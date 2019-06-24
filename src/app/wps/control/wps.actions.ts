@@ -1,13 +1,11 @@
 import { Action } from '@ngrx/store';
-import { Product } from './product';
-import { ProcessState } from './processState';
-import { WpsProcess } from './wpsProcess';
+import { Product, Process } from './workflowcontrol';
 
 
 export enum EWpsActionTypes {
     productsProvided = "[Wps] Products Provided", 
     processStarted = "[Wps] Process Started", 
-    processStateChanged = "[Wps] Process State Changed"
+    processStatesChanged = "[Wps] Process States Changed"
 }
 
 
@@ -19,13 +17,13 @@ export class ProductsProvided implements Action {
 
 export class ProcessStarted implements Action {
     type: string = EWpsActionTypes.processStarted;
-    constructor (public payload: {process: WpsProcess}) {}
+    constructor (public payload: {process: Process}) {}
 }
 
 
 export class ProcessStatesChanged implements Action {
-    type: string = EWpsActionTypes.processStateChanged;
-    constructor (public payload: {processStates: ProcessState[]}) {}
+    type: string = EWpsActionTypes.processStatesChanged;
+    constructor (public payload: {processes: Process[]}) {}
 }
 
 

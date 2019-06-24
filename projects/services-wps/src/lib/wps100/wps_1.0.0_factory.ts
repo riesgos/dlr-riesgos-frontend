@@ -37,18 +37,23 @@ export class WpsFactory100 implements WpsMarshaller {
                 let format; 
                 if(isReference) {
                     datatype = "complex";
+                    // @ts-ignore
                     data = output.reference.href || null;
+                    // @ts-ignore
                     format = output.reference.mimeType;
                 } else {
                     if(output.data && output.data.literalData) {
                         datatype = "literal"; 
                         format = output.data.literalData.dataType;
                     }
+                    // @ts-ignore
                     else if(output.data.complexData) {
                         datatype = "complex";
+                        // @ts-ignore
                         format = output.data.complexData.mimeType;
                     }
                     else datatype = "bbox";
+                    // @ts-ignore
                     data = this.unmarshalOutputData(output.data);
                 }
     
@@ -185,6 +190,7 @@ export class WpsFactory100 implements WpsMarshaller {
                 identifier: { value: inp.id },
                 title: { value: inp.id }, 
                 _abstract: { value: "" }, 
+                // @ts-ignore
                 data: data, 
             })
         }

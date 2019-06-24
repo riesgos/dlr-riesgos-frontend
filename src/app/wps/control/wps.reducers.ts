@@ -3,13 +3,13 @@ import { WpsState } from './wps.state';
 
 
 
-export const wpsReducer = (state: WpsState, action: WpsActions): WpsState => {
+export function wpsReducer (state: WpsState, action: WpsActions): WpsState  {
     console.log("Wps-reducer now handling action of type " + action.type, action, state);
     switch(action.type) {
-        case EWpsActionTypes.processStateChanged: 
+        case EWpsActionTypes.processStatesChanged: 
             return {
                 ...state, 
-                processStates: (action as ProcessStatesChanged).payload.processStates
+                processes: (action as ProcessStatesChanged).payload.processes
             };
         case EWpsActionTypes.productsProvided:
         case EWpsActionTypes.processStarted:

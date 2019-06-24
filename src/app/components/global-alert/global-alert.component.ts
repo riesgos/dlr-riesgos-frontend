@@ -8,7 +8,7 @@ import { IAlert } from './alert.service';
 })
 export class GlobalAlertComponent implements OnInit {
   @Input() alert: null | IAlert;
-  @Output() alertChange = new EventEmitter();
+  @Output() alertChange = new EventEmitter<null | IAlert>();
   constructor() { }
 
   close() {

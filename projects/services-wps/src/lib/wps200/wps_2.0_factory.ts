@@ -1,4 +1,4 @@
-import { WpsMarshaller, WpsInput, WpsOutput, WpsResult } from "../wps_datatypes";
+import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability } from "../wps_datatypes";
 import { WPSCapabilitiesType } from "./wps_2.0";
 
 
@@ -14,12 +14,11 @@ export class WpsFactory200 implements WpsMarshaller {
         return `${baseurl}?service=WPS&request=Execute&version=2.0.0&identifier=${processId}`;
     }
     
-    unmarshalCapabilities(capabilities: WPSCapabilitiesType) {
-        let out = [];
+    unmarshalCapabilities(capabilities: WPSCapabilitiesType): WpsCapability[] {
+        let out: WpsCapability[] = [];
         capabilities.contents.processSummary.forEach(summary => {
             out.push({
-                id: summary.identifier.value,
-                title: summary.title[0].value
+                id: summary.identifier.value
             })
         });
         return out;
@@ -30,7 +29,7 @@ export class WpsFactory200 implements WpsMarshaller {
         return [];
     }
     
-    marshalExecBody(processId: string, inputs: WpsInput[], output: WpsOutput) {
+    marshalExecBody(processId: string, inputs: WpsInput[], output: WpsOutputDescription) {
         throw new Error("Method not implemented.");
         return null;
     }

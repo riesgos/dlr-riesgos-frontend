@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve --configuration=es --source-map --port=4200 --host=0.0.0.0",
+    "build": "ng build --configuration=es --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "installLibrary": "node scripts/installLibraryDependencies",
+    "translate": "ng xi18n  --output-path locale"
   },
   "private": true,
   "dependencies": {
@@ -19,6 +21,12 @@
     "@angular/platform-browser": "~8.0.1",
     "@angular/platform-browser-dynamic": "~8.0.1",
     "@angular/router": "~8.0.1",
+    "@clr/angular": "^2.0.1",
+    "@clr/icons": "2.0.1",
+    "@clr/ui": "2.0.1",
+    "@ngrx/effects": "^8.0.1",
+    "@ngrx/store": "^8.0.1",
+    "@webcomponents/custom-elements": "^1.0.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"

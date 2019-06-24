@@ -1,0 +1,20 @@
+<div style="display: table-row">
+  
+  <div style="display: table-cell">
+      <clr-input-container>
+        <label>
+          {{parameter.name}}:
+        </label>
+        <input value="{{bbox_lower}} {{bbox_upper}}"  [attr.disabled]="true" type="text" clrInput style="width:75%;" />
+        <clr-control-helper>{{parameter.description}}</clr-control-helper>
+        <clr-control-error>Invalid input</clr-control-error>
+      </clr-input-container>
+  </div>
+  
+  <div style="display: table-cell">
+      <button type="button" (click)="onSelectButtonClicked()" class="btn btn-outline"><clr-icon shape="cursor-arrow"></clr-icon></button>
+  </div>
+
+</div>
+
+  

@@ -1,0 +1,15 @@
+<clr-select-container>
+
+  <label>
+    {{parameter.name}}:
+  </label>
+    
+  <select clrSelect  [attr.disabled]="disabled ? '' : null"  (change)="onChange($event.target.value)">
+      <option [value]="activeOption" selected>{{activeOption}}</option>
+      <option *ngFor="let option of options" [value]="option">{{option}}</option>
+  </select>
+
+  <clr-control-helper>{{parameter.description}}</clr-control-helper>
+  <clr-control-error>Invalid input</clr-control-error>
+
+</clr-select-container>

@@ -1,0 +1,51 @@
+<!-- <h3>{{page.getName()}}</h3> -->
+
+<p>{{page.getDescription()}}</p>
+
+<div class="wizardElement">
+    <ng-container [ngSwitch]="page.getState() | async">
+
+        <ng-container *ngSwitchCase="'unavailable'">
+            <span class="label" i18n>This page can not be configured yet.</span>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'available'">
+            <ukis-form [parameters]="page.getConfig()" (formSubmitted)="onSubmit($event)"></ukis-form>
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="'running'">
+            <span class="spinner spinner-inline" i18n> Loading... </span>
+            <!-- <ukis-global-progress></ukis-global-progress> -->
+            <!-- <div class="progress loop"><progress></progress></div> -->
+            <!-- <ukis-form [fg]="pageForm" [parameters]="page.getConfig()" (formSubmitted)="onSubmit($event)" [disabled]="true"> </ukis-form> -->
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'completedSuccessfully'">
+            <ukis-form [parameters]="page.getConfig()" (formSubmitted)="onSubmit($event)" [disabled]="true">
+            </ukis-form>
+            <button class="btn btn-outline" (click)="onNextClicked()" i18n>Next</button>
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>Reconfigure</button>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'error'">
+
+            <div class="alert alert-danger">
+                <div class="alert-items">
+                    <div class="alert-item static">
+                        <div class="alert-icon-wrapper">
+                            <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+                        </div>
+                        <span class="alert-text">
+                            {{page.getErrorMessage()}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>Retry</button>
+        </ng-container>
+
+    </ng-container>
+</div>

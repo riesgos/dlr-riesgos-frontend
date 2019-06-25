@@ -20,6 +20,7 @@ export class FeatureTableComponent implements OnInit {
     let featureCollection: FeatureCollection = this.vectorLayer.data;
     this.title = this.vectorLayer.name;
     this.features = featureCollection.features;
+    // @ts-ignore
     this.properties = Object.keys(this.features[0].properties);
   }
 

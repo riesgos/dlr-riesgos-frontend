@@ -18,15 +18,13 @@ import { FooterService } from './components/global-footer/footer.service';
 import { AlertService } from './components/global-alert/alert.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { ConfigurationControlModule } from 'projects/configuration-control/src/public_api';
+import { ConfigurationWizardComponent } from './components/config_wizard/configuration-wizard/configuration-wizard.component';
+import { FormComponent } from './components/config_wizard/form/form.component';
+import { FormSelectFieldComponent } from './components/config_wizard/form-select-field/form-select-field.component';
+import { FormStringFieldComponent } from './components/config_wizard/form-string-field/form-string-field.component';
+import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 import { FeatureTablesModule } from 'projects/feature-tables/src/public_api';
-import { WpsWorkflowControl } from './wps/control/wpsWorkflowControl';
-import { WpsClient } from 'projects/services-wps/src/public_api';
-import { ConfigurationWizzardComponent } from './components/configuration-wizzard/configuration-wizzard.component';
-import { WizzardPageComponent } from './components/wizzard-page/wizzard-page.component';
-import { SelectFieldComponent } from './components/select-field/select-field.component';
-import { LiteralFieldComponent } from './components/literal-field/literal-field.component';
-import { BboxFieldComponent } from './components/bbox-field/bbox-field.component';
+import { WorkflowControl } from './wps/control/workflowcontrol';
 
 @NgModule({
   declarations: [
@@ -35,12 +33,12 @@ import { BboxFieldComponent } from './components/bbox-field/bbox-field.component
     GlobalFooterComponent, 
     GlobalProgressComponent, 
     HeaderComponent,
-    SaveButtonComponent,
-    ConfigurationWizzardComponent,
-    WizzardPageComponent,
-    SelectFieldComponent,
-    LiteralFieldComponent,
-    BboxFieldComponent
+    SaveButtonComponent, 
+    ConfigurationWizardComponent, 
+    FormComponent, 
+    FormSelectFieldComponent, 
+    FormStringFieldComponent, 
+    WizardPageComponent
   ],
   imports: [
     BrowserModule,
@@ -52,10 +50,9 @@ import { BboxFieldComponent } from './components/bbox-field/bbox-field.component
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    ConfigurationControlModule,
     FeatureTablesModule
   ],
-  providers: [AlertService, FooterService, ProgressService, WpsWorkflowControl, WpsClient],
+  providers: [AlertService, FooterService, ProgressService, WorkflowControl],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

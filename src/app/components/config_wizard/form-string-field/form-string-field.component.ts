@@ -2,7 +2,7 @@ import { Component, OnInit, Input , forwardRef } from '@angular/core';
 import { FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { StringUconfWDD } from '../userconfigurable_wpsdata';
+import { StringUconfWD } from '../userconfigurable_wpsdata';
 
 @Component({
   selector: 'ukis-form-string-field',
@@ -18,7 +18,7 @@ export class FormStringFieldComponent implements OnInit, ControlValueAccessor {
 
 
   @Input() formControl: FormControl;
-  @Input() parameter: StringUconfWDD;
+  @Input() parameter: StringUconfWD;
   public value: string;
   public valid: Observable<boolean>;
   public disabled: boolean = false;

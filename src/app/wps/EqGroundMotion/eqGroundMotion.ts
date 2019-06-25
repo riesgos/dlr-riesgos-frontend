@@ -1,40 +1,36 @@
-import { WpsProcess } from '../control/wpsProcess';
-import { WpsDataDescription } from 'projects/services-wps/src/public_api';
+import { WpsData, WpsClient } from 'projects/services-wps/src/public_api';
+import { Process } from '../control/workflowcontrol';
+import { HttpClient } from '@angular/common/http';
 
 
 
 
-export class EqGroundMotion implements WpsProcess {
-    
-    readonly id: string = "org.n52.wps.python.algorithm.ShakemapProcess"; 
+export class EqGroundMotion extends Process {
 
-    readonly url: string = "https://riesgos.52north.org/wps/WebProcessingService";    
-    
-    readonly inputDescriptions: WpsDataDescription[] = [{
-            id: "quakeml-input", 
+    constructor(httpClient: HttpClient) {
+
+        const id: string = "org.n52.wps.python.algorithm.ShakemapProcess";
+
+        const url: string = "https://riesgos.52north.org/wps/WebProcessingService";
+
+        const inputs: WpsData[] = [{
+            id: "quakeml-input",
+            data: null,
             format: "application/vnd.geo+json",
-            reference: false, 
+            reference: false,
             type: "complex"
         }];
-    
-    readonly outputDescription: WpsDataDescription = {
-        id: "shakemap-output", 
-        type: "complex",
-        reference: false,
-        format: "application/WMS"
-    };
 
+        const output: WpsData = {
+            id: "shakemap-output",
+            data: null,
+            type: "complex",
+            reference: false,
+            format: "application/WMS"
+        };
 
-    processId(): string {
-        return this.id;
-    }
+        super(id, url, inputs, output, new WpsClient("1.0.0", httpClient));
 
-    providesProducts(): string[] {
-        return [this.outputDescription.id];
-    }
-
-    requiresProducts(): string[] {
-        return this.inputDescriptions.map(inpt => inpt.id);
     }
 
 }

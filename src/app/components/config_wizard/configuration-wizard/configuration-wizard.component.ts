@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { of, Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { WpsProcess } from 'src/app/wps/control/wpsProcess';
-import { processes } from 'src/app/wps/processes';
+import { Process } from 'src/app/wps/control/workflowcontrol';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
 
 
 
@@ -14,11 +14,11 @@ import { processes } from 'src/app/wps/processes';
 })
 export class ConfigurationWizardComponent implements OnInit {
 
-  processes: WpsProcess[];
+  processes: Process[];
   private focussedPageId: BehaviorSubject<string>; // @TODO: store.get(focussedPage)
 
-  constructor() {
-    this.processes = processes;
+  constructor(private store: Store<State>) {
+    this.processes = processProvider.processes;
   }
   
   ngOnInit() {
@@ -29,7 +29,7 @@ export class ConfigurationWizardComponent implements OnInit {
     // @TODO: store.emmit(new ProcessFocussed(process))
   }
 
-  hasFocus(process: WpsProcess): Observable<boolean> {
+  hasFocus(process: Process): Observable<boolean> {
 
   }
 }

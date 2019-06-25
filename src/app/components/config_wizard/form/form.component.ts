@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { UserconfigurableWpsDataDescription } from '../userconfigurable_wpsdata';
+import { UserconfigurableWpsData } from '../userconfigurable_wpsdata';
 
 @Component({
   selector: 'ukis-form',
@@ -10,7 +10,7 @@ import { UserconfigurableWpsDataDescription } from '../userconfigurable_wpsdata'
 export class FormComponent implements OnInit {
 
   fg: FormGroup;
-  @Input() parameters: UserconfigurableWpsDataDescription[];
+  @Input() parameters: UserconfigurableWpsData[];
   @Input() disabled: boolean = false;
   @Output() formSubmitted: EventEmitter<any> = new EventEmitter<any>();
 
@@ -18,7 +18,7 @@ export class FormComponent implements OnInit {
 
   ngOnInit() {
     let formControls = {};
-    this.parameters.forEach((para: UserconfigurableWpsDataDescription) => {
+    this.parameters.forEach((para: UserconfigurableWpsData) => {
       let fc = new FormControl(para.defaultValue);
       formControls[para.id] = fc;
     });

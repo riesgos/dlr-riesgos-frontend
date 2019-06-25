@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { WpsProcess } from 'src/app/wps/control/wpsProcess';
-import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription } from '../userconfigurable_wpsdata';
+import { Store, select } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
+import { ProductsProvided } from 'src/app/wps/control/wps.actions';
+import { Process } from 'src/app/wps/control/workflowcontrol';
+import { getStateForProcess } from 'src/app/wps/control/wps.selectors';
+import { isUserconfigurableWpsData, UserconfigurableWpsData } from '../userconfigurable_wpsdata';
 
 
 
@@ -11,33 +15,34 @@ import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescriptio
 })
 export class WizardPageComponent implements OnInit {
 
-  @Output() configSubmitted: EventEmitter<{pageId: string, values: any}> = new EventEmitter<{pageId: string, values: any}>();
-  @Output() nextClicked: EventEmitter<string> = new EventEmitter<string>();
-  @Output() reconfigureClicked: EventEmitter<string> = new EventEmitter<string>();
-  @Input() process: WpsProcess;
-  parameters: UserconfigurableWpsDataDescription[];
+  @Input() process: Process;
+  parameters: UserconfigurableWpsData[];
+  processState$ = this.store.pipe(
+    select(getStateForProcess, {id: this.process.id})
+  );
 
-  constructor() { }
+  constructor(
+    private store: Store<State>
+  ) { }
 
   ngOnInit() {
-    this.parameters = this.process.inputDescriptions
-      .filter(descr => isUserconfigurableWpsDataDescription(descr))
-      .map(descr => descr as UserconfigurableWpsDataDescription);
+    this.parameters = this.process.requiredProducts
+      .filter(descr => isUserconfigurableWpsData(descr))
+      .map(descr => descr as UserconfigurableWpsData);
   }
 
-  onSubmit(data) {
-    // @TODO: store.emmit(new ParametersProvided) ?
-    this.configSubmitted.emit({pageId: this.process.processId(), values: data})
+  onSubmit(products: UserconfigurableWpsData[]) {
+    this.store.dispatch(new ProductsProvided({products: products}));
   }
 
   onNextClicked() {
     // @TODO: store.emmit(new NextClicked) ? 
-    this.nextClicked.emit(this.process.processId());
+    //this.nextClicked.emit(this.process.processId());
   } 
 
   onReconfigureClicked () {
     // @TODO: store.emmit(new Reconfigure) ? 
-    this.reconfigureClicked.emit(this.process.processId());
+    // this.reconfigureClicked.emit(this.process.processId());
   }
 
 }

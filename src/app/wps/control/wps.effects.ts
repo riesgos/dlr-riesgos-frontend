@@ -1,11 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ProcessStatesChanged, ProcessStarted } from './wps.actions';
-import { WpsWorkflowControl } from './wpsWorkflowControl';
 import { map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Product } from './product';
-import { ProcessState } from './wps.state';
+import { WorkflowControl, Process } from './workflowcontrol';
 
 
 
@@ -19,13 +17,12 @@ export class WpsEffects {
         ofType<WpsActions>(EWpsActionTypes.productsProvided),
         map((action: ProductsProvided) => {
             for (let product of action.payload.products) {
-                this.wfc.setProduct(product);
+                this.wfc.provideProduct(product);
             }
-            const newStates = this.wfc.getStates();
-            return newStates;
+            return this.wfc.processes;
         }),
-        switchMap((newStates: ProcessState[]) => {
-            return of(new ProcessStatesChanged({ processStates: newStates }));
+        switchMap((newProcesses: Process[]) => {
+            return of(new ProcessStatesChanged({ processes: newProcesses }));
         })
     );
 
@@ -36,8 +33,8 @@ export class WpsEffects {
         switchMap((action: ProcessStarted) => {
             return this.wfc.executeProcess(action.payload.process);
         }),
-        map((results: Product[]) => {
-            return new ProductsProvided({products: results});
+        map((result: boolean) => {
+            return new ProcessStatesChanged({processes: this.wfc.processes});
         })
     );
 
@@ -45,6 +42,6 @@ export class WpsEffects {
 
     constructor(
         private actions$: Actions,
-        private wfc: WpsWorkflowControl
+        private wfc: WorkflowControl
     ) { }
 }

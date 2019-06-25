@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { SelectUconfWDD } from '../userconfigurable_wpsdata';
+import { SelectUconfWD } from '../userconfigurable_wpsdata';
 
 @Component({
   selector: 'ukis-form-select-field',
@@ -14,7 +14,7 @@ import { SelectUconfWDD } from '../userconfigurable_wpsdata';
 })
 export class FormSelectFieldComponent implements OnInit, ControlValueAccessor {
 
-  @Input() parameter: SelectUconfWDD;
+  @Input() parameter: SelectUconfWD;
   public disabled: boolean = false;
   public activeOption: any;
   public options; 

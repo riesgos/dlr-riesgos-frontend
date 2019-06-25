@@ -1,47 +1,45 @@
-import { WpsProcess } from '../control/wpsProcess';
-import { WpsDataDescription } from 'projects/services-wps/src/public_api';
+import { WpsDataDescription, WpsClient, WpsData } from 'projects/services-wps/src/public_api';
+import { Process } from '../control/workflowcontrol';
+import { HttpClient } from '@angular/common/http';
 
 
 
 
-export class TsPhysicalSimulation implements WpsProcess {
+export class TsPhysicalSimulation extends Process {
 
-    readonly id: string = "get_tsunamap";
-    
-    readonly url: string = "http://tsunami-wps.awi.de/wps";    
-    
-    readonly inputDescriptions: WpsDataDescription[] = [{
-        id: "lat",
-        reference: false, 
-        type: "literal"
-    }, {
-        id: "lon", 
-        reference: false, 
-        type: "literal"
-    }, {
-        id: "mag", 
-        reference: false, 
-        type: "literal"
-    }];
-    
-    readonly outputDescription: WpsDataDescription = {
-        id: "tsunamap", 
-        type: "complex", 
-        format: "application/xml",
-        reference: false
-    };
+    constructor(httpClient: HttpClient) {
 
+        const id: string = "get_tsunamap";
 
-    processId(): string {
-        return this.id;
-    }
+        const url: string = "http://tsunami-wps.awi.de/wps";
 
-    providesProducts(): string[] {
-        return [this.outputDescription.id];
-    }
+        const inputs: WpsData[] = [{
+            id: "lat",
+            reference: false,
+            type: "literal",
+            data: null
+        }, {
+            id: "lon",
+            reference: false,
+            type: "literal",
+            data: null
+        }, {
+            id: "mag",
+            reference: false,
+            type: "literal",
+            data: null
+        }];
 
-    requiresProducts(): string[] {
-        return this.inputDescriptions.map(inpt => inpt.id);
+        const output: WpsData = {
+            id: "tsunamap",
+            type: "complex",
+            format: "application/xml",
+            reference: false,
+            data: null
+        };
+
+        super(id, url, inputs, output, new WpsClient("1.0.0", httpClient));
+
     }
 
 }

@@ -2,6 +2,31 @@ import {Graph, graph_alg} from 'graphlib';
 import { WpsData, WpsClient } from 'projects/services-wps/src/public_api';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
+import { Injectable, Inject } from '@angular/core';
+import { EqEventCatalogue } from '../EqEventCatalogue/eqEventCatalogue';
+import { EqGroundMotion } from '../EqGroundMotion/eqGroundMotion';
+import { EqTsInteraction } from '../EqTsInteraction/eqTsInteraction';
+import { TsPhysicalSimulation } from '../TsPhysicalSimulation/tsPhysicalSimulation';
+import { HttpClient } from '@angular/common/http';
+
+
+
+/**
+ * The process/product model is a special case of a bipartite graph. 
+ * 
+ * G: node
+ *      N = Prods U Procs
+ *      E = Inputs U Outputs
+ * Also:
+ *      Prods = Prods_used U Prods_unused
+ * 
+ * Here we enforce that every process has exactly one  output. 
+ *      #Outputs = #Procs
+ * 
+ * Define multiusage as the number of times products are used in more than one process. 
+ * As a consequence of Eulers theorem we then get: 
+ *  #loops = #multiusage - #Prods_unused + 1
+ */
 
 
 
@@ -58,6 +83,10 @@ export class Process {
         this.state = this.calculateState();
     }
 
+    public getState(): ProcessState {
+        return this.state;
+    }
+
 
     private calculateState(): ProcessState {
         if( this.requiredProducts.find(pr => pr.data === undefined ) ) return ProcessState.unavailable;
@@ -66,19 +95,24 @@ export class Process {
     }
 }
 
-
+@Injectable()
 export class WorkflowControl {
 
     readonly processes: Process[]; 
     private graph: Graph;
 
 
-    constructor(processes: Process[]) {
+    constructor(httpClient: HttpClient) {
 
-        this.processes = processes;
+        const processes = [
+            new EqEventCatalogue(httpClient), 
+            new EqGroundMotion(httpClient), 
+            new EqTsInteraction(httpClient), 
+            new TsPhysicalSimulation(httpClient)
+        ]
 
         this.graph = new Graph({directed: true});
-        for (let process of this.processes) {
+        for (let process of processes) {
             for (let inProd of process.requiredProducts) {
                 this.graph.setEdge(inProd.id, process.id);
             }
@@ -89,6 +123,15 @@ export class WorkflowControl {
         if (!graph_alg.isAcyclic(this.graph)) {
             throw new Error('Process graphs with cycles are not supported');
         }
+
+        this.processes = this.getProcessesInExecutionOrder(processes);
+    }
+
+    executeProcess(process: Process): Observable<boolean> {
+        return process.execute().pipe(
+            tap((result: WpsData) => {this.provideProduct(result)}),
+            map((result: WpsData) => {return true})
+        )
     }
 
 
@@ -98,17 +141,22 @@ export class WorkflowControl {
             .map(process => process.setProduct(product));
     }
 
-
-    getProcessesInExecutionOrder(): Process[] {
-        const allIds = graph_alg.topsort(this.graph);
-        const processIds = this.processes.map(proc => proc.id);
-        const sortedProcessIds = allIds.filter(id => processIds.includes(id));
-        const sortedProcesses = sortedProcessIds.map(id => this.getProcess(id));
-        return sortedProcesses;
+    
+    getProcesses() {
+        throw new Error("Method not implemented.");
+    }
+    
+    
+    getProcess(id: string): Process | undefined {
+        return this.processes.find(proc => proc.id == id);
     }
 
 
-    getProcess(id: string): Process | undefined {
-        return this.processes.find(proc => proc.id == id);
+    private getProcessesInExecutionOrder(processes: Process[]): Process[] {
+        const allIds = graph_alg.topsort(this.graph);
+        const processIds = processes.map(proc => proc.id);
+        const sortedProcessIds = allIds.filter(id => processIds.includes(id));
+        const sortedProcesses = sortedProcessIds.map(id => processes.find(proc => proc.id == id) );
+        return sortedProcesses;
     }
 }

@@ -42,8 +42,8 @@ export class WpsConfigurationProvider {
     }
 
         
-    getProcesses(): Process[] {
-        return this.getProcessesForScenario(this.scenario);
+    createProcesses(): Process[] {
+        return this.createProcessesForScenario(this.scenario);
     }
 
     getConfigurationForScenario(scenario: string): ProcessDescription[] {
@@ -51,7 +51,7 @@ export class WpsConfigurationProvider {
     }
 
 
-    getProcessesForScenario(scenario: string): Process[] {
+    createProcessesForScenario(scenario: string): Process[] {
         const descriptions = this.getConfigurationForScenario(scenario);
         const processes = descriptions.map(desc => this.createProcess(desc));
         return processes;

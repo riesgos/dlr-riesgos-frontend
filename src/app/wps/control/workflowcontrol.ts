@@ -1,4 +1,4 @@
-import {Graph, graph_alg} from 'graphlib';
+import {Graph, alg} from 'graphlib';
 import { WpsData } from 'projects/services-wps/src/public_api';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
@@ -37,7 +37,7 @@ export class WorkflowControl {
 
     constructor(configurationProvider: WpsConfigurationProvider) {
 
-        const processes: Process[] = configurationProvider.getProcesses();
+        const processes: Process[] = configurationProvider.createProcesses();
 
         this.graph = new Graph({directed: true});
         for (let process of processes) {
@@ -48,7 +48,7 @@ export class WorkflowControl {
             this.graph.setEdge(process.id, outProd.id);
         }
 
-        if (!graph_alg.isAcyclic(this.graph)) {
+        if (!alg.isAcyclic(this.graph)) {
             throw new Error('Process graphs with cycles are not supported');
         }
 
@@ -76,7 +76,7 @@ export class WorkflowControl {
 
 
     private getProcessesInExecutionOrder(processes: Process[]): Process[] {
-        const allIds = graph_alg.topsort(this.graph);
+        const allIds = alg.topsort(this.graph);
         const processIds = processes.map(proc => proc.id);
         const sortedProcessIds = allIds.filter(id => processIds.includes(id));
         const sortedProcesses = sortedProcessIds.map(id => processes.find(proc => proc.id == id) );

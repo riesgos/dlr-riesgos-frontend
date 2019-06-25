@@ -44,9 +44,9 @@ export class ConfigurationWizardComponent implements OnInit {
     ngOnInit() {
     }
 
-    getState(process: ProcessDescription): Observable<ProcessState> {
+    getState(process: ProcessDescription): Observable<ProcessState | undefined> {
         return this.processStates$.pipe(
-            map(states => states.get(process.id))
+            map(states =>  states.get(process.id) )
         )
     }
 

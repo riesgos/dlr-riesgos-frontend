@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { UkisRoutingModule } from './app-routing.module';
+import { UkisComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
@@ -26,10 +26,12 @@ import { WizardPageComponent } from './components/config_wizard/wizard-page/wiza
 import { FeatureTablesModule } from 'projects/feature-tables/src/public_api';
 import { WorkflowControl } from './wps/control/workflowcontrol';
 import { WpsConfigurationProvider } from './wps/configuration/configurationProvider';
+import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
+import { RouteMapComponent } from './route-components/route-map/route-map.component';
 
 @NgModule({
   declarations: [
-    AppComponent, 
+    UkisComponent, 
     GlobalAlertComponent, 
     GlobalFooterComponent, 
     GlobalProgressComponent, 
@@ -39,11 +41,13 @@ import { WpsConfigurationProvider } from './wps/configuration/configurationProvi
     FormComponent, 
     FormSelectFieldComponent, 
     FormStringFieldComponent, 
-    WizardPageComponent
+    WizardPageComponent, 
+    ScenariosComponent, 
+    RouteMapComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    UkisRoutingModule,
     ClarityModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers),
@@ -54,6 +58,6 @@ import { WpsConfigurationProvider } from './wps/configuration/configurationProvi
     FeatureTablesModule
   ],
   providers: [AlertService, FooterService, ProgressService, WorkflowControl, WpsConfigurationProvider],
-  bootstrap: [AppComponent]
+  bootstrap: [UkisComponent]
 })
 export class AppModule { }

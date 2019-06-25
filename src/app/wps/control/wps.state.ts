@@ -8,3 +8,9 @@ export interface WpsState {
     processStates: Map<ProcessId, ProcessState>, 
     productValues: Map<ProductId, Product>
 }
+
+
+export const initialWpsState: WpsState = {
+    processStates: new Map<ProcessId, ProcessState>(), 
+    productValues: new Map<ProductId, Product>()
+}

@@ -1,0 +1,23 @@
+.label, a.label {
+    min-width: 100px;
+  }
+  
+  // #map {
+  //   // width: unset !important;
+  //   // height: unset !important; //calc(100% - 56px); //header 50 + 2
+  //   // position: unset !important;
+  //   // width: 1082px;
+  //   // height: 948px;
+  //   // flex: 1 1 900px !important;
+  // }
+  
+  #SidenavConfigurationWizard {
+      width: 25%; 
+      min-width: 500px;
+      order: 1;
+  }
+  
+  #LayerSwitcher {
+      width: 25%; 
+      min-width: 300px;
+  }

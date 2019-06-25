@@ -1,34 +1,34 @@
 <clr-stack-view class="ConfigurationWizard">
     <clr-stack-header style="margin-left: 20px;" i18n>Configuration Wizard</clr-stack-header>
-    <clr-stack-block *ngFor="let process of processes" [clrSbExpanded]="hasFocus(process)" (clrSbExpandedChange)="onBlockClicked($event, process)">
+    <clr-stack-block *ngFor="let processDescription of processDescriptions" [clrSbExpanded]="hasFocus(processDescription)" (clrSbExpandedChange)="onBlockClicked($event, processDescription)">
 
 
 
         <clr-stack-label class="ConfigurationWizardLabel">
-            <ng-container *ngIf="getState(process) | async as state">
+            <ng-container *ngIf="getState(processDescription) | async as state">
                 <ng-container [ngSwitch]="state">
                     <ng-container *ngSwitchCase="'unavailable'">
-                        <clr-icon [attr.shape]=""></clr-icon> <b class="p1">{{process.name}}</b>
+                        <clr-icon [attr.shape]=""></clr-icon> <b class="p1">{{processDescription.name}}</b>
                         <div style="float:right;"> <span class="label" i18n>Unavailable</span> </div>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'available'">
-                        <clr-icon [attr.shape]="" class="is-highlight"></clr-icon> <b class="p1">{{process.name}}</b>
+                        <clr-icon [attr.shape]="" class="is-highlight"></clr-icon> <b class="p1">{{processDescription.name}}</b>
                         <div style="float:right;"> <span class="label label-info" i18n>Available</span> </div>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'running'">
-                        <clr-icon [attr.shape]="" class="is-warning"></clr-icon> <b class="p1">{{process.name}}</b>
+                        <clr-icon [attr.shape]="" class="is-warning"></clr-icon> <b class="p1">{{processDescription.name}}</b>
                         <div style="float:right;"> <span class="label label-warning" i18n>Running ...</span> </div>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'completedSuccessfully'">
-                        <clr-icon [attr.shape]="" class="is-success"></clr-icon> <b class="p1">{{process.name}}</b>
+                        <clr-icon [attr.shape]="" class="is-success"></clr-icon> <b class="p1">{{processDescription.name}}</b>
                         <div style="float:right;"> <span class="label label-success" i18n>Completed</span> </div>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'error'">
-                        <clr-icon [attr.shape]="" class="is-danger"></clr-icon> <b class="p1">{{process.name}}</b>
+                        <clr-icon [attr.shape]="" class="is-danger"></clr-icon> <b class="p1">{{processDescription.name}}</b>
                         <div style="float:right;"> <span class="label label-danger" i18n>Error</span> </div>
                     </ng-container>
 
@@ -38,7 +38,7 @@
 
         <clr-stack-block class="ConfigurationWizardContent">
             <clr-stack-content>
-                <ukis-wizard-page [process]="process" >
+                <ukis-wizard-page [processDescription]="processDescription" >
                 </ukis-wizard-page>
             </clr-stack-content>
         </clr-stack-block>

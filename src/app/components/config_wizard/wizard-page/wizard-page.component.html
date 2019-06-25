@@ -1,8 +1,8 @@
 
-<p>{{process.description}}</p>
+<p>{{processDescription.description}}</p>
 
 <div class="wizardElement">
-    <ng-container [ngSwitch]="process.getState()">
+    <ng-container [ngSwitch]="state$ | async">
 
         <ng-container *ngSwitchCase="'unavailable'">
             <span class="label" i18n>This process can not be configured yet.</span>
@@ -33,7 +33,7 @@
                             <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
                         </div>
                         <span class="alert-text">
-                            {{process.getErrorMessage()}}
+                            {{getErrorMessage(processDescription)}}
                         </span>
                     </div>
                 </div>

@@ -8,7 +8,7 @@ const getFocusState = function(state: State): FocusState {
 }
 
 
-export const getFocussedProcess = createSelector(
+export const getFocussedProcessId = createSelector(
     getFocusState, 
-    (focusState: FocusState) => focusState.focussedProcess
+    (focusState: FocusState) => focusState.focussedProcessId
 );

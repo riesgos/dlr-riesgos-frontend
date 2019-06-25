@@ -29,6 +29,8 @@
     "@ngrx/effects": "^8.0.1",
     "@ngrx/store": "^8.0.1",
     "@turf/helpers": "^6.1.4",
+    "@ukis/base-layers-raster": "^5.1.0",
+    "@ukis/layer-control": "^5.1.0",
     "@ukis/map-ol": "^5.1.0",
     "@ukis/services-layers": "^5.1.0",
     "@ukis/services-util-store": "^5.1.0",

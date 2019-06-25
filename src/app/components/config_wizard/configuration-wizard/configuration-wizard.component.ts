@@ -3,7 +3,7 @@ import { of, Observable, BehaviorSubject } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
-import { getFocussedProcess } from 'src/app/focus/focus.selectors';
+import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map } from 'rxjs/operators';
 import { Process, ProcessState, ProcessId } from 'src/app/wps/control/process';
 import { WpsConfigurationProvider, ProcessDescription } from 'src/app/wps/configuration/configurationProvider';
@@ -22,22 +22,21 @@ export class ConfigurationWizardComponent implements OnInit {
 
     private focussedPageId$: Observable<string>;
     private processStates$: Observable<Map<ProcessId, ProcessState>>;
-    processes: ProcessDescription[];
+    processDescriptions: ProcessDescription[];
 
     constructor(
         private store: Store<State>, 
         configProvider: WpsConfigurationProvider    
     ) {
 
-        this.processes = configProvider.getConfiguration();
+        this.processDescriptions = configProvider.getConfiguration();
 
         this.processStates$ = this.store.pipe(
             select(getProcessStates)
         );
 
         this.focussedPageId$ = this.store.pipe(
-            select(getFocussedProcess),
-            map(proc => proc.id)
+            select(getFocussedProcessId)
         );
     }
 
@@ -50,13 +49,13 @@ export class ConfigurationWizardComponent implements OnInit {
         )
     }
 
-    onBlockClicked(event, process: Process) {
-        this.store.dispatch(new NewProcessClicked({process: process}));
+    onBlockClicked(event, processDescr: ProcessDescription) {
+        this.store.dispatch(new NewProcessClicked({processId: processDescr.id}));
     }
 
-    hasFocus(process: Process): Observable<boolean> {
+    hasFocus(processDescr: ProcessDescription): Observable<boolean> {
         return this.focussedPageId$.pipe(
-            map(id => id == process.id)
+            map(id => id == processDescr.id)
         );
     }
 }

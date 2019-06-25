@@ -1,9 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided } from 'src/app/wps/control/wps.actions';
 import { isUserconfigurableWpsData, UserconfigurableWpsData } from '../userconfigurable_wpsdata';
-import { Process } from 'src/app/wps/control/process';
+import { ProcessDescription } from 'src/app/wps/configuration/configurationProvider';
+import { Observable } from 'rxjs';
+import { ProcessState } from 'src/app/wps/control/process';
+import { getProcessStates } from 'src/app/wps/control/wps.selectors';
+import { map } from 'rxjs/operators';
 
 
 
@@ -14,7 +18,8 @@ import { Process } from 'src/app/wps/control/process';
 })
 export class WizardPageComponent implements OnInit {
 
-  @Input() process: Process;
+  @Input() processDescription: ProcessDescription;
+  state$: Observable<ProcessState | undefined>;
   parameters: UserconfigurableWpsData[];
 
 
@@ -23,9 +28,14 @@ export class WizardPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.parameters = this.process.requiredProducts
+    this.parameters = this.processDescription.requiredProducts
       .filter(descr => isUserconfigurableWpsData(descr))
       .map(descr => descr as UserconfigurableWpsData);
+
+    this.state$ = this.store.pipe(
+      select(getProcessStates),
+      map(states => states.get(this.processDescription.id))
+    );
   }
 
   onSubmit(products: UserconfigurableWpsData[]) {
@@ -41,5 +51,6 @@ export class WizardPageComponent implements OnInit {
     // @TODO: store.emmit(new Reconfigure) ? 
     // this.reconfigureClicked.emit(this.process.processId());
   }
+
 
 }

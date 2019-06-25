@@ -1,11 +1,11 @@
 import { WpsActions, EWpsActionTypes, ProcessStatesChanged, ProcessStarted, ProductsProvided } from './wps.actions';
-import { WpsState } from './wps.state';
+import { WpsState, initialWpsState } from './wps.state';
 import { ProcessId, ProcessState, Product } from './process';
 import { ProductId } from 'projects/services-wps/src/public_api';
 
 
 
-export function wpsReducer (state: WpsState, action: WpsActions): WpsState  {
+export function wpsReducer (state: WpsState = initialWpsState, action: WpsActions): WpsState  {
     console.log("Wps-reducer now handling action of type " + action.type, action, state);
     switch(action.type) {
 

@@ -28,6 +28,9 @@ import { WorkflowControl } from './wps/control/workflowcontrol';
 import { WpsConfigurationProvider } from './wps/configuration/configurationProvider';
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
+import { MapOlModule } from '@ukis/map-ol';
+import { LayersModule } from '@ukis/services-layers';
+import { LayerControlModule } from '@ukis/layer-control';
 
 @NgModule({
   declarations: [
@@ -48,6 +51,9 @@ import { RouteMapComponent } from './route-components/route-map/route-map.compon
   imports: [
     BrowserModule,
     UkisRoutingModule,
+    MapOlModule,
+    LayersModule,
+    LayerControlModule, 
     ClarityModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers),

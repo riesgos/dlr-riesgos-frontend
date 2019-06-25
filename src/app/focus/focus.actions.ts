@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Process } from '../wps/control/process';
+import { Process, ProcessId } from '../wps/control/process';
 
 
 
@@ -10,7 +10,7 @@ export enum EFocusActionTypes {
 
 export class NewProcessClicked implements Action {
     type: string = EFocusActionTypes.newProcessClicked;
-    constructor(public payload: {process: Process}) {}
+    constructor(public payload: {processId: ProcessId}) {}
 }
 
 

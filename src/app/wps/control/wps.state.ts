@@ -1,9 +1,11 @@
-import { Process } from './workflowcontrol';
+import { ProcessId, ProcessState } from './workflowcontrol';
+import { WpsData, ProductId } from 'projects/services-wps/src/public_api';
 
 
 
 
 
 export interface WpsState {
-    processes: Process[]
+    processStates: Map<ProcessId, ProcessState>,
+    productValues: Map<ProductId, WpsData>
 }

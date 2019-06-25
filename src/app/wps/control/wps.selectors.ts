@@ -7,9 +7,7 @@ const getWpsState = (state: State) => state.wpsState;
 export const getStateForProcess = createSelector(
     getWpsState, 
     (wpsState: WpsState, args) => {
-        const proc = wpsState.processes.find(p => p.id == args.id);
-        if(proc) return proc.getState();
-        return null;
+        return wpsState.processStates.get(args.id);
     }
 )
 

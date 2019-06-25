@@ -29,8 +29,10 @@ import { HttpClient } from '@angular/common/http';
  */
 
 
-
 export type Product = WpsData;
+
+
+export type ProcessId = string;
 
 
 export enum ProcessState {
@@ -46,7 +48,7 @@ export class Process {
     private state: ProcessState;
 
     constructor(
-        readonly id: string, 
+        readonly id: ProcessId, 
         readonly url: string, 
         readonly requiredProducts: Product[], 
         readonly providedProduct: Product,
@@ -147,7 +149,7 @@ export class WorkflowControl {
     }
     
     
-    getProcess(id: string): Process | undefined {
+    getProcess(id: ProcessId): Process | undefined {
         return this.processes.find(proc => proc.id == id);
     }
 

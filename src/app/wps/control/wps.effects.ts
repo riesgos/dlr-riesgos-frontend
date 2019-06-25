@@ -19,10 +19,8 @@ export class WpsEffects {
             for (let product of action.payload.products) {
                 this.wfc.provideProduct(product);
             }
-            return this.wfc.processes;
-        }),
-        switchMap((newProcesses: Process[]) => {
-            return of(new ProcessStatesChanged({ processes: newProcesses }));
+            const newProcesses = this.wfc.processes;
+            return new ProcessStatesChanged({ processes: newProcesses });
         })
     );
 

@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { of, Observable, BehaviorSubject } from 'rxjs';
 import { Process } from 'src/app/wps/control/workflowcontrol';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
+import { getProcesses } from 'src/app/wps/control/wps.selectors';
 
 
 
@@ -14,11 +15,13 @@ import { State } from 'src/app/ngrx_register';
 })
 export class ConfigurationWizardComponent implements OnInit {
 
-  processes: Process[];
-  private focussedPageId: BehaviorSubject<string>; // @TODO: store.get(focussedPage)
+  processes$: Observable<Process[]>;
+  private focussedPageId: Observable<string>; // @TODO: store.get(focussedPage)
 
   constructor(private store: Store<State>) {
-    this.processes = processProvider.processes;
+    this.processes$ = this.store.pipe(
+      select(getProcesses)
+    );
   }
   
   ngOnInit() {

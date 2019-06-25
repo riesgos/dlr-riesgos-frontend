@@ -2,9 +2,10 @@ export type WpsVerion = "1.0.0" | "2.0.0";
 export type WpsDataFormat = "application/vnd.geo+json" | "application/WMS" | "application/xml"; 
 
 
+export type ProductId = string;
 
 export interface WpsDataDescription {
-    id: string;
+    id: ProductId;
     type: "literal" | "complex" | "bbox" | "status";
     reference: boolean;
     format?: WpsDataFormat;

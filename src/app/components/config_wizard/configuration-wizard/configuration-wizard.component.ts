@@ -1,38 +1,62 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { of, Observable, BehaviorSubject } from 'rxjs';
-import { Process } from 'src/app/wps/control/workflowcontrol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getProcesses } from 'src/app/wps/control/wps.selectors';
+import { NewProcessClicked } from 'src/app/focus/focus.actions';
+import { getFocussedProcess } from 'src/app/focus/focus.selectors';
+import { map } from 'rxjs/operators';
+import { Process, ProcessState, ProcessId } from 'src/app/wps/control/process';
+import { WpsConfigurationProvider, ProcessDescription } from 'src/app/wps/configuration/configurationProvider';
+import { getProcessStates } from 'src/app/wps/control/wps.selectors';
 
 
 
 @Component({
-  selector: 'ukis-configuration-wizard',
-  templateUrl: './configuration-wizard.component.html',
-  styleUrls: ['./configuration-wizard.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'ukis-configuration-wizard',
+    templateUrl: './configuration-wizard.component.html',
+    styleUrls: ['./configuration-wizard.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ConfigurationWizardComponent implements OnInit {
 
-  processes$: Observable<Process[]>;
-  private focussedPageId: Observable<string>; // @TODO: store.get(focussedPage)
 
-  constructor(private store: Store<State>) {
-    this.processes$ = this.store.pipe(
-      select(getProcesses)
-    );
-  }
-  
-  ngOnInit() {
-  }
+    private focussedPageId$: Observable<string>;
+    private processStates$: Observable<Map<ProcessId, ProcessState>>;
+    processes: ProcessDescription[];
 
-  onBlockClicked(event, i) {
-    const focussedProcess = this.processes[i];
-    // @TODO: store.emmit(new ProcessFocussed(process))
-  }
+    constructor(
+        private store: Store<State>, 
+        configProvider: WpsConfigurationProvider    
+    ) {
 
-  hasFocus(process: Process): Observable<boolean> {
+        this.processes = configProvider.getConfiguration();
 
-  }
+        this.processStates$ = this.store.pipe(
+            select(getProcessStates)
+        );
+
+        this.focussedPageId$ = this.store.pipe(
+            select(getFocussedProcess),
+            map(proc => proc.id)
+        );
+    }
+
+    ngOnInit() {
+    }
+
+    getState(process: ProcessDescription): Observable<ProcessState> {
+        return this.processStates$.pipe(
+            map(states => states.get(process.id))
+        )
+    }
+
+    onBlockClicked(event, process: Process) {
+        this.store.dispatch(new NewProcessClicked({process: process}));
+    }
+
+    hasFocus(process: Process): Observable<boolean> {
+        return this.focussedPageId$.pipe(
+            map(id => id == process.id)
+        );
+    }
 }

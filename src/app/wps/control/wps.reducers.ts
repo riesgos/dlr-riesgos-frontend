@@ -1,6 +1,7 @@
 import { WpsActions, EWpsActionTypes, ProcessStatesChanged, ProcessStarted, ProductsProvided } from './wps.actions';
 import { WpsState } from './wps.state';
-import { ProcessId, ProcessState } from './workflowcontrol';
+import { ProcessId, ProcessState, Product } from './process';
+import { ProductId } from 'projects/services-wps/src/public_api';
 
 
 
@@ -10,20 +11,20 @@ export function wpsReducer (state: WpsState, action: WpsActions): WpsState  {
 
 
         case EWpsActionTypes.processStatesChanged: 
-            let newProcessStates = new Map<ProcessId, ProcessState>();
-            for(let process of (action as ProcessStatesChanged).payload.processes) {
-                newProcessStates.set(process.id, process.getState())
+            let newPrStates = new Map<ProcessId, ProcessState>();
+            for (let process of (action as ProcessStatesChanged).payload.processes) {
+                newPrStates.set(process.id, process.getState());
             }
             return {
                 ...state, 
-                processStates: newProcessStates
+                processStates: newPrStates
             };
 
 
         case EWpsActionTypes.processStarted:
             const runningProcess = (action as ProcessStarted).payload.process;
             let newProcStates = state.processStates;
-            newProcStates.set(runningProcess.id, runningProcess.getState());
+            newProcStates.set(runningProcess.id, runningProcess.getState())
             return {
                 ...state, 
                 processStates: newProcStates
@@ -31,15 +32,14 @@ export function wpsReducer (state: WpsState, action: WpsActions): WpsState  {
 
 
         case EWpsActionTypes.productsProvided:
-            const newProducts = (action as ProductsProvided).payload.products;
-            let newProductValues = state.productValues;
-            for(let prod of newProducts) {
-                newProductValues.set(prod.id, prod)
+            let newProducts = new Map<ProductId, Product>();
+            for(let product of (action as ProductsProvided).payload.products) {
+                newProducts.set(product.id, product)
             }
             return {
                 ...state, 
-                productValues: newProductValues
-            };
+                productValues: newProducts
+            }
 
 
         default: 

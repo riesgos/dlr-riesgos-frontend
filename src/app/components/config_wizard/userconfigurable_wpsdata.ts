@@ -20,6 +20,6 @@ export interface SelectUconfWD extends UserconfigurableWpsData {
     options: string[]
 }
 
-export function isUserconfigurableWpsData(obj: WpsData): obj is UserconfigurableWpsData {
+export const isUserconfigurableWpsData = function(obj: WpsData): obj is UserconfigurableWpsData {
     return obj.hasOwnProperty("fieldtype");
 }

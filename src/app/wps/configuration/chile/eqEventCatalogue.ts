@@ -1,23 +1,22 @@
-import { WpsDataDescription, WpsClient, WpsData } from 'projects/services-wps/src/public_api';
-import { Process } from '../control/workflowcontrol';
-import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { HttpClient } from '@angular/common/http';
+import { ProcessDescription } from '../configurationProvider';
 
 
 
 
-export class EqEventCatalogue extends Process {
+export const EqEventCatalogue: ProcessDescription = {
 
-    constructor(httpClient: HttpClient) {
+        id: "org.n52.wps.python.algorithm.QuakeMLProcessBBox",
 
-        const id: string = "org.n52.wps.python.algorithm.QuakeMLProcessBBox";
+        url: "https://riesgos.52north.org/wps/WebProcessingService",
 
-        const url: string = "https://riesgos.52north.org/wps/WebProcessingService";
+        name: "Earthquake Catalogue",
 
-        const inputs: UserconfigurableWpsData[] = [{
+        description: "Catalogue of historical earthquakes.",
+
+        requiredProducts: [{
             id: "input-boundingbox",
             type: "bbox",
-            fieldtype: "bbox",
+            fieldtype: "string",
             data: null,
             reference: false,
             description: "Please select an area of interest",
@@ -86,19 +85,16 @@ export class EqEventCatalogue extends Process {
             reference: false,
             fieldtype: "string",
             type: "literal"
-        }
-        ];
+        }],
 
-        const output: WpsData = {
+        providedProduct: {
             id: "selected-rows",
             data: null,
             format: "application/vnd.geo+json",
             reference: false,
             type: "complex"
-        };
+        }, 
 
-
-        super(id, url, inputs, output, new WpsClient("1.0.0", httpClient))
-    }
+        wpsVersion: "1.0.0"
 
 }

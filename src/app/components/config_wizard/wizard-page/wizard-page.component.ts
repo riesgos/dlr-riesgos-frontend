@@ -2,9 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided } from 'src/app/wps/control/wps.actions';
-import { Process } from 'src/app/wps/control/workflowcontrol';
-import { getStateForProcess } from 'src/app/wps/control/wps.selectors';
 import { isUserconfigurableWpsData, UserconfigurableWpsData } from '../userconfigurable_wpsdata';
+import { Process } from 'src/app/wps/control/process';
 
 
 
@@ -17,9 +16,7 @@ export class WizardPageComponent implements OnInit {
 
   @Input() process: Process;
   parameters: UserconfigurableWpsData[];
-  processState$ = this.store.pipe(
-    select(getStateForProcess, {id: this.process.id})
-  );
+
 
   constructor(
     private store: Store<State>

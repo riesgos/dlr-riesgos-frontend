@@ -25,6 +25,7 @@ import { FormStringFieldComponent } from './components/config_wizard/form-string
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 import { FeatureTablesModule } from 'projects/feature-tables/src/public_api';
 import { WorkflowControl } from './wps/control/workflowcontrol';
+import { WpsConfigurationProvider } from './wps/configuration/configurationProvider';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,7 @@ import { WorkflowControl } from './wps/control/workflowcontrol';
     HttpClientModule,
     FeatureTablesModule
   ],
-  providers: [AlertService, FooterService, ProgressService, WorkflowControl],
+  providers: [AlertService, FooterService, ProgressService, WorkflowControl, WpsConfigurationProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -2,7 +2,7 @@
 <p>{{process.description}}</p>
 
 <div class="wizardElement">
-    <ng-container [ngSwitch]="processState$ | async">
+    <ng-container [ngSwitch]="process.getState()">
 
         <ng-container *ngSwitchCase="'unavailable'">
             <span class="label" i18n>This process can not be configured yet.</span>

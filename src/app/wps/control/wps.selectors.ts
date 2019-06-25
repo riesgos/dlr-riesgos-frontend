@@ -4,15 +4,8 @@ import { WpsState } from './wps.state';
 
 const getWpsState = (state: State) => state.wpsState;
 
-export const getStateForProcess = createSelector(
-    getWpsState, 
-    (wpsState: WpsState, args) => {
-        return wpsState.processStates.get(args.id);
-    }
-)
 
-
-export const getProcesses = createSelector(
+export const getProcessStates = createSelector(
     getWpsState, 
-    (wpsState: WpsState) => wpsState.processes
+    (s: WpsState) => s.processStates
 );

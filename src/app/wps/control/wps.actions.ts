@@ -1,5 +1,5 @@
-import { Action } from '@ngrx/store';
-import { Product, Process } from './workflowcontrol';
+import { Action } from '@ngrx/store'; 
+import { Product, Process } from './process';
 
 
 export enum EWpsActionTypes {

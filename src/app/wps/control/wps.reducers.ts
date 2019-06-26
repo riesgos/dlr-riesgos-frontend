@@ -78,9 +78,22 @@ function calculateProcessState(oldProcessStates, newProductValues) {
 }
 
 
-function getInitialStateForScenario(senario: string): WpsState {
-    const processes = [EqEventCatalogue, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
+function getInitialStateForScenario(scenario: string): WpsState {
+    const processes = getProcessesForScenario(scenario);
+    return convertProcessesToState(processes);
+}
 
+
+function getProcessesForScenario(scenario: string): Process[] {
+    switch(scenario) {
+        case "c1": 
+        default: 
+            return [EqEventCatalogue, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
+    }
+}
+
+
+function convertProcessesToState(processes: Process[]): WpsState {
     let processStates = new Map<ProcessId, Process>();
     for(let process of processes) {
         processStates.set(process.id, process);
@@ -93,7 +106,7 @@ function getInitialStateForScenario(senario: string): WpsState {
         }
         productValues.set(process.providedProduct.id, {description: process.providedProduct, value: null});
     }
-    
+
     return {
         processStates: processStates, 
         productValues: productValues

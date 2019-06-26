@@ -58,19 +58,23 @@ export class WpsFactory100 implements WpsMarshaller {
                 }
     
                 out.push({
-                    id: output.identifier.value,
-                    data: data,
-                    format: format,
-                    reference: isReference,
-                    type: datatype
+                    description: {
+                        id: output.identifier.value,
+                        format: format,
+                        reference: isReference,
+                        type: datatype
+                    }, 
+                    value: data,
                 });
             }
         } else if(responseJson.value.statusLocation) { // asynchronous request?
             out.push({
-                id: responseJson.value.process.identifier.value,
-                data: responseJson.value.statusLocation, 
-                reference: true, 
-                type: "status"
+                description: {
+                    id: responseJson.value.process.identifier.value,
+                    reference: true, 
+                    type: "status"
+                }, 
+                value: responseJson.value.statusLocation,
             });
         }
 
@@ -162,33 +166,33 @@ export class WpsFactory100 implements WpsMarshaller {
         for(let inp of inputArr) {
     
             let data: DataType;
-            switch(inp.type) {
+            switch(inp.description.type) {
                 case "literal":
                     data = {
-                        literalData: { value: String(inp.data) }
+                        literalData: { value: String(inp.value) }
                     };
                     break;
                 case "bbox": 
                     data = {
                         boundingBoxData: {
-                            lowerCorner: [inp.data[1], inp.data[0]],
-                            upperCorner: [inp.data[3], inp.data[2]]
+                            lowerCorner: [inp.value[1], inp.value[0]],
+                            upperCorner: [inp.value[3], inp.value[2]]
                         }
                     };
                     break;
                 case "complex":
                     data = {
                         complexData: {
-                            content: inp.data,
-                            mimeType: inp.format
+                            content: inp.value,
+                            mimeType: inp.description.format
                         }
                     };
                     break;
             }
 
             theInputs.push({
-                identifier: { value: inp.id },
-                title: { value: inp.id }, 
+                identifier: { value: inp.description.id },
+                title: { value: inp.description.id }, 
                 _abstract: { value: "" }, 
                 // @ts-ignore
                 data: data, 

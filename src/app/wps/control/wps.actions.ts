@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Product, Process, ProcessId } from './workflow_datatypes';
+import { Product, Process, ProcessId } from './wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
 
 

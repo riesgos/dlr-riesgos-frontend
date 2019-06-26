@@ -24,7 +24,6 @@ import { FormSelectFieldComponent } from './components/config_wizard/form-select
 import { FormStringFieldComponent } from './components/config_wizard/form-string-field/form-string-field.component';
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 import { FeatureTablesModule } from 'projects/feature-tables/src/public_api';
-import { WorkflowControl } from './wps/control/workflowcontrol';
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
 import { MapOlModule } from '@ukis/map-ol';
@@ -67,7 +66,7 @@ import { LayercontrolComponent } from './components/layercontrol/layercontrol.co
   ],
   providers: [
     AlertService, FooterService, ProgressService, 
-    WorkflowControl],
+  ],
   bootstrap: [UkisComponent]
 })
 export class AppModule { }

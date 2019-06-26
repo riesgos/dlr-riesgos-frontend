@@ -1,4 +1,4 @@
-import { Process, Product, ProcessId } from './workflow_datatypes';
+import { Process, Product, ProcessId } from './wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
 
 

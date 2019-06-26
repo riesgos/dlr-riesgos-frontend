@@ -6,7 +6,7 @@ import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map } from 'rxjs/operators';
 import { getProcessStates } from 'src/app/wps/control/wps.selectors';
-import { Process } from 'src/app/wps/control/workflow_datatypes';
+import { Process } from 'src/app/wps/control/wps.datatypes';
 
 
 

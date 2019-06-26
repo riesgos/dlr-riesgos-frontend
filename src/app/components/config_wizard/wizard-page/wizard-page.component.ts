@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided, ProcessStarted } from 'src/app/wps/control/wps.actions';
 import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription } from '../userconfigurable_wpsdata';
-import { Process, Product } from 'src/app/wps/control/workflow_datatypes';
+import { Process, Product } from 'src/app/wps/control/wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
 
 

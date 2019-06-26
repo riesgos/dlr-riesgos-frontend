@@ -16,8 +16,9 @@ export type WpsInputDescription = WpsDataDescription;
 export type WpsOutputDescription = WpsDataDescription;
 
 
-export interface WpsData extends WpsDataDescription {
-    data: any;
+export interface WpsData {
+    description: WpsDataDescription;
+    value: any;
 }
 export type WpsInput = WpsData;
 export type WpsResult = WpsData;

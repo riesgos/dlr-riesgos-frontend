@@ -83,7 +83,7 @@ export class WpsClient {
 
         return executeRequest.pipe(
             switchMap(executeResponse => {
-                const getStateRequest = this.checkState(executeResponse[0].data);
+                const getStateRequest = this.checkState(executeResponse[0].value);
                 return pollUntil(
                     getStateRequest, 
                     pollingRate,

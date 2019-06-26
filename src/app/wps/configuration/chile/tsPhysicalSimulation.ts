@@ -1,4 +1,4 @@
-import { Process, ProcessState } from '../../control/workflow_datatypes';
+import { Process, ProcessState } from '../../control/wps.datatypes';
 
 
 

@@ -1,5 +1,5 @@
-import { Action } from '@ngrx/store';
-import { Process, ProcessId } from '../wps/control/process';
+import { Action } from '@ngrx/store'; 
+import { ProcessId } from '../wps/control/workflow_datatypes';
 
 
 

@@ -1,32 +1,32 @@
-import { ProcessDescription } from '../configurationProvider';
+import { Process, ProcessState } from '../../control/workflow_datatypes';
 
 
 
 
-export const EqTsInteraction: ProcessDescription = {
+export const EqTsInteraction: Process = {
 
-   id: "org.n52.project.riesgos.GetEpicentersProcess",
+    state: ProcessState.unavailable,
 
-    url: "http://tsunami-riesgos.awi.de:8080/wps/WebProcessingService", 
+    id: "org.n52.project.riesgos.GetEpicentersProcess",
 
-    name: "Earthquake/tsunami interaction", 
+    url: "http://tsunami-riesgos.awi.de:8080/wps/WebProcessingService",
 
-    description: "Relates a tsunami to a given earthquake", 
+    name: "Earthquake/tsunami interaction",
+
+    description: "Relates a tsunami to a given earthquake",
 
     requiredProducts: [{
-            id: "input-boundingbox",
-            reference: false,
-            type: "bbox",
-            data: null
-        }],
+        id: "input-boundingbox",
+        reference: false,
+        type: "bbox",
+    }],
 
     providedProduct: {
-            id: "epicenters",
-            reference: false,
-            format: "application/vnd.geo+json",
-            type: "complex",
-            data: null
-    }, 
+        id: "epicenters",
+        reference: false,
+        format: "application/vnd.geo+json",
+        type: "complex",
+    },
 
     wpsVersion: "1.0.0"
 

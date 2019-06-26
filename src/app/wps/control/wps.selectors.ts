@@ -1,9 +1,9 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { WpsState, initialWpsState } from './wps.state';
+import { WpsState } from './wps.state';
 
 const getWpsState = (state: State) => {
-    return state.wpsState || initialWpsState;
+    return state.wpsState;
 }
 
 export const getProcessStates = createSelector(

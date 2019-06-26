@@ -1,26 +1,23 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ProductsProvided } from 'src/app/wps/control/wps.actions';
-import { isUserconfigurableWpsData, UserconfigurableWpsData } from '../userconfigurable_wpsdata';
-import { ProcessDescription } from 'src/app/wps/configuration/configurationProvider';
-import { Observable } from 'rxjs';
-import { ProcessState } from 'src/app/wps/control/process';
-import { getProcessStates } from 'src/app/wps/control/wps.selectors';
-import { map } from 'rxjs/operators';
+import { ProductsProvided, ProcessStarted } from 'src/app/wps/control/wps.actions';
+import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription } from '../userconfigurable_wpsdata';
+import { Process, Product } from 'src/app/wps/control/workflow_datatypes';
+import { ProductId } from 'projects/services-wps/src/public_api';
 
 
 
 @Component({
   selector: 'ukis-wizard-page',
   templateUrl: './wizard-page.component.html',
-  styleUrls: ['./wizard-page.component.css']
+  styleUrls: ['./wizard-page.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WizardPageComponent implements OnInit {
 
-  @Input() processDescription: ProcessDescription;
-  state$: Observable<ProcessState | undefined>;
-  parameters: UserconfigurableWpsData[];
+  @Input() process: Process;
+  parameters: UserconfigurableWpsDataDescription[];
 
 
   constructor(
@@ -28,18 +25,27 @@ export class WizardPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.parameters = this.processDescription.requiredProducts
-      .filter(descr => isUserconfigurableWpsData(descr))
-      .map(descr => descr as UserconfigurableWpsData);
-
-    this.state$ = this.store.pipe(
-      select(getProcessStates),
-      map(states => states.get(this.processDescription.id))
-    );
+    this.parameters = this.process.requiredProducts
+      .filter(descr => isUserconfigurableWpsDataDescription(descr))
+      .map(descr => descr as UserconfigurableWpsDataDescription);
   }
 
-  onSubmit(products: UserconfigurableWpsData[]) {
+  onSubmit(formData) {
+
+    let products = new Map<ProductId, Product>();
+    for (let key in formData) {
+
+      let val = formData[key];
+      let descr = this.getDescription(key);
+      
+      products.set(key, {
+        description: descr, 
+        value: val
+      });
+    }
+
     this.store.dispatch(new ProductsProvided({products: products}));
+    this.store.dispatch(new ProcessStarted({process: this.process}));
   }
 
   onNextClicked() {
@@ -50,6 +56,13 @@ export class WizardPageComponent implements OnInit {
   onReconfigureClicked () {
     // @TODO: store.emmit(new Reconfigure) ? 
     // this.reconfigureClicked.emit(this.process.processId());
+  }
+
+  private getDescription(id: string): UserconfigurableWpsDataDescription {
+    for(let para of this.parameters) {
+      if(para.id == id) return para;
+    }
+    throw new Error(`could not find a configuration with id ${id}`);
   }
 
 

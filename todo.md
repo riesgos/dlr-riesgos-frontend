@@ -12,47 +12,17 @@ wizard-page:
 should this be done in workflowcontrol or in ngrx?
 
 
----- Issue: what to do with focus-state -------------
-config-wizard: 
-    focusedProcess in store
-        => or should it rather be in a separate global state container, lets call it EphemeralGlobalStateService?
 
 
----- Issue: consequently split Configuration from Value --------------------------------
-split Product into 
-   productConfig
-   productValue
-   Product
-     config
-     value
-     state
-
-
-
-
-
-
-
-
-
-
-things learned about ngrx
-    store is just a GlobalStateService with readonly state. 
-    changes in state happen through message-system. 
-
-
-things learned about design
-    classes should be used for injected dependencies. 
-    model should be separate from these classes. 
-    ie: 
-
-        export const processes: Process[];
-
-        export class ProcessWrapper{
-            constructor(httpClient: HttpClient) {
-                this.model = processes[3]
-            }
-
+---- Issue: handling multiple scenarios -----------------------------------------------
+A user may jump from scenario to scenario. 
+We need to adjust the state accordingly: 
+    scenario
+        proces
+        prods
+    scenario
+        procs
+        prods
 
 
 

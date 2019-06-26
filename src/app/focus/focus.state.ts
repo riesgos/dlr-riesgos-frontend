@@ -1,4 +1,6 @@
-import { Process, ProcessId } from '../wps/control/process';
+import { ProcessId } from '../wps/control/workflow_datatypes';
+
+
 
 
 

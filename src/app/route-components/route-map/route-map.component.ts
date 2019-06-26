@@ -1,31 +1,36 @@
-import { Component, OnInit, AfterViewInit, HostBinding, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
-import { LayersService, RasterLayer, VectorLayer } from '@ukis/services-layers';
+import { Component, OnInit, ChangeDetectionStrategy, HostBinding } from '@angular/core';
+import { LayersService } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import { MapOlService } from '@ukis/map-ol';
+import { Store } from '@ngrx/store';
+import { reducers, effects, State } from 'src/app/ngrx_register';
+import { ActivatedRoute } from '@angular/router';
+import { ScenarioChosen } from 'src/app/wps/control/wps.actions';
 
 @Component({
+  host: { "[class.content-container]": "true" }, // <-- required for clarity-layout
   selector: 'ukis-route-map',
   templateUrl: './route-map.component.html',
   styleUrls: ['./route-map.component.scss'],
-  host: { "[class.content-container]": "true" }, // <-- required for clarity-layout
-  changeDetection: ChangeDetectionStrategy.OnPush,  // <--  required so that ol does not continually refresh
-  providers: [LayersService, MapStateService, MapOlService], // <-- required for MapOlService to be constructed when the page is loaded. otherwise no canvas-element created. 
-  encapsulation: ViewEncapsulation.None, // <-- required so that we can overwrite the #map style to "width:unset;" (otherwise map distorted when moving from scenarios to map)
-
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    LayersService, 
+    MapStateService, 
+    MapOlService
+  ]
 })
 export class RouteMapComponent implements OnInit {
-
   @HostBinding('class') class = 'content-container';
-  controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
 
   constructor(
-      public layersSvc: LayersService,
-      public mapStateSvc: MapStateService,
-      public mapSvc: MapOlService
-      ) {
-      this.controls = { attribution: true, scaleLine: true };
-  }
+    private activeRoute: ActivatedRoute, 
+    private store: Store<State>
+  ) {}
+
+
   ngOnInit() {
+    const scenario = this.activeRoute.snapshot.paramMap.get("id") || "c1";
+    this.store.dispatch(new ScenarioChosen({scenario: scenario}));
   }
 
 }

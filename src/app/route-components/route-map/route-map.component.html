@@ -1,39 +1,13 @@
-
-<nav class="sidenav" id="SidenavConfigurationWizard">
-  <section class="sidenav-content"  [clr-nav-level]="2">
-    <ukis-configuration-wizard></ukis-configuration-wizard>
-  </section>
-</nav>
-
-
-<ukis-map-ol [layersSvc]="layersSvc" [mapState]="mapStateSvc" [controls]="controls" class="content-area"></ukis-map-ol>
-
-
-<clr-vertical-nav [clrVerticalNavCollapsible]="true" id="LayerSwitcher">
-
-  <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers">
-    <clr-icon shape="world" title="Overlays" clrVerticalNavIcon></clr-icon>
-    <span i18n>Results</span>
-    <clr-vertical-nav-group-children class="padding title-ellipsis">
-      <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc" [layerfilter]="'Overlays'">
-      </ukis-layer-control>
-    </clr-vertical-nav-group-children>
-  </clr-vertical-nav-group>
-
-  <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers">
-    <clr-icon shape="layers" clrVerticalNavIcon title="layers"></clr-icon>
-    <span i18n>Additional layers</span>
-    <clr-vertical-nav-group-children class="padding title-ellipsis">
-      <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc"></ukis-layer-control>
-    </clr-vertical-nav-group-children>
-  </clr-vertical-nav-group>
-
-  <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers">
-    <clr-icon shape="table" clrVerticalNavIcon title="Tables"></clr-icon>
-    <span i18n>Tables</span>
-    <clr-vertical-nav-group-children class="padding title-ellipsis">
-      <ukis-feature-tables [layersSvc]="layersSvc"></ukis-feature-tables>
-    </clr-vertical-nav-group-children>
-  </clr-vertical-nav-group>
-
-</clr-vertical-nav>
+<div class="content-area">
+    <div class="clr-row">
+      <div class="clr-col-3">
+          <ukis-configuration-wizard></ukis-configuration-wizard>
+      </div>
+      <div class="clr-col-6">
+          <ukis-map></ukis-map>
+      </div>
+      <div class="clr-col-3">
+          <ukis-layercontrol></ukis-layercontrol>
+      </div>
+    </div>
+</div>

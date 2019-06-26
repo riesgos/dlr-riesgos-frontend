@@ -5,6 +5,7 @@ import { FocusState, initialFocusState } from './focus.state';
 
 
 export const focusReducer = function(state: FocusState = initialFocusState, action: FocusAction): FocusState {
+    console.log(`Focus-reducer now handling action of type ${action.type}`, action, state);
     switch(action.type) {
 
         case EFocusActionTypes.newProcessClicked:

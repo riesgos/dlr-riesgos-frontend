@@ -1,9 +1,11 @@
-import { ProcessDescription } from '../configurationProvider';
+import { Process, ProcessState } from '../../control/workflow_datatypes';
 
 
 
 
-export const EqGroundMotion : ProcessDescription = {
+export const EqGroundMotion : Process = {
+
+    state: ProcessState.unavailable,
 
     id: "org.n52.wps.python.algorithm.ShakemapProcess",
 
@@ -15,7 +17,6 @@ export const EqGroundMotion : ProcessDescription = {
 
     requiredProducts: [{
             id: "quakeml-input",
-            data: null,
             format: "application/vnd.geo+json",
             reference: false,
             type: "complex"
@@ -23,7 +24,6 @@ export const EqGroundMotion : ProcessDescription = {
 
     providedProduct: {
             id: "shakemap-output",
-            data: null,
             type: "complex",
             reference: false,
             format: "application/WMS"

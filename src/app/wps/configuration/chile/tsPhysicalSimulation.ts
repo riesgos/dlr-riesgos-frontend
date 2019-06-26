@@ -1,9 +1,11 @@
-import { ProcessDescription } from '../configurationProvider';
+import { Process, ProcessState } from '../../control/workflow_datatypes';
 
 
 
 
-export const TsPhysicalSimulation: ProcessDescription = {
+export const TsPhysicalSimulation: Process = {
+
+    state: ProcessState.unavailable,
 
     id: "get_tsunamap",
 
@@ -17,17 +19,14 @@ export const TsPhysicalSimulation: ProcessDescription = {
             id: "lat",
             reference: false,
             type: "literal",
-            data: null
         }, {
             id: "lon",
             reference: false,
             type: "literal",
-            data: null
         }, {
             id: "mag",
             reference: false,
             type: "literal",
-            data: null
         }],
 
     providedProduct: {
@@ -35,7 +34,6 @@ export const TsPhysicalSimulation: ProcessDescription = {
             type: "complex",
             format: "application/xml",
             reference: false,
-            data: null
     }, 
 
     wpsVersion: "1.0.0"

@@ -27,6 +27,7 @@ export class FormStringFieldComponent implements OnInit, ControlValueAccessor {
   constructor() { }
 
   ngOnInit() {
+    //console.log(`${this.parameter.id} string field init`);
     this.valid = this.formControl.statusChanges.pipe(
       map((state) => {
         if(state == "VALID") return true;

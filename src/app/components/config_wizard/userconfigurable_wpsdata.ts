@@ -1,25 +1,27 @@
-import { WpsData } from 'projects/services-wps/src/public_api';
+import { WpsDataDescription } from 'projects/services-wps/src/public_api';
 
 
 
 
-export interface UserconfigurableWpsData extends WpsData {
-    fieldtype: "string" | "select" | "bbox"
-}
-
-export interface StringUconfWD extends UserconfigurableWpsData {
+export interface StringUconfWD extends WpsDataDescription {
     fieldtype: "string"
 }
 
-export interface BboxUconfWD extends UserconfigurableWpsData {
+export interface BboxUconfWD extends WpsDataDescription {
     fieldtype: "bbox"
 }
 
-export interface SelectUconfWD extends UserconfigurableWpsData {
+export interface SelectUconfWD extends WpsDataDescription {
     fieldtype: "select", 
     options: string[]
 }
 
-export const isUserconfigurableWpsData = function(obj: WpsData): obj is UserconfigurableWpsData {
+
+
+export type UserconfigurableWpsDataDescription = StringUconfWD | BboxUconfWD | SelectUconfWD;
+
+
+
+export const isUserconfigurableWpsDataDescription = function(obj: WpsDataDescription): obj is UserconfigurableWpsDataDescription {
     return obj.hasOwnProperty("fieldtype");
 }

@@ -25,12 +25,14 @@ import { FormStringFieldComponent } from './components/config_wizard/form-string
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 import { FeatureTablesModule } from 'projects/feature-tables/src/public_api';
 import { WorkflowControl } from './wps/control/workflowcontrol';
-import { WpsConfigurationProvider } from './wps/configuration/configurationProvider';
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
 import { MapOlModule } from '@ukis/map-ol';
 import { LayersModule } from '@ukis/services-layers';
 import { LayerControlModule } from '@ukis/layer-control';
+import { WpsClient } from 'projects/services-wps/src/public_api';
+import { MapComponent } from './components/map/map.component';
+import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,7 @@ import { LayerControlModule } from '@ukis/layer-control';
     FormStringFieldComponent, 
     WizardPageComponent, 
     ScenariosComponent, 
-    RouteMapComponent
+    RouteMapComponent, MapComponent, LayercontrolComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +65,9 @@ import { LayerControlModule } from '@ukis/layer-control';
     HttpClientModule,
     FeatureTablesModule
   ],
-  providers: [AlertService, FooterService, ProgressService, WorkflowControl, WpsConfigurationProvider],
+  providers: [
+    AlertService, FooterService, ProgressService, 
+    WorkflowControl],
   bootstrap: [UkisComponent]
 })
 export class AppModule { }

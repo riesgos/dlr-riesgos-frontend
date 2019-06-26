@@ -11,7 +11,7 @@ import * as OWS_1_1_0_Factory from 'ogc-schemas/lib/OWS_1_1_0'; let OWS_1_1_0 = 
 import * as OWS_2_0_Factory from 'ogc-schemas/lib/OWS_2_0'; let OWS_2_0 = OWS_2_0_Factory.OWS_2_0; //let OWS_2_0 = require('ogc-schemas/lib/OWS_2_0').OWS_2_0;
 import * as WPS_1_0_0_Factory from 'ogc-schemas/lib/WPS_1_0_0'; let WPS_1_0_0 = WPS_1_0_0_Factory.WPS_1_0_0; //let WPS_1_0_0 = require('ogc-schemas/lib/WPS_1_0_0').WPS_1_0_0;
 import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; import { doAfter, doUntil, poll, pollUntil } from "./utils/polling";
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 let WPS_2_0 = WPS_2_0_Factory.WPS_2_0; //let WPS_2_0 = require('ogc-schemas/lib/WPS_2_0').WPS_2_0;
 
 
@@ -32,7 +32,10 @@ export class WpsClient {
     private cache: Cache;
 
 
-    constructor(version: WpsVerion = "1.0.0", private webclient: HttpClient) {
+    constructor(
+        @Inject("WpsVersion") version: WpsVerion = "1.0.0", 
+        private webclient: HttpClient
+    ) {
         this.cache = new Cache();
         this.version = version;
         let context;

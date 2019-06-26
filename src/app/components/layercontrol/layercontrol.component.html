@@ -1,0 +1,43 @@
+<clr-stack-view class="LayerSwitcher">
+    <clr-stack-header style="margin-left: 20px;" i18n>Layer control</clr-stack-header>
+
+
+    <clr-stack-block>
+        <clr-stack-label>
+            <clr-icon shape="world" title="Overlays"></clr-icon>
+            <span i18n>Results</span>
+        </clr-stack-label>
+    </clr-stack-block>
+    <clr-stack-block>
+        <clr-stack-content>
+            <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc" [layerfilter]="'Overlays'">
+            </ukis-layer-control>
+        </clr-stack-content>
+    </clr-stack-block>
+
+    <clr-stack-block>
+        <clr-stack-label>
+            <clr-icon shape="layers" title="layers"></clr-icon>
+            <span i18n>Additional layers</span>
+        </clr-stack-label>
+    </clr-stack-block>
+    <clr-stack-block>
+        <clr-stack-content>
+            <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc"></ukis-layer-control>
+        </clr-stack-content>
+    </clr-stack-block>
+
+
+    <clr-stack-block>
+        <clr-stack-label>
+            <clr-icon shape="table" title="Tables"></clr-icon>
+            <span i18n>Tables</span>
+        </clr-stack-label>
+    </clr-stack-block>
+    <clr-stack-block>
+        <clr-stack-content>
+            <ukis-feature-tables [layersSvc]="layersSvc"></ukis-feature-tables>
+        </clr-stack-content>
+    </clr-stack-block>
+
+</clr-stack-view>

@@ -1,47 +1,40 @@
-import { WpsActions, EWpsActionTypes, ProcessStatesChanged, ProcessStarted, ProductsProvided } from './wps.actions';
-import { WpsState, initialWpsState } from './wps.state';
-import { ProcessId, ProcessState, Product } from './process';
+import { WpsActions, EWpsActionTypes, ProcessStatesChanged, ProcessStarted, ProductsProvided, InitialStateObtained } from './wps.actions';
+import { WpsState } from './wps.state';
 import { ProductId } from 'projects/services-wps/src/public_api';
+import { Product } from './workflow_datatypes';
 
 
 
-export function wpsReducer (state: WpsState = initialWpsState, action: WpsActions): WpsState  {
+export function wpsReducer (state: WpsState, action: WpsActions): WpsState  {
     console.log("Wps-reducer now handling action of type " + action.type, action, state);
     switch(action.type) {
 
+        case EWpsActionTypes.initialStateObtained:
+            return {
+                processStates: (action as InitialStateObtained).payload.processes, 
+                productValues: (action as InitialStateObtained).payload.products
+            }
+            
 
         case EWpsActionTypes.processStatesChanged: 
-            let newPrStates = new Map<ProcessId, ProcessState>();
-            for (let process of (action as ProcessStatesChanged).payload.processes) {
-                newPrStates.set(process.id, process.getState());
-            }
             return {
                 ...state, 
-                processStates: newPrStates
+                processStates: (action as ProcessStatesChanged).payload.processes
             };
 
-
-        case EWpsActionTypes.processStarted:
-            const runningProcess = (action as ProcessStarted).payload.process;
-            let newProcStates = state.processStates;
-            newProcStates.set(runningProcess.id, runningProcess.getState())
-            return {
-                ...state, 
-                processStates: newProcStates
-            };
-
-
+            
         case EWpsActionTypes.productsProvided:
-            let newProducts = new Map<ProductId, Product>();
-            for(let product of (action as ProductsProvided).payload.products) {
-                newProducts.set(product.id, product)
-            }
+            let newProductValues = state.productValues;
+            (action as ProductsProvided).payload.products.forEach((v,k) => {
+                newProductValues.set(k, v)
+            });
             return {
                 ...state, 
-                productValues: newProducts
+                productValues: newProductValues 
             }
-
-
+                
+                
+        case EWpsActionTypes.processStarted:
         default: 
             return state;
     }

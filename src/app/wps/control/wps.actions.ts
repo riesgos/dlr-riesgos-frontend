@@ -5,6 +5,7 @@ import { ProductId } from 'projects/services-wps/src/public_api';
 
 export enum EWpsActionTypes {
     productsProvided = "[Wps] Products Provided", 
+    clickRunProduct = "[Wps] Click on 'run process' button",
     processStarted = "[Wps] Process Started", 
     processStatesChanged = "[Wps] Process States Changed", 
     scenarioChosen = "[Wps] Scenario chosen",
@@ -15,6 +16,12 @@ export enum EWpsActionTypes {
 export class ProductsProvided implements Action {
     type: string = EWpsActionTypes.productsProvided;
     constructor (public payload: {products: Product[]}) {}
+}
+
+
+export class ClickRunProcess implements Action {
+    type: string = EWpsActionTypes.clickRunProduct;
+    constructor (public payload: {productsProvided: Product[], process: Process}) {}
 }
 
 
@@ -42,4 +49,4 @@ export class InitialStateObtained implements Action {
 }
 
 
-export type WpsActions = ProductsProvided | ProcessStarted | ProcessStatesChanged | ScenarioChosen;
+export type WpsActions = ProductsProvided | ClickRunProcess | ProcessStarted | ProcessStatesChanged | ScenarioChosen;

@@ -85,7 +85,7 @@ function calculateProcessState(oldProcessStates: Process[], newProductValues: Pr
         const nonuserRequiredPords = filterForInternal(requiredProds);
         const output = getProductById(process.providedProduct.id, newProductValues);
 
-        if(process.state == ProcessState.running || process.state == ProcessState.error) {
+        if(process.state == ProcessState.error) {
             return process;
         } else if(!isComplete(nonuserRequiredPords)) {
             return {

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ProductsProvided, ProcessStarted } from 'src/app/wps/control/wps.actions';
+import { ProductsProvided, ProcessStarted, ClickRunProcess } from 'src/app/wps/control/wps.actions';
 import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription } from '../userconfigurable_wpsdata';
 import { Process, Product } from 'src/app/wps/control/wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
@@ -44,8 +44,7 @@ export class WizardPageComponent implements OnInit {
       });
     }
 
-    this.store.dispatch(new ProductsProvided({products: products}));
-    this.store.dispatch(new ProcessStarted({process: this.process}));
+    this.store.dispatch(new ClickRunProcess({productsProvided: products, process: this.process}));
   }
 
   onNextClicked() {

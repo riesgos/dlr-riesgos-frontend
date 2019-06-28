@@ -7,6 +7,7 @@ import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map } from 'rxjs/operators';
 import { getProcessStates } from 'src/app/wps/control/wps.selectors';
 import { Process } from 'src/app/wps/control/wps.datatypes';
+import { WizardableProcess, isWizardableProcess } from '../wizardable_processes';
 
 
 
@@ -21,7 +22,7 @@ export class ConfigurationWizardComponent implements OnInit {
 
 
     private focussedPageId$: Observable<string>;
-    private processes$: Observable<Process[]>;
+    private processes$: Observable<WizardableProcess[]>;
 
     constructor(
         private store: Store<State>
@@ -29,10 +30,8 @@ export class ConfigurationWizardComponent implements OnInit {
 
         this.processes$ = this.store.pipe(
             select(getProcessStates),
-            map(processMap => {
-                let out: Process[] = [];
-                processMap.forEach((v, k) => out.push(v));
-                return out;
+            map(processes => {
+                return processes.filter(process => isWizardableProcess(process)) as WizardableProcess[]
             })
         );
 

@@ -1,9 +1,10 @@
 import { Process, ProcessState } from '../../control/wps.datatypes';
+import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 
 
 
 
-export const TsPhysicalSimulation: Process = {
+export const TsPhysicalSimulation: WizardableProcess = {
 
     state: ProcessState.unavailable,
 
@@ -36,5 +37,7 @@ export const TsPhysicalSimulation: Process = {
             reference: false,
     }, 
 
-    wpsVersion: "1.0.0"
+    wpsVersion: "1.0.0", 
+
+    shape: "tsunami"
 }

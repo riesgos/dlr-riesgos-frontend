@@ -1,9 +1,10 @@
 import { Process, ProcessState } from '../../control/wps.datatypes';
+import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 
 
 
 
-export const EqGroundMotion : Process = {
+export const EqGroundMotion : WizardableProcess = {
 
     state: ProcessState.unavailable,
 
@@ -29,6 +30,8 @@ export const EqGroundMotion : Process = {
             format: "application/WMS"
         }, 
 
-    wpsVersion: "1.0.0"
+    wpsVersion: "1.0.0", 
+
+    shape: "earthquake"
 
 }

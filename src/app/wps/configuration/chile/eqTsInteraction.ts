@@ -1,9 +1,10 @@
 import { Process, ProcessState } from '../../control/wps.datatypes';
+import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 
 
 
 
-export const EqTsInteraction: Process = {
+export const EqTsInteraction: WizardableProcess = {
 
     state: ProcessState.unavailable,
 
@@ -28,6 +29,8 @@ export const EqTsInteraction: Process = {
         type: "complex",
     },
 
-    wpsVersion: "1.0.0"
+    wpsVersion: "1.0.0", 
+
+    shape: "tsunami"
 
 }

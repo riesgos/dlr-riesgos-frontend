@@ -2,6 +2,7 @@ import { Process, ProcessState } from '../../control/wps.datatypes';
 import { UserconfigurableWpsDataDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerDescription } from 'src/app/components/map/mappable_wpsdata';
 import {Style, Fill, Stroke, Circle, Text} from 'ol/style';
+import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 
 
 
@@ -122,7 +123,7 @@ const output: VectorLayerDescription = {
 
 
 
-export const EqEventCatalogue: Process = {
+export const EqEventCatalogue: WizardableProcess = {
     state: ProcessState.unavailable,
     id: "org.n52.wps.python.algorithm.QuakeMLProcessBBox",
     url: "https://riesgos.52north.org/wps/WebProcessingService",
@@ -130,5 +131,6 @@ export const EqEventCatalogue: Process = {
     description: "Catalogue of historical earthquakes.",
     requiredProducts: requiredProducts,
     providedProduct: output,
-    wpsVersion: "1.0.0"
+    wpsVersion: "1.0.0", 
+    shape: "earthquake"
 }

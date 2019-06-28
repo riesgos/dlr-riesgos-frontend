@@ -32,13 +32,13 @@ export class WizardPageComponent implements OnInit {
 
   onSubmit(formData) {
 
-    let products = new Map<ProductId, Product>();
+    let products: Product[] = [];
     for (let key in formData) {
 
       let val = formData[key];
       let descr = this.getDescription(key);
       
-      products.set(key, {
+      products.push({
         description: descr, 
         value: val
       });

@@ -1,3 +1,9 @@
+debug
+    initialize focus once scenario was chosen
+    form labels not visible
+
+
+
 
 
 ---- Issue: data-return-type for dynforms -----------

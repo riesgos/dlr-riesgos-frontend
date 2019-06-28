@@ -14,7 +14,7 @@ export enum EWpsActionTypes {
 
 export class ProductsProvided implements Action {
     type: string = EWpsActionTypes.productsProvided;
-    constructor (public payload: {products: Map<ProductId, Product>}) {}
+    constructor (public payload: {products: Product[]}) {}
 }
 
 
@@ -26,7 +26,7 @@ export class ProcessStarted implements Action {
 
 export class ProcessStatesChanged implements Action {
     type: string = EWpsActionTypes.processStatesChanged;
-    constructor (public payload: {processes: Map<ProcessId, Process>}) {}
+    constructor (public payload: {processes: Process[]}) {}
 }
 
 
@@ -38,7 +38,7 @@ export class ScenarioChosen implements Action {
 
 export class InitialStateObtained implements Action {
     type: string = EWpsActionTypes.initialStateObtained;
-    constructor(public payload: {products: Map<ProductId, Product>, processes: Map<ProcessId, Process>}) {}
+    constructor(public payload: {products: Product[], processes: Process[]}) {}
 }
 
 

@@ -18,7 +18,7 @@ export type ProcessId = string;
 export enum ProcessState {
     unavailable = "unavailable",
     available = "available", 
-    runing = "running", 
+    running = "running", 
     completed = "completed", 
     error = "error", 
 }

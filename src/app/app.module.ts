@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 import { UkisRoutingModule } from './app-routing.module';
 import { UkisComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
@@ -62,7 +63,11 @@ import { LayercontrolComponent } from './components/layercontrol/layercontrol.co
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FeatureTablesModule
+    FeatureTablesModule, 
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
   ],
   providers: [
     AlertService, FooterService, ProgressService, 

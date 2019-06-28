@@ -6,7 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { WpsClient, WpsData } from 'projects/services-wps/src/public_api';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getInputsForProcess, filterInputsForProcess, convertProductsToWpsData, convertWpsDataToProds } from './wps.selectors';
+import { filterInputsForProcess } from './wps.selectors';
+import { NewProcessClicked } from 'src/app/focus/focus.actions';
 
 
 
@@ -21,14 +22,20 @@ export class WpsEffects {
         withLatestFrom(this.store$),
         switchMap(([action, state]) => {
             const process = (action as ProcessStarted).payload.process;
-            const inpts = filterInputsForProcess(process, state.wpsState.productValues);
-            const inputs = convertProductsToWpsData(inpts);
+            const inputs = filterInputsForProcess(process, state.wpsState.productValues);
             return this.wpsClient.executeAsync(process.url, process.id, inputs, process.providedProduct, 500);
         }),
         map((result: WpsData[]) => {
-            const prods = convertWpsDataToProds(result);
-            return new ProductsProvided({products: prods});
+            return new ProductsProvided({products: result});
         })
+    );
+
+
+    @Effect()
+    scenarioChosen$ = this.actions$.pipe(
+        ofType<WpsActions>(EWpsActionTypes.scenarioChosen), 
+        withLatestFrom(this.store$),
+        map(([action, state]) => new NewProcessClicked({processId: state.wpsState.processStates[0].id}))
     );
 
     private wpsClient: WpsClient;

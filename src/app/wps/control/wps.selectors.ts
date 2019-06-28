@@ -23,6 +23,20 @@ export const getInputsForProcess = createSelector(
 )
 
 
+export const getMaplikeProducts = createSelector(
+    getWpsState, 
+    (s: WpsState) => {
+        return s.productValues
+            .filter(prod => prod.value != null)
+            .filter(prod => prod.description.format == "application/vnd.geo+json" || prod.description.format == "application/WMS")
+    }
+);
+
+
+
+
+
+
 export const getProcessById = function(id: ProcessId, processes: Process[]): Process {
     const process = processes.find(p => p.id == id);
     if(process === undefined) throw new Error(`Could not find process ${id}`);

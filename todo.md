@@ -1,6 +1,5 @@
 debug
-    initialize focus once scenario was chosen
-    form labels not visible
+    no layout for state==completed
 
 
 

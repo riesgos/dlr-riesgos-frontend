@@ -1,4 +1,4 @@
-import { WpsActions, EWpsActionTypes, ProcessStatesChanged, ProcessStarted, ProductsProvided, InitialStateObtained, ScenarioChosen } from './wps.actions';
+import { WpsActions, EWpsActionTypes, ProcessStarted, ProductsProvided, InitialStateObtained, ScenarioChosen } from './wps.actions';
 import { WpsState } from './wps.state';
 import { ProductId } from 'projects/services-wps/src/public_api';
 import { Product, ProcessState, ProcessId, Process } from './wps.datatypes';
@@ -16,13 +16,6 @@ export function wpsReducer (state: WpsState, action: WpsActions): WpsState  {
 
         case EWpsActionTypes.scenarioChosen:
             return getInitialStateForScenario((action as ScenarioChosen).payload.scenario);
-
-
-        case EWpsActionTypes.processStatesChanged: 
-            return {
-                ...state, 
-                processStates: updateOldProcesses(state.processStates, (action as ProcessStatesChanged).payload.processes)
-            };
 
             
         case EWpsActionTypes.productsProvided:
@@ -63,7 +56,13 @@ function updateOldProcesses(oldProcesses: Process[], newProcesses: Process[]): P
         if(!newProcesses.find(newProcess => newProcess.id == oldProcess.id)) newProcesses.push(oldProcess);
     }
 
-    return newProcesses;
+    const sortedProcesses = newProcesses.sort((p1, p2) => {
+        if(p1.id < p2.id) return -1;
+        else if(p1.id > p2.id) return 1;
+        return 0;
+    });
+
+    return sortedProcesses;
 }
 
 
@@ -73,7 +72,13 @@ function updateOldProducts(oldProducts: Product[], newProducts: Product[]): Prod
         if(!newProducts.find(newProduct => newProduct.description.id == oldProduct.description.id)) newProducts.push(oldProduct);
     }
 
-    return newProducts;
+    const sortedProducts = newProducts.sort((p1, p2) => {
+        if(p1.description.id < p2.description.id) return -1;
+        else if(p1.description.id > p2.description.id) return 1;
+        return 0;
+    });
+
+    return sortedProducts;
 }
 
 

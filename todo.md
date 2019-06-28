@@ -1,5 +1,6 @@
 debug
-    no layout for state==completed
+    display products once returned
+        hmmm. product is returned. but not displayed on map..
 
 
 

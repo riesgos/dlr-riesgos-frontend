@@ -9,6 +9,7 @@ import { State } from 'src/app/ngrx_register';
 import { getMaplikeProducts } from 'src/app/wps/control/wps.selectors';
 import { Product } from 'src/app/wps/control/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
+import { VectorLayerData, isVectorLayerData, isWmsData, WmsData } from './mappable_wpsdata';
 
 @Component({
 
@@ -34,8 +35,8 @@ export class MapComponent implements OnInit, AfterViewInit {
 
         this.store.pipe(select(getMaplikeProducts)).subscribe((products: Product[]) => {
             for (let product of products) {
-                if (product.description.format == "application/WMS") this.addWmsLayer(product);
-                else if (product.description.format == "application/vnd.geo+json") this.addGeojsonLayer(product);
+                if (isWmsData(product)) this.addWmsLayer(product);
+                else if (isVectorLayerData(product)) this.addGeojsonLayer(product);
             }
         })
 
@@ -84,14 +85,14 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
 
-    private addGeojsonLayer(product: Product): void {
+    private addGeojsonLayer(product: VectorLayerData): void {
         let layer = this.createGeojsonLayer(product);
         layer.opacity = 1.0;
         this.layersSvc.addLayer(layer, "Overlays");
     }
 
 
-    private createGeojsonLayer(product: Product): VectorLayer {
+    private createGeojsonLayer(product: VectorLayerData): VectorLayer {
         let layer: VectorLayer = new VectorLayer({
             id: `${product.description.id}_result_layer`,
             name: `${product.description.id}`,
@@ -99,11 +100,11 @@ export class MapComponent implements OnInit, AfterViewInit {
             type: "geojson", 
             data: product.value[0],
             options: {
-                style: product.style
+                style: product.description.style
             }, 
             popup: <any>{
                 asyncPupup: (obj, callback) => {
-                    const html = product.text(obj);
+                    const html = product.description.text(obj);
                     callback(html);
                 }
               }
@@ -112,13 +113,13 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
 
-    private addWmsLayer(product: Product): void {
+    private addWmsLayer(product: WmsData): void {
         let layer = this.createWmsLayer(product);
         layer.opacity = 1.0;
         this.layersSvc.addLayer(layer, "Overlays");
     }
 
-    private createWmsLayer(product: Product): RasterLayer {
+    private createWmsLayer(product: WmsData): RasterLayer {
         let url = new URL(product.value[0]);
         url.searchParams.set("height", "600");
         url.searchParams.set("width", "600");

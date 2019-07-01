@@ -1,4 +1,4 @@
-import { WpsDataDescription } from 'projects/services-wps/src/public_api';
+import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public_api';
 
 
 
@@ -31,6 +31,28 @@ export type UserconfigurableWpsDataDescription = StringUconfWD | BboxUconfWD | S
 
 
 
+export interface StringUconfWpsData extends WpsData {
+    description: StringUconfWD
+}
+
+export interface BboxUconfWpsData extends WpsData {
+    description: BboxUconfWD
+}
+
+export interface SelectUconfWpsData extends WpsData {
+    description: SelectUconfWD
+}
+
+
+
+export type UserconfigurableWpsData = StringUconfWpsData | BboxUconfWpsData | SelectUconfWpsData;
+
+
+
 export const isUserconfigurableWpsDataDescription = function(obj: WpsDataDescription): obj is UserconfigurableWpsDataDescription {
     return obj.hasOwnProperty("wizardProperties");
+}
+
+export const isUserconfigurableWpsData = function(obj: WpsData): obj is UserconfigurableWpsData {
+    return isUserconfigurableWpsDataDescription(obj.description);
 }

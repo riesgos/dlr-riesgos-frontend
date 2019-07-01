@@ -26,11 +26,13 @@ export class ConfigurationWizardComponent implements OnInit {
 
     constructor(
         private store: Store<State>
-    ) {
+        ) {
+            console.log("wizzard constructed")
 
         this.processes$ = this.store.pipe(
             select(getProcessStates),
             map(processes => {
+                console.log("wizard has the processes ", processes.filter(process => isWizardableProcess(process)))
                 return processes.filter(process => isWizardableProcess(process)) as WizardableProcess[]
             })
         );
@@ -41,6 +43,7 @@ export class ConfigurationWizardComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log("wizard initialized")
     }
 
     onBlockClicked(event, processDescr: Process) {

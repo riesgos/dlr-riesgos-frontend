@@ -1,7 +1,7 @@
 <clr-select-container>
 
   <label>
-    {{parameter.name}}:
+    {{parameter.wizardProperties.name}}:
   </label>
     
   <select clrSelect  [attr.disabled]="disabled ? '' : null"  (change)="onChange($event.target.value)">

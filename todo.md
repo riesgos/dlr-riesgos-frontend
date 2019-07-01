@@ -1,7 +1,6 @@
 bbox-selected: 
-    still not displayed on map - even though is mappable!
-
-
+    value in field not updated
+    layer on map not updated when selection changed
 
 
 

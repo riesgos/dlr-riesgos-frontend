@@ -13,6 +13,7 @@ const bbox: UserconfigurableWpsDataDescription & BboxLayerDescription = {
     description: "Please select an area of interest",
     defaultValue: [-75.00, -35.00, -65.00, -30.00],
     wizardProperties: {
+        name: "AOI", 
         fieldtype: "bbox",
     },
 }
@@ -25,6 +26,7 @@ const requiredProducts: UserconfigurableWpsDataDescription[] = [
     id: "mmin",
     type: "literal",
     wizardProperties: {
+        name: "mmin",
         fieldtype: "string",
     },
     description: "minimum magnitude",
@@ -36,6 +38,7 @@ const requiredProducts: UserconfigurableWpsDataDescription[] = [
     defaultValue: "8.0",
     type: "literal",
     wizardProperties: {
+        name: "mmax", 
         fieldtype: "string",
     },
     reference: false
@@ -45,6 +48,7 @@ const requiredProducts: UserconfigurableWpsDataDescription[] = [
     defaultValue: "0",
     type: "literal",
     wizardProperties: {
+        name: "zmin", 
         fieldtype: "string",
     },
     reference: false
@@ -54,6 +58,7 @@ const requiredProducts: UserconfigurableWpsDataDescription[] = [
     defaultValue: "100",
     type: "literal",
     wizardProperties: {
+        name: "zmax", 
         fieldtype: "string",
     },
     reference: false
@@ -62,6 +67,7 @@ const requiredProducts: UserconfigurableWpsDataDescription[] = [
     description: "p",
     type: "literal",
     wizardProperties: {
+        name: "p", 
         fieldtype: "string",
     },
     reference: false,
@@ -73,6 +79,7 @@ const requiredProducts: UserconfigurableWpsDataDescription[] = [
     reference: false,
     type: "literal",
     wizardProperties: {
+        name: "Catalogue type", 
         fieldtype: "string",
     },
 }, {
@@ -81,6 +88,7 @@ const requiredProducts: UserconfigurableWpsDataDescription[] = [
     defaultValue: "5.00",
     reference: false,
     wizardProperties: {
+        name: "tlon",
         fieldtype: "string",
     },
     type: "literal"
@@ -90,6 +98,7 @@ const requiredProducts: UserconfigurableWpsDataDescription[] = [
     defaultValue: "-35.00",
     reference: false,
     wizardProperties: {
+        name: "tlat",
         fieldtype: "string",
     },
     type: "literal"

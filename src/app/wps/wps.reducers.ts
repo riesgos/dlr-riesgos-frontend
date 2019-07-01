@@ -1,7 +1,7 @@
 import { WpsActions, EWpsActionTypes, ProcessStarted, ProductsProvided, InitialStateObtained, ScenarioChosen } from './wps.actions';
 import { WpsState, initialWpsState } from './wps.state';
 import { ProductId } from 'projects/services-wps/src/public_api';
-import { Product, ProcessState, ProcessId, Process } from './wps.datatypes';
+import { Product, ProcessState, ProcessId, Process, ProductDescription } from './wps.datatypes';
 import { EqEventCatalogue } from '../configuration/chile/eqEventCatalogue';
 import { EqGroundMotion } from '../configuration/chile/eqGroundMotion';
 import { EqTsInteraction } from '../configuration/chile/eqTsInteraction';
@@ -66,10 +66,15 @@ function updateOldProcesses(oldProcesses: Process[], newProcesses: Process[]): P
 }
 
 
-function updateOldProducts(oldProducts: Product[], newProducts: Product[]): Product[] {
+function updateOldProducts(oldProducts: Product[], theNewProducts: Product[]): Product[] {
+
+    let newProducts: Product[] = []
+    for (let prod of theNewProducts) {
+        newProducts.push({...prod})
+    }
 
     for(let oldProduct of oldProducts) {
-        if(!newProducts.find(newProduct => newProduct.description.id == oldProduct.description.id)) newProducts.push(oldProduct);
+        if(!newProducts.find(newProduct => newProduct.description.id == oldProduct.description.id)) newProducts.push({...oldProduct});
     }
 
     const sortedProducts = newProducts.sort((p1, p2) => {

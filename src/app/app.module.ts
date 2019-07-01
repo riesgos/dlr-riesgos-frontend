@@ -34,6 +34,7 @@ import { WpsClient } from 'projects/services-wps/src/public_api';
 import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
 import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
+import { VarDirective } from './ng-var.directive';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,11 @@ import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-fie
     FormStringFieldComponent, 
     WizardPageComponent, 
     ScenariosComponent, 
-    RouteMapComponent, MapComponent, LayercontrolComponent, FormBboxFieldComponent
+    RouteMapComponent, 
+    MapComponent, 
+    LayercontrolComponent, 
+    FormBboxFieldComponent, 
+    VarDirective
   ],
   imports: [
     BrowserModule,
@@ -59,7 +64,14 @@ import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-fie
     LayerControlModule, 
     ClarityModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot(reducers),
+    StoreModule.forRoot(reducers, {
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true,
+        strictStateSerializability: true,
+        strictActionSerializability: true,
+      },
+    }),
     EffectsModule.forRoot(effects), 
     FormsModule,
     ReactiveFormsModule,

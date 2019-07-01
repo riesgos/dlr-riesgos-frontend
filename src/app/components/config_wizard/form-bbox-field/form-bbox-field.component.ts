@@ -3,7 +3,7 @@ import { BboxUconfWD } from '../userconfigurable_wpsdata';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { InteractionStarted } from 'src/app/interactions/interactions.actions';
+import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { ClrHostWrappingModule } from '@clr/angular/utils/host-wrapping/host-wrapping.module';
 import { filter, map, find } from 'rxjs/operators';
 import { InteractionState } from 'src/app/interactions/interactions.state';
@@ -26,7 +26,7 @@ export class FormBboxFieldComponent implements OnInit, ControlValueAccessor {
 
     @Input() parameter: BboxUconfWD;
     @Input() formControl: FormControl;
-    public value: BehaviorSubject<any>;
+    public bboxValue: any;
     public disabled: boolean = false;
     private changeFunction;
     private touchFunction; 
@@ -34,30 +34,40 @@ export class FormBboxFieldComponent implements OnInit, ControlValueAccessor {
     constructor(
         private store: Store<State>
     ) {
-        this.value = new BehaviorSubject<any>(null);
     }
     
     ngOnInit() {
 
-        this.value.next(this.parameter.defaultValue);
+        console.log("bbox field initialized")
+        //this.value.next(this.parameter.defaultValue);
 
         this.store.pipe(select(getProducts))
             .pipe(
                 map((products: Product[]) => products.find(p => p.description.id == this.parameter.id))
             ).subscribe((product: Product) => {
-                this.value.next(product.value)
+                console.log(`bbox value for product ${this.parameter.id} has changed to `, product)
+                this.bboxValue  = product.value;
             })
             
     }
 
+    // called when form submitted
     writeValue(obj: any): void {
-        //console.log(`${this.parameter.id} writeValue`, obj);
-        this.value.next(obj);
+        console.log(`${this.parameter.id} writeValue`, obj);
+        this.bboxValue = obj;
     }
 
+    // called when field changed and then clicked elsewhere
     registerOnChange(fn: any): void {
-        //console.log(`${this.parameter.id} registering change function `, fn);
+        console.log(`${this.parameter.id} registering change function `, fn);
         this.changeFunction = fn;
+    }
+    
+    // called when field changed and then clicked elsewhere
+    onChange(newVal) {
+        console.log("calling changefunction with ", newVal);
+        this.changeFunction(newVal);
+        this.store.dispatch(new InteractionCompleted({product: {description: this.parameter, value: newVal}}))
     }
 
     registerOnTouched(fn: any): void {
@@ -65,21 +75,17 @@ export class FormBboxFieldComponent implements OnInit, ControlValueAccessor {
     }
 
     setDisabledState(isDisabled: boolean): void {
-        //console.log(`${this.parameter.id} setDisabledState`, isDisabled);
+        console.log(`${this.parameter.id} setDisabledState`, isDisabled);
         this.disabled = isDisabled;
     }
 
-    onChange(newVal) {
-        // console.log("calling changefunction with ", newVal);
-        this.changeFunction(newVal);
-    }
 
     onClick(event) {
         this.store.dispatch(new InteractionStarted({
             mode: "bbox", 
             product: {
                 description: this.parameter, 
-                value: this.value.getValue()
+                value: this.bboxValue
             }
         }))
     }

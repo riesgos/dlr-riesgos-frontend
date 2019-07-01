@@ -3,6 +3,7 @@ import { State } from 'src/app/ngrx_register';
 import { WpsState } from './wps.state';
 import { ProductId, WpsData } from 'projects/services-wps/src/public_api';
 import { Product, Process, ProcessId } from './wps.datatypes';
+import { ProductsProvided } from './wps.actions';
 
 const getWpsState = (state: State) => {
     return state.wpsState;
@@ -11,6 +12,12 @@ const getWpsState = (state: State) => {
 export const getProcessStates = createSelector(
     getWpsState, 
     (s: WpsState) => s.processStates
+);
+
+
+export const getProducts = createSelector(
+    getWpsState, 
+    (s: WpsState) => s.productValues
 );
 
 
@@ -28,7 +35,7 @@ export const getMaplikeProducts = createSelector(
     (s: WpsState) => {
         return s.productValues
             .filter(prod => prod.value != null)
-            .filter(prod => prod.description.format == "application/vnd.geo+json" || prod.description.format == "application/WMS")
+            .filter(prod => prod.description.format == "application/vnd.geo+json" || prod.description.format == "application/WMS" || prod.description.type == "bbox")
     }
 );
 

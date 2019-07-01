@@ -9,3 +9,9 @@ export interface WpsState {
     processStates: Process[], 
     productValues: Product[];
 }
+
+
+export const initialWpsState: WpsState = {
+    processStates: [], 
+    productValues: []
+}

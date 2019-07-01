@@ -1,4 +1,4 @@
-import { Process, ProcessState } from '../../control/wps.datatypes';
+import { Process, ProcessState } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 
 
@@ -32,6 +32,8 @@ export const EqGroundMotion : WizardableProcess = {
 
     wpsVersion: "1.0.0", 
 
-    shape: "earthquake"
+    wizardProperties: {
+        shape: "earthquake"
+    }
 
 }

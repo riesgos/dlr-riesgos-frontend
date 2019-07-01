@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store'; 
-import { ProcessId } from '../wps/control/wps.datatypes';
+import { ProcessId } from '../wps/wps.datatypes';
 
 
 

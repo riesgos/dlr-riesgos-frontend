@@ -5,8 +5,8 @@ import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map } from 'rxjs/operators';
-import { getProcessStates } from 'src/app/wps/control/wps.selectors';
-import { Process } from 'src/app/wps/control/wps.datatypes';
+import { getProcessStates } from 'src/app/wps/wps.selectors';
+import { Process } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess, isWizardableProcess } from '../wizardable_processes';
 
 

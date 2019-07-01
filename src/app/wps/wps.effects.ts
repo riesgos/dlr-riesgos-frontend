@@ -33,9 +33,23 @@ export class WpsEffects {
         ofType<WpsActions>(EWpsActionTypes.processStarted),
         withLatestFrom(this.store$),
         switchMap(([action, state]) => {
+
             const process = (action as ProcessStarted).payload.process;
             const inputs = filterInputsForProcess(process, state.wpsState.productValues);
-            return this.wpsClient.executeAsync(process.url, process.id, inputs, process.providedProduct, 500);
+            const outputDescription = process.providedProduct;
+
+            return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescription, 500).pipe(map(output => {
+                // Ugly little hack: if outputDescription contained any information that has been lost in translation through marshalling and unmarshalling, we add it here back in. 
+                // Potentially better long term sollution: let every component that needs a products description get that from the process. 
+                // But that might have drawbacks too: 
+                //    - 
+                for(let key in outputDescription) {
+                    if(!output[0].description.hasOwnProperty(key)) {
+                        output[0].description[key] = outputDescription[key];
+                    }
+                }
+                return output;
+            }));
         }),
         map((result: WpsData[]) => {
             return new ProductsProvided({products: result});

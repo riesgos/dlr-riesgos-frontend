@@ -2,12 +2,32 @@ import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public_ap
 
 
 
+export interface BboxLayerDescription extends WpsDataDescription {
+    type: "bbox"
+}
+
+
+export interface BboxLayerData extends WpsData {
+    description: BboxLayerDescription
+}
+
+
+export const isBboxLayerDescription = (descr: WpsDataDescription): descr is BboxLayerDescription => {
+    return descr.type == "bbox"; 
+}
+
+export const isBboxLayerData = (data: WpsData): data is BboxLayerData => {
+    return isBboxLayerDescription(data.description);
+}
+
 
 export interface VectorLayerDescription extends WpsDataDescription {
     format: "application/vnd.geo+json", 
     type: "complex",
-    style: any,
-    text: any
+    vectorLayerAttributes: {
+        style: any,
+        text: any
+    }
 }
 
 export interface VectorLayerData extends WpsData {
@@ -15,7 +35,7 @@ export interface VectorLayerData extends WpsData {
 }
 
 export const isVectorLayerDescription = (description: WpsDataDescription): description is VectorLayerDescription => {
-    return description["format"] == "application/vnd.geo+json" && description["type"] == "complex";
+    return description["format"] == "application/vnd.geo+json" && description["type"] == "complex" && description.hasOwnProperty["vectorLayerAttributes"];
 }
 
 

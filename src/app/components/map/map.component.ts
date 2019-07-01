@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, HostBinding, AfterViewInit } from '@angular/core';
+import { DragBox } from 'ol/interaction';
+import { Style, Stroke } from 'ol/style';
 import { get as getProjection } from 'ol/proj.js';
 import { LayersService, RasterLayer, VectorLayer } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
@@ -6,10 +8,15 @@ import { osm } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getMaplikeProducts } from 'src/app/wps/control/wps.selectors';
-import { Product } from 'src/app/wps/control/wps.datatypes';
+import { getMaplikeProducts } from 'src/app/wps/wps.selectors';
+import { Product } from 'src/app/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
-import { VectorLayerData, isVectorLayerData, isWmsData, WmsData } from './mappable_wpsdata';
+import { VectorLayerData, isVectorLayerData, isWmsData, WmsData, isBboxLayerData, BboxLayerData } from './mappable_wpsdata';
+import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
+import { BehaviorSubject } from 'rxjs';
+import { InteractionMode, InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
+import { featureCollection, feature } from '@turf/helpers';
+import { bboxPolygon } from '@turf/turf';
 
 @Component({
 
@@ -23,32 +30,49 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
 
+    private interactionState: BehaviorSubject<InteractionState>
+
     constructor(
         public layersSvc: LayersService,
         public mapStateSvc: MapStateService,
         public mapSvc: MapOlService,
-        private store: Store<State>, 
+        private store: Store<State>,
         private httpClient: HttpClient
     ) {
 
         this.controls = { attribution: true, scaleLine: true };
 
-        this.store.pipe(select(getMaplikeProducts)).subscribe((products: Product[]) => {
-            for (let product of products) {
-                if (isWmsData(product)) this.addWmsLayer(product);
-                else if (isVectorLayerData(product)) this.addGeojsonLayer(product);
+        // listening for mapable products
+        this.store.pipe(select(getMaplikeProducts)).subscribe(
+            (products: Product[]) => {
+                this.mapSvc.removeAllLayers("overlays");
+                for (let product of products) {
+                    if (isWmsData(product)) this.addWmsLayer(product);
+                    else if (isVectorLayerData(product)) this.addGeojsonLayer(product);
+                    else if (isBboxLayerData(product)) this.addBboxLayer(product);
+                }
             }
+        );
+
+        // listening for interaction modes
+        this.interactionState = new BehaviorSubject<InteractionState>(initialInteractionState);
+        this.store.pipe(select("interactionState")).subscribe(currentInteractionState => {
+            this.interactionState.next(currentInteractionState);
         })
+
+        this.mapSvc.map.on("click", () => {
+            this.mapSvc.removeAllPopups();
+        });
 
     }
 
     ngOnInit() {
 
-        let osmLayer = new osm();
+        const osmLayer = new osm();
         osmLayer.visible = true;
         this.layersSvc.addLayer(osmLayer, 'Layers');
 
-        let powerlineLayer = new RasterLayer({
+        const powerlineLayer = new RasterLayer({
             id: "powerlines",
             name: "Powerlines",
             type: "wms",
@@ -60,7 +84,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         });
         this.layersSvc.addLayer(powerlineLayer, "Layers");
 
-        let relief = new RasterLayer({
+        const relief = new RasterLayer({
             id: "shade",
             name: "Hillshade",
             type: "wms",
@@ -75,6 +99,28 @@ export class MapComponent implements OnInit, AfterViewInit {
         });
         this.layersSvc.addLayer(relief, "Layers");
 
+
+        // adding dragbox interaction and hooking it into the store
+        const dragBox = new DragBox({
+            condition: (event) => { 
+                return this.interactionState.getValue().mode == "bbox";
+            },
+            onBoxEnd: () => {
+                const coords = dragBox.getGeometry().flatCoordinates
+                const box = [coords[0], coords[1], coords[4], coords[5]];
+                const product: Product = {
+                    ...this.interactionState.getValue().product, 
+                    value: box
+                };
+                this.store.dispatch(new InteractionCompleted({product: product}))
+            },
+            style: new Style({
+                stroke: new Stroke({
+                    color: [0, 0, 255, 1]
+                })
+            })
+        });
+        this.mapSvc.map.addInteraction(dragBox);
 
     }
 
@@ -96,18 +142,43 @@ export class MapComponent implements OnInit, AfterViewInit {
         let layer: VectorLayer = new VectorLayer({
             id: `${product.description.id}_result_layer`,
             name: `${product.description.id}`,
-            opacity: 1, 
-            type: "geojson", 
+            opacity: 1,
+            type: "geojson",
             data: product.value[0],
             options: {
-                style: product.description.style
-            }, 
+                style: product.description.vectorLayerAttributes.style
+            },
             popup: <any>{
                 asyncPupup: (obj, callback) => {
-                    const html = product.description.text(obj);
+                    const html = product.description.vectorLayerAttributes.text(obj);
                     callback(html);
                 }
-              }
+            }
+        });
+        return layer;
+    }
+
+    private addBboxLayer(product: BboxLayerData): void {
+        console.log("adding layer for product", product)
+        let layer = this.createBboxLayer(product);
+        layer.opacity = 1.0;
+        this.layersSvc.addLayer(layer, "Overlays");
+    }
+
+    private createBboxLayer(product: BboxLayerData): VectorLayer {
+        let layer: VectorLayer = new VectorLayer({
+            id: `${product.description.id}_result_layer`,
+            name: `${product.description.id}`,
+            opacity: 1,
+            type: "geojson",
+            data: featureCollection([bboxPolygon(product.value)]),
+            options: {},
+            popup: <any>{
+                asyncPupup: (obj, callback) => {
+                    const html = JSON.stringify(obj);
+                    callback(html);
+                }
+            }
         });
         return layer;
     }
@@ -156,10 +227,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
 
-      /**
-     * @TODO: move this functionality to the WMS-Output-object
-     */
-    private  getFeatureInfoPopup(obj, mapSvc, callback) {
+    /**
+   * @TODO: move this functionality to the WMS-Output-object
+   */
+    private getFeatureInfoPopup(obj, mapSvc, callback) {
         let source = obj.source;
         let evt = obj.evt;
         let viewResolution = mapSvc.map.getView().getResolution();
@@ -177,12 +248,12 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     private formatFeatureCollectionToTable(collection): string {
         let html = "<clr-datagrid>";
-        for(let key in collection["features"][0]["properties"]) {
+        for (let key in collection["features"][0]["properties"]) {
             html += `<clr-dg-column>${key}</clr-dg-column>`;
         }
-        for(let feature of collection["features"]) {
+        for (let feature of collection["features"]) {
             html += "<clr-dg-row>";
-            for(let key in feature["properties"]) {
+            for (let key in feature["properties"]) {
                 let val = feature["properties"][key];
                 html += `<clr-dg-cell>${val}</clr-dg-cell>`;
             }

@@ -99,10 +99,10 @@ export class WpsClient {
 
     }
 
-    execute(url: string, processId: string, inputs: WpsInput[], output: WpsOutputDescription, async: boolean): Observable<WpsResult[]> {
+    execute(url: string, processId: string, inputs: WpsInput[], outputDescription: WpsOutputDescription, async: boolean): Observable<WpsResult[]> {
 
         const executeUrl = this.wpsmarshaller.executeUrl(url, processId);
-        const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, output, async);
+        const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescription, async);
         const xmlExecbody = this.xmlmarshaller.marshalString(execbody);
 
         const headers = new HttpHeaders({

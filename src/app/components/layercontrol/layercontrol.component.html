@@ -1,43 +1,42 @@
-<clr-stack-view class="LayerSwitcher">
+<clr-stack-view class="ConfigurationWizard">
     <clr-stack-header style="margin-left: 20px;" i18n>Layer control</clr-stack-header>
 
-
-    <clr-stack-block>
-        <clr-stack-label>
-            <clr-icon shape="world" title="Overlays"></clr-icon>
-            <span i18n>Results</span>
+    <clr-stack-block [clrSbExpanded]="true">
+        <clr-stack-label class="ConfigurationWizardLabel">
+            <clr-icon shape="world" title="Overlays" class="is-highlight"></clr-icon>
+            <b class="p1" i18n>Results</b>
         </clr-stack-label>
-    </clr-stack-block>
-    <clr-stack-block>
-        <clr-stack-content>
-            <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc" [layerfilter]="'Overlays'">
-            </ukis-layer-control>
-        </clr-stack-content>
+        <clr-stack-block class="ConfigurationWizardContent">
+            <clr-stack-content>
+                <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc" [layerfilter]="'Overlays'">
+                </ukis-layer-control>
+            </clr-stack-content>
+        </clr-stack-block>
     </clr-stack-block>
 
-    <clr-stack-block>
-        <clr-stack-label>
-            <clr-icon shape="layers" title="layers"></clr-icon>
-            <span i18n>Additional layers</span>
+    <clr-stack-block [clrSbExpanded]="true">
+        <clr-stack-label class="ConfigurationWizardLabel">
+            <clr-icon shape="layers" title="layers" class="is-highlight"></clr-icon>
+            <b class="p1" i18n>Additional layers</b>
         </clr-stack-label>
-    </clr-stack-block>
-    <clr-stack-block>
-        <clr-stack-content>
-            <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc"></ukis-layer-control>
-        </clr-stack-content>
+        <clr-stack-block class="ConfigurationWizardContent">
+            <clr-stack-content>
+                <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc"></ukis-layer-control>
+            </clr-stack-content>
+        </clr-stack-block>
     </clr-stack-block>
 
 
-    <clr-stack-block>
-        <clr-stack-label>
-            <clr-icon shape="table" title="Tables"></clr-icon>
-            <span i18n>Tables</span>
+    <clr-stack-block [clrSbExpanded]="true">
+        <clr-stack-label class="ConfigurationWizardLabel">
+            <clr-icon shape="table" title="Tables" class="is-highlight"></clr-icon>
+            <b class="p1" i18n>Tables</b>
         </clr-stack-label>
-    </clr-stack-block>
-    <clr-stack-block>
-        <clr-stack-content>
-            <ukis-feature-tables [layersSvc]="layersSvc"></ukis-feature-tables>
-        </clr-stack-content>
+        <clr-stack-block class="ConfigurationWizardContent">
+            <clr-stack-content>
+                <ukis-feature-tables [layersSvc]="layersSvc"></ukis-feature-tables>
+            </clr-stack-content>
+        </clr-stack-block>
     </clr-stack-block>
 
 </clr-stack-view>

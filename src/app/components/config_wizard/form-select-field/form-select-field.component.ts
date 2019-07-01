@@ -24,7 +24,7 @@ export class FormSelectFieldComponent implements OnInit, ControlValueAccessor {
   constructor() { }
 
   ngOnInit() {
-    this.options = this.parameter.options;
+    this.options = this.parameter.wizardProperties.options;
   }
 
   writeValue(obj: any): void {

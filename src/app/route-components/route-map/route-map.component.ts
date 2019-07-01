@@ -5,7 +5,7 @@ import { MapOlService } from '@ukis/map-ol';
 import { Store } from '@ngrx/store';
 import { reducers, effects, State } from 'src/app/ngrx_register';
 import { ActivatedRoute } from '@angular/router';
-import { ScenarioChosen } from 'src/app/wps/control/wps.actions';
+import { ScenarioChosen } from 'src/app/wps/wps.actions';
 
 @Component({
   host: { "[class.content-container]": "true" }, // <-- required for clarity-layout

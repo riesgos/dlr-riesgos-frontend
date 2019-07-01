@@ -1,5 +1,5 @@
 import { WpsActions, EWpsActionTypes, ProcessStarted, ProductsProvided, InitialStateObtained, ScenarioChosen } from './wps.actions';
-import { WpsState } from './wps.state';
+import { WpsState, initialWpsState } from './wps.state';
 import { ProductId } from 'projects/services-wps/src/public_api';
 import { Product, ProcessState, ProcessId, Process } from './wps.datatypes';
 import { EqEventCatalogue } from '../configuration/chile/eqEventCatalogue';
@@ -11,7 +11,7 @@ import { isUserconfigurableWpsDataDescription } from 'src/app/components/config_
 
 
 
-export function wpsReducer (state: WpsState, action: WpsActions): WpsState  {
+export function wpsReducer (state: WpsState = initialWpsState, action: WpsActions): WpsState  {
     switch(action.type) {
 
         case EWpsActionTypes.scenarioChosen:

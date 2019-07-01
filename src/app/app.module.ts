@@ -33,6 +33,7 @@ import { LayerControlModule } from '@ukis/layer-control';
 import { WpsClient } from 'projects/services-wps/src/public_api';
 import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
+import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import { LayercontrolComponent } from './components/layercontrol/layercontrol.co
     FormStringFieldComponent, 
     WizardPageComponent, 
     ScenariosComponent, 
-    RouteMapComponent, MapComponent, LayercontrolComponent
+    RouteMapComponent, MapComponent, LayercontrolComponent, FormBboxFieldComponent
   ],
   imports: [
     BrowserModule,

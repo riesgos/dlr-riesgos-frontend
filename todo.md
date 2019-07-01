@@ -1,16 +1,9 @@
-debug
-    display products once returned
-        hmmm. product is returned. but not displayed on map..
+bbox-selected: 
+    still not displayed on map - even though is mappable!
 
 
 
 
-
----- Issue: data-return-type for dynforms -----------
-wizard-page: 
-    onSubmit(data) {
-        store.dispatch(new ParametersProvided) ?
-    => make sure data is really WpsData, not just its value
 
 
 

@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ProductsProvided, ProcessStarted, ClickRunProcess } from 'src/app/wps/control/wps.actions';
+import { ProductsProvided, ProcessStarted, ClickRunProcess } from 'src/app/wps/wps.actions';
 import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription } from '../userconfigurable_wpsdata';
-import { Process, Product } from 'src/app/wps/control/wps.datatypes';
+import { Process, Product } from 'src/app/wps/wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
 
 

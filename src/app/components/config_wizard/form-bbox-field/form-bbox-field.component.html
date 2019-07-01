@@ -4,7 +4,8 @@
       {{parameter.id}}:
     </label>
 
-    <input type="text" clrInput value="{{value}}" (change)="onChange($event.target.value)" [attr.disabled]="disabled ? '' : null"/>
+    <input type="text" clrInput value="{{value | async}}" (change)="onChange($event.target.value)" (click)="onClick($event)" [attr.disabled]="disabled ? '' : null"/>
+
 
     <clr-control-helper>{{parameter.description}}</clr-control-helper>
     <clr-control-error>Invalid input</clr-control-error>

@@ -20,7 +20,6 @@
         <ng-container *ngSwitchCase="'completed'">
             <ukis-form [parameters]="parameters$ | async" (formSubmitted)="onSubmit($event)" [disabled]="true">
             </ukis-form>
-            <button class="btn btn-outline" (click)="onNextClicked()" i18n>Next</button>
             <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>Reconfigure</button>
         </ng-container>
 

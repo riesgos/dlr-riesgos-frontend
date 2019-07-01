@@ -32,7 +32,6 @@
     "@turf/helpers": "^6.1.4",
     "@turf/turf": "^5.1.6",
     "@ukis/base-layers-raster": "^5.1.0",
-    "@ukis/layer-control": "^5.1.0",
     "@ukis/map-ol": "^5.1.0",
     "@ukis/services-layers": "^5.1.0",
     "@ukis/services-util-store": "^5.1.0",

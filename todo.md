@@ -1,12 +1,19 @@
-execution: 
-    why is eq-selected row not displayed?
+
+reconfigure: 
+    invalidate and update
+        Hmmm. This really needs a graph-structure. 
+            Ok. Rebuild wps. 
+                In WpsEffects, have an instance of WorkflowControl. 
+                Every action is funnelled via Effects through WorkflowControl. 
+                After action, workflowcontrol provides new Process[] and Product[], which go into the reducer. 
+                There is only one reducer: ActionNewProcessesAndProductsProvided
 
 
 
 bbox-selected: 
     catch bad formatting before commiting product to message-queue
-
-
+    always round of to 2 dec.places
+    format in such a way that bbox is displayed in feature-tables
 
 
 

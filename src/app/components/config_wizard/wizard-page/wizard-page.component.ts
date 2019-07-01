@@ -51,11 +51,6 @@ export class WizardPageComponent implements OnInit {
     this.store.dispatch(new ClickRunProcess({productsProvided: products, process: this.process }));
   }
 
-  onNextClicked() {
-    // @TODO: store.emmit(new NextClicked) ? 
-    //this.nextClicked.emit(this.process.processId());
-  } 
-
   onReconfigureClicked () {
     // @TODO: store.emmit(new Reconfigure) ? 
     // this.reconfigureClicked.emit(this.process.processId());

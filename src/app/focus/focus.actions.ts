@@ -4,7 +4,8 @@ import { ProcessId } from '../wps/wps.datatypes';
 
 
 export enum EFocusActionTypes {
-    newProcessClicked = "[Focus] new process clicked"
+    newProcessClicked = "[Focus] new process clicked",
+    goToNextProcess = "[Focus] going to next process"
 }
 
 
@@ -14,4 +15,9 @@ export class NewProcessClicked implements Action {
 }
 
 
-export type FocusAction = NewProcessClicked;
+export class GoToNextProcess implements Action {
+    type: string = EFocusActionTypes.goToNextProcess
+}
+
+
+export type FocusAction = NewProcessClicked | GoToNextProcess;

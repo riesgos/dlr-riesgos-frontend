@@ -19,6 +19,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ], 
+    "paths": {
+      "@ukis/layer-control": [
+        "projects/layer-control/src/public_api"
+      ],
+      "@ukis/layer-control/*": [
+        "projects/layer-control/*"
+      ],
+    }
   }
 }

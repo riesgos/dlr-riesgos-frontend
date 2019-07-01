@@ -7,7 +7,7 @@ import { WpsClient, WpsData } from 'projects/services-wps/src/public_api';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { filterInputsForProcess } from './wps.selectors';
-import { NewProcessClicked } from 'src/app/focus/focus.actions';
+import { NewProcessClicked, GoToNextProcess } from 'src/app/focus/focus.actions';
 
 
 
@@ -51,8 +51,11 @@ export class WpsEffects {
                 return output;
             }));
         }),
-        map((result: WpsData[]) => {
-            return new ProductsProvided({products: result});
+        switchMap((result: WpsData[]) => {
+            return [
+                new ProductsProvided({products: result}), 
+                new GoToNextProcess()
+            ]
         })
     );
 

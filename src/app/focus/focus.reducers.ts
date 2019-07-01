@@ -1,4 +1,4 @@
-import { FocusAction, EFocusActionTypes } from './focus.actions';
+import { FocusAction, EFocusActionTypes, NewProcessClicked } from './focus.actions';
 import { FocusState, initialFocusState } from './focus.state';
 
 
@@ -10,10 +10,12 @@ export const focusReducer = function(state: FocusState = initialFocusState, acti
         case EFocusActionTypes.newProcessClicked:
             return {
                 ...state, 
-                focussedProcessId: action.payload.processId
+                focussedProcessId: (action as NewProcessClicked).payload.processId
             }
-            
 
+            
+            
+        case EFocusActionTypes.goToNextProcess: 
         default: 
             return state;
 

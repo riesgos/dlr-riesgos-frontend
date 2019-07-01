@@ -8,6 +8,7 @@ export enum EWpsActionTypes {
     clickRunProduct = "[Wps] Click on 'run process' button",
     processStarted = "[Wps] Process Started",
     scenarioChosen = "[Wps] Scenario chosen",
+    restartingFromProcess = "[Wps] Restarting from process", 
     initialStateObtained = "[Wps] Initial state obtained"
 }
 
@@ -37,10 +38,16 @@ export class ScenarioChosen implements Action {
 }
 
 
+export class RestartingFromProcess implements Action {
+    type: string = EWpsActionTypes.restartingFromProcess;
+    constructor(public payload: {process: Process}) {}
+}
+
+
 export class InitialStateObtained implements Action {
     type: string = EWpsActionTypes.initialStateObtained;
     constructor(public payload: {products: Product[], processes: Process[]}) {}
 }
 
 
-export type WpsActions = ProductsProvided | ClickRunProcess | ProcessStarted | ScenarioChosen;
+export type WpsActions = ProductsProvided | ClickRunProcess | ProcessStarted | RestartingFromProcess | ScenarioChosen;

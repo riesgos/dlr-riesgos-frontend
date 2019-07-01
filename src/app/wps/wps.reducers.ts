@@ -1,4 +1,4 @@
-import { WpsActions, EWpsActionTypes, ProcessStarted, ProductsProvided, InitialStateObtained, ScenarioChosen } from './wps.actions';
+import { WpsActions, EWpsActionTypes, ProcessStarted, ProductsProvided, InitialStateObtained, ScenarioChosen, RestartingFromProcess } from './wps.actions';
 import { WpsState, initialWpsState } from './wps.state';
 import { ProductId } from 'projects/services-wps/src/public_api';
 import { Product, ProcessState, ProcessId, Process, ProductDescription } from './wps.datatypes';
@@ -43,6 +43,14 @@ export function wpsReducer (state: WpsState = initialWpsState, action: WpsAction
             }
 
 
+        case EWpsActionTypes.restartingFromProcess: 
+            const restartedProcess = (action as RestartingFromProcess).payload.process;
+            const [newProducts, newProcesses] = invalidateFrom(restartedProcess, state.processStates, state.productValues);
+            return {
+                processStates: newProcesses, 
+                productValues: newProducts
+            };
+
 
         default: 
             return state;
@@ -85,6 +93,23 @@ function updateOldProducts(oldProducts: Product[], theNewProducts: Product[]): P
 
     return sortedProducts;
 }
+
+
+
+
+function invalidateFrom(invalidatedProcess: Process, oldProcesses: Process[],  oldProductValues: Product[]): [Product[], Process[]] {
+    const newProcesses: Process[] = []; 
+    const newProducts: Product[] = [];
+    let passedInvalidatedProcess = false;
+    for(let process of oldProcesses) {
+        if(process.id == invalidatedProcess.id) passedInvalidatedProcess = true;
+        if(passedInvalidatedProcess) {
+
+        }
+    }
+}
+
+
 
 
 function calculateProcessState(oldProcessStates: Process[], newProductValues: Product[]) {

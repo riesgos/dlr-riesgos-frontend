@@ -106,7 +106,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             },
             onBoxEnd: () => {
                 const coords = dragBox.getGeometry().flatCoordinates
-                const box = [coords[0], coords[1], coords[4], coords[5]];
+                const box = [coords[0], coords[5], coords[4], coords[1]];
                 const product: Product = {
                     ...this.interactionState.getValue().product, 
                     value: box

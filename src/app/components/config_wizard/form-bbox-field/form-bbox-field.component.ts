@@ -36,36 +36,26 @@ export class FormBboxFieldComponent implements OnInit, ControlValueAccessor {
     ) {
     }
     
-    ngOnInit() {
-
-        console.log("bbox field initialized")
-        //this.value.next(this.parameter.defaultValue);
-
-        this.store.pipe(select(getProducts))
-            .pipe(
-                map((products: Product[]) => products.find(p => p.description.id == this.parameter.id))
-            ).subscribe((product: Product) => {
-                console.log(`bbox value for product ${this.parameter.id} has changed to `, product)
-                this.bboxValue  = product.value;
-            })
-            
-    }
+    ngOnInit() {}
 
     // called when form submitted
     writeValue(obj: any): void {
-        console.log(`${this.parameter.id} writeValue`, obj);
+        //console.log(`${this.parameter.id} writeValue`, obj);
         this.bboxValue = obj;
     }
 
     // called when field changed and then clicked elsewhere
     registerOnChange(fn: any): void {
-        console.log(`${this.parameter.id} registering change function `, fn);
+        //console.log(`${this.parameter.id} registering change function `, fn);
         this.changeFunction = fn;
     }
     
     // called when field changed and then clicked elsewhere
     onChange(newVal) {
-        console.log("calling changefunction with ", newVal);
+        //console.log("calling changefunction with ", newVal);
+        if(typeof newVal == "string") {
+            newVal = newVal.split(",").map(v => parseFloat(v));
+        }
         this.changeFunction(newVal);
         this.store.dispatch(new InteractionCompleted({product: {description: this.parameter, value: newVal}}))
     }
@@ -75,7 +65,7 @@ export class FormBboxFieldComponent implements OnInit, ControlValueAccessor {
     }
 
     setDisabledState(isDisabled: boolean): void {
-        console.log(`${this.parameter.id} setDisabledState`, isDisabled);
+        //console.log(`${this.parameter.id} setDisabledState`, isDisabled);
         this.disabled = isDisabled;
     }
 

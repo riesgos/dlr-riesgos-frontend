@@ -2,9 +2,12 @@ import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided, ProcessStarted, ClickRunProcess } from 'src/app/wps/wps.actions';
-import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription } from '../userconfigurable_wpsdata';
-import { Process, Product } from 'src/app/wps/wps.datatypes';
+import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription, UserconfigurableWpsData, isUserconfigurableWpsData } from '../userconfigurable_wpsdata';
+import { Process, Product, ProductDescription } from 'src/app/wps/wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
+import { getInputsForProcess } from 'src/app/wps/wps.selectors';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
 
@@ -17,7 +20,7 @@ import { ProductId } from 'projects/services-wps/src/public_api';
 export class WizardPageComponent implements OnInit {
 
   @Input() process: Process;
-  parameters: UserconfigurableWpsDataDescription[];
+  parameters$: Observable<UserconfigurableWpsData[]>;
 
 
   constructor(
@@ -25,9 +28,10 @@ export class WizardPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.parameters = this.process.requiredProducts
-      .filter(descr => isUserconfigurableWpsDataDescription(descr))
-      .map(descr => descr as UserconfigurableWpsDataDescription);
+    this.parameters$ = this.store.pipe(
+      select(getInputsForProcess, {processId: this.process.id}), 
+      map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableWpsData(i)) as UserconfigurableWpsData[] )
+    );
   }
 
   onSubmit(formData) {
@@ -57,12 +61,10 @@ export class WizardPageComponent implements OnInit {
     // this.reconfigureClicked.emit(this.process.processId());
   }
 
-  private getDescription(id: string): UserconfigurableWpsDataDescription {
-    for(let para of this.parameters) {
-      if(para.id == id) return para;
-    }
-    throw new Error(`could not find a configuration with id ${id}`);
+  private getDescription(key: ProductId): ProductDescription {
+    const d =  this.process.requiredProducts.find(prodD => prodD.id == key);
+    if(d === undefined) throw new Error(`product ${key} not known within requirements of process ${this.process.id}`);
+    return d;
   }
-
 
 }

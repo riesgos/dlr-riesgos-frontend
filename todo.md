@@ -1,6 +1,5 @@
 bbox-selected: 
-    value in field not updated
-    layer on map not updated when selection changed
+    catch bad formatting before commiting product to message-queue
 
 
 

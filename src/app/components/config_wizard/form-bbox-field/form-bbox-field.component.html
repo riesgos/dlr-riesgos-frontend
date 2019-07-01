@@ -6,18 +6,6 @@
 
 
     <input type="text" clrInput value="{{bboxValue}}" (change)="onChange($event.target.value)" (click)="onClick($event)" [attr.disabled]="disabled ? '' : null"/>
-    <!-- <div *ngIf="(value | async) as val; then valueInput else defaultInput">
-    </div>
-    
-    <ng-template #valueInput>
-      there
-        <input type="text" clrInput value="val" (change)="onChange($event.target.value)" (click)="onClick($event)" [attr.disabled]="disabled ? '' : null"/>
-    </ng-template>
-
-    <ng-template #defaultInput>
-      hi!
-        <input type="text" clrInput value="'1, 2,3, 4'" (change)="onChange($event.target.value)" (click)="onClick($event)" [attr.disabled]="disabled ? '' : null"/>
-    </ng-template> -->
 
 
     <clr-control-helper>{{parameter.description}}</clr-control-helper>

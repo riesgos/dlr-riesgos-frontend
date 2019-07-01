@@ -3,11 +3,11 @@
 
         
         <div *ngFor="let parameter of parameters">
-            <ng-container [ngSwitch]="parameter.wizardProperties.fieldtype">
-                <div *ngSwitchCase="'string'"  ><ukis-form-string-field [parameter]="parameter" [formControlName]="parameter.id" [formControl]="fg.get(parameter.id)"></ukis-form-string-field></div>
-                <div *ngSwitchCase="'select'"  ><ukis-form-select-field [parameter]="parameter" [formControlName]="parameter.id" [formControl]="fg.get(parameter.id)"></ukis-form-select-field></div>
-                <div *ngSwitchCase="'bbox'"    ><ukis-form-bbox-field   [parameter]="parameter" [formControlName]="parameter.id" [formControl]="fg.get(parameter.id)"></ukis-form-bbox-field></div>
-                <div *ngSwitchDefault          ><ukis-form-string-field [parameter]="parameter" [formControlName]="parameter.id" [formControl]="fg.get(parameter.id)"></ukis-form-string-field></div>
+            <ng-container [ngSwitch]="parameter.description.wizardProperties.fieldtype">
+                <div *ngSwitchCase="'string'"  ><ukis-form-string-field [parameter]="parameter.description" [formControlName]="parameter.description.id" [formControl]="fg.get(parameter.description.id)"></ukis-form-string-field></div>
+                <div *ngSwitchCase="'select'"  ><ukis-form-select-field [parameter]="parameter.description" [formControlName]="parameter.description.id" [formControl]="fg.get(parameter.description.id)"></ukis-form-select-field></div>
+                <div *ngSwitchCase="'bbox'"    ><ukis-form-bbox-field   [parameter]="parameter.description" [formControlName]="parameter.description.id" [formControl]="fg.get(parameter.description.id)"></ukis-form-bbox-field></div>
+                <div *ngSwitchDefault          ><ukis-form-string-field [parameter]="parameter.description" [formControlName]="parameter.description.id" [formControl]="fg.get(parameter.description.id)"></ukis-form-string-field></div>
             </ng-container>
         </div>
         

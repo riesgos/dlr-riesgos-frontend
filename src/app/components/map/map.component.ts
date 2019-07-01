@@ -45,7 +45,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         // listening for mapable products
         this.store.pipe(select(getMaplikeProducts)).subscribe(
             (products: Product[]) => {
-                this.mapSvc.removeAllLayers("overlays");
                 for (let product of products) {
                     if (isWmsData(product)) this.addWmsLayer(product);
                     else if (isVectorLayerData(product)) this.addGeojsonLayer(product);
@@ -162,6 +161,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         console.log("adding layer for product", product)
         let layer = this.createBboxLayer(product);
         layer.opacity = 1.0;
+        this.layersSvc.removeLayer(layer, "Overlays");
         this.layersSvc.addLayer(layer, "Overlays");
     }
 

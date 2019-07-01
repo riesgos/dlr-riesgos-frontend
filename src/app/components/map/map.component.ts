@@ -133,6 +133,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     private addGeojsonLayer(product: VectorLayerData): void {
         let layer = this.createGeojsonLayer(product);
         layer.opacity = 1.0;
+        this.layersSvc.removeLayer(layer, "Overlays");
         this.layersSvc.addLayer(layer, "Overlays");
     }
 
@@ -187,6 +188,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     private addWmsLayer(product: WmsData): void {
         let layer = this.createWmsLayer(product);
         layer.opacity = 1.0;
+        this.layersSvc.removeLayer(layer, "Overlays");
         this.layersSvc.addLayer(layer, "Overlays");
     }
 

@@ -48,7 +48,7 @@ export class WizardPageComponent implements OnInit {
       });
     }
 
-    this.store.dispatch(new ClickRunProcess({productsProvided: products, process: this.process}));
+    this.store.dispatch(new ClickRunProcess({productsProvided: products, process: this.process }));
   }
 
   onNextClicked() {

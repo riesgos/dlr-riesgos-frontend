@@ -1,3 +1,8 @@
+execution: 
+    why is eq-selected row not displayed?
+
+
+
 bbox-selected: 
     catch bad formatting before commiting product to message-queue
 

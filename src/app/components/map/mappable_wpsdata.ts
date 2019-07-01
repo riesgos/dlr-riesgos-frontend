@@ -35,7 +35,8 @@ export interface VectorLayerData extends WpsData {
 }
 
 export const isVectorLayerDescription = (description: WpsDataDescription): description is VectorLayerDescription => {
-    return description["format"] == "application/vnd.geo+json" && description["type"] == "complex" && description.hasOwnProperty["vectorLayerAttributes"];
+    const result = description["format"] == "application/vnd.geo+json" && description["type"] == "complex" && description.hasOwnProperty("vectorLayerAttributes");
+    return result;
 }
 
 

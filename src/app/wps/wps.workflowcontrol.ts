@@ -1,5 +1,5 @@
 import { Process, Product, ProcessId, ProcessState } from './wps.datatypes';
-import { Graph, graph_alg } from 'graphlib';
+import { Graph, alg } from 'graphlib';
 import { ProductId, WpsData } from 'projects/services-wps/src/lib/wps_datatypes';
 import { WpsClient } from 'projects/services-wps/src/public_api';
 import { HttpClient } from '@angular/common/http';
@@ -28,12 +28,16 @@ export class WorkflowControl {
             this.graph.setEdge(process.id, outProd.id);
         }
 
-        if (!graph_alg.isAcyclic(this.graph)) {
+        if (!alg.isAcyclic(this.graph)) {
             throw new Error('Process graphs with cycles are not supported');
         }
 
         this.products = products;
         this.processes = this.getProcessesInExecutionOrder(processes);
+        this.processes = this.processes.map(p => {return {
+            ...p,
+            state: this.calculateState(p.id)
+        }});
         
     }
 
@@ -49,6 +53,7 @@ export class WorkflowControl {
             
             (response: any) => {
                 if(doWhileRequesting) doWhileRequesting(response, requestCounter);
+                requestCounter += 1;
             }
 
         ).pipe(
@@ -148,7 +153,7 @@ export class WorkflowControl {
 
 
     private setProcessState(id: ProcessId, state: ProcessState): Process {
-        this.processes.map(process => {
+        this.processes = this.processes.map(process => {
             if(process.id == id) return {
                 ...process, 
                 state: state
@@ -160,7 +165,7 @@ export class WorkflowControl {
 
 
     private setProductValue(id: ProductId, value: any): Product {
-        this.products.map(product => {
+        this.products = this.products.map(product => {
             if(product.description.id == id) return {
                 ...product, 
                 value: value
@@ -172,7 +177,7 @@ export class WorkflowControl {
 
 
     private getProcessesInExecutionOrder(processes: Process[]): Process[] {
-        const allIds = graph_alg.topsort(this.graph);
+        const allIds = alg.topsort(this.graph);
         const processIds = processes.map(proc => proc.id);
         const sortedProcessIds = allIds.filter(id => processIds.includes(id));
         const sortedProcesses = sortedProcessIds.map(id => processes.find(proc => proc.id == id) );

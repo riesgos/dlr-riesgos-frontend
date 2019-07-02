@@ -115,7 +115,7 @@ let green2red = function (magnitude) {
 }
 
 
-const output: VectorLayerDescription = {
+const selectedEqs: VectorLayerDescription = {
     id: "selected-rows",
     format: "application/vnd.geo+json",
     reference: false,
@@ -165,7 +165,7 @@ export const EqEventCatalogue: WizardableProcess = {
     name: "Earthquake Catalogue",
     description: "Catalogue of historical earthquakes.",
     requiredProducts: requiredProducts,
-    providedProduct: output,
+    providedProduct: selectedEqs,
     wpsVersion: "1.0.0", 
     
     wizardProperties: {

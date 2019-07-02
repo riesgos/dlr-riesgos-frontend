@@ -1,24 +1,31 @@
+groundmotion-simulation: 
+    interaction with map
+        click on field turns on select interaction. 
+        interacts with both map and table. 
+
+
+
+EqGroundMotionProvider
+    this should not be a process at all. 
+    workflowcontrol should know a third type of data: the "transformer". 
+    transformers do require and provide data just like processes, but they cannot be executed and have no state. 
+    Processes must not have the "WatchingProcess" property, but transformers must. 
+    Even better nomenclature: they are all processes, but only WpsProcesses have urls and state and are executable. 
+
+
 
 reconfigure: 
-    invalidate and update
-        Hmmm. This really needs a graph-structure. 
-            Ok. Rebuild wps. 
-                In WpsEffects, have an instance of WorkflowControl. 
-                Every action is funnelled via Effects through WorkflowControl. 
-                After action, workflowcontrol provides new Process[] and Product[], which go into the reducer. 
-                There is only one reducer: ActionNewProcessesAndProductsProvided
+    problem with map and tables: dont remove layers when "reconfigure" clicked
 
 
 
-bbox-selected: 
-    catch bad formatting before commiting product to message-queue
-    always round of to 2 dec.places
-    format in such a way that bbox is displayed in feature-tables
-
-
-
----- Issue: allow processes to add new products whenever a new product arrives ---------
-should this be done in workflowcontrol or in ngrx?
+field-formatting: 
+    bbox-selected: 
+        catch bad formatting before commiting product to message-queue
+        always round of to 2 dec.places
+        format in such a way that bbox is displayed in feature-tables
+    groundmotion-simulation: 
+        format so that feature-id displayed in field
 
 
 

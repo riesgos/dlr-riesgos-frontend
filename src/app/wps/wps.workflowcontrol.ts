@@ -1,4 +1,4 @@
-import { Process, Product, ProcessId, ProcessState } from './wps.datatypes';
+import { Process, Product, ProcessId, ProcessState, isWatchingProcess } from './wps.datatypes';
 import { Graph, alg } from 'graphlib';
 import { ProductId, WpsData } from 'projects/services-wps/src/lib/wps_datatypes';
 import { WpsClient } from 'projects/services-wps/src/public_api';
@@ -101,14 +101,25 @@ export class WorkflowControl {
     provideProduct(id: ProductId, value: any): void {
 
         // set new value
-        this.setProductValue(id, value);
+        const newProduct = this.setProductValue(id, value);
 
-        // update state of all downstream provesses
-        const inputEdges = this.graph.outEdges(id);
-        for(let inputEdge of inputEdges) {
-            const processId = inputEdge.w;
-            this.setProcessState(processId, this.calculateState(processId));
+        // allow watching processes to add or change further products
+        for(let process of this.processes) {
+            if(isWatchingProcess(process)) {
+                const additionalProducts = process.onProductAdded(newProduct, this.products);
+                for(let additionalProduct of additionalProducts) {
+                    this.setProductValue(additionalProduct.description.id, additionalProduct.value); // @TODO: maybe even call provideProduct here?
+                }
+            }
         }
+
+        // update state of all downstream processes
+        this.processes = this.processes.map(process => {
+            return {
+                ...process, 
+                state: this.calculateState(process.id)
+            }
+        });
     }
 
 
@@ -188,6 +199,8 @@ export class WorkflowControl {
     private calculateState(id: ProcessId): ProcessState {
 
         const process = this.getProcess(id);
+        const internalUpstreamProducts = process.requiredProducts.map(p => p.id).filter(id => this.hasProvidingProcess(id));
+        const userprovidedProducts = process.requiredProducts.map(p => p.id).filter(id => !this.hasProvidingProcess(id));
 
         // currently running?
         if(process.state == ProcessState.running) return ProcessState.running;
@@ -196,13 +209,20 @@ export class WorkflowControl {
         const output = this.getProduct(process.providedProduct.id);
         if(output.value) return ProcessState.completed;
 
-        // is any non-user-input missing? -> unavailable
-        for(let productDescr of process.requiredProducts) {
-            const product = this.getProduct(productDescr.id);
-            if(!isUserconfigurableWpsData(product) && !product.value) return ProcessState.unavailable;
+        // is any internal input missing? -> unavailable
+        for(let id of internalUpstreamProducts) {
+            const product = this.getProduct(id);
+            if(!product.value) return ProcessState.unavailable;
         }
 
         return ProcessState.available;
+    }
+
+
+    private hasProvidingProcess(id: ProductId): boolean {
+        const inEdges = this.graph.inEdges(id);
+        if(inEdges.length < 1) return false;
+        return true;
     }
 
 }

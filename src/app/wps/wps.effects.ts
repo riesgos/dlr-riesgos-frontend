@@ -10,7 +10,7 @@ import { filterInputsForProcess } from './wps.selectors';
 import { NewProcessClicked, GoToNextProcess } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
 import { EqEventCatalogue } from '../configuration/chile/eqEventCatalogue';
-import { EqGroundMotion } from '../configuration/chile/eqGroundMotion';
+import { EqGroundMotion, EqGroundMotionProvider } from '../configuration/chile/eqGroundMotion';
 import { EqTsInteraction } from '../configuration/chile/eqTsInteraction';
 import { TsPhysicalSimulation } from '../configuration/chile/tsPhysicalSimulation';
 import { Process, Product } from './wps.datatypes';
@@ -114,7 +114,7 @@ export class WpsEffects {
      * @TODO: in the future, this will also load data from files
      */
     private loadScenarioData(scenario: string): [Process[], Product[]] {
-        const processes = [EqEventCatalogue, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
+        const processes = [EqEventCatalogue, EqGroundMotionProvider, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
         const products = this.createEmptyProducts(processes);
         return [processes, products];
     }

@@ -35,3 +35,14 @@ export interface Process {
     readonly state: ProcessState,
     readonly wpsVersion: WpsVerion
 }
+
+
+
+export interface WatchingProcess extends Process {
+    onProductAdded(newProduct: Product, allProducts: Product[]): Product[];
+}
+
+
+export const isWatchingProcess = (process: Process): process is WatchingProcess => {
+    return process.hasOwnProperty("onProductAdded");
+}

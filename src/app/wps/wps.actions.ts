@@ -4,12 +4,16 @@ import { ProductId } from 'projects/services-wps/src/public_api';
 
 
 export enum EWpsActionTypes {
+    scenarioChosen = "[Wps] Scenario chosen",
     productsProvided = "[Wps] Products Provided", 
     clickRunProduct = "[Wps] Click on 'run process' button",
-    processStarted = "[Wps] Process Started",
-    scenarioChosen = "[Wps] Scenario chosen",
     restartingFromProcess = "[Wps] Restarting from process", 
-    initialStateObtained = "[Wps] Initial state obtained"
+    wpsDataUpdate = "[Wps] Data update"
+}
+
+export class ScenarioChosen implements Action {
+    type: string = EWpsActionTypes.scenarioChosen;
+    constructor(public payload: {scenario: string}) {}
 }
 
 
@@ -25,18 +29,6 @@ export class ClickRunProcess implements Action {
 }
 
 
-export class ProcessStarted implements Action {
-    type: string = EWpsActionTypes.processStarted;
-    constructor (public payload: {process: Process}) {}
-}
-
-
-
-export class ScenarioChosen implements Action {
-    type: string = EWpsActionTypes.scenarioChosen;
-    constructor(public payload: {scenario: string}) {}
-}
-
 
 export class RestartingFromProcess implements Action {
     type: string = EWpsActionTypes.restartingFromProcess;
@@ -44,10 +36,10 @@ export class RestartingFromProcess implements Action {
 }
 
 
-export class InitialStateObtained implements Action {
-    type: string = EWpsActionTypes.initialStateObtained;
-    constructor(public payload: {products: Product[], processes: Process[]}) {}
+export class WpsDataUpdate implements Action {
+    type: string = EWpsActionTypes.wpsDataUpdate;
+    constructor(public payload: {processes: Process[], products: Product[]}) {}
 }
 
 
-export type WpsActions = ProductsProvided | ClickRunProcess | ProcessStarted | RestartingFromProcess | ScenarioChosen;
+export type WpsActions = ProductsProvided | ClickRunProcess | RestartingFromProcess | ScenarioChosen | WpsDataUpdate;

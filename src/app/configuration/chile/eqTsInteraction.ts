@@ -5,20 +5,6 @@ import { WpsData } from 'projects/services-wps/src/public_api';
 
 
 
-export const inputBoundingBox2: UserconfigurableWpsData = {
-    description: {
-        id: "input-boundingbox",
-        reference: false,
-        type: "bbox",
-        wizardProperties: {
-            fieldtype: "bbox", 
-            name: "AOI"
-        }
-    }, 
-    value: null
-};
-
-
 export const epicenters: WpsData = {
     description: {
         id: "epicenters",

@@ -17,6 +17,8 @@ export class WorkflowControl {
 
     constructor(processes: Process[], products: Product[], httpClient: HttpClient) {
 
+        this.checkDataIntegrity(processes, products);
+
         this.wpsClient = new WpsClient("1.0.0", httpClient);
 
         this.graph = new Graph({ directed: true });
@@ -249,6 +251,41 @@ export class WorkflowControl {
         const inEdges = this.graph.inEdges(id);
         if(inEdges.length < 1) return false;
         return true;
+    }
+
+
+    private checkDataIntegrity(processes: Process[], products: Product[]): void {
+        const processIds = processes.map(p => p.id);
+        const productIds = products.map(p => p.description.id);
+
+        let requiredProducts: string[] = [];
+        for(let process of processes) {
+            for(let product of process.requiredProducts) requiredProducts.push(product);
+            requiredProducts.push(process.providedProduct);
+        }
+
+        for(let reqiredProd of requiredProducts) {
+            if(!productIds.includes(reqiredProd)) throw new Error(`${reqiredProd} is required but not provided to context`);
+        }
+
+        const processDuplicates = this.getDuplicates(processIds);
+        if(processDuplicates.length > 0) throw new Error(`Duplicate processes: ${processDuplicates}`);
+
+        const productDuplicates = this.getDuplicates(productIds);
+        if(productDuplicates.length > 0) throw new Error(`Duplicate products: ${productDuplicates}`);
+    }
+
+    private getDuplicates(arr: string[]): string[] {
+        const sorted_arr = arr.slice().sort();
+
+        let duplicates: string[] = [];
+        for (var i = 0; i < sorted_arr.length - 1; i++) {
+            if (sorted_arr[i + 1] == sorted_arr[i]) {
+                duplicates.push(sorted_arr[i]);
+            }
+        }
+
+        return duplicates;
     }
 
 }

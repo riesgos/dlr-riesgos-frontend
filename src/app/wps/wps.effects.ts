@@ -1,17 +1,15 @@
 import { Injectable } from "@angular/core";
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen, ClickRunProcess, WpsDataUpdate, RestartingFromProcess } from './wps.actions';
-import { map, switchMap, withLatestFrom } from 'rxjs/operators'; 
+import { map, switchMap } from 'rxjs/operators'; 
 import { HttpClient } from '@angular/common/http';
-import { WpsClient, WpsData } from 'projects/services-wps/src/public_api';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { filterInputsForProcess } from './wps.selectors';
-import { NewProcessClicked, GoToNextProcess } from 'src/app/focus/focus.actions';
+import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
 import { EqEventCatalogue, inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/eqEventCatalogue';
 import { EqGroundMotion, EqGroundMotionProvider, shakemapOutput, selectedEq } from '../configuration/chile/eqGroundMotion';
-import { EqTsInteraction, epicenters, inputBoundingBox2 } from '../configuration/chile/eqTsInteraction';
+import { EqTsInteraction, epicenters } from '../configuration/chile/eqTsInteraction';
 import { TsPhysicalSimulation, tsunamap, lat, lon, mag } from '../configuration/chile/tsPhysicalSimulation';
 import { Process, Product } from './wps.datatypes';
 
@@ -115,7 +113,7 @@ export class WpsEffects {
      */
     private loadScenarioData(scenario: string): [Process[], Product[]] {
         const processes = [EqEventCatalogue, EqGroundMotionProvider, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
-        const products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, inputBoundingBox2, epicenters, lat, lon, mag, tsunamap];
+        const products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, epicenters, lat, lon, mag, tsunamap];
         return [processes, products];
     }
 

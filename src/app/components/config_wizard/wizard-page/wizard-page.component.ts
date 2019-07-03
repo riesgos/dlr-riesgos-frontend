@@ -6,7 +6,7 @@ import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescriptio
 import { Process, Product, ProductDescription } from 'src/app/wps/wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
 import { getInputsForProcess } from 'src/app/wps/wps.selectors';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 
@@ -21,6 +21,7 @@ export class WizardPageComponent implements OnInit {
 
   @Input() process: Process;
   parameters$: Observable<UserconfigurableWpsData[]>;
+  private _parameters: UserconfigurableWpsData[];
 
 
   constructor(
@@ -30,7 +31,8 @@ export class WizardPageComponent implements OnInit {
   ngOnInit() {
     this.parameters$ = this.store.pipe(
       select(getInputsForProcess, {processId: this.process.id}), 
-      map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableWpsData(i)) as UserconfigurableWpsData[] )
+      map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableWpsData(i)) as UserconfigurableWpsData[] ),
+      tap((parameters: UserconfigurableWpsData[]) => this._parameters = parameters)
     );
   }
 
@@ -55,10 +57,11 @@ export class WizardPageComponent implements OnInit {
     this.store.dispatch(new RestartingFromProcess({process: this.process}));
   }
 
-  private getDescription(key: ProductId): ProductDescription {
-    const d =  this.process.requiredProducts.find(prodD => prodD.id == key);
-    if(d === undefined) throw new Error(`product ${key} not known within requirements of process ${this.process.id}`);
-    return d;
+
+  private getDescription(id: ProductId): ProductDescription {
+    const product = this._parameters.find(p => p.description.id == id);
+    if(!product) throw new Error(`No such product ${id} on the wizard-page for process ${this.process.id}`);
+    return product.description;
   }
 
 }

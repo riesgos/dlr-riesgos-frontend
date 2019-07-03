@@ -1,16 +1,11 @@
+circular dependency somewhere. 
+
+
 groundmotion-simulation: 
     interaction with map
         click on field turns on select interaction. 
         interacts with both map and table. 
 
-
-
-EqGroundMotionProvider
-    this should not be a process at all. 
-    workflowcontrol should know a third type of data: the "transformer". 
-    transformers do require and provide data just like processes, but they cannot be executed and have no state. 
-    Processes must not have the "WatchingProcess" property, but transformers must. 
-    Even better nomenclature: they are all processes, but only WpsProcesses have urls and state and are executable. 
 
 
 

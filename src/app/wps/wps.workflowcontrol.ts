@@ -1,4 +1,4 @@
-import { Process, Product, ProcessId, ProcessState, isWatchingProcess } from './wps.datatypes';
+import { Process, Product, ProcessId, ProcessState, isWatchingProcess, isWpsProcess, WpsProcess } from './wps.datatypes';
 import { Graph, alg } from 'graphlib';
 import { ProductId, WpsData } from 'projects/services-wps/src/lib/wps_datatypes';
 import { WpsClient } from 'projects/services-wps/src/public_api';
@@ -21,14 +21,15 @@ export class WorkflowControl {
 
         this.graph = new Graph({ directed: true });
         for (let process of processes) {
-            for (let inProd of process.requiredProducts) {
-                this.graph.setEdge(inProd.id, process.id);
+            for (let inProdId of process.requiredProducts) {
+                this.graph.setEdge(inProdId, process.id);
             }
-            let outProd = process.providedProduct;
-            this.graph.setEdge(process.id, outProd.id);
+            let outProdId = process.providedProduct;
+            this.graph.setEdge(process.id, outProdId);
         }
 
         if (!alg.isAcyclic(this.graph)) {
+            console.log("Graph: ", Graph.json.write(this.graph));
             throw new Error('Process graphs with cycles are not supported');
         }
 
@@ -43,11 +44,11 @@ export class WorkflowControl {
 
     execute(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
 
-        let process = this.getProcess(id);
+        let process = this.getWpsProcess(id);
         let inputs = this.getProcessInputs(id);
-        let outputDescription = process.providedProduct;
+        let outputDescription = this.getProduct(process.providedProduct).description;
     
-        process = this.setProcessState(process.id, ProcessState.running);
+        process = this.setProcessState(process.id, ProcessState.running) as WpsProcess;
         let requestCounter = 0;
         return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescription, 1000, 
             
@@ -114,12 +115,22 @@ export class WorkflowControl {
         }
 
         // update state of all downstream processes
-        this.processes = this.processes.map(process => {
-            return {
-                ...process, 
-                state: this.calculateState(process.id)
-            }
-        });
+        this.updateProcessStatesDownstream(id);
+    }
+
+
+    private updateProcessStatesDownstream(id: string): void {
+        
+        if(this.isProcess(id)) {
+            this.setProcessState(id, this.calculateState(id));
+        }
+
+        const outEdges = this.graph.outEdges(id);
+        for (let outEdge of outEdges) {
+            const targetId = outEdge.w;
+            this.updateProcessStatesDownstream(targetId);
+        }
+        
     }
 
 
@@ -143,9 +154,19 @@ export class WorkflowControl {
 
     private getProcessInputs(id: ProcessId): Product[] {
         const process = this.getProcess(id);
-        const ids = process.requiredProducts.map(p => p.id);
-        const products = ids.map(id => this.getProduct(id));
+        const productIds = process.requiredProducts;
+        const products = productIds.map(id => this.getProduct(id));
         return products; 
+    }
+
+
+    private getWpsProcess(id: ProcessId): WpsProcess {
+        const process = this.getProcess(id);
+        if(!isWpsProcess(process)){
+            throw new Error(`is not a WpsProcess: ${process.id}`);
+        } else {
+            return process;
+        }
     }
 
 
@@ -153,6 +174,11 @@ export class WorkflowControl {
         const process = this.processes.find(p => p.id == id);
         if(!process) throw new Error(`no such process: ${id}`);
         return process;
+    }
+
+
+    private isProcess(id: string): boolean {
+        return this.processes.map(p => p.id).includes(id);
     }
 
 
@@ -199,14 +225,14 @@ export class WorkflowControl {
     private calculateState(id: ProcessId): ProcessState {
 
         const process = this.getProcess(id);
-        const internalUpstreamProducts = process.requiredProducts.map(p => p.id).filter(id => this.hasProvidingProcess(id));
-        const userprovidedProducts = process.requiredProducts.map(p => p.id).filter(id => !this.hasProvidingProcess(id));
+        const internalUpstreamProducts = process.requiredProducts.filter(id => this.hasProvidingProcess(id));
+        const userprovidedProducts = process.requiredProducts.filter(id => !this.hasProvidingProcess(id));
 
         // currently running?
         if(process.state == ProcessState.running) return ProcessState.running;
 
         // is the output there? -> complete
-        const output = this.getProduct(process.providedProduct.id);
+        const output = this.getProduct(process.providedProduct);
         if(output.value) return ProcessState.completed;
 
         // is any internal input missing? -> unavailable

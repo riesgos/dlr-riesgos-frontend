@@ -9,10 +9,10 @@ import { State } from 'src/app/ngrx_register';
 import { filterInputsForProcess } from './wps.selectors';
 import { NewProcessClicked, GoToNextProcess } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
-import { EqEventCatalogue } from '../configuration/chile/eqEventCatalogue';
-import { EqGroundMotion, EqGroundMotionProvider } from '../configuration/chile/eqGroundMotion';
-import { EqTsInteraction } from '../configuration/chile/eqTsInteraction';
-import { TsPhysicalSimulation } from '../configuration/chile/tsPhysicalSimulation';
+import { EqEventCatalogue, inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/eqEventCatalogue';
+import { EqGroundMotion, EqGroundMotionProvider, shakemapOutput, selectedEq } from '../configuration/chile/eqGroundMotion';
+import { EqTsInteraction, epicenters, inputBoundingBox2 } from '../configuration/chile/eqTsInteraction';
+import { TsPhysicalSimulation, tsunamap, lat, lon, mag } from '../configuration/chile/tsPhysicalSimulation';
 import { Process, Product } from './wps.datatypes';
 
 
@@ -115,26 +115,8 @@ export class WpsEffects {
      */
     private loadScenarioData(scenario: string): [Process[], Product[]] {
         const processes = [EqEventCatalogue, EqGroundMotionProvider, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
-        const products = this.createEmptyProducts(processes);
+        const products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, inputBoundingBox2, epicenters, lat, lon, mag, tsunamap];
         return [processes, products];
-    }
-
-
-    private createEmptyProducts(processes: Process[]): Product[] {
-        let products: Product[] = [];
-        for(let process of processes) {
-            for(let prodDescr of process.requiredProducts) {
-                products.push({
-                    description: prodDescr, 
-                    value: null
-                })
-            }
-            products.push({
-                description: process.providedProduct, 
-                value: null
-            })
-        }
-        return products;
     }
 
 }

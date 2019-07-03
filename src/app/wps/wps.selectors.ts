@@ -58,7 +58,7 @@ export const getProductById = function(id: ProductId, products: Product[]): Prod
 
 
 export const filterInputsForProcess = function(process: Process, products: Product[]): Product[] {
-    let filteredProducts = process.requiredProducts.map(p => getProductById(p.id, products))
+    let filteredProducts = process.requiredProducts.map(pid => getProductById(pid, products))
     return filteredProducts;
 }
 

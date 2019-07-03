@@ -1,4 +1,4 @@
-import { WpsDataDescription, WpsVerion } from 'projects/services-wps/src/public_api';
+import { WpsDataDescription, WpsVerion, ProductId } from 'projects/services-wps/src/public_api';
 import { UserconfigurableWpsDataDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
 
@@ -28,14 +28,27 @@ export enum ProcessState {
 export interface Process {
     readonly id: ProcessId, 
     readonly name: string,
+    readonly requiredProducts: ProductId[], 
+    readonly providedProduct: ProductId,
+    readonly state: ProcessState,
+}
+
+
+export const isProcess = (o: any): o is Process => {
+    return o.hasOwnProperty("id") &&  o.hasOwnProperty("requiredProducts") &&  o.hasOwnProperty("providedProduct");
+}
+
+
+export interface WpsProcess extends Process {
     readonly description: string, 
     readonly url: string, 
-    readonly requiredProducts: ProductDescription[], 
-    readonly providedProduct: ProductDescription,
-    readonly state: ProcessState,
     readonly wpsVersion: WpsVerion
 }
 
+
+export const isWpsProcess = (p: Process): p is WpsProcess => {
+    return p.hasOwnProperty("url") && p.hasOwnProperty("state") && p.hasOwnProperty("wpsVersion");
+}
 
 
 export interface WatchingProcess extends Process {

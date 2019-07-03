@@ -1,10 +1,46 @@
-import { Process, ProcessState } from '../../wps/wps.datatypes';
+import { Process, ProcessState, WpsProcess } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WpsData } from 'projects/services-wps/src/public_api';
 
 
+export const lat: WpsData = {
+    description: {
+        id: "lat",
+        reference: false,
+        type: "literal",
+    },
+    value: null
+};
 
+export const lon: WpsData = {
+    description: {
+        id: "lon",
+        reference: false,
+        type: "literal",
+    },
+    value: null
+};
 
-export const TsPhysicalSimulation: WizardableProcess = {
+export const mag: WpsData = {
+    description: {
+        id: "mag",
+        reference: false,
+        type: "literal",
+    },
+    value: null
+};
+
+export const tsunamap: WpsData = {
+    description: {
+        id: "tsunamap",
+        type: "complex",
+        format: "application/xml",
+        reference: false,
+},
+    value: null
+};
+
+export const TsPhysicalSimulation: WizardableProcess & WpsProcess = {
 
     state: ProcessState.unavailable,
 
@@ -16,26 +52,9 @@ export const TsPhysicalSimulation: WizardableProcess = {
 
     description: "Simulates a tsunami's inundation map based on a given earthquake",
 
-    requiredProducts: [{
-            id: "lat",
-            reference: false,
-            type: "literal",
-        }, {
-            id: "lon",
-            reference: false,
-            type: "literal",
-        }, {
-            id: "mag",
-            reference: false,
-            type: "literal",
-        }],
+    requiredProducts: ["lat",  "lon", "mag"],
 
-    providedProduct: {
-            id: "tsunamap",
-            type: "complex",
-            format: "application/xml",
-            reference: false,
-    }, 
+    providedProduct: "tsunamap", 
 
     wpsVersion: "1.0.0", 
 

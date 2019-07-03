@@ -1,10 +1,37 @@
-import { Process, ProcessState } from '../../wps/wps.datatypes';
+import { Process, ProcessState, WpsProcess } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { WpsData } from 'projects/services-wps/src/public_api';
 
 
 
+export const inputBoundingBox2: UserconfigurableWpsData = {
+    description: {
+        id: "input-boundingbox",
+        reference: false,
+        type: "bbox",
+        wizardProperties: {
+            fieldtype: "bbox", 
+            name: "AOI"
+        }
+    }, 
+    value: null
+};
 
-export const EqTsInteraction: WizardableProcess = {
+
+export const epicenters: WpsData = {
+    description: {
+        id: "epicenters",
+        reference: false,
+        format: "application/vnd.geo+json",
+        type: "complex",
+    }, 
+    value: null
+};
+
+
+
+export const EqTsInteraction: WizardableProcess & WpsProcess = {
 
     state: ProcessState.unavailable,
 
@@ -16,18 +43,9 @@ export const EqTsInteraction: WizardableProcess = {
 
     description: "Relates a tsunami to a given earthquake",
 
-    requiredProducts: [{
-        id: "input-boundingbox",
-        reference: false,
-        type: "bbox",
-    }],
+    requiredProducts: ["input-boundingbox"],
 
-    providedProduct: {
-        id: "epicenters",
-        reference: false,
-        format: "application/vnd.geo+json",
-        type: "complex",
-    },
+    providedProduct: "epicenters",
 
     wpsVersion: "1.0.0", 
 

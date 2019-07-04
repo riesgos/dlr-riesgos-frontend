@@ -78,7 +78,8 @@ export class WpsClient {
         
         const executeRequest = this.execute(url, processId, inputs, output, true);
 
-        const cachedResponse = this.cache.get(executeRequest);
+        const cacheKey = this.cache.makeKey({url: url, id: processId, inputs: inputs, output: output});
+        const cachedResponse = this.cache.get(cacheKey);
         if(cachedResponse) return of(cachedResponse); 
 
         return executeRequest.pipe(
@@ -94,7 +95,7 @@ export class WpsClient {
                     tapFunction
                 )
             }),
-            tap( response => this.cache.set(executeRequest, response) )
+            tap( response => this.cache.set(cacheKey, response) )
         );
 
     }

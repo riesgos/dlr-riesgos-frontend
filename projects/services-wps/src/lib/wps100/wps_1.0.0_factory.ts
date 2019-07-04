@@ -85,6 +85,7 @@ export class WpsFactory100 implements WpsMarshaller {
         if(data.complexData) {
             switch(data.complexData.mimeType){
                 case "application/vnd.geo+json": 
+                    //@ts-ignore 
                     return data.complexData.content.map(cont => JSON.parse(cont));
                 case "application/WMS":
                     return data.complexData.content;
@@ -183,7 +184,7 @@ export class WpsFactory100 implements WpsMarshaller {
                 case "complex":
                     data = {
                         complexData: {
-                            content: inp.value,
+                            content: [JSON.stringify(inp.value)],
                             mimeType: inp.description.format
                         }
                     };

@@ -1,10 +1,10 @@
 <clr-input-container [class.clr-error]="(valid | async) == false">
     
-    <label>
+    <label class="clr-col-md-3">
       {{parameter.wizardProperties.name}}:
     </label>
 
-    <input type="text" clrInput value="{{value}}" (change)="onChange($event.target.value)" [attr.disabled]="disabled ? '' : null"/>
+    <input class="clr-col-md-9" type="text" clrInput value="{{value}}" (change)="onChange($event.target.value)" [attr.disabled]="disabled ? '' : null"/>
 
     <clr-control-helper>{{parameter.description}}</clr-control-helper>
     <clr-control-error>Invalid input</clr-control-error>

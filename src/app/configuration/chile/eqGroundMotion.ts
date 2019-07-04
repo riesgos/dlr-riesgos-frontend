@@ -15,7 +15,7 @@ export const selectedEq: UserconfigurableWpsData = {
         wizardProperties: {
             fieldtype: "select", 
             name: "Selected earthquake", 
-            options: []
+            options: {},
         }
     },
     value: null
@@ -45,6 +45,12 @@ export const EqGroundMotionProvider: WatchingProcess = {
         switch(newProduct.description.id) {
 
             case "selected-rows": 
+
+                let options = {};
+                for(let feature of newProduct.value[0].features) {
+                    options[feature.id] = feature;
+                }
+
                 return [{
                     description: {
                         id: "quakeml-input",
@@ -54,10 +60,10 @@ export const EqGroundMotionProvider: WatchingProcess = {
                         wizardProperties: {
                             fieldtype: "select", 
                             name: "Selected earthquake", 
-                            options: newProduct.value[0].features
+                            options: options, 
                         }
                     },
-                    value: newProduct.value[0].features[0]
+                    value: [newProduct.value[0].features[0]]
                 }]
 
 

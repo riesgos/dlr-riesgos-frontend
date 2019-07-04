@@ -1,5 +1,6 @@
-circular dependency somewhere. 
 
+
+map create field showing current interaction mode
 
 groundmotion-simulation: 
     interaction with map
@@ -7,10 +8,13 @@ groundmotion-simulation:
         interacts with both map and table. 
 
 
-
-
 reconfigure: 
-    problem with map and tables: dont remove layers when "reconfigure" clicked
+    problem with map and tables: mavservices dont remove layers when "reconfigure" clicked
+
+
+wizard: 
+    dont use forms, use ngrx. 
+    hmmm. how would i get the fieldvalues on submit?
 
 
 
@@ -21,6 +25,7 @@ field-formatting:
         format in such a way that bbox is displayed in feature-tables
     groundmotion-simulation: 
         format so that feature-id displayed in field
+        maybe we need to pass a format-function to wizardProperties
 
 
 

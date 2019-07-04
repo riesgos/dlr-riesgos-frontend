@@ -9,22 +9,20 @@ export class Cache {
         this.store = new UtilStoreService();
     }
 
-    get(request: any): any {
-        const key = this.key(request);
+    get(key: string): any {
         const response = this.store.local(key);
         if(response) console.log("found this in cache for key "+key+": ", response);
         else console.log("No cache hit for key "+key);
         return response;
     }
 
-    set(request: any, response: any): void {
-        const key = this.key(request);
+    set(key: string, response: any): void {
         this.store.local(key, response);
-        console.log("stored in cache for key" + key + ": ", response);
+        console.log("stored in cache for key " + key + ": ", response);
     }
 
-    private key(request: any): string {
-        return md5(JSON.stringify(request));
+    public makeKey(object: any): string {
+        return md5(JSON.stringify(object));
     }
 
 }

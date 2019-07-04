@@ -21,7 +21,8 @@ export interface SelectUconfWD extends WpsDataDescription {
     wizardProperties: {
         name: string,
         fieldtype: "select", 
-        options: string[]
+        options: {[key: string]: any}
+
     }
 }
 

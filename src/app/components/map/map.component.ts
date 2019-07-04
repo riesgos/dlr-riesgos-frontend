@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewEncapsulation, HostBinding, AfterViewInit } from '@angular/core';
-import { DragBox } from 'ol/interaction';
+import { DragBox, Select } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
+import { singleClick } from 'ol/events/condition';
+import { GeoJSON } from 'ol/format';
 import { get as getProjection } from 'ol/proj.js';
 import { LayersService, RasterLayer, VectorLayer } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
@@ -29,7 +31,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
 
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
-
+    private geoJson = new GeoJSON();
     private interactionState: BehaviorSubject<InteractionState>
 
     constructor(
@@ -128,6 +130,24 @@ export class MapComponent implements OnInit, AfterViewInit {
             })
         });
         this.mapSvc.map.addInteraction(dragBox);
+
+
+        // adding featureselect interaction and hooking it into the store
+        const featureSelect = new Select({
+            condition: (event) => {
+                return event.type == "pointerdown" && this.interactionState.getValue().mode == "featureselection"
+            }
+        })
+        let selectedFeatures = featureSelect.getFeatures();
+        selectedFeatures.on('add', (event) => {
+            const feature = event.target.item(0);
+            const product = {
+                ...this.interactionState.getValue().product, 
+                value: this.geoJson.writeFeatureObject(feature)
+            };
+            this.store.dispatch(new InteractionCompleted({product: product}))
+          });
+        this.mapSvc.map.addInteraction(featureSelect);
 
     }
 

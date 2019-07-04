@@ -64,14 +64,7 @@ import { VarDirective } from './ng-var.directive';
     LayerControlModule, 
     ClarityModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot(reducers, {
-      runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true,
-        strictStateSerializability: true,
-        strictActionSerializability: false,
-      },
-    }),
+    StoreModule.forRoot(reducers),
     EffectsModule.forRoot(effects), 
     FormsModule,
     ReactiveFormsModule,

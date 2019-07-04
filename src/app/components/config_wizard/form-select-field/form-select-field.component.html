@@ -1,12 +1,12 @@
 <clr-select-container>
 
-  <label>
+  <label class="clr-col-md-3">
     {{parameter.wizardProperties.name}}:
   </label>
     
-  <select clrSelect  [attr.disabled]="disabled ? '' : null"  (change)="onChange($event.target.value)">
-      <option [value]="activeOption" selected>{{activeOption}}</option>
-      <option *ngFor="let option of options" [value]="option">{{option}}</option>
+  <select class="clr-col-md-9" clrSelect  [attr.disabled]="disabled ? '' : null"  (change)="onChange($event.target.value)"  (click)="onClick($event)">
+      <option [value]="activeSelection" selected>{{activeSelection}}</option>
+      <option *ngFor="let str of selectionStrings" [value]="str">{{str}}</option>
   </select>
 
   <clr-control-helper>{{parameter.description}}</clr-control-helper>

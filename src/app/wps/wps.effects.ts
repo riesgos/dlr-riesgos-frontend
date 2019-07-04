@@ -3,7 +3,7 @@ import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen, ClickRunProcess, WpsDataUpdate, RestartingFromProcess } from './wps.actions';
 import { map, switchMap } from 'rxjs/operators'; 
 import { HttpClient } from '@angular/common/http';
-import { Store } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
@@ -75,12 +75,22 @@ export class WpsEffects {
                     }
             });
         }),
-        map((success: boolean) => {
+        switchMap((success: boolean) => {
 
-            return new WpsDataUpdate({
-                processes: this.wfc.getProcesses(), 
-                products: this.wfc.getProducts()
-            })
+            let actions: Action[] = [];
+
+            const processes = this.wfc.getProcesses();
+            const products = this.wfc.getProducts();
+            const wpsUpdate = new WpsDataUpdate({processes: processes, products: products});
+            actions.push(wpsUpdate);
+
+            const nextProcess = this.wfc.getActiveProcess();
+            if(nextProcess) {
+                const processClicked = new NewProcessClicked({processId: nextProcess.id});
+                actions.push(processClicked)
+            }
+
+            return actions;
 
         })
     );

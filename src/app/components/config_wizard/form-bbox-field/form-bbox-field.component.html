@@ -1,11 +1,11 @@
 <clr-input-container [class.clr-error]="(valid | async) == false" >
     
-    <label>
+    <label class="clr-col-md-3">
       {{parameter.wizardProperties.name}}:
     </label>
 
 
-    <input type="text" clrInput value="{{bboxValue}}" (change)="onChange($event.target.value)" (click)="onClick($event)" [attr.disabled]="disabled ? '' : null"/>
+    <input class="clr-col-md-9" type="text" clrInput value="{{bboxValue}}" (change)="onChange($event.target.value)" (click)="onClick($event)" [attr.disabled]="disabled ? '' : null"/>
 
 
     <clr-control-helper>{{parameter.description}}</clr-control-helper>

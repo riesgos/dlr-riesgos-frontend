@@ -102,6 +102,7 @@ export class WorkflowControl {
 
 
     provideProduct(id: ProductId, value: any): void {
+        // @TODO: providing a new input-product to an already completed prcesses should set its state back to available. 
 
         // set new value
         const newProduct = this.setProductValue(id, value);
@@ -111,13 +112,18 @@ export class WorkflowControl {
             if(isWatchingProcess(process)) {
                 const additionalProducts = process.onProductAdded(newProduct, this.products);
                 for(let additionalProduct of additionalProducts) {
-                    this.setProductValue(additionalProduct.description.id, additionalProduct.value); // @TODO: maybe even call provideProduct here?
+                    this.updateProduct(additionalProduct); // @TODO: maybe even call provideProduct here?
                 }
             }
         }
 
         // update state of all downstream processes
         this.updateProcessStatesDownstream(id);
+    }
+
+
+    getActiveProcess(): Process | undefined {
+        return this.processes.find(p => p.state == ProcessState.available);
     }
 
 
@@ -212,6 +218,15 @@ export class WorkflowControl {
             return product;
         });
         return this.getProduct(id);
+    }
+
+
+    // sometimes we need to update the whole product; for example when we want to change the select-options under description.wizardProps.options
+    private updateProduct(newProduct: Product): void {
+        this.products = this.products.map(product => {
+            if(product.description.id == newProduct.description.id) return {...newProduct};
+            return product;
+        });
     }
 
 

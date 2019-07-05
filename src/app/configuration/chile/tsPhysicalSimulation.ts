@@ -1,31 +1,44 @@
-import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
+import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnavailable, WatchingProcess, Product } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public_api';
+import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
 
-export const lat: WpsData = {
+export const lat: UserconfigurableWpsData = {
     description: {
         id: "lat",
         reference: false,
         type: "literal",
+        wizardProperties: {
+            fieldtype: "string", 
+            name: "lattitude", 
+        }
     },
     value: null
 };
 
-export const lon: WpsData = {
+export const lon: UserconfigurableWpsData = {
     description: {
         id: "lon",
         reference: false,
         type: "literal",
+        wizardProperties: {
+            fieldtype: "string", 
+            name: "lattitude", 
+        }
     },
     value: null
 };
 
-export const mag: WpsData = {
+export const mag: UserconfigurableWpsData = {
     description: {
         id: "mag",
         reference: false,
         type: "literal",
+        wizardProperties: {
+            fieldtype: "string", 
+            name: "lattitude", 
+        }
     },
     value: null
 };
@@ -36,11 +49,15 @@ export const tsunamap: WpsData = {
         type: "complex",
         format: "application/xml",
         reference: false,
+        
 },
     value: null
 };
 
-export const TsPhysicalSimulation: WizardableProcess & WpsProcess = {
+
+
+
+export const TsPhysicalSimulation: WizardableProcess & WpsProcess & WatchingProcess = {
 
     state: new ProcessStateUnavailable(),
 
@@ -60,5 +77,25 @@ export const TsPhysicalSimulation: WizardableProcess & WpsProcess = {
 
     wizardProperties: {
         shape: "tsunami"
+    }, 
+
+    onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
+        switch(newProduct.description.id) {
+            
+            case "quakeml-input": 
+                return [{
+                    ...lon, 
+                    value: newProduct.value.geometry.coordinates[0]
+                }, {
+                    ...lat,
+                    value: newProduct.value.geometry.coordinates[1]
+                }, {
+                    ...mag,
+                    value: newProduct.value.properties["magnitude.mag.value"]
+                }];
+
+            default: 
+                return [];
+        }
     }
 }

@@ -2,7 +2,7 @@
 <p>{{process.description}}</p>
 
 <div class="wizardElement">
-    <ng-container [ngSwitch]="process.state">
+    <ng-container [ngSwitch]="process.state.type">
 
         <ng-container *ngSwitchCase="'unavailable'">
             <span class="label" i18n>This process can not be configured yet.</span>
@@ -29,10 +29,10 @@
                 <div class="alert-items">
                     <div class="alert-item static">
                         <div class="alert-icon-wrapper">
-                            <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+                            <clr-icon class="alert-icon" shape="exclamation-circle" style="margin:0px;"></clr-icon>
                         </div>
                         <span class="alert-text">
-                            {{getErrorMessage(processDescription)}}
+                            {{process.state.message}}
                         </span>
                     </div>
                 </div>

@@ -85,7 +85,7 @@ export class WpsEffects {
             actions.push(wpsUpdate);
 
             const nextProcess = this.wfc.getActiveProcess();
-            if(nextProcess) {
+            if(nextProcess && success) {
                 const processClicked = new NewProcessClicked({processId: nextProcess.id});
                 actions.push(processClicked)
             }

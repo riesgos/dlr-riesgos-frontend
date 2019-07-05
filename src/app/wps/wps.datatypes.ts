@@ -15,13 +15,40 @@ export interface Product {
 export type ProcessId = string;
 
 
-export enum ProcessState {
+export enum ProcessStateTypes {
     unavailable = "unavailable",
     available = "available", 
     running = "running", 
     completed = "completed", 
     error = "error", 
 }
+
+export class ProcessStateUnavailable {
+    type: string = ProcessStateTypes.unavailable
+}
+
+
+export class ProcessStateAvailable {
+    type: string = ProcessStateTypes.available
+}
+
+
+export class ProcessStateRunning {
+    type: string = ProcessStateTypes.running
+}
+
+
+export class ProcessStateCompleted {
+    type: string = ProcessStateTypes.completed
+}
+
+
+export class ProcessStateError {
+    type: string = ProcessStateTypes.error
+    constructor(public message: string) {}
+}
+
+export type ProcessState = ProcessStateUnavailable | ProcessStateAvailable | ProcessStateRunning | ProcessStateCompleted | ProcessStateError;
 
 
 

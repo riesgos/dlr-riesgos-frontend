@@ -1,21 +1,18 @@
+error: 
+    display errors if they occur. 
 
-
-map create field showing current interaction mode
-
-groundmotion-simulation: 
-    interaction with map
-        click on field turns on select interaction. 
-        interacts with both map and table. 
-
+tsunami-interaction: error occurring. 
 
 reconfigure: 
     problem with map and tables: mavservices dont remove layers when "reconfigure" clicked
 
 
+map create field showing current interaction mode
+
+
 wizard: 
     dont use forms, use ngrx. 
     hmmm. how would i get the fieldvalues on submit?
-
 
 
 field-formatting: 

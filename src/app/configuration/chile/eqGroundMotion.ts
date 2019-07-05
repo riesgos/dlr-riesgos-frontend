@@ -1,4 +1,4 @@
-import { ProcessState, WatchingProcess, Product, WpsProcess } from '../../wps/wps.datatypes';
+import { ProcessState, WatchingProcess, Product, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { SelectUconfWD, UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public_api';
@@ -38,7 +38,7 @@ export const shakemapOutput: WpsData = {
 export const EqGroundMotionProvider: WatchingProcess = {
     id: "org.n52.wps.python.algorithm.ShakemapProcess_provider",
     name: "", 
-    state: ProcessState.available,
+    state: {type: ProcessStateTypes.unavailable},
     requiredProducts: ["selected-rows"], 
     providedProduct: "quakeml-input",
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
@@ -78,7 +78,7 @@ export const EqGroundMotionProvider: WatchingProcess = {
 
 export const EqGroundMotion : WizardableProcess & WpsProcess = {
 
-    state: ProcessState.unavailable,
+    state: new ProcessStateUnavailable(),
 
     id: "org.n52.wps.python.algorithm.ShakemapProcess",
 

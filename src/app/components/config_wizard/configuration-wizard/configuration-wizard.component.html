@@ -5,7 +5,7 @@
 
 
         <clr-stack-label class="ConfigurationWizardLabel">
-            <ng-container *ngIf="process.state as state">
+            <ng-container *ngIf="process.state.type as state">
                 <ng-container [ngSwitch]="state">
                     <ng-container *ngSwitchCase="'unavailable'">
                         <clr-icon [attr.shape]="process.wizardProperties.shape"></clr-icon> <b class="p1">{{process.name}}</b>

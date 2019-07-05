@@ -1,4 +1,4 @@
-import { Process, ProcessState, WpsProcess } from '../../wps/wps.datatypes';
+import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public_api';
@@ -19,7 +19,7 @@ export const epicenters: WpsData = {
 
 export const EqTsInteraction: WizardableProcess & WpsProcess = {
 
-    state: ProcessState.unavailable,
+    state: new ProcessStateUnavailable(),
 
     id: "org.n52.project.riesgos.GetEpicentersProcess",
 

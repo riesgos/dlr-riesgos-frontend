@@ -1,4 +1,4 @@
-import { Process, Product, ProcessId, ProcessState, isWatchingProcess, isWpsProcess, WpsProcess } from './wps.datatypes';
+import { Process, Product, ProcessId, ProcessState, isWatchingProcess, isWpsProcess, WpsProcess, ProcessStateRunning, ProcessStateCompleted, ProcessStateError, ProcessStateTypes, ProcessStateUnavailable, ProcessStateAvailable } from './wps.datatypes';
 import { Graph, alg } from 'graphlib';
 import { ProductId, WpsData } from 'projects/services-wps/src/lib/wps_datatypes';
 import { WpsClient } from 'projects/services-wps/src/public_api';
@@ -50,7 +50,7 @@ export class WorkflowControl {
         let inputs = this.getProcessInputs(id);
         let outputDescription = this.getProduct(process.providedProduct).description;
     
-        process = this.setProcessState(process.id, ProcessState.running) as WpsProcess;
+        process = this.setProcessState(process.id, new ProcessStateRunning()) as WpsProcess;
         let requestCounter = 0;
         return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescription, 1000, 
             
@@ -75,16 +75,16 @@ export class WorkflowControl {
                 for(let product of output) {
                     this.provideProduct(product.description.id, product.value);
                 }
-                this.setProcessState(process.id, ProcessState.completed)
+                this.setProcessState(process.id, new ProcessStateCompleted())
             }),
-
-            catchError((error) => {
-                this.setProcessState(process.id, ProcessState.error);
-                return of(error);
-            }), 
 
             map((output: WpsData[]) => {
                 return true
+            }),
+
+            catchError((error) => {
+                this.setProcessState(process.id, new ProcessStateError(error.message));
+                return of(false);
             })
         );
 
@@ -123,7 +123,7 @@ export class WorkflowControl {
 
 
     getActiveProcess(): Process | undefined {
-        return this.processes.find(p => p.state == ProcessState.available);
+        return this.processes.find(p => p.state.type == ProcessStateTypes.available);
     }
 
 
@@ -246,19 +246,19 @@ export class WorkflowControl {
         const userprovidedProducts = process.requiredProducts.filter(id => !this.hasProvidingProcess(id));
 
         // currently running?
-        if(process.state == ProcessState.running) return ProcessState.running;
+        if(process.state.type == ProcessStateTypes.running) return new ProcessStateRunning();
 
         // is the output there? -> complete
         const output = this.getProduct(process.providedProduct);
-        if(output.value) return ProcessState.completed;
+        if(output.value) return new ProcessStateCompleted();
 
         // is any internal input missing? -> unavailable
         for(let id of internalUpstreamProducts) {
             const product = this.getProduct(id);
-            if(!product.value) return ProcessState.unavailable;
+            if(!product.value) return new ProcessStateUnavailable();
         }
 
-        return ProcessState.available;
+        return new ProcessStateAvailable();
     }
 
 

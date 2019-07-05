@@ -1,4 +1,4 @@
-import { Process, ProcessState, WpsProcess } from '../../wps/wps.datatypes';
+import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
 import { UserconfigurableWpsDataDescription, UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerDescription, BboxLayerDescription, VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
@@ -13,7 +13,7 @@ export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
         type: "bbox",
         reference: false,
         description: "Please select an area of interest",
-        defaultValue: [-75.00, -35.00, -65.00, -30.00],
+        defaultValue: [-71.00,-34.00,-70.00,-33.00],
         wizardProperties: {
             name: "AOI",
             fieldtype: "bbox",
@@ -206,7 +206,7 @@ export const selectedEqs: VectorLayerData = {
 
 
 export const EqEventCatalogue: WizardableProcess & WpsProcess = {
-    state: ProcessState.unavailable,
+    state: new ProcessStateUnavailable(),
     id: "org.n52.wps.python.algorithm.QuakeMLProcessBBox",
     url: "https://riesgos.52north.org/wps/WebProcessingService",
     name: "Earthquake Catalogue",

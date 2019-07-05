@@ -1,4 +1,4 @@
-import { Process, ProcessState, WpsProcess } from '../../wps/wps.datatypes';
+import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public_api';
 
@@ -42,7 +42,7 @@ export const tsunamap: WpsData = {
 
 export const TsPhysicalSimulation: WizardableProcess & WpsProcess = {
 
-    state: ProcessState.unavailable,
+    state: new ProcessStateUnavailable(),
 
     id: "get_tsunamap",
 

@@ -1,29 +1,33 @@
-error: 
-    display errors if they occur. 
+as a project completes, your work shifts from dev to ops. 
+there are those languages that recognize that big projects require contracts, and those that dont.
 
-tsunami-interaction: error occurring. 
+
+forms
+    disallow submit until all fields filled in 
+    bbox-field: format field
+        catch bad formatting before commiting product to message-queue
+        always round of to 2 dec.places
+        format in such a way that bbox is displayed in feature-tables
+    feature-select-field: 
+        very slow
+        selected feature stays visible on top, should be on bottom
+    i have a featureselect field, but also need a string-select field
+
+
+awi
+    eq-ts-interaction: has moved to get_scenario
+        returns in response-body: <wps:LiteralData dataType="string">http://tsunami-wps.awi.de:8080/shoa_115_8.00/ows?service=wms&request=GetCapabilities</wps:LiteralData>
+        whereas the ground-motion-service has returned:  <wps:ComplexData mimeType="application/WMS"><![CDATA[https://riesgos.52north.org/geoserver/wms?Service=WMS&Request=GetMap&Version=1.1.1&layers=riesgos:shakemap_9824f&width=0&height=0&format=image/png&bbox=&srs=]]></wps:ComplexData>
+            The first seems more reasonable to me... with a GetCapabilities we can constuct a WMS-request more easily...
+
+
+
 
 reconfigure: 
     problem with map and tables: mavservices dont remove layers when "reconfigure" clicked
 
 
 map create field showing current interaction mode
-
-
-wizard: 
-    dont use forms, use ngrx. 
-    hmmm. how would i get the fieldvalues on submit?
-
-
-field-formatting: 
-    bbox-selected: 
-        catch bad formatting before commiting product to message-queue
-        always round of to 2 dec.places
-        format in such a way that bbox is displayed in feature-tables
-    groundmotion-simulation: 
-        format so that feature-id displayed in field
-        maybe we need to pass a format-function to wizardProperties
-
 
 
 

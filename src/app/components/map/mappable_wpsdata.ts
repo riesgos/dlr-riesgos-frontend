@@ -48,7 +48,7 @@ export const isVectorLayerData = (data: WpsData): data is VectorLayerData => {
 
 export interface WmsLayerDescription extends WpsDataDescription {
     format: "application/WMS", 
-    type: "complex"
+    type: "complex" | "literal"
 }
 
 export interface WmsData extends WpsData {
@@ -57,7 +57,7 @@ export interface WmsData extends WpsData {
 
 
 export const isWmsLayerDescription = (description: WpsDataDescription): description is WmsLayerDescription => {
-    return description.format == "application/WMS" && description.type == "complex";
+    return description.format == "application/WMS" && (description.type == "complex" || description.type == "literal");
 }
 
 export const isWmsData = (data: WpsData): data is WmsData => {

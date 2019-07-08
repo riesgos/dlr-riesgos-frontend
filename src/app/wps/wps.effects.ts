@@ -9,7 +9,7 @@ import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
 import { EqEventCatalogue, inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/eqEventCatalogue';
 import { EqGroundMotion, EqGroundMotionProvider, shakemapOutput, selectedEq } from '../configuration/chile/eqGroundMotion';
-import { EqTsInteraction, epicenters } from '../configuration/chile/eqTsInteraction';
+import { EqTsInteraction, epicenter } from '../configuration/chile/eqTsInteraction';
 import { TsPhysicalSimulation, tsunamap, lat, lon, mag } from '../configuration/chile/tsPhysicalSimulation';
 import { Process, Product } from './wps.datatypes';
 
@@ -123,7 +123,7 @@ export class WpsEffects {
      */
     private loadScenarioData(scenario: string): [Process[], Product[]] {
         const processes = [EqEventCatalogue, EqGroundMotionProvider, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
-        const products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, epicenters, lat, lon, mag, tsunamap];
+        const products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, epicenter, lat, lon, mag, tsunamap];
         return [processes, products];
     }
 

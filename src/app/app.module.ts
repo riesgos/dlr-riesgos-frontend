@@ -21,7 +21,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfigurationWizardComponent } from './components/config_wizard/configuration-wizard/configuration-wizard.component';
 import { FormComponent } from './components/config_wizard/form/form.component';
-import { FormSelectFieldComponent } from './components/config_wizard/form-select-field/form-select-field.component';
+import { FormFeatureSelectFieldComponent } from './components/config_wizard/form-featureselect-field/form-featureselect-field.component';
 import { FormStringFieldComponent } from './components/config_wizard/form-string-field/form-string-field.component';
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 import { FeatureTablesModule } from 'projects/feature-tables/src/public_api';
@@ -35,6 +35,7 @@ import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
 import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
 import { VarDirective } from './ng-var.directive';
+import { LayerFactory } from './components/map/productToLayer';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,7 @@ import { VarDirective } from './ng-var.directive';
     SaveButtonComponent, 
     ConfigurationWizardComponent, 
     FormComponent, 
-    FormSelectFieldComponent, 
+    FormFeatureSelectFieldComponent, 
     FormStringFieldComponent, 
     WizardPageComponent, 
     ScenariosComponent, 
@@ -76,7 +77,7 @@ import { VarDirective } from './ng-var.directive';
     }),
   ],
   providers: [
-    AlertService, FooterService, ProgressService, 
+    AlertService, FooterService, ProgressService, LayerFactory
   ],
   bootstrap: [UkisComponent]
 })

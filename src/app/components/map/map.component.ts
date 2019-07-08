@@ -10,7 +10,7 @@ import { osm } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getMaplikeProducts } from 'src/app/wps/wps.selectors';
+import { getMapableProducts } from 'src/app/wps/wps.selectors';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerData, isVectorLayerData, isWmsData, WmsData, isBboxLayerData, BboxLayerData } from './mappable_wpsdata';
@@ -19,6 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 import { InteractionMode, InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { featureCollection, feature } from '@turf/helpers';
 import { bboxPolygon } from '@turf/turf';
+import { LayerFactory } from './productToLayer';
 
 @Component({
 
@@ -39,26 +40,18 @@ export class MapComponent implements OnInit, AfterViewInit {
         public mapStateSvc: MapStateService,
         public mapSvc: MapOlService,
         private store: Store<State>,
-        private httpClient: HttpClient
+        private httpClient: HttpClient, 
+        private layerFactory: LayerFactory
     ) {
 
         this.controls = { attribution: true, scaleLine: true };
 
         // listening for mapable products
-        this.store.pipe(select(getMaplikeProducts)).subscribe(
+        this.store.pipe(select(getMapableProducts)).subscribe(
             (products: Product[]) => {
-
-                const oldLayers = this.mapSvc.getLayers("overlays");
-                if(oldLayers) {
-                    for(let layer of oldLayers) {
-                        this.layersSvc.removeLayer(layer, "Overlays");
-                    }
-                }
-
                 for (let product of products) {
-                    if (isWmsData(product)) this.addWmsLayer(product);
-                    else if (isVectorLayerData(product)) this.addGeojsonLayer(product);
-                    else if (isBboxLayerData(product)) this.addBboxLayer(product);
+                    const layer = layerFactory.toLayer(product);
+                    if(layer) this.layersSvc.addLayer(layer, "Overlays");
                 }
             }
         );
@@ -158,138 +151,5 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
 
-    private addGeojsonLayer(product: VectorLayerData): void {
-        let layer = this.createGeojsonLayer(product);
-        layer.opacity = 1.0;
-        this.layersSvc.removeLayer(layer, "Overlays");
-        this.layersSvc.addLayer(layer, "Overlays");
-    }
-
-
-    private createGeojsonLayer(product: VectorLayerData): VectorLayer {
-        let layer: VectorLayer = new VectorLayer({
-            id: `${product.description.id}_result_layer`,
-            name: `${product.description.id}`,
-            opacity: 1,
-            type: "geojson",
-            data: product.value[0],
-            options: {
-                style: product.description.vectorLayerAttributes.style
-            },
-            popup: <any>{
-                asyncPupup: (obj, callback) => {
-                    const html = product.description.vectorLayerAttributes.text(obj);
-                    callback(html);
-                }
-            }
-        });
-        return layer;
-    }
-
-    private addBboxLayer(product: BboxLayerData): void {
-        let layer = this.createBboxLayer(product);
-        layer.opacity = 1.0;
-        this.layersSvc.removeLayer(layer, "Overlays");
-        this.layersSvc.addLayer(layer, "Overlays");
-    }
-
-    private createBboxLayer(product: BboxLayerData): VectorLayer {
-        let layer: VectorLayer = new VectorLayer({
-            id: `${product.description.id}_result_layer`,
-            name: `${product.description.id}`,
-            opacity: 1,
-            type: "geojson",
-            data: featureCollection([bboxPolygon(product.value)]),
-            options: {},
-            popup: <any>{
-                asyncPupup: (obj, callback) => {
-                    const html = JSON.stringify(obj);
-                    callback(html);
-                }
-            }
-        });
-        return layer;
-    }
-
-
-    private addWmsLayer(product: WmsData): void {
-        let layer = this.createWmsLayer(product);
-        layer.opacity = 1.0;
-        //this.layersSvc.removeLayer(layer, "Overlays");
-        this.layersSvc.addLayer(layer, "Overlays");
-    }
-
-    private createWmsLayer(product: WmsData): RasterLayer {
-        let url = new URL(product.value[0]);
-        url.searchParams.set("height", "600");
-        url.searchParams.set("width", "600");
-        url.searchParams.set("bbox", "-75.629882815,-36.123046875,-66.0498046875,-30.41015625");
-        url.searchParams.set("scs", this.mapSvc.getProjection().getCode());
-        // @TODO: convert all searchparameter names to uppercase
-        let layer: RasterLayer = new RasterLayer({
-            id: `${product.description.id}_result_layer`,
-            name: `${product.description.id}`,
-            opacity: 1,
-            removable: true,
-            type: "wms",
-            visible: true,
-            url: `${url.origin}${url.pathname}?`,
-            params: {
-                "VERSION": url.searchParams.get("Version"),
-                "LAYERS": url.searchParams.get("layers"),
-                "WIDTH": url.searchParams.get("width"),
-                "HEIGHT": url.searchParams.get("height"),
-                "FORMAT": url.searchParams.get("format"),
-                "BBOX": url.searchParams.get("bbox"),
-                "SRS": url.searchParams.get("srs"),
-                "TRANSPARENT": "TRUE"
-            },
-            legendImg: `${url.origin}${url.pathname}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=${url.searchParams.get("Version")}&STYLES=default&FORMAT=${url.searchParams.get("format")}&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${url.searchParams.get("layers")}`,
-            popup: <any>{
-                asyncPupup: (obj, callback) => {
-                    this.getFeatureInfoPopup(obj, this.mapSvc, callback)
-                }
-            }
-        });
-        layer["crossOrigin"] = "anonymous";
-        return layer;
-    }
-
-
-    /**
-   * @TODO: move this functionality to the WMS-Output-object
-   */
-    private getFeatureInfoPopup(obj, mapSvc, callback) {
-        let source = obj.source;
-        let evt = obj.evt;
-        let viewResolution = mapSvc.map.getView().getResolution();
-        let properties: any = {};
-        let url = source.getGetFeatureInfoUrl(
-            evt.coordinate, viewResolution, mapSvc.EPSG,
-            { 'INFO_FORMAT': 'application/json' }
-        );
-
-        this.httpClient.get(url).subscribe(response => {
-            const html = this.formatFeatureCollectionToTable(response);
-            callback(html);
-        })
-    }
-
-    private formatFeatureCollectionToTable(collection): string {
-        let html = "<clr-datagrid>";
-        for (let key in collection["features"][0]["properties"]) {
-            html += `<clr-dg-column>${key}</clr-dg-column>`;
-        }
-        for (let feature of collection["features"]) {
-            html += "<clr-dg-row>";
-            for (let key in feature["properties"]) {
-                let val = feature["properties"][key];
-                html += `<clr-dg-cell>${val}</clr-dg-cell>`;
-            }
-            html += "</clr-dg-row>";
-        }
-        html += "</clr-datagrid>"
-        return html;
-    }
-
+   
 }

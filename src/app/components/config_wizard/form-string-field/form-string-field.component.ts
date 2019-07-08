@@ -1,60 +1,40 @@
 import { Component, OnInit, Input , forwardRef } from '@angular/core';
-import { FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
+import { FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { StringUconfWD } from '../userconfigurable_wpsdata';
+import { map, debounceTime } from 'rxjs/operators';
+import { StringUconfWD, StringUconfWpsData } from '../userconfigurable_wpsdata';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
+import { ProductsProvided } from 'src/app/wps/wps.actions';
 
 @Component({
   selector: 'ukis-form-string-field',
   templateUrl: './form-string-field.component.html',
   styleUrls: ['./form-string-field.component.css'],
-  providers: [{ 
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: forwardRef(() => FormStringFieldComponent),
-    }]
 })
-export class FormStringFieldComponent implements OnInit, ControlValueAccessor {
+export class FormStringFieldComponent implements OnInit {
 
 
-  @Input() formControl: FormControl;
-  @Input() parameter: StringUconfWD;
-  public value: string;
-  public valid: Observable<boolean>;
-  public disabled: boolean = false;
-  private changeFunction; 
+  @Input() parameter: StringUconfWpsData;
+  formControl: FormControl
 
-  constructor() { }
-
+  constructor(private store: Store<State>) {}
+  
   ngOnInit() {
-    //console.log(`${this.parameter.id} string field init`);
-    this.valid = this.formControl.statusChanges.pipe(
-      map((state) => {
-        if(state == "VALID") return true;
-        else return false;
-      })
-    );
-  }
+    this.formControl = new FormControl(this.parameter.value || this.parameter.description.defaultValue, [Validators.required]);
+    this.formControl.valueChanges.pipe(
+      debounceTime(500),
+    ).subscribe(val => {
+      if(this.formControl.valid) {
+        this.store.dispatch(new ProductsProvided({
+          products: [{
+            ...this.parameter, 
+            value: val
+          }]
+        }))
+      }
+    })
 
-  writeValue(obj: any): void {
-    //console.log(`${this.parameter.id} writeValue`, obj);
-    this.value = obj;
-  }
-
-  registerOnChange(fn: any): void {
-    this.changeFunction = fn; 
-  }
-
-  registerOnTouched(fn: any): void {}
-
-  setDisabledState(isDisabled: boolean): void {
-    //console.log(`${this.parameter.id} setDisabledState`, isDisabled);
-    this.disabled = isDisabled;
-  }
-
-  onChange(event) {
-    //console.log("calling change funciton with ", event);
-    this.changeFunction(event);
   }
 
 }

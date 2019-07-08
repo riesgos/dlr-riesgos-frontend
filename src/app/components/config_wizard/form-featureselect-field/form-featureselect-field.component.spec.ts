@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormSelectFieldComponent } from './form-select-field.component';
+import { FormFeatureSelectFieldComponent } from './form-featureselect-field.component';
 
 describe('FormSelectFieldComponent', () => {
-  let component: FormSelectFieldComponent;
-  let fixture: ComponentFixture<FormSelectFieldComponent>;
+  let component: FormFeatureSelectFieldComponent;
+  let fixture: ComponentFixture<FormFeatureSelectFieldComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormSelectFieldComponent ]
+      declarations: [ FormFeatureSelectFieldComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormSelectFieldComponent);
+    fixture = TestBed.createComponent(FormFeatureSelectFieldComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

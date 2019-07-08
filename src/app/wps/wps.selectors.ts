@@ -30,7 +30,7 @@ export const getInputsForProcess = createSelector(
 )
 
 
-export const getMaplikeProducts = createSelector(
+export const getMapableProducts = createSelector(
     getWpsState, 
     (s: WpsState) => {
         return s.productValues

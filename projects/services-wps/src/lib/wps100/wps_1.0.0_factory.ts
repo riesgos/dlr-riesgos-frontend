@@ -93,6 +93,16 @@ export class WpsFactory100 implements WpsMarshaller {
                     throw new Error(`Cannot unmarshal data of format ${data.complexData.mimeType}`);
             }
         }
+
+        else if (data.literalData) {
+            switch(data.literalData.dataType) {
+                case "string":
+                    return data.literalData.value;
+                default: 
+                    throw new Error(`Cannot unmarshal data of format ${data.literalData.dataType}`);
+            }
+        }
+
         throw new Error(`Not yet implemented: ${data}`);
     }
 
@@ -165,6 +175,8 @@ export class WpsFactory100 implements WpsMarshaller {
         let theInputs: InputType[] = [];
         
         for(let inp of inputArr) {
+
+            if(inp.value === null || inp.value === undefined) throw new Error(`Value for input ${inp.description.id} is not set`);
     
             let data: DataType;
             switch(inp.description.type) {

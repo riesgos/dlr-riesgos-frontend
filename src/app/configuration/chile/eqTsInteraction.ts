@@ -5,12 +5,12 @@ import { WpsData } from 'projects/services-wps/src/public_api';
 
 
 
-export const epicenters: WpsData = {
+export const epicenter: WpsData = {
     description: {
-        id: "epicenters",
+        id: "epiCenter",
         reference: false,
-        format: "application/vnd.geo+json",
-        type: "complex",
+        format: "application/WMS",
+        type: "literal",
     }, 
     value: null
 };
@@ -21,17 +21,17 @@ export const EqTsInteraction: WizardableProcess & WpsProcess = {
 
     state: new ProcessStateUnavailable(),
 
-    id: "org.n52.project.riesgos.GetEpicentersProcess",
+    id: "get_scenario",
 
-    url: "http://tsunami-riesgos.awi.de:8080/wps/WebProcessingService",
+    url: "http://tsunami-wps.awi.de/wps",
 
     name: "Earthquake/tsunami interaction",
 
     description: "Relates a tsunami to a given earthquake",
 
-    requiredProducts: ["input-boundingbox"],
+    requiredProducts: ["lat",  "lon", "mag"],
 
-    providedProduct: "epicenters",
+    providedProduct: "epiCenter",
 
     wpsVersion: "1.0.0", 
 

@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided, ClickRunProcess, RestartingFromProcess } from 'src/app/wps/wps.actions';
 import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription, UserconfigurableWpsData, isUserconfigurableWpsData } from '../userconfigurable_wpsdata';
-import { Process, Product, ProductDescription } from 'src/app/wps/wps.datatypes';
+import { Process, Product, ProductDescription, ProcessId } from 'src/app/wps/wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
 import { getInputsForProcess } from 'src/app/wps/wps.selectors';
 import { map, tap } from 'rxjs/operators';
@@ -36,32 +36,16 @@ export class WizardPageComponent implements OnInit {
     );
   }
 
-  onSubmit(formData) {
-
-    let products: Product[] = [];
-    for (let key in formData) {
-
-      let val = formData[key];
-      let descr = this.getDescription(key);
-      
-      products.push({
-        description: descr, 
-        value: val
-      });
+  onSubmitClicked () {
+    for (let parameter of this._parameters) {
+      if(parameter.value == null && parameter.description.defaultValue) parameter.value = parameter.description.defaultValue; 
     }
-
-    this.store.dispatch(new ClickRunProcess({productsProvided: products, process: this.process }));
+    this.store.dispatch(new ClickRunProcess({productsProvided: this._parameters, process: this.process }));
   }
 
   onReconfigureClicked () {
     this.store.dispatch(new RestartingFromProcess({process: this.process}));
   }
 
-
-  private getDescription(id: ProductId): ProductDescription {
-    const product = this._parameters.find(p => p.description.id == id);
-    if(!product) throw new Error(`No such product ${id} on the wizard-page for process ${this.process.id}`);
-    return product.description;
-  }
 
 }

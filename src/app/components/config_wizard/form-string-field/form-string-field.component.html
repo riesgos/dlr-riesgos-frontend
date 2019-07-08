@@ -1,12 +1,12 @@
-<clr-input-container [class.clr-error]="(valid | async) == false">
+<clr-input-container [class.clr-error]="formControl.invalid && (formControl.dirty || formControl.touched)">
     
     <label class="clr-col-md-3">
-      {{parameter.wizardProperties.name}}:
+      {{parameter.description.wizardProperties.name}}:
     </label>
 
-    <input class="clr-col-md-9" type="text" clrInput value="{{value}}" (change)="onChange($event.target.value)" [attr.disabled]="disabled ? '' : null"/>
+    <input class="clr-col-md-9" type="text" clrInput  [formControl]="formControl" [value]="formControl.value"/>
 
-    <clr-control-helper>{{parameter.description}}</clr-control-helper>
+    <clr-control-helper>{{parameter.description.description}}</clr-control-helper>
     <clr-control-error>Invalid input</clr-control-error>
 
 </clr-input-container>

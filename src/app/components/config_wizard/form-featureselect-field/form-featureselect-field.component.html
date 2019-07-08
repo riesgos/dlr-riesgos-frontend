@@ -1,7 +1,7 @@
 <clr-select-container>
 
   <label class="clr-col-md-3">
-    {{parameter.wizardProperties.name}}:
+    {{parameter.description.wizardProperties.name}}:
   </label>
     
   <select class="clr-col-md-9" clrSelect  [attr.disabled]="disabled ? '' : null"  (change)="onChange($event.target.value)"  (click)="onClick($event)">
@@ -9,7 +9,7 @@
       <option *ngFor="let str of selectionStrings" [value]="str">{{str}}</option>
   </select>
 
-  <clr-control-helper>{{parameter.description}}</clr-control-helper>
+  <clr-control-helper>{{parameter.description.description}}</clr-control-helper>
   <clr-control-error>Invalid input</clr-control-error>
 
 </clr-select-container>

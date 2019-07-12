@@ -1,38 +1,59 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from '@angular/common/http';
+import { Injectable, OnInit } from "@angular/core";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { isWmsData, isVectorLayerData, isBboxLayerData, BboxLayerData, VectorLayerData, WmsData } from './mappable_wpsdata';
-import { VectorLayer, RasterLayer, Layer } from '@ukis/services-layers';
+//import { VectorLayer, RasterLayer, Layer, LayersService } from '@ukis/services-layers';
 import { featureCollection } from '@turf/helpers';
 import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@ukis/map-ol';
-import { WMSCapabilities } from 'ol/format/WMSCapabilities';
-import { map } from 'rxjs/operators';
+import { WMSCapabilities } from 'ol/format';
+import { map, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
+import { Layer, VectorLayer, RasterLayer } from '@ukis/services-layers';
 
-
+/**
+ * Why do wo add another layer of translation here, instead of translating in wpsClient?
+ * Pro translate in wps-client: 
+ *  - 
+ * Pro translate in separate layer: 
+ *  - data in store should be in a *general* format, layer-types are too specific
+ *  - 
+ */
 
 interface WmsParameters {
-    origin: string | null; path: string | null; version: string | null; layers: string | null; width: string | null; height: string | null; format: string | null; bbox: string | null; srs: string | null;
+    origin: string | null; 
+    path: string | null; 
+    version: string | null; 
+    layers: string | null; 
+    width: string | null; 
+    height: string | null; 
+    format: string | null; 
+    bbox: string | null; 
+    srs: string | null;
 }
 
 
-
 @Injectable()
-export class LayerFactory {
+export class LayerMarshaller  {
     
     constructor(
         private httpClient: HttpClient,
-        private mapSvc: MapOlService
-    ) {}
-    
-    toLayer(product: Product): Layer | undefined {
+        private mapSvc: MapOlService,
+        private store: Store<State>
+        ) {}
+        
+
+
+    toLayer(product: Product): Observable<Layer> {
         if (isWmsData(product)) return this.makeWmsLayer(product);
         else if (isVectorLayerData(product)) return this.makeGeojsonLayer(product);
         else if (isBboxLayerData(product)) return this.makeBboxLayer(product);
+        else throw new Error(`this product cannot be converted into a layer: ${product}`);
     }
 
-    makeBboxLayer(product: BboxLayerData) {
+    makeBboxLayer(product: BboxLayerData): Observable<VectorLayer> {
         let layer: VectorLayer = new VectorLayer({
             id: `${product.description.id}_result_layer`,
             name: `${product.description.id}`,
@@ -47,10 +68,10 @@ export class LayerFactory {
                 }
             }
         });
-        return layer;
+        return of(layer);
     }
 
-    makeGeojsonLayer(product: VectorLayerData): VectorLayer {
+    makeGeojsonLayer(product: VectorLayerData): Observable<VectorLayer> {
         let layer: VectorLayer = new VectorLayer({
             id: `${product.description.id}_result_layer`,
             name: `${product.description.id}`,
@@ -67,58 +88,57 @@ export class LayerFactory {
                 }
             }
         });
-        return layer;
+        return of(layer);
     }
-
-
-
 
     makeWmsLayer(product: WmsData): Observable<RasterLayer> {
         
         let val;
         if(product.description.type == "complex") val = product.value[0];
-        if(product.description.type == "literal") val = product.value;
+        else if(product.description.type == "literal") val = product.value;
+        else throw new Error(`Could not find a value in product ${product}`);
 
         let wmsParameters$: Observable<WmsParameters>;
         if(val.includes("GetMap")) {
             wmsParameters$ = this.parseGetMapUrl(val);
         }
-        if(val.includes("GetCapabilities")) {
+        else if(val.includes("GetCapabilities")) {
             wmsParameters$ = this.parseGetCapabilitiesUrl(val);
         }
+        else throw new Error(`Cannot parse parameters from this value. ${val}`);
 
-        wmsParameters$.subscribe((paras: WmsParameters) => {
-
-        });
         
-        // @TODO: convert all searchparameter names to uppercase
-        let layer: RasterLayer = new RasterLayer({
-            id: `${product.description.id}_result_layer`,
-            name: `${product.description.id}`,
-            opacity: 1,
-            removable: true,
-            type: "wms",
-            visible: true,
-            url: `${origin}${path}?`,
-            params: {
-                "VERSION": version,
-                "LAYERS": layers,
-                "WIDTH": width,
-                "HEIGHT": height,
-                "FORMAT": format,
-                "BBOX": bbox,
-                "SRS": srs,
-                "TRANSPARENT": "TRUE"
-            },
-            legendImg: `${origin}${path}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=${version}&STYLES=default&FORMAT=${format}&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${layers}`,
-            popup: <any>{
-                asyncPupup: (obj, callback) => {
-                    this.getFeatureInfoPopup(obj, this.mapSvc, callback)
+        return wmsParameters$.pipe(map((paras: WmsParameters) => {
+            // @TODO: convert all searchparameter names to uppercase
+            let layer: RasterLayer = new RasterLayer({
+                id: `${product.description.id}_result_layer`,
+                name: `${product.description.id}`,
+                opacity: 1,
+                removable: true,
+                type: "wms",
+                visible: true,
+                url: `${paras.origin}${paras.path}?`,
+                params: {
+                    "VERSION": paras.version,
+                    "LAYERS": paras.layers,
+                    "WIDTH": paras.width,
+                    "HEIGHT": paras.height,
+                    "FORMAT": paras.format,
+                    "BBOX": paras.bbox,
+                    "SRS": paras.srs,
+                    "TRANSPARENT": "TRUE"
+                },
+                legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${paras.layers}`,
+                popup: <any>{
+                    asyncPupup: (obj, callback) => {
+                        this.getFeatureInfoPopup(obj, this.mapSvc, callback)
+                    }
                 }
-            }
-        });
-        layer["crossOrigin"] = "anonymous";
-        return layer;
+            });
+            layer["crossOrigin"] = "anonymous";
+            return layer;
+        }));
+        
     }
 
 
@@ -143,12 +163,27 @@ export class LayerFactory {
     }
 
     private parseGetCapabilitiesUrl(urlString: string): Observable<WmsParameters> {
-        return this.httpClient.get(urlString).pipe(
+        const url = new URL(urlString);
+
+        let headers = new HttpHeaders({
+            'Content-Type': 'text/xml',
+            'Accept': 'text/xml, application/xml'
+        });
+
+        return this.httpClient.get(urlString, { headers: headers, responseType: 'text' }).pipe(
             map(result => {
-                resultJson = new WMSCapabilities().read(result);
+                const resultJson = new WMSCapabilities().read(result);
                 console.log(resultJson);
                 return {
-
+                    origin: url.origin, 
+                    path: url.pathname, 
+                    version: resultJson.version, 
+                    layers: resultJson.Capability.Layer.Layer.map(layer => layer.Name), 
+                    width: "600", 
+                    height: "400", 
+                    format: "image/png",
+                    bbox: resultJson.Capability.Layer.BoundingBox[0].extent, 
+                    srs: resultJson.Capability.Layer.CRS[0]
                 };
             })
         );
@@ -190,10 +225,6 @@ export class LayerFactory {
         html += "</clr-datagrid>"
         return html;
     }
-
-
-
-
 
 
 

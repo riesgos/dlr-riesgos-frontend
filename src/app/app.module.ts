@@ -35,7 +35,7 @@ import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
 import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
 import { VarDirective } from './ng-var.directive';
-import { LayerFactory } from './components/map/productToLayer';
+import { LayerMarshaller } from './components/map/layer_marshaller';
 
 @NgModule({
   declarations: [
@@ -77,7 +77,7 @@ import { LayerFactory } from './components/map/productToLayer';
     }),
   ],
   providers: [
-    AlertService, FooterService, ProgressService, LayerFactory
+    AlertService, FooterService, ProgressService, LayerMarshaller
   ],
   bootstrap: [UkisComponent]
 })

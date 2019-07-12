@@ -1,5 +1,21 @@
 as a project completes, your work shifts from dev to ops. 
-there are those languages that recognize that big projects require contracts, and those that dont.
+production-language: 
+    types
+    immutability
+    beans
+    soap/rest
+
+
+
+make layers transparent once out of focus. 
+
+
+
+
+processes: 
+    show processprovider
+
+
 
 
 forms

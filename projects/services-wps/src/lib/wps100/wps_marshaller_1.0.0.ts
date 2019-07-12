@@ -3,7 +3,7 @@ import { WPSCapabilitiesType, IWpsExecuteProcessBody, Execute, DataInputsType, I
 
 
 
-export class WpsFactory100 implements WpsMarshaller {
+export class WpsMarshaller100 implements WpsMarshaller {
     
     constructor() { }
     

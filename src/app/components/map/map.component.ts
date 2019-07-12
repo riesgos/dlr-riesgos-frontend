@@ -4,7 +4,6 @@ import { Style, Stroke } from 'ol/style';
 import { singleClick } from 'ol/events/condition';
 import { GeoJSON } from 'ol/format';
 import { get as getProjection } from 'ol/proj.js';
-import { LayersService, RasterLayer, VectorLayer } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import { osm } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
@@ -13,13 +12,11 @@ import { State } from 'src/app/ngrx_register';
 import { getMapableProducts } from 'src/app/wps/wps.selectors';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
-import { VectorLayerData, isVectorLayerData, isWmsData, WmsData, isBboxLayerData, BboxLayerData } from './mappable_wpsdata';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
-import { BehaviorSubject } from 'rxjs';
-import { InteractionMode, InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
-import { featureCollection, feature } from '@turf/helpers';
-import { bboxPolygon } from '@turf/turf';
-import { LayerFactory } from './productToLayer';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
+import { LayerMarshaller } from './layer_marshaller';
+import { Layer, LayersService, RasterLayer } from '@ukis/services-layers';
 
 @Component({
 
@@ -34,27 +31,19 @@ export class MapComponent implements OnInit, AfterViewInit {
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
     private geoJson = new GeoJSON();
     private interactionState: BehaviorSubject<InteractionState>
+    private currentLayers: Observable<Layer[]>; 
 
     constructor(
-        public layersSvc: LayersService,
         public mapStateSvc: MapStateService,
         public mapSvc: MapOlService,
         private store: Store<State>,
-        private httpClient: HttpClient, 
-        private layerFactory: LayerFactory
+        private layerMarshaller: LayerMarshaller,
+        private layersSvc: LayersService, 
     ) {
 
         this.controls = { attribution: true, scaleLine: true };
 
-        // listening for mapable products
-        this.store.pipe(select(getMapableProducts)).subscribe(
-            (products: Product[]) => {
-                for (let product of products) {
-                    const layer = layerFactory.toLayer(product);
-                    if(layer) this.layersSvc.addLayer(layer, "Overlays");
-                }
-            }
-        );
+        this.currentLayers = this.layersSvc.getLayers();
 
         // listening for interaction modes
         this.interactionState = new BehaviorSubject<InteractionState>(initialInteractionState);
@@ -142,6 +131,19 @@ export class MapComponent implements OnInit, AfterViewInit {
           });
         this.mapSvc.map.addInteraction(featureSelect);
 
+
+
+
+        this.store.pipe(
+            select(getMapableProducts)
+         ).subscribe((products: Product[]) => {
+             this.layersSvc.removeOverlays();
+             for (let product of products) {
+                this.layerMarshaller.toLayer(product).subscribe(layer => {
+                    this.layersSvc.addLayer(layer, "Overlays")
+                });
+            }
+        });
     }
 
     ngAfterViewInit() {

@@ -4,6 +4,7 @@ import { WpsState } from './wps.state';
 import { ProductId, WpsData } from 'projects/services-wps/src/public_api';
 import { Product, Process, ProcessId } from './wps.datatypes';
 import { ProductsProvided } from './wps.actions';
+import { isVectorLayerData, isBboxLayerData, isWmsData } from '../components/map/mappable_wpsdata';
 
 const getWpsState = (state: State) => {
     return state.wpsState;
@@ -35,7 +36,7 @@ export const getMapableProducts = createSelector(
     (s: WpsState) => {
         return s.productValues
             .filter(prod => prod.value != null)
-            .filter(prod => prod.description.format == "application/vnd.geo+json" || prod.description.format == "application/WMS" || prod.description.type == "bbox")
+            .filter(prod => isVectorLayerData(prod) || isBboxLayerData(prod) || isWmsData(prod))
     }
 );
 

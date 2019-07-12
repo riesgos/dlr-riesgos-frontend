@@ -1,5 +1,5 @@
 import { WpsMarshaller, WpsInput, WpsVerion, WpsResult, WpsOutputDescription } from "./wps_datatypes";
-import { WpsFactory100 } from "./wps100/wps_1.0.0_factory";
+import { WpsMarshaller100 } from "./wps100/wps_marshaller_1.0.0";
 import { WpsFactory200 } from "./wps200/wps_2.0_factory";
 import { Cache } from "./utils/cache";
 import { Observable, timer, of } from 'rxjs';
@@ -40,7 +40,7 @@ export class WpsClient {
         this.version = version;
         let context;
         if (this.version == "1.0.0") {
-            this.wpsmarshaller = new WpsFactory100();
+            this.wpsmarshaller = new WpsMarshaller100();
             context = new Jsonix.Context([XLink_1_0, OWS_1_1_0, WPS_1_0_0]);
         }
         else if (this.version == "2.0.0") {

@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { reducers, effects, State } from 'src/app/ngrx_register';
 import { ActivatedRoute } from '@angular/router';
 import { ScenarioChosen } from 'src/app/wps/wps.actions';
+import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
 
 @Component({
   host: { "[class.content-container]": "true" }, // <-- required for clarity-layout
@@ -14,7 +15,7 @@ import { ScenarioChosen } from 'src/app/wps/wps.actions';
   styleUrls: ['./route-map.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    LayersService, 
+    LayersService,
     MapStateService, 
     MapOlService
   ]

@@ -3,11 +3,12 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided, ClickRunProcess, RestartingFromProcess } from 'src/app/wps/wps.actions';
 import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription, UserconfigurableWpsData, isUserconfigurableWpsData } from '../userconfigurable_wpsdata';
-import { Process, Product, ProductDescription, ProcessId } from 'src/app/wps/wps.datatypes';
+import { Process, Product, ProductDescription, ProcessId, WpsProcess } from 'src/app/wps/wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
 import { getInputsForProcess } from 'src/app/wps/wps.selectors';
 import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { WizardableProcess } from '../wizardable_processes';
 
 
 
@@ -19,7 +20,7 @@ import { Observable } from 'rxjs';
 })
 export class WizardPageComponent implements OnInit {
 
-  @Input() process: Process;
+  @Input() process: WpsProcess & WizardableProcess;
   parameters$: Observable<UserconfigurableWpsData[]>;
   private _parameters: UserconfigurableWpsData[];
 

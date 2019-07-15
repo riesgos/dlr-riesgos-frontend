@@ -38,7 +38,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         public mapSvc: MapOlService,
         private store: Store<State>,
         private layerMarshaller: LayerMarshaller,
-        private layersSvc: LayersService, 
+        public layersSvc: LayersService, 
     ) {
 
         this.controls = { attribution: true, scaleLine: true };

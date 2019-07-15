@@ -22,7 +22,7 @@ export class ConfigurationWizardComponent implements OnInit {
 
 
     private focussedPageId$: Observable<string>;
-    private processes$: Observable<WizardableProcess[]>;
+    public processes$: Observable<WizardableProcess[]>;
 
     constructor(
         private store: Store<State>

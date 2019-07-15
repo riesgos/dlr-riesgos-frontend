@@ -4,7 +4,7 @@
     {{parameter.description.wizardProperties.name}}:
   </label>
     
-  <select class="clr-col-md-9" clrSelect  [attr.disabled]="disabled ? '' : null"  (change)="onChange($event.target.value)"  (click)="onClick($event)">
+  <select class="clr-col-md-9" clrSelect (change)="onChange($event.target.value)" (click)="onClick($event)">
       <option [value]="activeSelection" selected>{{activeSelection}}</option>
       <option *ngFor="let str of selectionStrings" [value]="str">{{str}}</option>
   </select>

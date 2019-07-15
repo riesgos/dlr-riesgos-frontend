@@ -4,7 +4,7 @@ import { initialInteractionState, InteractionState } from './interactions.state'
 
 
 
-export const interactionReducer = (state: InteractionState = initialInteractionState, action: InteractionAction): InteractionState => {
+export function interactionReducer(state: InteractionState = initialInteractionState, action: InteractionAction): InteractionState {
     switch(action.type) {
 
         case InteractionActionTypes.started: 

@@ -10,6 +10,7 @@ import { UtilStoreService } from '@ukis/services-util-store';
 export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
     description: {
         id: "input-boundingbox",
+        name: "eq-selection: boundingbox",
         type: "bbox",
         reference: false,
         description: "Please select an area of interest",
@@ -162,10 +163,10 @@ let green2red = function (magnitude) {
 export const selectedEqs: VectorLayerData = {
     description: {
         id: "selected-rows",
+        name: "available earthquakes",
         format: "application/vnd.geo+json",
         reference: false,
         type: "complex",
-
         vectorLayerAttributes: {
             style: (feature) => {
                 let magnitude = feature.get("magnitude.mag.value");
@@ -184,11 +185,12 @@ export const selectedEqs: VectorLayerData = {
                 return style;
             },
             text: (properties) => {
-                let text = `<h3>Id: ${properties["origin.publicID"]}</h3>`;//`<h3>${dateFromISO8601(feature.get("origin.time.value"))} (Id: ${feature.getId()})</h3>`;
+                let text = `<h3>Available earthquakes</h3>`;
                 let selectedProperties = {
-                    "Magnitude": properties["magnitude.mag.value"],
-                    "Depth": properties["origin.depth.value"] + " m",
-                    "Dip value": properties["focalMechanism.nodalPlanes.nodalPlane1.dip.value"] + " °"
+                    "Id": properties["origin.publicID"],
+                    "Magnitude": Math.round(properties["magnitude.mag.value"] * 100) / 100,
+                    "Depth": Math.round(properties["origin.depth.value"] * 100) / 100 + " m",
+                    "Dip value": Math.round(properties["focalMechanism.nodalPlanes.nodalPlane1.dip.value"] * 100) / 100 + " °"
                 };
                 text += "<table class='table'><tbody>";
                 for (let property in selectedProperties) {
@@ -216,6 +218,8 @@ export const EqEventCatalogue: WizardableProcess & WpsProcess = {
     wpsVersion: "1.0.0",
 
     wizardProperties: {
-        shape: "earthquake"
+        shape: "earthquake", 
+        providerName: "Helmholtz Centre Potsdam German Research Centre for Geosciences", 
+        providerUrl: "https://www.gfz-potsdam.de/en/"
     }
 }

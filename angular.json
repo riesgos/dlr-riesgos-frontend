@@ -244,6 +244,41 @@
           }
         }
       }
+    },
+    "screenshot": {
+      "projectType": "library",
+      "root": "projects/screenshot",
+      "sourceRoot": "projects/screenshot/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/screenshot/tsconfig.lib.json",
+            "project": "projects/screenshot/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/screenshot/src/test.ts",
+            "tsConfig": "projects/screenshot/tsconfig.spec.json",
+            "karmaConfig": "projects/screenshot/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/screenshot/tsconfig.lib.json",
+              "projects/screenshot/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "project-riesgos"

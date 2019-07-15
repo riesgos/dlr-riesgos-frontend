@@ -1,8 +1,10 @@
 
 <p>{{process.description}}</p>
+<p class="p3">Provider: <a href="{{process.wizardProperties.providerUrl}}" target="_blank">{{process.wizardProperties.providerName}}</a></p>
 
 <div class="wizardElement">
     <ng-container [ngSwitch]="process.state.type">
+
 
         <ng-container *ngSwitchCase="'unavailable'">
             <span class="label" i18n>This process can not be configured yet.</span>

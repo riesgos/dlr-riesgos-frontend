@@ -36,7 +36,9 @@ export const EqTsInteraction: WizardableProcess & WpsProcess = {
     wpsVersion: "1.0.0", 
 
     wizardProperties: {
-        shape: "tsunami"
+        shape: "tsunami",
+        providerName: "Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research", 
+        providerUrl: "https://www.awi.de/en/"
     }
 
 }

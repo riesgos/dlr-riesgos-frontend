@@ -1,8 +1,8 @@
-import { ProcessState, WatchingProcess, Product, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
+import { WatchingProcess, Product, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { SelectUconfWD, UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public_api';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+import { VectorLayerData, WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 
 
 
@@ -22,12 +22,13 @@ export const selectedEq: UserconfigurableWpsData = {
 }
 
 
-export const shakemapOutput: WpsData = {
+export const shakemapOutput: WpsData & WmsLayerData = {
     description: {
         id: "shakemap-output",
+        name: "shakemap",
         type: "complex",
         reference: false,
-        format: "application/WMS"
+        format: "application/WMS", 
     },
     value: null
 }
@@ -95,7 +96,9 @@ export const EqGroundMotion : WizardableProcess & WpsProcess = {
     wpsVersion: "1.0.0", 
 
     wizardProperties: {
-        shape: "earthquake"
+        shape: "earthquake", 
+        providerName: "Helmholtz Centre Potsdam German Research Centre for Geosciences", 
+        providerUrl: "https://www.gfz-potsdam.de/en/"
     }, 
 
 }

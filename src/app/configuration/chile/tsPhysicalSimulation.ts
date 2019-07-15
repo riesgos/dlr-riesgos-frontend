@@ -2,6 +2,7 @@ import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnava
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public_api';
 import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 
 
 export const lat: UserconfigurableWpsData = {
@@ -47,17 +48,16 @@ export const tsunamap: WpsData = {
     description: {
         id: "tsunamap",
         type: "complex",
-        format: "application/xml",
-        reference: false,
-        
-},
+        format: "application/WMS",
+        reference: true,
+    },
     value: null
 };
 
 
 
 
-export const TsPhysicalSimulation: WizardableProcess & WpsProcess & WatchingProcess = {
+export const TsPhysicalSimulation: WpsProcess & WatchingProcess = {
 
     state: new ProcessStateUnavailable(),
 
@@ -74,10 +74,6 @@ export const TsPhysicalSimulation: WizardableProcess & WpsProcess & WatchingProc
     providedProduct: "tsunamap", 
 
     wpsVersion: "1.0.0", 
-
-    wizardProperties: {
-        shape: "tsunami"
-    }, 
 
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch(newProduct.description.id) {

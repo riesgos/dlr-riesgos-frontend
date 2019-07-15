@@ -1,7 +1,7 @@
 import { Injectable, OnInit } from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Product } from 'src/app/wps/wps.datatypes';
-import { isWmsData, isVectorLayerData, isBboxLayerData, BboxLayerData, VectorLayerData, WmsData } from './mappable_wpsdata';
+import { isWmsData, isVectorLayerData, isBboxLayerData, BboxLayerData, VectorLayerData, WmsLayerData } from './mappable_wpsdata';
 //import { VectorLayer, RasterLayer, Layer, LayersService } from '@ukis/services-layers';
 import { featureCollection } from '@turf/helpers';
 import { bboxPolygon } from '@turf/turf';
@@ -56,14 +56,14 @@ export class LayerMarshaller  {
     makeBboxLayer(product: BboxLayerData): Observable<VectorLayer> {
         let layer: VectorLayer = new VectorLayer({
             id: `${product.description.id}_result_layer`,
-            name: `${product.description.id}`,
+            name: `${product.description.name}`,
             opacity: 1,
             type: "geojson",
             data: featureCollection([bboxPolygon(product.value)]),
             options: {},
             popup: <any>{
                 asyncPupup: (obj, callback) => {
-                    const html = JSON.stringify(obj);
+                    const html = JSON.stringify(product.value);
                     callback(html);
                 }
             }
@@ -72,14 +72,17 @@ export class LayerMarshaller  {
     }
 
     makeGeojsonLayer(product: VectorLayerData): Observable<VectorLayer> {
+
+        const style = this.getStyle(product);
+
         let layer: VectorLayer = new VectorLayer({
             id: `${product.description.id}_result_layer`,
-            name: `${product.description.id}`,
+            name: `${product.description.name}`,
             opacity: 1,
             type: "geojson",
             data: product.value[0],
             options: {
-                style: product.description.vectorLayerAttributes.style
+                style: style
             },
             popup: <any>{
                 asyncPupup: (obj, callback) => {
@@ -91,7 +94,13 @@ export class LayerMarshaller  {
         return of(layer);
     }
 
-    makeWmsLayer(product: WmsData): Observable<RasterLayer> {
+    private getStyle(product: VectorLayerData) {
+        if (product.description.vectorLayerAttributes.style) return product.description.vectorLayerAttributes.style;
+        else if (product.description.vectorLayerAttributes.sldFile) return null;
+        else return null;
+    }
+
+    makeWmsLayer(product: WmsLayerData): Observable<RasterLayer> {
         
         let val;
         if(product.description.type == "complex") val = product.value[0];
@@ -112,7 +121,7 @@ export class LayerMarshaller  {
             // @TODO: convert all searchparameter names to uppercase
             let layer: RasterLayer = new RasterLayer({
                 id: `${product.description.id}_result_layer`,
-                name: `${product.description.id}`,
+                name: `${product.description.name}`,
                 opacity: 1,
                 removable: true,
                 type: "wms",
@@ -210,7 +219,7 @@ export class LayerMarshaller  {
     }
 
     private formatFeatureCollectionToTable(collection): string {
-        let html = "<clr-datagrid>";
+        let html = `<h3>${collection.id}</h3><clr-datagrid>`;
         for (let key in collection["features"][0]["properties"]) {
             html += `<clr-dg-column>${key}</clr-dg-column>`;
         }

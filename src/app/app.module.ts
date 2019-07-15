@@ -36,6 +36,7 @@ import { LayercontrolComponent } from './components/layercontrol/layercontrol.co
 import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
 import { VarDirective } from './ng-var.directive';
 import { LayerMarshaller } from './components/map/layer_marshaller';
+import { ScreenshotComponent } from './components/screenshot/screenshot.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,7 @@ import { LayerMarshaller } from './components/map/layer_marshaller';
     MapComponent, 
     LayercontrolComponent, 
     FormBboxFieldComponent, 
-    VarDirective
+    VarDirective, ScreenshotComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +71,7 @@ import { LayerMarshaller } from './components/map/layer_marshaller';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FeatureTablesModule, 
+    FeatureTablesModule,
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production, // Restrict extension to log-only mode

@@ -3,7 +3,8 @@ import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public_ap
 
 
 export interface BboxLayerDescription extends WpsDataDescription {
-    type: "bbox"
+    type: "bbox", 
+    name: string,
 }
 
 
@@ -24,9 +25,11 @@ export const isBboxLayerData = (data: WpsData): data is BboxLayerData => {
 export interface VectorLayerDescription extends WpsDataDescription {
     format: "application/vnd.geo+json", 
     type: "complex",
+    name: string,
     vectorLayerAttributes: {
-        style: any,
-        text: any
+        style?: any,
+        text?: any,
+        sldFile?: string
     }
 }
 
@@ -48,10 +51,11 @@ export const isVectorLayerData = (data: WpsData): data is VectorLayerData => {
 
 export interface WmsLayerDescription extends WpsDataDescription {
     format: "application/WMS", 
+    name: string,
     type: "complex" | "literal"
 }
 
-export interface WmsData extends WpsData {
+export interface WmsLayerData extends WpsData {
     description: WmsLayerDescription
 }
 
@@ -60,6 +64,6 @@ export const isWmsLayerDescription = (description: WpsDataDescription): descript
     return description.format == "application/WMS" && (description.type == "complex" || description.type == "literal");
 }
 
-export const isWmsData = (data: WpsData): data is WmsData => {
+export const isWmsData = (data: WpsData): data is WmsLayerData => {
     return isWmsLayerDescription(data.description);
 }

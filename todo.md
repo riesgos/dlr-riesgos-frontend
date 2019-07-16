@@ -1,11 +1,47 @@
+performance: 
+    je mehr features, desto längerer lag bei auswahl eq in groundmotion simulation
+
+
+with new getLayer*s*, riesgos:shakemap does not get displayed. i believe that no full layer-object is returned. 
+    layer is returned, but all tiles are transparent. 
+        https://riesgos.52north.org/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=TRUE&LAYERS=riesgos%3Ashakemap_703cf&WIDTH=256&HEIGHT=256&BBOX=-68.90625%2C-33.75%2C-67.5%2C-32.34375&SRS=EPSG%3A4326&STYLES=
+
+the rxjs-wait keeps throwing user out of textfield
+
+
+popup for rasterdata: 
+    often no feature returned, but at least show the collections other properties (timeStamp in this case: http://tsunami-wps.awi.de:8080/shoa_115_8.00/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=TRUE&QUERY_LAYERS=shoa_115_mwh&LAYERS=shoa_115_mwh&WIDTH=256&HEIGHT=256&BBOX=-2445.984905127436%2C-2445.984905127436%2C-1.7957972886506468e-9%2C-1.7957972886506468e-9&SRS=EPSG%3A4326&INFO_FORMAT=application%2Fjson&I=248&J=3&CRS=EPSG%3A3857&STYLES= )
+
+
+---- Issue: handling multiple scenarios -----------------------------------------------
+A user may jump from scenario to scenario. 
+We need to adjust the state accordingly: 
+    scenario
+        proces
+        prods
+    scenario
+        procs
+        prods
 
 make layers transparent once out of focus. 
     listen to "focusChangeEvent"
-    oh, but opacity must be part of state for this to work!
-        add layers to state
+
 screenshot funktion in top right
-tabelle und feature in karte müssen in bezug zueinander stehen: highlight feature and row
+
 restore
+
+tabelle: crop to five rows
+tabelle und feature in karte müssen in bezug zueinander stehen: highlight feature and row
+
+
+rechte spalte: variable größe
+
+
+translate jsonix to ts
+
+
+
+
 
 
 
@@ -62,22 +98,6 @@ forms
 Save as file
     using memento pattern?
     restoring happens per request, not per value
-
-
-
-rechte spalte: variable größe
-
-
-
----- Issue: handling multiple scenarios -----------------------------------------------
-A user may jump from scenario to scenario. 
-We need to adjust the state accordingly: 
-    scenario
-        proces
-        prods
-    scenario
-        procs
-        prods
 
 
 

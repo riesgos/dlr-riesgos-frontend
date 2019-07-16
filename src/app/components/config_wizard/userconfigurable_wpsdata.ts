@@ -10,6 +10,14 @@ export interface StringUconfWD extends WpsDataDescription {
     }
 }
 
+export interface StringSelectUconfWD extends WpsDataDescription {
+    wizardProperties: {
+        name: string, 
+        fieldtype: "stringselect", 
+    }
+    options: string[]
+}
+
 export interface BboxUconfWD extends WpsDataDescription {
     wizardProperties: {
         name: string,
@@ -26,14 +34,16 @@ export interface SelectUconfWD extends WpsDataDescription {
     }
 }
 
-
-
-export type UserconfigurableWpsDataDescription = StringUconfWD | BboxUconfWD | SelectUconfWD;
+export type UserconfigurableWpsDataDescription = StringUconfWD | StringSelectUconfWD | BboxUconfWD | SelectUconfWD;
 
 
 
 export interface StringUconfWpsData extends WpsData {
     description: StringUconfWD
+}
+
+export interface StringSelectUconfWpsData extends WpsData {
+    description: StringSelectUconfWD
 }
 
 export interface BboxUconfWpsData extends WpsData {
@@ -46,7 +56,7 @@ export interface SelectUconfWpsData extends WpsData {
 
 
 
-export type UserconfigurableWpsData = StringUconfWpsData | BboxUconfWpsData | SelectUconfWpsData;
+export type UserconfigurableWpsData = StringUconfWpsData | StringSelectUconfWpsData | BboxUconfWpsData | SelectUconfWpsData;
 
 
 

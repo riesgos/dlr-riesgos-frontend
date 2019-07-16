@@ -139,8 +139,10 @@ export class MapComponent implements OnInit, AfterViewInit {
          ).subscribe((products: Product[]) => {
              this.layersSvc.removeOverlays();
              for (let product of products) {
-                this.layerMarshaller.toLayer(product).subscribe(layer => {
-                    this.layersSvc.addLayer(layer, "Overlays")
+                this.layerMarshaller.toLayers(product).subscribe(layers => {
+                    for(let layer of layers) {
+                        this.layersSvc.addLayer(layer, "Overlays")
+                    }
                 });
             }
         });

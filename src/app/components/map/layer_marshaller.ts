@@ -12,6 +12,7 @@ import { Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { Layer, VectorLayer, RasterLayer } from '@ukis/services-layers';
+import { MapStateService } from '@ukis/services-map-state';
 
 /**
  * Why do wo add another layer of translation here, instead of translating in wpsClient?
@@ -23,15 +24,15 @@ import { Layer, VectorLayer, RasterLayer } from '@ukis/services-layers';
  */
 
 interface WmsParameters {
-    origin: string | null; 
-    path: string | null; 
-    version: string | null; 
-    layers: string | null; 
-    width: string | null; 
-    height: string | null; 
-    format: string | null; 
-    bbox: string | null; 
-    srs: string | null;
+    origin: string; 
+    path: string; 
+    version: string; 
+    layers: string[]; 
+    width: number; 
+    height: number; 
+    format: string; 
+    bbox: number[] | null; 
+    srs: string;
 }
 
 
@@ -41,15 +42,16 @@ export class LayerMarshaller  {
     constructor(
         private httpClient: HttpClient,
         private mapSvc: MapOlService,
+        public mapStateSvc: MapStateService,
         private store: Store<State>
         ) {}
         
 
 
-    toLayer(product: Product): Observable<Layer> {
-        if (isWmsData(product)) return this.makeWmsLayer(product);
-        else if (isVectorLayerData(product)) return this.makeGeojsonLayer(product);
-        else if (isBboxLayerData(product)) return this.makeBboxLayer(product);
+    toLayers(product: Product): Observable<Layer[]> {
+        if (isWmsData(product)) return this.makeWmsLayers(product);
+        else if (isVectorLayerData(product)) return this.makeGeojsonLayer(product).pipe(map(layer => [layer]));
+        else if (isBboxLayerData(product)) return this.makeBboxLayer(product).pipe(map(layer => [layer]));
         else throw new Error(`this product cannot be converted into a layer: ${product}`);
     }
 
@@ -100,7 +102,7 @@ export class LayerMarshaller  {
         else return null;
     }
 
-    makeWmsLayer(product: WmsLayerData): Observable<RasterLayer> {
+    makeWmsLayers(product: WmsLayerData): Observable<RasterLayer[]> {
         
         let val;
         if(product.description.type == "complex") val = product.value[0];
@@ -118,56 +120,79 @@ export class LayerMarshaller  {
 
         
         return wmsParameters$.pipe(map((paras: WmsParameters) => {
-            // @TODO: convert all searchparameter names to uppercase
-            let layer: RasterLayer = new RasterLayer({
-                id: `${product.description.id}_result_layer`,
-                name: `${product.description.name}`,
-                opacity: 1,
-                removable: true,
-                type: "wms",
-                visible: true,
-                url: `${paras.origin}${paras.path}?`,
-                params: {
-                    "VERSION": paras.version,
-                    "LAYERS": paras.layers,
-                    "WIDTH": paras.width,
-                    "HEIGHT": paras.height,
-                    "FORMAT": paras.format,
-                    "BBOX": paras.bbox,
-                    "SRS": paras.srs,
-                    "TRANSPARENT": "TRUE"
-                },
-                legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${paras.layers}`,
-                popup: <any>{
-                    asyncPupup: (obj, callback) => {
-                        this.getFeatureInfoPopup(obj, this.mapSvc, callback)
-                    }
+            let layers: RasterLayer[] = [];
+            if(paras) {
+                for (let layername of paras.layers) {
+                    // @TODO: convert all searchparameter names to uppercase
+                    let layer: RasterLayer = new RasterLayer({
+                        id: `${layername}_result_layer`,
+                        name: `${layername}`,
+                        opacity: 1,
+                        removable: true,
+                        type: "wms",
+                        visible: true,
+                        url: `${paras.origin}${paras.path}?`,
+                        params: {
+                            "VERSION": paras.version,
+                            "LAYERS": layername,
+                            "WIDTH": paras.width,
+                            "HEIGHT": paras.height,
+                            "FORMAT": paras.format,
+                            "BBOX": paras.bbox,
+                            "SRS": paras.srs,
+                            "TRANSPARENT": "TRUE"
+                        },
+                        legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${layername}`,
+                        popup: <any>{
+                            asyncPupup: (obj, callback) => {
+                                this.getFeatureInfoPopup(obj, this.mapSvc, callback)
+                            }
+                        }
+                    });
+                    layer["crossOrigin"] = "anonymous";
+                    layers.push(layer);
                 }
-            });
-            layer["crossOrigin"] = "anonymous";
-            return layer;
+            }
+            return layers;
         }));
         
     }
 
 
     private parseGetMapUrl(urlString: string): Observable<WmsParameters> {
+
         const url = new URL(urlString);
         url.searchParams.set("height", "600");
         url.searchParams.set("width", "600");
         url.searchParams.set("bbox", "-75.629882815,-36.123046875,-66.0498046875,-30.41015625");
         url.searchParams.set("scs", this.mapSvc.getProjection().getCode());
 
+        let layers: string[] = [];
+        let layersString = url.searchParams.get("layers");
+        if(layersString) layers = layersString.split(",");
+
+        let width = 600;
+        let widthString = url.searchParams.get("width");
+        if(widthString) width = parseInt(widthString);
+
+        let height = 400;
+        let heightString = url.searchParams.get("height");
+        if(heightString) height = parseInt(heightString);
+
+        let bbox: number[] = [];
+        let bboxString = url.searchParams.get("bbox");
+        if(bboxString) bbox = bboxString.split(",").map(s => parseInt(s))
+
         return of({
             origin: url.origin, 
             path: url.pathname, 
-            version: url.searchParams.get("Version"), 
-            layers: url.searchParams.get("layers"), 
-            width: url.searchParams.get("width"), 
-            height: url.searchParams.get("height"), 
-            format: url.searchParams.get("format"),
-            bbox: url.searchParams.get("bbox"), 
-            srs: url.searchParams.get("srs")
+            version: url.searchParams.get("Version") || "1.1.1", 
+            layers: layers, 
+            width: width, 
+            height: height, 
+            format: url.searchParams.get("format") || "image/png",
+            bbox: bbox, 
+            srs: url.searchParams.get("srs") || this.mapSvc.getProjection().getCode()
         });
     }
 
@@ -188,8 +213,8 @@ export class LayerMarshaller  {
                     path: url.pathname, 
                     version: resultJson.version, 
                     layers: resultJson.Capability.Layer.Layer.map(layer => layer.Name), 
-                    width: "600", 
-                    height: "400", 
+                    width: 600, 
+                    height: 400, 
                     format: "image/png",
                     bbox: resultJson.Capability.Layer.BoundingBox[0].extent, 
                     srs: resultJson.Capability.Layer.CRS[0]
@@ -205,7 +230,9 @@ export class LayerMarshaller  {
     private getFeatureInfoPopup(obj, mapSvc, callback) {
         let source = obj.source;
         let evt = obj.evt;
-        let viewResolution = mapSvc.map.getView().getResolution();
+        let viewResolution = mapSvc.map.getView().getResolution() || 
+            // throws exception: mapSvc.map.getView().getResolutionForExtent(this.mapSvc.getCurrentExtent()) || 
+            mapSvc.map.getView().getResolutionForZoom();
         let properties: any = {};
         let url = source.getGetFeatureInfoUrl(
             evt.coordinate, viewResolution, mapSvc.EPSG,
@@ -220,16 +247,18 @@ export class LayerMarshaller  {
 
     private formatFeatureCollectionToTable(collection): string {
         let html = `<h3>${collection.id}</h3><clr-datagrid>`;
-        for (let key in collection["features"][0]["properties"]) {
-            html += `<clr-dg-column>${key}</clr-dg-column>`;
-        }
-        for (let feature of collection["features"]) {
-            html += "<clr-dg-row>";
-            for (let key in feature["properties"]) {
-                let val = feature["properties"][key];
-                html += `<clr-dg-cell>${val}</clr-dg-cell>`;
+        if(collection["features"].length > 0) {
+            for (let key in collection["features"][0]["properties"]) {
+                html += `<clr-dg-column>${key}</clr-dg-column>`;
             }
-            html += "</clr-dg-row>";
+            for (let feature of collection["features"]) {
+                html += "<clr-dg-row>";
+                for (let key in feature["properties"]) {
+                    let val = feature["properties"][key];
+                    html += `<clr-dg-cell>${val}</clr-dg-cell>`;
+                }
+                html += "</clr-dg-row>";
+            }
         }
         html += "</clr-datagrid>"
         return html;

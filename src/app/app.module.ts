@@ -37,6 +37,7 @@ import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-fie
 import { VarDirective } from './ng-var.directive';
 import { LayerMarshaller } from './components/map/layer_marshaller';
 import { ScreenshotComponent } from './components/screenshot/screenshot.component';
+import { FormStringselectFieldComponent } from './components/config_wizard/form-stringselect-field/form-stringselect-field.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,7 @@ import { ScreenshotComponent } from './components/screenshot/screenshot.componen
     MapComponent, 
     LayercontrolComponent, 
     FormBboxFieldComponent, 
-    VarDirective, ScreenshotComponent
+    VarDirective, ScreenshotComponent, FormStringselectFieldComponent
   ],
   imports: [
     BrowserModule,

@@ -13,8 +13,8 @@ import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/i
 export class FormFeatureSelectFieldComponent implements OnInit {
 
   @Input() parameter: SelectUconfWpsData;
-  private options: {[k: string]: any};
-  public selectionStrings: string[]; 
+  private options: { [k: string]: any };
+  public selectionStrings: string[];
   public activeSelection: string;
 
 
@@ -29,16 +29,16 @@ export class FormFeatureSelectFieldComponent implements OnInit {
 
   onChange(newValString) {
     const newVal = this.options[newValString];
-    this.store.dispatch(new InteractionCompleted({product: {description: this.parameter.description, value: newVal}}))
+    this.store.dispatch(new InteractionCompleted({ product: { description: this.parameter.description, value: newVal } }))
   }
 
   onClick(event) {
     this.store.dispatch(new InteractionStarted({
-      mode: "featureselection", 
+      mode: "featureselection",
       product: {
         ... this.parameter
       }
-  }))
+    }))
   }
 
 }

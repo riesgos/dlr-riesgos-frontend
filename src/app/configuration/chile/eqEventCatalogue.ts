@@ -1,5 +1,5 @@
 import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
-import { UserconfigurableWpsDataDescription, UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { UserconfigurableWpsDataDescription, UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerDescription, BboxLayerDescription, VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
@@ -102,7 +102,7 @@ export const p: UserconfigurableWpsData = {
 };
 
 
-export const etype: UserconfigurableWpsData = {
+export const etype: StringSelectUconfWpsData = {
     description: {
         id: "etype",
         description: "etype",
@@ -111,8 +111,9 @@ export const etype: UserconfigurableWpsData = {
         type: "literal",
         wizardProperties: {
             name: "Catalogue type",
-            fieldtype: "string",
+            fieldtype: "stringselect"
         },
+        options: ["deaggregation", "observed", "stochastic", "expert"]
     },
     value: null
 };

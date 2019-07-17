@@ -1,20 +1,6 @@
-save/restore:
-    before we can do the scenario-switching, we need a better understanding of how to do save-and-restore. 
-    my suggestion: 
-        save-event: serialize current state under given filename
+save/restore
+    layercontrol does not react to restore
         
-
-
----- Issue: handling multiple scenarios -----------------------------------------------
-A user may jump from scenario to scenario. 
-We need to adjust the state accordingly: 
-    scenario
-        proces
-        prods
-    scenario
-        procs
-        prods
-
 
 
 sld-styling: 

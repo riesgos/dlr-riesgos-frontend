@@ -27,6 +27,7 @@ export class SaveButtonComponent implements OnInit {
     nameControl: FormControl;
     dataStorage: StorageRow[] = [];
     selectedStorageRow: StorageRow;
+    private currentState: WpsState
 
     constructor(
         private storageService: UtilStoreService,
@@ -34,25 +35,22 @@ export class SaveButtonComponent implements OnInit {
     ) {
         this.nameControl = new FormControl("Save state", [Validators.required]);
     }
-
+    
     ngOnInit() {
+        this.store.pipe(select(getFullWpsState)).subscribe((state: WpsState) => {
+            this.currentState = state;
+        })
     }
 
     storeRow(): void {
         let name = this.nameControl.value;
-
-        this.store.pipe(select(getFullWpsState)).subscribe((state: WpsState) => {
-
-            let data = state;
-            this.dataStorage.push({
-                name: name,
-                data: data,
-                date: new Date()
-            });
-            this.showStoreModal = false;
-
-        })
-
+        let data = this.currentState;
+        this.dataStorage.push({
+            name: name,
+            data: data,
+            date: new Date()
+        });
+        this.showStoreModal = false;
     }
 
     restoreSelectedRow(): void {

@@ -9,7 +9,7 @@ import { osm } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getMapableProducts } from 'src/app/wps/wps.selectors';
+import { getMapableProducts, getScenario } from 'src/app/wps/wps.selectors';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
@@ -149,9 +149,23 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.mapSvc.setCenter([-70.799, -33.990]);
-        this.mapSvc.setZoom(8);
-        this.mapSvc.setProjection(getProjection('EPSG:4326'));
+        this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
+            switch(scenario) {
+                case "c1":
+                    this.mapSvc.setCenter([-70.799, -33.990]);
+                    break;
+                case "e1": 
+                    this.mapSvc.setCenter([-78.442, -0.678]);
+                    break;
+                case "p1":
+                    this.mapSvc.setCenter([-75.902, -11.490]);
+                    break;
+                default: 
+                    throw new Error(`Unknown scenario: ${scenario}`)
+                }
+                this.mapSvc.setZoom(8);
+                this.mapSvc.setProjection(getProjection('EPSG:4326'));
+            })
     }
 
 

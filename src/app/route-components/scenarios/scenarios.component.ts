@@ -63,8 +63,8 @@ export class ScenariosComponent implements OnInit {
   constructor() {
     this.scenarios = [
       { id: 'c1', title: 'Showcase Chile', preview: 'assets/data/Showcase-c1.jpg', content: '', index: 1 },
-      { id: 'e1', title: 'Showcase Ecuador', preview: 'assets/data/Showcase-e1.jpg', content: '', index: 2, disabled: true },
-      { id: 'p1', title: 'Showcase Peru', preview: 'assets/data/Showcase-c1.jpg', content: '', index: 3, disabled: true }];
+      { id: 'e1', title: 'Showcase Ecuador', preview: 'assets/data/Showcase-e1.jpg', content: '', index: 2 },
+      { id: 'p1', title: 'Showcase Peru', preview: 'assets/data/Showcase-c1.jpg', content: '', index: 3 }];
   }
 
   ngOnInit() {

@@ -6,14 +6,28 @@ import { Product, Process, ProcessId } from './wps.datatypes';
 import { ProductsProvided } from './wps.actions';
 import { isVectorLayerData, isBboxLayerData, isWmsData } from '../components/map/mappable_wpsdata';
 
+
 const getWpsState = (state: State) => {
     return state.wpsState;
 }
+
+
+export const getFullWpsState = createSelector(
+    getWpsState, 
+    (s: WpsState) => s
+)
+
 
 export const getProcessStates = createSelector(
     getWpsState, 
     (s: WpsState) => s.processStates
 );
+
+
+export const getScenario = createSelector(
+    getWpsState, 
+    (s: WpsState) => s.scenario
+)
 
 
 export const getProducts = createSelector(

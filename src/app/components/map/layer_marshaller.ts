@@ -246,21 +246,38 @@ export class LayerMarshaller  {
     }
 
     private formatFeatureCollectionToTable(collection): string {
-        let html = `<h3>${collection.id}</h3><clr-datagrid>`;
+        let html = "";
+        
+        if(collection.id) html += `<h3>${collection.id}</h3>`;
+        
         if(collection["features"].length > 0) {
+            html += "<table>";
+            html += "<tr>";
             for (let key in collection["features"][0]["properties"]) {
-                html += `<clr-dg-column>${key}</clr-dg-column>`;
+                html += `<th>${key}</th>`;
             }
+            html += "</tr>";
             for (let feature of collection["features"]) {
-                html += "<clr-dg-row>";
+                html += "<tr>";
                 for (let key in feature["properties"]) {
                     let val = feature["properties"][key];
-                    html += `<clr-dg-cell>${val}</clr-dg-cell>`;
+                    html += `<td>${val}</td>`;
                 }
-                html += "</clr-dg-row>";
+                html += "</tr>";
             }
+            html += "</table>"
         }
-        html += "</clr-datagrid>"
+        
+        const otherKeys = Object.keys(collection).filter(key => !["type", "totalFeatures", "features", "crs"].includes(key));
+        if(otherKeys.length > 0) {
+            html += "<table>";
+            for (let key of otherKeys) {
+                const val = collection[key];
+                html += `<tr> <td>${key}:</td> <td>${val}</td> </tr>`;
+            }
+            html += "</table>"
+        }
+        
         return html;
     }
 

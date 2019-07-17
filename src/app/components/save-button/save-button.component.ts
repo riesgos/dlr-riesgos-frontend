@@ -1,12 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UtilStoreService } from '@ukis/services-util-store';
 import { Form, FormControl, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
+import { getFullWpsState } from 'src/app/wps/wps.selectors';
+import { WpsState } from 'src/app/wps/wps.state';
+import { WpsDataUpdate } from 'src/app/wps/wps.actions';
 
 
 interface StorageRow {
     name: string,
     date: Date,
-    data: any
+    data: WpsState
 }
 
 @Component({
@@ -16,7 +21,6 @@ interface StorageRow {
 })
 export class SaveButtonComponent implements OnInit {
 
-    @Input() saveProvider: SaveProvider;
     showResetModal: boolean = false;
     showRestoreModal: boolean = false;
     showStoreModal: boolean = false;
@@ -25,7 +29,8 @@ export class SaveButtonComponent implements OnInit {
     selectedStorageRow: StorageRow;
 
     constructor(
-        //private storageService: UtilStoreService
+        private storageService: UtilStoreService,
+        private store: Store<State>
     ) {
         this.nameControl = new FormControl("Save state", [Validators.required]);
     }
@@ -35,30 +40,32 @@ export class SaveButtonComponent implements OnInit {
 
     storeRow(): void {
         let name = this.nameControl.value;
-        let data = this.saveProvider.getDataToSave();
-        this.dataStorage.push({
-            name: name,
-            data: data,
-            date: new Date()
-        });
-        this.showStoreModal = false;
+
+        this.store.pipe(select(getFullWpsState)).subscribe((state: WpsState) => {
+
+            let data = state;
+            this.dataStorage.push({
+                name: name,
+                data: data,
+                date: new Date()
+            });
+            this.showStoreModal = false;
+
+        })
+
     }
 
     restoreSelectedRow(): void {
-        if (this.selectedStorageRow) this.saveProvider.restoreData(this.selectedStorageRow.data);
+        if (this.selectedStorageRow) {
+            const processes = this.selectedStorageRow.data.processStates;
+            const products = this.selectedStorageRow.data.productValues;
+            this.store.dispatch(new WpsDataUpdate({processes: processes, products: products}))
+        }
         this.showRestoreModal = false;
     }
 
     onResetClicked(): void {
-        this.saveProvider.reset();
         this.showResetModal = false;
     }
 
-}
-
-
-export interface SaveProvider {
-    getDataToSave(): any;
-    restoreData(data: any): void;
-    reset(): void;
 }

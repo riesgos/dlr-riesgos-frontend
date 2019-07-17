@@ -14,7 +14,7 @@ export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
         type: "bbox",
         reference: false,
         description: "Please select an area of interest",
-        defaultValue: [-71.00,-34.00,-70.00,-33.00],
+        defaultValue: [-73.5,-34,-70.5,-29.0],
         wizardProperties: {
             name: "AOI",
             fieldtype: "bbox",

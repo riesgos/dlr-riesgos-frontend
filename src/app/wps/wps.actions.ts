@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Product, Process, ProcessId } from './wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public_api';
+import { Scenario } from './wps.state';
 
 
 export enum EWpsActionTypes {
@@ -8,12 +9,12 @@ export enum EWpsActionTypes {
     productsProvided = "[Wps] Products Provided", 
     clickRunProduct = "[Wps] Click on 'run process' button",
     restartingFromProcess = "[Wps] Restarting from process", 
-    wpsDataUpdate = "[Wps] Data update"
+    wpsDataUpdate = "[Wps] Data update", 
 }
 
 export class ScenarioChosen implements Action {
     type: string = EWpsActionTypes.scenarioChosen;
-    constructor(public payload: {scenario: string}) {}
+    constructor(public payload: {scenario: Scenario}) {}
 }
 
 
@@ -40,6 +41,8 @@ export class WpsDataUpdate implements Action {
     type: string = EWpsActionTypes.wpsDataUpdate;
     constructor(public payload: {processes: Process[], products: Product[]}) {}
 }
+
+
 
 
 export type WpsActions = ProductsProvided | ClickRunProcess | RestartingFromProcess | ScenarioChosen | WpsDataUpdate;

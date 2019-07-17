@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen, ClickRunProcess, WpsDataUpdate, RestartingFromProcess } from './wps.actions';
-import { map, switchMap } from 'rxjs/operators'; 
+import { map, switchMap, withLatestFrom } from 'rxjs/operators'; 
 import { HttpClient } from '@angular/common/http';
-import { Store, Action } from '@ngrx/store';
+import { Store, Action, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
@@ -12,6 +12,9 @@ import { EqGroundMotion, EqGroundMotionProvider, shakemapOutput, selectedEq } fr
 import { EqTsInteraction, epicenter } from '../configuration/chile/eqTsInteraction';
 import { TsPhysicalSimulation, tsunamap, lat, lon, mag } from '../configuration/chile/tsPhysicalSimulation';
 import { Process, Product } from './wps.datatypes';
+import { UtilStoreService } from '@ukis/services-util-store';
+import { getProcessStates } from './wps.selectors';
+import { WpsState } from './wps.state';
 
 
 
@@ -30,10 +33,18 @@ export class WpsEffects {
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
 
-            const wpsUpdate = new WpsDataUpdate({processes: processes, products: products});
-            const processClicked = new NewProcessClicked({processId: processes[0].id});
+            let actions: Action[] = [];
 
-            return [wpsUpdate, processClicked];
+            const wpsUpdate = new WpsDataUpdate({processes: processes, products: products});
+            actions.push(wpsUpdate);
+
+
+            if(processes.length > 0) {
+                const processClicked = new NewProcessClicked({processId: processes[0].id});
+                actions.push(processClicked);
+            }
+
+            return actions;
         })
     );
 
@@ -113,7 +124,11 @@ export class WpsEffects {
 
     private wfc: WorkflowControl;
 
-    constructor( private httpClient: HttpClient, private actions$: Actions, private store$: Store<State> ) {
+    constructor( 
+        private actions$: Actions, 
+        private store$: Store<State>,
+        private httpClient: HttpClient, 
+        ) {
         //this.wfc = new WorkflowControl([], [], this.httpClient);
     }
 
@@ -122,9 +137,21 @@ export class WpsEffects {
      * @TODO: in the future, this will also load data from files
      */
     private loadScenarioData(scenario: string): [Process[], Product[]] {
-        const processes = [EqEventCatalogue, EqGroundMotionProvider, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
-        const products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, epicenter, lat, lon, mag, tsunamap];
-        return [processes, products];
+        let processes: Process[] = [];
+        let products: Product[] = [];
+        switch(scenario){
+            case "c1": 
+                processes = [EqEventCatalogue, EqGroundMotionProvider, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
+                products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, epicenter, lat, lon, mag, tsunamap];
+                return [processes, products];
+            case "e1": 
+            case "p1":
+                processes = [];
+                products = [];
+                return [processes, products];
+            default: 
+                throw new Error(`Unknown scenario ${scenario}`)
+        }
     }
 
 }

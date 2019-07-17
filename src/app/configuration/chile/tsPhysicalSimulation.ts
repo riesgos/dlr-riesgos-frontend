@@ -25,7 +25,7 @@ export const lon: UserconfigurableWpsData = {
         type: "literal",
         wizardProperties: {
             fieldtype: "string", 
-            name: "lattitude", 
+            name: "longitude", 
         }
     },
     value: null
@@ -38,7 +38,7 @@ export const mag: UserconfigurableWpsData = {
         type: "literal",
         wizardProperties: {
             fieldtype: "string", 
-            name: "lattitude", 
+            name: "maginitude", 
         }
     },
     value: null

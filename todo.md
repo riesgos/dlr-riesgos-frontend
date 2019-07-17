@@ -1,16 +1,8 @@
-performance: 
-    je mehr features, desto längerer lag bei auswahl eq in groundmotion simulation
-
-
-with new getLayer*s*, riesgos:shakemap does not get displayed. i believe that no full layer-object is returned. 
-    layer is returned, but all tiles are transparent. 
-        https://riesgos.52north.org/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=TRUE&LAYERS=riesgos%3Ashakemap_703cf&WIDTH=256&HEIGHT=256&BBOX=-68.90625%2C-33.75%2C-67.5%2C-32.34375&SRS=EPSG%3A4326&STYLES=
-
-the rxjs-wait keeps throwing user out of textfield
-
-
-popup for rasterdata: 
-    often no feature returned, but at least show the collections other properties (timeStamp in this case: http://tsunami-wps.awi.de:8080/shoa_115_8.00/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=TRUE&QUERY_LAYERS=shoa_115_mwh&LAYERS=shoa_115_mwh&WIDTH=256&HEIGHT=256&BBOX=-2445.984905127436%2C-2445.984905127436%2C-1.7957972886506468e-9%2C-1.7957972886506468e-9&SRS=EPSG%3A4326&INFO_FORMAT=application%2Fjson&I=248&J=3&CRS=EPSG%3A3857&STYLES= )
+save/restore:
+    before we can do the scenario-switching, we need a better understanding of how to do save-and-restore. 
+    my suggestion: 
+        save-event: serialize current state under given filename
+        
 
 
 ---- Issue: handling multiple scenarios -----------------------------------------------
@@ -23,6 +15,38 @@ We need to adjust the state accordingly:
         procs
         prods
 
+
+
+sld-styling: 
+    parse:
+    display
+    include in riesgos
+        let vector-parameters have optional sld-property
+
+
+ich bin mir nicht sicher ob dir schon jemand den Link zu unserem WPS Server geschickt hat, aber wenn nicht dann ist er hier:
+http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+Und das hier ist der versprochene Link zum WCS von Geomer (gerade mit dem GetCapabilities-Aufruf):
+https://www.sd-kama.de/geoserver/anim_cotopaxi4/ows?service=wcs&version=1.1&request=GetCapabilities
+
+
+the rxjs-wait keeps throwing user out of textfield
+    products-provided is beeing executed
+    after that, field is regenerated?
+
+
+performance: 
+    je mehr features, desto längerer lag bei auswahl eq in groundmotion simulation
+    https://blog.ninja-squad.com/2018/09/20/angular-performances-part-3/
+    performance problems immediately disappear when i disable the feature-tables. 
+
+
+tabelle und feature in karte müssen in bezug zueinander stehen: highlight feature and row
+tabelle: crop to five rows
+tabelle: alphabetisch sortierbar
+tabelle: unter layer
+tabelle: Mouseover "add columns"
+
 make layers transparent once out of focus. 
     listen to "focusChangeEvent"
 
@@ -30,8 +54,9 @@ screenshot funktion in top right
 
 restore
 
-tabelle: crop to five rows
-tabelle und feature in karte müssen in bezug zueinander stehen: highlight feature and row
+bbox: 
+    click on bbox field -> ineraction starts
+    click on other field -> interaction has not stopped!
 
 
 rechte spalte: variable größe
@@ -49,24 +74,7 @@ layerswitcher:
     per layer: export and table icons
     show raster/vector icons
 
-tabelle: alphabetisch sortierbar
-tabelle: unter layer
-tabelle: Mouseover "add columns"
 
-
-sld-styling: 
-    parse:
-    display
-    include in riesgos
-        let vector-parameters have optional sld-property
-
-
-
-
-ich bin mir nicht sicher ob dir schon jemand den Link zu unserem WPS Server geschickt hat, aber wenn nicht dann ist er hier:
-http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
-Und das hier ist der versprochene Link zum WCS von Geomer (gerade mit dem GetCapabilities-Aufruf):
-https://www.sd-kama.de/geoserver/anim_cotopaxi4/ows?service=wcs&version=1.1&request=GetCapabilities
 
 
 

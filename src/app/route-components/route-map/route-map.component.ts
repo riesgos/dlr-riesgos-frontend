@@ -30,7 +30,8 @@ export class RouteMapComponent implements OnInit {
 
 
   ngOnInit() {
-    const scenario = this.activeRoute.snapshot.paramMap.get("id") || "c1";
+    const scenario = this.activeRoute.snapshot.queryParams["id"] || "c1";
+    console.log(`user just chose scenario ${scenario}`)
     this.store.dispatch(new ScenarioChosen({scenario: scenario}));
   }
 

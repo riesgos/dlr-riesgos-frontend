@@ -10,6 +10,7 @@ export class ScreenshotService {
   constructor() { }
 
   makeScreenshot() {
-    return from(html2canvas(document.body));
+    let element = document.body;
+    return from(html2canvas(element));
   }
 }

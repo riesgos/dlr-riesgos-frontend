@@ -15,6 +15,7 @@ import { Process, Product } from './wps.datatypes';
 import { UtilStoreService } from '@ukis/services-util-store';
 import { getProcessStates } from './wps.selectors';
 import { WpsState } from './wps.state';
+import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
 
 
 
@@ -145,6 +146,9 @@ export class WpsEffects {
                 products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, epicenter, lat, lon, mag, tsunamap];
                 return [processes, products];
             case "e1": 
+                processes = [LaharWps];
+                products = [direction, intensity, parameter, laharWms];
+                return [processes, products];
             case "p1":
                 processes = [];
                 products = [];

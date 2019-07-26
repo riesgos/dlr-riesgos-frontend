@@ -5,7 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getFullWpsState } from 'src/app/wps/wps.selectors';
 import { WpsState } from 'src/app/wps/wps.state';
-import { WpsDataUpdate } from 'src/app/wps/wps.actions';
+import { WpsDataUpdate, ScenarioChosen } from 'src/app/wps/wps.actions';
 
 
 interface StorageRow {
@@ -63,6 +63,8 @@ export class SaveButtonComponent implements OnInit {
     }
 
     onResetClicked(): void {
+        const currentScenario = this.currentState.scenario;
+        this.store.dispatch(new ScenarioChosen({scenario: currentScenario}));
         this.showResetModal = false;
     }
 

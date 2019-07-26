@@ -14,7 +14,7 @@ import { ProductsProvided } from 'src/app/wps/wps.actions';
 export class FormStringselectFieldComponent implements OnInit {
 
     @Input() parameter: StringSelectUconfWpsData;
-    private options: string[];
+    public options: string[];
     public activeSelection: string;
 
 

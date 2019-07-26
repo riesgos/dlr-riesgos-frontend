@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { Layer, VectorLayer, RasterLayer } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
+import { SldParserService } from 'projects/sld-parser/src/public-api';
 
 /**
  * Why do wo add another layer of translation here, instead of translating in wpsClient?
@@ -43,6 +44,7 @@ export class LayerMarshaller  {
         private httpClient: HttpClient,
         private mapSvc: MapOlService,
         public mapStateSvc: MapStateService,
+        private sldParser: SldParserService,
         private store: Store<State>
         ) {}
         
@@ -96,10 +98,10 @@ export class LayerMarshaller  {
         return of(layer);
     }
 
-    private getStyle(product: VectorLayerData) {
-        if (product.description.vectorLayerAttributes.style) return product.description.vectorLayerAttributes.style;
-        else if (product.description.vectorLayerAttributes.sldFile) return null;
-        else return null;
+    private getStyle(product: VectorLayerData): Observable<CallableFunction | null> {
+        if (product.description.vectorLayerAttributes.style) return of(product.description.vectorLayerAttributes.style);
+        else if (product.description.vectorLayerAttributes.sldFile) return this.sldParser.readStyleForLayer(product.description.vectorLayerAttributes.sldFile, product.description.id);
+        else return of(null);
     }
 
     makeWmsLayers(product: WmsLayerData): Observable<RasterLayer[]> {

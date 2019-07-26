@@ -1,6 +1,3 @@
-save/restore
-    layercontrol does not react to restore
-        
 
 
 sld-styling: 
@@ -20,6 +17,9 @@ the rxjs-wait keeps throwing user out of textfield
     products-provided is beeing executed
     after that, field is regenerated?
 
+save/restore
+    layercontrol does not react to restore
+        
 
 performance: 
     je mehr features, desto längerer lag bei auswahl eq in groundmotion simulation

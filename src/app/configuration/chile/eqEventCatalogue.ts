@@ -169,29 +169,13 @@ export const selectedEqs: VectorLayerData = {
         reference: false,
         type: "complex",
         vectorLayerAttributes: {
-            style: (feature) => {
-                let magnitude = feature.get("magnitude.mag.value");
-                let style = new Style({
-                    image: new Circle({
-                        radius: (magnitude - 6.0) * 10.0,
-                        fill: new Fill({
-                            color: green2red(magnitude),
-                        }),
-                        stroke: new Stroke({
-                            color: [0, 0, 0],
-                            width: 1
-                        }),
-                    })
-                });
-                return style;
-            },
+            sldFile: "src/app/configuration/chile/QuakeledgerStyle.sld",
             text: (properties) => {
                 let text = `<h3>Available earthquakes</h3>`;
                 let selectedProperties = {
                     "Id": properties["origin.publicID"],
                     "Magnitude": Math.round(properties["magnitude.mag.value"] * 100) / 100,
-                    "Depth": Math.round(properties["origin.depth.value"] * 100) / 100 + " m",
-                    "Dip value": Math.round(properties["focalMechanism.nodalPlanes.nodalPlane1.dip.value"] * 100) / 100 + " °"
+                    "Depth": Math.round(properties["origin.depth.value"] * 100) / 100 + " m"
                 };
                 text += "<table class='table'><tbody>";
                 for (let property in selectedProperties) {

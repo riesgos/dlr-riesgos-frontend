@@ -2,9 +2,9 @@ import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided, ClickRunProcess, RestartingFromProcess } from 'src/app/wps/wps.actions';
-import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription, UserconfigurableWpsData, isUserconfigurableWpsData } from '../userconfigurable_wpsdata';
+import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription, UserconfigurableWpsData, isUserconfigurableWpsData, FeatureSelectUconfWD } from '../userconfigurable_wpsdata';
 import { Process, Product, ProductDescription, ProcessId, WpsProcess } from 'src/app/wps/wps.datatypes';
-import { ProductId } from 'projects/services-wps/src/public_api';
+import { ProductId } from 'projects/services-wps/src/public-api';
 import { getInputsForProcess } from 'src/app/wps/wps.selectors';
 import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -39,7 +39,11 @@ export class WizardPageComponent implements OnInit {
 
   onSubmitClicked () {
     for (let parameter of this._parameters) {
-      if(parameter.value == null && parameter.description.defaultValue) parameter.value = parameter.description.defaultValue; 
+      if (parameter.value == null) {
+        if (parameter.description.defaultValue) {
+          parameter.value = parameter.description.defaultValue;
+        }
+      }
     }
     this.store.dispatch(new ClickRunProcess({productsProvided: this._parameters, process: this.process }));
   }

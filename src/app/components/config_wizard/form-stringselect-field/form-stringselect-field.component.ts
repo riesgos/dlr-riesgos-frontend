@@ -1,9 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
-import { SelectUconfWpsData, StringSelectUconfWpsData } from '../userconfigurable_wpsdata';
-import { FormControl } from '@angular/forms';
+import {  StringSelectUconfWpsData } from '../userconfigurable_wpsdata';
 import { ProductsProvided } from 'src/app/wps/wps.actions';
 
 @Component({

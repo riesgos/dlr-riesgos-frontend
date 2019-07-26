@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Product, Process, ProcessId } from './wps.datatypes';
-import { ProductId } from 'projects/services-wps/src/public_api';
+import { ProductId } from 'projects/services-wps/src/public-api';
 import { Scenario } from './wps.state';
 
 

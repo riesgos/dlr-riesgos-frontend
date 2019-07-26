@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { SelectUconfWD, SelectUconfWpsData } from '../userconfigurable_wpsdata';
+import { FeatureSelectUconfWD, FeatureSelectUconfWpsData } from '../userconfigurable_wpsdata';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
@@ -12,7 +12,7 @@ import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/i
 })
 export class FormFeatureSelectFieldComponent implements OnInit {
 
-  @Input() parameter: SelectUconfWpsData;
+  @Input() parameter: FeatureSelectUconfWpsData;
   private options: { [k: string]: any };
   public selectionStrings: string[];
   public activeSelection: string;
@@ -21,7 +21,7 @@ export class FormFeatureSelectFieldComponent implements OnInit {
   constructor(private store: Store<State>) { }
 
   ngOnInit() {
-    this.options = this.parameter.description.wizardProperties.options;
+    this.options = this.parameter.description.options;
     this.selectionStrings = Object.keys(this.options);
     this.activeSelection = this.parameter.value.id;
   }

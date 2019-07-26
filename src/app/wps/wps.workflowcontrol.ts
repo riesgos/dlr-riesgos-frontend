@@ -1,11 +1,11 @@
 import { Process, Product, ProcessId, ProcessState, isWatchingProcess, isWpsProcess, WpsProcess, ProcessStateRunning, ProcessStateCompleted, ProcessStateError, ProcessStateTypes, ProcessStateUnavailable, ProcessStateAvailable } from './wps.datatypes';
 import { Graph, alg } from 'graphlib';
 import { ProductId, WpsData } from 'projects/services-wps/src/lib/wps_datatypes';
-import { WpsClient } from 'projects/services-wps/src/public_api';
 import { HttpClient } from '@angular/common/http';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { isUserconfigurableWpsDataDescription, isUserconfigurableWpsData } from '../components/config_wizard/userconfigurable_wpsdata';
+import { WpsClient } from 'projects/services-wps/src/public-api';
 
 
 export class WorkflowControl {

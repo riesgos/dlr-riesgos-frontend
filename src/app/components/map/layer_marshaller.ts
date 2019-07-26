@@ -76,26 +76,27 @@ export class LayerMarshaller  {
     }
 
     makeGeojsonLayer(product: VectorLayerData): Observable<VectorLayer> {
-
-        const style = this.getStyle(product);
-
-        let layer: VectorLayer = new VectorLayer({
-            id: `${product.description.id}_result_layer`,
-            name: `${product.description.name}`,
-            opacity: 1,
-            type: "geojson",
-            data: product.value[0],
-            options: {
-                style: style
-            },
-            popup: <any>{
-                asyncPupup: (obj, callback) => {
-                    const html = product.description.vectorLayerAttributes.text(obj);
-                    callback(html);
-                }
-            }
-        });
-        return of(layer);
+        return this.getStyle(product).pipe(
+            map(styleFunction => {
+                let layer: VectorLayer = new VectorLayer({
+                    id: `${product.description.id}_result_layer`,
+                    name: `${product.description.name}`,
+                    opacity: 1,
+                    type: "geojson",
+                    data: product.value[0],
+                    options: {
+                        style: styleFunction
+                    },
+                    popup: <any>{
+                        asyncPupup: (obj, callback) => {
+                            const html = product.description.vectorLayerAttributes.text(obj);
+                            callback(html);
+                        }
+                    }
+                });
+                return layer;
+            })
+        );
     }
 
     private getStyle(product: VectorLayerData): Observable<CallableFunction | null> {

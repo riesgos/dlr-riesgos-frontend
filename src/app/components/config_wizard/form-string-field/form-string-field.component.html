@@ -4,7 +4,7 @@
       {{parameter.description.wizardProperties.name}}:
     </label>
 
-    <input class="clr-col-md-9" type="text" clrInput  [formControl]="formControl" [value]="formControl.value"/>
+    <input class="clr-col-md-9" type="text" clrInput  [formControl]="formControl" [value]="formControl.value"  (focus)="onFocussed(true)" (blur)="onFocussed(false)" />
 
     <clr-control-helper>{{parameter.description.description}}</clr-control-helper>
     <clr-control-error>Invalid input</clr-control-error>

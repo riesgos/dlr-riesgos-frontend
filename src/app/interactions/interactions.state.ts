@@ -1,4 +1,4 @@
-import { ProductId } from 'projects/services-wps/src/public_api';
+import { ProductId } from 'projects/services-wps/src/public-api';
 import { Product } from '../wps/wps.datatypes';
 
 export type InteractionMode = "normal" | "featureselection" | "bbox";

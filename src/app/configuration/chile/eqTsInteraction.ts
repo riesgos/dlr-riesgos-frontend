@@ -1,7 +1,7 @@
 import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WpsData } from 'projects/services-wps/src/public_api';
+import { WpsData } from 'projects/services-wps/src/public-api';
 
 
 

@@ -1,4 +1,4 @@
-import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public_api';
+import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public-api';
 
 
 
@@ -25,16 +25,15 @@ export interface BboxUconfWD extends WpsDataDescription {
     }
 }
 
-export interface SelectUconfWD extends WpsDataDescription {
+export interface FeatureSelectUconfWD extends WpsDataDescription {
     wizardProperties: {
         name: string,
         fieldtype: "select", 
-        options: {[key: string]: any}
-
     }
+    options: {[key: string]: any}
 }
 
-export type UserconfigurableWpsDataDescription = StringUconfWD | StringSelectUconfWD | BboxUconfWD | SelectUconfWD;
+export type UserconfigurableWpsDataDescription = StringUconfWD | StringSelectUconfWD | BboxUconfWD | FeatureSelectUconfWD;
 
 
 
@@ -50,13 +49,13 @@ export interface BboxUconfWpsData extends WpsData {
     description: BboxUconfWD
 }
 
-export interface SelectUconfWpsData extends WpsData {
-    description: SelectUconfWD
+export interface FeatureSelectUconfWpsData extends WpsData {
+    description: FeatureSelectUconfWD
 }
 
 
 
-export type UserconfigurableWpsData = StringUconfWpsData | StringSelectUconfWpsData | BboxUconfWpsData | SelectUconfWpsData;
+export type UserconfigurableWpsData = StringUconfWpsData | StringSelectUconfWpsData | BboxUconfWpsData | FeatureSelectUconfWpsData;
 
 
 

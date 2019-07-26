@@ -30,7 +30,6 @@ import { RouteMapComponent } from './route-components/route-map/route-map.compon
 import { MapOlModule } from '@ukis/map-ol';
 import { LayersModule } from '@ukis/services-layers';
 import { LayerControlModule } from '@ukis/layer-control';
-import { WpsClient } from 'projects/services-wps/src/public_api';
 import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
 import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';

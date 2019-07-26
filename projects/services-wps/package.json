@@ -1,13 +1,9 @@
 {
-  "name": "@ukis/services-wps",
-  "version": "0.0.0-PLACEHOLDER",
-  "main": "src/public_api",
+  "name": "services-wps",
+  "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^8.1.1",
     "@angular/core": "^8.1.1",
-    "rxjs": "^6.3.3"
-  },
-  "dependencies": {
     "@ukis/services-util-store": "0.0.0-PLACEHOLDER",
     "md5": "^2.2.1",
     "w3c-schemas": "^1.4.0",

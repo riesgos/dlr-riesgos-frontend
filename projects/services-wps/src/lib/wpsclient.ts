@@ -38,7 +38,8 @@ export class WpsClient {
 
     constructor(
         @Inject("WpsVersion") version: WpsVerion = "1.0.0", 
-        private webclient: HttpClient
+        private webclient: HttpClient, 
+        private caching = false
     ) {
         this.cache = new Cache();
         this.version = version;
@@ -83,8 +84,10 @@ export class WpsClient {
         const executeRequest = this.execute(url, processId, inputs, output, true);
 
         const cacheKey = this.cache.makeKey({url: url, id: processId, inputs: inputs, output: output});
-        const cachedResponse = this.cache.get(cacheKey);
-        if(cachedResponse) return of(cachedResponse); 
+        if(this.caching)  {
+            const cachedResponse = this.cache.get(cacheKey);
+            if(cachedResponse) return of(cachedResponse); 
+        }
 
         return executeRequest.pipe(
             switchMap(executeResponse => {
@@ -99,7 +102,9 @@ export class WpsClient {
                     tapFunction
                 )
             }),
-            tap( response => this.cache.set(cacheKey, response) )
+            tap(response => {
+                if(this.caching) this.cache.set(cacheKey, response)
+            })
         );
 
     }

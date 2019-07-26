@@ -1,9 +1,7 @@
-import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
-import { UserconfigurableWpsDataDescription, UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { VectorLayerDescription, BboxLayerDescription, VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
+import { WpsProcess, ProcessStateUnavailable } from '../../wps/wps.datatypes';
+import { UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { UtilStoreService } from '@ukis/services-util-store';
 
 
 

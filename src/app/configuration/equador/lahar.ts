@@ -1,7 +1,7 @@
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateAvailable, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { SelectUconfWD, SelectUconfWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { FeatureSelectUconfWD, FeatureSelectUconfWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
 
 export const direction: StringSelectUconfWpsData = {

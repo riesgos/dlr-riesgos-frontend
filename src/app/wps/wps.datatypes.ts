@@ -1,4 +1,4 @@
-import { WpsDataDescription, WpsVerion, ProductId } from 'projects/services-wps/src/public_api';
+import { WpsDataDescription, WpsVerion, ProductId } from 'projects/services-wps/src/public-api';
 import { UserconfigurableWpsDataDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
 

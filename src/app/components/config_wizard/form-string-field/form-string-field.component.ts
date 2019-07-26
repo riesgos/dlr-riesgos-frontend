@@ -1,5 +1,5 @@
-import { Component, OnInit, Input , forwardRef } from '@angular/core';
-import { FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { StringUconfWD, StringUconfWpsData } from '../userconfigurable_wpsdata';
@@ -16,25 +16,35 @@ export class FormStringFieldComponent implements OnInit {
 
 
   @Input() parameter: StringUconfWpsData;
-  formControl: FormControl
+  formControl: FormControl;
 
   constructor(private store: Store<State>) {}
   
   ngOnInit() {
     this.formControl = new FormControl(this.parameter.value || this.parameter.description.defaultValue, [Validators.required]);
-    this.formControl.valueChanges.pipe(
-      debounceTime(500),
-    ).subscribe(val => {
-      if(this.formControl.valid) {
-        this.store.dispatch(new ProductsProvided({
-          products: [{
-            ...this.parameter, 
-            value: val
-          }]
-        }))
-      }
-    })
+    // this.formControl.valueChanges.pipe(
+    //   debounceTime(1500),
+    // ).subscribe(val => {
+    //   if(this.formControl.valid) {
+    //     this.store.dispatch(new ProductsProvided({
+    //       products: [{
+    //         ...this.parameter, 
+    //         value: val
+    //       }]
+    //     }))
+    //   }
+    // })
+  }
 
+  onFocussed (focussed: boolean): void {
+    if(!focussed) {
+      this.store.dispatch(new ProductsProvided({
+        products: [{
+          ...this.parameter, 
+          value: this.formControl.value
+        }]
+      }))
+    }
   }
 
 }

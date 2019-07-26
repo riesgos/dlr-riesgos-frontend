@@ -1,4 +1,4 @@
-import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public_api';
+import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public-api';
 
 
 

@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { InteractionMode } from './interactions.state';
 import { Product } from '../wps/wps.datatypes';
-import { ProductId } from 'projects/services-wps/src/public_api';
+import { ProductId } from 'projects/services-wps/src/public-api';
 
 
 export enum InteractionActionTypes {

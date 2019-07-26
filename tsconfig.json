@@ -38,6 +38,12 @@
       ],
       "sld-parser/*": [
         "dist/sld-parser/*"
+      ],
+      "services-wps": [
+        "dist/services-wps"
+      ],
+      "services-wps/*": [
+        "dist/services-wps/*"
       ]
     }
   }

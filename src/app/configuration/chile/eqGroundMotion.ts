@@ -1,7 +1,7 @@
 import { WatchingProcess, Product, WpsProcess, ProcessStateTypes, ProcessStateUnavailable } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WpsData } from 'projects/services-wps/src/public_api';
+import { WpsData } from 'projects/services-wps/src/public-api';
 import { VectorLayerData, WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 
 
@@ -12,10 +12,10 @@ export const selectedEq: UserconfigurableWpsData = {
         format: "application/vnd.geo+json",
         reference: false,
         type: "complex", 
+        options: {},
         wizardProperties: {
             fieldtype: "select", 
             name: "Selected earthquake", 
-            options: {},
         }
     },
     value: null
@@ -58,10 +58,10 @@ export const EqGroundMotionProvider: WatchingProcess = {
                         format: "application/vnd.geo+json",
                         reference: false,
                         type: "complex", 
+                        options: options, 
                         wizardProperties: {
                             fieldtype: "select", 
                             name: "Selected earthquake", 
-                            options: options, 
                         }
                     },
                     value: [newProduct.value[0].features[0]]

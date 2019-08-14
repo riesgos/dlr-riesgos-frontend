@@ -1,5 +1,5 @@
 <clr-stack-view class="ConfigurationWizard">
-    <clr-stack-header style="margin-left: 20px;" i18n>Configuration Wizard</clr-stack-header>
+    <clr-stack-header style="margin-left: 20px;">{{'Configuration Wizard' | translate}}</clr-stack-header>
     <clr-stack-block *ngFor="let process of processes$ | async" [clrSbExpanded]="hasFocus(process) | async" (clrSbExpandedChange)="onBlockClicked($event, process)">
 
 

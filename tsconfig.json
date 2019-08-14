@@ -11,7 +11,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es5",
     "strictNullChecks": true,
     "typeRoots": [
       "node_modules/@types"
@@ -44,6 +44,12 @@
       ],
       "services-wps/*": [
         "dist/services-wps/*"
+      ],
+      "translate": [
+        "dist/translate"
+      ],
+      "translate/*": [
+        "dist/translate/*"
       ]
     }
   }

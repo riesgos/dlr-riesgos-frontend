@@ -18,6 +18,7 @@ import { ProgressService, IProgress } from './components/global-progress/progres
 import {ActivatedRoute} from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ukis-root',
@@ -41,7 +42,8 @@ export class UkisComponent {
     private footerService: FooterService,
     private alertService: AlertService,
     private progressService: ProgressService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translator: TranslateService
   ) {
     this.getHtmlMeta(['title', 'version', 'description']);
 
@@ -63,19 +65,21 @@ export class UkisComponent {
 
     this.currentMapName = this.route.queryParamMap.pipe(
       map(params => {
-        switch(params.get("id")) {
-          case "c1": 
-            return "Chile";
-          case "e1": 
-            return "Equador";
-          case "p1": 
-            return "Peru"; 
+        switch (params.get('id')) {
+          case 'c1': 
+            return 'Chile';
+          case 'e1': 
+            return 'Equador';
+          case 'p1': 
+            return 'Peru'; 
           default: 
-            const out = params.get("id") || "";
+            const out = params.get('id') || '';
             return out;
         }
       })
     );
+
+    translator.use('spanish');
   }
 
   showProgress = (progress: IProgress) => {
@@ -98,7 +102,7 @@ export class UkisComponent {
       let meta = _ref[_i];
       let name = meta.getAttribute('name');
       if (name && names.includes(name)) {
-        this[name.toUpperCase()] = meta.getAttribute('content') || eval(meta.getAttribute('value') || "");
+        this[name.toUpperCase()] = meta.getAttribute('content') || eval(meta.getAttribute('value') || '');
       }
     }
   }

@@ -3,7 +3,7 @@
   <ukis-global-progress *ngIf="ui.progress" [(progress)]="ui.progress"></ukis-global-progress>
 
   <ukis-header [ukis-title]="title">
-    <a routerLink="/scenarios" routerLinkActive="active" class="nav-link nav-text header-nav-el" i18n>Stories</a>
+    <a routerLink="/scenarios" routerLinkActive="active" class="nav-link nav-text header-nav-el">{{'Stories' | translate}}</a>
     <a class="nav-link nav-text header-nav-el">{{currentMapName | async}}</a>
   </ukis-header>
 

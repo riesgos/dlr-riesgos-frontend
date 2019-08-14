@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen, ClickRunProcess, WpsDataUpdate, RestartingFromProcess } from './wps.actions';
 import { map, switchMap, withLatestFrom } from 'rxjs/operators'; 
@@ -26,15 +26,15 @@ export class WpsEffects {
 
     @Effect()
     scenarioChosen$ = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.scenarioChosen), 
+        ofType<WpsActions>(EWpsActionTypes.scenarioChosen),
         switchMap((action: ScenarioChosen) => {
 
             const [rawProcs, rawProds] = this.loadScenarioData(action.payload.scenario);
-            this.wfc = new WorkflowControl(rawProcs, rawProds, this.httpClient); 
+            this.wfc = new WorkflowControl(rawProcs, rawProds, this.httpClient);
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
 
-            let actions: Action[] = [];
+            const actions: Action[] = [];
 
             const wpsUpdate = new WpsDataUpdate({processes: processes, products: products});
             actions.push(wpsUpdate);
@@ -51,10 +51,10 @@ export class WpsEffects {
 
     @Effect()
     ProductsProvided = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.productsProvided), 
+        ofType<WpsActions>(EWpsActionTypes.productsProvided),
         map((action: ProductsProvided) => {
 
-            for(let product of action.payload.products) {
+            for (const product of action.payload.products) {
                 this.wfc.provideProduct(product.description.id, product.value);
             }
             const processes = this.wfc.getProcesses();
@@ -62,7 +62,7 @@ export class WpsEffects {
             return new WpsDataUpdate({processes: processes, products: products});
 
         })
-    )
+    );
 
 
     @Effect()
@@ -72,16 +72,16 @@ export class WpsEffects {
 
             const newProducts = action.payload.productsProvided;
             const process = action.payload.process;
-            for (let prod of newProducts) {
+            for (const prod of newProducts) {
                 this.wfc.provideProduct(prod.description.id, prod.value);
             }
 
-            return this.wfc.execute(process.id, 
-                
+            return this.wfc.execute(process.id,
+
                 (response, counter) => {
                     if(counter < 1) {
                         this.store$.dispatch(new WpsDataUpdate({
-                            processes: this.wfc.getProcesses(), 
+                            processes: this.wfc.getProcesses(),
                             products: this.wfc.getProducts()
                         }));
                     }
@@ -89,7 +89,7 @@ export class WpsEffects {
         }),
         switchMap((success: boolean) => {
 
-            let actions: Action[] = [];
+            const actions: Action[] = [];
 
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
@@ -97,9 +97,9 @@ export class WpsEffects {
             actions.push(wpsUpdate);
 
             const nextProcess = this.wfc.getActiveProcess();
-            if(nextProcess && success) {
+            if (nextProcess && success) {
                 const processClicked = new NewProcessClicked({processId: nextProcess.id});
-                actions.push(processClicked)
+                actions.push(processClicked);
             }
 
             return actions;
@@ -110,7 +110,7 @@ export class WpsEffects {
 
     @Effect()
     restartingFromProcess$ = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.restartingFromProcess), 
+        ofType<WpsActions>(EWpsActionTypes.restartingFromProcess),
         map((action: RestartingFromProcess) => {
 
             this.wfc.invalidateProcess(action.payload.process.id);
@@ -125,10 +125,10 @@ export class WpsEffects {
 
     private wfc: WorkflowControl;
 
-    constructor( 
-        private actions$: Actions, 
+    constructor(
+        private actions$: Actions,
         private store$: Store<State>,
-        private httpClient: HttpClient, 
+        private httpClient: HttpClient,
         ) {
         //this.wfc = new WorkflowControl([], [], this.httpClient);
     }
@@ -140,20 +140,20 @@ export class WpsEffects {
     private loadScenarioData(scenario: string): [Process[], Product[]] {
         let processes: Process[] = [];
         let products: Product[] = [];
-        switch(scenario){
-            case "c1": 
+        switch (scenario) {
+            case 'c1':
                 processes = [EqEventCatalogue, EqGroundMotionProvider, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
                 products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, epicenter, lat, lon, mag, tsunamap];
                 return [processes, products];
-            case "e1": 
+            case 'e1':
                 processes = [LaharWps];
                 products = [direction, intensity, parameter, laharWms];
                 return [processes, products];
-            case "p1":
+            case 'p1':
                 processes = [];
                 products = [];
                 return [processes, products];
-            default: 
+            default:
                 throw new Error(`Unknown scenario ${scenario}`)
         }
     }

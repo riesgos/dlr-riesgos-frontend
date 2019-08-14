@@ -2,7 +2,7 @@ import { WpsProcess, ProcessStateUnavailable } from '../../wps/wps.datatypes';
 import { UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-
+import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
 
 
 export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
@@ -167,7 +167,23 @@ export const selectedEqs: VectorLayerData = {
         reference: false,
         type: "complex",
         vectorLayerAttributes: {
-            sldFile: "src/app/configuration/chile/QuakeledgerStyle.sld",
+            // sldFile: "src/app/configuration/chile/QuakeledgerStyle.sld",
+            style: (feature) => {
+                let magnitude = feature.get("magnitude.mag.value");
+                let style = new Style({
+                    image: new Circle({
+                        radius: (magnitude - 6.0) * 10.0,
+                        fill: new Fill({
+                            color: green2red(magnitude),
+                        }),
+                        stroke: new Stroke({
+                            color: [0, 0, 0],
+                            width: 1
+                        }),
+                    })
+                });
+                return style;
+            },
             text: (properties) => {
                 let text = `<h3>Available earthquakes</h3>`;
                 let selectedProperties = {

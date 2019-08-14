@@ -32,6 +32,8 @@
     "@clr/ui": "^2.0.2",
     "@ngrx/effects": "^8.0.1",
     "@ngrx/store": "^8.0.1",
+    "@ngx-translate/core": "^11.0.1",
+    "@ngx-translate/http-loader": "^4.0.0",
     "@nieuwlandgeo/sldreader": "0.0.7",
     "@turf/helpers": "^6.1.4",
     "@turf/turf": "^5.1.6",

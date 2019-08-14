@@ -18,7 +18,7 @@ import { ProgressService } from './components/global-progress/progress.service';
 import { FooterService } from './components/global-footer/footer.service';
 import { AlertService } from './components/global-alert/alert.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ConfigurationWizardComponent } from './components/config_wizard/configuration-wizard/configuration-wizard.component';
 import { FormComponent } from './components/config_wizard/form/form.component';
 import { FormFeatureSelectFieldComponent } from './components/config_wizard/form-featureselect-field/form-featureselect-field.component';
@@ -37,25 +37,27 @@ import { VarDirective } from './ng-var.directive';
 import { LayerMarshaller } from './components/map/layer_marshaller';
 import { ScreenshotComponent } from './components/screenshot/screenshot.component';
 import { FormStringselectFieldComponent } from './components/config_wizard/form-stringselect-field/form-stringselect-field.component';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 @NgModule({
   declarations: [
-    UkisComponent, 
-    GlobalAlertComponent, 
-    GlobalFooterComponent, 
-    GlobalProgressComponent, 
+    UkisComponent,
+    GlobalAlertComponent,
+    GlobalFooterComponent,
+    GlobalProgressComponent,
     HeaderComponent,
-    SaveButtonComponent, 
-    ConfigurationWizardComponent, 
-    FormComponent, 
-    FormFeatureSelectFieldComponent, 
-    FormStringFieldComponent, 
-    WizardPageComponent, 
-    ScenariosComponent, 
-    RouteMapComponent, 
-    MapComponent, 
-    LayercontrolComponent, 
-    FormBboxFieldComponent, 
+    SaveButtonComponent,
+    ConfigurationWizardComponent,
+    FormComponent,
+    FormFeatureSelectFieldComponent,
+    FormStringFieldComponent,
+    WizardPageComponent,
+    ScenariosComponent,
+    RouteMapComponent,
+    MapComponent,
+    LayercontrolComponent,
+    FormBboxFieldComponent,
     VarDirective, ScreenshotComponent, FormStringselectFieldComponent
   ],
   imports: [
@@ -63,11 +65,11 @@ import { FormStringselectFieldComponent } from './components/config_wizard/form-
     UkisRoutingModule,
     MapOlModule,
     LayersModule,
-    LayerControlModule, 
+    LayerControlModule,
     ClarityModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot(effects), 
+    EffectsModule.forRoot(effects),
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
@@ -76,9 +78,16 @@ import { FormStringselectFieldComponent } from './components/config_wizard/form-
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/translations/', '.json'),
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
-    AlertService, FooterService, ProgressService, LayerMarshaller
+    AlertService, FooterService, ProgressService, LayerMarshaller,
   ],
   bootstrap: [UkisComponent]
 })

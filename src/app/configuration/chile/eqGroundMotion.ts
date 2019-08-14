@@ -8,97 +8,96 @@ import { VectorLayerData, WmsLayerData } from 'src/app/components/map/mappable_w
 
 export const selectedEq: UserconfigurableWpsData = {
     description: {
-        id: "quakeml-input",
-        format: "application/vnd.geo+json",
+        id: 'quakeml-input',
+        format: 'application/vnd.geo+json',
         reference: false,
-        type: "complex", 
+        type: 'complex',
         options: {},
         wizardProperties: {
-            fieldtype: "select", 
-            name: "Selected earthquake", 
+            fieldtype: 'select',
+            name: 'Selected earthquake',
         }
     },
     value: null
-}
+};
 
 
 export const shakemapOutput: WpsData & WmsLayerData = {
     description: {
-        id: "shakemap-output",
-        name: "shakemap",
-        type: "complex",
+        id: 'shakemap-output',
+        name: 'shakemap',
+        type: 'complex',
         reference: false,
-        format: "application/WMS", 
+        format: 'application/WMS',
     },
     value: null
-}
-
+};
 
 
 
 export const EqGroundMotionProvider: WatchingProcess = {
-    id: "org.n52.wps.python.algorithm.ShakemapProcess_provider",
-    name: "", 
+    id: 'org.n52.wps.python.algorithm.ShakemapProcess_provider',
+    name: '',
     state: {type: ProcessStateTypes.unavailable},
-    requiredProducts: ["selected-rows"], 
-    providedProduct: "quakeml-input",
+    requiredProducts: ['selected-rows'],
+    providedProduct: 'quakeml-input',
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        switch(newProduct.description.id) {
+        switch (newProduct.description.id) {
 
-            case "selected-rows": 
+            case 'selected-rows':
 
-                let options = {};
-                for(let feature of newProduct.value[0].features) {
+                const options = {};
+                for (const feature of newProduct.value[0].features) {
                     options[feature.id] = feature;
                 }
 
                 return [{
                     description: {
-                        id: "quakeml-input",
-                        format: "application/vnd.geo+json",
+                        id: 'quakeml-input',
+                        format: 'application/vnd.geo+json',
                         reference: false,
-                        type: "complex", 
-                        options: options, 
+                        type: 'complex',
+                        options: options,
                         wizardProperties: {
-                            fieldtype: "select", 
-                            name: "Selected earthquake", 
+                            fieldtype: 'select',
+                            name: 'Selected earthquake',
                         }
                     },
                     value: [newProduct.value[0].features[0]]
-                }]
+                }];
 
 
-            default: 
+            default:
                 return [];
         }
     }
-}
+};
 
 
 
 
-export const EqGroundMotion : WizardableProcess & WpsProcess = {
+export const EqGroundMotion: WizardableProcess & WpsProcess = {
 
     state: new ProcessStateUnavailable(),
 
-    id: "org.n52.wps.python.algorithm.ShakemapProcess",
+    id: 'org.n52.wps.python.algorithm.ShakemapProcess',
 
-    url: "https://riesgos.52north.org/wps/WebProcessingService",
+    url: 'https://riesgos.52north.org/wps/WebProcessingService',
 
-    name: "Groundmotion Simulation", 
+    name: 'Groundmotion Simulation',
 
-    description: "Simulates the ground motion caused by a given eathquakes parameters",
+    description: 'Simulates the ground motion caused by a given eathquakes parameters',
 
-    requiredProducts: ["quakeml-input"],
+    requiredProducts: ['quakeml-input'],
 
-    providedProduct: "shakemap-output", 
+    providedProduct: 'shakemap-output',
 
-    wpsVersion: "1.0.0", 
+    wpsVersion: '1.0.0',
 
     wizardProperties: {
-        shape: "earthquake", 
-        providerName: "Helmholtz Centre Potsdam German Research Centre for Geosciences", 
-        providerUrl: "https://www.gfz-potsdam.de/en/"
-    }, 
+        shape: 'earthquake',
+        providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
+        providerUrl: 'https://www.gfz-potsdam.de/en/'
+    },
 
-}
+};

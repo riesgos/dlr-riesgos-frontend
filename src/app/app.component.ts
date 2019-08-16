@@ -18,7 +18,6 @@ import { ProgressService, IProgress } from './components/global-progress/progres
 import {ActivatedRoute} from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ukis-root',
@@ -43,7 +42,6 @@ export class UkisComponent {
     private alertService: AlertService,
     private progressService: ProgressService,
     private route: ActivatedRoute,
-    private translator: TranslateService
   ) {
     this.getHtmlMeta(['title', 'version', 'description']);
 
@@ -79,7 +77,6 @@ export class UkisComponent {
       })
     );
 
-    translator.use('spanish');
   }
 
   showProgress = (progress: IProgress) => {

@@ -8,28 +8,28 @@
             <ng-container *ngIf="process.state.type as state">
                 <ng-container [ngSwitch]="state">
                     <ng-container *ngSwitchCase="'unavailable'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape"></clr-icon> <b class="p1">{{process.name}}</b>
-                        <div style="float:right;"> <span class="label" i18n>Unavailable</span> </div>
+                        <clr-icon [attr.shape]="process.wizardProperties.shape"></clr-icon> <b class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label">{{'Unavailable' | translate}}</span> </div>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'available'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-highlight"></clr-icon> <b class="p1">{{process.name}}</b>
-                        <div style="float:right;"> <span class="label label-info" i18n>Available</span> </div>
+                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-highlight"></clr-icon> <b class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label label-info">{{'Available' | translate}}</span> </div>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'running'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-warning"></clr-icon> <b class="p1">{{process.name}}</b>
-                        <div style="float:right;"> <span class="label label-warning" i18n>Running ...</span> </div>
+                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-warning"></clr-icon> <b class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label label-warning">{{'Running' | translate}} ...</span> </div>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'completed'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-success"></clr-icon> <b class="p1">{{process.name}}</b>
-                        <div style="float:right;"> <span class="label label-success" i18n>Completed</span> </div>
+                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-success"></clr-icon> <b class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label label-success">{{'Completed' | translate}}</span> </div>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="'error'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-danger"></clr-icon> <b class="p1">{{process.name}}</b>
-                        <div style="float:right;"> <span class="label label-danger" i18n>Error</span> </div>
+                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-danger"></clr-icon> <b class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label label-danger">{{'Error' | translate}}</span> </div>
                     </ng-container>
 
                 </ng-container>

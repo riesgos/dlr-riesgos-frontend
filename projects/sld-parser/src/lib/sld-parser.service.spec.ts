@@ -4,22 +4,14 @@ import { XhrFactory, HttpClient, HttpXhrBackend, HttpClientModule } from '@angul
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 
-class MyXhrFactory extends XhrFactory {
-    build(): XMLHttpRequest {
-        return new XMLHttpRequest();
-    }
-}
-let httpClient = new HttpClient(new HttpXhrBackend(new MyXhrFactory()));
-
-
 
 describe('SldParserService', () => {
 
     beforeEach(() => TestBed.configureTestingModule({
         imports: [
-            HttpClientModule,
+            // HttpClientModule,
             HttpClientTestingModule
-        ], 
+        ],
         providers: [
             SldParserService
         ]
@@ -36,10 +28,10 @@ describe('SldParserService', () => {
         const httpMock = TestBed.get(HttpTestingController);
 
         const parser: SldParserService = TestBed.get(SldParserService);
-        
-        parser.readStyleForLayer("QuakeledgerStyle.sld", "selected_rows").subscribe((result) => {
+
+        parser.readStyleForLayer('QuakeledgerStyle.sld', 'selected_rows').subscribe((result) => {
             console.log(result);
-            expect( typeof result ).toBe("function");
+            expect( typeof result ).toBe('function');
             done();
         });
 

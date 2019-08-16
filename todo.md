@@ -1,21 +1,17 @@
-shoa inundation layer
-    cannot find them in map
-    try loading the kml-files
-        cannot load kmz files, need kml. 
-        download them
-            no data displayed (even though response is indeed given by server)
-        
 
-sdl
+sld
 
-übersetzung
+assetmaster
+
+modelprop
+
+
 
 provider auch in layerpicker
 
 alternative catalogues
 
-save/restore
-    layercontrol does not react to restore
+layercontrol does not react to restore
 
 screenshot funktion in top right
 

@@ -39,6 +39,7 @@ import { ScreenshotComponent } from './components/screenshot/screenshot.componen
 import { FormStringselectFieldComponent } from './components/config_wizard/form-stringselect-field/form-stringselect-field.component';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
     MapComponent,
     LayercontrolComponent,
     FormBboxFieldComponent,
-    VarDirective, ScreenshotComponent, FormStringselectFieldComponent
+    VarDirective, ScreenshotComponent, FormStringselectFieldComponent, LanguageSwitcherComponent
   ],
   imports: [
     BrowserModule,

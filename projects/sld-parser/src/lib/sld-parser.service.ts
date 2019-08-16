@@ -27,7 +27,7 @@ export class SldParserService {
                 const style = getStyle(sldLayer, layerName);
                 const featureTypeStyle = style.featuretypestyles[0];
                 const styleFunction = createOlStyleFunction(featureTypeStyle, {
-                    // @TODO: in this object we may define a few additional hooks to help the stylefunction interact with the actual layer.
+                    // in this object we may define a few additional hooks to help the stylefunction interact with the actual layer.
                 });
                 return styleFunction;
             })

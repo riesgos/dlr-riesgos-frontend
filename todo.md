@@ -1,10 +1,14 @@
 
-sld
+make sure new layers appear on top
+
 
 assetmaster
 
 modelprop
 
+
+selection: 
+    dont allow ol to put a selected feature in its own overlay. 
 
 
 provider auch in layerpicker

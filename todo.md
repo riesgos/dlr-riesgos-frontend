@@ -1,14 +1,13 @@
 
-layerswitcher
-    make sure new layers appear on top
-    dont allow user to delete layer
+assetmaster
+
+modelprop
 
 selection: 
     dont allow ol to put a selected feature in its own overlay. 
 
-assetmaster
-
-modelprop
+layerswitcher
+    make sure new layers appear on top
 
 
 

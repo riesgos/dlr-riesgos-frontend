@@ -16,6 +16,8 @@ import { UtilStoreService } from '@ukis/services-util-store';
 import { getProcessStates } from './wps.selectors';
 import { WpsState } from './wps.state';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
+import { ExposureModel, exposure } from '../configuration/chile/exposure';
+import { VulnerabilityModel, vulnerability } from '../configuration/chile/vulnerability';
 
 
 
@@ -142,8 +144,19 @@ export class WpsEffects {
         let products: Product[] = [];
         switch (scenario) {
             case 'c1':
-                processes = [EqEventCatalogue, EqGroundMotionProvider, EqGroundMotion, EqTsInteraction, TsPhysicalSimulation];
-                products = [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs, selectedEq, shakemapOutput, epicenter, lat, lon, mag, tsunamap];
+                processes = [
+                    ExposureModel, VulnerabilityModel,
+                    EqEventCatalogue, EqGroundMotionProvider,
+                    EqGroundMotion, EqTsInteraction,
+                    TsPhysicalSimulation
+                ];
+                products = [
+                    exposure, vulnerability,
+                    inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
+                    selectedEqs, selectedEq, shakemapOutput,
+                    epicenter, lat, lon, mag,
+                    tsunamap
+                ];
                 return [processes, products];
             case 'e1':
                 processes = [LaharWps];

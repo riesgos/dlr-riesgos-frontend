@@ -57,7 +57,8 @@ export class SaveButtonComponent implements OnInit {
         if (this.selectedStorageRow) {
             const processes = this.selectedStorageRow.data.processStates;
             const products = this.selectedStorageRow.data.productValues;
-            this.store.dispatch(new WpsDataUpdate({processes: processes, products: products}))
+            const graph = this.selectedStorageRow.data.graph;
+            this.store.dispatch(new WpsDataUpdate({processes, products, graph}));
         }
         this.showRestoreModal = false;
     }

@@ -1,10 +1,8 @@
 
+process completed: jump to next
+    always jumps to wrong one. Implement "getNextActiveProcessAfter"
+
 layercontrol does not react to restore
-
-remove bbox on restore
-
-selection: 
-    dont allow ol to put a selected feature in its own overlay. 
 
 layerswitcher
     make sure new layers appear on top
@@ -14,6 +12,9 @@ assetmaster
 
 modelprop
     in testserver einbinden
+
+
+
 
 
 

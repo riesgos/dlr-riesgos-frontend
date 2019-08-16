@@ -9,11 +9,14 @@ export function wpsReducer(state: WpsState = initialWpsState, action: WpsActions
         case EWpsActionTypes.wpsDataUpdate:
             const newProcesses = (action as WpsDataUpdate).payload.processes;
             const newProducts = (action as WpsDataUpdate).payload.products;
+            const newGraph = (action as WpsDataUpdate).payload.graph;
             return {
+                ...state,
                 scenario: state.scenario,
                 processStates: newProcesses,
-                productValues: newProducts
-            }
+                productValues: newProducts,
+                graph: newGraph
+            };
 
         case EWpsActionTypes.scenarioChosen:
             return {

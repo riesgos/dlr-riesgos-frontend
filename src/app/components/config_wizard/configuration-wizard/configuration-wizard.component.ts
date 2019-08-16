@@ -40,9 +40,7 @@ export class ConfigurationWizardComponent implements OnInit {
         );
     }
 
-    ngOnInit() {
-        console.log("wizard initialized")
-    }
+    ngOnInit() {}
 
     onBlockClicked(event, processDescr: Process) {
         this.store.dispatch(new NewProcessClicked({processId: processDescr.id}));

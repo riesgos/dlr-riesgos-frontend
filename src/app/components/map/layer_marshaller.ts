@@ -77,6 +77,7 @@ export class LayerMarshaller  {
                 }
             }
         });
+        layer.productId = product.description.id;
         return of(layer);
     }
 
@@ -100,6 +101,7 @@ export class LayerMarshaller  {
                         }
                     }
                 });
+                layer.productId = product.description.id;
                 return layer;
             })
         );
@@ -166,6 +168,7 @@ export class LayerMarshaller  {
                         }
                     });
                     layer['crossOrigin'] = 'anonymous';
+                    layer.productId = product.description.id;
                     layers.push(layer);
                 }
             }

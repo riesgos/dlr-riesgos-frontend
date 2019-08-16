@@ -14,7 +14,7 @@ import { osm } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getMapableProducts, getScenario } from 'src/app/wps/wps.selectors';
+import { getMapableProducts, getScenario, getGraph } from 'src/app/wps/wps.selectors';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
@@ -22,6 +22,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './layer_marshaller';
 import { Layer, LayersService, RasterLayer, CustomLayer } from '@ukis/services-layers';
+import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
+import { Graph } from 'graphlib';
+
 
 @Component({
 
@@ -36,7 +39,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
     private geoJson = new GeoJSON();
     private interactionState: BehaviorSubject<InteractionState>;
-    private currentLayers: Observable<Layer[]>;
+    private graph: BehaviorSubject<Graph>;
+    private currentLayers: BehaviorSubject<Layer[]>;
 
     constructor(
         public mapStateSvc: MapStateService,
@@ -45,10 +49,13 @@ export class MapComponent implements OnInit, AfterViewInit {
         private layerMarshaller: LayerMarshaller,
         public layersSvc: LayersService,
     ) {
-
         this.controls = { attribution: true, scaleLine: true };
+        this.currentLayers = new BehaviorSubject<Layer[]>([]);
+        this.layersSvc.getOverlays().subscribe(layers => this.currentLayers.next(layers));
+    }
 
-        this.currentLayers = this.layersSvc.getLayers();
+
+    ngOnInit() {
 
         // listening for interaction modes
         this.interactionState = new BehaviorSubject<InteractionState>(initialInteractionState);
@@ -56,13 +63,46 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.interactionState.next(currentInteractionState);
         });
 
+        // listening for changes in graph
+        this.graph = new BehaviorSubject<Graph>(null);
+        this.store.pipe(select(getGraph)).subscribe((graph: Graph) => {
+            this.graph.next(graph);
+        });
+
+        // listening for focus-change
+        this.store.pipe(select(getFocussedProcessId)).subscribe((focussedProcessId: string) => {
+            const graph = this.graph.getValue();
+            const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
+            const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
+
+            const layers = this.currentLayers.getValue();
+            for (const layer of layers) {
+                if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
+                    layer.opacity = 0.9;
+                } else {
+                    layer.opacity = 0.2;
+                }
+                this.layersSvc.updateLayer(layer, "Overlays");
+            }
+        });
+
+        // listening for products that can be displayed in the map
+        this.store.pipe(
+            select(getMapableProducts)
+         ).subscribe((products: Product[]) => {
+             this.layersSvc.removeOverlays();
+             for (const product of products) {
+                this.layerMarshaller.toLayers(product).subscribe(layers => {
+                    for (const layer of layers) {
+                        this.layersSvc.addLayer(layer, 'Overlays');
+                    }
+                });
+            }
+        });
+
         this.mapSvc.map.on('click', () => {
             this.mapSvc.removeAllPopups();
         });
-
-    }
-
-    ngOnInit() {
 
 
         // adding dragbox interaction and hooking it into the store
@@ -77,7 +117,7 @@ export class MapComponent implements OnInit, AfterViewInit {
                     ...this.interactionState.getValue().product,
                     value: box
                 };
-                this.store.dispatch(new InteractionCompleted({product: product}));
+                this.store.dispatch(new InteractionCompleted({product}));
             },
             style: new Style({
                 stroke: new Stroke({
@@ -89,40 +129,22 @@ export class MapComponent implements OnInit, AfterViewInit {
 
 
         // adding featureselect interaction and hooking it into the store
-        const featureSelect = new Select({
-            condition: (event) => {
-                return event.type === 'pointerdown' && this.interactionState.getValue().mode === 'featureselection';
-            }
+        this.mapSvc.map.on('click', (event) => {
+            this.mapSvc.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
+                if (this.interactionState.getValue().mode === 'featureselection') {
+                    const product = {
+                        ...this.interactionState.getValue().product,
+                        value: this.geoJson.writeFeatureObject(feature)
+                    };
+                    this.store.dispatch(new InteractionCompleted({product}));
+                }
+            });
         });
-        const selectedFeatures = featureSelect.getFeatures();
-        selectedFeatures.on('add', (event) => {
-            const feature = event.target.item(0);
-            const product = {
-                ...this.interactionState.getValue().product, 
-                value: this.geoJson.writeFeatureObject(feature)
-            };
-            this.store.dispatch(new InteractionCompleted({product: product}));
-          });
-        this.mapSvc.map.addInteraction(featureSelect);
 
-
-
-
-        this.store.pipe(
-            select(getMapableProducts)
-         ).subscribe((products: Product[]) => {
-             this.layersSvc.removeOverlays();
-             for (const product of products) {
-                this.layerMarshaller.toLayers(product).subscribe(layers => {
-                    for (const layer of layers) {
-                        this.layersSvc.addLayer(layer, 'Overlays');
-                    }
-                });
-            }
-        });
     }
 
     ngAfterViewInit() {
+        // listening gor change in scenario
         this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
 
             this.mapSvc.setZoom(8);

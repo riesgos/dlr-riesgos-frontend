@@ -2,14 +2,15 @@ import { Action } from '@ngrx/store';
 import { Product, Process, ProcessId } from './wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public-api';
 import { Scenario } from './wps.state';
+import { Graph } from 'graphlib';
 
 
 export enum EWpsActionTypes {
-    scenarioChosen = "[Wps] Scenario chosen",
-    productsProvided = "[Wps] Products Provided", 
-    clickRunProduct = "[Wps] Click on 'run process' button",
-    restartingFromProcess = "[Wps] Restarting from process", 
-    wpsDataUpdate = "[Wps] Data update", 
+    scenarioChosen = '[Wps] Scenario chosen',
+    productsProvided = '[Wps] Products Provided',
+    clickRunProduct = '[Wps] Click on \'run process\' button',
+    restartingFromProcess = '[Wps] Restarting from process',
+    wpsDataUpdate = '[Wps] Data update',
 }
 
 export class ScenarioChosen implements Action {
@@ -20,13 +21,13 @@ export class ScenarioChosen implements Action {
 
 export class ProductsProvided implements Action {
     type: string = EWpsActionTypes.productsProvided;
-    constructor (public payload: {products: Product[]}) {}
+    constructor(public payload: {products: Product[]}) {}
 }
 
 
 export class ClickRunProcess implements Action {
     type: string = EWpsActionTypes.clickRunProduct;
-    constructor (public payload: {productsProvided: Product[], process: Process}) {}
+    constructor(public payload: {productsProvided: Product[], process: Process}) {}
 }
 
 
@@ -39,7 +40,7 @@ export class RestartingFromProcess implements Action {
 
 export class WpsDataUpdate implements Action {
     type: string = EWpsActionTypes.wpsDataUpdate;
-    constructor(public payload: {processes: Process[], products: Product[]}) {}
+    constructor(public payload: {processes: Process[], products: Product[], graph: Graph}) {}
 }
 
 

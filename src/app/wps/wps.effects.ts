@@ -35,14 +35,12 @@ export class WpsEffects {
             this.wfc = new WorkflowControl(rawProcs, rawProds, this.httpClient);
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
+            const graph = this.wfc.getGraph();
 
             const actions: Action[] = [];
-
-            const wpsUpdate = new WpsDataUpdate({processes: processes, products: products});
+            const wpsUpdate = new WpsDataUpdate({processes, products, graph});
             actions.push(wpsUpdate);
-
-
-            if(processes.length > 0) {
+            if (processes.length > 0) {
                 const processClicked = new NewProcessClicked({processId: processes[0].id});
                 actions.push(processClicked);
             }
@@ -61,7 +59,9 @@ export class WpsEffects {
             }
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
-            return new WpsDataUpdate({processes: processes, products: products});
+            const graph = this.wfc.getGraph();
+
+            return new WpsDataUpdate({processes, products, graph});
 
         })
     );
@@ -84,7 +84,8 @@ export class WpsEffects {
                     if (counter < 1) {
                         this.store$.dispatch(new WpsDataUpdate({
                             processes: this.wfc.getProcesses(),
-                            products: this.wfc.getProducts()
+                            products: this.wfc.getProducts(),
+                            graph: this.wfc.getGraph()
                         }));
                     }
             });
@@ -95,7 +96,8 @@ export class WpsEffects {
 
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
-            const wpsUpdate = new WpsDataUpdate({processes: processes, products: products});
+            const graph = this.wfc.getGraph();
+            const wpsUpdate = new WpsDataUpdate({processes, products, graph});
             actions.push(wpsUpdate);
 
             const nextProcess = this.wfc.getActiveProcess();
@@ -118,7 +120,8 @@ export class WpsEffects {
             this.wfc.invalidateProcess(action.payload.process.id);
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
-            return new WpsDataUpdate({processes: processes, products: products});
+            const graph = this.wfc.getGraph();
+            return new WpsDataUpdate({processes, products, graph});
 
         })
     );

@@ -9,48 +9,54 @@ import { isVectorLayerData, isBboxLayerData, isWmsData } from '../components/map
 
 const getWpsState = (state: State) => {
     return state.wpsState;
-}
+};
 
 
 export const getFullWpsState = createSelector(
-    getWpsState, 
+    getWpsState,
     (s: WpsState) => s
-)
+);
 
 
 export const getProcessStates = createSelector(
-    getWpsState, 
+    getWpsState,
     (s: WpsState) => s.processStates
 );
 
 
 export const getScenario = createSelector(
-    getWpsState, 
+    getWpsState,
     (s: WpsState) => s.scenario
-)
+);
 
 
 export const getProducts = createSelector(
-    getWpsState, 
+    getWpsState,
     (s: WpsState) => s.productValues
 );
 
 
+export const getGraph = createSelector(
+    getWpsState,
+    (s: WpsState) => s.graph
+);
+
+
 export const getInputsForProcess = createSelector(
-    getWpsState, 
+    getWpsState,
     (s: WpsState, args: {processId: string}) => {
         const process = getProcessById(args.processId, s.processStates);
         return filterInputsForProcess(process, s.productValues);
     }
-)
+);
 
 
 export const getMapableProducts = createSelector(
-    getWpsState, 
+    getWpsState,
     (s: WpsState) => {
         return s.productValues
             .filter(prod => prod.value != null)
-            .filter(prod => isVectorLayerData(prod) || isBboxLayerData(prod) || isWmsData(prod))
+            .filter(prod => isVectorLayerData(prod) || isBboxLayerData(prod) || isWmsData(prod));
     }
 );
 
@@ -59,32 +65,36 @@ export const getMapableProducts = createSelector(
 
 
 
-export const getProcessById = function(id: ProcessId, processes: Process[]): Process {
-    const process = processes.find(p => p.id == id);
-    if(process === undefined) throw new Error(`Could not find process ${id}`);
-    return process; 
-}
+export const getProcessById = (id: ProcessId, processes: Process[]): Process => {
+    const process = processes.find(p => p.id === id);
+    if (process === undefined) {
+        throw new Error(`Could not find process ${id}`);
+    }
+    return process;
+};
 
-export const getProductById = function(id: ProductId, products: Product[]): Product {
-    const product = products.find(p => p.description.id == id);
-    if(product === undefined) throw new Error(`Could not find product ${id}`);
-    return product; 
-}
+export const getProductById = (id: ProductId, products: Product[]): Product => {
+    const product = products.find(p => p.description.id === id);
+    if (product === undefined) {
+        throw new Error(`Could not find product ${id}`);
+    }
+    return product;
+};
 
 
-export const filterInputsForProcess = function(process: Process, products: Product[]): Product[] {
-    let filteredProducts = process.requiredProducts.map(pid => getProductById(pid, products))
+export const filterInputsForProcess = (process: Process, products: Product[]): Product[] => {
+    const filteredProducts = process.requiredProducts.map(pid => getProductById(pid, products));
     return filteredProducts;
-}
+};
 
 
-export const convertProductsToWpsData = function (inpts: Product[]): WpsData[] {
-    let out: WpsData[] = inpts;
+export const convertProductsToWpsData = (inpts: Product[]): WpsData[] => {
+    const out: WpsData[] = inpts;
     return out;
-}
+};
 
 
-export const convertWpsDataToProds = function(data: WpsData[]): Product[] {
-    let out = data;
+export const convertWpsDataToProds = (data: WpsData[]): Product[] => {
+    const out = data;
     return out;
-}
+};

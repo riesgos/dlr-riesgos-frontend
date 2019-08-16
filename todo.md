@@ -1,7 +1,7 @@
 
-assetmaster
+layercontrol does not react to restore
 
-modelprop
+remove bbox on restore
 
 selection: 
     dont allow ol to put a selected feature in its own overlay. 
@@ -9,15 +9,18 @@ selection:
 layerswitcher
     make sure new layers appear on top
 
+assetmaster
+    in testserver einbinden
+
+modelprop
+    in testserver einbinden
+
 
 
 provider auch in layerpicker
 
 alternative catalogues
 
-layercontrol does not react to restore
-
-screenshot funktion in top right
 
 rechte spalte: variable größe
 
@@ -64,3 +67,5 @@ performance:
     https://blog.ninja-squad.com/2018/09/20/angular-performances-part-3/
     performance problems immediately disappear when i disable the feature-tables. 
 
+
+screenshot funktion in top right

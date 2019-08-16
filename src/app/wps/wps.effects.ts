@@ -69,7 +69,7 @@ export class WpsEffects {
 
     @Effect()
     runProcessClicked$ = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.clickRunProduct), 
+        ofType<WpsActions>(EWpsActionTypes.clickRunProduct),
         switchMap((action: ClickRunProcess) =>  {
 
             const newProducts = action.payload.productsProvided;
@@ -81,7 +81,7 @@ export class WpsEffects {
             return this.wfc.execute(process.id,
 
                 (response, counter) => {
-                    if(counter < 1) {
+                    if (counter < 1) {
                         this.store$.dispatch(new WpsDataUpdate({
                             processes: this.wfc.getProcesses(),
                             products: this.wfc.getProducts()
@@ -132,7 +132,7 @@ export class WpsEffects {
         private store$: Store<State>,
         private httpClient: HttpClient,
         ) {
-        //this.wfc = new WorkflowControl([], [], this.httpClient);
+        // this.wfc = new WorkflowControl([], [], this.httpClient);
     }
 
 
@@ -167,7 +167,7 @@ export class WpsEffects {
                 products = [];
                 return [processes, products];
             default:
-                throw new Error(`Unknown scenario ${scenario}`)
+                throw new Error(`Unknown scenario ${scenario}`);
         }
     }
 

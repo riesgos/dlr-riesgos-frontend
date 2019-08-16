@@ -9,9 +9,9 @@ import { WpsDataUpdate, ScenarioChosen } from 'src/app/wps/wps.actions';
 
 
 interface StorageRow {
-    name: string,
-    date: Date,
-    data: WpsState
+    name: string;
+    date: Date;
+    data: WpsState;
 }
 
 @Component({
@@ -21,30 +21,30 @@ interface StorageRow {
 })
 export class SaveButtonComponent implements OnInit {
 
-    showResetModal: boolean = false;
-    showRestoreModal: boolean = false;
-    showStoreModal: boolean = false;
+    showResetModal = false;
+    showRestoreModal = false;
+    showStoreModal = false;
     nameControl: FormControl;
     dataStorage: StorageRow[] = [];
     selectedStorageRow: StorageRow;
-    private currentState: WpsState
+    private currentState: WpsState;
 
     constructor(
         private storageService: UtilStoreService,
         private store: Store<State>
     ) {
-        this.nameControl = new FormControl("Save state", [Validators.required]);
+        this.nameControl = new FormControl('Save state', [Validators.required]);
     }
-    
+
     ngOnInit() {
         this.store.pipe(select(getFullWpsState)).subscribe((state: WpsState) => {
             this.currentState = state;
-        })
+        });
     }
 
     storeRow(): void {
-        let name = this.nameControl.value;
-        let data = this.currentState;
+        const name = this.nameControl.value;
+        const data = this.currentState;
         this.dataStorage.push({
             name: name,
             data: data,

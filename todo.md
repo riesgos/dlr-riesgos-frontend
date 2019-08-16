@@ -1,14 +1,15 @@
 
-make sure new layers appear on top
+layerswitcher
+    make sure new layers appear on top
+    dont allow user to delete layer
 
+selection: 
+    dont allow ol to put a selected feature in its own overlay. 
 
 assetmaster
 
 modelprop
 
-
-selection: 
-    dont allow ol to put a selected feature in its own overlay. 
 
 
 provider auch in layerpicker

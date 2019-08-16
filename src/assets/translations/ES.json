@@ -1,10 +1,21 @@
 {
     "RIESGOS Demonstrator": "RIESGOS demonstrador",
     "Stories": "Historias",
-    "Configuration Wizard": "Asistente de Configuración",
-    "Earthquake Catalogue": "Catálogo de terremotos",
+    
     "Unavailable": "Indisponible", 
     "Available": "Disponible",
     "Running": "Ejecutando",
-    "Completed": "Terminado"
+    "Completed": "Terminado",
+    
+    "Configuration Wizard": "Asistente de Configuración",
+    "Provider": "Proveedor",
+    "This process can not be configured yet.": "Este proceso aún no se puede configurar.",
+    "Submit": "Enviar",
+    "Loading...": "Descargando ...",
+    "Reconfigure": "Reconfigurar",
+    "Retry": "De nuevo",
+    
+    "Earthquake Catalogue": "Catálogo de terremotos",
+    "Catalogue of historical earthquakes.": "Catálogo de terremotos históricos.",
+    "Groundmotion Simulation": "simulación de movimiento de tierra"
 }

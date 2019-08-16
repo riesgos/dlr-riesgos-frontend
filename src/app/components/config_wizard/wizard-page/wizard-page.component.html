@@ -1,28 +1,28 @@
 
-<p>{{process.description}}</p>
-<p class="p3">Provider: <a href="{{process.wizardProperties.providerUrl}}" target="_blank">{{process.wizardProperties.providerName}}</a></p>
+<p>{{process.description | translate}}</p>
+<p class="p3">{{'Provider' | translate}}: <a href="{{process.wizardProperties.providerUrl}}" target="_blank">{{process.wizardProperties.providerName}}</a></p>
 
 <div class="wizardElement">
     <ng-container [ngSwitch]="process.state.type">
 
 
         <ng-container *ngSwitchCase="'unavailable'">
-            <span class="label" i18n>This process can not be configured yet.</span>
+            <span class="label" i18n>{{'This process can not be configured yet.' | translate}}</span>
         </ng-container>
 
         <ng-container *ngSwitchCase="'available'">
             <ukis-form [parameters]="parameters$ | async"></ukis-form>
-            <button class="btn btn-outline" (click)="onSubmitClicked()" i18n>Submit</button>
+            <button class="btn btn-outline" (click)="onSubmitClicked()" i18n>{{'Submit' | translate}}</button>
         </ng-container>
 
 
         <ng-container *ngSwitchCase="'running'">
-            <span class="spinner spinner-inline" i18n> Loading... </span>
+            <span class="spinner spinner-inline" i18n>{{'Loading...' | translate}}</span>
         </ng-container>
 
         <ng-container *ngSwitchCase="'completed'">
             <ukis-form [parameters]="parameters$ | async" [disabled]="true"> </ukis-form>
-            <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>Reconfigure</button>
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>{{'Reconfigure' | translate}}</button>
         </ng-container>
 
         <ng-container *ngSwitchCase="'error'">
@@ -41,7 +41,7 @@
             </div>
 
 
-            <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>Retry</button>
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>{{'Retry' | translate}}</button>
         </ng-container>
 
     </ng-container>

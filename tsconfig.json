@@ -12,7 +12,7 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es5",
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -21,6 +21,27 @@
       "dom"
     ],
     "paths": {
+      "@ukis/map-ol": [
+        "projects/map-ol/src/public_api"
+      ],
+      "@ukis/map-ol/*": [
+        "projects/map-ol/*"
+      ],
+      "@ukis/services-layers": [
+        "projects/services-layers/src/public_api"
+      ],
+      "@ukis/services-layers/*": [
+        "projects/services-layers/*"
+      ],
+      "@ukis/services-map-state": [
+        "projects/services-map-state/src/public_api"
+      ],
+      "@ukis/services-map-state/*": [
+        "projects/services-map-state/*"
+      ],
+
+
+
       "@ukis/layer-control": [
         "projects/layer-control/src/public_api"
       ],

@@ -88,9 +88,9 @@ export class WpsEffects {
                             graph: this.wfc.getGraph()
                         }));
                     }
-            });
+            }).pipe(map(success => [success, process.id] ));
         }),
-        switchMap((success: boolean) => {
+        switchMap(([success, processId]: [boolean, string]) => {
 
             const actions: Action[] = [];
 
@@ -100,7 +100,11 @@ export class WpsEffects {
             const wpsUpdate = new WpsDataUpdate({processes, products, graph});
             actions.push(wpsUpdate);
 
-            const nextProcess = this.wfc.getActiveProcess();
+            let nextProcess = this.wfc.getNextActiveChildProcess(processId);
+            if (! nextProcess) {
+                nextProcess = this.wfc.getActiveProcess();
+            }
+
             if (nextProcess && success) {
                 const processClicked = new NewProcessClicked({processId: nextProcess.id});
                 actions.push(processClicked);
@@ -160,18 +164,28 @@ export class WpsEffects {
                     epicenter, lat, lon, mag,
                     tsunamap
                 ];
-                return [processes, products];
+                break;
             case 'e1':
                 processes = [LaharWps];
                 products = [direction, intensity, parameter, laharWms];
-                return [processes, products];
+                break;
             case 'p1':
                 processes = [];
                 products = [];
-                return [processes, products];
+                break;
             default:
                 throw new Error(`Unknown scenario ${scenario}`);
         }
+
+        // @TODO: this feels bad. Is this a design mistake?
+        const resetProducts = products.map(prod => {
+            return {
+                ...prod,
+                value: null
+            };
+        });
+
+        return [processes, resetProducts];
     }
 
 }

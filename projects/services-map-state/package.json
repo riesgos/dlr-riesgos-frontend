@@ -1,0 +1,12 @@
+{
+  "name": "@ukis/services-map-state",
+  "version": "0.0.0-PLACEHOLDER",
+  "main": "src/public_api",
+  "peerDependencies": {
+    "@angular/common": "~8.1.0",
+    "@angular/core": "~8.1.0",
+    "rxjs": "~6.5.2"
+  },
+  "dependencies": {
+  }
+}

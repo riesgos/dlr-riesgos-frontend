@@ -2,7 +2,7 @@ import { WpsMarshaller, WpsInput, WpsVerion, WpsResult, WpsOutputDescription } f
 import { WpsMarshaller100 } from './wps100/wps_marshaller_1.0.0';
 import { WpsFactory200 } from './wps200/wps_2.0_factory';
 import { Cache } from './utils/cache';
-import { Observable, timer, of } from 'rxjs';
+import { Observable, timer, of, throwError } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
 // import { Jsonix } from '@boundlessgeo/jsonix'; //let Jsonix = require('jsonix').Jsonix;
 
@@ -74,36 +74,44 @@ export class WpsClient {
 
 
     describeProcess(processId: string): Observable<any> {
-        throw new Error('Not implemented yet')
+        throw new Error('Not implemented yet');
     }
 
 
-    executeAsync(url: string, processId: string, inputs: WpsInput[], output: WpsOutputDescription, pollingRate: number = 1000, tapFunction?: (response: any) => void): Observable<WpsResult[]> {
-        
+    executeAsync(url: string, processId: string, inputs: WpsInput[], output: WpsOutputDescription,
+                 pollingRate: number = 1000, tapFunction?: (response: any) => void): Observable<WpsResult[]> {
+
         const executeRequest = this.execute(url, processId, inputs, output, true);
 
         const cacheKey = this.cache.makeKey({url: url, id: processId, inputs: inputs, output: output});
-        if(this.caching)  {
+        if (this.caching)  {
             const cachedResponse = this.cache.get(cacheKey);
-            if(cachedResponse) return of(cachedResponse); 
+            if (cachedResponse) return of(cachedResponse);
         }
 
         return executeRequest.pipe(
             switchMap(executeResponse => {
                 const getStateRequest = this.checkState(executeResponse[0].value);
                 return pollUntil(
-                    getStateRequest, 
+                    getStateRequest,
                     pollingRate,
                     (stateResponse) => {
-                        const resultsObtained = stateResponse[0].description.type != 'status';
+                        const resultsObtained = stateResponse[0].description.type !== 'status';
                         return resultsObtained;
                     },
                     tapFunction
-                )
+                );
             }),
-            tap(response => {
+            tap((response: WpsResult[]) => {
+                for (const result of response) {
+                    if (result.description.type === 'error') {
+                        throwError(new Error(result.value));
+                    }
+                }
+            }),
+            tap((response: WpsResult[]) => {
                 if(this.caching) this.cache.set(cacheKey, response)
-            })
+            }),
         );
 
     }
@@ -138,10 +146,10 @@ export class WpsClient {
                 const output = this.wpsmarshaller.unmarshalExecuteResponse(jsonResponse);
                 return output;
             })
-        ); 
+        );
     }
 
     dismiss(processId: string): Observable<any> {
-        throw new Error('Not implemented yet')
+        throw new Error('Not implemented yet');
     }
 }

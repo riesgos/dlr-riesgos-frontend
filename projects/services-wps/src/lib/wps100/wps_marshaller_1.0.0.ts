@@ -1,5 +1,5 @@
-import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability } from "../wps_datatypes";
-import { WPSCapabilitiesType, IWpsExecuteProcessBody, Execute, DataInputsType, InputType, ResponseFormType, DataType, IWpsExecuteResponse, DocumentOutputDefinitionType, ResponseDocumentType } from "./wps_1.0.0";
+import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability } from '../wps_datatypes';
+import { WPSCapabilitiesType, IWpsExecuteProcessBody, Execute, DataInputsType, InputType, ResponseFormType, DataType, IWpsExecuteResponse, DocumentOutputDefinitionType, ResponseDocumentType } from './wps_1.0.0';
 
 
 
@@ -16,47 +16,56 @@ export class WpsMarshaller100 implements WpsMarshaller {
     }
 
     unmarshalCapabilities(capabilities: WPSCapabilitiesType): WpsCapability[] {
-        let out: WpsCapability[] = [];
+        const out: WpsCapability[] = [];
         capabilities.processOfferings.process.forEach(process => {
             out.push({
                 id: process.identifier.value
-            })
-        })
+            });
+        });
         return out;
     }
 
     unmarshalExecuteResponse(responseJson: IWpsExecuteResponse): WpsResult[] {
-        let out: WpsResult[] = [];
+        const out: WpsResult[] = [];
 
-        if(responseJson.value.processOutputs) { // synchronous request?
-            for(let output of responseJson.value.processOutputs.output) {
-                let isReference = output.reference ? true : false;
-                
+        if (responseJson.value.status.processFailed) { // Failure?
+            out.push({
+                description: {
+                    id: responseJson.value.process.identifier.value,
+                    reference: true,
+                    type: 'error'
+                },
+                value: responseJson.value.statusLocation
+            });
+        } else if (responseJson.value.processOutputs) { // synchronous request?
+            for (const output of responseJson.value.processOutputs.output) {
+                const isReference = output.reference ? true : false;
+
                 let datatype;
                 let data;
-                let format; 
-                if(isReference) {
-                    datatype = "complex";
+                let format;
+                if (isReference) {
+                    datatype = 'complex';
                     // @ts-ignore
                     data = output.reference.href || null;
                     // @ts-ignore
                     format = output.reference.mimeType;
                 } else {
-                    if(output.data && output.data.literalData) {
-                        datatype = "literal"; 
+                    if (output.data && output.data.literalData) {
+                        datatype = 'literal';
                         format = output.data.literalData.dataType;
                     }
                     // @ts-ignore
-                    else if(output.data.complexData) {
-                        datatype = "complex";
+                    else if (output.data.complexData) {
+                        datatype = 'complex';
                         // @ts-ignore
                         format = output.data.complexData.mimeType;
                     }
-                    else datatype = "bbox";
+                    else datatype = 'bbox';
                     // @ts-ignore
                     data = this.unmarshalOutputData(output.data);
                 }
-    
+
                 out.push({
                     description: {
                         id: output.identifier.value,
@@ -67,13 +76,13 @@ export class WpsMarshaller100 implements WpsMarshaller {
                     value: data,
                 });
             }
-        } else if(responseJson.value.statusLocation) { // asynchronous request?
+        } else if (responseJson.value.statusLocation) { // asynchronous request?
             out.push({
                 description: {
                     id: responseJson.value.process.identifier.value,
-                    reference: true, 
-                    type: "status"
-                }, 
+                    reference: true,
+                    type: 'status'
+                },
                 value: responseJson.value.statusLocation,
             });
         }
@@ -82,23 +91,21 @@ export class WpsMarshaller100 implements WpsMarshaller {
     }
 
     protected unmarshalOutputData(data: DataType): any {
-        if(data.complexData) {
-            switch(data.complexData.mimeType){
-                case "application/vnd.geo+json": 
+        if (data.complexData) {
+            switch(data.complexData.mimeType) {
+                case 'application/vnd.geo+json':
                     //@ts-ignore 
                     return data.complexData.content.map(cont => JSON.parse(cont));
-                case "application/WMS":
+                case 'application/WMS':
                     return data.complexData.content;
-                default: 
+                default:
                     throw new Error(`Cannot unmarshal data of format ${data.complexData.mimeType}`);
             }
-        }
-
-        else if (data.literalData) {
-            switch(data.literalData.dataType) {
-                case "string":
+        } else if (data.literalData) {
+            switch (data.literalData.dataType) {
+                case 'string':
                     return data.literalData.value;
-                default: 
+                default:
                     throw new Error(`Cannot unmarshal data of format ${data.literalData.dataType}`);
             }
         }
@@ -115,17 +122,17 @@ export class WpsMarshaller100 implements WpsMarshaller {
             dataInputs: wps1Inputs,
             identifier: processId,
             responseForm: wps1ResponseForm,
-            service: "WPS",
-            version: "1.0.0"
+            service: 'WPS',
+            version: '1.0.0'
         };
 
         let body: IWpsExecuteProcessBody = {
             name: {
-                key: "{http://www.opengis.net/wps/1.0.0}Execute",
-                localPart: "Execute",
-                namespaceURI: "http://www.opengis.net/wps/1.0.0",
-                prefix: "wps",
-                string: "{http://www.opengis.net/wps/1.0.0}wps:Execute"
+                key: '{http://www.opengis.net/wps/1.0.0}Execute',
+                localPart: 'Execute',
+                namespaceURI: 'http://www.opengis.net/wps/1.0.0',
+                prefix: 'wps',
+                string: '{http://www.opengis.net/wps/1.0.0}wps:Execute'
             },
             value: bodyValue
         };
@@ -139,14 +146,14 @@ export class WpsMarshaller100 implements WpsMarshaller {
 
         let defType: DocumentOutputDefinitionType;
         switch(output.type) {
-            case "literal":
+            case 'literal':
                 defType = {
                     identifier: { value: output.id },
                     asReference: output.reference,
                     mimeType: output.format
                 };
                 break;
-            case "complex":
+            case 'complex':
                 defType = {
                     identifier: { value: output.id },
                     asReference: output.reference,
@@ -180,12 +187,12 @@ export class WpsMarshaller100 implements WpsMarshaller {
     
             let data: DataType;
             switch(inp.description.type) {
-                case "literal":
+                case 'literal':
                     data = {
                         literalData: { value: String(inp.value) }
                     };
                     break;
-                case "bbox": 
+                case 'bbox': 
                     data = {
                         boundingBoxData: {
                             lowerCorner: [inp.value[1], inp.value[0]],
@@ -193,7 +200,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
                         }
                     };
                     break;
-                case "complex":
+                case 'complex':
                     data = {
                         complexData: {
                             content: [JSON.stringify(inp.value)],
@@ -206,7 +213,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
             theInputs.push({
                 identifier: { value: inp.description.id },
                 title: { value: inp.description.id }, 
-                _abstract: { value: "" }, 
+                _abstract: { value: '' }, 
                 // @ts-ignore
                 data: data, 
             })

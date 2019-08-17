@@ -21,13 +21,14 @@ import { InteractionCompleted } from 'src/app/interactions/interactions.actions'
 import { BehaviorSubject, Observable } from 'rxjs';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './layer_marshaller';
-import { Layer, LayersService, RasterLayer, CustomLayer } from '@ukis/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
+import { ProductLayer, isProductLayer } from './map.types';
+import { switchMap } from 'rxjs/operators';
 
 
 @Component({
-
     selector: 'ukis-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
@@ -40,7 +41,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     private geoJson = new GeoJSON();
     private interactionState: BehaviorSubject<InteractionState>;
     private graph: BehaviorSubject<Graph>;
-    private currentLayers: BehaviorSubject<Layer[]>;
+
+    // TODO: instead of getting these, implement a function "updateOverlays"
+    private currentOverlays: BehaviorSubject<Layer[]>;
+    private layerGroups: BehaviorSubject<(Layer | LayerGroup)[]>;
 
     constructor(
         public mapStateSvc: MapStateService,
@@ -50,8 +54,8 @@ export class MapComponent implements OnInit, AfterViewInit {
         public layersSvc: LayersService,
     ) {
         this.controls = { attribution: true, scaleLine: true };
-        this.currentLayers = new BehaviorSubject<Layer[]>([]);
-        this.layersSvc.getOverlays().subscribe(layers => this.currentLayers.next(layers));
+        this.currentOverlays = this.layersSvc.getOverlays();
+        this.layerGroups = this.layersSvc.getLayerGroups();
     }
 
 
@@ -75,30 +79,41 @@ export class MapComponent implements OnInit, AfterViewInit {
             const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
             const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
 
-            const layers = this.currentLayers.getValue();
+            const layers = this.currentOverlays.getValue();
             for (const layer of layers) {
                 if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
                     layer.opacity = 0.9;
                 } else {
                     layer.opacity = 0.2;
                 }
-                this.layersSvc.updateLayer(layer, "Overlays");
+                this.layersSvc.updateLayer(layer, 'Overlays');
+                const groups = this.layerGroups.getValue();
+                this.layerGroups.next(groups);
             }
         });
 
         // listening for products that can be displayed in the map
         this.store.pipe(
-            select(getMapableProducts)
-         ).subscribe((products: Product[]) => {
-             this.layersSvc.removeOverlays();
-             for (const product of products) {
-                this.layerMarshaller.toLayers(product).subscribe(layers => {
-                    for (const layer of layers) {
-                        this.layersSvc.addLayer(layer, 'Overlays');
-                    }
-                });
+            select(getMapableProducts),
+            switchMap((products: Product[]) => {
+                console.log('got mappable products', products);
+                return this.layerMarshaller.productsToLayers(products);
+            })
+        ).subscribe((newoverlays: ProductLayer[]) => {
+            console.log("now adding the new overlays", newoverlays);
+            this.currentOverlays.next(newoverlays);
+
+
+            const layergroups = this.mapSvc.map.getLayers();
+            if (layergroups && layergroups.getArray().length) {
+                console.log('map now has these layergroups: ', layergroups.getArray());
+                for (const layergroup of layergroups.getArray()) {
+                    layergroup.dispatchEvent('change');
+                    console.log(`map now has these ${layergroup.getProperties().type}: `, layergroup.getLayers().getArray());
+                }
             }
         });
+
 
         this.mapSvc.map.on('click', () => {
             this.mapSvc.removeAllPopups();
@@ -117,7 +132,7 @@ export class MapComponent implements OnInit, AfterViewInit {
                     ...this.interactionState.getValue().product,
                     value: box
                 };
-                this.store.dispatch(new InteractionCompleted({product}));
+                this.store.dispatch(new InteractionCompleted({ product }));
             },
             style: new Style({
                 stroke: new Stroke({
@@ -136,7 +151,7 @@ export class MapComponent implements OnInit, AfterViewInit {
                         ...this.interactionState.getValue().product,
                         value: this.geoJson.writeFeatureObject(feature)
                     };
-                    this.store.dispatch(new InteractionCompleted({product}));
+                    this.store.dispatch(new InteractionCompleted({ product }));
                 }
             });
         });
@@ -144,7 +159,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        // listening gor change in scenario
+        // listening for change in scenario
         this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
 
             this.mapSvc.setZoom(8);
@@ -174,7 +189,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
 
-   private getInfoLayers(scenario: string): Layer[] {
+    private getInfoLayers(scenario: string): Layer[] {
         const layers: Layer[] = [];
 
         const osmLayer = new osm();
@@ -239,5 +254,5 @@ export class MapComponent implements OnInit, AfterViewInit {
 
 
         return layers;
-   }
+    }
 }

@@ -7,12 +7,13 @@ import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@ukis/map-ol';
 import { WMSCapabilities } from 'ol/format';
 import { map, switchMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { Layer, VectorLayer, RasterLayer } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import { SldParserService } from 'projects/sld-parser/src/public-api';
+import { ProductVectorLayer, ProductRasterLayer, ProductLayer } from './map.types';
 
 /**
  * Why do wo add another layer of translation here, instead of translating in wpsClient?
@@ -48,8 +49,28 @@ export class LayerMarshaller  {
         ) {}
 
 
+    productsToLayers(products: Product[]): Observable<ProductLayer[]> {
+        if (products.length === 0) {
+            return of([]);
+        }
 
-    toLayers(product: Product): Observable<Layer[]> {
+        const obsables = [];
+        for (const product of products) {
+            obsables.push(this.toLayers(product));
+        }
+        return forkJoin(...obsables).pipe(map((results: ProductLayer[][]) => {
+            const newLayers: ProductLayer[] = [];
+            for (const result of results) {
+                for (const layer of result) {
+                    newLayers.push(layer);
+                }
+            }
+            return newLayers;
+        }));
+    }
+
+
+    toLayers(product: Product): Observable<ProductLayer[]> {
         if (isWmsData(product)) {
             return this.makeWmsLayers(product);
         } else if (isVectorLayerData(product)) {
@@ -61,8 +82,8 @@ export class LayerMarshaller  {
         }
     }
 
-    makeBboxLayer(product: BboxLayerData): Observable<VectorLayer> {
-        const layer: VectorLayer = new VectorLayer({
+    makeBboxLayer(product: BboxLayerData): Observable<ProductVectorLayer> {
+        const layer: ProductVectorLayer = new ProductVectorLayer({
             id: `${product.description.id}_result_layer`,
             name: `${product.description.name}`,
             removable: false,
@@ -81,10 +102,10 @@ export class LayerMarshaller  {
         return of(layer);
     }
 
-    makeGeojsonLayer(product: VectorLayerData): Observable<VectorLayer> {
+    makeGeojsonLayer(product: VectorLayerData): Observable<ProductVectorLayer> {
         return this.getStyle(product).pipe(
             map(styleFunction => {
-                const layer: VectorLayer = new VectorLayer({
+                const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.description.id}_result_layer`,
                     name: `${product.description.name}`,
                     opacity: 1,
@@ -117,7 +138,7 @@ export class LayerMarshaller  {
         }
     }
 
-    makeWmsLayers(product: WmsLayerData): Observable<RasterLayer[]> {
+    makeWmsLayers(product: WmsLayerData): Observable<ProductRasterLayer[]> {
 
         let val;
         if (product.description.type === 'complex') {
@@ -138,11 +159,11 @@ export class LayerMarshaller  {
         }
 
         return wmsParameters$.pipe(map((paras: WmsParameters) => {
-            const layers: RasterLayer[] = [];
+            const layers: ProductRasterLayer[] = [];
             if (paras) {
                 for (const layername of paras.layers) {
                     // @TODO: convert all searchparameter names to uppercase
-                    const layer: RasterLayer = new RasterLayer({
+                    const layer: ProductRasterLayer = new ProductRasterLayer({
                         id: `${layername}_result_layer`,
                         name: `${layername}`,
                         opacity: 1,
@@ -160,14 +181,16 @@ export class LayerMarshaller  {
                             SRS: paras.srs,
                             TRANSPARENT: 'TRUE'
                         },
-                        legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${layername}`,
+                        legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
+                            `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
+                            `&TRANSPARENT=TRUE&LAYER=${layername}`,
                         popup: {
                             asyncPupup: (obj, callback) => {
-                                this.getFeatureInfoPopup(obj, this.mapSvc, callback)
+                                this.getFeatureInfoPopup(obj, this.mapSvc, callback);
                             }
                         }
                     });
-                    layer['crossOrigin'] = 'anonymous';
+                    // layer.crossOrigin = 'anonymous';
                     layer.productId = product.description.id;
                     layers.push(layer);
                 }
@@ -194,19 +217,19 @@ export class LayerMarshaller  {
         let width = 600;
         const widthString = url.searchParams.get('width');
         if (widthString) {
-            width = parseInt(widthString);
+            width = parseInt(widthString, 10);
         }
 
         let height = 400;
         const heightString = url.searchParams.get('height');
         if (heightString) {
-            height = parseInt(heightString);
+            height = parseInt(heightString, 10);
         }
 
         let bbox: number[] = [];
         const bboxString = url.searchParams.get('bbox');
         if (bboxString) {
-            bbox = bboxString.split(',').map(s => parseInt(s));
+            bbox = bboxString.split(',').map(s => parseInt(s, 10));
         }
 
         return of({

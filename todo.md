@@ -1,8 +1,19 @@
 
+layercontrol does not react to restore
+    on reset we trigger the 'scenario' chosen action.
+    this causes all processes to return to initial state and all product-values to become null.
+    yet, on the map, the old values remain. 
+        in listen to mappable products: check if after reset products with value null are provided. 
+        what i get is a new list of all those mappable products that have non-null values
+        this.layersSvc.removeOverlays(); is actually called, so i'd expect the map to be cleansed, but nothing happens. is that to do with onPush strategy?
+            no, apparently not. however, without onPush, i get an error in the layerswitcher.
+    resolved this by making layerService.overlays public.
+        But now the layerswitcher no longer updates. Ugh. 
+    
+
 process completed: jump to next
     always jumps to wrong one. Implement "getNextActiveProcessAfter"
-
-layercontrol does not react to restore
+        now tries to jump to shakemapProcess_provider. This provider thing is rather unhandy.
 
 layerswitcher
     make sure new layers appear on top

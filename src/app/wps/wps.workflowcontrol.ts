@@ -39,10 +39,12 @@ export class WorkflowControl {
 
         this.products = products;
         this.processes = this.getProcessesInExecutionOrder(processes);
-        this.processes = this.processes.map(p => {return {
-            ...p,
-            state: this.calculateState(p.id)
-        }});
+        this.processes = this.processes.map(p => {
+            return {
+                ...p,
+                state: this.calculateState(p.id)
+            };
+        });
     }
 
     execute(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
@@ -53,7 +55,7 @@ export class WorkflowControl {
 
         process = this.setProcessState(process.id, new ProcessStateRunning()) as WpsProcess;
         let requestCounter = 0;
-        return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescription, 1000, 
+        return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescription, 1000,
 
             (response: any) => {
                 if (doWhileRequesting) {
@@ -79,7 +81,7 @@ export class WorkflowControl {
                 for (const product of output) {
                     this.provideProduct(product.description.id, product.value);
                 }
-                this.setProcessState(process.id, new ProcessStateCompleted())
+                this.setProcessState(process.id, new ProcessStateCompleted());
             }),
 
             map((output: WpsData[]) => {
@@ -111,7 +113,7 @@ export class WorkflowControl {
 
 
     provideProduct(id: ProductId, value: any): void {
-        // @TODO: providing a new input-product to an already completed prcesses should set its state back to available. 
+        // @TODO: providing a new input-product to an already completed prcesses should set its state back to available.
 
         // set new value
         const newProduct = this.setProductValue(id, value);
@@ -141,10 +143,19 @@ export class WorkflowControl {
     }
 
 
-    // getNextActiveProcessAfter(id: ProcessId): Process | undefined {
-    //     const candidates = this.getActiveProcesses();
-
-    // }
+    getNextActiveChildProcess(id: ProcessId): Process | undefined {
+        const productIds: string[] = this.graph.outEdges(id).map(edge => edge.w);
+        for (const productId of productIds) {
+            const childProcessIds: ProcessId[] = this.graph.outEdges(productId).map(edge => edge.w);
+            for (const childProcessId of childProcessIds) {
+                const childProcess = this.getProcess(childProcessId);
+                if (childProcess.state.type === ProcessStateTypes.available) {
+                    return childProcess;
+                }
+            }
+        }
+        return undefined;
+    }
 
 
     private updateProcessStatesDownstream(id: string): void {
@@ -199,7 +210,9 @@ export class WorkflowControl {
 
     private getProcess(id: ProcessId): Process {
         const process = this.processes.find(p => p.id === id);
-        if (!process) throw new Error(`no such process: ${id}`);
+        if (!process) {
+            throw new Error(`no such process: ${id}`);
+        }
         return process;
     }
 
@@ -211,17 +224,21 @@ export class WorkflowControl {
 
     private getProduct(id: ProductId): Product {
         const product = this.products.find(p => p.description.id === id);
-        if (!product) throw new Error(`no such product: ${id}`);
+        if (!product) {
+            throw new Error(`no such product: ${id}`);
+        }
         return product;
     }
 
 
     private setProcessState(id: ProcessId, state: ProcessState): Process {
         this.processes = this.processes.map(process => {
-            if (process.id == id) return {
-                ...process, 
-                state: state
-            };
+            if (process.id === id) {
+                return {
+                    ...process,
+                    state: state
+                };
+            }
             return process;
         });
         return this.getProcess(id);
@@ -230,10 +247,12 @@ export class WorkflowControl {
 
     private setProductValue(id: ProductId, value: any): Product {
         this.products = this.products.map(product => {
-            if(product.description.id === id) return {
-                ...product, 
-                value: value
-            };
+            if (product.description.id === id) {
+                return {
+                    ...product,
+                    value: value
+                };
+            }
             return product;
         });
         return this.getProduct(id);
@@ -244,7 +263,9 @@ export class WorkflowControl {
     // for example when we want to change the select-options under description.wizardProps.options
     private updateProduct(newProduct: Product): void {
         this.products = this.products.map(product => {
-            if (product.description.id === newProduct.description.id) return {...newProduct};
+            if (product.description.id === newProduct.description.id) {
+                return {...newProduct};
+            }
             return product;
         });
     }
@@ -266,16 +287,22 @@ export class WorkflowControl {
         const userprovidedProducts = process.requiredProducts.filter(prdId => !this.hasProvidingProcess(prdId));
 
         // currently running?
-        if(process.state.type === ProcessStateTypes.running) return new ProcessStateRunning();
+        if (process.state.type === ProcessStateTypes.running) {
+            return new ProcessStateRunning();
+        }
 
         // is the output there? -> complete
         const output = this.getProduct(process.providedProduct);
-        if (output.value) return new ProcessStateCompleted();
+        if (output.value) {
+            return new ProcessStateCompleted();
+        }
 
         // is any internal input missing? -> unavailable
         for (const prodId of internalUpstreamProducts) {
             const product = this.getProduct(prodId);
-            if (!product.value) return new ProcessStateUnavailable();
+            if (!product.value) {
+                return new ProcessStateUnavailable();
+            }
         }
 
         return new ProcessStateAvailable();
@@ -284,7 +311,9 @@ export class WorkflowControl {
 
     private hasProvidingProcess(id: ProductId): boolean {
         const inEdges = this.graph.inEdges(id);
-        if (inEdges.length < 1) return false;
+        if (inEdges.length < 1) {
+            return false;
+        }
         return true;
     }
 
@@ -295,19 +324,33 @@ export class WorkflowControl {
 
         const requiredProducts: string[] = [];
         for (const process of processes) {
-            for (const product of process.requiredProducts) requiredProducts.push(product);
+            for (const product of process.requiredProducts) {
+                requiredProducts.push(product);
+            }
             requiredProducts.push(process.providedProduct);
         }
 
         for (const reqiredProd of requiredProducts) {
-            if (!productIds.includes(reqiredProd)) throw new Error(`${reqiredProd} is required but not provided to context`);
+            if (!productIds.includes(reqiredProd)) {
+                throw new Error(`${reqiredProd} is required but not provided to context`);
+            }
         }
 
         const processDuplicates = this.getDuplicates(processIds);
-        if(processDuplicates.length > 0) throw new Error(`Duplicate processes: ${processDuplicates}`);
+        if (processDuplicates.length > 0) {
+            throw new Error(`Duplicate processes: ${processDuplicates}`);
+        }
 
         const productDuplicates = this.getDuplicates(productIds);
-        if(productDuplicates.length > 0) throw new Error(`Duplicate products: ${productDuplicates}`);
+        if (productDuplicates.length > 0) {
+            throw new Error(`Duplicate products: ${productDuplicates}`);
+        }
+
+        for (const product of products) {
+            if (product.value) {
+                console.log("product already has a value", product)
+            }
+        }
     }
 
     private getDuplicates(arr: string[]): string[] {

@@ -42,9 +42,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     private interactionState: BehaviorSubject<InteractionState>;
     private graph: BehaviorSubject<Graph>;
 
-    // TODO: instead of getting these, implement a function "updateOverlays"
-    private currentOverlays: BehaviorSubject<Layer[]>;
-    private layerGroups: BehaviorSubject<(Layer | LayerGroup)[]>;
+    // // TODO: instead of getting these, implement a function "updateOverlays"
+    // private currentOverlays: BehaviorSubject<Layer[]>;
+    // private layerGroups: BehaviorSubject<(Layer | LayerGroup)[]>;
+    private currentOverlays: ProductLayer[];
 
     constructor(
         public mapStateSvc: MapStateService,
@@ -54,8 +55,9 @@ export class MapComponent implements OnInit, AfterViewInit {
         public layersSvc: LayersService,
     ) {
         this.controls = { attribution: true, scaleLine: true };
-        this.currentOverlays = this.layersSvc.getOverlays();
-        this.layerGroups = this.layersSvc.getLayerGroups();
+        this.currentOverlays = [];
+        // this.currentOverlays = this.layersSvc.getOverlays();
+        // this.layerGroups = this.layersSvc.getLayerGroups();
     }
 
 
@@ -79,16 +81,17 @@ export class MapComponent implements OnInit, AfterViewInit {
             const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
             const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
 
-            const layers = this.currentOverlays.getValue();
-            for (const layer of layers) {
+            for (const layer of this.currentOverlays) {
                 if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
+                    console.log(`setting layer ${layer.productId} visible`)
                     layer.opacity = 0.9;
                 } else {
+                    console.log(`setting layer ${layer.productId} in-visible`)
                     layer.opacity = 0.2;
                 }
                 this.layersSvc.updateLayer(layer, 'Overlays');
-                const groups = this.layerGroups.getValue();
-                this.layerGroups.next(groups);
+                // const groups = this.layerGroups.getValue();
+                // this.layerGroups.next(groups);
             }
         });
 
@@ -99,9 +102,9 @@ export class MapComponent implements OnInit, AfterViewInit {
                 console.log('got mappable products', products);
                 return this.layerMarshaller.productsToLayers(products);
             })
-        ).subscribe((newoverlays: ProductLayer[]) => {
-            console.log("now adding the new overlays", newoverlays);
-            this.currentOverlays.next(newoverlays);
+        ).subscribe((newOverlays: ProductLayer[]) => {
+            this.currentOverlays = newOverlays;
+            this.layersSvc.setNewLayersInLayerGroup(newOverlays, 'Overlays');
 
 
             const layergroups = this.mapSvc.map.getLayers();
@@ -170,7 +173,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
-                this.layersSvc.addLayer(layer, 'Layers');
+                this.layersSvc.addLayer(layer, 'Layers', false);  // @TODO: should this be set to true or false? Solving this will help a lot!
             }
         });
     }

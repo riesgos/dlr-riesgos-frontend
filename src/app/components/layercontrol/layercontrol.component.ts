@@ -6,12 +6,12 @@ import { MapStateService } from '@ukis/services-map-state';
   selector: 'ukis-layercontrol',
   templateUrl: './layercontrol.component.html',
   styleUrls: ['./layercontrol.component.scss'],
-  encapsulation: ViewEncapsulation.None, 
+  encapsulation: ViewEncapsulation.None,
 })
 export class LayercontrolComponent implements OnInit {
 
   constructor(
-    public layersSvc: LayersService, 
+    public layersSvc: LayersService,
     public mapStateSvc: MapStateService
   ) { }
 

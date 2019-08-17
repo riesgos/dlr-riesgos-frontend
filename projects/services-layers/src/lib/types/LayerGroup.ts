@@ -32,3 +32,12 @@ export class LayerGroup {
         Object.assign(this, options);
     }
 }
+
+
+export const isLayerGroup = (s: any): s is LayerGroup => {
+    return (
+        s.hasOwnProperty('id') &&
+        s.hasOwnProperty('name') &&
+        s.hasOwnProperty('layers')
+    );
+};

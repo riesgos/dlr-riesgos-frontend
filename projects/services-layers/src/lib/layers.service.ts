@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { Layer, RasterLayer } from './types/Layers';
-import { LayerGroup } from './types/LayerGroup';
+import { LayerGroup, isLayerGroup } from './types/LayerGroup';
+import { filter } from 'minimatch';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,8 @@ export class LayersService {
       }
     }
   }
+
+
 
   /**
    * filtertype: 'Baselayers' | 'Overlays' | 'Layers'
@@ -285,6 +288,32 @@ export class LayersService {
       console.log('layerGroup is not removable!');
     }
   }
+
+
+  public setNewLayersInLayerGroup(layers: Layer[], filtertype: 'Overlays' | 'Baselayers' | 'Layers'): void {
+
+    // Step 1: updating layergroups
+    const layerGroups = this.layergroups.getValue();
+    const newLayerGoups = layerGroups.map(layerGroup => {
+      if (isLayerGroup(layerGroup)) {
+        if (layerGroup.filtertype === filtertype) {
+          layerGroup.layers = layers;
+        }
+      }
+      return layerGroup;
+    });
+    this.layergroups.next(newLayerGoups);
+
+    // Step 2: updating layers
+    if (filtertype === 'Overlays') {
+      this.overlays.next(layers);
+    } else if (filtertype === 'Baselayers') {
+      this.baseLayers.next(layers);
+    } else {
+      this.layers.next(layers);
+    }
+  }
+
 
   public updateLayerGroup(layerGroup: LayerGroup, sort: boolean = false) {
     if (sort) {

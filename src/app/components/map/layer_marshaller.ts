@@ -89,6 +89,7 @@ export class LayerMarshaller  {
             removable: false,
             opacity: 1,
             type: 'geojson',
+            filtertype: 'Overlays',
             data: featureCollection([bboxPolygon(product.value)]),
             options: {},
             popup: {
@@ -111,6 +112,7 @@ export class LayerMarshaller  {
                     opacity: 1,
                     removable: false,
                     type: 'geojson',
+                    filtertype: 'Overlays',
                     data: product.value[0],
                     options: {
                         style: styleFunction
@@ -169,6 +171,7 @@ export class LayerMarshaller  {
                         opacity: 1,
                         removable: false,
                         type: 'wms',
+                        filtertype: 'Overlays',
                         visible: true,
                         url: `${paras.origin}${paras.path}?`,
                         params: {

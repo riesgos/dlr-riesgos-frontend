@@ -27,12 +27,20 @@ modelprop
 
 
 
-
+fix LayersService
+    usually, we add layers with lSvc.addLayer(layer, 'overlays', false)
+    this causes the layer to be added 
+        to lSvc.overlays
+        and to lSvc.layergroups, but *not* as part of the group 'overlays', but as a single layer.
+    lSvc.layergroups can therefore contain both layers and layergroups
+    since lSvc.layergroups can contain single, ungrouped layers, lSvc uses the property 'filtertype' to figure out if a layer belongs to overlays or not. 
+        amongst other places, this feature is used in lSvc.updateLayer(layer, 'overlays')
+    however, the property 'filtertye' is optional. 
+        by consequence, if you forget to set 'filtertype', updating a layer does not have an effect. 
 
 provider auch in layerpicker
 
 alternative catalogues
-
 
 rechte spalte: variable größe
 

@@ -175,7 +175,6 @@ export class MapOlComponent implements OnInit, OnDestroy, AfterViewChecked, Afte
       );
       this.subs.push(onLayers);
       const onOverlays = this.layersSvc.getOverlays().subscribe(layers => {
-        console.log("map-ol-component, subscribe: updating overlays to ", layers)
         this.addUpdateLayers(layers, 'overlays', ['baselayers', 'layers']);
       });
       this.subs.push(onOverlays);

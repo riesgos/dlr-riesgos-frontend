@@ -1,7 +1,7 @@
 <main class="content-area">
   <div class="clr-row scenarios-view">
     <div class="clr-col-12 clr-col-sm-12 clr-col-md-12 clr-col-lg-12 center" style="margin-bottom: -50px;">
-      <h3 i18n>Available RIESGOS stories for the Andes region</h3>
+      <h3 >{{'Available RIESGOS stories for the Andes region' | translate}}</h3>
       <p>
         <!-- <b>Based on decentralized web-services to access Data and trigger computation for different disciplines, such as
           geophysics, hydrology, geology, geography, geo-statistics, and remote sensing.</b>
@@ -40,7 +40,7 @@
 
     <!--  class="clr-col-12 clr-col-sm-12 clr-col-md-12 clr-col-lg-12 center" -->
     <div class="center">
-      <h3 i18n>The stories are developed for the following hazards and their interactions, </h3>
+      <h3 >{{'The stories are developed for the following hazards and their interactions, ' | translate}}</h3>
       <!-- class="clr-row" -->
       <span>
         <!-- clr-col-1 -->
@@ -49,13 +49,13 @@
           <figcaption>{{item.title}}</figcaption>
         </figure>
       </span>
-      <h3 i18n>considering the following 'elements at risk'.</h3>
+      <h3 >{{'considering the following \"elements at risk\".' | translate}}</h3>
       <!-- class="clr-row" -->
       <span>
         <!-- clr-col-1 -->
         <figure class="logo" *ngFor="let item of elementsAtRisk">
           <img [src]="'/assets/logos/riesgos_'+item.abbreviation+'_.png'" [alt]="item.title">
-          <figcaption>{{item.title}}</figcaption>
+          <figcaption>{{item.title | translate}}</figcaption>
         </figure>
       </span>
     </div>
@@ -63,7 +63,7 @@
 </main>
 <clr-modal *ngIf="showInfo" [(clrModalOpen)]="modalOpen" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="false">
 
-  <h3 class="modal-title">{{selectedScenario.title}}</h3>
+  <h3 class="modal-title">{{selectedScenario.title | translate}}</h3>
   <div class="modal-body">
     <img [src]="selectedScenario.preview" alt="ukis logo white">
     <span [innerHTML]="selectedScenario.content"></span>

@@ -292,17 +292,26 @@ export class LayersService {
 
   public setNewLayersInLayerGroup(layers: Layer[], filtertype: 'Overlays' | 'Baselayers' | 'Layers'): void {
 
+    // False: the commented approach only works when we added layers with 'toGroup = true', which causes layergroups to be
+    // stored in the this.layergroups. in practice, however, we always use 'toGroup = false', which causes single layers
+    // to be stored in this.layergroups
+
     // Step 1: updating layergroups
-    const layerGroups = this.layergroups.getValue();
-    const newLayerGoups = layerGroups.map(layerGroup => {
-      if (isLayerGroup(layerGroup)) {
-        if (layerGroup.filtertype === filtertype) {
-          layerGroup.layers = layers;
-        }
-      }
-      return layerGroup;
-    });
-    this.layergroups.next(newLayerGoups);
+    // const layerGroups = this.layergroups.getValue();
+    // const newLayerGoups = layerGroups.map(layerGroup => {
+    //   if (isLayerGroup(layerGroup)) {
+    //     if (layerGroup.filtertype === filtertype) {
+    //       layerGroup.layers = layers;
+    //     }
+    //   }
+    //   return layerGroup;
+    // });
+    // this.layergroups.next(newLayerGoups);
+
+    // Step 1: updating layergroups
+    const otherLayers = this.layergroups.getValue().filter(l => l.filtertype !== filtertype);
+    const newLayers = otherLayers.concat(layers);
+    this.layergroups.next(newLayers);
 
     // Step 2: updating layers
     if (filtertype === 'Overlays') {

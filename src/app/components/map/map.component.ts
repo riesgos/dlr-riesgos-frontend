@@ -56,8 +56,6 @@ export class MapComponent implements OnInit, AfterViewInit {
     ) {
         this.controls = { attribution: true, scaleLine: true };
         this.currentOverlays = [];
-        // this.currentOverlays = this.layersSvc.getOverlays();
-        // this.layerGroups = this.layersSvc.getLayerGroups();
     }
 
 
@@ -83,15 +81,11 @@ export class MapComponent implements OnInit, AfterViewInit {
 
             for (const layer of this.currentOverlays) {
                 if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
-                    console.log(`setting layer ${layer.productId} visible`)
                     layer.opacity = 0.9;
                 } else {
-                    console.log(`setting layer ${layer.productId} in-visible`)
                     layer.opacity = 0.2;
                 }
                 this.layersSvc.updateLayer(layer, 'Overlays');
-                // const groups = this.layerGroups.getValue();
-                // this.layerGroups.next(groups);
             }
         });
 
@@ -99,27 +93,11 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.store.pipe(
             select(getMapableProducts),
             switchMap((products: Product[]) => {
-                console.log('got mappable products', products);
                 return this.layerMarshaller.productsToLayers(products);
             })
         ).subscribe((newOverlays: ProductLayer[]) => {
             this.currentOverlays = newOverlays;
             this.layersSvc.setNewLayersInLayerGroup(newOverlays, 'Overlays');
-
-
-            const layergroups = this.mapSvc.map.getLayers();
-            if (layergroups && layergroups.getArray().length) {
-                console.log('map now has these layergroups: ', layergroups.getArray());
-                for (const layergroup of layergroups.getArray()) {
-                    layergroup.dispatchEvent('change');
-                    console.log(`map now has these ${layergroup.getProperties().type}: `, layergroup.getLayers().getArray());
-                }
-            }
-        });
-
-
-        this.mapSvc.map.on('click', () => {
-            this.mapSvc.removeAllPopups();
         });
 
 
@@ -159,6 +137,9 @@ export class MapComponent implements OnInit, AfterViewInit {
             });
         });
 
+        this.mapSvc.map.on('click', () => {
+            this.mapSvc.removeAllPopups();
+        });
     }
 
     ngAfterViewInit() {
@@ -173,7 +154,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
-                this.layersSvc.addLayer(layer, 'Layers', false);  // @TODO: should this be set to true or false? Solving this will help a lot!
+                this.layersSvc.addLayer(layer, 'Layers', false);
             }
         });
     }

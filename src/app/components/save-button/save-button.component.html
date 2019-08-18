@@ -1,63 +1,63 @@
 <button class="btn btn-primary" (click)="showResetModal = true">
     <clr-icon shape="refresh"></clr-icon>
-    <span style="padding-left: 7px;" i18n>Reset</span>
+    <span style="padding-left: 7px;">{{'Reset' | translate}}</span>
 </button>
 
 <button class="btn btn-primary" (click)="showStoreModal = true">
     <clr-icon shape="download"></clr-icon>
-    <span style="padding-left: 7px;" i18n>Save</span>
+    <span style="padding-left: 7px;">{{'Save' | translate}}</span>
 </button>
 
 <button class="btn btn-primary" (click)="showRestoreModal = true">
     <clr-icon shape="upload"></clr-icon>
-    <span style="padding-left: 7px;" i18n>Restore</span>
+    <span style="padding-left: 7px;">{{'Restore' | translate}}</span>
 </button>
 
 
 <clr-modal [(clrModalOpen)]="showResetModal" [clrModalStaticBackdrop]="false">
-    <h3 class="modal-title" i18n>Reset</h3>
+    <h3 class="modal-title">{{'Reset' | translate}}</h3>
     <div class="modal-body">
 
-        <p i18n>Are you sure you want to reset all your selections?</p>
+        <p>{{'Are you sure you want to reset all your selections?' | translate}}</p>
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="showResetModal = false" i18n>Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="onResetClicked()" i18n>Reset</button>
+        <button type="button" class="btn btn-outline" (click)="showResetModal = false">{{'Cancel' | translate}}</button>
+        <button type="button" class="btn btn-primary" (click)="onResetClicked()">{{'Reset' | translate}}</button>
     </div>
 </clr-modal>
 
 <clr-modal [(clrModalOpen)]="showStoreModal" [clrModalStaticBackdrop]="false">
-    <h3 class="modal-title" i18n>Store data</h3>
+    <h3 class="modal-title">{{'Store data' | translate }}</h3>
     <div class="modal-body">
 
-        <p i18n>Please enter a name under which to store the current state</p>
+        <p>{{'Please enter a name under which to store the current state' | translate}}</p>
 
         <form clrForm>
             <clr-input-container>
-                <label for="name" i18n>Name</label>
+                <label for="name">{{'Name' | translate }}</label>
                 <input clrInput type="text" id="name" [formControl]="nameControl" />
             </clr-input-container>
         </form>
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="showStoreModal = false" i18n>Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="storeRow()" i18n>Store</button>
+        <button type="button" class="btn btn-outline" (click)="showStoreModal = false">{{'Cancel' | translate}}</button>
+        <button type="button" class="btn btn-primary" (click)="storeRow()">{{'Store' | translate}}</button>
     </div>
 </clr-modal>
 
 
 <clr-modal [(clrModalOpen)]="showRestoreModal" [clrModalStaticBackdrop]="false">
-    <h3 class="modal-title" i18n>Restore data</h3>
+    <h3 class="modal-title">{{'Restore data' | translate }}</h3>
     <div class="modal-body">
 
-        <p i18n>Please select a state that you want to restore.</p>
+        <p>{{'Please select a state that you want to restore.' | translate}}</p>
 
         <clr-datagrid [(clrDgSingleSelected)]="selectedStorageRow">
-            <clr-dg-column i18n>Name</clr-dg-column>
-            <clr-dg-column i18n>Creation date</clr-dg-column>
-            <clr-dg-column i18n>Data</clr-dg-column>
+            <clr-dg-column>{{'Name' | translate}}</clr-dg-column>
+            <clr-dg-column>{{'Creation date' | translate}}</clr-dg-column>
+            <clr-dg-column>{{'Data' | translate}}</clr-dg-column>
 
             <clr-dg-row *clrDgItems="let row of dataStorage" [clrDgItem]="row">
                 <clr-dg-cell>{{row.name}}</clr-dg-cell>
@@ -65,13 +65,13 @@
                 <clr-dg-cell>{{row.data.length }} products</clr-dg-cell>
             </clr-dg-row>
 
-            <clr-dg-footer>{{dataStorage.length}} <span i18n>entries</span></clr-dg-footer>
+            <clr-dg-footer>{{dataStorage.length}} <span>{{'entries' | translate}}</span></clr-dg-footer>
         </clr-datagrid>
-        <span i18n>Selected row:</span> <span *ngIf="selectedStorageRow">{{selectedStorageRow.name}}</span>
+        <span>{{'Selected row:' | translate}}</span> <span *ngIf="selectedStorageRow">{{selectedStorageRow.name}}</span>
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="showRestoreModal = false" i18n>Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="restoreSelectedRow()" i18n>Restore</button>
+        <button type="button" class="btn btn-outline" (click)="showRestoreModal = false">{{'Cancel' | translate}}</button>
+        <button type="button" class="btn btn-primary" (click)="restoreSelectedRow()">{{'Restore' | translate}}</button>
     </div>
 </clr-modal>

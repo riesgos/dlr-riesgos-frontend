@@ -72,7 +72,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
                         format: format,
                         reference: isReference,
                         type: datatype
-                    }, 
+                    },
                     value: data,
                 });
             }
@@ -92,9 +92,9 @@ export class WpsMarshaller100 implements WpsMarshaller {
 
     protected unmarshalOutputData(data: DataType): any {
         if (data.complexData) {
-            switch(data.complexData.mimeType) {
+            switch (data.complexData.mimeType) {
                 case 'application/vnd.geo+json':
-                    //@ts-ignore 
+                    // @ts-ignore
                     return data.complexData.content.map(cont => JSON.parse(cont));
                 case 'application/WMS':
                     return data.complexData.content;
@@ -104,9 +104,8 @@ export class WpsMarshaller100 implements WpsMarshaller {
         } else if (data.literalData) {
             switch (data.literalData.dataType) {
                 case 'string':
-                    return data.literalData.value;
                 default:
-                    throw new Error(`Cannot unmarshal data of format ${data.literalData.dataType}`);
+                    return data.literalData.value;
             }
         }
 
@@ -115,10 +114,10 @@ export class WpsMarshaller100 implements WpsMarshaller {
 
     marshalExecBody(processId: string, inputs: WpsInput[], output: WpsOutputDescription, async: boolean): IWpsExecuteProcessBody {
 
-        let wps1Inputs = this.marshalInputs(inputs);
-        let wps1ResponseForm = this.marshalResponseForm(output, async);
+        const wps1Inputs = this.marshalInputs(inputs);
+        const wps1ResponseForm = this.marshalResponseForm(output, async);
 
-        let bodyValue: Execute = {
+        const bodyValue: Execute = {
             dataInputs: wps1Inputs,
             identifier: processId,
             responseForm: wps1ResponseForm,
@@ -126,7 +125,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
             version: '1.0.0'
         };
 
-        let body: IWpsExecuteProcessBody = {
+        const body: IWpsExecuteProcessBody = {
             name: {
                 key: '{http://www.opengis.net/wps/1.0.0}Execute',
                 localPart: 'Execute',
@@ -145,7 +144,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
     protected marshalResponseForm(output: WpsOutputDescription, async=false): ResponseFormType {
 
         let defType: DocumentOutputDefinitionType;
-        switch(output.type) {
+        switch (output.type) {
             case 'literal':
                 defType = {
                     identifier: { value: output.id },
@@ -160,31 +159,33 @@ export class WpsMarshaller100 implements WpsMarshaller {
                     mimeType: output.format
                 };
                 break;
-            default: 
+            default:
                 throw new Error(`This Wps-outputtype has not been implemented yet! ${output} `);
         }
 
-        let responseDocument: ResponseDocumentType = {
+        const responseDocument: ResponseDocumentType = {
             output: [defType],
             status: async ? true : false,
             storeExecuteResponse: async ? true : false
-        }
+        };
 
-        let form: ResponseFormType = {
-            responseDocument: responseDocument
+        const form: ResponseFormType = {
+            responseDocument
         };
         return form;
     }
 
 
     protected marshalInputs(inputArr: WpsInput[]) {
-        
-        let theInputs: InputType[] = [];
-        
-        for(let inp of inputArr) {
 
-            if(inp.value === null || inp.value === undefined) throw new Error(`Value for input ${inp.description.id} is not set`);
-    
+        const theInputs: InputType[] = [];
+
+        for (const inp of inputArr) {
+
+            if (inp.value === null || inp.value === undefined) {
+                throw new Error(`Value for input ${inp.description.id} is not set`);
+            }
+
             let data: DataType;
             switch(inp.description.type) {
                 case 'literal':

@@ -105,6 +105,7 @@ export class WpsClient {
             tap((response: WpsResult[]) => {
                 for (const result of response) {
                     if (result.description.type === 'error') {
+                        console.log('server responded with 200, but body contained an error-result: ', result);
                         throwError(new Error(result.value));
                     }
                 }

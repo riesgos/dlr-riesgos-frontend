@@ -164,7 +164,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             case 'c1':
                 return [-70.799, -33.990];
             case 'e1':
-                return [-78.442, -0.678];
+                return [-78.4386, -0.6830];
             case 'p1':
                 return [-75.902, -11.490];
             default:

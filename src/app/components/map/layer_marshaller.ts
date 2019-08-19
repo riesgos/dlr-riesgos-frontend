@@ -156,6 +156,8 @@ export class LayerMarshaller  {
             wmsParameters$ = this.parseGetMapUrl(val);
         } else if (val.includes('GetCapabilities')) {
             wmsParameters$ = this.parseGetCapabilitiesUrl(val);
+        } else if (val.includes('http') && val.includes('://')) {
+            wmsParameters$ = this.parseGetMapUrl(val);
         } else {
             throw new Error(`Cannot parse parameters from this value. ${val}`);
         }

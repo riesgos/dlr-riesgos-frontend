@@ -3,10 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "serve:es": "ng serve  --aot --configuration=es --source-map --port=4200 --host=0.0.0.0",
-    "serve:en": "ng serve  --aot --source-map --port=4200 --host=0.0.0.0",
-    "build:es": "ng build --configuration=es --prod",
-    "build:en": "ng build --prod",
+    "serve": "ng serve  --aot --configuration=es --source-map --port=4200 --host=0.0.0.0",
+    "serve": "ng serve  --aot --source-map --port=4200 --host=0.0.0.0",
     "build:dev": "ng build",
     "test": "ng test",
     "lint": "ng lint",

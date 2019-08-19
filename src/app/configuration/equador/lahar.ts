@@ -6,13 +6,13 @@ import { FeatureSelectUconfWD, FeatureSelectUconfWpsData, StringSelectUconfWpsDa
 
 export const direction: StringSelectUconfWpsData = {
     description: {
-        id: "direction", 
+        id: 'direction', 
         reference: false, 
-        type: "literal", 
-        options: ["South", "North"],
+        type: 'literal', 
+        options: ['South', 'North'],
         wizardProperties: {
-            fieldtype: "stringselect",
-            name: "direction", 
+            fieldtype: 'stringselect',
+            name: 'direction', 
         }
     }, 
     value: null
@@ -20,13 +20,13 @@ export const direction: StringSelectUconfWpsData = {
 
 export const intensity: StringSelectUconfWpsData = {
     description: {
-        id: "intensity", 
+        id: 'intensity', 
         reference: false, 
-        type: "literal", 
-        options: ["VEI1", "VEI2", "VEI3", "VEI4"],
+        type: 'literal', 
+        options: ['VEI1', 'VEI2', 'VEI3', 'VEI4'],
         wizardProperties: {
-            fieldtype: "stringselect", 
-            name: "intensity", 
+            fieldtype: 'stringselect', 
+            name: 'intensity', 
         }
     }, 
     value: null
@@ -34,13 +34,13 @@ export const intensity: StringSelectUconfWpsData = {
 
 export const parameter: StringSelectUconfWpsData = {
     description: {
-        id: "parameter", 
-        reference: false, 
-        type: "literal", 
-        options: ["MaxHeight", "MaxVelocity", "MaxPressure", "MaxErosion", "Deposition"],
+        id: 'parameter',
+        reference: false,
+        type: 'literal',
+        options: ['MaxHeight', 'MaxVelocity', 'MaxPressure', 'MaxErosion', 'Deposition'],
         wizardProperties: {
-            fieldtype: "stringselect", 
-            name: "parameter", 
+            fieldtype: 'stringselect',
+            name: 'parameter',
         }
     }, 
     value: null
@@ -49,29 +49,29 @@ export const parameter: StringSelectUconfWpsData = {
 
 export const laharWms: WmsLayerData = {
     description: {
-        id: "result",
-        name: "laharWms",
-        type: "complex",
+        id: 'result',
+        name: 'laharWms',
+        type: 'literal',  // this is deliberate. layer-wps returns this value as a litteral, not as a complex.
         reference: false,
-        format: "application/WMS", 
+        format: 'application/WMS',
     },
     value: null
-}
+};
 
 
 
 export const LaharWps: WizardableProcess & WpsProcess = {
-    id: "gs:LaharModel",
-    url: "http://91.250.85.221/geoserver/riesgos/wps",
-    name: "Lahar",
-    description: "Simulates the path a lahar would take",
-    providedProduct: "result",
-    requiredProducts: ["direction", "intensity", "parameter"], 
+    id: 'gs:LaharModel',
+    url: 'http://91.250.85.221/geoserver/riesgos/wps',
+    name: 'Lahar',
+    description: 'Simulates the path a lahar would take',
+    providedProduct: 'result',
+    requiredProducts: ['direction', 'intensity', 'parameter'],
     state: new ProcessStateUnavailable(),
-    wpsVersion: "1.0.0", 
+    wpsVersion: '1.0.0',
     wizardProperties: {
-        providerName: "EOMAP GMBH", 
-        providerUrl: "https://www.eomap.com/",
-        shape: "avalance"
+        providerName: 'EOMAP GMBH',
+        providerUrl: 'https://www.eomap.com/',
+        shape: 'avalance'
     }
 }

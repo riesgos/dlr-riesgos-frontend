@@ -21,6 +21,12 @@
       "dom"
     ],
     "paths": {
+      "@ukis/base-layers-raster": [
+        "projects/base-layers-raster/src/public_api"
+      ],
+      "@ukis/base-layers-raster/*": [
+        "projects/base-layers-raster/*"
+      ],
       "@ukis/map-ol": [
         "projects/map-ol/src/public_api"
       ],

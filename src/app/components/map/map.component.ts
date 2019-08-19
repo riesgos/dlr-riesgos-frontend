@@ -42,9 +42,6 @@ export class MapComponent implements OnInit, AfterViewInit {
     private interactionState: BehaviorSubject<InteractionState>;
     private graph: BehaviorSubject<Graph>;
 
-    // // TODO: instead of getting these, implement a function "updateOverlays"
-    // private currentOverlays: BehaviorSubject<Layer[]>;
-    // private layerGroups: BehaviorSubject<(Layer | LayerGroup)[]>;
     private currentOverlays: ProductLayer[];
 
     constructor(

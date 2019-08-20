@@ -1,4 +1,4 @@
-<div class="content-area">
+<!-- <div class="content-area">
     <div class="clr-row">
       <div class="clr-col-3">
           <ukis-configuration-wizard></ukis-configuration-wizard>
@@ -10,4 +10,17 @@
           <ukis-layercontrol></ukis-layercontrol>
       </div>
     </div>
-</div>
+</div> -->
+
+<main class="content-area">
+    <ukis-map></ukis-map>
+</main>
+
+<clr-vertical-nav [clrVerticalNavCollapsible]="true" [clr-nav-level]="2">
+    <ukis-layercontrol></ukis-layercontrol>
+</clr-vertical-nav>
+
+
+<clr-vertical-nav [clrVerticalNavCollapsible]="true" class="left">
+    <ukis-configuration-wizard></ukis-configuration-wizard>
+</clr-vertical-nav>

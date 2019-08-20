@@ -113,7 +113,7 @@ export class WorkflowControl {
 
 
     provideProduct(id: ProductId, value: any): void {
-        // @TODO: providing a new input-product to an already completed prcesses should set its state back to available.
+        // @TODO: providing a new input-product to an already completed processes should set its state back to available.
 
         // set new value
         const newProduct = this.setProductValue(id, value);

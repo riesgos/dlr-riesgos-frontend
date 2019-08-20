@@ -1,18 +1,19 @@
-import { WpsProcess, ProcessStateUnavailable } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, WatchingProcess, Product } from '../../wps/wps.datatypes';
 import { UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
+import { selectedRows } from '../chile/modelProp';
 
 
-export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
+export const inputBoundingboxPeru: UserconfigurableWpsData & BboxLayerData = {
     description: {
         id: 'input-boundingbox',
         name: 'eq-selection: boundingbox',
         type: 'bbox',
         reference: false,
         description: 'Please select an area of interest',
-        defaultValue: [-73.5, -34, -70.5, -29.0],
+        defaultValue: [-86.5, -20.5, -68.5, -0.6],
         wizardProperties: {
             name: 'AOI',
             fieldtype: 'bbox',
@@ -151,16 +152,6 @@ export const tlat: UserconfigurableWpsData = {
 
 
 
-
-const green2red = (magnitude: number): string => {
-    const range = 9.5 - 5;
-    const part = magnitude - 5;
-    let perc = 360.0 * part / range;
-    perc = Math.floor(perc);
-    return `hsl(${perc}, 100%, 50%)`;
-};
-
-
 export const selectedEqs: VectorLayerData = {
     description: {
         id: 'selected-rows',
@@ -194,7 +185,7 @@ export const selectedEqs: VectorLayerData = {
 
 
 
-export const EqEventCatalogue: WizardableProcess & WpsProcess = {
+export const EqEventCataloguePeru: WizardableProcess & WpsProcess & WatchingProcess = {
     state: new ProcessStateUnavailable(),
     id: 'org.n52.wps.python.algorithm.QuakeMLProcessBBox',
     url: 'https://riesgos.52north.org/wps/WebProcessingService',
@@ -208,5 +199,18 @@ export const EqEventCatalogue: WizardableProcess & WpsProcess = {
         shape: 'earthquake',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
         providerUrl: 'https://www.gfz-potsdam.de/en/'
+    },
+
+    onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
+        const outprods: Product[] = [];
+
+        if (newProduct.description.id === 'input-boundingbox') {
+            outprods.push({
+                ... selectedRows,
+                value: null
+            });
+        }
+
+        return outprods;
     }
 };

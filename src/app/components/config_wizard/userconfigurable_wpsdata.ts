@@ -6,31 +6,31 @@ import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public-ap
 export interface StringUconfWD extends WpsDataDescription {
     wizardProperties: {
         name: string,
-        fieldtype: "string"
-    }
+        fieldtype: 'string'
+    };
 }
 
 export interface StringSelectUconfWD extends WpsDataDescription {
     wizardProperties: {
-        name: string, 
-        fieldtype: "stringselect", 
-    }
-    options: string[]
+        name: string,
+        fieldtype: 'stringselect',
+    };
+    options: string[];
 }
 
 export interface BboxUconfWD extends WpsDataDescription {
     wizardProperties: {
         name: string,
-        fieldtype: "bbox"
-    }
+        fieldtype: 'bbox'
+    };
 }
 
 export interface FeatureSelectUconfWD extends WpsDataDescription {
     wizardProperties: {
         name: string,
-        fieldtype: "select", 
-    }
-    options: {[key: string]: any}
+        fieldtype: 'select',
+    };
+    options: {[key: string]: any};
 }
 
 export type UserconfigurableWpsDataDescription = StringUconfWD | StringSelectUconfWD | BboxUconfWD | FeatureSelectUconfWD;
@@ -38,19 +38,19 @@ export type UserconfigurableWpsDataDescription = StringUconfWD | StringSelectUco
 
 
 export interface StringUconfWpsData extends WpsData {
-    description: StringUconfWD
+    description: StringUconfWD;
 }
 
 export interface StringSelectUconfWpsData extends WpsData {
-    description: StringSelectUconfWD
+    description: StringSelectUconfWD;
 }
 
 export interface BboxUconfWpsData extends WpsData {
-    description: BboxUconfWD
+    description: BboxUconfWD;
 }
 
 export interface FeatureSelectUconfWpsData extends WpsData {
-    description: FeatureSelectUconfWD
+    description: FeatureSelectUconfWD;
 }
 
 
@@ -59,10 +59,10 @@ export type UserconfigurableWpsData = StringUconfWpsData | StringSelectUconfWpsD
 
 
 
-export const isUserconfigurableWpsDataDescription = function(obj: WpsDataDescription): obj is UserconfigurableWpsDataDescription {
-    return obj.hasOwnProperty("wizardProperties");
-}
+export const isUserconfigurableWpsDataDescription = (obj: WpsDataDescription): obj is UserconfigurableWpsDataDescription => {
+    return obj.hasOwnProperty('wizardProperties');
+};
 
-export const isUserconfigurableWpsData = function(obj: WpsData): obj is UserconfigurableWpsData {
+export const isUserconfigurableWpsData = (obj: WpsData): obj is UserconfigurableWpsData => {
     return isUserconfigurableWpsDataDescription(obj.description);
-}
+};

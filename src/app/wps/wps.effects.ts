@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect } from '@ngrx/effects';
-import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen, ClickRunProcess, WpsDataUpdate, RestartingFromProcess } from './wps.actions';
-import { map, switchMap, withLatestFrom } from 'rxjs/operators'; 
+import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen,
+        ClickRunProcess, WpsDataUpdate, RestartingFromProcess } from './wps.actions';
+import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
-import { EqEventCatalogue, inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/eqEventCatalogue';
+import { EqEventCatalogue, inputBoundingbox, mmin, mmax, zmin,
+        zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/eqEventCatalogue';
 import { EqGroundMotion, EqGroundMotionProvider, shakemapOutput, selectedEq } from '../configuration/chile/eqGroundMotion';
 import { EqTsInteraction, epicenter } from '../configuration/chile/eqTsInteraction';
 import { TsPhysicalSimulation, tsunamap, lat, lon, mag } from '../configuration/chile/tsPhysicalSimulation';
 import { Process, Product } from './wps.datatypes';
-import { UtilStoreService } from '@ukis/services-util-store';
-import { getProcessStates } from './wps.selectors';
-import { WpsState } from './wps.state';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
-import { ExposureModel, exposure } from '../configuration/chile/exposure';
-import { VulnerabilityModel, vulnerability } from '../configuration/chile/vulnerability';
+import { ExposureModel, lonmin, lonmax, latmin, latmax, selectedRowsXml,
+        assettype, schema, querymode } from '../configuration/chile/assetMaster';
+import { VulnerabilityModel, assetcategory, losscategory, taxonomies, selectedRows } from '../configuration/chile/modelProp';
+import { inputBoundingboxPeru, EqEventCataloguePeru } from '../configuration/peru/eqEventCatalogue';
 
 
 
@@ -79,7 +80,6 @@ export class WpsEffects {
             }
 
             return this.wfc.execute(process.id,
-
                 (response, counter) => {
                     if (counter < 1) {
                         this.store$.dispatch(new WpsDataUpdate({
@@ -158,7 +158,8 @@ export class WpsEffects {
                     TsPhysicalSimulation
                 ];
                 products = [
-                    exposure, vulnerability,
+                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
+                    assetcategory, losscategory, taxonomies, selectedRows,
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, selectedEq, shakemapOutput,
                     epicenter, lat, lon, mag,
@@ -170,8 +171,17 @@ export class WpsEffects {
                 products = [direction, intensity, parameter, laharWms];
                 break;
             case 'p1':
-                processes = [];
-                products = [];
+                processes = [
+                    EqEventCataloguePeru, EqGroundMotionProvider,
+                    EqGroundMotion, EqTsInteraction,
+                    TsPhysicalSimulation
+                ];
+                products = [
+                    inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
+                    selectedEqs, selectedEq, shakemapOutput,
+                    epicenter, lat, lon, mag,
+                    tsunamap
+                ];
                 break;
             default:
                 throw new Error(`Unknown scenario ${scenario}`);

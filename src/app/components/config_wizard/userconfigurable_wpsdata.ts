@@ -58,6 +58,10 @@ export interface FeatureSelectUconfWpsData extends WpsData {
 export type UserconfigurableWpsData = StringUconfWpsData | StringSelectUconfWpsData | BboxUconfWpsData | FeatureSelectUconfWpsData;
 
 
+export const isStringSelectableParameter = (obj: WpsData): obj is StringSelectUconfWpsData => {
+    return obj.description.hasOwnProperty('options');
+}
+
 
 export const isUserconfigurableWpsDataDescription = (obj: WpsDataDescription): obj is UserconfigurableWpsDataDescription => {
     return obj.hasOwnProperty('wizardProperties');

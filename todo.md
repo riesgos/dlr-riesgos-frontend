@@ -1,11 +1,26 @@
 
-assetmaster
-    in testserver einbinden
+we need a way to also 'execute' non-wps services. 
+what would be the most consistent way to do this?
+ - pro: with executable non-wps-processes we no longer need watching processes. 
 
-modelprop
-    in testserver einbinden
+
+
+update quakeledger and shakyground to get data from new url
+
+
+
+
+peru service
+    quakeledger peru needs to return alirezas prepared eqs
+        get the eqs from the epicenters aliraza sent you
+        have the process return them instead of the actual data
+        use those eqs as input to ts-service
+
+
+
 
 process completed: jump to next
+    deactivated for now.
     always jumps to wrong one. Implement "getNextActiveProcessAfter"
         now tries to jump to shakemapProcess_provider. This provider thing is rather unhandy.
 

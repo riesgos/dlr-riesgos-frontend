@@ -1,5 +1,6 @@
-import { WpsDataDescription, WpsVerion, ProductId } from 'projects/services-wps/src/public-api';
+import { WpsDataDescription, WpsVerion, ProductId, WpsData } from 'projects/services-wps/src/public-api';
 import { UserconfigurableWpsDataDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { Observable } from 'rxjs';
 
 
 
@@ -73,9 +74,17 @@ export interface WpsProcess extends Process {
     readonly wpsVersion: WpsVerion;
 }
 
-
 export const isWpsProcess = (p: Process): p is WpsProcess => {
     return p.hasOwnProperty('url') && p.hasOwnProperty('state') && p.hasOwnProperty('wpsVersion');
+};
+
+
+export interface CustomProcess extends Process {
+    execute: (inputs: WpsData[]) => Observable<WpsData[]>;
+}
+
+export const isCustomProcess = (p: Process): p is CustomProcess => {
+    return p.hasOwnProperty('execute');
 };
 
 

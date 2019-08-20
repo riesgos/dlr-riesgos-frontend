@@ -106,6 +106,9 @@ export class LayerMarshaller  {
     makeGeojsonLayer(product: VectorLayerData): Observable<ProductVectorLayer> {
         return this.getStyle(product).pipe(
             map(styleFunction => {
+
+                let data = product.value[0];
+
                 const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.description.id}_result_layer`,
                     name: `${product.description.name}`,
@@ -113,7 +116,7 @@ export class LayerMarshaller  {
                     removable: false,
                     type: 'geojson',
                     filtertype: 'Overlays',
-                    data: product.value[0],
+                    data: data,
                     options: {
                         style: styleFunction
                     },

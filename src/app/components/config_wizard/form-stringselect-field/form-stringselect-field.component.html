@@ -5,8 +5,7 @@
   </label>
 
   <select class="clr-col-md-9" clrSelect (change)="onChange($event.target.value)">
-      <option [value]="activeSelection" selected>{{activeSelection}}</option>
-      <option *ngFor="let str of options" [value]="str">{{str}}</option>
+      <option *ngFor="let str of options" [value]="str" [attr.selected]="str == activeSelection ? true : null">{{str}}</option>
   </select>
 
   <clr-control-helper>{{parameter.description.description}}</clr-control-helper>

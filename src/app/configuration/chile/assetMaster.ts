@@ -4,6 +4,8 @@ import { WpsData } from 'projects/services-wps/src/public-api';
 import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { UserconfigurableWpsData, StringUconfWpsData,
         StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Feature as olFeature } from 'ol/Feature';
 
 
 export const lonmin: StringUconfWpsData = {
@@ -14,7 +16,8 @@ export const lonmin: StringUconfWpsData = {
             fieldtype: 'string',
             name: 'lonmin'
         },
-        reference: false
+        reference: false,
+        defaultValue: -71.8
     },
     value: null
 };
@@ -28,7 +31,8 @@ export const lonmax: UserconfigurableWpsData = {
           fieldtype: 'string',
           name: 'lonmax'
       },
-      reference: false
+      reference: false,
+      defaultValue: -71.4
   },
   value: null
 };
@@ -42,7 +46,8 @@ export const latmin: StringUconfWpsData = {
           fieldtype: 'string',
           name: 'latmin'
       },
-      reference: false
+      reference: false,
+      defaultValue: -33.2
   },
   value: null
 };
@@ -56,7 +61,8 @@ description: {
         fieldtype: 'string',
         name: 'latmax'
     },
-    reference: false
+    reference: false,
+    defaultValue: -33.0
 },
 value: null
 };
@@ -66,6 +72,7 @@ export const schema: StringSelectUconfWpsData = {
   description: {
     id: 'schema',
     options: ['SARA_v1.0'],
+    defaultValue: 'SARA_v1.0',
     reference: false,
     type: 'literal',
     wizardProperties: {
@@ -82,6 +89,7 @@ export const assettype: StringSelectUconfWpsData = {
   description: {
     id: 'assettype',
     options: ['res'],
+    defaultValue: 'res',
     reference: false,
     type: 'literal',
     wizardProperties: {
@@ -116,7 +124,25 @@ export const selectedRowsXml: VectorLayerData = {
     reference: false,
     format: 'application/vnd.geo+json',
     name: 'selectedRowsXml',
-    vectorLayerAttributes: {}
+    vectorLayerAttributes: {
+      style: (feature: olFeature, resolution: number) => {
+        return new olStyle({
+          image: new olCircle({
+            radius: 30,
+            fill: new olFill({
+              color: 'blue'
+            }),
+            stroke: new olStroke({
+              color: 'white',
+              witdh: 1
+            })
+          })
+        });
+      },
+      text: (feature: olFeature) => {
+        return JSON.stringify(feature);
+      }
+    },
   },
   value: null
 };

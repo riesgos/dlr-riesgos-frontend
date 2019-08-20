@@ -163,7 +163,7 @@ const green2red = (magnitude: number): string => {
 
 export const selectedEqs: VectorLayerData = {
     description: {
-        id: 'selected-rows',
+        id: 'selectedRows',
         name: 'available earthquakes',
         format: 'application/vnd.geo+json',
         reference: false,
@@ -196,12 +196,12 @@ export const selectedEqs: VectorLayerData = {
 
 export const EqEventCatalogue: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
-    id: 'org.n52.wps.python.algorithm.QuakeMLProcessBBox',
-    url: 'https://riesgos.52north.org/wps/WebProcessingService',
+    id: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
+    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     name: 'Earthquake Catalogue',
     description: 'Catalogue of historical earthquakes.',
     requiredProducts: ['input-boundingbox', 'mmin', 'mmax', 'zmin', 'zmax', 'p', 'etype', 'tlon', 'tlat'],
-    providedProduct: 'selected-rows',
+    providedProduct: 'selectedRows',
     wpsVersion: '1.0.0',
 
     wizardProperties: {

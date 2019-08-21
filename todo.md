@@ -1,10 +1,16 @@
-re-integrate exposure- and vulnerability-service
-    requires uuids, though.
 
 experiment with data per reference. 
     Can you give a productA from process1 to process2 per reference,
     when you have obtained productA from process1 under a different mime-type than what you present to process2?
         Do that with shakyground and deus
+
+re-integrate exposure- and vulnerability-service
+    requires uuids, though.
+        WpsData.description.sourceId
+        Product: uid
+        Process: required & provided: must be uids
+        Workflowcontrol.graph: uses uid
+
 
 from process get both wms- and shakemap-output
     Usually, we want a wms-output for the frontend

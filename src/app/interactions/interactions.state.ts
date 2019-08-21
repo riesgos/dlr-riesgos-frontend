@@ -20,7 +20,8 @@ export const initialInteractionState: InteractionState = {
             reference: false,
             type: 'literal',
             wizardProperties: {
-                fieldtype: 'string'
+                fieldtype: 'string',
+                name: 'auto_default parameter'
             }
         },
         value: null

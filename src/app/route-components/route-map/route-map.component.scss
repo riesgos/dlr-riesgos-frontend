@@ -1,0 +1,22 @@
+.is-collapsed {
+  .clr-vertical-nav-header {
+    display: none;
+  }
+}
+
+.clr-vertical-nav-header {
+  margin-top: 0rem;
+  margin-left: 0.4rem;
+  padding-bottom: 0.5rem;
+  font-weight: 400;
+  color: inherit;
+
+  &.is-highlight {
+    color: #0079b8;
+  }
+}
+
+/** set width for Configuration Wizard */
+clr-vertical-nav.left {
+  width: 18.5rem;
+}

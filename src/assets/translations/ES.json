@@ -1,28 +1,24 @@
 {
     "RIESGOS Demonstrator": "RIESGOS demonstrador",
     "Stories": "Escenarios",
-    
-    "Unavailable": "Indisponible", 
+    "Unavailable": "Indisponible",
     "Available": "Disponible",
     "Running": "Ejecutando",
     "Completed": "Terminado",
-    
     "Configuration Wizard": "Asistente de Configuración",
+    "Configuration": "Configuración",
     "Provider": "Proveedor",
     "This process can not be configured yet.": "Este proceso aún no se puede configurar.",
     "Submit": "Enviar",
     "Loading...": "Descargando ...",
     "Reconfigure": "Reconfigurar",
     "Retry": "De nuevo",
-    
     "Earthquake Catalogue": "Catálogo de terremotos",
     "Catalogue of historical earthquakes.": "Catálogo de terremotos históricos.",
-    "Groundmotion Simulation": "Simulación de movimiento de tierra", 
-
+    "Groundmotion Simulation": "Simulación de movimiento de tierra",
     "Layer control": "Control de las capas",
     "Results": "Resultados",
-    "Additional layers": "Capas aditionales", 
-
+    "Additional layers": "Capas aditionales",
     "Reset": "Reiniciar",
     "Save": "Guardar",
     "Restore": "Restaurar",
@@ -37,15 +33,12 @@
     "Creation date": "Fecha de creación",
     "Data": "Datos",
     "entries": "entradas",
-    "Selected row:": "Entrada seleccionada:", 
-
+    "Selected row:": "Entrada seleccionada:",
     "Available RIESGOS stories for the Andes region": "Historias disponibles de RIESGOS para la región de los Andes",
     "The stories are developed for the following hazards and their interactions, ": "Las historias se desarrollan para los siguientes peligros y sus interacciones, ",
     "considering the following \"elements at risk\".": "considerando los siguientes \"elementos en riesgo\".",
-
     "Showcase": "Escenario",
     "Showcase Chile": "Escenario Chile",
     "Showcase Ecuador": "Escenario Ecuador",
     "Showcase Peru": "Escenario Peru"
-
 }

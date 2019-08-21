@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { LayersService } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 
@@ -10,6 +10,8 @@ import { MapStateService } from '@ukis/services-map-state';
 })
 export class LayercontrolComponent implements OnInit {
 
+  @Input() expandedResults = false;
+  @Input() expandedLayers = true;
   constructor(
     public layersSvc: LayersService,
     public mapStateSvc: MapStateService

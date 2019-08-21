@@ -4,6 +4,7 @@ import { FeatureSelectUconfWD, FeatureSelectUconfWpsData } from '../userconfigur
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
+import { convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 @Component({
   selector: 'ukis-form-featureselect-field',
@@ -35,16 +36,18 @@ export class FormFeatureSelectFieldComponent implements OnInit {
 
   onChange(newValString) {
     const newVal = this.options[newValString];
-    this.store.dispatch(new InteractionCompleted({ product: { description: this.parameter.description, value: newVal } }))
+    this.store.dispatch(new InteractionCompleted(
+      { product: convertWpsDataToProd({ description: this.parameter.description, value: newVal }) }
+    ));
   }
 
   onClick(event) {
     this.store.dispatch(new InteractionStarted({
-      mode: "featureselection",
-      product: {
+      mode: 'featureselection',
+      product: convertWpsDataToProd({
         ... this.parameter
-      }
-    }))
+      })
+    }));
   }
 
 }

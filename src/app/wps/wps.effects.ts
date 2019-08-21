@@ -20,6 +20,7 @@ import { ExposureModel, lonmin, lonmax, latmin, latmax, selectedRowsXml,
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, selectedRows } from '../configuration/chile/modelProp';
 import { selectedEq, EqSelection, selectedRow } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
+import { convertWpsDataToProds } from './wps.selectors';
 
 
 
@@ -159,24 +160,24 @@ export class WpsEffects {
                     Shakyground,
                     TsService
                 ];
-                products = [
+                products = convertWpsDataToProds([
                     // lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
                     // assetcategory, losscategory, taxonomies, selectedRows,
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, selectedRow,
                     selectedEq, shakemapOutput,
                     lat, lon, mag, epicenter
-                ];
+                ]);
                 break;
             case 'e1':
                 processes = [
                     LaharWps,
                     geomerHydrological
                 ];
-                products = [
+                products = convertWpsDataToProds([
                     direction, intensity, parameter, laharWms,
                     hydrologicalSimulation
-                ];
+                ]);
                 break;
             case 'p1':
                 processes = [
@@ -185,12 +186,12 @@ export class WpsEffects {
                     Shakyground,
                     TsService
                 ];
-                products = [
+                products = convertWpsDataToProds([
                     inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, selectedRow,
                     selectedEq, shakemapOutput,
                     lat, lon, mag, epicenter
-                ];
+                ]);
                 break;
             default:
                 throw new Error(`Unknown scenario ${scenario}`);

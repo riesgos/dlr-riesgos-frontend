@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export type ProductDescription = WpsDataDescription | UserconfigurableWpsDataDescription;
 
 export interface Product {
+    readonly uid: string;
     readonly description: ProductDescription;
     readonly value: any;
 }

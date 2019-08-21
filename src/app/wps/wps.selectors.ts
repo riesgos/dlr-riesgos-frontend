@@ -94,7 +94,15 @@ export const convertProductsToWpsData = (inpts: Product[]): WpsData[] => {
 };
 
 
+export const convertWpsDataToProd = (data: WpsData): Product => {
+    const uid = `${data.description.sourceProcessId}_${data.description.id}`;
+    return {
+        ...data,
+        uid
+    };
+};
+
 export const convertWpsDataToProds = (data: WpsData[]): Product[] => {
-    const out = data;
+    const out: Product[] = data.map(d => convertWpsDataToProd(d));
     return out;
 };

@@ -5,7 +5,7 @@ import { ProductsProvided, ClickRunProcess, RestartingFromProcess } from 'src/ap
 import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription, UserconfigurableWpsData, isUserconfigurableWpsData, FeatureSelectUconfWD, isStringSelectableParameter } from '../userconfigurable_wpsdata';
 import { Process, Product, ProductDescription, ProcessId, WpsProcess } from 'src/app/wps/wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public-api';
-import { getInputsForProcess } from 'src/app/wps/wps.selectors';
+import { getInputsForProcess, convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { WizardableProcess } from '../wizardable_processes';
@@ -47,7 +47,7 @@ export class WizardPageComponent implements OnInit {
         }
       }
     }
-    this.store.dispatch(new ClickRunProcess({productsProvided: this._parameters, process: this.process }));
+    this.store.dispatch(new ClickRunProcess({productsProvided: convertWpsDataToProds(this._parameters), process: this.process }));
   }
 
   onReconfigureClicked() {

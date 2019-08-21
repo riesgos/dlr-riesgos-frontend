@@ -9,6 +9,7 @@ import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { featureCollection } from '@turf/helpers';
+import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 
 
 
@@ -92,7 +93,7 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
                     options[feature.id] = feature;
                 }
 
-                return [{
+                return convertWpsDataToProds([{
                     description: {
                         id: 'selectedRow',
                         sourceProcessId: 'EqSelection',
@@ -105,7 +106,7 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
                         }
                     },
                     value: null
-                }];
+                }]);
 
 
             default:

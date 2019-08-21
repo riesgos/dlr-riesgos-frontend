@@ -2,6 +2,7 @@ import { Process, ProcessState, WpsProcess, ProcessStateTypes, ProcessStateUnava
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public-api';
+import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 
 
 
@@ -64,20 +65,19 @@ export const TsService: WizardableProcess & WpsProcess & WatchingProcess = {
         providerUrl: 'https://www.awi.de/en/'
     },
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        const outprods: Product[] = [];
+        let outprods: Product[] = [];
         if (newProduct.description.id === 'quakeMLFile') {
-            outprods.push({
+            const newProds = convertWpsDataToProds([{
                 ... lon,
                 value: newProduct.value[0].features[0].geometry.coordinates[0]
-            });
-            outprods.push({
+            }, {
                 ...lat,
                 value: newProduct.value[0].features[0].geometry.coordinates[1]
-            });
-            outprods.push({
+            }, {
                 ...mag,
                 value: newProduct.value[0].features[0].properties['magnitude.mag.value']
-            });
+            }]);
+            outprods = outprods.concat(newProds);
         }
         return outprods;
     }

@@ -13,6 +13,7 @@ export interface InteractionState {
 export const initialInteractionState: InteractionState = {
     mode: 'normal',
     product: {
+        uid: 'auto_default parameter',
         description: {
             id: 'default parameter',
             sourceProcessId: 'auto',

@@ -6,29 +6,31 @@ import { FeatureSelectUconfWD, FeatureSelectUconfWpsData, StringSelectUconfWpsDa
 
 export const direction: StringSelectUconfWpsData = {
     description: {
-        id: 'direction', 
-        reference: false, 
-        type: 'literal', 
+        id: 'direction',
+        reference: false,
+        type: 'literal',
         options: ['South', 'North'],
+        defaultValue: 'South',
         wizardProperties: {
             fieldtype: 'stringselect',
-            name: 'direction', 
+            name: 'direction',
         }
-    }, 
+    },
     value: null
 }
 
 export const intensity: StringSelectUconfWpsData = {
     description: {
-        id: 'intensity', 
-        reference: false, 
-        type: 'literal', 
+        id: 'intensity',
+        reference: false,
+        type: 'literal',
         options: ['VEI1', 'VEI2', 'VEI3', 'VEI4'],
+        defaultValue: 'VEI1',
         wizardProperties: {
-            fieldtype: 'stringselect', 
-            name: 'intensity', 
+            fieldtype: 'stringselect',
+            name: 'intensity',
         }
-    }, 
+    },
     value: null
 };
 
@@ -38,6 +40,7 @@ export const parameter: StringSelectUconfWpsData = {
         reference: false,
         type: 'literal',
         options: ['MaxHeight', 'MaxVelocity', 'MaxPressure', 'MaxErosion', 'Deposition'],
+        defaultValue: 'MaxHeight',
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'parameter',

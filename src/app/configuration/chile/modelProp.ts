@@ -48,14 +48,12 @@ export const taxonomies: StringUconfWpsData = {
 };
 
 
-export const selectedRows: VectorLayerData = {
+export const selectedRows: WpsData = {
     description: {
       id: 'selectedRows',
       type: 'complex',
       reference: false,
-      format: 'application/vnd.geo+json',
-      name: 'selectedRows',
-      vectorLayerAttributes: {}
+      format: 'application/json'
     },
     value: null
   };

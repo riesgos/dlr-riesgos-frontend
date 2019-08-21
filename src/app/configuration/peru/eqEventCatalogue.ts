@@ -113,8 +113,8 @@ export const etype: StringSelectUconfWpsData = {
             fieldtype: 'stringselect'
         },
         options: [
-                // 'deaggregation', 'observed', 'stochastic',  <--- deactivated
-                'expert']
+            // 'deaggregation', 'observed', 'stochastic',  <--- deactivated
+            'expert']
     },
     value: null
 };
@@ -154,7 +154,7 @@ export const tlat: UserconfigurableWpsData = {
 
 export const selectedEqs: VectorLayerData = {
     description: {
-        id: 'selected-rows',
+        id: 'selectedRows',
         name: 'available earthquakes',
         format: 'application/vnd.geo+json',
         reference: false,
@@ -192,7 +192,7 @@ export const EqEventCataloguePeru: WizardableProcess & WpsProcess & WatchingProc
     name: 'Earthquake Catalogue',
     description: 'Catalogue of historical earthquakes.',
     requiredProducts: ['input-boundingbox', 'mmin', 'mmax', 'zmin', 'zmax', 'p', 'etype', 'tlon', 'tlat'],
-    providedProduct: 'selected-rows',
+    providedProduct: 'selectedRows',
     wpsVersion: '1.0.0',
 
     wizardProperties: {
@@ -204,10 +204,57 @@ export const EqEventCataloguePeru: WizardableProcess & WpsProcess & WatchingProc
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         const outprods: Product[] = [];
 
-        if (newProduct.description.id === 'input-boundingbox') {
+        if (newProduct.description.id === 'selectedRows') {
+
+            console.log('quakeledger: providing provisional eqs')
             outprods.push({
-                ... selectedRows,
-                value: null
+                ...selectedRows,
+                value: [
+                    {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [
+                                        -75.902, -11.490
+                                    ]
+                                },
+                                "properties": {
+                                    "preferredOriginID": "CHOA_110",
+                                    "preferredMagnitudeID": "CHOA_110",
+                                    "type": "earthquake",
+                                    "description.text": "expert",
+                                    "origin.publicID": "CHOA_110",
+                                    "origin.time.value": "2018-01-01T00:00:00.000000Z",
+                                    "origin.time.uncertainty": "nan",
+                                    "origin.depth.value": "28.0",
+                                    "origin.depth.uncertainty": "nan",
+                                    "origin.creationInfo.value": "GFZ",
+                                    "originUncertainty.horizontalUncertainty": "nan",
+                                    "originUncertainty.minHorizontalUncertainty": "nan",
+                                    "originUncertainty.maxHorizontalUncertainty": "nan",
+                                    "originUncertainty.azimuthMaxHorizontalUncertainty": "nan",
+                                    "magnitude.publicID": "CHOA_110",
+                                    "magnitude.mag.value": "8.0",
+                                    "magnitude.mag.uncertainty": "nan",
+                                    "magnitude.type": "MW",
+                                    "magnitude.creationInfo.value": "GFZ",
+                                    "focalMechanism.publicID": "CHOA_110",
+                                    "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "9.0",
+                                    "focalMechanism.nodalPlanes.nodalPlane1.strike.uncertainty": "nan",
+                                    "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "18.0",
+                                    "focalMechanism.nodalPlanes.nodalPlane1.dip.uncertainty": "nan",
+                                    "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+                                    "focalMechanism.nodalPlanes.nodalPlane1.rake.uncertainty": "nan",
+                                    "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+                                },
+                                "id": "CHOA_110"
+                            },
+                        ]
+                    }
+                ]
             });
         }
 

@@ -94,6 +94,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
         if (data.complexData) {
             switch (data.complexData.mimeType) {
                 case 'application/vnd.geo+json':
+                case 'application/json':
                     // @ts-ignore
                     return data.complexData.content.map(cont => JSON.parse(cont));
                 case 'application/WMS':

@@ -23,7 +23,7 @@ export const isBboxLayerData = (data: WpsData): data is BboxLayerData => {
 
 
 export interface VectorLayerDescription extends WpsDataDescription {
-    format: 'application/vnd.geo+json';
+    format: 'application/vnd.geo+json' | 'application/json';
     type: 'complex';
     name: string;
     vectorLayerAttributes: {

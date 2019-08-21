@@ -39,12 +39,12 @@ export const EqGroundMotionProvider: WatchingProcess = {
     id: 'org.n52.wps.python.algorithm.ShakemapProcess_provider',
     name: '',
     state: {type: ProcessStateTypes.unavailable},
-    requiredProducts: ['selected-rows'],
+    requiredProducts: ['selectedRows'],
     providedProduct: 'quakeml-input',
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch (newProduct.description.id) {
 
-            case 'selected-rows':
+            case 'selectedRows':
 
                 const options = {};
                 for (const feature of newProduct.value[0].features) {

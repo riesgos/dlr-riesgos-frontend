@@ -9,8 +9,8 @@ import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
 import { EqEventCatalogue, inputBoundingbox, mmin, mmax, zmin,
-        zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/eqEventCatalogue';
-import { EqGroundMotion, EqGroundMotionProvider, shakemapOutput, selectedEq } from '../configuration/chile/eqGroundMotion';
+        zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
+import { EqGroundMotion, shakemapOutput } from '../configuration/chile/shakyground';
 import { EqTsInteraction, epicenter } from '../configuration/chile/eqTsInteraction';
 import { TsPhysicalSimulation, tsunamap, lat, lon, mag } from '../configuration/chile/tsPhysicalSimulation';
 import { Process, Product } from './wps.datatypes';
@@ -19,6 +19,7 @@ import { ExposureModel, lonmin, lonmax, latmin, latmax, selectedRowsXml,
         assettype, schema, querymode } from '../configuration/chile/assetMaster';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, selectedRows } from '../configuration/chile/modelProp';
 import { inputBoundingboxPeru, EqEventCataloguePeru } from '../configuration/peru/eqEventCatalogue';
+import { selectedEq, EqSelection, selectedRow } from '../configuration/chile/eqselection';
 
 
 
@@ -100,15 +101,15 @@ export class WpsEffects {
             const wpsUpdate = new WpsDataUpdate({processes, products, graph});
             actions.push(wpsUpdate);
 
-            let nextProcess = this.wfc.getNextActiveChildProcess(processId);
-            if (! nextProcess) {
-                nextProcess = this.wfc.getActiveProcess();
-            }
-
-            if (nextProcess && success) {
-                const processClicked = new NewProcessClicked({processId: nextProcess.id});
-                actions.push(processClicked);
-            }
+            // We abstain from moving on to the next process for now, until we have a nice way of finding the next one in line.
+            // let nextProcess = this.wfc.getNextActiveChildProcess(processId);
+            // if (! nextProcess) {
+            //     nextProcess = this.wfc.getActiveProcess();
+            // }
+            // if (nextProcess && success) {
+            //     const processClicked = new NewProcessClicked({processId: nextProcess.id});
+            //     actions.push(processClicked);
+            // }
 
             return actions;
 
@@ -152,16 +153,16 @@ export class WpsEffects {
         switch (scenario) {
             case 'c1':
                 processes = [
-                    ExposureModel, VulnerabilityModel,
-                    EqEventCatalogue, EqGroundMotionProvider,
+                    // ExposureModel, VulnerabilityModel,
+                    EqEventCatalogue, EqSelection,
                     EqGroundMotion, EqTsInteraction,
                     TsPhysicalSimulation
                 ];
                 products = [
-                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
-                    assetcategory, losscategory, taxonomies, selectedRows,
+                    // lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
+                    // assetcategory, losscategory, taxonomies, selectedRows,
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
-                    selectedEqs, selectedEq, shakemapOutput,
+                    selectedEqs, selectedRow, selectedEq, shakemapOutput,
                     epicenter, lat, lon, mag,
                     tsunamap
                 ];
@@ -172,13 +173,13 @@ export class WpsEffects {
                 break;
             case 'p1':
                 processes = [
-                    EqEventCataloguePeru, EqGroundMotionProvider,
-                    EqGroundMotion, EqTsInteraction,
+                    EqEventCataloguePeru,
+                    EqTsInteraction,
                     TsPhysicalSimulation
                 ];
                 products = [
                     inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
-                    selectedEqs, selectedEq, shakemapOutput,
+                    selectedEqs, selectedRow, selectedEq, shakemapOutput,
                     epicenter, lat, lon, mag,
                     tsunamap
                 ];

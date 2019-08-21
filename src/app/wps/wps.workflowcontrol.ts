@@ -1,6 +1,6 @@
 import { Process, Product, ProcessId, ProcessState, isWatchingProcess, isWpsProcess, WpsProcess,
     ProcessStateRunning, ProcessStateCompleted, ProcessStateError, ProcessStateTypes,
-    ProcessStateUnavailable, ProcessStateAvailable } from './wps.datatypes';
+    ProcessStateUnavailable, ProcessStateAvailable, isCustomProcess, CustomProcess } from './wps.datatypes';
 import { Graph, alg } from 'graphlib';
 import { ProductId, WpsData } from 'projects/services-wps/src/lib/wps_datatypes';
 import { HttpClient } from '@angular/common/http';
@@ -8,6 +8,7 @@ import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { isUserconfigurableWpsDataDescription, isUserconfigurableWpsData } from '../components/config_wizard/userconfigurable_wpsdata';
 import { WpsClient } from 'projects/services-wps/src/public-api';
+import { doesNotThrow } from 'assert';
 
 
 export class WorkflowControl {
@@ -47,7 +48,45 @@ export class WorkflowControl {
         });
     }
 
+
     execute(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
+        const process = this.getProcess(id);
+        if (isWpsProcess(process)) {
+            return this.executeWps(id, doWhileRequesting);
+        } else if (isCustomProcess(process)) {
+            return this.executeCustom(id, doWhileRequesting);
+        } else {
+            throw new Error(`Tried to execute a non-executable process ${id}`);
+        }
+    }
+
+    private executeCustom(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
+
+        const process = this.getCustomProcess(id);
+        const inputs = this.getProcessInputs(id);
+
+        return process.execute(inputs).pipe(
+            tap((output: WpsData[]) => {
+                for (const product of output) {
+                    this.provideProduct(product.description.id, product.value);
+                }
+                this.setProcessState(process.id, new ProcessStateCompleted());
+            }),
+
+            map((output: WpsData[]) => {
+                return true;
+            }),
+
+            catchError((error) => {
+                this.setProcessState(process.id, new ProcessStateError(error.message));
+                console.error(error);
+                return of(false);
+            })
+        );
+
+    }
+
+    private executeWps(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
 
         let process = this.getWpsProcess(id);
         const inputs = this.getProcessInputs(id);
@@ -207,6 +246,15 @@ export class WorkflowControl {
         }
     }
 
+    private getCustomProcess(id: ProcessId): CustomProcess {
+        const process = this.getProcess(id);
+        if (!isCustomProcess(process)) {
+            throw new Error(`is not a CustomProcess: ${process.id}`);
+        } else {
+            return process;
+        }
+    }
+
 
     private getProcess(id: ProcessId): Process {
         const process = this.processes.find(p => p.id === id);
@@ -236,7 +284,7 @@ export class WorkflowControl {
             if (process.id === id) {
                 return {
                     ...process,
-                    state: state
+                    state
                 };
             }
             return process;
@@ -250,7 +298,7 @@ export class WorkflowControl {
             if (product.description.id === id) {
                 return {
                     ...product,
-                    value: value
+                    value
                 };
             }
             return product;

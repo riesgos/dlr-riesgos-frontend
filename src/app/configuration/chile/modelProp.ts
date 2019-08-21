@@ -9,6 +9,7 @@ import { StringSelectUconfWpsData, StringUconfWD, StringUconfWpsData } from 'src
 export const assetcategory: StringSelectUconfWpsData = {
     description: {
         id: 'assetcategory',
+        sourceProcessId: 'user',
         options: ['buildings'],
         reference: false,
         type: 'literal',
@@ -23,6 +24,7 @@ export const assetcategory: StringSelectUconfWpsData = {
 export const losscategory: StringSelectUconfWpsData = {
     description: {
         id: 'losscategory',
+        sourceProcessId: 'user',
         options: ['structural'],
         reference: false,
         type: 'literal',
@@ -37,6 +39,7 @@ export const losscategory: StringSelectUconfWpsData = {
 export const taxonomies: StringUconfWpsData = {
     description: {
         id: 'taxonomies',
+        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         wizardProperties: {
@@ -51,6 +54,7 @@ export const taxonomies: StringUconfWpsData = {
 export const selectedRows: WpsData = {
     description: {
       id: 'selectedRows',
+      sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
       type: 'complex',
       reference: false,
       format: 'application/json'

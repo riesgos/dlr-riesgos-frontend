@@ -8,6 +8,7 @@ import { WpsData } from 'projects/services-wps/src/public-api';
 export const lat: WpsData = {
     description: {
         id: 'lat',
+        sourceProcessId: 'auto',
         reference: false,
         type: 'literal',
     },
@@ -17,6 +18,7 @@ export const lat: WpsData = {
 export const lon: WpsData = {
     description: {
         id: 'lon',
+        sourceProcessId: 'auto',
         reference: false,
         type: 'literal',
     },
@@ -26,6 +28,7 @@ export const lon: WpsData = {
 export const mag: WpsData = {
     description: {
         id: 'mag',
+        sourceProcessId: 'auto',
         reference: false,
         type: 'literal',
     },
@@ -36,6 +39,7 @@ export const mag: WpsData = {
 export const epicenter: WpsData = {
     description: {
         id: 'epiCenter',
+        sourceProcessId: 'get_scenario',
         reference: false,
         format: 'application/WMS',
         type: 'literal',

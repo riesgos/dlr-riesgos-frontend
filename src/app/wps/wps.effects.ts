@@ -16,7 +16,7 @@ import { TsService, epicenter, lat, lon, mag } from '../configuration/chile/tsSe
 import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, selectedRowsXml,
-        assettype, schema, querymode } from '../configuration/chile/assetMaster';
+        assettype, schema, querymode } from '../configuration/chile/assetmaster';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, selectedRows } from '../configuration/chile/modelProp';
 import { selectedEq, EqSelection, selectedRow } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';

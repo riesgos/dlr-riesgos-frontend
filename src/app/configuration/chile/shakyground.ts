@@ -8,6 +8,7 @@ import { VectorLayerData, WmsLayerData } from 'src/app/components/map/mappable_w
 export const shakemapOutput: WpsData & WmsLayerData = {
     description: {
         id: 'shakeMapFile',
+        sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
         name: 'shakemap',
         type: 'complex',
         reference: false,

@@ -7,6 +7,7 @@ import { FeatureSelectUconfWD, FeatureSelectUconfWpsData, StringSelectUconfWpsDa
 export const direction: StringSelectUconfWpsData = {
     description: {
         id: 'direction',
+        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         options: ['South', 'North'],
@@ -22,6 +23,7 @@ export const direction: StringSelectUconfWpsData = {
 export const intensity: StringSelectUconfWpsData = {
     description: {
         id: 'intensity',
+        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         options: ['VEI1', 'VEI2', 'VEI3', 'VEI4'],
@@ -37,6 +39,7 @@ export const intensity: StringSelectUconfWpsData = {
 export const parameter: StringSelectUconfWpsData = {
     description: {
         id: 'parameter',
+        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         options: ['MaxHeight', 'MaxVelocity', 'MaxPressure', 'MaxErosion', 'Deposition'],
@@ -53,6 +56,7 @@ export const parameter: StringSelectUconfWpsData = {
 export const laharWms: WmsLayerData = {
     description: {
         id: 'result',
+        sourceProcessId: 'gs:LaharModel',
         name: 'laharWms',
         type: 'literal',  // this is deliberate. layer-wps returns this value as a litteral, not as a complex.
         reference: false,

@@ -11,6 +11,7 @@ import { Feature as olFeature } from 'ol/Feature';
 export const lonmin: StringUconfWpsData = {
     description: {
         id: 'lonmin',
+        sourceProcessId: 'user',
         type: 'literal',
         wizardProperties: {
             fieldtype: 'string',
@@ -26,6 +27,7 @@ export const lonmin: StringUconfWpsData = {
 export const lonmax: UserconfigurableWpsData = {
   description: {
       id: 'lonmax',
+      sourceProcessId: 'user',
       type: 'literal',
       wizardProperties: {
           fieldtype: 'string',
@@ -41,6 +43,7 @@ export const lonmax: UserconfigurableWpsData = {
 export const latmin: StringUconfWpsData = {
   description: {
       id: 'latmin',
+      sourceProcessId: 'user',
       type: 'literal',
       wizardProperties: {
           fieldtype: 'string',
@@ -56,6 +59,7 @@ export const latmin: StringUconfWpsData = {
 export const latmax: StringUconfWpsData = {
 description: {
     id: 'latmax',
+    sourceProcessId: 'user',
     type: 'literal',
     wizardProperties: {
         fieldtype: 'string',
@@ -71,6 +75,7 @@ value: null
 export const schema: StringSelectUconfWpsData = {
   description: {
     id: 'schema',
+    sourceProcessId: 'user',
     options: ['SARA_v1.0'],
     defaultValue: 'SARA_v1.0',
     reference: false,
@@ -88,6 +93,7 @@ export const schema: StringSelectUconfWpsData = {
 export const assettype: StringSelectUconfWpsData = {
   description: {
     id: 'assettype',
+    sourceProcessId: 'user',
     options: ['res'],
     defaultValue: 'res',
     reference: false,
@@ -104,6 +110,7 @@ export const assettype: StringSelectUconfWpsData = {
 export const querymode: StringSelectUconfWpsData = {
   description: {
     id: 'querymode',
+    sourceProcessId: 'user',
     options: ['intersects', 'within'],
     defaultValue: 'intersects',
     reference: false,
@@ -120,6 +127,7 @@ export const querymode: StringSelectUconfWpsData = {
 export const selectedRowsXml: VectorLayerData = {
   description: {
     id: 'selectedRowsXml',
+    sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
     type: 'complex',
     reference: false,
     format: 'application/vnd.geo+json',

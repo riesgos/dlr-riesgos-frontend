@@ -8,6 +8,7 @@ import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
 export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
     description: {
         id: 'input-boundingbox',
+        sourceProcessId: 'user',
         name: 'eq-selection: boundingbox',
         type: 'bbox',
         reference: false,
@@ -24,6 +25,7 @@ export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
 export const mmin: UserconfigurableWpsData = {
     description: {
         id: 'mmin',
+        sourceProcessId: 'user',
         type: 'literal',
         wizardProperties: {
             name: 'mmin',
@@ -40,6 +42,7 @@ export const mmin: UserconfigurableWpsData = {
 export const mmax: UserconfigurableWpsData = {
     description: {
         id: 'mmax',
+        sourceProcessId: 'user',
         type: 'literal',
         wizardProperties: {
             name: 'mmax',
@@ -56,6 +59,7 @@ export const mmax: UserconfigurableWpsData = {
 export const zmin: UserconfigurableWpsData = {
     description: {
         id: 'zmin',
+        sourceProcessId: 'user',
         description: 'minimum depth',
         defaultValue: '0',
         type: 'literal',
@@ -71,6 +75,7 @@ export const zmin: UserconfigurableWpsData = {
 export const zmax: UserconfigurableWpsData = {
     description: {
         id: 'zmax',
+        sourceProcessId: 'user',
         description: 'maximum depth',
         defaultValue: '100',
         type: 'literal',
@@ -87,6 +92,7 @@ export const zmax: UserconfigurableWpsData = {
 export const p: UserconfigurableWpsData = {
     description: {
         id: 'p',
+        sourceProcessId: 'user',
         description: 'p',
         type: 'literal',
         wizardProperties: {
@@ -103,6 +109,7 @@ export const p: UserconfigurableWpsData = {
 export const etype: StringSelectUconfWpsData = {
     description: {
         id: 'etype',
+        sourceProcessId: 'user',
         description: 'etype',
         defaultValue: 'expert', // 'deaggregation',
         reference: false,
@@ -121,6 +128,7 @@ export const etype: StringSelectUconfWpsData = {
 export const tlon: UserconfigurableWpsData = {
     description: {
         id: 'tlon',
+        sourceProcessId: 'user',
         description: 'longitude [decimal degrees]',
         defaultValue: '5.00',
         reference: false,
@@ -137,6 +145,7 @@ export const tlon: UserconfigurableWpsData = {
 export const tlat: UserconfigurableWpsData = {
     description: {
         id: 'tlat',
+        sourceProcessId: 'user',
         description: 'latitude [decimal degrees]',
         defaultValue: '-35.00',
         reference: false,
@@ -151,19 +160,10 @@ export const tlat: UserconfigurableWpsData = {
 
 
 
-
-const green2red = (magnitude: number): string => {
-    const range = 9.5 - 5;
-    const part = magnitude - 5;
-    let perc = 360.0 * part / range;
-    perc = Math.floor(perc);
-    return `hsl(${perc}, 100%, 50%)`;
-};
-
-
 export const selectedEqs: VectorLayerData = {
     description: {
         id: 'selectedRows',
+        sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
         name: 'available earthquakes',
         format: 'application/vnd.geo+json',
         reference: false,

@@ -9,6 +9,7 @@ import { WpsData } from 'projects/services-wps/src/public-api';
 export const hydrologicalSimulation: WmsLayerData = {
     description: {
         id: 'hydrologicalSimulation',
+        sourceProcessId: 'geomerHydrological',
         name: 'Hydrological Simulation',
         format: 'application/WMS',
         reference: true,

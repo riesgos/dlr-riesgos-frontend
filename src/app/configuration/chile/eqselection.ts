@@ -15,6 +15,7 @@ import { featureCollection } from '@turf/helpers';
 export const selectedRow: FeatureSelectUconfWpsData = {
     description: {
         id: 'selectedRow',
+        sourceProcessId: 'user',
         options: [],
         reference: false,
         type: 'complex',
@@ -30,6 +31,7 @@ export const selectedRow: FeatureSelectUconfWpsData = {
 export const selectedEq: VectorLayerData = {
     description: {
         id: 'quakeMLFile',
+        sourceProcessId: 'EqSelection',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
@@ -93,6 +95,7 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
                 return [{
                     description: {
                         id: 'selectedRow',
+                        sourceProcessId: 'EqSelection',
                         options: options,
                         reference: false,
                         type: 'complex',

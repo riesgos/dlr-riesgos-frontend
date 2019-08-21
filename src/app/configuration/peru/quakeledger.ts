@@ -1,9 +1,11 @@
-import { WpsProcess, ProcessStateUnavailable, WatchingProcess, Product } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, WatchingProcess, Product, CustomProcess } from '../../wps/wps.datatypes';
 import { UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
 import { selectedRows } from '../chile/modelProp';
+import { Observable, of } from 'rxjs';
+import { WpsData } from 'projects/services-wps/src/public-api';
 
 
 export const inputBoundingboxPeru: UserconfigurableWpsData & BboxLayerData = {
@@ -168,7 +170,7 @@ export const selectedEqs: VectorLayerData = {
                     Magnitude: Math.round(properties['magnitude.mag.value'] * 100) / 100,
                     Depth: Math.round(properties['origin.depth.value'] * 100) / 100 + ' m'
                 };
-                text += '<table class="table"><tbody>';
+                text += '<table class=\'table\'><tbody>';
                 for (const property in selectedProperties) {
                     if (selectedProperties[property]) {
                         const propertyValue = selectedProperties[property];
@@ -184,80 +186,77 @@ export const selectedEqs: VectorLayerData = {
 };
 
 
+const fakeEqs =  [
+    {
+        'type': 'FeatureCollection',
+        'features': [
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [
+                        -77.68, -12.62
+                    ]
+                },
+                'properties': {
+                    'origin.publicID': '1',
+                    'origin.depth.value': '28.0',
+                    'magnitude.mag.value': '8.0',
+                },
+                'id': '1'
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [
+                        -78.19, -11.77
+                    ]
+                },
+                'properties': {
+                    'origin.publicID': '2',
+                    'origin.depth.value': '28.0',
+                    'magnitude.mag.value': '8.0',
+                },
+                'id': '2'
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [
+                        -78.70, -10.93
+                    ]
+                },
+                'properties': {
+                    'origin.publicID': '3',
+                    'origin.depth.value': '28.0',
+                    'magnitude.mag.value': '8.0',
+                },
+                'id': '3'
+            },
+        ]
+    }
+];
 
-export const EqEventCataloguePeru: WizardableProcess & WpsProcess & WatchingProcess = {
+
+export const QuakeLedgerPeru: WizardableProcess & CustomProcess = {
     state: new ProcessStateUnavailable(),
     id: 'org.n52.wps.python.algorithm.QuakeMLProcessBBox',
-    url: 'https://riesgos.52north.org/wps/WebProcessingService',
     name: 'Earthquake Catalogue',
-    description: 'Catalogue of historical earthquakes.',
     requiredProducts: ['input-boundingbox', 'mmin', 'mmax', 'zmin', 'zmax', 'p', 'etype', 'tlon', 'tlat'],
     providedProduct: 'selectedRows',
-    wpsVersion: '1.0.0',
-
     wizardProperties: {
         shape: 'earthquake',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
         providerUrl: 'https://www.gfz-potsdam.de/en/'
     },
 
-    onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        const outprods: Product[] = [];
+    execute: (inputs: WpsData[]): Observable<WpsData[]> => {
+        return of([{
+            ... selectedEqs,
+            value: fakeEqs
+        }]);
+    },
 
-        if (newProduct.description.id === 'selectedRows') {
-
-            console.log('quakeledger: providing provisional eqs')
-            outprods.push({
-                ...selectedRows,
-                value: [
-                    {
-                        "type": "FeatureCollection",
-                        "features": [
-                            {
-                                "type": "Feature",
-                                "geometry": {
-                                    "type": "Point",
-                                    "coordinates": [
-                                        -75.902, -11.490
-                                    ]
-                                },
-                                "properties": {
-                                    "preferredOriginID": "CHOA_110",
-                                    "preferredMagnitudeID": "CHOA_110",
-                                    "type": "earthquake",
-                                    "description.text": "expert",
-                                    "origin.publicID": "CHOA_110",
-                                    "origin.time.value": "2018-01-01T00:00:00.000000Z",
-                                    "origin.time.uncertainty": "nan",
-                                    "origin.depth.value": "28.0",
-                                    "origin.depth.uncertainty": "nan",
-                                    "origin.creationInfo.value": "GFZ",
-                                    "originUncertainty.horizontalUncertainty": "nan",
-                                    "originUncertainty.minHorizontalUncertainty": "nan",
-                                    "originUncertainty.maxHorizontalUncertainty": "nan",
-                                    "originUncertainty.azimuthMaxHorizontalUncertainty": "nan",
-                                    "magnitude.publicID": "CHOA_110",
-                                    "magnitude.mag.value": "8.0",
-                                    "magnitude.mag.uncertainty": "nan",
-                                    "magnitude.type": "MW",
-                                    "magnitude.creationInfo.value": "GFZ",
-                                    "focalMechanism.publicID": "CHOA_110",
-                                    "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "9.0",
-                                    "focalMechanism.nodalPlanes.nodalPlane1.strike.uncertainty": "nan",
-                                    "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "18.0",
-                                    "focalMechanism.nodalPlanes.nodalPlane1.dip.uncertainty": "nan",
-                                    "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-                                    "focalMechanism.nodalPlanes.nodalPlane1.rake.uncertainty": "nan",
-                                    "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-                                },
-                                "id": "CHOA_110"
-                            },
-                        ]
-                    }
-                ]
-            });
-        }
-
-        return outprods;
-    }
 };

@@ -24,7 +24,8 @@ const Jsonix = JsonixModule.Jsonix;
  * There are two layers of marshalling:
  *  - the Wps-marshaller marshals user-facing data to wps-specific types
  *  - Jsonix marshals wps-specific data to xml.
- * user-facing data -> wpsmarshaller -> Wps-type-specific data -> Jsonix-marhsaller -> XML -> webclient -> WPS -> XML -> Jsonix-unmarshaller -> Wps-type-specific data -> wpsmarshaller -> user-facing data
+ * user-facing data -> wpsmarshaller -> Wps-type-specific data -> Jsonix-marhsaller -> XML ->
+ * -> webclient -> WPS -> XML -> Jsonix-unmarshaller -> Wps-type-specific data -> wpsmarshaller -> user-facing data
  */
 @Injectable()
 export class WpsClient {
@@ -62,7 +63,7 @@ export class WpsClient {
             'Content-Type': 'text/xml',
             'Accept': 'text/xml, application/xml'
         });
-        return this.webclient.get(getCapabilitiesUrl, { headers: headers, responseType: 'text' }).pipe(
+        return this.webclient.get(getCapabilitiesUrl, { headers, responseType: 'text' }).pipe(
             map(response => {
                 return this.xmlunmarshaller.unmarshalString(response);
             }),
@@ -83,10 +84,12 @@ export class WpsClient {
 
         const executeRequest = this.execute(url, processId, inputs, output, true);
 
-        const cacheKey = this.cache.makeKey({url: url, id: processId, inputs: inputs, output: output});
+        const cacheKey = this.cache.makeKey({url, id: processId, inputs, output});
         if (this.caching)  {
             const cachedResponse = this.cache.get(cacheKey);
-            if (cachedResponse) return of(cachedResponse);
+            if (cachedResponse) {
+                return of(cachedResponse);
+            }
         }
 
         return executeRequest.pipe(
@@ -106,18 +109,21 @@ export class WpsClient {
                 for (const result of response) {
                     if (result.description.type === 'error') {
                         console.log('server responded with 200, but body contained an error-result: ', result);
-                        throwError(new Error(result.value));
+                        throw new Error(result.value);
                     }
                 }
             }),
             tap((response: WpsResult[]) => {
-                if(this.caching) this.cache.set(cacheKey, response)
+                if (this.caching) {
+                    this.cache.set(cacheKey, response);
+                }
             }),
         );
 
     }
 
-    execute(url: string, processId: string, inputs: WpsInput[], outputDescription: WpsOutputDescription, async: boolean): Observable<WpsResult[]> {
+    execute(url: string, processId: string, inputs: WpsInput[],
+            outputDescription: WpsOutputDescription, async: boolean): Observable<WpsResult[]> {
 
         const executeUrl = this.wpsmarshaller.executeUrl(url, processId);
         const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescription, async);
@@ -127,7 +133,7 @@ export class WpsClient {
             'Content-Type': 'text/xml',
             'Accept': 'text/xml, application/xml'
         });
-        return this.webclient.post(executeUrl, xmlExecbody, { headers: headers, responseType: 'text' }).pipe(
+        return this.webclient.post(executeUrl, xmlExecbody, { headers, responseType: 'text' }).pipe(
             map(xmlResponse => {
                 const jsonResponse = this.xmlunmarshaller.unmarshalString(xmlResponse);
                 const output = this.wpsmarshaller.unmarshalExecuteResponse(jsonResponse);
@@ -141,7 +147,7 @@ export class WpsClient {
             'Content-Type': 'text/xml',
             'Accept': 'text/xml, application/xml'
         });
-        return this.webclient.get(statusUrl, {headers: headers, responseType: 'text'}).pipe(
+        return this.webclient.get(statusUrl, {headers, responseType: 'text'}).pipe(
             map( xmlResponse => {
                 const jsonResponse = this.xmlunmarshaller.unmarshalString(xmlResponse);
                 const output = this.wpsmarshaller.unmarshalExecuteResponse(jsonResponse);

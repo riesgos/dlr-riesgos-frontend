@@ -23,7 +23,13 @@ export class FormFeatureSelectFieldComponent implements OnInit {
   ngOnInit() {
     this.options = this.parameter.description.options;
     this.selectionStrings = Object.keys(this.options);
-    this.activeSelection = this.parameter.value.id;
+    if (this.parameter.value) {
+      this.activeSelection = this.parameter.value.id;
+    } else if (this.parameter.description.defaultValue) {
+      this.activeSelection = this.parameter.description.defaultValue;
+    } else {
+      this.activeSelection = this.parameter.description.options[0];
+    }
   }
 
 

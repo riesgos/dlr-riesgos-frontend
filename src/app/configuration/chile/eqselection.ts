@@ -5,6 +5,10 @@ import { WpsData } from 'projects/services-wps/src/public-api';
 import { Feature } from '@turf/helpers';
 import { Observable, of } from 'rxjs';
 import { WpsActions } from 'src/app/wps/wps.actions';
+import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Feature as olFeature } from 'ol/Feature';
+import { featureCollection } from '@turf/helpers';
 
 
 
@@ -23,12 +27,32 @@ export const selectedRow: FeatureSelectUconfWpsData = {
 };
 
 
-export const selectedEq: WpsData = {
+export const selectedEq: VectorLayerData = {
     description: {
         id: 'quakeMLFile',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
+        name: 'Selected EQ',
+        vectorLayerAttributes: {
+            style: (feature: olFeature, resolution: number) => {
+                return new olStyle({
+                  image: new olCircle({
+                    radius: 30,
+                    fill: new olFill({
+                      color: 'blue'
+                    }),
+                    stroke: new olStroke({
+                      color: 'white',
+                      witdh: 1
+                    })
+                  })
+                });
+              },
+              text: (feature: olFeature) => {
+                return JSON.stringify(feature);
+              }
+        }
     },
     value: null
 };
@@ -48,16 +72,11 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
     },
 
     execute: (inputs: WpsData[]): Observable<WpsData[]> => {
-        let eqVal = null;
-        for (const input of inputs) {
-            if (input.description.id === 'selectedRow') {
-                eqVal = input.value;
-            }
-        }
-
+        const eqVal = inputs.find(i => i.description.id === 'selectedRow').value;
+        const eqValFeatureCollection = featureCollection([eqVal]);
         return of([{
             ...selectedEq,
-            value: eqVal
+            value: [eqValFeatureCollection]
         }]);
     },
 

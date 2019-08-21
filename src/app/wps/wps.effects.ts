@@ -8,18 +8,18 @@ import { Store, Action, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
-import { EqEventCatalogue, inputBoundingbox, mmin, mmax, zmin,
+import { QuakeLedger, inputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
-import { EqGroundMotion, shakemapOutput } from '../configuration/chile/shakyground';
-import { EqTsInteraction, epicenter } from '../configuration/chile/eqTsInteraction';
-import { TsPhysicalSimulation, tsunamap, lat, lon, mag } from '../configuration/chile/tsPhysicalSimulation';
+import { inputBoundingboxPeru, QuakeLedgerPeru } from '../configuration/peru/quakeledger';
+import { Shakyground, shakemapOutput } from '../configuration/chile/shakyground';
+import { TsService, epicenter, lat, lon, mag } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, selectedRowsXml,
         assettype, schema, querymode } from '../configuration/chile/assetMaster';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, selectedRows } from '../configuration/chile/modelProp';
-import { inputBoundingboxPeru, EqEventCataloguePeru } from '../configuration/peru/eqEventCatalogue';
 import { selectedEq, EqSelection, selectedRow } from '../configuration/chile/eqselection';
+import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
 
 
 
@@ -154,34 +154,42 @@ export class WpsEffects {
             case 'c1':
                 processes = [
                     // ExposureModel, VulnerabilityModel,
-                    EqEventCatalogue, EqSelection,
-                    EqGroundMotion, EqTsInteraction,
-                    TsPhysicalSimulation
+                    QuakeLedger,
+                    EqSelection,
+                    Shakyground,
+                    TsService
                 ];
                 products = [
                     // lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
                     // assetcategory, losscategory, taxonomies, selectedRows,
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
-                    selectedEqs, selectedRow, selectedEq, shakemapOutput,
-                    epicenter, lat, lon, mag,
-                    tsunamap
+                    selectedEqs, selectedRow,
+                    selectedEq, shakemapOutput,
+                    lat, lon, mag, epicenter
                 ];
                 break;
             case 'e1':
-                processes = [LaharWps];
-                products = [direction, intensity, parameter, laharWms];
+                processes = [
+                    LaharWps,
+                    geomerHydrological
+                ];
+                products = [
+                    direction, intensity, parameter, laharWms,
+                    hydrologicalSimulation
+                ];
                 break;
             case 'p1':
                 processes = [
-                    EqEventCataloguePeru,
-                    EqTsInteraction,
-                    TsPhysicalSimulation
+                    QuakeLedgerPeru,
+                    EqSelection,
+                    Shakyground,
+                    TsService
                 ];
                 products = [
                     inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
-                    selectedEqs, selectedRow, selectedEq, shakemapOutput,
-                    epicenter, lat, lon, mag,
-                    tsunamap
+                    selectedEqs, selectedRow,
+                    selectedEq, shakemapOutput,
+                    lat, lon, mag, epicenter
                 ];
                 break;
             default:

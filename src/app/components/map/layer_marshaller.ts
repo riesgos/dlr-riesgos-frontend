@@ -261,7 +261,7 @@ export class LayerMarshaller  {
             'Accept': 'text/xml, application/xml'
         });
 
-        return this.httpClient.get(urlString, { headers: headers, responseType: 'text' }).pipe(
+        return this.httpClient.get(urlString, { headers, responseType: 'text' }).pipe(
             map(result => {
                 const resultJson = new WMSCapabilities().read(result);
                 console.log(resultJson);

@@ -1,13 +1,3 @@
-
-create fake implementation of quakeledger for peru service
-    quakeledger peru needs to return alirezas prepared eqs
-        get the eqs from the epicenters aliraza sent you
-        have the process return them instead of the actual data
-        use those eqs as input to ts-service
-
-create fake-implementation of geomer services
-    calling wcs in background
-
 re-integrate exposure- and vulnerability-service
     requires uuids, though. 
 
@@ -22,9 +12,6 @@ from process get both wms- and shakemap-output
         For shakyground, we need to pipe the shakemap-output into a translation-service to obtain wms-data
         For TS-service, we need to start ts-wms-service to get wms-output; and start ts-shkmp-service to get shakemap data
 
-ts-service
-    since the eq is given by EQ-Selection-Service, TS-Userinterface does no longer need any input fields
-    can instead be a watching process that sets its own inputs once the selected eq has been chosen
 
 
 
@@ -78,7 +65,6 @@ tabelle: Mouseover "add columns"
         
 wps-client:
     bei CORS wird kein Error geworfen <--- scheint gar nicht zu gehen?
-    Selbst execAsync sollte einen timeout haben. <-- nah, geht mit tapFunction wenn gewünscht
 
 performance: 
     je mehr features, desto längerer lag bei auswahl eq in groundmotion simulation
@@ -91,3 +77,14 @@ we need a way to also 'execute' non-wps services.
 what would be the most consistent way to do this?
  - pro: with executable non-wps-processes we no longer need watching processes. 
     is this really true?
+
+ts-service
+    switch order of coords
+        shouold cause error
+        error should be displayed
+    email an alireaza ist unterwegs. 
+
+create fake-implementation of geomer services
+    calling wcs in background
+    maybe not even neccessary? since geomer promised they had one
+        Either way they need to set acces-control headers. 

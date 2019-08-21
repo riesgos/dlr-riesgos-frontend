@@ -17,7 +17,7 @@ export const shakemapOutput: WpsData & WmsLayerData = {
 };
 
 
-export const EqGroundMotion: WizardableProcess & WpsProcess = {
+export const Shakyground: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
     id: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

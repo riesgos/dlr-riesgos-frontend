@@ -194,7 +194,7 @@ export const selectedEqs: VectorLayerData = {
 
 
 
-export const EqEventCatalogue: WizardableProcess & WpsProcess = {
+export const QuakeLedger: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
     id: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

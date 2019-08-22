@@ -12,7 +12,7 @@ import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
   selector: 'ukis-route-map',
   templateUrl: './route-map.component.html',
   styleUrls: ['./route-map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     LayersService,
     MapStateService,

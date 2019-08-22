@@ -23,7 +23,7 @@ export const hydrologicalSimulation: WmsLayerData = {
 
 export const geomerHydrological: WizardableProcess & CustomProcess = {
     id: 'geomerHydrological',
-    name: 'Hydrology',
+    name: 'Flood',
     requiredProducts: convertWpsDataToProds([laharWms]).map(p => p.uid),
     providedProduct: convertWpsDataToProd(hydrologicalSimulation).uid,
     state: new ProcessStateUnavailable(),

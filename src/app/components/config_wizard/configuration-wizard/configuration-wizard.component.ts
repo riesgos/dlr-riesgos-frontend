@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { map } from 'rxjs/operators';
+import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { getProcessStates } from 'src/app/wps/wps.selectors';
 import { Process } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess, isWizardableProcess } from '../wizardable_processes';
@@ -20,6 +20,7 @@ import { WizardableProcess, isWizardableProcess } from '../wizardable_processes'
 })
 export class ConfigurationWizardComponent implements OnInit {
 
+    @Input() navExpanded = true;
     private focussedPageId$: Observable<string>;
     public processes$: Observable<WizardableProcess[]>;
     constructor(
@@ -45,8 +46,8 @@ export class ConfigurationWizardComponent implements OnInit {
     }
 
     hasFocus(processDescr: Process): Observable<boolean> {
-        return this.focussedPageId$.pipe(
-            map(id => id == processDescr.id)
+        return this.focussedPageId$.pipe(distinctUntilChanged()).pipe(
+            map(id => id === processDescr.id)
         );
     }
 
@@ -88,5 +89,11 @@ export class ConfigurationWizardComponent implements OnInit {
             'is-success': stateType === 'completed',
             'is-danger': stateType === 'error'
         };
+    }
+
+    groupExpand: boolean = true;
+
+    updateGroupExpand(event: any) {
+        this.groupExpand = event;
     }
 }

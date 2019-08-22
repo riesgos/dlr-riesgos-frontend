@@ -53,28 +53,28 @@
     </clr-stack-block>
 </clr-stack-view> -->
 
-<!-- [clrVerticalNavGroupExpanded]="hasFocus(process) | async" -->
-<clr-vertical-nav-group *ngFor="let process of processes$ | async"
-    (clrVerticalNavGroupExpandedChange)="onBlockClicked($event, process)" class="layers">
+<ng-container *ngFor="let process of processes$ | async">
+    <clr-vertical-nav-group class="layers" (clrVerticalNavGroupExpandedChange)="onBlockClicked($event, process)">
+        <clr-icon [attr.shape]="process.wizardProperties.shape" title="{{process.name | translate}}"
+            [ngClass]="getClassForProcess(process.state.type)" clrVerticalNavIcon></clr-icon>
 
-    <clr-icon [attr.shape]="process.wizardProperties.shape" title="{{process.name | translate}}"
-        [ngClass]="getClassForProcess(process.state.type)" clrVerticalNavIcon></clr-icon>
-
-    <span class="p1">{{process.name | translate}}</span>
-    <div style="float:right;"><span class="label"
-            [ngClass]="getClassForLable(process.state.type)">{{processStateForTranslate(process.state.type) | translate}}</span>
-    </div>
-
-    <clr-vertical-nav-group-children class="padding title-ellipsis">
-        <ukis-wizard-page [process]="process"> </ukis-wizard-page>
-    </clr-vertical-nav-group-children>
-</clr-vertical-nav-group>
+        <span class="p1">{{process.name | translate}}</span>
+        <div style="float:right;"><span class="label"
+                [ngClass]="getClassForLable(process.state.type)">{{processStateForTranslate(process.state.type) | translate}}</span>
+        </div>
+        <ng-template [clrIfExpanded]="hasFocus(process) | async"
+            (clrIfExpandedChange)="updateGroupExpand($event)">
+            <clr-vertical-nav-group-children class="padding title-ellipsis" *clrIfExpanded>
+                <ukis-wizard-page [process]="process"> </ukis-wizard-page>
+            </clr-vertical-nav-group-children>
+        </ng-template>
+    </clr-vertical-nav-group>
+</ng-container>
 
 <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers">
 
     <clr-icon shape="cog" title="{{'Configuration' | translate}}" clrVerticalNavIcon></clr-icon>
     <span class="p1">{{'Configuration' | translate}}</span>
-
     <clr-vertical-nav-group-children class="padding title-ellipsis">
         <ukis-save-buttons></ukis-save-buttons>
     </clr-vertical-nav-group-children>

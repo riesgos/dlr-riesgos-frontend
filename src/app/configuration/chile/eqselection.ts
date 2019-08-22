@@ -87,8 +87,7 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch (newProduct.uid) {
 
-            case 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess_selectedRows':
-
+            case 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess_selectedRows':
                 const options = {};
                 for (const feature of newProduct.value[0].features) {
                     options[feature.id] = feature;

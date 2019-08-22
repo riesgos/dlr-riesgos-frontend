@@ -22,8 +22,8 @@ import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
 export class RouteMapComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
-  expandedLayerControl = true;
-  expandedConfigurationWizard = true;
+  expandedLayerControl = false;
+  expandedConfigurationWizard = false;
   constructor(
     private activeRoute: ActivatedRoute,
     private store: Store<State>

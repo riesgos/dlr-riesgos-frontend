@@ -16,7 +16,7 @@ import { WizardableProcess, isWizardableProcess } from '../wizardable_processes'
     templateUrl: './configuration-wizard.component.html',
     styleUrls: ['./configuration-wizard.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfigurationWizardComponent implements OnInit {
 

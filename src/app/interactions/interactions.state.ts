@@ -11,16 +11,17 @@ export interface InteractionState {
 
 
 export const initialInteractionState: InteractionState = {
-    mode: "normal", 
+    mode: "normal",
     product: {
         description: {
-            id: "default parameter", 
-            reference: false, 
-            type: "literal", 
+            id: "default parameter",
+            reference: false,
+            type: "literal",
             wizardProperties: {
-                fieldtype: "string"
+                fieldtype: "string",
+                name: ""
             }
-        }, 
+        },
         value: null
     }
 }

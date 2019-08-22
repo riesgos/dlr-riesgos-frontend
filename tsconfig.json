@@ -21,6 +21,12 @@
       "dom"
     ],
     "paths": {
+      "@ukis/layer-control": [
+        "projects/layer-control/src/public_api.ts"
+      ],
+      "@ukis/layer-control/*": [
+        "projects/layer-control/*"
+      ],
       "sld-parser": [
         "dist/sld-parser"
       ],

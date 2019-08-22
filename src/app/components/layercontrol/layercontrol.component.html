@@ -41,7 +41,7 @@
 
 <clr-vertical-nav-group [(clrVerticalNavGroupExpanded)]="expandedResults" class="layers">
     <clr-icon shape="world" title="{{'Results' | translate}}" [ngClass]="{'is-highlight': expandedResults}" clrVerticalNavIcon></clr-icon>
-    <span class="p1" i18n>{{'Results' | translate}}</span>
+    <span class="p1">{{'Results' | translate}}</span>
     <clr-vertical-nav-group-children class="padding title-ellipsis">
         <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc" [layerfilter]="'Overlays'">
         </ukis-layer-control>
@@ -50,7 +50,7 @@
 
 <clr-vertical-nav-group [(clrVerticalNavGroupExpanded)]="expandedLayers" class="layers">
     <clr-icon shape="layers" title="{{'Additional layers' | translate}}" [ngClass]="{'is-highlight': expandedLayers}" clrVerticalNavIcon></clr-icon>
-    <span class="p1" i18n>{{'Additional layers' | translate}}</span>
+    <span class="p1">{{'Additional layers' | translate}}</span>
     <clr-vertical-nav-group-children class="padding title-ellipsis">
         <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc"></ukis-layer-control>
     </clr-vertical-nav-group-children>

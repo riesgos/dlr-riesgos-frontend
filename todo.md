@@ -1,16 +1,10 @@
+erdbeben: 
+    make selection visible already while user is clicking, not just after 'enviar'
 
 experiment with data per reference. 
     Can you give a productA from process1 to process2 per reference,
     when you have obtained productA from process1 under a different mime-type than what you present to process2?
         Do that with shakyground and deus
-
-re-integrate exposure- and vulnerability-service
-    requires uuids, though.
-        WpsData.description.sourceId ....................... done
-        Product: uid ....................................... done
-        Process: required & provided: must be uids ......... done
-          also check 'onProductAdded' for propper id-usage . done
-        Workflowcontrol.graph: uses uid .................... done
 
 clean up typesystem
     products and processes are general concepts. 
@@ -18,7 +12,6 @@ clean up typesystem
         wps-product-ids and wps-process-ids should have nothing in common with product-ids and process-ids. 
         make sure that, in absence of other information, we assume products, not wps-products. 
             in particular: in wps-effects: should we not just import products, instead of wps-products and then converting them?
-
 
 from process get both wms- and shakemap-output
     Usually, we want a wms-output for the frontend

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, HostBinding, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, HostBinding, AfterViewInit, OnDestroy } from '@angular/core';
 import { DragBox, Select } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
 import { singleClick } from 'ol/events/condition';
@@ -18,7 +18,7 @@ import { getMapableProducts, getScenario, getGraph } from 'src/app/wps/wps.selec
 import { Product } from 'src/app/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './layer_marshaller';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
@@ -34,7 +34,7 @@ import { switchMap } from 'rxjs/operators';
     styleUrls: ['./map.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
@@ -43,6 +43,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     private graph: BehaviorSubject<Graph>;
 
     private currentOverlays: ProductLayer[];
+    private subs: Subscription[] = [];
 
     constructor(
         public mapStateSvc: MapStateService,
@@ -57,21 +58,22 @@ export class MapComponent implements OnInit, AfterViewInit {
 
 
     ngOnInit() {
-
         // listening for interaction modes
         this.interactionState = new BehaviorSubject<InteractionState>(initialInteractionState);
-        this.store.pipe(select('interactionState')).subscribe(currentInteractionState => {
+        const sub1 = this.store.pipe(select('interactionState')).subscribe(currentInteractionState => {
             this.interactionState.next(currentInteractionState);
         });
+        this.subs.push(sub1);
 
         // listening for changes in graph
         this.graph = new BehaviorSubject<Graph>(null);
-        this.store.pipe(select(getGraph)).subscribe((graph: Graph) => {
+        const sub2 = this.store.pipe(select(getGraph)).subscribe((graph: Graph) => {
             this.graph.next(graph);
         });
+        this.subs.push(sub2);
 
         // listening for focus-change
-        this.store.pipe(select(getFocussedProcessId)).subscribe((focussedProcessId: string) => {
+        const sub3 = this.store.pipe(select(getFocussedProcessId)).subscribe((focussedProcessId: string) => {
             const graph = this.graph.getValue();
             const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
             const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
@@ -85,19 +87,20 @@ export class MapComponent implements OnInit, AfterViewInit {
                 this.layersSvc.updateLayer(layer, 'Overlays');
             }
         });
+        this.subs.push(sub3);
 
         // listening for products that can be displayed in the map
-        this.store.pipe(
+        const sub4 = this.store.pipe(
             select(getMapableProducts),
             switchMap((products: Product[]) => {
                 return this.layerMarshaller.productsToLayers(products);
             })
         ).subscribe((newOverlays: ProductLayer[]) => {
-            console.log('update layers')
             this.currentOverlays = newOverlays;
             this.layersSvc.removeOverlays();
             newOverlays.map(l => this.layersSvc.addLayer(l, l.filtertype));
         });
+        this.subs.push(sub4);
 
 
         // adding dragbox interaction and hooking it into the store
@@ -140,25 +143,29 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.mapSvc.removeAllPopups();
         });
 
-        // listening for change in scenario
-        this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
-    
-            this.mapSvc.setZoom(8);
-            this.mapSvc.setProjection(getProjection('EPSG:4326'));
-            console.log(`setting center for scenario ${scenario}`)
-            const center = this.getCenter(scenario);
-            this.mapSvc.setCenter(center);
-    
+        const sub5 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
                 this.layersSvc.addLayer(layer, 'Layers', false);
             }
         });
+        this.subs.push(sub5);
     }
 
+
     ngAfterViewInit() {
-        this.mapSvc.setZoom(8);
-        this.mapSvc.setProjection(getProjection('EPSG:4326'));
+        // listening for change in scenario
+        const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
+            this.mapSvc.setZoom(8);
+            this.mapSvc.setProjection(getProjection('EPSG:4326'));
+            const center = this.getCenter(scenario);
+            this.mapSvc.setCenter(center);
+        });
+        this.subs.push(sub6);
+    }
+
+    ngOnDestroy() {
+        this.subs.map(s => s.unsubscribe());
     }
 
     private getCenter(scenario: string): [number, number] {

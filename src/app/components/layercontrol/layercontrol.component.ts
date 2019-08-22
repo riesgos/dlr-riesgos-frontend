@@ -10,7 +10,7 @@ import { MapStateService } from '@ukis/services-map-state';
 })
 export class LayercontrolComponent implements OnInit {
   @Input() navExpanded = true;
-  @Input() expandedResults = false;
+  @Input() expandedResults = true;
   @Input() expandedLayers = true;
   constructor(
     public layersSvc: LayersService,

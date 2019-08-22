@@ -1,46 +1,6 @@
-<!-- <clr-stack-view class="ConfigurationWizard">
-    <clr-stack-header style="margin-left: 20px;" i18n>{{'Layer control' | translate}}</clr-stack-header>
-
-    <clr-stack-block [clrSbExpanded]="true" class="layers">
-        <clr-stack-label class="ConfigurationWizardLabel">
-            <clr-icon shape="world" title="Overlays" class="is-highlight"></clr-icon>
-            <b class="p1" i18n>{{'Results' | translate}}</b>
-        </clr-stack-label>
-        <clr-stack-block class="ConfigurationWizardContent">
-            <clr-stack-content>
-                <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc" [layerfilter]="'Overlays'">
-                </ukis-layer-control>
-            </clr-stack-content>
-        </clr-stack-block>
-    </clr-stack-block>
-
-    <clr-stack-block [clrSbExpanded]="true" class="layers">
-        <clr-stack-label class="ConfigurationWizardLabel">
-            <clr-icon shape="layers" title="layers" class="is-highlight"></clr-icon>
-            <b class="p1" i18n>{{'Additional layers' | translate}}</b>
-        </clr-stack-label>
-        <clr-stack-block class="ConfigurationWizardContent">
-            <clr-stack-content>
-                <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc"></ukis-layer-control>
-            </clr-stack-content>
-        </clr-stack-block>
-    </clr-stack-block>
-
-    <clr-stack-block [clrSbExpanded]="true" class="layers">
-        <clr-stack-label class="ConfigurationWizardLabel">
-            <clr-icon shape="table" title="Tables" class="is-highlight"></clr-icon>
-            <b class="p1" i18n>Tables</b>
-        </clr-stack-label>
-        <clr-stack-block class="ConfigurationWizardContent">
-            <clr-stack-content>
-                <ukis-feature-tables [layersSvc]="layersSvc"></ukis-feature-tables>
-            </clr-stack-content>
-        </clr-stack-block>
-    </clr-stack-block>
-</clr-stack-view> -->
-
 <clr-vertical-nav-group [(clrVerticalNavGroupExpanded)]="expandedResults" class="layers">
-    <clr-icon shape="world" title="{{'Results' | translate}}" [ngClass]="{'is-highlight': expandedResults}" clrVerticalNavIcon></clr-icon>
+    <clr-icon shape="world" title="{{'Results' | translate}}" [ngClass]="{'is-highlight': expandedResults}"
+        clrVerticalNavIcon></clr-icon>
     <span class="p1">{{'Results' | translate}}</span>
     <clr-vertical-nav-group-children class="padding title-ellipsis">
         <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc" [layerfilter]="'Overlays'">
@@ -49,9 +9,11 @@
 </clr-vertical-nav-group>
 
 <clr-vertical-nav-group [(clrVerticalNavGroupExpanded)]="expandedLayers" class="layers">
-    <clr-icon shape="layers" title="{{'Additional layers' | translate}}" [ngClass]="{'is-highlight': expandedLayers}" clrVerticalNavIcon></clr-icon>
+    <clr-icon shape="layers" title="{{'Additional layers' | translate}}" [ngClass]="{'is-highlight': expandedLayers}"
+        clrVerticalNavIcon></clr-icon>
     <span class="p1">{{'Additional layers' | translate}}</span>
     <clr-vertical-nav-group-children class="padding title-ellipsis">
-        <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc"></ukis-layer-control>
+        <ukis-layer-control [layersSvc]="layersSvc" [mapStateSvc]="mapStateSvc">
+        </ukis-layer-control>
     </clr-vertical-nav-group-children>
 </clr-vertical-nav-group>

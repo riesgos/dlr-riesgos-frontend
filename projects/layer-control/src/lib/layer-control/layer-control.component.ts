@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 
 import { LayersService } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
@@ -16,16 +16,16 @@ export class LayerControlComponent implements OnInit, OnDestroy {
   @Input('layersSvc') layersSvc: LayersService;
   @Input('mapStateSvc') mapStateSvc?: MapStateService;
   @Input('layerfilter') layerfilter = 'Layers';
-
+  
   layerGroupsSubscription: Subscription;
   layersSubscription: Subscription;
   layergroups: Array<Layer | LayerGroup>;
-
-
+  
+  
   constructor() {
     this.layergroups = [];
   }
-
+  
   ngOnInit() {
     this.layerGroupsSubscription = this.layersSvc.getLayerGroups().subscribe(layergroups => {
       console.log('layercontrol: now changing layergroups to ', layergroups)

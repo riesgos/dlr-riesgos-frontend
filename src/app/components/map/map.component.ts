@@ -139,23 +139,26 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.mapSvc.map.on('click', () => {
             this.mapSvc.removeAllPopups();
         });
-    }
 
-    ngAfterViewInit() {
         // listening for change in scenario
         this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
-
+    
             this.mapSvc.setZoom(8);
             this.mapSvc.setProjection(getProjection('EPSG:4326'));
-
+            console.log(`setting center for scenario ${scenario}`)
             const center = this.getCenter(scenario);
             this.mapSvc.setCenter(center);
-
+    
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
                 this.layersSvc.addLayer(layer, 'Layers', false);
             }
         });
+    }
+
+    ngAfterViewInit() {
+        this.mapSvc.setZoom(8);
+        this.mapSvc.setProjection(getProjection('EPSG:4326'));
     }
 
     private getCenter(scenario: string): [number, number] {

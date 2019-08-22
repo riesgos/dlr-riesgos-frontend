@@ -21,7 +21,7 @@ export const initialInteractionState: InteractionState = {
             type: 'literal',
             wizardProperties: {
                 fieldtype: 'string',
-                name: 'auto_default parameter'
+                name: ''
             }
         },
         value: null

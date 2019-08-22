@@ -28,8 +28,7 @@ export class UkisComponent {
   title = 'RIESGOS Demonstrator';
 
   ui = {
-    floating: true,
-    flipped: false,
+    floating: false,
     footer: false,
     alert: null,
     progress: null

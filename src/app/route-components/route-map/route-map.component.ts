@@ -9,7 +9,6 @@ import { ScenarioChosen } from 'src/app/wps/wps.actions';
 import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
 
 @Component({
-  host: { '[class.content-container]': 'true' }, // <-- required for clarity-layout
   selector: 'ukis-route-map',
   templateUrl: './route-map.component.html',
   styleUrls: ['./route-map.component.scss'],
@@ -23,16 +22,18 @@ import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
 export class RouteMapComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
+  expandedLayerControl = true;
+  expandedConfigurationWizard = true;
   constructor(
     private activeRoute: ActivatedRoute,
     private store: Store<State>
-  ) {}
+  ) { }
 
 
   ngOnInit() {
     const scenario = this.activeRoute.snapshot.queryParams['id'] || 'c1';
     console.log(`user just chose scenario ${scenario}`)
-    this.store.dispatch(new ScenarioChosen({scenario: scenario}));
+    this.store.dispatch(new ScenarioChosen({ scenario: scenario }));
   }
 
 }

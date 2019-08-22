@@ -1,50 +1,81 @@
-<clr-stack-view class="ConfigurationWizard">
+<!-- <clr-stack-view class="ConfigurationWizard">
     <clr-stack-header style="margin-left: 20px;">{{'Configuration Wizard' | translate}}</clr-stack-header>
-    <clr-stack-block *ngFor="let process of processes$ | async" [clrSbExpanded]="hasFocus(process) | async" (clrSbExpandedChange)="onBlockClicked($event, process)">
-
-
-
+    <clr-stack-block *ngFor="let process of processes$ | async" [clrSbExpanded]="hasFocus(process) | async"
+        (clrSbExpandedChange)="onBlockClicked($event, process)">
         <clr-stack-label class="ConfigurationWizardLabel">
-            <ng-container *ngIf="process.state.type as state">
-                <ng-container [ngSwitch]="state">
-                    <ng-container *ngSwitchCase="'unavailable'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape"></clr-icon> <b class="p1">{{process.name | translate}}</b>
+            <div *ngIf="process.state.type as state">
+                <div [ngSwitch]="state">
+                    <div *ngSwitchCase="'unavailable'">
+                        <clr-icon [attr.shape]="process.wizardProperties.shape"></clr-icon> <b
+                            class="p1">{{process.name | translate}}</b>
                         <div style="float:right;"> <span class="label">{{'Unavailable' | translate}}</span> </div>
-                    </ng-container>
+                    </div>
 
-                    <ng-container *ngSwitchCase="'available'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-highlight"></clr-icon> <b class="p1">{{process.name | translate}}</b>
-                        <div style="float:right;"> <span class="label label-info">{{'Available' | translate}}</span> </div>
-                    </ng-container>
+                    <div *ngSwitchCase="'available'">
+                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-highlight"></clr-icon> <b
+                            class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label label-info">{{'Available' | translate}}</span>
+                        </div>
+                    </div>
 
-                    <ng-container *ngSwitchCase="'running'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-warning"></clr-icon> <b class="p1">{{process.name | translate}}</b>
-                        <div style="float:right;"> <span class="label label-warning">{{'Running' | translate}} ...</span> </div>
-                    </ng-container>
+                    <div *ngSwitchCase="'running'">
+                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-warning"></clr-icon> <b
+                            class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label label-warning">{{'Running' | translate}}
+                                ...</span> </div>
+                    </div>
 
-                    <ng-container *ngSwitchCase="'completed'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-success"></clr-icon> <b class="p1">{{process.name | translate}}</b>
-                        <div style="float:right;"> <span class="label label-success">{{'Completed' | translate}}</span> </div>
-                    </ng-container>
+                    <div *ngSwitchCase="'completed'">
+                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-success"></clr-icon> <b
+                            class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label label-success">{{'Completed' | translate}}</span>
+                        </div>
+                    </div>
 
-                    <ng-container *ngSwitchCase="'error'">
-                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-danger"></clr-icon> <b class="p1">{{process.name | translate}}</b>
-                        <div style="float:right;"> <span class="label label-danger">{{'Error' | translate}}</span> </div>
-                    </ng-container>
+                    <div *ngSwitchCase="'error'">
+                        <clr-icon [attr.shape]="process.wizardProperties.shape" class="is-danger"></clr-icon> <b
+                            class="p1">{{process.name | translate}}</b>
+                        <div style="float:right;"> <span class="label label-danger">{{'Error' | translate}}</span>
+                        </div>
+                    </div>
 
-                </ng-container>
-            </ng-container>
+                </div>
+            </div>
         </clr-stack-label>
 
         <clr-stack-block class="ConfigurationWizardContent">
             <clr-stack-content>
-                <ukis-wizard-page [process]="process" > </ukis-wizard-page>
+                <ukis-wizard-page [process]="process"> </ukis-wizard-page>
             </clr-stack-content>
         </clr-stack-block>
 
 
     </clr-stack-block>
-</clr-stack-view>
+</clr-stack-view> -->
 
+<ng-container *ngFor="let process of processes$ | async">
+    <clr-vertical-nav-group class="layers" (clrVerticalNavGroupExpandedChange)="onBlockClicked($event, process)">
+        <clr-icon [attr.shape]="process.wizardProperties.shape" title="{{process.name | translate}}"
+            [ngClass]="getClassForProcess(process.state.type)" clrVerticalNavIcon></clr-icon>
 
-<ukis-save-buttons></ukis-save-buttons>
+        <span class="p1">{{process.name | translate}}</span>
+        <div style="float:right;"><span class="label"
+                [ngClass]="getClassForLable(process.state.type)">{{processStateForTranslate(process.state.type) | translate}}</span>
+        </div>
+        <ng-template [clrIfExpanded]="hasFocus(process) | async"
+            (clrIfExpandedChange)="updateGroupExpand($event)">
+            <clr-vertical-nav-group-children class="padding title-ellipsis" *clrIfExpanded>
+                <ukis-wizard-page [process]="process"> </ukis-wizard-page>
+            </clr-vertical-nav-group-children>
+        </ng-template>
+    </clr-vertical-nav-group>
+</ng-container>
+
+<clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers">
+
+    <clr-icon shape="cog" title="{{'Configuration' | translate}}" clrVerticalNavIcon></clr-icon>
+    <span class="p1">{{'Configuration' | translate}}</span>
+    <clr-vertical-nav-group-children class="padding title-ellipsis">
+        <ukis-save-buttons></ukis-save-buttons>
+    </clr-vertical-nav-group-children>
+</clr-vertical-nav-group>

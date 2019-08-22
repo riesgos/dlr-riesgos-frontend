@@ -154,7 +154,7 @@ export class WpsEffects {
         switch (scenario) {
             case 'c1':
                 processes = [
-                    // ExposureModel, VulnerabilityModel,
+                    ExposureModel, VulnerabilityModel,
                     QuakeLedger,
                     EqSelection,
                     Shakyground,

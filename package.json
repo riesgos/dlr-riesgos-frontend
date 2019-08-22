@@ -37,6 +37,7 @@
     "@ukis/base-layers-raster": "^5.2.1",
     "@ukis/map-ol": "^5.2.1",
     "@ukis/services-layers": "^5.2.1",
+    "@ukis/layer-control": "^5.2.1",
     "@ukis/services-util-store": "^5.2.1",
     "@webcomponents/custom-elements": "^1.2.2",
     "geojson": "^0.5.0",

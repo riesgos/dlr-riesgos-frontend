@@ -6,10 +6,18 @@ experiment with data per reference.
 
 re-integrate exposure- and vulnerability-service
     requires uuids, though.
-        WpsData.description.sourceId
-        Product: uid
-        Process: required & provided: must be uids
-        Workflowcontrol.graph: uses uid
+        WpsData.description.sourceId ....................... done
+        Product: uid ....................................... done
+        Process: required & provided: must be uids ......... done
+          also check 'onProductAdded' for propper id-usage . done
+        Workflowcontrol.graph: uses uid .................... done
+
+clean up typesystem
+    products and processes are general concepts. 
+    wps-products and wps-processes are special cases. 
+        wps-product-ids and wps-process-ids should have nothing in common with product-ids and process-ids. 
+        make sure that, in absence of other information, we assume products, not wps-products. 
+            in particular: in wps-effects: should we not just import products, instead of wps-products and then converting them?
 
 
 from process get both wms- and shakemap-output

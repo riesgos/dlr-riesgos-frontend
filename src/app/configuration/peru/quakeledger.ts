@@ -3,10 +3,11 @@ import { UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/compo
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
-import { selectedRows } from '../chile/modelProp';
+import { buildingAndDamageClasses } from '../chile/modelProp';
 import { Observable, of } from 'rxjs';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import { selectedEqs } from '../chile/quakeledger';
+import { selectedEqs, mmin, mmax, zmin, zmax, p, etype, tlon, tlat } from '../chile/quakeledger';
+import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 
 export const inputBoundingboxPeru: UserconfigurableWpsData & BboxLayerData = {
@@ -85,19 +86,19 @@ export const QuakeLedgerPeru: WizardableProcess & CustomProcess = {
     state: new ProcessStateUnavailable(),
     id: 'org.n52.wps.python.algorithm.QuakeMLProcessBBox',
     name: 'Earthquake Catalogue',
-    requiredProducts: ['input-boundingbox', 'mmin', 'mmax', 'zmin', 'zmax', 'p', 'etype', 'tlon', 'tlat'],
-    providedProduct: 'selectedRows',
+    requiredProducts: convertWpsDataToProds([inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat]).map(prd => prd.uid),
+    providedProduct: convertWpsDataToProd(selectedEqs).uid,
     wizardProperties: {
         shape: 'earthquake',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
         providerUrl: 'https://www.gfz-potsdam.de/en/'
     },
 
-    execute: (inputs: WpsData[]): Observable<WpsData[]> => {
-        return of([{
+    execute: (inputs: Product[]): Observable<Product[]> => {
+        return of([convertWpsDataToProd({
             ... selectedEqs,
             value: fakeEqs
-        }]);
+        })]);
     },
 
 };

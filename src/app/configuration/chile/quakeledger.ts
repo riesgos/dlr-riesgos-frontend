@@ -3,6 +3,7 @@ import { UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/compo
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
+import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 
 export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
@@ -200,8 +201,8 @@ export const QuakeLedger: WizardableProcess & WpsProcess = {
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     name: 'Earthquake Catalogue',
     description: 'Catalogue of historical earthquakes.',
-    requiredProducts: ['input-boundingbox', 'mmin', 'mmax', 'zmin', 'zmax', 'p', 'etype', 'tlon', 'tlat'],
-    providedProduct: 'selectedRows',
+    requiredProducts: convertWpsDataToProds([inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat]).map(prd => prd.uid),
+    providedProduct: convertWpsDataToProd(selectedEqs).uid,
     wpsVersion: '1.0.0',
 
     wizardProperties: {

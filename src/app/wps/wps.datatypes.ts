@@ -81,7 +81,7 @@ export const isWpsProcess = (p: Process): p is WpsProcess => {
 
 
 export interface CustomProcess extends Process {
-    execute: (inputs: WpsData[]) => Observable<WpsData[]>;
+    execute: (inputs: Product[]) => Observable<Product[]>;
 }
 
 export const isCustomProcess = (p: Process): p is CustomProcess => {

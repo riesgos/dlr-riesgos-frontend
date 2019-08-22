@@ -3,6 +3,8 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { VectorLayerData, WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { selectedEq } from './eqselection';
+import { convertWpsDataToProd, convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 
 
 export const shakemapOutput: WpsData & WmsLayerData = {
@@ -24,8 +26,8 @@ export const Shakyground: WizardableProcess & WpsProcess = {
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     name: 'Groundmotion Simulation',
     description: 'Simulates the ground motion caused by a given eathquakes parameters',
-    requiredProducts: ['quakeMLFile'],
-    providedProduct: 'shakeMapFile',
+    requiredProducts: convertWpsDataToProds([selectedEq]).map(p => p.uid),
+    providedProduct: convertWpsDataToProd(shakemapOutput).uid,
     wpsVersion: '1.0.0',
     wizardProperties: {
         shape: 'earthquake',

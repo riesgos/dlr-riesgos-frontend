@@ -6,6 +6,7 @@ import { UserconfigurableWpsData, StringUconfWpsData,
         StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 
 export const lonmin: StringUconfWpsData = {
@@ -162,8 +163,8 @@ export const ExposureModel: WizardableProcess & WpsProcess = {
     wpsVersion: '1.0.0',
     name: 'EQ Exposure Model',
     description: '',
-    requiredProducts: ['lonmin', 'lonmax', 'latmin', 'latmax', 'querymode', 'schema', 'assettype'],
-    providedProduct: 'selectedRowsXml',
+    requiredProducts: convertWpsDataToProds([lonmin, lonmax, latmin, latmax, querymode, schema, assettype]).map(p => p.uid),
+    providedProduct: convertWpsDataToProd(selectedRowsXml).uid,
     wizardProperties: {
         shape: 'earthquake',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',

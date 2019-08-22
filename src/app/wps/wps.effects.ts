@@ -17,8 +17,8 @@ import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, selectedRowsXml,
         assettype, schema, querymode } from '../configuration/chile/assetmaster';
-import { VulnerabilityModel, assetcategory, losscategory, taxonomies, selectedRows } from '../configuration/chile/modelProp';
-import { selectedEq, EqSelection, selectedRow } from '../configuration/chile/eqselection';
+import { VulnerabilityModel, assetcategory, losscategory, taxonomies, buildingAndDamageClasses } from '../configuration/chile/modelProp';
+import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
 import { convertWpsDataToProds } from './wps.selectors';
 
@@ -58,7 +58,7 @@ export class WpsEffects {
         map((action: ProductsProvided) => {
 
             for (const product of action.payload.products) {
-                this.wfc.provideProduct(product.description.id, product.value);
+                this.wfc.provideProduct(product.uid, product.value);
             }
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
@@ -78,7 +78,7 @@ export class WpsEffects {
             const newProducts = action.payload.productsProvided;
             const process = action.payload.process;
             for (const prod of newProducts) {
-                this.wfc.provideProduct(prod.description.id, prod.value);
+                this.wfc.provideProduct(prod.uid, prod.value);
             }
 
             return this.wfc.execute(process.id,
@@ -161,10 +161,10 @@ export class WpsEffects {
                     TsService
                 ];
                 products = convertWpsDataToProds([
-                    // lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
-                    // assetcategory, losscategory, taxonomies, selectedRows,
+                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
+                    assetcategory, losscategory, taxonomies, buildingAndDamageClasses,
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
-                    selectedEqs, selectedRow,
+                    selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapOutput,
                     lat, lon, mag, epicenter
                 ]);
@@ -188,7 +188,7 @@ export class WpsEffects {
                 ];
                 products = convertWpsDataToProds([
                     inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
-                    selectedEqs, selectedRow,
+                    selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapOutput,
                     lat, lon, mag, epicenter
                 ]);

@@ -9,11 +9,12 @@ import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { featureCollection } from '@turf/helpers';
-import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
+import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
+import { buildingAndDamageClasses } from './modelProp';
 
 
 
-export const selectedRow: FeatureSelectUconfWpsData = {
+export const userinputSelectedEq: FeatureSelectUconfWpsData = {
     description: {
         id: 'selectedRow',
         sourceProcessId: 'user',
@@ -66,48 +67,36 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
     id: 'EqSelection',
     name: 'Select earthquake',
     state: {type: ProcessStateTypes.unavailable},
-    requiredProducts: ['selectedRows', 'selectedRow'],
-    providedProduct: 'quakeMLFile',
+    requiredProducts: convertWpsDataToProds([buildingAndDamageClasses, userinputSelectedEq]).map(p => p.uid),
+    providedProduct: convertWpsDataToProd(selectedEq).uid,
     wizardProperties: {
         providerName: '',
         providerUrl: '',
         shape: 'earthquake'
     },
 
-    execute: (inputs: WpsData[]): Observable<WpsData[]> => {
-        const eqVal = inputs.find(i => i.description.id === 'selectedRow').value;
+    execute: (inputs: Product[]): Observable<Product[]> => {
+        const eqVal = inputs.find(i => i.uid === 'user_selectedRow').value;
         const eqValFeatureCollection = featureCollection([eqVal]);
-        return of([{
+        return of([convertWpsDataToProd({
             ...selectedEq,
             value: [eqValFeatureCollection]
-        }]);
+        })]);
     },
 
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        switch (newProduct.description.id) {
+        switch (newProduct.uid) {
 
-            case 'selectedRows':
+            case 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess_selectedRows':
 
                 const options = {};
                 for (const feature of newProduct.value[0].features) {
                     options[feature.id] = feature;
                 }
 
-                return convertWpsDataToProds([{
-                    description: {
-                        id: 'selectedRow',
-                        sourceProcessId: 'EqSelection',
-                        options: options,
-                        reference: false,
-                        type: 'complex',
-                        wizardProperties: {
-                            fieldtype: 'select',
-                            name: 'Selected EQ'
-                        }
-                    },
-                    value: null
-                }]);
+                userinputSelectedEq.description.options = options;
 
+                return convertWpsDataToProds([userinputSelectedEq]);
 
             default:
                 return [];

@@ -2,6 +2,7 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { WpsProcess, ProcessStateAvailable, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { FeatureSelectUconfWD, FeatureSelectUconfWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 
 export const direction: StringSelectUconfWpsData = {
@@ -72,8 +73,8 @@ export const LaharWps: WizardableProcess & WpsProcess = {
     url: 'http://91.250.85.221/geoserver/riesgos/wps',
     name: 'Lahar',
     description: 'Simulates the path a lahar would take',
-    providedProduct: 'result',
-    requiredProducts: ['direction', 'intensity', 'parameter'],
+    requiredProducts: convertWpsDataToProds([direction, intensity, parameter]).map(p => p.uid),
+    providedProduct: convertWpsDataToProd(laharWms).uid,
     state: new ProcessStateUnavailable(),
     wpsVersion: '1.0.0',
     wizardProperties: {

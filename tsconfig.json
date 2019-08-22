@@ -21,24 +21,6 @@
       "dom"
     ],
     "paths": {
-      "@ukis/services-layers": [
-        "projects/services-layers/src/public_api"
-      ],
-      "@ukis/services-layers/*": [
-        "projects/services-layers/*"
-      ],
-      "@ukis/layer-control": [
-        "projects/layer-control/src/public_api"
-      ],
-      "@ukis/layer-control/*": [
-        "projects/layer-control/*"
-      ],
-      "screenshot": [
-        "dist/screenshot"
-      ],
-      "screenshot/*": [
-        "dist/screenshot/*"
-      ],
       "sld-parser": [
         "dist/sld-parser"
       ],
@@ -50,12 +32,6 @@
       ],
       "services-wps/*": [
         "dist/services-wps/*"
-      ],
-      "translate": [
-        "dist/translate"
-      ],
-      "translate/*": [
-        "dist/translate/*"
       ]
     }
   }

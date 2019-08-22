@@ -93,7 +93,6 @@ export class MapComponent implements OnInit, AfterViewInit {
                 return this.layerMarshaller.productsToLayers(products);
             })
         ).subscribe((newOverlays: ProductLayer[]) => {
-            console.log('update layers')
             this.currentOverlays = newOverlays;
             this.layersSvc.removeOverlays();
             newOverlays.map(l => this.layersSvc.addLayer(l, l.filtertype));

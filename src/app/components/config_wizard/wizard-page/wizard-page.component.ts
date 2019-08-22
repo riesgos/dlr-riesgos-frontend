@@ -16,7 +16,7 @@ import { WizardableProcess } from '../wizardable_processes';
   selector: 'ukis-wizard-page',
   templateUrl: './wizard-page.component.html',
   styleUrls: ['./wizard-page.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WizardPageComponent implements OnInit {
 

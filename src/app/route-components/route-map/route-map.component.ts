@@ -12,7 +12,7 @@ import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
   selector: 'ukis-route-map',
   templateUrl: './route-map.component.html',
   styleUrls: ['./route-map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     LayersService,
     MapStateService,
@@ -22,12 +22,31 @@ import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
 export class RouteMapComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
-  expandedLayerControl = true;
-  expandedConfigurationWizard = true;
   constructor(
     private activeRoute: ActivatedRoute,
-    private store: Store<State>
+    private store: Store<State>,
+    public layersSvc: LayersService,
+    public mapStateSvc: MapStateService
   ) { }
+
+  private _collapsedLayerControl = false;
+  private _collapsedConfigurationWizard = false;
+
+  get collapsedLayerControl(): boolean {
+    return this._collapsedLayerControl;
+  }
+  set collapsedLayerControl(value: boolean) {
+    console.log('set expandedLayerContro',value)
+    this._collapsedLayerControl = value;
+  }
+
+  get collapsedConfigurationWizard(): boolean {
+    return this._collapsedConfigurationWizard;
+  }
+  set collapsedConfigurationWizard(value: boolean) {
+    console.log('set collapsedConfigurationWizard',value)
+    this._collapsedConfigurationWizard = value;
+  }
 
 
   ngOnInit() {

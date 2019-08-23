@@ -259,7 +259,7 @@ export class WorkflowControl {
     }
 
 
-    private getProcess(id: ProcessId): Process {
+    public getProcess(id: ProcessId): Process {
         const process = this.processes.find(p => p.id === id);
         if (!process) {
             throw new Error(`no such process: ${id}`);

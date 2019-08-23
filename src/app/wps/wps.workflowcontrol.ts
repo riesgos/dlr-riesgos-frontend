@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs';
 import { isUserconfigurableWpsDataDescription, isUserconfigurableWpsData } from '../components/config_wizard/userconfigurable_wpsdata';
 import { WpsClient } from 'projects/services-wps/src/public-api';
 import { doesNotThrow } from 'assert';
+import { convertWpsDataToProd, convertWpsDataToProds } from './wps.selectors';
 
 
 export class WorkflowControl {
@@ -67,8 +68,9 @@ export class WorkflowControl {
 
         return process.execute(inputs).pipe(
             tap((output: WpsData[]) => {
-                for (const product of output) {
-                    this.provideProduct(product.description.id, product.value);
+                const products = convertWpsDataToProds(output);
+                for (const product of products) {
+                    this.provideProduct(product.uid, product.value);
                 }
                 this.setProcessState(process.id, new ProcessStateCompleted());
             }),
@@ -117,8 +119,9 @@ export class WorkflowControl {
             }),
 
             tap((output: WpsData[]) => {
-                for (const product of output) {
-                    this.provideProduct(product.description.id, product.value);
+                const products = convertWpsDataToProds(output);
+                for (const product of products) {
+                    this.provideProduct(product.uid, product.value);
                 }
                 this.setProcessState(process.id, new ProcessStateCompleted());
             }),
@@ -256,7 +259,7 @@ export class WorkflowControl {
     }
 
 
-    private getProcess(id: ProcessId): Process {
+    public getProcess(id: ProcessId): Process {
         const process = this.processes.find(p => p.id === id);
         if (!process) {
             throw new Error(`no such process: ${id}`);
@@ -271,7 +274,7 @@ export class WorkflowControl {
 
 
     private getProduct(id: ProductId): Product {
-        const product = this.products.find(p => p.description.id === id);
+        const product = this.products.find(p => p.uid === id);
         if (!product) {
             throw new Error(`no such product: ${id}`);
         }
@@ -295,7 +298,7 @@ export class WorkflowControl {
 
     private setProductValue(id: ProductId, value: any): Product {
         this.products = this.products.map(product => {
-            if (product.description.id === id) {
+            if (product.uid === id) {
                 return {
                     ...product,
                     value
@@ -311,7 +314,7 @@ export class WorkflowControl {
     // for example when we want to change the select-options under description.wizardProps.options
     private updateProduct(newProduct: Product): void {
         this.products = this.products.map(product => {
-            if (product.description.id === newProduct.description.id) {
+            if (product.uid === newProduct.uid) {
                 return {...newProduct};
             }
             return product;
@@ -368,7 +371,7 @@ export class WorkflowControl {
 
     private checkDataIntegrity(processes: Process[], products: Product[]): void {
         const processIds = processes.map(p => p.id);
-        const productIds = products.map(p => p.description.id);
+        const productIds = products.map(p => p.uid);
 
         const requiredProducts: string[] = [];
         for (const process of processes) {

@@ -1,18 +1,20 @@
 export type WpsVerion = '1.0.0' | '2.0.0';
-export type WpsDataFormat = 'application/vnd.geo+json' | 'application/json' | 'application/WMS' | 'application/xml' | 'application/text'; 
+export type WpsDataFormat = 'application/vnd.geo+json' | 'application/json' | 'application/WMS' | 'application/xml' | 'application/text';
 
 
+export type ProcessId = string;
 export type ProductId = string;
 
 export interface WpsDataDescription {
     id: ProductId;
+    sourceProcessId: ProcessId;
     type: 'literal' | 'complex' | 'bbox' | 'status' | 'error';
     reference: boolean;
     format?: WpsDataFormat;
     description?: string;
     defaultValue?: any;
 }
-export type WpsInputDescription = WpsDataDescription; 
+export type WpsInputDescription = WpsDataDescription;
 export type WpsOutputDescription = WpsDataDescription;
 
 

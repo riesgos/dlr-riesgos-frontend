@@ -6,11 +6,13 @@ import { UserconfigurableWpsData, StringUconfWpsData,
         StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 
 export const lonmin: StringUconfWpsData = {
     description: {
         id: 'lonmin',
+        sourceProcessId: 'user',
         type: 'literal',
         wizardProperties: {
             fieldtype: 'string',
@@ -26,6 +28,7 @@ export const lonmin: StringUconfWpsData = {
 export const lonmax: UserconfigurableWpsData = {
   description: {
       id: 'lonmax',
+      sourceProcessId: 'user',
       type: 'literal',
       wizardProperties: {
           fieldtype: 'string',
@@ -41,6 +44,7 @@ export const lonmax: UserconfigurableWpsData = {
 export const latmin: StringUconfWpsData = {
   description: {
       id: 'latmin',
+      sourceProcessId: 'user',
       type: 'literal',
       wizardProperties: {
           fieldtype: 'string',
@@ -56,6 +60,7 @@ export const latmin: StringUconfWpsData = {
 export const latmax: StringUconfWpsData = {
 description: {
     id: 'latmax',
+    sourceProcessId: 'user',
     type: 'literal',
     wizardProperties: {
         fieldtype: 'string',
@@ -71,6 +76,7 @@ value: null
 export const schema: StringSelectUconfWpsData = {
   description: {
     id: 'schema',
+    sourceProcessId: 'user',
     options: ['SARA_v1.0'],
     defaultValue: 'SARA_v1.0',
     reference: false,
@@ -88,6 +94,7 @@ export const schema: StringSelectUconfWpsData = {
 export const assettype: StringSelectUconfWpsData = {
   description: {
     id: 'assettype',
+    sourceProcessId: 'user',
     options: ['res'],
     defaultValue: 'res',
     reference: false,
@@ -104,6 +111,7 @@ export const assettype: StringSelectUconfWpsData = {
 export const querymode: StringSelectUconfWpsData = {
   description: {
     id: 'querymode',
+    sourceProcessId: 'user',
     options: ['intersects', 'within'],
     defaultValue: 'intersects',
     reference: false,
@@ -120,6 +128,7 @@ export const querymode: StringSelectUconfWpsData = {
 export const selectedRowsXml: VectorLayerData = {
   description: {
     id: 'selectedRowsXml',
+    sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
     type: 'complex',
     reference: false,
     format: 'application/vnd.geo+json',
@@ -154,8 +163,8 @@ export const ExposureModel: WizardableProcess & WpsProcess = {
     wpsVersion: '1.0.0',
     name: 'EQ Exposure Model',
     description: '',
-    requiredProducts: ['lonmin', 'lonmax', 'latmin', 'latmax', 'querymode', 'schema', 'assettype'],
-    providedProduct: 'selectedRowsXml',
+    requiredProducts: convertWpsDataToProds([lonmin, lonmax, latmin, latmax, querymode, schema, assettype]).map(p => p.uid),
+    providedProduct: convertWpsDataToProd(selectedRowsXml).uid,
     wizardProperties: {
         shape: 'earthquake',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',

@@ -1,17 +1,3 @@
-<!-- <div class="content-area">
-    <div class="clr-row">
-      <div class="clr-col-3">
-          <ukis-configuration-wizard></ukis-configuration-wizard>
-      </div>
-      <div class="clr-col-6">
-          <ukis-map></ukis-map>
-      </div>
-      <div class="clr-col-3">
-          <ukis-layercontrol></ukis-layercontrol>
-      </div>
-    </div>
-</div> -->
-
 <main class="content-area">
     <ukis-map></ukis-map>
 </main>
@@ -19,13 +5,13 @@
 
 <clr-vertical-nav [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsedLayerControl"
     [clr-nav-level]="2">
-    <h3 class="clr-vertical-nav-header is-highlight" i18n>{{'Layer control' | translate}}</h3>
+    <h3 class="clr-vertical-nav-header is-highlight">{{'Layer control' | translate}}</h3>
     <ukis-layercontrol [navExpanded]="!collapsedLayerControl"></ukis-layercontrol>
 </clr-vertical-nav>
 
 
 <clr-vertical-nav [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsedConfigurationWizard"
     class="left">
-    <h3 class="clr-vertical-nav-header is-highlight" i18n>{{'Configuration Wizard' | translate}}</h3>
+    <h3 class="clr-vertical-nav-header is-highlight">{{'Configuration Wizard' | translate}}</h3>
     <ukis-configuration-wizard [navExpanded]="!collapsedConfigurationWizard"></ukis-configuration-wizard>
 </clr-vertical-nav>

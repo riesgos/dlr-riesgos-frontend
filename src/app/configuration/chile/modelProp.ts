@@ -3,12 +3,15 @@ import { WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { StringSelectUconfWpsData, StringUconfWD, StringUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
+import { schema } from './assetmaster';
 
 
 
 export const assetcategory: StringSelectUconfWpsData = {
     description: {
         id: 'assetcategory',
+        sourceProcessId: 'user',
         options: ['buildings'],
         reference: false,
         type: 'literal',
@@ -23,6 +26,7 @@ export const assetcategory: StringSelectUconfWpsData = {
 export const losscategory: StringSelectUconfWpsData = {
     description: {
         id: 'losscategory',
+        sourceProcessId: 'user',
         options: ['structural'],
         reference: false,
         type: 'literal',
@@ -37,6 +41,7 @@ export const losscategory: StringSelectUconfWpsData = {
 export const taxonomies: StringUconfWpsData = {
     description: {
         id: 'taxonomies',
+        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         wizardProperties: {
@@ -48,9 +53,10 @@ export const taxonomies: StringUconfWpsData = {
 };
 
 
-export const selectedRows: WpsData = {
+export const buildingAndDamageClasses: WpsData = {
     description: {
       id: 'selectedRows',
+      sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
       type: 'complex',
       reference: false,
       format: 'application/json'
@@ -65,8 +71,8 @@ export const VulnerabilityModel: WizardableProcess & WpsProcess = {
     wpsVersion: '1.0.0',
     name: 'EQ Vulnerability Model',
     description: '',
-    requiredProducts: ['schema', 'assetcategory', 'losscategory', 'taxonomies'],
-    providedProduct: 'selectedRows',
+    requiredProducts: convertWpsDataToProds([schema, assetcategory, losscategory, taxonomies]).map(p => p.uid),
+    providedProduct: convertWpsDataToProd(buildingAndDamageClasses).uid,
     wizardProperties: {
         shape: 'earthquake',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',

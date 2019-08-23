@@ -1,10 +1,25 @@
-re-integrate exposure- and vulnerability-service
-    requires uuids, though. 
+
+geomer einbinden: 
+    muss local von https aus aufrufen. 
+    https://medium.com/@rubenvermeulen/running-angular-cli-over-https-with-a-trusted-certificate-4a0d5f92747a
+
+exposure & vulnerability: 
+    wie nochmal einbinden?
+
+erdbeben: 
+    make selection visible already while user is clicking, not just after 'enviar'
 
 experiment with data per reference. 
     Can you give a productA from process1 to process2 per reference,
     when you have obtained productA from process1 under a different mime-type than what you present to process2?
         Do that with shakyground and deus
+
+clean up typesystem
+    products and processes are general concepts. 
+    wps-products and wps-processes are special cases. 
+        wps-product-ids and wps-process-ids should have nothing in common with product-ids and process-ids. 
+        make sure that, in absence of other information, we assume products, not wps-products. 
+            in particular: in wps-effects: should we not just import products, instead of wps-products and then converting them?
 
 from process get both wms- and shakemap-output
     Usually, we want a wms-output for the frontend
@@ -15,6 +30,12 @@ from process get both wms- and shakemap-output
 
 
 
+workflowcontrol changes: merge back into library
+    state to processes, including state 'running' and 'error'. in wfc process-states were calculated from the surrounding productstates, which id not allow state 'running'
+    process-states have attributes (like errormessage)
+    processes can have custom execute method
+    executeWps can be async
+    provide product with watchingProcesses
 
 process completed: jump to next
     deactivated for now.

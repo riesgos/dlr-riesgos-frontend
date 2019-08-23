@@ -63,13 +63,13 @@ export class UkisComponent {
     this.currentMapName = this.route.queryParamMap.pipe(
       map(params => {
         switch (params.get('id')) {
-          case 'c1': 
+          case 'c1':
             return 'Chile';
-          case 'e1': 
-            return 'Equador';
-          case 'p1': 
-            return 'Peru'; 
-          default: 
+          case 'e1':
+            return 'Ecuador';
+          case 'p1':
+            return 'Peru';
+          default:
             const out = params.get('id') || '';
             return out;
         }

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export type ProductDescription = WpsDataDescription | UserconfigurableWpsDataDescription;
 
 export interface Product {
+    readonly uid: string;
     readonly description: ProductDescription;
     readonly value: any;
 }
@@ -80,7 +81,7 @@ export const isWpsProcess = (p: Process): p is WpsProcess => {
 
 
 export interface CustomProcess extends Process {
-    execute: (inputs: WpsData[]) => Observable<WpsData[]>;
+    execute: (inputs: Product[]) => Observable<Product[]>;
 }
 
 export const isCustomProcess = (p: Process): p is CustomProcess => {

@@ -6,6 +6,7 @@ import { StringUconfWD, StringUconfWpsData } from '../userconfigurable_wpsdata';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided } from 'src/app/wps/wps.actions';
+import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 
 @Component({
   selector: 'ukis-form-string-field',
@@ -36,14 +37,14 @@ export class FormStringFieldComponent implements OnInit {
     // })
   }
 
-  onFocussed (focussed: boolean): void {
-    if(!focussed) {
+  onFocussed(focussed: boolean): void {
+    if (!focussed) {
       this.store.dispatch(new ProductsProvided({
-        products: [{
-          ...this.parameter, 
+        products: convertWpsDataToProds([{
+          ...this.parameter,
           value: this.formControl.value
-        }]
-      }))
+        }])
+      }));
     }
   }
 

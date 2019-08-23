@@ -74,7 +74,7 @@ export const getProcessById = (id: ProcessId, processes: Process[]): Process => 
 };
 
 export const getProductById = (id: ProductId, products: Product[]): Product => {
-    const product = products.find(p => p.description.id === id);
+    const product = products.find(p => p.uid === id);
     if (product === undefined) {
         throw new Error(`Could not find product ${id}`);
     }
@@ -94,7 +94,15 @@ export const convertProductsToWpsData = (inpts: Product[]): WpsData[] => {
 };
 
 
+export const convertWpsDataToProd = (data: WpsData): Product => {
+    const uid = `${data.description.sourceProcessId}_${data.description.id}`;
+    return {
+        ...data,
+        uid
+    };
+};
+
 export const convertWpsDataToProds = (data: WpsData[]): Product[] => {
-    const out = data;
+    const out: Product[] = data.map(d => convertWpsDataToProd(d));
     return out;
 };

@@ -2,11 +2,13 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { WpsProcess, ProcessStateAvailable, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { FeatureSelectUconfWD, FeatureSelectUconfWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 
 export const direction: StringSelectUconfWpsData = {
     description: {
         id: 'direction',
+        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         options: ['South', 'North'],
@@ -22,6 +24,7 @@ export const direction: StringSelectUconfWpsData = {
 export const intensity: StringSelectUconfWpsData = {
     description: {
         id: 'intensity',
+        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         options: ['VEI1', 'VEI2', 'VEI3', 'VEI4'],
@@ -37,6 +40,7 @@ export const intensity: StringSelectUconfWpsData = {
 export const parameter: StringSelectUconfWpsData = {
     description: {
         id: 'parameter',
+        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         options: ['MaxHeight', 'MaxVelocity', 'MaxPressure', 'MaxErosion', 'Deposition'],
@@ -53,6 +57,7 @@ export const parameter: StringSelectUconfWpsData = {
 export const laharWms: WmsLayerData = {
     description: {
         id: 'result',
+        sourceProcessId: 'gs:LaharModel',
         name: 'laharWms',
         type: 'literal',  // this is deliberate. layer-wps returns this value as a litteral, not as a complex.
         reference: false,
@@ -68,8 +73,8 @@ export const LaharWps: WizardableProcess & WpsProcess = {
     url: 'http://91.250.85.221/geoserver/riesgos/wps',
     name: 'Lahar',
     description: 'Simulates the path a lahar would take',
-    providedProduct: 'result',
-    requiredProducts: ['direction', 'intensity', 'parameter'],
+    requiredProducts: convertWpsDataToProds([direction, intensity, parameter]).map(p => p.uid),
+    providedProduct: convertWpsDataToProd(laharWms).uid,
     state: new ProcessStateUnavailable(),
     wpsVersion: '1.0.0',
     wizardProperties: {

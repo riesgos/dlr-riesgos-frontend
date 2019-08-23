@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import {  StringSelectUconfWpsData } from '../userconfigurable_wpsdata';
 import { ProductsProvided } from 'src/app/wps/wps.actions';
+import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 
 @Component({
     selector: 'ukis-form-stringselect-field',
@@ -27,10 +28,10 @@ export class FormStringselectFieldComponent implements OnInit {
     onChange(newValString) {
         this.activeSelection = newValString;
         this.store.dispatch(new ProductsProvided({
-            products: [{
+            products: convertWpsDataToProds([{
                 ...this.parameter,
                 value: newValString
-            }]
+            }])
         }));
     }
 }

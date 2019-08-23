@@ -32,6 +32,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
             out.push({
                 description: {
                     id: responseJson.value.process.identifier.value,
+                    sourceProcessId: responseJson.value.process.identifier.value,
                     reference: true,
                     type: 'error'
                 },
@@ -69,6 +70,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
                 out.push({
                     description: {
                         id: output.identifier.value,
+                        sourceProcessId: responseJson.value.process.identifier.value,
                         format: format,
                         reference: isReference,
                         type: datatype
@@ -80,6 +82,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
             out.push({
                 description: {
                     id: responseJson.value.process.identifier.value,
+                    sourceProcessId: responseJson.value.process.identifier.value,
                     reference: true,
                     type: 'status'
                 },

@@ -154,7 +154,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             this.mapSvc.setZoom(8);
             this.mapSvc.setProjection(getProjection('EPSG:4326'));
-
             const center = this.getCenter(scenario);
             this.mapSvc.setCenter(center);
         });

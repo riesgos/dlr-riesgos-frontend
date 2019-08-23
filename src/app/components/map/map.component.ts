@@ -1,14 +1,11 @@
 import { Component, OnInit, ViewEncapsulation, HostBinding, AfterViewInit, OnDestroy } from '@angular/core';
-import { DragBox, Select } from 'ol/interaction';
+import { DragBox } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
-import { singleClick } from 'ol/events/condition';
-import ImageLayer from 'ol/layer/Image';
-import ImageWMS from 'ol/source/ImageWMS';
 import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
-import { KML as olKmlFormat, GeoJSON as olGeojsonFormat } from 'ol/format';
 import { GeoJSON } from 'ol/format';
-import { get as getProjection } from 'ol/proj.js';
+import KML from 'ol/format/KML';
+import { get as getProjection, transformExtent } from 'ol/proj';
 import { MapStateService } from '@ukis/services-map-state';
 import { osm } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
@@ -16,15 +13,14 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getMapableProducts, getScenario, getGraph } from 'src/app/wps/wps.selectors';
 import { Product } from 'src/app/wps/wps.datatypes';
-import { HttpClient } from '@angular/common/http';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './layer_marshaller';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
-import { ProductLayer, isProductLayer } from './map.types';
+import { ProductLayer } from './map.types';
 import { switchMap } from 'rxjs/operators';
 
 
@@ -188,7 +184,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const osmLayer = new osm();
         osmLayer.visible = true;
-        layers.push(osmLayer);
+        osmLayer.legendImg = 'assets/layer-preview/osm-96px.jpg',
+            layers.push(osmLayer);
 
         const relief = new RasterLayer({
             id: 'shade',
@@ -200,6 +197,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 TRANSPARENT: true,
                 FORMAT: 'image/png'
             },
+            bbox: [-180, -56, 180, 60],
+            description: 'SRTM30 Hillshade - by terrestris',
+            legendImg: 'assets/layer-preview/hillshade-96px.jpg',
             opacity: 0.3,
             visible: false
         });
@@ -216,30 +216,44 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 params: {
                     LAYERS: 'men:lt_sic_728861dd_ef2a_4159_bac9_f5012a351115'
                 },
+                // bbox: [-75.2, -53.1, -65.3, -18.4], not working??
+                description: 'SIC-Übertragungsleitung (Línea de Transmisión SIC)',
+                legendImg: 'http://sig.minenergia.cl/geoserver/men/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=lt_sic_728861dd_ef2a_4159_bac9_f5012a351115',
+                opacity: 0.3,
                 visible: false
             });
             layers.push(powerlineLayer);
 
             const shoaMaps = {
-                'Taltal (SHOA)': 'assets/data/geojson/citsu_taltal_2da_Ed_2012.json',
-                'Valparaiso (SHOA)': 'assets/data/geojson/citsu_valparaiso_vinna.json'
+                //'Taltal (SHOA)': 'assets/data/geojson/citsu_taltal_2da_Ed_2012.json',
+                //'Valparaiso (SHOA)': 'assets/data/geojson/citsu_valparaiso_vinna.json'
+                'Taltal (SHOA)': 'assets/data/kml/citsu_taltal_2da_Ed_2012.kml',
+                'Valparaiso (SHOA)': 'assets/data/kml/citsu_valparaiso_vinna.kml'
 
             };
             for (const key in shoaMaps) {
                 if (shoaMaps[key]) {
                     const url = shoaMaps[key];
-                    const l = new olVectorLayer({
-                        source: new olVectorSource({
-                            url: url,
-                            format: new olGeojsonFormat()
-                        })
+                    const ls = new olVectorSource({
+                        url: url,
+                        format: new KML()//new olGeojsonFormat()
                     });
+                    console.log(ls.getExtent())
+                    //console.log( transformExtent(ls.getExtent(), this.mapSvc.EPSG, 'EPSG:4326') )
+                    const l = new olVectorLayer({
+                        source: ls,
+                        // style: 
+                    });
+                    // console.log(l.getProperties())
                     const layer = new CustomLayer({
                         custom_layer: l,
                         name: key,
                         id: key,
                         type: 'custom',
-                        visible: false
+                        // bbox: ,
+                        visible: false,
+                        attribution: '',
+                        popup: true
                     });
                     layers.push(layer);
                 }

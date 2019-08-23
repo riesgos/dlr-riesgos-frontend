@@ -1,3 +1,11 @@
+
+geomer einbinden: 
+    muss local von https aus aufrufen. 
+    https://medium.com/@rubenvermeulen/running-angular-cli-over-https-with-a-trusted-certificate-4a0d5f92747a
+
+exposure & vulnerability: 
+    wie nochmal einbinden?
+
 erdbeben: 
     make selection visible already while user is clicking, not just after 'enviar'
 
@@ -22,6 +30,12 @@ from process get both wms- and shakemap-output
 
 
 
+workflowcontrol changes: merge back into library
+    state to processes, including state 'running' and 'error'. in wfc process-states were calculated from the surrounding productstates, which id not allow state 'running'
+    process-states have attributes (like errormessage)
+    processes can have custom execute method
+    executeWps can be async
+    provide product with watchingProcesses
 
 process completed: jump to next
     deactivated for now.

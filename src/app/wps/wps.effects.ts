@@ -146,7 +146,7 @@ export class WpsEffects {
 
 
     /**
-     * @TODO: in the future, this will also load data from files
+     * @TODO: in the future, this will also load data from files with httpclient on the fly
      */
     private loadScenarioData(scenario: string): [Process[], Product[]] {
         let processes: Process[] = [];
@@ -154,7 +154,8 @@ export class WpsEffects {
         switch (scenario) {
             case 'c1':
                 processes = [
-                    ExposureModel, VulnerabilityModel,
+                    ExposureModel,
+                    VulnerabilityModel,
                     QuakeLedger,
                     EqSelection,
                     Shakyground,

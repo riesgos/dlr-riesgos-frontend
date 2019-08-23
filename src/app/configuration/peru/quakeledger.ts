@@ -2,8 +2,6 @@ import { WpsProcess, ProcessStateUnavailable, WatchingProcess, Product, CustomPr
 import { UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
-import { buildingAndDamageClasses } from '../chile/modelProp';
 import { Observable, of } from 'rxjs';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { selectedEqs, mmin, mmax, zmin, zmax, p, etype, tlon, tlat } from '../chile/quakeledger';

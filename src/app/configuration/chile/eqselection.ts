@@ -11,6 +11,7 @@ import { Feature as olFeature } from 'ol/Feature';
 import { featureCollection } from '@turf/helpers';
 import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 import { buildingAndDamageClasses } from './modelProp';
+import { selectedEqs } from './quakeledger';
 
 
 
@@ -67,7 +68,7 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
     id: 'EqSelection',
     name: 'Select earthquake',
     state: {type: ProcessStateTypes.unavailable},
-    requiredProducts: convertWpsDataToProds([buildingAndDamageClasses, userinputSelectedEq]).map(p => p.uid),
+    requiredProducts: convertWpsDataToProds([selectedEqs, userinputSelectedEq]).map(p => p.uid),
     providedProduct: convertWpsDataToProd(selectedEq).uid,
     wizardProperties: {
         providerName: '',

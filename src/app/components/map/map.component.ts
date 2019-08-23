@@ -3,8 +3,7 @@ import { DragBox } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
 import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
-import { GeoJSON } from 'ol/format';
-import KML from 'ol/format/KML';
+import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection, transformExtent } from 'ol/proj';
 import { MapStateService } from '@ukis/services-map-state';
 import { osm } from '@ukis/base-layers-raster';
@@ -17,11 +16,12 @@ import { InteractionCompleted } from 'src/app/interactions/interactions.actions'
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './layer_marshaller';
-import { Layer, LayersService, RasterLayer, CustomLayer } from '@ukis/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
 import { ProductLayer } from './map.types';
 import { switchMap } from 'rxjs/operators';
+import tBbox from '@turf/bbox'
 
 
 @Component({
@@ -142,7 +142,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub5 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
-                this.layersSvc.addLayer(layer, 'Layers', false);
+                if (layer instanceof LayerGroup) {
+                    this.layersSvc.addLayerGroup(layer)
+                } else {
+                    this.layersSvc.addLayer(layer, 'Layers', false);
+                }
             }
         });
         this.subs.push(sub5);
@@ -177,9 +181,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-
-    private getInfoLayers(scenario: string): Layer[] {
-        const layers: Layer[] = [];
+    /** TODO add openlayers Drag-and-Drop to add new Additional Layers https://openlayers.org/en/latest/examples/drag-and-drop-image-vector.html */
+    private getInfoLayers(scenario: string) {
+        const layers: Array<Layer | LayerGroup> = [];
 
         const osmLayer = new osm();
         osmLayer.visible = true;
@@ -224,24 +228,38 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             layers.push(powerlineLayer);
 
             const shoaMaps = {
-                //'Taltal (SHOA)': 'assets/data/geojson/citsu_taltal_2da_Ed_2012.json',
-                //'Valparaiso (SHOA)': 'assets/data/geojson/citsu_valparaiso_vinna.json'
+                // 'Taltal (SHOA)': 'assets/data/geojson/citsu_taltal_2da_Ed_2012.json',
+                // 'Valparaiso (SHOA)': 'assets/data/geojson/citsu_valparaiso_vinna.json'
                 'Taltal (SHOA)': 'assets/data/kml/citsu_taltal_2da_Ed_2012.kml',
                 'Valparaiso (SHOA)': 'assets/data/kml/citsu_valparaiso_vinna.kml'
-
             };
+            const shoaLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'shoaLayers',
+                name: 'Tsunami Flood Layers (CITSU)',
+                layers: [],
+                bbox: [-75.856, -30.586, -65.737, -22.203]
+            });
+
             for (const key in shoaMaps) {
                 if (shoaMaps[key]) {
                     const url = shoaMaps[key];
                     const ls = new olVectorSource({
                         url: url,
-                        format: new KML()//new olGeojsonFormat()
+                        format: new KML() // new GeoJSON() //new KML() //
                     });
-                    console.log(ls.getExtent())
-                    //console.log( transformExtent(ls.getExtent(), this.mapSvc.EPSG, 'EPSG:4326') )
+                    let _bbox;
+                    switch (key) {
+                        case 'Taltal (SHOA)':
+                            _bbox = [-72.005, -26.275, -69.476, -24.155] // [-70.5212625609999, -25.41627692326784, -70.45375737099988, -25.38161171826857];
+                            break;
+
+                        case 'Valparaiso (SHOA)':
+                            _bbox = [-75.289, -38.839, -70.230, -35.097] // [-71.65049581099993, -33.04949744513699, -71.5276867199999, -32.93281934213857];
+                            break;
+                    }
                     const l = new olVectorLayer({
-                        source: ls,
-                        // style: 
+                        source: ls
                     });
                     // console.log(l.getProperties())
                     const layer = new CustomLayer({
@@ -249,14 +267,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         name: key,
                         id: key,
                         type: 'custom',
-                        // bbox: ,
+                        // bbox: _bbox, //TODO bbox not working (layer not displayd)?? but it is working in the demo-maps with custom layer and bbox
                         visible: false,
                         attribution: '',
                         popup: true
                     });
-                    layers.push(layer);
+
+                    /* ls.on('change', (evt) => {
+                        console.log(evt.target.getExtent());
+                        ls.un('change');
+                    }); */
+
+                    shoaLayers.layers.push(layer);
                 }
             }
+            layers.push(shoaLayers)
         }
 
 

@@ -236,12 +236,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             });
             layers.push(powerlineLayer);
 
-            /*           const shoaMaps = {
-                          // 'Taltal (SHOA)': 'assets/data/geojson/citsu_taltal_2da_Ed_2012.json',
-                          // 'Valparaiso (SHOA)': 'assets/data/geojson/citsu_valparaiso_vinna.json'
-                          'Taltal (SHOA)': 'assets/data/kml/citsu_taltal_2da_Ed_2012.kml',
-                          'Valparaiso (SHOA)': 'assets/data/kml/citsu_valparaiso_vinna.kml'
-                      }; */
+
             const shoaLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'shoaLayers',
@@ -283,43 +278,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 ],
                 bbox: [-76.202, -33.397, -67.490, -24.899]
             });
-
-            /*
-            for (const key in shoaMaps) {
-                if (shoaMaps[key]) {
-                    const url = shoaMaps[key];
-                    const ls = new olVectorSource({
-                        url: url,
-                        format: new KML() // new GeoJSON() //new KML() //
-                    });
-                    let _bbox;
-                    switch (key) {
-                        case 'Taltal (SHOA)':
-                            _bbox = [-72.005, -26.275, -69.476, -24.155] // [-70.5212625609999, -25.41627692326784, -70.45375737099988, -25.38161171826857];
-                            break;
-
-                        case 'Valparaiso (SHOA)':
-                            _bbox = [-75.289, -38.839, -70.230, -35.097] // [-71.65049581099993, -33.04949744513699, -71.5276867199999, -32.93281934213857];
-                            break;
-                    }
-                    const l = new olVectorLayer({
-                        source: ls
-                    });
-                    // console.log(l.getProperties())
-                    const layer = new CustomLayer({
-                        custom_layer: l,
-                        name: key,
-                        id: key,
-                        type: 'custom',
-                        bbox: _bbox, //TODO bbox not working (layer not displayd)?? but it is working in the demo-maps with custom layer and bbox
-                        visible: false,
-                        attribution: '',
-                        popup: true
-                    });
-                    shoaLayers.layers.push(layer);
-                }
-            }
-            */
             layers.push(shoaLayers);
         }
 

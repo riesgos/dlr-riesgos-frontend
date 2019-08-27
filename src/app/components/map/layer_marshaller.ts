@@ -14,7 +14,8 @@ import { Layer, VectorLayer, RasterLayer } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import { SldParserService } from 'projects/sld-parser/src/public-api';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer } from './map.types';
-import bbox from '@turf/bbox';
+import tBbox from '@turf/bbox';
+import tBuffer from '@turf/buffer';
 
 /**
  * Why do wo add another layer of translation here, instead of translating in wpsClient?
@@ -109,7 +110,8 @@ export class LayerMarshaller  {
             map(styleFunction => {
 
                 const data = product.value[0];
-                const bx = bbox(data);
+                console.log("data:", data)
+                const bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.description.id}_result_layer`,

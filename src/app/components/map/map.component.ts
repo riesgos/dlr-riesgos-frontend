@@ -21,7 +21,9 @@ import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
 import { ProductLayer } from './map.types';
 import { switchMap } from 'rxjs/operators';
-import tBbox from '@turf/bbox'
+import tBbox from '@turf/bbox';
+import tBuffer from '@turf/buffer';
+import { featureCollection as tFeatureCollection } from '@turf/helpers';
 
 
 @Component({
@@ -128,7 +130,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (this.interactionState.getValue().mode === 'featureselection') {
                     const product = {
                         ...this.interactionState.getValue().product,
-                        value: this.geoJson.writeFeatureObject(feature)
+                        value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
                     };
                     this.store.dispatch(new InteractionCompleted({ product }));
                 }
@@ -143,7 +145,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
                 if (layer instanceof LayerGroup) {
-                    this.layersSvc.addLayerGroup(layer)
+                    this.layersSvc.addLayerGroup(layer);
                 } else {
                     this.layersSvc.addLayer(layer, 'Layers', false);
                 }

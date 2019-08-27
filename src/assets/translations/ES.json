@@ -16,8 +16,14 @@
     "Earthquake Catalogue": "Catálogo de terremotos",
     "Select earthquake": "Elija un terremoto",
     
+    "EQ Exposure Model": "Modelo de exposición",
+    "EQ Vulnerability Model": "Modelo de vulnerabilidad",
     "Catalogue of historical earthquakes.": "Catálogo de terremotos históricos.",
     "Groundmotion Simulation": "Simulación de movimiento de tierra",
+    "Simulates the ground motion caused by a given eathquake": "Simula el movimiento del suelo causado por un terremoto dado",
+    "Earthquake/tsunami interaction": "Interacción terremoto / tsunami",
+    "Relates a tsunami to a given earthquake": "Relaciona un tsunami con un terremoto dado",
+
     "Layer control": "Control de las capas",
     "Results": "Resultados",
     "Additional layers": "Capas adicionales",

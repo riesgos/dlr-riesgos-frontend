@@ -16,7 +16,7 @@ export class InteractionEffects {
     $interactionCompleted = this.actions$.pipe(
         ofType<InteractionAction>(InteractionActionTypes.completed),
         map((action: InteractionCompleted) => {
-            return new ProductsProvided({products: [action.payload.product]})
+            return new ProductsProvided({products: [action.payload.product]});
         })
     );
 

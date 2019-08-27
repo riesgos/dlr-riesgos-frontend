@@ -15,6 +15,7 @@ export const shakemapOutput: WpsData & WmsLayerData = {
         type: 'complex',
         reference: false,
         format: 'application/WMS',
+        styles: 'shakemap-pga'
     },
     value: null
 };
@@ -25,7 +26,7 @@ export const Shakyground: WizardableProcess & WpsProcess = {
     id: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     name: 'Groundmotion Simulation',
-    description: 'Simulates the ground motion caused by a given eathquakes parameters',
+    description: 'Simulates the ground motion caused by a given eathquake',
     requiredProducts: convertWpsDataToProds([selectedEq]).map(p => p.uid),
     providedProduct: convertWpsDataToProd(shakemapOutput).uid,
     wpsVersion: '1.0.0',

@@ -1,4 +1,5 @@
 import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public-api';
+import { FeatureCollection } from '@turf/helpers';
 
 
 
@@ -39,10 +40,12 @@ export type UserconfigurableWpsDataDescription = StringUconfWD | StringSelectUco
 
 export interface StringUconfWpsData extends WpsData {
     description: StringUconfWD;
+    value: string;
 }
 
 export interface StringSelectUconfWpsData extends WpsData {
     description: StringSelectUconfWD;
+    value: string;
 }
 
 export interface BboxUconfWpsData extends WpsData {
@@ -51,6 +54,7 @@ export interface BboxUconfWpsData extends WpsData {
 
 export interface FeatureSelectUconfWpsData extends WpsData {
     description: FeatureSelectUconfWD;
+    value: [FeatureCollection];
 }
 
 

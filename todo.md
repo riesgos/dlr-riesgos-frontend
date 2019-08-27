@@ -1,18 +1,12 @@
-
-geomer einbinden: 
-    muss local von https aus aufrufen. 
-    https://medium.com/@rubenvermeulen/running-angular-cli-over-https-with-a-trusted-certificate-4a0d5f92747a
-
-exposure & vulnerability: 
-    wie nochmal einbinden?
-
-erdbeben: 
-    make selection visible already while user is clicking, not just after 'enviar'
+shakyground: 
+    needs a style-selection-parameter, otherwise returns black map
 
 experiment with data per reference. 
     Can you give a productA from process1 to process2 per reference,
     when you have obtained productA from process1 under a different mime-type than what you present to process2?
         Do that with shakyground and deus
+
+inputs to processes need to be listed in process-wizard
 
 clean up typesystem
     products and processes are general concepts. 
@@ -27,6 +21,12 @@ from process get both wms- and shakemap-output
         For shakyground, we need to pipe the shakemap-output into a translation-service to obtain wms-data
         For TS-service, we need to start ts-wms-service to get wms-output; and start ts-shkmp-service to get shakemap data
 
+geomer einbinden: 
+    muss local von https aus aufrufen. 
+    https://medium.com/@rubenvermeulen/running-angular-cli-over-https-with-a-trusted-certificate-4a0d5f92747a
+    when using chrome: 
+        Access to XMLHttpRequest at 'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?version=1.3.0&service=wms&request=GetCapabilities' from origin 'http://localhost:4200' has been blocked by CORS policy: Request header field content-type is not allowed by Access-Control-Allow-Headers in preflight response.
+        
 
 
 
@@ -105,7 +105,7 @@ ts-service
         error should be displayed
     email an alireaza ist unterwegs. 
 
-create fake-implementation of geomer services
-    calling wcs in background
-    maybe not even neccessary? since geomer promised they had one
-        Either way they need to set acces-control headers. 
+exposure & vulnerability: 
+    wie nochmal einbinden?
+        exposition (assetmaster): output not used anywhere
+        vulnerability (modelprop): return json w/o georeferences.  <-- how to style this? how to show to user?

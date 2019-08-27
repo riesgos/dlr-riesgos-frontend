@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { convertWpsDataToProd } from 'src/app/wps/wps.selectors';
+import { featureCollection } from '@turf/helpers';
 
 @Component({
   selector: 'ukis-form-featureselect-field',
@@ -25,7 +26,7 @@ export class FormFeatureSelectFieldComponent implements OnInit {
     this.options = this.parameter.description.options;
     this.selectionStrings = Object.keys(this.options);
     if (this.parameter.value) {
-      this.activeSelection = this.parameter.value.id;
+      this.activeSelection = this.parameter.value[0].features[0].id as string;
     } else if (this.parameter.description.defaultValue) {
       this.activeSelection = this.parameter.description.defaultValue;
     } else {
@@ -36,8 +37,9 @@ export class FormFeatureSelectFieldComponent implements OnInit {
 
   onChange(newValString) {
     const newVal = this.options[newValString];
+    const newValFeatureCollection = featureCollection([newVal]);
     this.store.dispatch(new InteractionCompleted(
-      { product: convertWpsDataToProd({ description: this.parameter.description, value: newVal }) }
+      { product: convertWpsDataToProd({ description: this.parameter.description, value: [newValFeatureCollection] }) }
     ));
   }
 

@@ -32,6 +32,7 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "@nieuwlandgeo/sldreader": "0.1.0",
+    "@turf/buffer": "^5.1.5",
     "@turf/helpers": "^6.1.4",
     "@turf/turf": "^5.1.6",
     "@ukis/base-layers-raster": "^5.2.1",

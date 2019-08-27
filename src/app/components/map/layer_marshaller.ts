@@ -14,7 +14,8 @@ import { Layer, VectorLayer, RasterLayer } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import { SldParserService } from 'projects/sld-parser/src/public-api';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer } from './map.types';
-import bbox from '@turf/bbox';
+import tBbox from '@turf/bbox';
+import tBuffer from '@turf/buffer';
 
 /**
  * Why do wo add another layer of translation here, instead of translating in wpsClient?
@@ -109,7 +110,7 @@ export class LayerMarshaller  {
             map(styleFunction => {
 
                 const data = product.value[0];
-                const bx = bbox(data);
+                const bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.description.id}_result_layer`,
@@ -190,7 +191,8 @@ export class LayerMarshaller  {
                             FORMAT: paras.format,
                             BBOX: paras.bbox,
                             SRS: paras.srs,
-                            TRANSPARENT: 'TRUE'
+                            TRANSPARENT: 'TRUE',
+                            STYLES: product.description.styles || '',
                         },
                         legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
                             `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
@@ -252,7 +254,7 @@ export class LayerMarshaller  {
             height: height,
             format: url.searchParams.get('format') || 'image/png',
             bbox: bbox,
-            srs: url.searchParams.get('srs') || this.mapSvc.getProjection().getCode()
+            srs: url.searchParams.get('srs') || this.mapSvc.getProjection().getCode(),
         });
     }
 

@@ -15,13 +15,34 @@ import { selectedEqs } from './quakeledger';
 
 
 
-export const userinputSelectedEq: FeatureSelectUconfWpsData = {
+export const userinputSelectedEq: FeatureSelectUconfWpsData & VectorLayerData = {
     description: {
         id: 'selectedRow',
         sourceProcessId: 'user',
         options: [],
         reference: false,
         type: 'complex',
+        format: 'application/vnd.geo+json',
+        name: 'selected earthquake',
+        vectorLayerAttributes: {
+            style: (feature: olFeature, resolution: number) => {
+                return new olStyle({
+                    image: new olCircle({
+                        radius: 30,
+                        fill: new olFill({
+                            color: 'blue'
+                        }),
+                        stroke: new olStroke({
+                            color: 'white',
+                            witdh: 1
+                        })
+                    })
+                });
+            },
+            text: (feature: olFeature) => {
+                return JSON.stringify(feature);
+            }
+        },
         wizardProperties: {
             fieldtype: 'select',
             name: 'Selected EQ'
@@ -31,33 +52,13 @@ export const userinputSelectedEq: FeatureSelectUconfWpsData = {
 };
 
 
-export const selectedEq: VectorLayerData = {
+export const selectedEq: WpsData = {
     description: {
         id: 'quakeMLFile',
         sourceProcessId: 'EqSelection',
         format: 'application/vnd.geo+json',
         reference: false,
-        type: 'complex',
-        name: 'Selected EQ',
-        vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
-                return new olStyle({
-                  image: new olCircle({
-                    radius: 30,
-                    fill: new olFill({
-                      color: 'blue'
-                    }),
-                    stroke: new olStroke({
-                      color: 'white',
-                      witdh: 1
-                    })
-                  })
-                });
-              },
-              text: (feature: olFeature) => {
-                return JSON.stringify(feature);
-              }
-        }
+        type: 'complex'
     },
     value: null
 };
@@ -67,7 +68,7 @@ export const selectedEq: VectorLayerData = {
 export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = {
     id: 'EqSelection',
     name: 'Select earthquake',
-    state: {type: ProcessStateTypes.unavailable},
+    state: { type: ProcessStateTypes.unavailable },
     requiredProducts: convertWpsDataToProds([selectedEqs, userinputSelectedEq]).map(p => p.uid),
     providedProduct: convertWpsDataToProd(selectedEq).uid,
     wizardProperties: {
@@ -78,10 +79,9 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
 
     execute: (inputs: Product[]): Observable<Product[]> => {
         const eqVal = inputs.find(i => i.uid === 'user_selectedRow').value;
-        const eqValFeatureCollection = featureCollection([eqVal]);
         return of([convertWpsDataToProd({
             ...selectedEq,
-            value: [eqValFeatureCollection]
+            value: eqVal
         })]);
     },
 

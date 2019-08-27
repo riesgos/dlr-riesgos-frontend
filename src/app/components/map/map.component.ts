@@ -6,7 +6,7 @@ import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection, transformExtent } from 'ol/proj';
 import { MapStateService } from '@ukis/services-map-state';
-import { osm } from '@ukis/base-layers-raster';
+import { osm, esri_world_imagery } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -24,6 +24,7 @@ import { switchMap } from 'rxjs/operators';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
+import { parse } from 'url';
 
 
 @Component({
@@ -56,6 +57,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     ngOnInit() {
+        this.subscribeToMapState();
         // listening for interaction modes
         this.interactionState = new BehaviorSubject<InteractionState>(initialInteractionState);
         const sub1 = this.store.pipe(select('interactionState')).subscribe(currentInteractionState => {
@@ -159,9 +161,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         // listening for change in scenario
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             this.mapSvc.setZoom(8);
-            this.mapSvc.setProjection(getProjection('EPSG:4326'));
+            // this.mapSvc.setProjection(getProjection('EPSG:4326'));
             const center = this.getCenter(scenario);
-            this.mapSvc.setCenter(center);
+            this.mapSvc.setCenter(center, true);
         });
         this.subs.push(sub6);
     }
@@ -189,8 +191,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const osmLayer = new osm();
         osmLayer.visible = true;
-        osmLayer.legendImg = 'assets/layer-preview/osm-96px.jpg',
-            layers.push(osmLayer);
+        osmLayer.legendImg = 'assets/layer-preview/osm-96px.jpg';
+        layers.push(osmLayer);
+
+        const esri_imagery = new esri_world_imagery(<any>{
+            legendImg: 'assets/layer-preview/esri-imagery-96px.jpg'
+        });
+        layers.push(esri_imagery);
 
         const relief = new RasterLayer({
             id: 'shade',
@@ -204,6 +211,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             },
             bbox: [-180, -56, 180, 60],
             description: 'SRTM30 Hillshade - by terrestris',
+            attribution: '&copy, <a href="http://www.terrestris.de">terrestris</a>',
             legendImg: 'assets/layer-preview/hillshade-96px.jpg',
             opacity: 0.3,
             visible: false
@@ -221,72 +229,78 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 params: {
                     LAYERS: 'men:lt_sic_728861dd_ef2a_4159_bac9_f5012a351115'
                 },
-                // bbox: [-75.2, -53.1, -65.3, -18.4], not working??
                 description: 'SIC-Übertragungsleitung (Línea de Transmisión SIC)',
+                attribution: '&copy, <a href="http://sig.minenergia.cl">sig.minenergia.cl</a>',
                 legendImg: 'http://sig.minenergia.cl/geoserver/men/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=lt_sic_728861dd_ef2a_4159_bac9_f5012a351115',
                 opacity: 0.3,
+                bbox: [-92.270, -44.104, -48.017, -24.388],
                 visible: false
             });
             layers.push(powerlineLayer);
 
-            const shoaMaps = {
-                // 'Taltal (SHOA)': 'assets/data/geojson/citsu_taltal_2da_Ed_2012.json',
-                // 'Valparaiso (SHOA)': 'assets/data/geojson/citsu_valparaiso_vinna.json'
-                'Taltal (SHOA)': 'assets/data/kml/citsu_taltal_2da_Ed_2012.kml',
-                'Valparaiso (SHOA)': 'assets/data/kml/citsu_valparaiso_vinna.kml'
-            };
+
             const shoaLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'shoaLayers',
                 name: 'Tsunami Flood Layers (CITSU)',
-                layers: [],
-                bbox: [-75.856, -30.586, -65.737, -22.203]
-            });
-
-            for (const key in shoaMaps) {
-                if (shoaMaps[key]) {
-                    const url = shoaMaps[key];
-                    const ls = new olVectorSource({
-                        url: url,
-                        format: new KML() // new GeoJSON() //new KML() //
-                    });
-                    let _bbox;
-                    switch (key) {
-                        case 'Taltal (SHOA)':
-                            _bbox = [-72.005, -26.275, -69.476, -24.155] // [-70.5212625609999, -25.41627692326784, -70.45375737099988, -25.38161171826857];
-                            break;
-
-                        case 'Valparaiso (SHOA)':
-                            _bbox = [-75.289, -38.839, -70.230, -35.097] // [-71.65049581099993, -33.04949744513699, -71.5276867199999, -32.93281934213857];
-                            break;
-                    }
-                    const l = new olVectorLayer({
-                        source: ls
-                    });
-                    // console.log(l.getProperties())
-                    const layer = new CustomLayer({
-                        custom_layer: l,
-                        name: key,
-                        id: key,
+                layers: [
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/kml/citsu_taltal_2da_Ed_2012.kml',
+                                format: new KML()
+                            })
+                        }),
+                        name: 'Taltal (SHOA)',
+                        id: 'Taltal_SHOA',
                         type: 'custom',
-                        // bbox: _bbox, //TODO bbox not working (layer not displayd)?? but it is working in the demo-maps with custom layer and bbox
+                        bbox: [-70.553, -25.472, -70.417, -25.334],
                         visible: false,
-                        attribution: '',
+                        attribution: '&copy, <a href="http://www.shoa.cl/php/citsu.php">shoa.cl</a>',
+                        legendImg: 'assets/layer-preview/citsu-96px.jpg',
                         popup: true
-                    });
+                    }),
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/kml/citsu_valparaiso_vinna.kml',
+                                format: new KML()
+                            })
+                        }),
+                        name: 'Valparaiso (SHOA)',
+                        id: 'Valparaiso_SHOA',
+                        type: 'custom',
+                        bbox: [-71.949, -33.230, -71.257, -32.720],
+                        visible: false,
+                        attribution: '&copy, <a href="http://www.shoa.cl/php/citsu.php">shoa.cl</a>',
+                        legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                        popup: true
+                    })
 
-                    /* ls.on('change', (evt) => {
-                        console.log(evt.target.getExtent());
-                        ls.un('change');
-                    }); */
-
-                    shoaLayers.layers.push(layer);
-                }
-            }
-            layers.push(shoaLayers)
+                ],
+                bbox: [-76.202, -33.397, -67.490, -24.899]
+            });
+            layers.push(shoaLayers);
         }
 
 
         return layers;
+    }
+
+
+    subscribeToMapState() {
+        const sub7 = this.mapStateSvc.getMapState().subscribe((state) => {
+            if (history.pushState) {
+                const url = parse(window.location.href.replace('#/', ''));
+                // console.log(url)
+                const query = new URLSearchParams(url.query);
+                const extent = state.extent.map(item => item.toFixed(3));
+                query.set('bbox', extent.join(','))
+                const newurl = `${url.protocol}//${url.host}/#${url.pathname}?${query.toString()}`; // bbox=${extent.join(',') &time=${state.time}
+                // console.log(newurl)
+                window.history.pushState({ path: newurl }, '', newurl);
+            }
+        });
+        this.subs.push(sub7);
     }
 }

@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "installLibrary": "node scripts/installLibraryDependencies",
-    "translate": "ng xi18n  --output-path locale"
+    "translate": "ng xi18n  --output-path locale",
+    "postinstall": "replace dist/sldreader.js src/index.js node_modules/@nieuwlandgeo/sldreader/package.json"
   },
   "private": true,
   "dependencies": {
@@ -31,7 +32,7 @@
     "@ngrx/store": "^8.0.1",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "@nieuwlandgeo/sldreader": "^0.0.8",
+    "@nieuwlandgeo/sldreader": "https://github.com/NieuwlandGeo/SLDReader.git",
     "@turf/buffer": "^5.1.5",
     "@turf/helpers": "^6.1.4",
     "@turf/turf": "^5.1.6",
@@ -73,6 +74,7 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "ng-packagr": "^5.1.0",
     "protractor": "~5.4.0",
+    "replace": "^1.1.1",
     "ts-node": "~7.0.0",
     "tsickle": "^0.35.0",
     "tslint": "~5.15.0",

@@ -1,13 +1,12 @@
 shakyground: 
     needs a style-selection-parameter, otherwise returns black map
 
-erdbeben: 
-    selection by click on drop and then click on map no longer works
-
 experiment with data per reference. 
     Can you give a productA from process1 to process2 per reference,
     when you have obtained productA from process1 under a different mime-type than what you present to process2?
         Do that with shakyground and deus
+
+inputs to processes need to be listed in process-wizard
 
 clean up typesystem
     products and processes are general concepts. 

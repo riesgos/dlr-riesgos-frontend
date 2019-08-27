@@ -55,6 +55,7 @@ export interface WmsLayerDescription extends WpsDataDescription {
     format: 'application/WMS';
     name: string;
     type: 'complex' | 'literal';
+    styles?: string;
 }
 
 export interface WmsLayerData extends WpsData {

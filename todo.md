@@ -1,7 +1,5 @@
 can we now forget the property 'sourceProcessId'?
 
-search for any remaining instances of ' as '
-
 have shakyground return both a wms and a refernce to the shakefile.
 
 allow mulitple styles for wms layers

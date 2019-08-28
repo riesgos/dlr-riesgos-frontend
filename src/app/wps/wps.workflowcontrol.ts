@@ -437,8 +437,8 @@ export class WorkflowControl {
             const equivalentWpsData = wpsData.find(data => {
                 return (
                     data.description.id === prod.description.id &&
-                    data.description.format === prod.description.format &&
-                    data.description.reference === prod.description.reference && 
+                    // data.description.format === prod.description.format && // <-- not ok. format can change from 'wms' to 'string'
+                    data.description.reference === prod.description.reference &&
                     data.description.type === prod.description.type
                 );
             });

@@ -9,7 +9,6 @@ export const lat: WpsData & Product = {
     uid: 'auto_lat',
     description: {
         id: 'lat',
-        sourceProcessId: 'auto',
         reference: false,
         type: 'literal',
     },
@@ -20,7 +19,6 @@ export const lon: WpsData & Product = {
     uid: 'auto_lon',
     description: {
         id: 'lon',
-        sourceProcessId: 'auto',
         reference: false,
         type: 'literal',
     },
@@ -31,7 +29,6 @@ export const mag: WpsData & Product = {
     uid: 'auto_mag',
     description: {
         id: 'mag',
-        sourceProcessId: 'auto',
         reference: false,
         type: 'literal',
     },
@@ -43,7 +40,6 @@ export const epicenter: WpsData & Product = {
     uid: 'get_scenario_epiCenter',
     description: {
         id: 'epiCenter',
-        sourceProcessId: 'get_scenario',
         reference: false,
         format: 'application/WMS',
         type: 'literal',

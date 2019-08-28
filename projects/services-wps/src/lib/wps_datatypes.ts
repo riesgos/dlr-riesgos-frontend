@@ -7,7 +7,6 @@ export type ProductId = string;
 
 export interface WpsDataDescription {
     id: ProductId;
-    sourceProcessId: ProcessId;
     type: 'literal' | 'complex' | 'bbox' | 'status' | 'error';
     reference: boolean;
     format?: WpsDataFormat;

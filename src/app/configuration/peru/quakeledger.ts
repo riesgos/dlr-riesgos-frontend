@@ -11,7 +11,6 @@ export const inputBoundingboxPeru: UserconfigurableProduct & BboxLayerData & Wps
     uid: 'user_input-boundingbox',
     description: {
         id: 'input-boundingbox',
-        sourceProcessId: 'user',
         name: 'eq-selection: boundingbox',
         type: 'bbox',
         reference: false,

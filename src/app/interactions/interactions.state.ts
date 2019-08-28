@@ -16,7 +16,6 @@ export const initialInteractionState: InteractionState = {
         uid: 'auto_default parameter',
         description: {
             id: 'default parameter',
-            sourceProcessId: 'auto',
             reference: false,
             type: 'literal',
             wizardProperties: {

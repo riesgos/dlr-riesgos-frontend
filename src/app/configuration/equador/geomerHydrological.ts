@@ -11,7 +11,6 @@ export const hydrologicalSimulation: WmsLayerData & WpsData = {
     uid: 'geomerHydrological_hydrologicalSimulation',
     description: {
         id: 'hydrologicalSimulation',
-        sourceProcessId: 'geomerHydrological',
         name: 'Hydrological Simulation',
         format: 'application/WMS',
         reference: true,

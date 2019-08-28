@@ -9,7 +9,6 @@ export const inputBoundingbox: BboxUconfProduct & BboxLayerData & WpsData = {
     uid: 'user_input-boundingbox',
     description: {
         id: 'input-boundingbox',
-        sourceProcessId: 'user',
         name: 'eq-selection: boundingbox',
         type: 'bbox',
         reference: false,
@@ -27,7 +26,6 @@ export const mmin: StringUconfProduct & WpsData = {
     uid: 'user_mmin',
     description: {
         id: 'mmin',
-        sourceProcessId: 'user',
         type: 'literal',
         wizardProperties: {
             name: 'mmin',
@@ -45,7 +43,6 @@ export const mmax: StringUconfProduct & WpsData = {
     uid: 'user_mmax',
     description: {
         id: 'mmax',
-        sourceProcessId: 'user',
         type: 'literal',
         wizardProperties: {
             name: 'mmax',
@@ -63,7 +60,6 @@ export const zmin: StringUconfProduct & WpsData = {
     uid: 'user_zmin',
     description: {
         id: 'zmin',
-        sourceProcessId: 'user',
         description: 'minimum depth',
         defaultValue: '0',
         type: 'literal',
@@ -80,7 +76,6 @@ export const zmax: StringUconfProduct & WpsData = {
     uid: 'user_zmax',
     description: {
         id: 'zmax',
-        sourceProcessId: 'user',
         description: 'maximum depth',
         defaultValue: '100',
         type: 'literal',
@@ -98,7 +93,6 @@ export const p: StringUconfProduct & WpsData = {
     uid: 'user_p',
     description: {
         id: 'p',
-        sourceProcessId: 'user',
         description: 'p',
         type: 'literal',
         wizardProperties: {
@@ -116,7 +110,6 @@ export const etype: StringSelectUconfProduct & WpsData = {
     uid: 'user_etype',
     description: {
         id: 'etype',
-        sourceProcessId: 'user',
         description: 'etype',
         defaultValue: 'expert', // 'deaggregation',
         reference: false,
@@ -136,7 +129,6 @@ export const tlon: StringUconfProduct & WpsData = {
     uid: 'user_tlon',
     description: {
         id: 'tlon',
-        sourceProcessId: 'user',
         description: 'longitude [decimal degrees]',
         defaultValue: '5.00',
         reference: false,
@@ -154,7 +146,6 @@ export const tlat: StringUconfProduct & WpsData = {
     uid: 'user_tlat',
     description: {
         id: 'tlat',
-        sourceProcessId: 'user',
         description: 'latitude [decimal degrees]',
         defaultValue: '-35.00',
         reference: false,
@@ -173,7 +164,6 @@ export const selectedEqs: VectorLayerData & WpsData = {
     uid: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess_selectedRows',
     description: {
         id: 'selectedRows',
-        sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
         name: 'available earthquakes',
         format: 'application/vnd.geo+json',
         reference: false,

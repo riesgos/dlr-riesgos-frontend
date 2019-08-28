@@ -9,7 +9,6 @@ export const shakemapOutput: WpsData & WmsLayerData = {
     uid: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess_shakeMapFile',
     description: {
         id: 'shakeMapFile',
-        sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
         name: 'shakemap',
         type: 'complex',
         reference: false,

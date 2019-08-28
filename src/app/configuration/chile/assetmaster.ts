@@ -12,7 +12,6 @@ export const lonmin: StringUconfProduct & WpsData = {
     uid: 'user_lonmin',
     description: {
         id: 'lonmin',
-        sourceProcessId: 'user',
         type: 'literal',
         wizardProperties: {
             fieldtype: 'string',
@@ -29,7 +28,6 @@ export const lonmax: StringUconfProduct & WpsData = {
   uid: 'user_lonmax',
   description: {
       id: 'lonmax',
-      sourceProcessId: 'user',
       type: 'literal',
       wizardProperties: {
           fieldtype: 'string',
@@ -46,7 +44,6 @@ export const latmin: StringUconfProduct & WpsData = {
   uid: 'user_latmin',
   description: {
       id: 'latmin',
-      sourceProcessId: 'user',
       type: 'literal',
       wizardProperties: {
           fieldtype: 'string',
@@ -63,7 +60,6 @@ export const latmax: StringUconfProduct & WpsData = {
   uid: 'user_latmax',
   description: {
     id: 'latmax',
-    sourceProcessId: 'user',
     type: 'literal',
     wizardProperties: {
         fieldtype: 'string',
@@ -80,7 +76,6 @@ export const schema: StringSelectUconfProduct & WpsData = {
   uid: 'user_schema',
   description: {
     id: 'schema',
-    sourceProcessId: 'user',
     options: ['SARA_v1.0'],
     defaultValue: 'SARA_v1.0',
     reference: false,
@@ -99,7 +94,6 @@ export const assettype: StringSelectUconfProduct & WpsData = {
   uid: 'user_assettype',
   description: {
     id: 'assettype',
-    sourceProcessId: 'user',
     options: ['res'],
     defaultValue: 'res',
     reference: false,
@@ -117,7 +111,6 @@ export const querymode: StringSelectUconfProduct & WpsData = {
   uid: 'user_querymode',
   description: {
     id: 'querymode',
-    sourceProcessId: 'user',
     options: ['intersects', 'within'],
     defaultValue: 'intersects',
     reference: false,
@@ -135,7 +128,6 @@ export const selectedRowsXml: VectorLayerData & WpsData = {
   uid: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess_selecteRowsXml',
   description: {
     id: 'selectedRowsXml',
-    sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
     type: 'complex',
     reference: false,
     format: 'application/vnd.geo+json',

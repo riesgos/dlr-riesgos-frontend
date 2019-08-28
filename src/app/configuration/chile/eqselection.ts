@@ -14,7 +14,6 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerData & 
     uid: 'user_selectedRow',
     description: {
         id: 'selectedRow',
-        sourceProcessId: 'user',
         options: [],
         defaultValue: null,
         reference: false,
@@ -53,7 +52,6 @@ export const selectedEq: WpsData & Product = {
     uid: 'EqSelection_quakeMLFile',
     description: {
         id: 'quakeMLFile',
-        sourceProcessId: 'EqSelection',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex'

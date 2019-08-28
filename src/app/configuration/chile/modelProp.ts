@@ -10,7 +10,6 @@ export const assetcategory: StringSelectUconfProduct & WpsData = {
     uid: 'user_assetcategory',
     description: {
         id: 'assetcategory',
-        sourceProcessId: 'user',
         options: ['buildings'],
         defaultValue: 'buildings',
         reference: false,
@@ -27,7 +26,6 @@ export const losscategory: StringSelectUconfProduct & WpsData = {
     uid: 'user_losscategory',
     description: {
         id: 'losscategory',
-        sourceProcessId: 'user',
         options: ['structural'],
         defaultValue: 'structural',
         reference: false,
@@ -44,7 +42,6 @@ export const taxonomies: StringUconfProduct & WpsData = {
     uid: 'user_taxonomies',
     description: {
         id: 'taxonomies',
-        sourceProcessId: 'user',
         reference: false,
         type: 'literal',
         defaultValue: '',
@@ -61,7 +58,6 @@ export const buildingAndDamageClasses: WpsData & Product = {
     uid: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess_selectedRows',
     description: {
       id: 'selectedRows',
-      sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
       type: 'complex',
       reference: false,
       format: 'application/json'

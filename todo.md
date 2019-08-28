@@ -1,17 +1,42 @@
-have shakyground return both a wms and a refernce to the shakefile.
-    keeps making get-request. suspicion: in wpsclient.ts:102
-
 allow mulitple styles for wms layers
-
-inputs to processes need to be listed in process-wizard
-
-For TS-service, we need to start ts-wms-service to get wms-output; and start ts-shkmp-service to get shakemap data
+    teste ob das mit den buttons vom layerswitcher geht 
+    falls nicht, dann als dropdown in selben feld wie transparency
 
 geomer einbinden: 
     muss local von https aus aufrufen. 
     https://medium.com/@rubenvermeulen/running-angular-cli-over-https-with-a-trusted-certificate-4a0d5f92747a
     when using chrome: 
         Access to XMLHttpRequest at 'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?version=1.3.0&service=wms&request=GetCapabilities' from origin 'http://localhost:4200' has been blocked by CORS policy: Request header field content-type is not allowed by Access-Control-Allow-Headers in preflight response.
+
+integrate deus -- seems to call for a few refactorings ...
+    is called multiple times
+        need another id for every time deus appears in graph
+            need again to make a difference between the workflow-id and the wps-process-id
+    hmm. input-product-ids are weird, too....
+        habe entwurf für nachfrage-email an nils parat
+        on the other hand, might it be alright if deus specifies another product-id?
+            after all, the wps-product-id is something wps-specific. only the product.uid counts for us. lets say they both have product.uid = 'shakemap'
+            what would that mean?
+                well, for one, 
+                    shakyground would have as output a product with uid = 'shakemap' and description.id = 'shakeMapFile'
+                    deus        would have as input  a product with uid = 'shakemap' and description.id = 'intensity'
+                that means that every wps-process needs to keep its own copy of all ingoing and outgoing wps-data.
+                    that means a lot of duplication of information
+                alternatively,  every wps-process could provide its own function of how to map products to wps-data.
+                    that means another method in wps-processes, when initially we intended to use them as data-only objects. 
+                we could have wps-processes specify their own execute-function. 
+                    this way, we completely scrap the idea of wps-processes as data-only objects. 
+                    but at least the wps-process could do its own transformation. 
+                    we would want to avoid, however, that any places other than wps.workflowcontrol can call wps-process.execute. 
+                        well, that would be avoided automatically, because only wps.workflowcontrol can provide wps-process.execute(inputs, outputs) with the neccessary arguments.
+                    with this, we'd still adhere to 'dont-call-me-ill-call-you', right?
+    maybe wizard-pages should be not configured by the processes & products. 
+    really. just draw up the design diagram again and see if there is any way we can simplify this. 
+
+inputs to processes need to be listed in process-wizard
+
+For TS-service, we need to start ts-wms-service to get wms-output; and start ts-shkmp-service to get shakemap data
+
         
 
 
@@ -28,22 +53,9 @@ process completed: jump to next
     always jumps to wrong one. Implement "getNextActiveProcessAfter"
         now tries to jump to shakemapProcess_provider. This provider thing is rather unhandy.
 
-fix LayersService
-    usually, we add layers with lSvc.addLayer(layer, 'overlays', false)
-    this causes the layer to be added 
-        to lSvc.overlays
-        and to lSvc.layergroups, but *not* as part of the group 'overlays', but as a single layer.
-    lSvc.layergroups can therefore contain both layers and layergroups
-    since lSvc.layergroups can contain single, ungrouped layers, lSvc uses the property 'filtertype' to figure out if a layer belongs to overlays or not. 
-        amongst other places, this feature is used in lSvc.updateLayer(layer, 'overlays')
-    however, the property 'filtertye' is optional. 
-        by consequence, if you forget to set 'filtertype', updating a layer does not have an effect. 
-
 provider auch in layerpicker
 
 alternative catalogues
-
-rechte spalte: variable größe
 
 layerswitcher: 
     per layer: export and table icons
@@ -62,7 +74,6 @@ forms
     feature-select-field: 
         very slow
         selected feature stays visible on top, should be on bottom
-    i have a featureselect field, but also need a string-select field
 
 tabelle und feature in karte müssen in bezug zueinander stehen: highlight feature and row
 tabelle: crop to five rows
@@ -80,16 +91,11 @@ performance:
 
 screenshot funktion in top right
 
-we need a way to also 'execute' non-wps services. 
-what would be the most consistent way to do this?
- - pro: with executable non-wps-processes we no longer need watching processes. 
-    is this really true?
-
 ts-service
     switch order of coords
         shouold cause error
         error should be displayed
-    email an alireaza ist unterwegs. 
+    email an alireaza ist unterwegs.
 
 exposure & vulnerability: 
     wie nochmal einbinden?

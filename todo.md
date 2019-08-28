@@ -1,6 +1,5 @@
-can we now forget the property 'sourceProcessId'?
-
 have shakyground return both a wms and a refernce to the shakefile.
+    keeps making get-request. suspicion: in wpsclient.ts:102
 
 allow mulitple styles for wms layers
 

@@ -1,12 +1,12 @@
-import { WpsProcess, ProcessStateUnavailable } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import {  WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { selectedEq } from './eqselection';
 
 
-export const shakemapOutput: WpsData & WmsLayerData = {
-    uid: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess_shakeMapFile',
+export const shakemapWmsOutput: WpsData & WmsLayerData = {
+    uid: 'ShakygroundProcess_shakeMapFile_wms',
     description: {
         id: 'shakeMapFile',
         name: 'shakemap',
@@ -14,6 +14,17 @@ export const shakemapOutput: WpsData & WmsLayerData = {
         reference: false,
         format: 'application/WMS',
         styles: 'shakemap-pga'
+    },
+    value: null
+};
+
+export const shakemapOutput: WpsData & Product = {
+    uid: 'ShakygroundProcess_shakeMapFile_shakemap',
+    description: {
+        id: 'shakeMapFile',
+        type: 'complex',
+        reference: true,
+        format: 'text/xml',
     },
     value: null
 };
@@ -26,7 +37,7 @@ export const Shakyground: WizardableProcess & WpsProcess = {
     name: 'Groundmotion Simulation',
     description: 'Simulates the ground motion caused by a given eathquake',
     requiredProducts: [selectedEq].map(p => p.uid),
-    providedProducts: [shakemapOutput.uid],
+    providedProducts: [shakemapWmsOutput, shakemapOutput].map(p => p.uid),
     wpsVersion: '1.0.0',
     wizardProperties: {
         shape: 'earthquake',

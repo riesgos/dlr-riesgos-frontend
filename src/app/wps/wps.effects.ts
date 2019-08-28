@@ -12,7 +12,7 @@ import { WorkflowControl } from './wps.workflowcontrol';
 import { QuakeLedger, inputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
 import { inputBoundingboxPeru, QuakeLedgerPeru } from '../configuration/peru/quakeledger';
-import { Shakyground, shakemapOutput } from '../configuration/chile/shakyground';
+import { Shakyground, shakemapWmsOutput, shakemapOutput } from '../configuration/chile/shakyground';
 import { TsService, epicenter, lat, lon, mag } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
@@ -168,7 +168,7 @@ export class WpsEffects {
                     assetcategory, losscategory, taxonomies, buildingAndDamageClasses,
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
-                    selectedEq, shakemapOutput,
+                    selectedEq, shakemapWmsOutput, shakemapOutput,
                     lat, lon, mag, epicenter
                 ];
                 break;
@@ -192,7 +192,7 @@ export class WpsEffects {
                 products = [
                     inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
-                    selectedEq, shakemapOutput,
+                    selectedEq, shakemapWmsOutput, shakemapOutput,
                     lat, lon, mag, epicenter
                 ];
                 break;

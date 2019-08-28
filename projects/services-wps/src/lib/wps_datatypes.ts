@@ -1,5 +1,6 @@
 export type WpsVerion = '1.0.0' | '2.0.0';
-export type WpsDataFormat = 'application/vnd.geo+json' | 'application/json' | 'application/WMS' | 'application/xml' | 'application/text';
+export type WpsDataFormat = 'application/vnd.geo+json' | 'application/json' | 'application/WMS' |
+                            'application/xml' | 'text/xml' | 'application/text';
 
 
 export type ProcessId = string;

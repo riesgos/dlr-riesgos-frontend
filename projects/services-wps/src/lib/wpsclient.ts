@@ -79,12 +79,12 @@ export class WpsClient {
     }
 
 
-    executeAsync(url: string, processId: string, inputs: WpsInput[], output: WpsOutputDescription,
+    executeAsync(url: string, processId: string, inputs: WpsInput[], outputs: WpsOutputDescription[],
                  pollingRate: number = 1000, tapFunction?: (response: any) => void): Observable<WpsResult[]> {
 
-        const executeRequest = this.execute(url, processId, inputs, output, true);
+        const executeRequest = this.execute(url, processId, inputs, outputs, true);
 
-        const cacheKey = this.cache.makeKey({url, id: processId, inputs, output});
+        const cacheKey = this.cache.makeKey({url, id: processId, inputs, outputs});
         if (this.caching)  {
             const cachedResponse = this.cache.get(cacheKey);
             if (cachedResponse) {
@@ -123,10 +123,10 @@ export class WpsClient {
     }
 
     execute(url: string, processId: string, inputs: WpsInput[],
-            outputDescription: WpsOutputDescription, async: boolean): Observable<WpsResult[]> {
+            outputDescriptions: WpsOutputDescription[], async: boolean): Observable<WpsResult[]> {
 
         const executeUrl = this.wpsmarshaller.executeUrl(url, processId);
-        const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescription, async);
+        const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescriptions, async);
         const xmlExecbody = this.xmlmarshaller.marshalString(execbody);
 
         const headers = new HttpHeaders({

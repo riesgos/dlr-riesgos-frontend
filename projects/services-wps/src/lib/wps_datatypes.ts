@@ -39,5 +39,5 @@ export interface WpsMarshaller {
     unmarshalCapabilities(capabilitiesJson: any): WpsCapability[];
     unmarshalExecuteResponse(responseJson: any): WpsResult[];
 
-    marshalExecBody(processId: string, inputs: WpsInput[], output: WpsOutputDescription, async: boolean): any;
+    marshalExecBody(processId: string, inputs: WpsInput[], outputs: WpsOutputDescription[], async: boolean): any;
 }

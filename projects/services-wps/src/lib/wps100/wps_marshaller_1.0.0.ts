@@ -1,5 +1,7 @@
 import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability } from '../wps_datatypes';
-import { WPSCapabilitiesType, IWpsExecuteProcessBody, Execute, DataInputsType, InputType, ResponseFormType, DataType, IWpsExecuteResponse, DocumentOutputDefinitionType, ResponseDocumentType } from './wps_1.0.0';
+import { WPSCapabilitiesType, IWpsExecuteProcessBody, Execute, DataInputsType,
+         InputType, ResponseFormType, DataType, IWpsExecuteResponse, DocumentOutputDefinitionType,
+         ResponseDocumentType } from './wps_1.0.0';
 
 
 
@@ -116,10 +118,10 @@ export class WpsMarshaller100 implements WpsMarshaller {
         throw new Error(`Not yet implemented: ${data}`);
     }
 
-    marshalExecBody(processId: string, inputs: WpsInput[], output: WpsOutputDescription, async: boolean): IWpsExecuteProcessBody {
+    marshalExecBody(processId: string, inputs: WpsInput[], outputs: WpsOutputDescription[], async: boolean): IWpsExecuteProcessBody {
 
         const wps1Inputs = this.marshalInputs(inputs);
-        const wps1ResponseForm = this.marshalResponseForm(output, async);
+        const wps1ResponseForm = this.marshalResponseForm(outputs, async);
 
         const bodyValue: Execute = {
             dataInputs: wps1Inputs,
@@ -145,30 +147,34 @@ export class WpsMarshaller100 implements WpsMarshaller {
     }
 
 
-    protected marshalResponseForm(output: WpsOutputDescription, async=false): ResponseFormType {
+    protected marshalResponseForm(outputs: WpsOutputDescription[], async = false): ResponseFormType {
 
-        let defType: DocumentOutputDefinitionType;
-        switch (output.type) {
-            case 'literal':
-                defType = {
-                    identifier: { value: output.id },
-                    asReference: output.reference,
-                    mimeType: output.format
-                };
-                break;
-            case 'complex':
-                defType = {
-                    identifier: { value: output.id },
-                    asReference: output.reference,
-                    mimeType: output.format
-                };
-                break;
-            default:
-                throw new Error(`This Wps-outputtype has not been implemented yet! ${output} `);
+        const outputDefinitions: DocumentOutputDefinitionType[] = [];
+        for (const output of outputs) {
+            let defType: DocumentOutputDefinitionType;
+            switch (output.type) {
+                case 'literal':
+                    defType = {
+                        identifier: { value: output.id },
+                        asReference: output.reference,
+                        mimeType: output.format
+                    };
+                    break;
+                case 'complex':
+                    defType = {
+                        identifier: { value: output.id },
+                        asReference: output.reference,
+                        mimeType: output.format
+                    };
+                    break;
+                default:
+                    throw new Error(`This Wps-outputtype has not been implemented yet! ${output} `);
+            }
+            outputDefinitions.push(defType);
         }
 
         const responseDocument: ResponseDocumentType = {
-            output: [defType],
+            output: outputDefinitions,
             status: async ? true : false,
             storeExecuteResponse: async ? true : false
         };
@@ -191,13 +197,13 @@ export class WpsMarshaller100 implements WpsMarshaller {
             }
 
             let data: DataType;
-            switch(inp.description.type) {
+            switch (inp.description.type) {
                 case 'literal':
                     data = {
                         literalData: { value: String(inp.value) }
                     };
                     break;
-                case 'bbox': 
+                case 'bbox':
                     data = {
                         boundingBoxData: {
                             lowerCorner: [inp.value[1], inp.value[0]],
@@ -217,13 +223,13 @@ export class WpsMarshaller100 implements WpsMarshaller {
 
             theInputs.push({
                 identifier: { value: inp.description.id },
-                title: { value: inp.description.id }, 
-                _abstract: { value: '' }, 
+                title: { value: inp.description.id },
+                _abstract: { value: '' },
                 // @ts-ignore
-                data: data, 
-            })
+                data: data,
+            });
         }
-        let inputs: DataInputsType = {
+        const inputs: DataInputsType = {
             input: theInputs
         };
         return inputs;

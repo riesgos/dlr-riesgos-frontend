@@ -30,7 +30,7 @@ export class ConfigurationWizardComponent implements OnInit {
         this.processes$ = this.store.pipe(
             select(getProcessStates),
             map(processes => {
-                return processes.filter(process => isWizardableProcess(process)) as WizardableProcess[]
+                return processes.filter(process => isWizardableProcess(process)) as WizardableProcess[];
             })
         );
 

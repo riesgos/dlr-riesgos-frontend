@@ -1,11 +1,9 @@
 import { WpsDataDescription, WpsVerion, ProductId, WpsData } from 'projects/services-wps/src/public-api';
-import { UserconfigurableWpsDataDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { UserconfigurableProductDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Observable } from 'rxjs';
 
 
-
-
-export type ProductDescription = WpsDataDescription | UserconfigurableWpsDataDescription;
+export type ProductDescription = object;
 
 export interface Product {
     readonly uid: string;
@@ -59,7 +57,7 @@ export interface Process {
     readonly id: ProcessId;
     readonly name: string;
     readonly requiredProducts: ProductId[];
-    readonly providedProduct: ProductId;
+    readonly providedProducts: ProductId[];
     readonly state: ProcessState;
 }
 

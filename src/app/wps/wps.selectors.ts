@@ -86,23 +86,3 @@ export const filterInputsForProcess = (process: Process, products: Product[]): P
     const filteredProducts = process.requiredProducts.map(pid => getProductById(pid, products));
     return filteredProducts;
 };
-
-
-export const convertProductsToWpsData = (inpts: Product[]): WpsData[] => {
-    const out: WpsData[] = inpts;
-    return out;
-};
-
-
-export const convertWpsDataToProd = (data: WpsData): Product => {
-    const uid = `${data.description.sourceProcessId}_${data.description.id}`;
-    return {
-        ...data,
-        uid
-    };
-};
-
-export const convertWpsDataToProds = (data: WpsData[]): Product[] => {
-    const out: Product[] = data.map(d => convertWpsDataToProd(d));
-    return out;
-};

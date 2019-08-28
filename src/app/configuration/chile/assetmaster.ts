@@ -2,14 +2,14 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { UserconfigurableWpsData, StringUconfWpsData,
-        StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { UserconfigurableProduct, StringUconfProduct,
+        StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 
-export const lonmin: StringUconfWpsData = {
+export const lonmin: StringUconfProduct & WpsData = {
+    uid: 'user_lonmin',
     description: {
         id: 'lonmin',
         sourceProcessId: 'user',
@@ -19,13 +19,14 @@ export const lonmin: StringUconfWpsData = {
             name: 'lonmin'
         },
         reference: false,
-        defaultValue: -71.8
+        defaultValue: '-71.8'
     },
     value: null
 };
 
 
-export const lonmax: UserconfigurableWpsData = {
+export const lonmax: StringUconfProduct & WpsData = {
+  uid: 'user_lonmax',
   description: {
       id: 'lonmax',
       sourceProcessId: 'user',
@@ -35,13 +36,14 @@ export const lonmax: UserconfigurableWpsData = {
           name: 'lonmax'
       },
       reference: false,
-      defaultValue: -71.4
+      defaultValue: '-71.4'
   },
   value: null
 };
 
 
-export const latmin: StringUconfWpsData = {
+export const latmin: StringUconfProduct & WpsData = {
+  uid: 'user_latmin',
   description: {
       id: 'latmin',
       sourceProcessId: 'user',
@@ -51,14 +53,15 @@ export const latmin: StringUconfWpsData = {
           name: 'latmin'
       },
       reference: false,
-      defaultValue: -33.2
+      defaultValue: '-33.2'
   },
   value: null
 };
 
 
-export const latmax: StringUconfWpsData = {
-description: {
+export const latmax: StringUconfProduct & WpsData = {
+  uid: 'user_latmax',
+  description: {
     id: 'latmax',
     sourceProcessId: 'user',
     type: 'literal',
@@ -67,13 +70,14 @@ description: {
         name: 'latmax'
     },
     reference: false,
-    defaultValue: -33.0
+    defaultValue: '-33.0'
 },
 value: null
 };
 
 
-export const schema: StringSelectUconfWpsData = {
+export const schema: StringSelectUconfProduct & WpsData = {
+  uid: 'user_schema',
   description: {
     id: 'schema',
     sourceProcessId: 'user',
@@ -91,7 +95,8 @@ export const schema: StringSelectUconfWpsData = {
 
 
 
-export const assettype: StringSelectUconfWpsData = {
+export const assettype: StringSelectUconfProduct & WpsData = {
+  uid: 'user_assettype',
   description: {
     id: 'assettype',
     sourceProcessId: 'user',
@@ -108,7 +113,8 @@ export const assettype: StringSelectUconfWpsData = {
 };
 
 
-export const querymode: StringSelectUconfWpsData = {
+export const querymode: StringSelectUconfProduct & WpsData = {
+  uid: 'user_querymode',
   description: {
     id: 'querymode',
     sourceProcessId: 'user',
@@ -125,7 +131,8 @@ export const querymode: StringSelectUconfWpsData = {
 };
 
 
-export const selectedRowsXml: VectorLayerData = {
+export const selectedRowsXml: VectorLayerData & WpsData = {
+  uid: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess_selecteRowsXml',
   description: {
     id: 'selectedRowsXml',
     sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
@@ -163,8 +170,8 @@ export const ExposureModel: WizardableProcess & WpsProcess = {
     wpsVersion: '1.0.0',
     name: 'EQ Exposure Model',
     description: '',
-    requiredProducts: convertWpsDataToProds([lonmin, lonmax, latmin, latmax, querymode, schema, assettype]).map(p => p.uid),
-    providedProduct: convertWpsDataToProd(selectedRowsXml).uid,
+    requiredProducts: [lonmin, lonmax, latmin, latmax, querymode, schema, assettype].map(p => p.uid),
+    providedProducts: [selectedRowsXml.uid],
     wizardProperties: {
         shape: 'earthquake',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',

@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { BboxUconfWD, BboxUconfWpsData } from '../userconfigurable_wpsdata';
+import { BboxUconfPD, BboxUconfProduct } from '../userconfigurable_wpsdata';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { debounceTime } from 'rxjs/operators';
-import { convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 
 @Component({
     selector: 'ukis-form-bbox-field',
@@ -14,7 +13,7 @@ import { convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 })
 export class FormBboxFieldComponent implements OnInit {
 
-    @Input() parameter: BboxUconfWpsData;
+    @Input() parameter: BboxUconfProduct;
     public formControl: FormControl;
     public disabled = false;
 
@@ -32,7 +31,9 @@ export class FormBboxFieldComponent implements OnInit {
                     newVal = newVal.split(',').map(v => parseFloat(v));
                 }
                 this.store.dispatch(new InteractionCompleted(
-                    {product: convertWpsDataToProd({description: this.parameter.description, value: newVal})}
+                    {product: {...this.parameter,
+                        value: newVal
+                    }}
                 ));
             }
         });
@@ -42,10 +43,10 @@ export class FormBboxFieldComponent implements OnInit {
     onClick(event) {
         this.store.dispatch(new InteractionStarted({
             mode: 'bbox',
-            product: convertWpsDataToProd({
-                description: this.parameter.description,
+            product: {
+                ...this.parameter,
                 value: this.formControl.value
-            })
+            }
         }));
     }
 

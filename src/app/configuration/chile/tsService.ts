@@ -1,14 +1,12 @@
-import { Process, ProcessState, WpsProcess, ProcessStateTypes,
-        ProcessStateUnavailable, WatchingProcess, Product } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, WatchingProcess, Product } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { UserconfigurableWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 import { selectedEq } from './eqselection';
 
 
 
-export const lat: WpsData = {
+export const lat: WpsData & Product = {
+    uid: 'auto_lat',
     description: {
         id: 'lat',
         sourceProcessId: 'auto',
@@ -18,7 +16,8 @@ export const lat: WpsData = {
     value: null
 };
 
-export const lon: WpsData = {
+export const lon: WpsData & Product = {
+    uid: 'auto_lon',
     description: {
         id: 'lon',
         sourceProcessId: 'auto',
@@ -28,7 +27,8 @@ export const lon: WpsData = {
     value: null
 };
 
-export const mag: WpsData = {
+export const mag: WpsData & Product = {
+    uid: 'auto_mag',
     description: {
         id: 'mag',
         sourceProcessId: 'auto',
@@ -39,7 +39,8 @@ export const mag: WpsData = {
 };
 
 
-export const epicenter: WpsData = {
+export const epicenter: WpsData & Product = {
+    uid: 'get_scenario_epiCenter',
     description: {
         id: 'epiCenter',
         sourceProcessId: 'get_scenario',
@@ -58,8 +59,8 @@ export const TsService: WizardableProcess & WpsProcess & WatchingProcess = {
     url: 'http://tsunami-wps.awi.de/wps',
     name: 'Earthquake/tsunami interaction',
     description: 'Relates a tsunami to a given earthquake',
-    requiredProducts: convertWpsDataToProds([selectedEq, lat, lon, mag]).map(p => p.uid),
-    providedProduct: convertWpsDataToProd(epicenter).uid,
+    requiredProducts: [selectedEq, lat, lon, mag].map(p => p.uid),
+    providedProducts: [epicenter.uid],
     wpsVersion: '1.0.0',
     wizardProperties: {
         shape: 'tsunami',
@@ -69,7 +70,7 @@ export const TsService: WizardableProcess & WpsProcess & WatchingProcess = {
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         let outprods: Product[] = [];
         if (newProduct.uid === 'EqSelection_quakeMLFile') {
-            const newProds = convertWpsDataToProds([{
+            const newProds = [{
                 ... lon,
                 value: newProduct.value[0].features[0].geometry.coordinates[0]
             }, {
@@ -78,7 +79,7 @@ export const TsService: WizardableProcess & WpsProcess & WatchingProcess = {
             }, {
                 ...mag,
                 value: newProduct.value[0].features[0].properties['magnitude.mag.value']
-            }]);
+            }];
             outprods = outprods.concat(newProds);
         }
         return outprods;

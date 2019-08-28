@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { UserconfigurableWpsDataDescription, UserconfigurableWpsData } from '../userconfigurable_wpsdata';
+import { UserconfigurableProductDescription, UserconfigurableProduct } from '../userconfigurable_wpsdata';
 
 @Component({
   selector: 'ukis-form',
@@ -10,7 +10,7 @@ import { UserconfigurableWpsDataDescription, UserconfigurableWpsData } from '../
 export class FormComponent implements OnInit {
 
 
-  @Input() parameters: UserconfigurableWpsData[];
+  @Input() parameters: UserconfigurableProduct[];
   @Input() disabled: boolean = false;
 
   constructor() { }

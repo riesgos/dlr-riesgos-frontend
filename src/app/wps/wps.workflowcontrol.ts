@@ -2,14 +2,11 @@ import { Process, Product, ProcessId, ProcessState, isWatchingProcess, isWpsProc
     ProcessStateRunning, ProcessStateCompleted, ProcessStateError, ProcessStateTypes,
     ProcessStateUnavailable, ProcessStateAvailable, isCustomProcess, CustomProcess } from './wps.datatypes';
 import { Graph, alg } from 'graphlib';
-import { ProductId, WpsData } from 'projects/services-wps/src/lib/wps_datatypes';
+import { ProductId, WpsData, WpsDataDescription } from 'projects/services-wps/src/lib/wps_datatypes';
 import { HttpClient } from '@angular/common/http';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { isUserconfigurableWpsDataDescription, isUserconfigurableWpsData } from '../components/config_wizard/userconfigurable_wpsdata';
 import { WpsClient } from 'projects/services-wps/src/public-api';
-import { doesNotThrow } from 'assert';
-import { convertWpsDataToProd, convertWpsDataToProds } from './wps.selectors';
 
 
 export class WorkflowControl {
@@ -30,8 +27,9 @@ export class WorkflowControl {
             for (const inProdId of process.requiredProducts) {
                 this.graph.setEdge(inProdId, process.id);
             }
-            const outProdId = process.providedProduct;
-            this.graph.setEdge(process.id, outProdId);
+            for (const outProdId of process.providedProducts) {
+                this.graph.setEdge(process.id, outProdId);
+            }
         }
 
         if (!alg.isAcyclic(this.graph)) {
@@ -67,15 +65,14 @@ export class WorkflowControl {
         const inputs = this.getProcessInputs(id);
 
         return process.execute(inputs).pipe(
-            tap((output: WpsData[]) => {
-                const products = convertWpsDataToProds(output);
-                for (const product of products) {
+            tap((outputs: Product[]) => {
+                for (const product of outputs) {
                     this.provideProduct(product.uid, product.value);
                 }
                 this.setProcessState(process.id, new ProcessStateCompleted());
             }),
 
-            map((output: WpsData[]) => {
+            map((outputs: Product[]) => {
                 return true;
             }),
 
@@ -91,12 +88,13 @@ export class WorkflowControl {
     private executeWps(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
 
         let process = this.getWpsProcess(id);
-        const inputs = this.getProcessInputs(id);
-        const outputDescription = this.getProduct(process.providedProduct).description;
+        const inputs = this.getProcessInputs(id) as WpsData[];
+        const outputProducts = this.getProducts(process.providedProducts) as (Product & WpsData)[];
+        const outputDescriptions = outputProducts.map(p => p.description) as WpsDataDescription[];
 
         process = this.setProcessState(process.id, new ProcessStateRunning()) as WpsProcess;
         let requestCounter = 0;
-        return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescription, 1000,
+        return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescriptions, 1000,
 
             (response: any) => {
                 if (doWhileRequesting) {
@@ -107,19 +105,23 @@ export class WorkflowControl {
 
         ).pipe(
 
-            map((output: WpsData[]) => {
+            map((outputs: WpsData[]) => {
                 // Ugly little hack: if outputDescription contained any information that has been lost in translation
                 // through marshalling and unmarshalling, we add it here back in.
-                for (const key in outputDescription) {
-                    if (!output[0].description.hasOwnProperty(key)) {
-                        output[0].description[key] = outputDescription[key];
+                for (let i = 0; i < outputs.length; i++) {
+                    const outputDescription = outputDescriptions[i];
+                    const output = outputs[i];
+                    for (const key in outputDescription) {
+                        if (!output.description.hasOwnProperty(key)) {
+                            output.description[key] = outputDescription[key];
+                        }
                     }
                 }
-                return output;
+                return outputs;
             }),
 
-            tap((output: WpsData[]) => {
-                const products = convertWpsDataToProds(output);
+            tap((outputs: WpsData[]) => {
+                const products = this.assignWpsDataToProducts(outputs, outputProducts);
                 for (const product of products) {
                     this.provideProduct(product.uid, product.value);
                 }
@@ -140,13 +142,21 @@ export class WorkflowControl {
     }
 
 
-    getProcesses(): Process[] {
-        return this.processes;
+    getProcesses(ids?: ProcessId[]): Process[] {
+        if (!ids) {
+            return this.processes;
+        } else {
+            return this.processes.filter(p => ids.includes(p.id));
+        }
     }
 
 
-    getProducts(): Product[] {
-        return this.products;
+    getProducts(ids?: ProductId[]): Product[] {
+        if (!ids) {
+            return this.products;
+        } else {
+            return this.products.filter(p => ids.includes(p.uid));
+        }
     }
 
     getGraph(): Graph {
@@ -343,8 +353,9 @@ export class WorkflowControl {
         }
 
         // is the output there? -> complete
-        const output = this.getProduct(process.providedProduct);
-        if (output.value) {
+        const outputs = this.getProducts(process.providedProducts);
+        const unfinishedOutputs = outputs.filter(prd => prd.value === null);
+        if (unfinishedOutputs.length === 0) {
             return new ProcessStateCompleted();
         }
 
@@ -375,10 +386,12 @@ export class WorkflowControl {
 
         const requiredProducts: string[] = [];
         for (const process of processes) {
-            for (const product of process.requiredProducts) {
-                requiredProducts.push(product);
+            for (const productId of process.requiredProducts) {
+                requiredProducts.push(productId);
             }
-            requiredProducts.push(process.providedProduct);
+            for (const productId of process.providedProducts) {
+                requiredProducts.push(productId);
+            }
         }
 
         for (const reqiredProd of requiredProducts) {
@@ -415,5 +428,30 @@ export class WorkflowControl {
         }
 
         return duplicates;
+    }
+
+    private assignWpsDataToProducts(wpsData: WpsData[], initialProds: (Product & WpsData)[]): Product[] {
+        const out: Product[] = [];
+
+        for (const prod of initialProds) {
+            const equivalentWpsData = wpsData.find(data => {
+                return (
+                    data.description.id === prod.description.id &&
+                    data.description.format === prod.description.format &&
+                    data.description.reference === prod.description.reference && 
+                    data.description.type === prod.description.type
+                );
+            });
+
+            if (equivalentWpsData) {
+                out.push({
+                    ...equivalentWpsData,
+                    uid: prod.uid
+                });
+            }
+
+        }
+
+        return out;
     }
 }

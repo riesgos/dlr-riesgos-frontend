@@ -1,12 +1,12 @@
-import { WpsProcess, ProcessStateUnavailable } from '../../wps/wps.datatypes';
-import { UserconfigurableWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
+import { StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { Style, Fill, Stroke, Circle, Text } from 'ol/style';
-import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
+import { WpsData } from 'projects/services-wps/src/public-api';
 
 
-export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
+export const inputBoundingbox: BboxUconfProduct & BboxLayerData & WpsData = {
+    uid: 'user_input-boundingbox',
     description: {
         id: 'input-boundingbox',
         sourceProcessId: 'user',
@@ -23,7 +23,8 @@ export const inputBoundingbox: UserconfigurableWpsData & BboxLayerData = {
     value: null
 };
 
-export const mmin: UserconfigurableWpsData = {
+export const mmin: StringUconfProduct & WpsData = {
+    uid: 'user_mmin',
     description: {
         id: 'mmin',
         sourceProcessId: 'user',
@@ -40,7 +41,8 @@ export const mmin: UserconfigurableWpsData = {
 };
 
 
-export const mmax: UserconfigurableWpsData = {
+export const mmax: StringUconfProduct & WpsData = {
+    uid: 'user_mmax',
     description: {
         id: 'mmax',
         sourceProcessId: 'user',
@@ -57,7 +59,8 @@ export const mmax: UserconfigurableWpsData = {
 };
 
 
-export const zmin: UserconfigurableWpsData = {
+export const zmin: StringUconfProduct & WpsData = {
+    uid: 'user_zmin',
     description: {
         id: 'zmin',
         sourceProcessId: 'user',
@@ -73,7 +76,8 @@ export const zmin: UserconfigurableWpsData = {
     value: null
 };
 
-export const zmax: UserconfigurableWpsData = {
+export const zmax: StringUconfProduct & WpsData = {
+    uid: 'user_zmax',
     description: {
         id: 'zmax',
         sourceProcessId: 'user',
@@ -90,7 +94,8 @@ export const zmax: UserconfigurableWpsData = {
 };
 
 
-export const p: UserconfigurableWpsData = {
+export const p: StringUconfProduct & WpsData = {
+    uid: 'user_p',
     description: {
         id: 'p',
         sourceProcessId: 'user',
@@ -107,7 +112,8 @@ export const p: UserconfigurableWpsData = {
 };
 
 
-export const etype: StringSelectUconfWpsData = {
+export const etype: StringSelectUconfProduct & WpsData = {
+    uid: 'user_etype',
     description: {
         id: 'etype',
         sourceProcessId: 'user',
@@ -126,7 +132,8 @@ export const etype: StringSelectUconfWpsData = {
     value: null
 };
 
-export const tlon: UserconfigurableWpsData = {
+export const tlon: StringUconfProduct & WpsData = {
+    uid: 'user_tlon',
     description: {
         id: 'tlon',
         sourceProcessId: 'user',
@@ -143,7 +150,8 @@ export const tlon: UserconfigurableWpsData = {
 };
 
 
-export const tlat: UserconfigurableWpsData = {
+export const tlat: StringUconfProduct & WpsData = {
+    uid: 'user_tlat',
     description: {
         id: 'tlat',
         sourceProcessId: 'user',
@@ -161,7 +169,8 @@ export const tlat: UserconfigurableWpsData = {
 
 
 
-export const selectedEqs: VectorLayerData = {
+export const selectedEqs: VectorLayerData & WpsData = {
+    uid: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess_selectedRows',
     description: {
         id: 'selectedRows',
         sourceProcessId: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
@@ -201,8 +210,8 @@ export const QuakeLedger: WizardableProcess & WpsProcess = {
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     name: 'Earthquake Catalogue',
     description: 'Catalogue of historical earthquakes.',
-    requiredProducts: convertWpsDataToProds([inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat]).map(prd => prd.uid),
-    providedProduct: convertWpsDataToProd(selectedEqs).uid,
+    requiredProducts: [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid),
+    providedProducts: [selectedEqs.uid],
     wpsVersion: '1.0.0',
 
     wizardProperties: {

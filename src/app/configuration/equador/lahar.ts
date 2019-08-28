@@ -1,11 +1,12 @@
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsProcess, ProcessStateAvailable, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { FeatureSelectUconfWD, FeatureSelectUconfWpsData, StringSelectUconfWpsData } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
+import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { WpsData } from 'projects/services-wps/src/public-api';
 
 
-export const direction: StringSelectUconfWpsData = {
+export const direction: StringSelectUconfProduct & WpsData = {
+    uid: 'user_direction',
     description: {
         id: 'direction',
         sourceProcessId: 'user',
@@ -19,9 +20,10 @@ export const direction: StringSelectUconfWpsData = {
         }
     },
     value: null
-}
+};
 
-export const intensity: StringSelectUconfWpsData = {
+export const intensity: StringSelectUconfProduct & WpsData = {
+    uid: 'user_intensity',
     description: {
         id: 'intensity',
         sourceProcessId: 'user',
@@ -37,7 +39,8 @@ export const intensity: StringSelectUconfWpsData = {
     value: null
 };
 
-export const parameter: StringSelectUconfWpsData = {
+export const parameter: StringSelectUconfProduct & WpsData = {
+    uid: 'user_parameter',
     description: {
         id: 'parameter',
         sourceProcessId: 'user',
@@ -49,12 +52,13 @@ export const parameter: StringSelectUconfWpsData = {
             fieldtype: 'stringselect',
             name: 'parameter',
         }
-    }, 
+    },
     value: null
 };
 
 
-export const laharWms: WmsLayerData = {
+export const laharWms: WmsLayerData & WpsData = {
+    uid: 'gs:LaharModel_result',
     description: {
         id: 'result',
         sourceProcessId: 'gs:LaharModel',
@@ -73,8 +77,8 @@ export const LaharWps: WizardableProcess & WpsProcess = {
     url: 'http://91.250.85.221/geoserver/riesgos/wps',
     name: 'Lahar',
     description: 'Simulates the path a lahar would take',
-    requiredProducts: convertWpsDataToProds([direction, intensity, parameter]).map(p => p.uid),
-    providedProduct: convertWpsDataToProd(laharWms).uid,
+    requiredProducts: [direction, intensity, parameter].map(p => p.uid),
+    providedProducts: [laharWms.uid],
     state: new ProcessStateUnavailable(),
     wpsVersion: '1.0.0',
     wizardProperties: {
@@ -82,4 +86,4 @@ export const LaharWps: WizardableProcess & WpsProcess = {
         providerUrl: 'https://www.eomap.com/',
         shape: 'avalance'
     }
-}
+};

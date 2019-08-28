@@ -1,9 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import {  StringSelectUconfWpsData } from '../userconfigurable_wpsdata';
+import {  StringSelectUconfProduct } from '../userconfigurable_wpsdata';
 import { ProductsProvided } from 'src/app/wps/wps.actions';
-import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 
 @Component({
     selector: 'ukis-form-stringselect-field',
@@ -12,7 +11,7 @@ import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 })
 export class FormStringselectFieldComponent implements OnInit {
 
-    @Input() parameter: StringSelectUconfWpsData;
+    @Input() parameter: StringSelectUconfProduct;
     public options: string[];
     public activeSelection: string;
 
@@ -28,10 +27,10 @@ export class FormStringselectFieldComponent implements OnInit {
     onChange(newValString) {
         this.activeSelection = newValString;
         this.store.dispatch(new ProductsProvided({
-            products: convertWpsDataToProds([{
+            products: [{
                 ...this.parameter,
                 value: newValString
-            }])
+            }]
         }));
     }
 }

@@ -48,7 +48,7 @@ export function toGraphviz(wfc: WorkflowControl): string {
         lines.push('    "' + process.id + '" ['+ attrs.join(',') + '];');
     }
     for (let product of wfc.getProducts()) {
-        lines.push('    "' + product.uid + '" [label="' +product.description.id + '", shape=oval];');
+        lines.push('    "' + product.uid + '" [label="' +product.description['id'] + '", shape=oval];');
         
     }
 

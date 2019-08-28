@@ -1,76 +1,80 @@
-import { WpsDataDescription, WpsData } from 'projects/services-wps/src/public-api';
 import { FeatureCollection } from '@turf/helpers';
+import { Product, ProductDescription } from 'src/app/wps/wps.datatypes';
 
 
 
 
-export interface StringUconfWD extends WpsDataDescription {
+export interface StringUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'string'
     };
+    defaultValue: string;
 }
 
-export interface StringSelectUconfWD extends WpsDataDescription {
+export interface StringSelectUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'stringselect',
     };
     options: string[];
+    defaultValue: string;
 }
 
-export interface BboxUconfWD extends WpsDataDescription {
+export interface BboxUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'bbox'
     };
+    defaultValue: any;
 }
 
-export interface FeatureSelectUconfWD extends WpsDataDescription {
+export interface FeatureSelectUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'select',
     };
     options: {[key: string]: any};
+    defaultValue: [FeatureCollection];
 }
 
-export type UserconfigurableWpsDataDescription = StringUconfWD | StringSelectUconfWD | BboxUconfWD | FeatureSelectUconfWD;
+export type UserconfigurableProductDescription = StringUconfPD | StringSelectUconfPD | BboxUconfPD | FeatureSelectUconfPD;
 
 
 
-export interface StringUconfWpsData extends WpsData {
-    description: StringUconfWD;
+export interface StringUconfProduct extends Product {
+    description: StringUconfPD;
     value: string;
 }
 
-export interface StringSelectUconfWpsData extends WpsData {
-    description: StringSelectUconfWD;
+export interface StringSelectUconfProduct extends Product {
+    description: StringSelectUconfPD;
     value: string;
 }
 
-export interface BboxUconfWpsData extends WpsData {
-    description: BboxUconfWD;
+export interface BboxUconfProduct extends Product {
+    description: BboxUconfPD;
 }
 
-export interface FeatureSelectUconfWpsData extends WpsData {
-    description: FeatureSelectUconfWD;
+export interface FeatureSelectUconfProduct extends Product {
+    description: FeatureSelectUconfPD;
     value: [FeatureCollection];
 }
 
 
 
-export type UserconfigurableWpsData = StringUconfWpsData | StringSelectUconfWpsData | BboxUconfWpsData | FeatureSelectUconfWpsData;
+export type UserconfigurableProduct = StringUconfProduct | StringSelectUconfProduct | BboxUconfProduct | FeatureSelectUconfProduct;
 
 
-export const isStringSelectableParameter = (obj: WpsData): obj is StringSelectUconfWpsData => {
+export const isStringSelectableProduct = (obj: Product): obj is StringSelectUconfProduct => {
     return obj.description.hasOwnProperty('options');
 }
 
 
-export const isUserconfigurableWpsDataDescription = (obj: WpsDataDescription): obj is UserconfigurableWpsDataDescription => {
+export const isUserconfigurableProductDescription = (obj: ProductDescription): obj is UserconfigurableProductDescription => {
     return obj.hasOwnProperty('wizardProperties');
 };
 
-export const isUserconfigurableWpsData = (obj: WpsData): obj is UserconfigurableWpsData => {
-    return isUserconfigurableWpsDataDescription(obj.description);
+export const isUserconfigurableProduct = (obj: Product): obj is UserconfigurableProduct => {
+    return isUserconfigurableProductDescription(obj.description);
 };

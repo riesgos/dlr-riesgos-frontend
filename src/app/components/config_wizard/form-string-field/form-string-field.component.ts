@@ -1,12 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, debounceTime } from 'rxjs/operators';
-import { StringUconfWD, StringUconfWpsData } from '../userconfigurable_wpsdata';
+import { StringUconfProduct } from '../userconfigurable_wpsdata';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided } from 'src/app/wps/wps.actions';
-import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 
 @Component({
   selector: 'ukis-form-string-field',
@@ -16,11 +13,11 @@ import { convertWpsDataToProds } from 'src/app/wps/wps.selectors';
 export class FormStringFieldComponent implements OnInit {
 
 
-  @Input() parameter: StringUconfWpsData;
+  @Input() parameter: StringUconfProduct;
   formControl: FormControl;
 
   constructor(private store: Store<State>) {}
-  
+
   ngOnInit() {
     this.formControl = new FormControl(this.parameter.value || this.parameter.description.defaultValue, [Validators.required]);
     // this.formControl.valueChanges.pipe(
@@ -29,7 +26,7 @@ export class FormStringFieldComponent implements OnInit {
     //   if(this.formControl.valid) {
     //     this.store.dispatch(new ProductsProvided({
     //       products: [{
-    //         ...this.parameter, 
+    //         ...this.parameter,
     //         value: val
     //       }]
     //     }))
@@ -40,10 +37,10 @@ export class FormStringFieldComponent implements OnInit {
   onFocussed(focussed: boolean): void {
     if (!focussed) {
       this.store.dispatch(new ProductsProvided({
-        products: convertWpsDataToProds([{
+        products: [{
           ...this.parameter,
           value: this.formControl.value
-        }])
+        }]
       }));
     }
   }

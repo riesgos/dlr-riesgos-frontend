@@ -1,25 +1,14 @@
-shakyground: 
-    needs a style-selection-parameter, otherwise returns black map
+can we now forget the property 'sourceProcessId'?
 
-experiment with data per reference. 
-    Can you give a productA from process1 to process2 per reference,
-    when you have obtained productA from process1 under a different mime-type than what you present to process2?
-        Do that with shakyground and deus
+search for any remaining instances of ' as '
+
+have shakyground return both a wms and a refernce to the shakefile.
+
+allow mulitple styles for wms layers
 
 inputs to processes need to be listed in process-wizard
 
-clean up typesystem
-    products and processes are general concepts. 
-    wps-products and wps-processes are special cases. 
-        wps-product-ids and wps-process-ids should have nothing in common with product-ids and process-ids. 
-        make sure that, in absence of other information, we assume products, not wps-products. 
-            in particular: in wps-effects: should we not just import products, instead of wps-products and then converting them?
-
-from process get both wms- and shakemap-output
-    Usually, we want a wms-output for the frontend
-    and a shakemap-output (or similar) for the next downstream-process.
-        For shakyground, we need to pipe the shakemap-output into a translation-service to obtain wms-data
-        For TS-service, we need to start ts-wms-service to get wms-output; and start ts-shkmp-service to get shakemap data
+For TS-service, we need to start ts-wms-service to get wms-output; and start ts-shkmp-service to get shakemap data
 
 geomer einbinden: 
     muss local von https aus aufrufen. 

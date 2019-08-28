@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ProductsProvided, ClickRunProcess, RestartingFromProcess } from 'src/app/wps/wps.actions';
-import { UserconfigurableWpsDataDescription, isUserconfigurableWpsDataDescription, UserconfigurableWpsData, isUserconfigurableWpsData, FeatureSelectUconfWD, isStringSelectableParameter } from '../userconfigurable_wpsdata';
-import { Process, Product, ProductDescription, ProcessId, WpsProcess } from 'src/app/wps/wps.datatypes';
-import { ProductId } from 'projects/services-wps/src/public-api';
-import { getInputsForProcess, convertWpsDataToProds } from 'src/app/wps/wps.selectors';
+import { ClickRunProcess, RestartingFromProcess } from 'src/app/wps/wps.actions';
+import { UserconfigurableProduct, isUserconfigurableProduct, isStringSelectableProduct } from '../userconfigurable_wpsdata';
+import { Product, WpsProcess } from 'src/app/wps/wps.datatypes';
+import { getInputsForProcess } from 'src/app/wps/wps.selectors';
 import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { WizardableProcess } from '../wizardable_processes';
@@ -21,8 +20,8 @@ import { WizardableProcess } from '../wizardable_processes';
 export class WizardPageComponent implements OnInit {
 
   @Input() process: WpsProcess & WizardableProcess;
-  parameters$: Observable<UserconfigurableWpsData[]>;
-  private _parameters: UserconfigurableWpsData[];
+  parameters$: Observable<UserconfigurableProduct[]>;
+  private _parameters: UserconfigurableProduct[];
 
 
   constructor(
@@ -32,22 +31,23 @@ export class WizardPageComponent implements OnInit {
   ngOnInit() {
     this.parameters$ = this.store.pipe(
       select(getInputsForProcess, {processId: this.process.id}),
-      map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableWpsData(i)) as UserconfigurableWpsData[] ),
-      tap((parameters: UserconfigurableWpsData[]) => this._parameters = parameters)
+      map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableProduct(i)) as UserconfigurableProduct[] ),
+      tap((parameters: UserconfigurableProduct[]) => this._parameters = parameters)
     );
   }
 
   onSubmitClicked() {
-    for (const parameter of this._parameters) {
-      if (parameter.value == null) {
-        if (parameter.description.defaultValue) {
-          parameter.value = parameter.description.defaultValue;
-        } else if (isStringSelectableParameter(parameter)) {
-          parameter.value = parameter.description.options[0];
+    for (let i = 0; i < this._parameters.length; i++) {
+      if (this._parameters[i].value === null) {
+        if (this._parameters[i].description.defaultValue) {
+          this._parameters[i] = {
+            ...this._parameters[i],
+            value: this._parameters[i].description.defaultValue
+          };
         }
       }
     }
-    this.store.dispatch(new ClickRunProcess({productsProvided: convertWpsDataToProds(this._parameters), process: this.process }));
+    this.store.dispatch(new ClickRunProcess({productsProvided: this._parameters, process: this.process }));
   }
 
   onReconfigureClicked() {

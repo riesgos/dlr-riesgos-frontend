@@ -3,12 +3,12 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Observable, of } from 'rxjs';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import { convertWpsDataToProds, convertWpsDataToProd } from 'src/app/wps/wps.selectors';
 import { laharWms } from './lahar';
 
 
 
-export const hydrologicalSimulation: WmsLayerData = {
+export const hydrologicalSimulation: WmsLayerData & WpsData = {
+    uid: 'geomerHydrological_hydrologicalSimulation',
     description: {
         id: 'hydrologicalSimulation',
         sourceProcessId: 'geomerHydrological',
@@ -24,8 +24,8 @@ export const hydrologicalSimulation: WmsLayerData = {
 export const geomerHydrological: WizardableProcess & CustomProcess = {
     id: 'geomerHydrological',
     name: 'Flood',
-    requiredProducts: convertWpsDataToProds([laharWms]).map(p => p.uid),
-    providedProduct: convertWpsDataToProd(hydrologicalSimulation).uid,
+    requiredProducts: [laharWms].map(p => p.uid),
+    providedProducts: [hydrologicalSimulation.uid],
     state: new ProcessStateUnavailable(),
     wizardProperties: {
         providerName: 'geomer',
@@ -33,9 +33,9 @@ export const geomerHydrological: WizardableProcess & CustomProcess = {
         shape: 'tsunami'
     },
     execute: (inputs: Product[]): Observable<Product[]> => {
-        return of([convertWpsDataToProd({
+        return of([{
             ...hydrologicalSimulation,
             value: ['https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?version=1.3.0&service=wms&request=GetCapabilities']
-        })]);
+        }]);
     }
 };

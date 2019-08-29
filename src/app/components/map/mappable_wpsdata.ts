@@ -54,7 +54,7 @@ export interface WmsLayerDescription extends ProductDescription {
     format: 'application/WMS';
     name: string;
     type: 'complex' | 'literal';
-    styles?: string;
+    styles?: string[];
     id: string;
 }
 

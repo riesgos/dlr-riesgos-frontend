@@ -1,6 +1,8 @@
 allow mulitple styles for wms layers
     teste ob das mit den buttons vom layerswitcher geht 
-    falls nicht, dann als dropdown in selben feld wie transparency
+        geht nicht, darum als dropdown in selben feld wie transparency
+            user must be able to specify a component, with arguments, to be rendered in dropdown. 
+                this seems to be a case of a dynamic compoent... https://angular.io/guide/dynamic-component-loader
 
 geomer einbinden: 
     muss local von https aus aufrufen. 

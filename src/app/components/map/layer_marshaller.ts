@@ -192,7 +192,7 @@ export class LayerMarshaller  {
                             BBOX: paras.bbox,
                             SRS: paras.srs,
                             TRANSPARENT: 'TRUE',
-                            STYLES: product.description.styles || '',
+                            STYLES: product.description.styles ? product.description.styles[0] : '',
                         },
                         legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
                             `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
@@ -204,6 +204,13 @@ export class LayerMarshaller  {
                         }
                     });
                     // layer.crossOrigin = 'anonymous';
+                    if (product.description.styles) {
+                        layer.actions = [
+                            {title: 'switch style', icon: 'switch', action: (layer) => {
+                                console.log('switching style for layer', layer);
+                            }}
+                        ];
+                    }
                     layer.productId = product.description.id;
                     layers.push(layer);
                 }

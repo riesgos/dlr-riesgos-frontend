@@ -13,7 +13,7 @@ export const shakemapWmsOutput: WpsData & WmsLayerData = {
         type: 'complex',
         reference: false,
         format: 'application/WMS',
-        styles: 'shakemap-pga'
+        styles: ['shakemap-pga', 'another style']
     },
     value: null
 };

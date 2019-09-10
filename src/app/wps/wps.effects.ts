@@ -22,6 +22,7 @@ import { VulnerabilityModel, assetcategory, losscategory, taxonomies, buildingAn
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
 import { Deus, fragility, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
+import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 
 
 
@@ -163,7 +164,8 @@ export class WpsEffects {
                     EqSelection,
                     Shakyground,
                     Deus,
-                    TsService
+                    TsService,
+                    PhysicalImpactAssessment
                 ];
                 products = [
                     lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
@@ -172,7 +174,8 @@ export class WpsEffects {
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapOutput,
                     fragility, loss, damage, transition, updated_exposure,
-                    lat, lon, mag, epicenter
+                    lat, lon, mag, epicenter,
+                    physicalImpact
                 ];
                 break;
             case 'e1':

@@ -101,7 +101,7 @@ export class LayerMarshaller  {
                 }
             }
         });
-        layer.productId = product.description.id;
+        layer.productId = product.uid;
         return of(layer);
     }
 
@@ -131,7 +131,7 @@ export class LayerMarshaller  {
                         }
                     }
                 });
-                layer.productId = product.description.id;
+                layer.productId = product.uid;
                 return layer;
             })
         );
@@ -211,7 +211,7 @@ export class LayerMarshaller  {
                             }}
                         ];
                     }
-                    layer.productId = product.description.id;
+                    layer.productId = product.uid;
                     layers.push(layer);
                 }
             }

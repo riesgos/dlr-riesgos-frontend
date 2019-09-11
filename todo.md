@@ -1,8 +1,8 @@
-allow mulitple styles for wms layers
-    teste ob das mit den buttons vom layerswitcher geht 
-        geht nicht, darum als dropdown in selben feld wie transparency
-            user must be able to specify a component, with arguments, to be rendered in dropdown. 
-                this seems to be a case of a dynamic compoent... https://angular.io/guide/dynamic-component-loader
+when moving back, older layers are not displayed with full opacity again
+
+when going to scenarios and back, products are no longer displayed under 'resultados'
+
+different way to display vulnerability
 
 geomer einbinden: 
     muss local von https aus aufrufen. 
@@ -34,6 +34,9 @@ integrate deus -- seems to call for a few refactorings ...
                     with this, we'd still adhere to 'dont-call-me-ill-call-you', right?
     maybe wizard-pages should be not configured by the processes & products. 
     really. just draw up the design diagram again and see if there is any way we can simplify this. 
+
+Integrate PIA
+
 
 inputs to processes need to be listed in process-wizard
 
@@ -103,3 +106,9 @@ exposure & vulnerability:
     wie nochmal einbinden?
         exposition (assetmaster): output not used anywhere
         vulnerability (modelprop): return json w/o georeferences.  <-- how to style this? how to show to user?
+
+allow mulitple styles for wms layers
+    teste ob das mit den buttons vom layerswitcher geht 
+        geht nicht, darum als dropdown in selben feld wie transparency
+            user must be able to specify a component, with arguments, to be rendered in dropdown. 
+                this seems to be a case of a dynamic compoent... https://angular.io/guide/dynamic-component-loader

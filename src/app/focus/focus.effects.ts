@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { Effect, Actions, ofType } from '@ngrx/effects';
 import { FocusAction, EFocusActionTypes, GoToNextProcess, NewProcessClicked } from './focus.actions';
 import { map, withLatestFrom } from 'rxjs/operators';
@@ -10,18 +10,18 @@ import { ProcessStateTypes } from '../wps/wps.datatypes';
 
 
 
-Injectable()
+Injectable();
 export class FocusEffects {
 
 
     @Effect()
     goingToNext$ = this.actions$.pipe(
-        ofType<FocusAction>(EFocusActionTypes.goToNextProcess), 
+        ofType<FocusAction>(EFocusActionTypes.goToNextProcess),
         withLatestFrom(this.store$),
         map(([action, state]) => {
-            const activeProcess = state.wpsState.processStates.find(p => p.state.type == ProcessStateTypes.available);
-            if(activeProcess) {
-                return new NewProcessClicked({processId: activeProcess.id})
+            const activeProcess = state.wpsState.processStates.find(p => p.state.type === ProcessStateTypes.available);
+            if (activeProcess) {
+                return new NewProcessClicked({processId: activeProcess.id});
             }
         })
     );

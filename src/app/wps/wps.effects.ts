@@ -42,7 +42,7 @@ export class WpsEffects {
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
 
-            console.log(toGraphviz(this.wfc));
+            // console.log(toGraphviz(this.wfc));
 
             const actions: Action[] = [];
             const wpsUpdate = new WpsDataUpdate({processes, products, graph});

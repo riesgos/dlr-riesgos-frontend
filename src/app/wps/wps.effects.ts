@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen,
-        ClickRunProcess, WpsDataUpdate, RestartingFromProcess } from './wps.actions';
+        ClickRunProcess, WpsDataUpdate, RestartingFromProcess, RestaringScenario } from './wps.actions';
 import { toGraphviz } from './wps.graphviz';
 import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -23,8 +23,6 @@ import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/c
 import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
 import { Deus, fragility, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
-import { getFullWpsState } from './wps.selectors';
-import { WpsState } from './wps.state';
 
 
 
@@ -32,6 +30,30 @@ import { WpsState } from './wps.state';
 @Injectable()
 export class WpsEffects {
 
+    @Effect()
+    RestaringScenario$ = this.actions$.pipe(
+        ofType<WpsActions>(EWpsActionTypes.restartingScenario),
+        switchMap((action: RestaringScenario) => {
+
+            const newScenario = action.payload.scenario;
+            const [procs, prods] = this.loadScenarioData(action.payload.scenario);
+
+            this.wfc = new WorkflowControl(procs, prods, this.httpClient);
+            const processes = this.wfc.getProcesses();
+            const products = this.wfc.getProducts();
+            const graph = this.wfc.getGraph();
+
+            const actions: Action[] = [];
+            const wpsUpdate = new WpsDataUpdate({processes, products, graph});
+            actions.push(wpsUpdate);
+            if (processes.length > 0) {
+                const processClicked = new NewProcessClicked({processId: processes[0].id});
+                actions.push(processClicked);
+            }
+
+            return actions;
+        })
+    );
 
     @Effect()
     scenarioChosen$ = this.actions$.pipe(
@@ -55,8 +77,6 @@ export class WpsEffects {
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
-
-            // console.log(toGraphviz(this.wfc));
 
             const actions: Action[] = [];
             const wpsUpdate = new WpsDataUpdate({processes, products, graph});

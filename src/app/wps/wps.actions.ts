@@ -7,9 +7,10 @@ import { Graph } from 'graphlib';
 
 export enum EWpsActionTypes {
     scenarioChosen = '[Wps] Scenario chosen',
-    productsProvided = '[Wps] Products Provided',
+    productsProvided = '[Wps] Products provided',
     clickRunProduct = '[Wps] Click on \'run process\' button',
     restartingFromProcess = '[Wps] Restarting from process',
+    restartingScenario = '[Wps] Restarting scenario',
     wpsDataUpdate = '[Wps] Data update',
 }
 
@@ -35,6 +36,11 @@ export class ClickRunProcess implements Action {
 export class RestartingFromProcess implements Action {
     type: string = EWpsActionTypes.restartingFromProcess;
     constructor(public payload: {process: Process}) {}
+}
+
+export class RestaringScenario implements Action {
+    type: string = EWpsActionTypes.restartingScenario;
+    constructor(public payload: {scenario: Scenario}) {}
 }
 
 

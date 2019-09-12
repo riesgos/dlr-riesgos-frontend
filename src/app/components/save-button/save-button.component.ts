@@ -3,15 +3,15 @@ import { UtilStoreService } from '@ukis/services-util-store';
 import { Form, FormControl, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getFullWpsState } from 'src/app/wps/wps.selectors';
-import { WpsState } from 'src/app/wps/wps.state';
-import { WpsDataUpdate, ScenarioChosen } from 'src/app/wps/wps.actions';
+import { getCurrentScenarioWpsState } from 'src/app/wps/wps.selectors';
+import { WpsScenarioState } from 'src/app/wps/wps.state';
+import { WpsDataUpdate, RestaringScenario } from 'src/app/wps/wps.actions';
 
 
 interface StorageRow {
     name: string;
     date: Date;
-    data: WpsState;
+    data: WpsScenarioState;
 }
 
 @Component({
@@ -27,7 +27,7 @@ export class SaveButtonComponent implements OnInit {
     nameControl: FormControl;
     dataStorage: StorageRow[] = [];
     selectedStorageRow: StorageRow;
-    private currentState: WpsState;
+    private currentState: WpsScenarioState;
 
     constructor(
         private storageService: UtilStoreService,
@@ -37,7 +37,7 @@ export class SaveButtonComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.store.pipe(select(getFullWpsState)).subscribe((state: WpsState) => {
+        this.store.pipe(select(getCurrentScenarioWpsState)).subscribe((state: WpsScenarioState) => {
             this.currentState = state;
         });
     }
@@ -65,7 +65,7 @@ export class SaveButtonComponent implements OnInit {
 
     onResetClicked(): void {
         const currentScenario = this.currentState.scenario;
-        this.store.dispatch(new ScenarioChosen({scenario: currentScenario}));
+        this.store.dispatch(new RestaringScenario({scenario: currentScenario}));
         this.showResetModal = false;
     }
 

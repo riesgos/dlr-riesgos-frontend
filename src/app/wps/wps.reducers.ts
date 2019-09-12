@@ -21,6 +21,7 @@ export function wpsReducer(state: WpsState = initialWpsState, action: WpsActions
             return newState;
 
         case EWpsActionTypes.scenarioChosen:
+        case EWpsActionTypes.restartingScenario:
             return {
                 ... state,
                 currentScenario: (action as ScenarioChosen).payload.scenario,

@@ -1,6 +1,11 @@
-when moving back, older layers are not displayed with full opacity again
+when scenario changes, see if there is already any data in the store. 
+    rearange wps-state to be under 'scenario', instead of side by side
+
+nothing displayed under results or layers.
 
 when going to scenarios and back, products are no longer displayed under 'resultados'
+
+save-state does not survive movement from scenario to selection back to scenario
 
 different way to display vulnerability
 
@@ -37,6 +42,7 @@ integrate deus -- seems to call for a few refactorings ...
 
 Integrate PIA
 
+for our own wps, if it needs to get other wps data per reference, we need a security clearance.
 
 inputs to processes need to be listed in process-wizard
 

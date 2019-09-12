@@ -32,12 +32,6 @@
       ],
       "services-wps/*": [
         "dist/services-wps/*"
-      ],
-      "@ukis/layer-control": [
-        "projects/layer-control/src/public_api.ts"
-      ],
-      "@ukis/layer-control/*": [
-        "projects/layer-control/*"
       ]
     }
   }

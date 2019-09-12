@@ -1,16 +1,24 @@
-nothing displayed under results or layers.
-
-save-state does not survive movement from scenario to selection back to scenario
 
 different way to display vulnerability
 
+save-state does not survive movement from scenario to selection back to scenario
+
+Integrate PIA
+
+for our own wps, if it needs to get other wps data per reference, we need a security clearance.
+
+inputs to processes need to be listed in process-wizard
+
+For TS-service, we need to start ts-wms-service to get wms-output; and start ts-shkmp-service to get shakemap data
+
 geomer einbinden: 
-    muss local von https aus aufrufen. 
-    https://medium.com/@rubenvermeulen/running-angular-cli-over-https-with-a-trusted-certificate-4a0d5f92747a
-    when using chrome: 
-        Access to XMLHttpRequest at 'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?version=1.3.0&service=wms&request=GetCapabilities' from origin 'http://localhost:4200' has been blocked by CORS policy: Request header field content-type is not allowed by Access-Control-Allow-Headers in preflight response.
+    immer noch cors probleme. habe eomap geschrieben. 
+
+        
+
 
 integrate deus -- seems to call for a few refactorings ...
+    in short term, nils will change product-id
     is called multiple times
         need another id for every time deus appears in graph
             need again to make a difference between the workflow-id and the wps-process-id
@@ -34,18 +42,6 @@ integrate deus -- seems to call for a few refactorings ...
                     with this, we'd still adhere to 'dont-call-me-ill-call-you', right?
     maybe wizard-pages should be not configured by the processes & products. 
     really. just draw up the design diagram again and see if there is any way we can simplify this. 
-
-Integrate PIA
-
-for our own wps, if it needs to get other wps data per reference, we need a security clearance.
-
-inputs to processes need to be listed in process-wizard
-
-For TS-service, we need to start ts-wms-service to get wms-output; and start ts-shkmp-service to get shakemap data
-
-        
-
-
 
 workflowcontrol changes: merge back into library
     state to processes, including state 'running' and 'error'. in wfc process-states were calculated from the surrounding productstates, which id not allow state 'running'

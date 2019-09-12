@@ -5,10 +5,10 @@ import { RouteMapComponent } from './route-components/route-map/route-map.compon
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
 
 const routes: Routes = [
-  { 
-    path: '', 
-    redirectTo: '/scenarios', 
-    pathMatch: 'full' 
+  {
+    path: '',
+    redirectTo: '/scenarios',
+    pathMatch: 'full'
   },
   {
     path: 'map',

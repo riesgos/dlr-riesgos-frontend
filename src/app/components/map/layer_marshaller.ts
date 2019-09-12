@@ -17,14 +17,6 @@ import { ProductVectorLayer, ProductRasterLayer, ProductLayer } from './map.type
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
 
-/**
- * Why do wo add another layer of translation here, instead of translating in wpsClient?
- * Pro translate in wps-client:
- *  -
- * Pro translate in separate layer:
- *  - data in store should be in a *general* format, layer-types are too specific
- *  -
- */
 
 interface WmsParameters {
     origin: string;

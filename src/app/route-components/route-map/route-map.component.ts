@@ -3,12 +3,15 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ActivatedRoute } from '@angular/router';
 import { ScenarioChosen } from 'src/app/wps/wps.actions';
+import { LayersService } from '@ukis/services-layers';
+import { MapStateService } from '@ukis/services-map-state';
+import { MapOlService } from '@ukis/map-ol';
 
 
 @Component({
   selector: 'ukis-route-map',
   templateUrl: './route-map.component.html',
-  styleUrls: ['./route-map.component.scss']
+  styleUrls: ['./route-map.component.scss'],
 })
 export class RouteMapComponent implements OnInit {
   @HostBinding('class') class = 'content-container';

@@ -31,7 +31,8 @@ import { parse } from 'url';
     selector: 'ukis-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    //providers: [LayersService, MapOlService, MapStateService]
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -40,7 +41,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private geoJson = new GeoJSON();
     private interactionState: BehaviorSubject<InteractionState>;
     private graph: BehaviorSubject<Graph>;
-
     private currentOverlays: ProductLayer[];
     private subs: Subscription[] = [];
 
@@ -57,7 +57,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     ngOnInit() {
+
         this.subscribeToMapState();
+
         // listening for interaction modes
         this.interactionState = new BehaviorSubject<InteractionState>(initialInteractionState);
         const sub1 = this.store.pipe(select('interactionState')).subscribe(currentInteractionState => {
@@ -78,13 +80,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
             const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
 
-            console.log(`now focussing on ${focussedProcessId}`);
             for (const layer of this.currentOverlays) {
                 if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
-                    console.log(`${layer.productId} is input or output of ${focussedProcessId}`)
                     layer.opacity = 0.9;
                 } else {
-                    console.log(`${layer.productId} is neither input nor output of ${focussedProcessId} `, inputs, outputs)
                     layer.opacity = 0.2;
                 }
                 this.layersSvc.updateLayer(layer, 'Overlays');
@@ -96,6 +95,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub4 = this.store.pipe(
             select(getMapableProducts),
             switchMap((products: Product[]) => {
+                console.log('the following products can now be displayed in the map', products);
                 return this.layerMarshaller.productsToLayers(products);
             })
         ).subscribe((newOverlays: ProductLayer[]) => {
@@ -146,6 +146,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.mapSvc.removeAllPopups();
         });
 
+        // listening for change in scenario - onInit
         const sub5 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
@@ -159,9 +160,19 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub5);
     }
 
+    private printAllLayers(message: string): void {
+        const layergroups = this.mapSvc.map.getLayers().getArray();
+        console.log(message);
+        console.log('1st level: ', layergroups);
+        for (const layergroup of layergroups) {
+            const title = layergroup.get('title');
+            const layers = layergroup.getLayers().getArray();
+            console.log(`2nd level: ${title}:`, layers);
+        }
+    }
 
     ngAfterViewInit() {
-        // listening for change in scenario
+        // listening for change in scenario - afterViewInit
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             this.mapSvc.setZoom(8);
             this.mapSvc.setProjection(getProjection('EPSG:4326'));
@@ -169,6 +180,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.mapSvc.setCenter(center, true);
         });
         this.subs.push(sub6);
+
+        this.printAllLayers("all layers after scenario-change");
     }
 
     ngOnDestroy() {

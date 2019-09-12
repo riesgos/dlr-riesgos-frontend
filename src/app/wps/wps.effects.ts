@@ -149,10 +149,9 @@ export class WpsEffects {
     }
 
 
-    /**
-     * @TODO: in the future, this will also load data from files with httpclient on the fly
-     */
     private loadScenarioData(scenario: string): [Process[], Product[]] {
+        // @TODO: per default, load data from store.
+
         let processes: Process[] = [];
         let products: Product[] = [];
         switch (scenario) {
@@ -206,15 +205,7 @@ export class WpsEffects {
                 throw new Error(`Unknown scenario ${scenario}`);
         }
 
-        // @TODO: this feels bad. Is this a design mistake?
-        const resetProducts = products.map(prod => {
-            return {
-                ...prod,
-                value: null
-            };
-        });
-
-        return [processes, resetProducts];
+        return [processes, products];
     }
 
 }

@@ -412,7 +412,7 @@ export class WorkflowControl {
 
         for (const product of products) {
             if (product.value) {
-                console.log("product already has a value", product)
+                console.log("product already has a value", product);
             }
         }
     }

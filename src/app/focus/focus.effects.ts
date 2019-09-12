@@ -19,7 +19,10 @@ export class FocusEffects {
         ofType<FocusAction>(EFocusActionTypes.goToNextProcess),
         withLatestFrom(this.store$),
         map(([action, state]) => {
-            const activeProcess = state.wpsState.processStates.find(p => p.state.type === ProcessStateTypes.available);
+            const currentScenario = state.wpsState.currentScenario;
+            const activeProcess = state.wpsState.scenarioData[currentScenario].processStates.find((p) => {
+                return p.state.type === ProcessStateTypes.available;
+            });
             if (activeProcess) {
                 return new NewProcessClicked({processId: activeProcess.id});
             }

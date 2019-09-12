@@ -7,21 +7,23 @@ export function wpsReducer(state: WpsState = initialWpsState, action: WpsActions
     switch (action.type) {
 
         case EWpsActionTypes.wpsDataUpdate:
+            const newScenario = state.currentScenario;
             const newProcesses = (action as WpsDataUpdate).payload.processes;
             const newProducts = (action as WpsDataUpdate).payload.products;
             const newGraph = (action as WpsDataUpdate).payload.graph;
-            return {
-                ...state,
-                scenario: state.scenario,
+            const newState = {...state};
+            newState.scenarioData[state.currentScenario] = {
+                scenario: newScenario,
                 processStates: newProcesses,
                 productValues: newProducts,
                 graph: newGraph
             };
+            return newState;
 
         case EWpsActionTypes.scenarioChosen:
             return {
                 ... state,
-                scenario: (action as ScenarioChosen).payload.scenario,
+                currentScenario: (action as ScenarioChosen).payload.scenario,
             };
 
         default:

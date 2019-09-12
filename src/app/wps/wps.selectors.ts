@@ -11,42 +11,47 @@ const getWpsState = (state: State) => {
     return state.wpsState;
 };
 
+const getCurrentScenarioState = (wpsState: WpsState) => {
+    const currentScenario = wpsState.currentScenario;
+    const scenarioData = wpsState.scenarioData[currentScenario];
+    return scenarioData;
+};
 
 export const getFullWpsState = createSelector(
     getWpsState,
-    (s: WpsState) => s
+    (s: WpsState) => getCurrentScenarioState(s)
 );
 
 
 export const getProcessStates = createSelector(
     getWpsState,
-    (s: WpsState) => s.processStates
+    (s: WpsState) => getCurrentScenarioState(s).processStates
 );
 
 
 export const getScenario = createSelector(
     getWpsState,
-    (s: WpsState) => s.scenario
+    (s: WpsState) => s.currentScenario
 );
 
 
 export const getProducts = createSelector(
     getWpsState,
-    (s: WpsState) => s.productValues
+    (s: WpsState) => getCurrentScenarioState(s).productValues
 );
 
 
 export const getGraph = createSelector(
     getWpsState,
-    (s: WpsState) => s.graph
+    (s: WpsState) => getCurrentScenarioState(s).graph
 );
 
 
 export const getInputsForProcess = createSelector(
     getWpsState,
     (s: WpsState, args: {processId: string}) => {
-        const process = getProcessById(args.processId, s.processStates);
-        return filterInputsForProcess(process, s.productValues);
+        const process = getProcessById(args.processId, getCurrentScenarioState(s).processStates);
+        return filterInputsForProcess(process, getCurrentScenarioState(s).productValues);
     }
 );
 
@@ -54,7 +59,7 @@ export const getInputsForProcess = createSelector(
 export const getMapableProducts = createSelector(
     getWpsState,
     (s: WpsState) => {
-        return s.productValues
+        return getCurrentScenarioState(s).productValues
             .filter(prod => prod.value != null)
             .filter(prod => isVectorLayerData(prod) || isBboxLayerData(prod) || isWmsData(prod));
     }

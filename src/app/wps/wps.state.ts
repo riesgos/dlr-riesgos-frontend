@@ -5,17 +5,22 @@ import { Graph, alg } from 'graphlib';
 
 export type Scenario = string;
 
-export interface WpsState {
+export interface WpsScenarioState {
     scenario: Scenario;
     processStates: Process[];
     productValues: Product[];
     graph: Graph;
 }
 
+export interface WpsState {
+    currentScenario: Scenario;
+    scenarioData: {
+        [key in Scenario]: WpsScenarioState
+    };
+}
+
 
 export const initialWpsState: WpsState = {
-    scenario: 'c1',
-    processStates: [],
-    productValues: [],
-    graph: null
-}
+    currentScenario: 'c1',
+    scenarioData: {}
+};

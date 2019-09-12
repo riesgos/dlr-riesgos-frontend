@@ -1,9 +1,4 @@
-when scenario changes, see if there is already any data in the store. 
-    rearange wps-state to be under 'scenario', instead of side by side
-
 nothing displayed under results or layers.
-
-when going to scenarios and back, products are no longer displayed under 'resultados'
 
 save-state does not survive movement from scenario to selection back to scenario
 

@@ -17,7 +17,7 @@ const getCurrentScenarioState = (wpsState: WpsState) => {
     return scenarioData;
 };
 
-export const getFullWpsState = createSelector(
+export const getCurrentScenarioWpsState = createSelector(
     getWpsState,
     (s: WpsState) => getCurrentScenarioState(s)
 );

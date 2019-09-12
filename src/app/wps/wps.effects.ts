@@ -23,6 +23,8 @@ import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/c
 import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
 import { Deus, fragility, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
+import { getFullWpsState } from './wps.selectors';
+import { WpsState } from './wps.state';
 
 
 
@@ -34,10 +36,22 @@ export class WpsEffects {
     @Effect()
     scenarioChosen$ = this.actions$.pipe(
         ofType<WpsActions>(EWpsActionTypes.scenarioChosen),
-        switchMap((action: ScenarioChosen) => {
+        withLatestFrom(this.store$),
+        switchMap(([action, state]: [ScenarioChosen, State]) => {
 
-            const [rawProcs, rawProds] = this.loadScenarioData(action.payload.scenario);
-            this.wfc = new WorkflowControl(rawProcs, rawProds, this.httpClient);
+            const newScenario = action.payload.scenario;
+
+            let procs: Process[];
+            let prods: Product[];
+            if (state.wpsState.scenarioData[newScenario]) {
+                const scenarioData = state.wpsState.scenarioData[newScenario];
+                procs = scenarioData.processStates;
+                prods = scenarioData.productValues;
+            } else {
+                [procs, prods] = this.loadScenarioData(action.payload.scenario);
+            }
+
+            this.wfc = new WorkflowControl(procs, prods, this.httpClient);
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();

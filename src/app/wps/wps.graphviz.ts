@@ -1,5 +1,7 @@
 import {Process, ProcessStateTypes, Product} from "./wps.datatypes";
 import {WorkflowControl} from "./wps.workflowcontrol";
+import { Graph } from 'graphlib';
+
 
 function attrsFromProcessStateTypes(processState: string): string[] {
     const attrs: string[] = [];
@@ -55,6 +57,31 @@ export function toGraphviz(wfc: WorkflowControl): string {
     lines.push('');
 
     for (let e of wfc.getGraph().edges()) {
+        lines.push('   "' + e.v + '" -> "' + e.w + '" [];');
+    }
+    lines.push('}');
+    return lines.join('\n');
+}
+
+export function toGraphvizDestructured(processes: Process[], products: Product[], graph: Graph): string {
+    const lines: string[] = [];
+
+    lines.push('digraph G {');
+
+    for (let process of processes) {
+        const attrs = attrsFromProcessStateTypes(process.state.type);
+        attrs.push("shape=box");
+        attrs.push('label="' + process.name + '"');
+        lines.push('    "' + process.id + '" ['+ attrs.join(',') + '];');
+    }
+    for (let product of products) {
+        lines.push('    "' + product.uid + '" [label="' +product.description['id'] + '", shape=oval];');
+        
+    }
+
+    lines.push('');
+
+    for (let e of graph.edges()) {
         lines.push('   "' + e.v + '" -> "' + e.w + '" [];');
     }
     lines.push('}');

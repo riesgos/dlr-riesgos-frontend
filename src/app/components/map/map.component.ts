@@ -32,7 +32,6 @@ import { parse } from 'url';
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    //providers: [LayersService, MapOlService, MapStateService]
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -186,6 +185,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy() {
         this.subs.map(s => s.unsubscribe());
+        this.layersSvc.removeBaseLayers();
+        this.layersSvc.removeLayers();
+        this.layersSvc.removeOverlays();
     }
 
     private getCenter(scenario: string): [number, number] {

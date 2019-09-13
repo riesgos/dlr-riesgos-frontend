@@ -4,8 +4,8 @@ import { State } from 'src/app/ngrx_register';
 import { ActivatedRoute } from '@angular/router';
 import { ScenarioChosen } from 'src/app/wps/wps.actions';
 import { LayersService } from '@ukis/services-layers';
-import { MapStateService } from '@ukis/services-map-state';
 import { MapOlService } from '@ukis/map-ol';
+import { MapStateService } from '@ukis/services-map-state';
 
 
 @Component({

@@ -4,7 +4,7 @@ import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 
 
 export const physicalImpact: VectorLayerData = {
-    uid: 'physicalImpact',
+    uid: 'pia_physicalImpact',
     description: {
         id: 'physicalImpact',
         format: 'application/vnd.geo+json',
@@ -20,10 +20,10 @@ export const PhysicalImpactAssessment: WizardableProcess & WpsProcess = {
     id: 'org.n52.dlr.riesgos.algorithm.PhysicalImpactAssessment',
     name: 'Pysical Impact',
     description: '',
-    url: 'https://riesgos.dlr.de/wps/WebProcessingService',
+    url: 'http://riesgos.dlr.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',
-    requiredProducts: [],
-    providedProducts: ['physicalImpact'],
+    requiredProducts: ['ShakygroundProcess_shakeMapFile_shakemap'],
+    providedProducts: ['pia_physicalImpact'],
     state: new ProcessStateAvailable(),
     wizardProperties: {
         providerName: 'German Aerospace Center (DLR)',

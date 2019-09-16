@@ -21,7 +21,7 @@ import { ExposureModel, lonmin, lonmax, latmin, latmax, selectedRowsXml,
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, buildingAndDamageClasses } from '../configuration/chile/modelProp';
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
-import { Deus, fragility, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
+import { Deus, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 
 
@@ -206,7 +206,7 @@ export class WpsEffects {
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapOutput,
-                    fragility, loss, damage, transition, updated_exposure,
+                    loss, damage, transition, updated_exposure,
                     lat, lon, mag, epicenter,
                     physicalImpact
                 ];

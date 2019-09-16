@@ -3,19 +3,20 @@ import { shakemapOutput } from './shakyground';
 import { schema, selectedRowsXml } from './assetmaster';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { buildingAndDamageClasses } from './modelProp';
 
 
 
-export const fragility: WpsData & Product = {
-    uid: 'fragility',
-    description: {
-        id: 'fragility',
-        reference: false,
-        type: 'complex',
-        format: 'application/json'
-    },
-    value: null
-};
+// export const fragility: WpsData & Product = {
+//     uid: 'fragility',
+//     description: {
+//         id: 'fragility',
+//         reference: false,
+//         type: 'complex',
+//         format: 'application/json'
+//     },
+//     value: null
+// };
 
 export const loss: WpsData & Product = {
     uid: 'loss',
@@ -68,7 +69,7 @@ export const Deus: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
     name: 'DeusProcess',
     description: 'Damage and exposure update service',
-    requiredProducts: [loss, fragility, schema, shakemapOutput, selectedRowsXml].map(p => p.uid),
+    requiredProducts: [loss, buildingAndDamageClasses, schema, shakemapOutput, selectedRowsXml].map(p => p.uid),
     providedProducts: [damage, transition, updated_exposure].map(p => p.uid),
     wizardProperties: {
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',

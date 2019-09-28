@@ -175,7 +175,7 @@ export class WorkflowControl {
             if (isWatchingProcess(process)) {
                 const additionalProducts = process.onProductAdded(newProduct, this.products);
                 for (const additionalProduct of additionalProducts) {
-                    this.updateProduct(additionalProduct); // @TODO: maybe even call provideProduct here?
+                    this.updateProduct(additionalProduct); // @TODO: maybe even call provideProduct recursively here?
                 }
             }
         }

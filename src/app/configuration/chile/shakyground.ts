@@ -18,7 +18,7 @@ export const shakemapWmsOutput: WpsData & WmsLayerData = {
     value: null
 };
 
-export const shakemapOutput: WpsData & Product = {
+export const shakemapRefOutput: WpsData & Product = {
     uid: 'ShakygroundProcess_shakeMapFile_shakemap',
     description: {
         id: 'shakeMapFile',
@@ -37,7 +37,7 @@ export const Shakyground: WizardableProcess & WpsProcess = {
     name: 'Groundmotion Simulation',
     description: 'Simulates the ground motion caused by a given eathquake',
     requiredProducts: [selectedEq].map(p => p.uid),
-    providedProducts: [shakemapWmsOutput, shakemapOutput].map(p => p.uid),
+    providedProducts: [shakemapWmsOutput, shakemapRefOutput].map(p => p.uid),
     wpsVersion: '1.0.0',
     wizardProperties: {
         shape: 'earthquake',

@@ -54,12 +54,12 @@ export const taxonomies: StringUconfProduct & WpsData = {
 };
 
 
-export const buildingAndDamageClasses: WpsData & Product = {
+export const buildingAndDamageClassesRef: WpsData & Product = {
     uid: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess_selectedRows',
     description: {
       id: 'selectedRows',
       type: 'complex',
-      reference: false,
+      reference: true,
       format: 'application/json'
     },
     value: null
@@ -73,7 +73,7 @@ export const VulnerabilityModel: WizardableProcess & WpsProcess = {
     name: 'EQ Vulnerability Model',
     description: '',
     requiredProducts: [schema, assetcategory, losscategory, taxonomies].map(p => p.uid),
-    providedProducts: [buildingAndDamageClasses.uid],
+    providedProducts: [buildingAndDamageClassesRef.uid],
     wizardProperties: {
         shape: 'earthquake',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',

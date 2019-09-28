@@ -1,6 +1,9 @@
 {
     "RIESGOS Demonstrator": "RIESGOS demostrador",
     "Stories": "Escenarios",
+    "Pilot regions": "Áreas de Estudio",
+    "Pilot region description": "Para comprender, describir y cuantificar situaciones de riesgo múltiple, RIESGOS trabaja con escenarios (casos  de  estudio  específicos)  en  áreas  de estudio seleccionadas de Chile, Ecuador y Perú. Los escenarios representarán situaciones realistas de riesgos múltiples con efectos en cascada. Por favor, seleccione una de las siguientes opciones:",
+
     "Unavailable": "Indisponible",
     "Available": "Disponible",
     "Running": "Ejecutando",

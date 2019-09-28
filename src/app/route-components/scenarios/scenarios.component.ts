@@ -1,4 +1,5 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 type previewmap = { id: string | number, index: number, title: string, preview: string, content?: any, disabled?: boolean };
 
@@ -8,7 +9,7 @@ type previewmap = { id: string | number, index: number, title: string, preview: 
   styleUrls: ['./scenarios.component.scss']
 })
 export class ScenariosComponent implements OnInit {
-  @HostBinding('class') class = 'content-container';
+  // @HostBinding('class') class = 'content-container';
 
   scenarios: previewmap[] = [];
   showInfo = false;
@@ -60,7 +61,10 @@ export class ScenariosComponent implements OnInit {
     title: 'electricity'
   }];
 
-  constructor() {
+
+  constructor(
+    public translator: TranslateService
+  ) {
     this.scenarios = [
       { id: 'c1', title: 'Showcase Chile', preview: 'assets/data/Showcase-c1.jpg', content: '', index: 1 },
       { id: 'e1', title: 'Showcase Ecuador', preview: 'assets/data/Showcase-e1.jpg', content: '', index: 2 },

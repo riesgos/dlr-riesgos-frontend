@@ -69,6 +69,7 @@ export const getMapableProducts = createSelector(
     (s: WpsState) => {
         return getCurrentScenarioState(s).productValues
             .filter(prod => prod.value != null)
+            //.filter(prod => prod.description.hasOwnProperty['reference'] && prod.description['reference'] === false)
             .filter(prod => isVectorLayerData(prod) || isBboxLayerData(prod) || isWmsData(prod));
     }
 );

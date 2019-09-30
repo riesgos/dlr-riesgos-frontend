@@ -94,7 +94,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub4 = this.store.pipe(
             select(getMapableProducts),
             switchMap((products: Product[]) => {
-                console.log('the following products can now be displayed in the map', products);
+                 // console.log('the following products can now be displayed in the map', products);
                 return this.layerMarshaller.productsToLayers(products);
             })
         ).subscribe((newOverlays: ProductLayer[]) => {

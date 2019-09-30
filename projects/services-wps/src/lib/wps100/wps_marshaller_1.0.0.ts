@@ -101,6 +101,8 @@ export class WpsMarshaller100 implements WpsMarshaller {
                     return data.complexData.content.map(cont => JSON.parse(cont));
                 case 'application/WMS':
                     return data.complexData.content;
+                case 'text/xml':
+                    return new XMLSerializer().serializeToString(data.complexData.content[0]); // @TODO: better: handle actual xml-data
                 default:
                     throw new Error(`Cannot unmarshal data of format ${data.complexData.mimeType}`);
             }
@@ -209,12 +211,23 @@ export class WpsMarshaller100 implements WpsMarshaller {
                     };
                     break;
                 case 'complex':
-                    data = {
-                        complexData: {
-                            content: [JSON.stringify(inp.value)],
-                            mimeType: inp.description.format
-                        }
-                    };
+                    switch (inp.description.format) {
+                        case 'text/xml':
+                            data = {
+                                complexData: {
+                                    content: [inp.value],  // @TODO: we assume here that text/xml-data is already stringified
+                                    mimeType: inp.description.format
+                                }
+                            };
+                            break;
+                        default:
+                            data = {
+                                complexData: {
+                                    content: [JSON.stringify(inp.value)],
+                                    mimeType: inp.description.format
+                                }
+                            };
+                    }
                     break;
             }
 

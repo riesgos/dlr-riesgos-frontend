@@ -94,7 +94,7 @@ export class WorkflowControl {
 
         process = this.setProcessState(process.id, new ProcessStateRunning()) as WpsProcess;
         let requestCounter = 0;
-        return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescriptions, 1000,
+        return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescriptions, 2000,
 
             (response: any) => {
                 if (doWhileRequesting) {
@@ -437,7 +437,7 @@ export class WorkflowControl {
             const equivalentWpsData = wpsData.find(data => {
                 return (
                     data.description.id === prod.description.id &&
-                    // data.description.format === prod.description.format && // <-- not ok. format can change from 'wms' to 'string'
+                    data.description.format === prod.description.format && // <-- not ok? format can change from 'wms' to 'string'?
                     data.description.reference === prod.description.reference &&
                     data.description.type === prod.description.type
                 );

@@ -16,13 +16,14 @@ import { Shakyground, shakemapWmsOutput, shakemapRefOutput } from '../configurat
 import { TsService, epicenter, lat, lon, mag } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
-import { ExposureModel, lonmin, lonmax, latmin, latmax, selectedRowsXml,
+import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
         assettype, schema, querymode } from '../configuration/chile/assetmaster';
-import { VulnerabilityModel, assetcategory, losscategory, taxonomies, buildingAndDamageClassesRef } from '../configuration/chile/modelProp';
+import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityRef } from '../configuration/chile/modelProp';
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
 import { Deus, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
+import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
 
 
 
@@ -196,18 +197,20 @@ export class WpsEffects {
                     QuakeLedger,
                     EqSelection,
                     Shakyground,
+                    DeusTranslator,
                     Deus,
                     TsService,
                     PhysicalImpactAssessment
                 ];
                 products = [
-                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode, selectedRowsXml,
-                    assetcategory, losscategory, taxonomies, buildingAndDamageClassesRef,
+                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode, exposureRef,
+                    assetcategory, losscategory, taxonomies, fragilityRef,
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapRefOutput,
                     loss, damage, transition, updated_exposure,
                     lat, lon, mag, epicenter,
+                    fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
                     physicalImpact
                 ];
                 break;

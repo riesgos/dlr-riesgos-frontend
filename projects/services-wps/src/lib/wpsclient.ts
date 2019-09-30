@@ -86,8 +86,10 @@ export class WpsClient {
 
         const cacheKey = this.cache.makeKey({url, id: processId, inputs, outputs});
         if (this.caching)  {
+            console.log('searching for data in cache ...');
             const cachedResponse = this.cache.get(cacheKey);
             if (cachedResponse) {
+                console.log('found data in cache.');
                 return of(cachedResponse);
             }
         }
@@ -115,6 +117,7 @@ export class WpsClient {
             }),
             tap((response: WpsResult[]) => {
                 if (this.caching) {
+                    console.log('storing data in cache.');
                     this.cache.set(cacheKey, response);
                 }
             }),

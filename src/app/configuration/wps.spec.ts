@@ -11,8 +11,8 @@ import {
 } from './chile/quakeledger';
 import { debounceTime, map, filter, switchMap } from 'rxjs/operators';
 import { Product, Process } from '../wps/wps.datatypes';
-import { schema, ExposureModel, lonmin, lonmax, latmin, latmax, querymode, assettype, selectedRowsXml } from './chile/assetmaster';
-import { assetcategory, losscategory, taxonomies, VulnerabilityModel, buildingAndDamageClassesRef } from './chile/modelProp';
+import { schema, ExposureModel, lonmin, lonmax, latmin, latmax, querymode, assettype, exposureRef } from './chile/assetmaster';
+import { assetcategory, losscategory, taxonomies, VulnerabilityModel, fragilityRef } from './chile/modelProp';
 import { Observable } from 'rxjs';
 import { Shakyground, shakemapWmsOutput, shakemapRefOutput } from './chile/shakyground';
 import { selectedEq, EqSelection, userinputSelectedEq } from './chile/eqselection';
@@ -34,7 +34,7 @@ class MyXhrFactory extends XhrFactory {
 
 class TestHttpClient extends HttpClient {
   constructor() {
-    super(new HttpXhrBackend(new MyXhrFactory()))
+    super(new HttpXhrBackend(new MyXhrFactory()));
   }
 }
 
@@ -67,7 +67,7 @@ fdescribe('WPS-service integration', () => {
       selectedEqs
     ];
 
-    expectOutputsToBeSet('c1', QuakeLedger, inputs, outputs).subscribe(consecutiveProducts => done());
+    expectOutputsToBeSet('c1', QuakeLedger, inputs, outputs).subscribe(allProducts => done());
   }, 10000);
 
   it('vulnerability should work as expected', (done) => {
@@ -82,10 +82,10 @@ fdescribe('WPS-service integration', () => {
     });
 
     const outputs = [
-      buildingAndDamageClassesRef
+      fragilityRef
     ];
 
-    expectOutputsToBeSet('c1', VulnerabilityModel, inputs, outputs).subscribe(consecutiveProducts => done());
+    expectOutputsToBeSet('c1', VulnerabilityModel, inputs, outputs).subscribe(allProducts => done());
   }, 10000);
 
   it('Exposure-model should work as expected', (done) => {
@@ -100,64 +100,64 @@ fdescribe('WPS-service integration', () => {
     });
 
     const outputs = [
-      selectedRowsXml
+      exposureRef
     ];
 
-    expectOutputsToBeSet('c1', ExposureModel, inputs, outputs).subscribe(consecutiveProducts => done());
+    expectOutputsToBeSet('c1', ExposureModel, inputs, outputs).subscribe(allProducts => done());
   }, 10000);
 
-  it('EQ-simulation should work as expected', (done) => {
+  // it('EQ-simulation should work as expected', (done) => {
 
-    const inputs = [
-      inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat
-    ].map(i => {
-      return {
-        ...i,
-        value: i.description.defaultValue
-      };
-    });
+  //   const inputs = [
+  //     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat
+  //   ].map(i => {
+  //     return {
+  //       ...i,
+  //       value: i.description.defaultValue
+  //     };
+  //   });
 
-    const outputs = [
-      selectedEqs
-    ];
+  //   const outputs = [
+  //     selectedEqs
+  //   ];
 
-    expectOutputsToBeSet('c1', QuakeLedger, inputs, outputs).pipe(
+  //   expectOutputsToBeSet('c1', QuakeLedger, inputs, outputs).pipe(
 
-      switchMap((allProds: Product[]) => {
+  //     switchMap((allProds: Product[]) => {
 
-        const newInputs = [{
-          ... userinputSelectedEq
-        }];
+  //       const newInputs = [{
+  //         ... userinputSelectedEq
+  //       }];
 
-        const newOutpus = [{
-          ...selectedEq
-        }];
+  //       const newOutpus = [{
+  //         ...selectedEq
+  //       }];
 
-        return expectOutputsToBeSet('c1', EqSelection, allProds.concat(newInputs), newOutpus);
+  //       return expectOutputsToBeSet('c1', EqSelection, allProds.concat(newInputs), newOutpus);
 
-      }),
+  //     }),
 
-      switchMap((allProds: Product[]) => {
+  //     switchMap((allProds: Product[]) => {
 
-        const se = allProds.find(pr => pr.uid === 'user_selectedRow');
+  //       const se = allProds.find(pr => pr.uid === 'user_selectedRow');
 
-        const newInputs = [{
-          ...se,
-          value: se.value
-        }];
+  //       const newInputs = [{
+  //         ...se,
+  //         value: se.value
+  //       }];
 
-        const newOutpus = [
-          shakemapWmsOutput,
-          shakemapRefOutput
-        ];
+  //       const newOutpus = [
+  //         shakemapWmsOutput,
+  //         shakemapRefOutput
+  //       ];
 
-        return expectOutputsToBeSet('c1', Shakyground, newInputs, newOutpus);
-      })
+  //       return expectOutputsToBeSet('c1', Shakyground, newInputs, newOutpus);
+  //     })
 
-    ).subscribe(out => done());
+  //   ).subscribe(out => done());
 
 
-  }, 30000);
+  // }, 30000);
 
 });
 
@@ -165,6 +165,8 @@ fdescribe('WPS-service integration', () => {
 
 function expectOutputsToBeSet(
   scenario: string, process: Process, inputs: Product[], outputs: Product[]): Observable<Product[]> {
+
+  console.log(`Now executing process ${process.id}...`);
 
   const store: Store<State> = TestBed.get(Store);
   store.dispatch(new ScenarioChosen({ scenario }));

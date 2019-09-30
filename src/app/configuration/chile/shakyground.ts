@@ -1,7 +1,7 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import {  WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { selectedEq } from './eqselection';
 
 

@@ -9,7 +9,7 @@ type previewmap = { id: string | number, index: number, title: string, preview: 
   styleUrls: ['./scenarios.component.scss']
 })
 export class ScenariosComponent implements OnInit {
-  // @HostBinding('class') class = 'content-container';
+  @HostBinding('class') class = 'content-container';
 
   scenarios: previewmap[] = [];
   showInfo = false;

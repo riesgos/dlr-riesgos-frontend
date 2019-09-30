@@ -59,7 +59,10 @@ import { LanguageSwitcherComponent } from './components/language-switcher/langua
     MapComponent,
     LayercontrolComponent,
     FormBboxFieldComponent,
-    VarDirective, ScreenshotComponent, FormStringselectFieldComponent, LanguageSwitcherComponent
+    VarDirective,
+    ScreenshotComponent,
+    FormStringselectFieldComponent,
+    LanguageSwitcherComponent
   ],
   imports: [
     BrowserModule,

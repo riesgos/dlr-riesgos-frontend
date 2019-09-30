@@ -19,7 +19,8 @@ export class FormStringFieldComponent implements OnInit {
   constructor(private store: Store<State>) {}
 
   ngOnInit() {
-    this.formControl = new FormControl(this.parameter.value || this.parameter.description.defaultValue, [Validators.required]);
+    this.formControl = new FormControl(this.parameter.value || this.parameter.description.defaultValue,
+      {updateOn: 'blur', validators: [Validators.required]});
     // this.formControl.valueChanges.pipe(
     //   debounceTime(1500),
     // ).subscribe(val => {

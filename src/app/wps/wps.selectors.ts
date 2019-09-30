@@ -40,6 +40,14 @@ export const getProducts = createSelector(
     (s: WpsState) => getCurrentScenarioState(s).productValues
 );
 
+export const getProduct = createSelector(
+    getWpsState,
+    (s: WpsState, args: {productId: string}) => {
+        const products = getCurrentScenarioState(s).productValues;
+        return products.find(p => p.uid === args.productId);
+    }
+);
+
 
 export const getGraph = createSelector(
     getWpsState,

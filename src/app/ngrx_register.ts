@@ -9,9 +9,9 @@ import { interactionReducer } from './interactions/interactions.reducer';
 import { InteractionEffects } from './interactions/interactions.effects';
 
 export interface State {
-    wpsState: WpsState,
-    focusState: FocusState,
-    interactionState: InteractionState
+    wpsState: WpsState;
+    focusState: FocusState;
+    interactionState: InteractionState;
 }
 
 export const reducers: ActionReducerMap<State> = {

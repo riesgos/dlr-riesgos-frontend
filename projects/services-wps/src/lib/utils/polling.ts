@@ -1,8 +1,10 @@
-import { Observable, timer } from 'rxjs';
-import { switchMap, tap, filter, take } from 'rxjs/operators';
+import { Observable, timer, of, forkJoin } from 'rxjs';
+import { switchMap, tap, filter, take, debounceTime, min, map } from 'rxjs/operators';
+import { HttpRequest } from '@angular/common/http';
+import { Predicate } from '@angular/core';
 
 
-export const poll = (request: Observable<any>, interval: number): Observable<any> => {
+export const repeat = (request: Observable<any>, interval: number): Observable<any> => {
     return timer(0, interval).pipe(
         switchMap(() => request)
     );
@@ -18,10 +20,10 @@ export const doUntil = (action: Observable<any>, predicate: (result: any) => boo
     );
 };
 
-export const pollUntil = (
+export const repeatUntil = (
     request: Observable<any>, interval: number, predicate: (result: any) => boolean, tapFunc?: (result: any) => void): Observable<any> => {
     return doUntil(
-        poll(request, interval),
+        repeat(request, interval),
         predicate,
         tapFunc
     );
@@ -50,3 +52,45 @@ export const doAfter = (observable: Observable<any>, callback: (result: any) => 
 //   ).subscribe(response => {
 //     console.log('got final result', response);
 //   })
+
+
+
+
+export function doAndWait<T>(task: Observable<T>, minWaitTime: number = 1000): Observable<T> {
+    const timer$ = timer(minWaitTime);
+    return forkJoin({
+        task: task,
+        timer: timer$
+    }).pipe(
+        map(result => {
+            return result.task;
+        })
+    );
+}
+
+export function pollUntil<T>(task: Observable<T>, predicate: Predicate<T>): Observable<T> {
+    const taskWithRetry = task.pipe(
+        switchMap((result: T) => {
+            if (predicate(result)) {
+                return of(result);
+            } else {
+                return taskWithRetry;
+            }
+        })
+    );
+    return taskWithRetry;
+}
+
+
+
+export function pollEveryUntil<T>(
+    task: Observable<T>, predicate: Predicate<T>, doWhile?: (t: T | null) => any, minWaitTime: number = 1000): Observable<T> {
+
+    doWhile(null);
+
+    const taskWithMinWaitTime = doAndWait(task, minWaitTime).pipe(
+        tap(result => doWhile(result))
+    );
+
+    return pollUntil(taskWithMinWaitTime, predicate);
+}

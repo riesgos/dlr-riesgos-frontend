@@ -11,7 +11,7 @@ import * as XLink_1_0_Factory from 'w3c-schemas/lib/XLink_1_0'; const XLink_1_0 
 import * as OWS_1_1_0_Factory from 'ogc-schemas/lib/OWS_1_1_0'; const OWS_1_1_0 = OWS_1_1_0_Factory.OWS_1_1_0;
 import * as OWS_2_0_Factory from 'ogc-schemas/lib/OWS_2_0'; const OWS_2_0 = OWS_2_0_Factory.OWS_2_0;
 import * as WPS_1_0_0_Factory from 'ogc-schemas/lib/WPS_1_0_0'; const WPS_1_0_0 = WPS_1_0_0_Factory.WPS_1_0_0;
-import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; import { doAfter, doUntil, poll, pollUntil } from './utils/polling';
+import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; import { doAfter, doUntil, repeat, repeatUntil, pollUntil, pollEveryUntil } from './utils/polling';
 import { Injectable, Inject } from '@angular/core';
 const WPS_2_0 = WPS_2_0_Factory.WPS_2_0; // const WPS_2_0 = require('ogc-schemas/lib/WPS_2_0').WPS_2_0;
 import * as JsonixModule from './jsonix/jsonix';
@@ -97,14 +97,14 @@ export class WpsClient {
         return executeRequest.pipe(
             switchMap(executeResponse => {
                 const getStateRequest = this.checkState(executeResponse[0].value);
-                return pollUntil(
+                return pollEveryUntil(
                     getStateRequest,
-                    pollingRate,
                     (stateResponse) => {
                         const resultsObtained = stateResponse[0].description.type !== 'status';
                         return resultsObtained;
                     },
-                    tapFunction
+                    tapFunction,
+                    pollingRate
                 );
             }),
             tap((response: WpsResult[]) => {

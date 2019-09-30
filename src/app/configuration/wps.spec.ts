@@ -51,7 +51,6 @@ fdescribe('WPS-service integration', () => {
     });
   });
 
-  const completeProductStore: Product[] = [];
 
   it('EQ-service should work as expected', (done) => {
 
@@ -68,7 +67,7 @@ fdescribe('WPS-service integration', () => {
       selectedEqs
     ];
 
-    expectOutputsToBeSet('c1', QuakeLedger, inputs, outputs, completeProductStore).subscribe(consecutiveProducts => done());
+    expectOutputsToBeSet('c1', QuakeLedger, inputs, outputs).subscribe(consecutiveProducts => done());
   }, 10000);
 
   it('vulnerability should work as expected', (done) => {
@@ -86,7 +85,7 @@ fdescribe('WPS-service integration', () => {
       buildingAndDamageClassesRef
     ];
 
-    expectOutputsToBeSet('c1', VulnerabilityModel, inputs, outputs, completeProductStore).subscribe(consecutiveProducts => done());
+    expectOutputsToBeSet('c1', VulnerabilityModel, inputs, outputs).subscribe(consecutiveProducts => done());
   }, 10000);
 
   it('Exposure-model should work as expected', (done) => {
@@ -104,7 +103,7 @@ fdescribe('WPS-service integration', () => {
       selectedRowsXml
     ];
 
-    expectOutputsToBeSet('c1', ExposureModel, inputs, outputs, completeProductStore).subscribe(consecutiveProducts => done());
+    expectOutputsToBeSet('c1', ExposureModel, inputs, outputs).subscribe(consecutiveProducts => done());
   }, 10000);
 
   it('EQ-simulation should work as expected', (done) => {
@@ -122,7 +121,7 @@ fdescribe('WPS-service integration', () => {
       selectedEqs
     ];
 
-    expectOutputsToBeSet('c1', QuakeLedger, inputs, outputs, completeProductStore).pipe(
+    expectOutputsToBeSet('c1', QuakeLedger, inputs, outputs).pipe(
 
       switchMap((allProds: Product[]) => {
 
@@ -134,7 +133,7 @@ fdescribe('WPS-service integration', () => {
           ...selectedEq
         }];
 
-        return expectOutputsToBeSet('c1', EqSelection, newInputs, newOutpus, allProds);
+        return expectOutputsToBeSet('c1', EqSelection, allProds.concat(newInputs), newOutpus);
 
       }),
 
@@ -152,7 +151,7 @@ fdescribe('WPS-service integration', () => {
           shakemapRefOutput
         ];
 
-        return expectOutputsToBeSet('c1', Shakyground, newInputs, newOutpus, allProds);
+        return expectOutputsToBeSet('c1', Shakyground, newInputs, newOutpus);
       })
 
     ).subscribe(out => done());
@@ -165,16 +164,14 @@ fdescribe('WPS-service integration', () => {
 
 
 function expectOutputsToBeSet(
-  scenario: string, process: Process, inputs: Product[], outputs: Product[], consecutiveProducts: Product[]): Observable<Product[]> {
+  scenario: string, process: Process, inputs: Product[], outputs: Product[]): Observable<Product[]> {
 
   const store: Store<State> = TestBed.get(Store);
   store.dispatch(new ScenarioChosen({ scenario }));
 
-  consecutiveProducts = consecutiveProducts.concat(inputs);
-
   store.dispatch(new ClickRunProcess({
-    productsProvided: consecutiveProducts,
-    process: QuakeLedger
+    productsProvided: inputs,
+    process
   }));
 
   const outputIds = outputs.map(o => o.uid);
@@ -207,7 +204,7 @@ function expectOutputsToBeSet(
         }
       }
       // store all set products in the inter-test-product-store.
-      consecutiveProducts = products.filter(prd => prd.value !== undefined);
+      const consecutiveProducts = products.filter(prd => prd.value !== undefined);
       return consecutiveProducts;
     })
   );

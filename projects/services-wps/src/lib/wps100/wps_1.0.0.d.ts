@@ -179,14 +179,14 @@ export interface RequestBaseType {
 }
 
 export interface InputReferenceType {
-   body: any;
-   bodyReference: InputReferenceType_BodyReference;
    href: string;
-   header?: any;
-   method?: string;
    mimeType?: string;
    encoding?: string;
    schema?: string;
+   body?: any;
+   bodyReference?: InputReferenceType_BodyReference;
+   header?: any;
+   method?: 'GET' | 'POST' | 'PUT' | 'HEAD' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
 }
 
 export interface LiteralOutputType {

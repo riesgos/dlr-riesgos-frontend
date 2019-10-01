@@ -1,6 +1,7 @@
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { ProcessStateAvailable, WpsProcess } from 'src/app/wps/wps.datatypes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { shakemapXmlRefOutput } from './shakyground';
 
 
 export const physicalImpact: VectorLayerData = {
@@ -22,8 +23,8 @@ export const PhysicalImpactAssessment: WizardableProcess & WpsProcess = {
     description: '',
     url: 'http://riesgos.dlr.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',
-    requiredProducts: ['ShakygroundProcess_shakeMapFile_shakemap'],
-    providedProducts: ['pia_physicalImpact'],
+    requiredProducts: [shakemapXmlRefOutput.uid],
+    providedProducts: [physicalImpact.uid],
     state: new ProcessStateAvailable(),
     wizardProperties: {
         providerName: 'German Aerospace Center (DLR)',

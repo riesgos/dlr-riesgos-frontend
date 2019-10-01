@@ -12,7 +12,7 @@ import { WorkflowControl } from './wps.workflowcontrol';
 import { QuakeLedger, inputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
 import { inputBoundingboxPeru, QuakeLedgerPeru } from '../configuration/peru/quakeledger';
-import { Shakyground, shakemapWmsOutput, shakemapRefOutput } from '../configuration/chile/shakyground';
+import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, epicenter, lat, lon, mag } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
@@ -24,6 +24,7 @@ import { hydrologicalSimulation, geomerHydrological } from '../configuration/equ
 import { Deus, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
+import { Reliability, country, hazard, damage_consumer_areas } from '../configuration/chile/reliability';
 
 
 
@@ -200,6 +201,7 @@ export class WpsEffects {
                     DeusTranslator,
                     Deus,
                     TsService,
+                    Reliability,
                     PhysicalImpactAssessment
                 ];
                 products = [
@@ -207,10 +209,11 @@ export class WpsEffects {
                     assetcategory, losscategory, taxonomies, fragilityRef,
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
-                    selectedEq, shakemapWmsOutput, shakemapRefOutput,
+                    selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     loss, damage, transition, updated_exposure,
                     lat, lon, mag, epicenter,
                     fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
+                    country, hazard, damage_consumer_areas,
                     physicalImpact
                 ];
                 break;
@@ -234,7 +237,7 @@ export class WpsEffects {
                 products = [
                     inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
-                    selectedEq, shakemapWmsOutput, shakemapRefOutput,
+                    selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     lat, lon, mag, epicenter
                 ];
                 break;

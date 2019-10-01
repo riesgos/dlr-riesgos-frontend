@@ -1,6 +1,6 @@
 import { CustomProcess, ProcessStateUnavailable, Product, WatchingProcess } from 'src/app/wps/wps.datatypes';
 import { fragilityRef } from './modelProp';
-import { shakemapRefOutput } from './shakyground';
+import { shakemapXmlRefOutput } from './shakyground';
 import { exposureRef } from './assetmaster';
 
 /**
@@ -18,9 +18,9 @@ export const fragilityRefDeusInput = {
 };
 
 export const shakemapRefDeusInput = {
-    ...shakemapRefOutput,
+    ...shakemapXmlRefOutput,
     description: {
-        ...shakemapRefOutput.description,
+        ...shakemapXmlRefOutput.description,
         id: 'intensity'
     },
     uid: 'deusTranslator_intensity'
@@ -39,7 +39,7 @@ export const exposureRefDeusInput = {
 export const DeusTranslator: WatchingProcess = {
     id: 'DeusTranslator',
     name: 'DeusTranslator',
-    requiredProducts: [fragilityRef, shakemapRefOutput, exposureRef].map(p => p.uid),
+    requiredProducts: [fragilityRef, shakemapXmlRefOutput, exposureRef].map(p => p.uid),
     providedProducts: [fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
     state: new ProcessStateUnavailable(),
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
@@ -50,7 +50,7 @@ export const DeusTranslator: WatchingProcess = {
                     ...fragilityRefDeusInput,
                     value: newProduct.value
                 }];
-            case shakemapRefOutput.uid:
+            case shakemapXmlRefOutput.uid:
                 console.log(`DeusTranslator adding value for ${newProduct.uid}...`);
                 return [{
                     ...shakemapRefDeusInput,

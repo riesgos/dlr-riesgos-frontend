@@ -1,0 +1,68 @@
+<wps:Execute xmlns:wps="http://www.opengis.net/wps/1.0.0" service="WPS" version="1.0.0">
+    <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess</p0:Identifier>
+    <wps:DataInputs>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">lonmin</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">lonmin</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>-71.8</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">lonmax</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">lonmax</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>-71.4</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">latmin</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">latmin</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>-33.2</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">latmax</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">latmax</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>-33.0</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">querymode</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">querymode</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>intersects</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">schema</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">schema</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>SARA_v1.0</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">assettype</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">assettype</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>res</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+    </wps:DataInputs>
+    <wps:ResponseForm>
+        <wps:ResponseDocument storeExecuteResponse="true" status="true">
+            <wps:Output mimeType="application/json" asReference="false">
+                <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">selectedRowsGeoJson</p0:Identifier>
+            </wps:Output>
+        </wps:ResponseDocument>
+    </wps:ResponseForm>
+</wps:Execute>

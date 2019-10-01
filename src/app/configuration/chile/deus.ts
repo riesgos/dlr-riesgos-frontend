@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product, WatchingProcess } from 'src/app/wps/wps.datatypes';
-import { shakemapRefOutput } from './shakyground';
+import { shakemapXmlRefOutput } from './shakyground';
 import { schema, exposureRef } from './assetmaster';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';

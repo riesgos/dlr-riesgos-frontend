@@ -207,6 +207,7 @@ export class LayerMarshaller  {
                     layers.push(layer);
                 }
             }
+            layers.reverse();
             return layers;
         }));
     }

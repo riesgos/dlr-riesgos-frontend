@@ -1,14 +1,16 @@
 import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability } from '../wps_datatypes';
-import { WPSCapabilitiesType, IWpsExecuteProcessBody, Execute, DataInputsType,
-         InputType, ResponseFormType, DataType, IWpsExecuteResponse, DocumentOutputDefinitionType,
-         ResponseDocumentType } from './wps_1.0.0';
+import {
+    WPSCapabilitiesType, IWpsExecuteProcessBody, Execute, DataInputsType,
+    InputType, ResponseFormType, DataType, IWpsExecuteResponse, DocumentOutputDefinitionType,
+    ResponseDocumentType, InputReferenceType, LiteralDataType
+} from './wps_1.0.0';
 
 
 
 export class WpsMarshaller100 implements WpsMarshaller {
-    
+
     constructor() { }
-    
+
     getCapabilitiesUrl(baseurl: string): string {
         return `${baseurl}?service=WPS&request=GetCapabilities&version=1.0.0`;
     }
@@ -185,63 +187,86 @@ export class WpsMarshaller100 implements WpsMarshaller {
     }
 
 
-    protected marshalInputs(inputArr: WpsInput[]) {
-
+    protected marshalInputs(inputArr: WpsInput[]): DataInputsType {
         const theInputs: InputType[] = [];
-
         for (const inp of inputArr) {
-
             if (inp.value === null || inp.value === undefined) {
                 throw new Error(`Value for input ${inp.description.id} is not set`);
             }
-
-            let data: DataType;
-            switch (inp.description.type) {
-                case 'literal':
-                    data = {
-                        literalData: { value: String(inp.value) }
-                    };
-                    break;
-                case 'bbox':
-                    data = {
-                        boundingBoxData: {
-                            lowerCorner: [inp.value[1], inp.value[0]],
-                            upperCorner: [inp.value[3], inp.value[2]]
-                        }
-                    };
-                    break;
-                case 'complex':
-                    switch (inp.description.format) {
-                        case 'text/xml':
-                            data = {
-                                complexData: {
-                                    content: [inp.value],  // @TODO: we assume here that text/xml-data is already stringified
-                                    mimeType: inp.description.format
-                                }
-                            };
-                            break;
-                        default:
-                            data = {
-                                complexData: {
-                                    content: [JSON.stringify(inp.value)],
-                                    mimeType: inp.description.format
-                                }
-                            };
-                    }
-                    break;
-            }
-
-            theInputs.push({
-                identifier: { value: inp.description.id },
-                title: { value: inp.description.id },
-                _abstract: { value: '' },
-                // @ts-ignore
-                data: data,
-            });
+            const marshalledInput = this.marshalInput(inp);
+            theInputs.push(marshalledInput);
         }
         const inputs: DataInputsType = {
             input: theInputs
         };
         return inputs;
+    }
+
+    protected marshalInput(input: WpsInput): InputType {
+        const id = input.description.id;
+        const title = input.description.id;
+        const abstract = '';
+
+        const inputType: InputType = {
+            identifier: { value: id },
+            title: { value: title },
+            _abstract: { value: abstract }
+        };
+
+        if (input.description.reference) {
+            inputType.reference = this.marshalReferenceInput(input);
+        } else {
+            inputType.data = this.marshalDataInput(input);
+        }
+
+        return inputType;
+    }
+
+    protected marshalDataInput(input: WpsInput): DataType {
+        let data: DataType;
+        switch (input.description.type) {
+            case 'literal':
+                data = {
+                    literalData: { value: String(input.value) }
+                };
+                break;
+            case 'bbox':
+                data = {
+                    boundingBoxData: {
+                        lowerCorner: [input.value[1], input.value[0]],
+                        upperCorner: [input.value[3], input.value[2]]
+                    }
+                };
+                break;
+            case 'complex':
+                switch (input.description.format) {
+                    case 'text/xml':
+                        data = {
+                            complexData: {
+                                content: [input.value],  // @TODO: we assume here that text/xml-data is already stringified
+                                mimeType: input.description.format
+                            }
+                        };
+                        break;
+                    default:
+                        data = {
+                            complexData: {
+                                content: [JSON.stringify(input.value)],
+                                mimeType: input.description.format
+                            }
+                        };
+                }
+                break;
+        }
+        return data;
+    }
+
+    protected marshalReferenceInput(input: WpsInput): InputReferenceType {
+        const ref: InputReferenceType = {
+            href: input.value,
+            method: 'GET',
+            mimeType: input.description.format
+        };
+        return ref;
     }
 }

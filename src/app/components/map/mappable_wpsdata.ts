@@ -70,5 +70,5 @@ export const isWmsLayerDescription = (description: ProductDescription): descript
 
 export const isWmsData = (data: Product): data is WmsLayerData => {
     return isWmsLayerDescription(data.description)
-        || (data.description['format'] === 'string' && (data.value as string).includes('service=wms'));
+        || ((data.description['format'] === 'string' || data.description['format'] === 'application/WMS') && (data.value as string).includes('wms'));
 };

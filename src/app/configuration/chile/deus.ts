@@ -68,29 +68,13 @@ export const Deus: WizardableProcess & WpsProcess = {
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',
     state: new ProcessStateUnavailable(),
-    name: 'DeusProcess',
-    description: 'Damage and exposure update service',
+    name: 'Vulnerability after EQ',
+    description: 'This service updates the vulnerability from the previous step using a given earthquake.',
     requiredProducts: [loss, schema, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
     providedProducts: [damage, transition, updated_exposure].map(p => p.uid),
     wizardProperties: {
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
         shape: 'dot-circle'
-    },
-    // onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-    //     if (newProduct.uid === buildingAndDamageClassesRef.uid) {
-    //         const copy = {...newProduct};
-    //         (copy as WpsData).description.id = 'fragility';
-    //         return [copy];
-    //     } else if (newProduct.uid === shakemapRefOutput.uid) {
-    //         const copy = {...newProduct};
-    //         (copy as WpsData).description.id = 'intensity';
-    //         return [copy];
-    //     } else if (newProduct.uid === selectedRowsXmlRef.uid) {
-    //         const copy = {...newProduct};
-    //         (copy as WpsData).description.id = 'exposure';
-    //         return [copy];
-    //     }
-    //     return [];
-    // }
+    }
 };

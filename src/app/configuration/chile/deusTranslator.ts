@@ -30,7 +30,7 @@ export const exposureRefDeusInput = {
     ...exposureRef,
     description: {
         ...exposureRef.description,
-        id: 'exposure'
+        id: 'exposure',
     },
     uid: 'deusTranslator_exposure'
 };
@@ -58,10 +58,13 @@ export const DeusTranslator: WatchingProcess = {
                 }];
             case exposureRef.uid:
                 console.log(`DeusTranslator adding value for ${newProduct.uid}...`);
-                return [{
+                const exposureDeus = {
                     ...exposureRefDeusInput,
                     value: newProduct.value
-                }];
+                };
+                delete exposureDeus.description.vectorLayerAttributes; // To avoid displaying exposure on map twice
+                delete exposureDeus.description.name;
+                return [exposureDeus];
             default:
                 return [];
         }

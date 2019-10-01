@@ -17,7 +17,7 @@ class WpsServer:
         execution = self.server.execute(self.id, self.inputs, self.outputs)
         monitorExecution(execution)
         print("printing request ...")
-        request = execution.buildRequest(processId, inputs, outputs)
+        request = execution.buildRequest(self.id, inputs, outputs)
         reqString = etree.tostring(request)
         print(reqString)
         return execution.processOutputs
@@ -43,13 +43,29 @@ catalogueService = WpsServer(
 )
 
 catOutputs = catalogueService.execute()
+selectedRows = catOutputs[0].data
+selectedRow = selectedRows.features[0]
+
+print(f"catalogue returned the data {selectedRow}")
+
+
+
 
 
 eqsimService = WpsServer(
-
+    'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+    'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
+    [('quakeMLFile'), ComplexDataInput(selectedRow)],
+    [('shakeMapFile', True, 'text/xml')],
 )
 
 eqOutputs = eqsimService.execute()
+shakemapXmlRef = eqOutputs[0].data
+
+print(f"shakyground returned the data {shakemapXmlRef}")
+
+
+
 
 
 reliabilityService = WpsServer(
@@ -57,7 +73,7 @@ reliabilityService = WpsServer(
     'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
     [
         ('intensity', 
-        ComplexDataInput('http://rz-vm140.gfz-potsdam.de:80/wps/RetrieveResultServlet?id=b508dc79-6171-4b96-b2a1-f3896aec43f7shakeMapFile.3a944430-eaa2-4c9e-93c6-c8e11415bb08')),
+        ComplexDataInput(shakemapXmlRef)),
         ('country', 'chile'),
         ('hazard', 'earthquake')
     ],
@@ -67,3 +83,5 @@ reliabilityService = WpsServer(
 )
 
 relOutputs = reliabilityService.execute()
+
+print(f"reliability returned the value {relOutputs[0]}")

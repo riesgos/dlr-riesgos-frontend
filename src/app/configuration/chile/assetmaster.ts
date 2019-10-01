@@ -148,7 +148,6 @@ export const exposureRef: VectorLayerData & WpsData & Product = {
         const r = 255 * (pop - pop0) / (pop1 - pop0);
         const g = 255 * (1 - (pop - pop0) / (pop1 - pop0));
         const b = 200;
-        console.log(`pop-sum: ${pop}, rgb: ${r} ${g} ${b}`);
 
         return new olStyle({
           fill: new olFill({

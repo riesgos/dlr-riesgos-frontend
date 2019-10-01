@@ -6,6 +6,8 @@ import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userc
 import { p } from './quakeledger';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { shakemapRefDeusInput } from './deusTranslator';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Feature as olFeature } from 'ol/Feature';
 
 
 
@@ -61,8 +63,20 @@ export const damage_consumer_areas: WpsData & Product & VectorLayerData = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: function () {},
-            text: function () {}
+            style: (feature: olFeature, resolution: number) => {
+                return new olStyle({
+                  fill: new olFill({
+                    color: [100, 10, 50, 0.3],
+                  }),
+                  stroke: new olStroke({
+                    color: [100, 10, 50, 1],
+                    witdh: 2
+                  })
+                });
+              },
+              text: (feature: olFeature) => {
+                return JSON.stringify(feature.properties);
+              }
         }
     },
     value: null
@@ -72,8 +86,8 @@ export const damage_consumer_areas: WpsData & Product & VectorLayerData = {
 export const Reliability: WpsProcess & WizardableProcess = {
     url: 'http://91.250.85.221/wps/WebProcessingService',
     id: 'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
-    name: 'System reliabilty',
-    description: 'Process for performing the reliability of infrastructure networks',
+    name: 'System reliabilty after EQ',
+    description: 'Process for evaluating the reliability of infrastructure networks',
     wpsVersion: '1.0.0',
     state: new ProcessStateUnavailable(),
     requiredProducts: [shakemapRefDeusInput, country, hazard].map(p => p.uid),

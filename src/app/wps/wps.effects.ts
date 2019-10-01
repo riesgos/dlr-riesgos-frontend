@@ -25,6 +25,7 @@ import { Deus, loss, damage, transition, updated_exposure } from '../configurati
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
 import { Reliability, country, hazard, damage_consumer_areas } from '../configuration/chile/reliability';
+import { FlooddamageProcess, durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings } from '../configuration/equador/damageAssessment';
 
 
 
@@ -220,11 +221,13 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     LaharWps,
-                    geomerHydrological
+                    geomerHydrological,
+                    FlooddamageProcess
                 ];
                 products = [
                     direction, intensity, parameter, laharWms,
-                    hydrologicalSimulation
+                    hydrologicalSimulation,
+                    durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings
                 ];
                 break;
             case 'p1':

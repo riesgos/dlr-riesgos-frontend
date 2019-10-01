@@ -1,7 +1,7 @@
 from owslib.wps import WebProcessingService, printInputOutput, monitorExecution, ComplexDataInput, BoundingBoxDataInput
 from owslib.ows import BoundingBox
 from owslib.etree import etree
-
+import json
 
 
 class WpsServer:
@@ -17,7 +17,7 @@ class WpsServer:
         execution = self.server.execute(self.id, self.inputs, self.outputs)
         monitorExecution(execution)
         print("printing request ...")
-        request = execution.buildRequest(self.id, inputs, outputs)
+        request = execution.buildRequest(self.id, self.inputs, self.outputs)
         reqString = etree.tostring(request)
         print(reqString)
         return execution.processOutputs
@@ -37,13 +37,13 @@ catalogueService = WpsServer(
         ('zmin', '0'),
         ('mmax', '9.0'),
         ('mmin', '6.0'),
-        ('input-boundingbox', BoundingBoxDataInput([-73.5, -34, -70.5, -29.0]))
+        ('input-boundingbox', BoundingBoxDataInput([-80, -35, -70, -25]))
     ],
     [('selectedRows', False, 'application/vnd.geo+json')]
 )
 
 catOutputs = catalogueService.execute()
-selectedRows = catOutputs[0].data
+selectedRows = json.loads(catOutputs[0].data[0])
 selectedRow = selectedRows.features[0]
 
 print(f"catalogue returned the data {selectedRow}")
@@ -72,7 +72,7 @@ reliabilityService = WpsServer(
     'http://91.250.85.221/wps/WebProcessingService',
     'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
     [
-        ('intensity', 
+        ('intensity',
         ComplexDataInput(shakemapXmlRef)),
         ('country', 'chile'),
         ('hazard', 'earthquake')

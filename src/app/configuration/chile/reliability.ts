@@ -86,7 +86,7 @@ export const damage_consumer_areas: WpsData & Product & VectorLayerData = {
 export const Reliability: WpsProcess & WizardableProcess = {
     url: 'http://91.250.85.221/wps/WebProcessingService',
     id: 'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
-    name: 'System reliabilty after EQ',
+    name: 'System reliability after EQ',
     description: 'Process for evaluating the reliability of infrastructure networks',
     wpsVersion: '1.0.0',
     state: new ProcessStateUnavailable(),

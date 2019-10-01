@@ -3,6 +3,12 @@
     "Stories": "Escenarios",
     "Pilot regions": "Áreas de Estudio",
     "Pilot region description": "Para comprender, describir y cuantificar situaciones de riesgo múltiple, RIESGOS trabaja con escenarios (casos  de  estudio  específicos)  en  áreas  de estudio seleccionadas de Chile, Ecuador y Perú. Los escenarios representarán situaciones realistas de riesgos múltiples con efectos en cascada. Por favor, seleccione una de las siguientes opciones:",
+    "Further information can be found on the project website.": "Se puede encontrar más información en la página web del proyecto.",
+    "website": "pagina web",
+
+    "c1": "Chile",
+    "p1": "Peru", 
+    "e1": "Ecuador",
 
     "Unavailable": "Indisponible",
     "Available": "Disponible",
@@ -24,10 +30,15 @@
     "Catalogue of historical earthquakes.": "Catálogo de terremotos históricos.",
     "Groundmotion Simulation": "Simulación de movimiento de tierra",
     "Simulates the ground motion caused by a given eathquake": "Simula el movimiento del suelo causado por un terremoto dado",
-    "Vulnerability after EQ": "Vulnerabilidad después del terremoto",
+    "Vulnerability after EQ": "Vulnerabilidad post-terremoto",
     "This service updates the vulnerability from the previous step using a given earthquake.": "Este servicio actualiza la vulnerabilidad del paso anterior usando un terremoto dado.",
     "Earthquake/tsunami interaction": "Interacción terremoto / tsunami",
     "Relates a tsunami to a given earthquake": "Relaciona un tsunami con un terremoto dado",
+
+    "System reliability after EQ": "Confiabilidad post-terremoto",
+    "Process for evaluating the reliability of infrastructure networks": "Proceso para evaluar la confiabilidad de las redes de infraestructura.",
+
+    "Physical Impact": "Impacto físico",
 
     "Layer control": "Control de las capas",
     "Results": "Resultados",

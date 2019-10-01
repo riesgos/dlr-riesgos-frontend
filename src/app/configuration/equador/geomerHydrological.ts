@@ -13,7 +13,7 @@ export const hydrologicalSimulation: WmsLayerData & WpsData = {
         id: 'hydrologicalSimulation',
         name: 'Hydrological Simulation',
         format: 'application/WMS',
-        reference: true,
+        reference: false,
         type: 'complex',
     },
     value: null

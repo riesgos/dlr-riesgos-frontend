@@ -1,68 +1,70 @@
-<wps:Execute xmlns:wps="http://www.opengis.net/wps/1.0.0" service="WPS" version="1.0.0">
-    <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess</p0:Identifier>
-    <wps:DataInputs>
-        <wps:Input>
-            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">lonmin</p0:Identifier>
-            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">lonmin</p0:Title>
-            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
-            <wps:Data>
-                <wps:LiteralData>-71.8</wps:LiteralData>
-            </wps:Data>
-        </wps:Input>
-        <wps:Input>
-            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">lonmax</p0:Identifier>
-            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">lonmax</p0:Title>
-            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
-            <wps:Data>
-                <wps:LiteralData>-71.4</wps:LiteralData>
-            </wps:Data>
-        </wps:Input>
-        <wps:Input>
-            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">latmin</p0:Identifier>
-            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">latmin</p0:Title>
-            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
-            <wps:Data>
-                <wps:LiteralData>-33.2</wps:LiteralData>
-            </wps:Data>
-        </wps:Input>
-        <wps:Input>
-            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">latmax</p0:Identifier>
-            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">latmax</p0:Title>
-            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
-            <wps:Data>
-                <wps:LiteralData>-33.0</wps:LiteralData>
-            </wps:Data>
-        </wps:Input>
-        <wps:Input>
-            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">querymode</p0:Identifier>
-            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">querymode</p0:Title>
-            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
-            <wps:Data>
-                <wps:LiteralData>intersects</wps:LiteralData>
-            </wps:Data>
-        </wps:Input>
-        <wps:Input>
-            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">schema</p0:Identifier>
-            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">schema</p0:Title>
-            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
-            <wps:Data>
-                <wps:LiteralData>SARA_v1.0</wps:LiteralData>
-            </wps:Data>
-        </wps:Input>
-        <wps:Input>
-            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">assettype</p0:Identifier>
-            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">assettype</p0:Title>
-            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
-            <wps:Data>
-                <wps:LiteralData>res</wps:LiteralData>
-            </wps:Data>
-        </wps:Input>
-    </wps:DataInputs>
-    <wps:ResponseForm>
-        <wps:ResponseDocument storeExecuteResponse="true" status="true">
-            <wps:Output mimeType="application/json" asReference="false">
-                <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">selectedRowsGeoJson</p0:Identifier>
-            </wps:Output>
-        </wps:ResponseDocument>
-    </wps:ResponseForm>
-</wps:Execute>
+<wps100:Execute xmlns:wps100="http://www.opengis.net/wps/1.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="WPS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_request.xsd">
+    <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess</ows110:Identifier>
+    <wps100:DataInputs>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">tlat</ows110:Identifier>
+            <wps100:Data>
+                <wps100:LiteralData>-35.00</wps100:LiteralData>
+            </wps100:Data>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">tlon</ows110:Identifier>
+            <wps100:Data>
+                <wps100:LiteralData>5.00</wps100:LiteralData>
+            </wps100:Data>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">etype</ows110:Identifier>
+            <wps100:Data>
+                <wps100:LiteralData>expert</wps100:LiteralData>
+            </wps100:Data>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">p</ows110:Identifier>
+            <wps100:Data>
+                <wps100:LiteralData>0.1</wps100:LiteralData>
+            </wps100:Data>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">zmax</ows110:Identifier>
+            <wps100:Data>
+                <wps100:LiteralData>100</wps100:LiteralData>
+            </wps100:Data>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">zmin</ows110:Identifier>
+            <wps100:Data>
+                <wps100:LiteralData>0</wps100:LiteralData>
+            </wps100:Data>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">mmax</ows110:Identifier>
+            <wps100:Data>
+                <wps100:LiteralData>9.0</wps100:LiteralData>
+            </wps100:Data>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">mmin</ows110:Identifier>
+            <wps100:Data>
+                <wps100:LiteralData>6.0</wps100:LiteralData>
+            </wps100:Data>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">input-boundingbox</ows110:Identifier>
+            <wps100:Data>
+                <wps100:BoundingBoxData crs="epsg:4326" dimensions="2">
+                    <ows110:LowerCorner xmlns:ows110="http://www.opengis.net/ows/1.1">-73.5 -34</ows110:LowerCorner>
+                    <ows110:UpperCorner xmlns:ows110="http://www.opengis.net/ows/1.1">-70.5 -29.0</ows110:UpperCorner>
+                </wps100:BoundingBoxData>
+            </wps100:Data>
+        </wps100:Input>
+    </wps100:DataInputs>
+    <wps100:ResponseForm>
+        <wps100:ResponseDocument storeExecuteResponse="true" status="true" lineage="false">
+            <wps100:Output mimeType="application/vnd.geo+json" asReference="false">
+                <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">selectedRows</ows110:Identifier>
+            </wps100:Output>
+        </wps100:ResponseDocument>
+    </wps100:ResponseForm>
+</wps100:Execute>

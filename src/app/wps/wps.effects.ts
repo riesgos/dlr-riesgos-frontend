@@ -20,12 +20,13 @@ import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
         assettype, schema, querymode } from '../configuration/chile/assetmaster';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityRef } from '../configuration/chile/modelProp';
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
-import { hydrologicalSimulation, geomerHydrological } from '../configuration/equador/geomerHydrological';
+import { hydrologicalSimulation, geomerFlood, durationTiff,
+    velocityTiff, depthTiff, geomerFloodWcsProvider } from '../configuration/equador/geomerHydrological';
 import { Deus, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
 import { Reliability, country, hazard, damage_consumer_areas } from '../configuration/chile/reliability';
-import { FlooddamageProcess, durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings } from '../configuration/equador/damageAssessment';
+import { FlooddamageProcess, damageManzanas, damageBuildings } from '../configuration/equador/damageAssessment';
 
 
 
@@ -104,6 +105,7 @@ export class WpsEffects {
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
+            console.log(toGraphvizDestructured(processes, products, graph));
             return new WpsDataUpdate({processes, products, graph});
 
         })
@@ -220,7 +222,8 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     LaharWps,
-                    geomerHydrological,
+                    geomerFlood,
+                    geomerFloodWcsProvider,
                     FlooddamageProcess
                 ];
                 products = [

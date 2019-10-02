@@ -166,7 +166,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         for (const layergroup of layergroups) {
             const title = layergroup.get('title');
             const layers = layergroup.getLayers().getArray();
-            console.log(`2nd level: ${title}:`, layers);
+            console.log(`2nd level: ${title}:`, layers, layers.map(l => l.get('id')));
         }
     }
 

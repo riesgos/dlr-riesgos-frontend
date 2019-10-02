@@ -64,18 +64,40 @@ export const damage_consumer_areas: WpsData & Product & VectorLayerData = {
         type: 'complex',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
+                const props = feature.getProperties();
+                let probDisr = 0;
+                if (props['Prob_Disruption']) {
+                    probDisr = props['Prob_Disruption'];
+                }
+
+                let r, g, b;
+                if (probDisr <= 0.1) {
+                    r = 0;
+                    g = 255;
+                    b = 0;
+                } else if (probDisr <= 0.5) {
+                    const perc = ((probDisr - 0.5) / (0.1 - 0.5));
+                    r = 255 * perc;
+                    g = 255 * (1 - perc);
+                    b = 0;
+                } else {
+                    r = 255;
+                    g = 0;
+                    b = 0;
+                }
+
                 return new olStyle({
                   fill: new olFill({
-                    color: [100, 10, 50, 0.3],
+                    color: [r, g, b, 0.3],
                   }),
                   stroke: new olStroke({
-                    color: [100, 10, 50, 1],
+                    color: [r, g, b, 1],
                     witdh: 2
                   })
                 });
               },
               text: (feature: olFeature) => {
-                return JSON.stringify(feature.properties);
+                return JSON.stringify(feature.getProperties());
               }
         }
     },

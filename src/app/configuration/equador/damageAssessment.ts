@@ -2,44 +2,10 @@ import { WizardPageComponent } from 'src/app/components/config_wizard/wizard-pag
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
+import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
 
 
 
-export const durationTiff: WpsData & Product = {
-    uid: 'FlooddamageProcess_duration',
-    description: {
-        id: 'duration-h',
-        reference: true,
-        type: 'complex',
-        format: 'image/geotiff',
-        description: 'Tiff file with the duration of the flood in hours'
-    },
-    value: null
-};
-
-export const velocityTiff: WpsData & Product = {
-    uid: 'FlooddamageProcess_velocity',
-    description: {
-        id: 'vsmax-ms',
-        reference: true,
-        type: 'complex',
-        format: 'image/geotiff',
-        description: 'Tiff file with the maximum velocity of the flood in m/s'
-    },
-    value: null
-};
-
-export const depthTiff: WpsData & Product = {
-    uid: 'FlooddamageProcess_depth',
-    description: {
-        id: 'wdmax-cm',
-        reference: true,
-        type: 'complex',
-        format: 'image/geotiff',
-        description: 'Tiff file with the maximum water depth of the flood in cm'
-    },
-    value: null
-};
 
 
 export const damageManzanas: WpsData & Product = {

@@ -1,17 +1,26 @@
 .scenario-footer {
   position: absolute;
-  bottom: 0px;
-  border-top: 1px solid #e5e5e5;
   background-color: #fff;
+  bottom: 0px;
   height: 20%;
 }
 
 .scenario-footer-inner {
+  border-top: 1px solid #e5e5e5;
   width: 100vw;
-  padding: 2em 0;
+  margin: 0 auto;
+  max-width: 80%;
+  padding: 2em 0 0 0;
+}
+
+.scenario-footer-second {
+  border-top: 1px solid #e5e5e5;
+  width: 100vw;
+  text-align: right;
   margin: 0 auto;
   max-width: 80%;
 }
+
 
 .scenarios-view {
     margin: 0.5rem;

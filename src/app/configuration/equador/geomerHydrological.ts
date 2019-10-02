@@ -23,7 +23,7 @@ export const hydrologicalSimulation: WmsLayerData & WpsData = {
 export const geomerFlood: WizardableProcess & CustomProcess = {
     id: 'geomerHydrological',
     name: 'Flood',
-    requiredProducts: [laharWms].map(p => p.uid),
+    requiredProducts: [direction, laharWms].map(p => p.uid),
     providedProducts: [hydrologicalSimulation.uid],
     state: new ProcessStateUnavailable(),
     wizardProperties: {
@@ -32,9 +32,15 @@ export const geomerFlood: WizardableProcess & CustomProcess = {
         shape: 'tsunami'
     },
     execute: (inputs: Product[]): Observable<Product[]> => {
+        const directionProduct = inputs.find(prd => prd.uid === direction.uid);
         return of([{
             ...hydrologicalSimulation,
-            value: ['https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?version=1.3.0&service=wms&request=GetCapabilities']
+            value: [
+                'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?Service=WMS&Request=GetMap&Version=1.1.1&layers=rain_cotopaxi:duration_latacunga_city&width=351&height=409&format=image/png&bbox=-78.0,-40.0,-50.0,-1.0&srs=EPSG:4326',
+                'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?Service=WMS&Request=GetMap&Version=1.1.1&layers=rain_cotopaxi:v_at_wdmax_latacunga_city&width=351&height=409&format=image/png&bbox=-78.0,-40.0,-50.0,-1.0&srs=EPSG:4326',    
+                'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?Service=WMS&Request=GetMap&Version=1.1.1&layers=rain_cotopaxi:wd_max_latacunga_city&width=351&height=409&format=image/png&bbox=-78.0,-40.0,-50.0,-1.0&srs=EPSG:4326'
+                // 'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?version=1.3.0&service=wms&request=GetCapabilities'
+            ]
         }]);
     }
 };

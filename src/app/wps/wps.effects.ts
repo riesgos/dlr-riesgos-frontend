@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen,
         ClickRunProcess, WpsDataUpdate, RestartingFromProcess, RestaringScenario } from './wps.actions';
-import { toGraphviz } from './wps.graphviz';
+import { toGraphviz, toGraphvizDestructured } from './wps.graphviz';
 import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action, select } from '@ngrx/store';
@@ -104,7 +104,6 @@ export class WpsEffects {
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
-
             return new WpsDataUpdate({processes, products, graph});
 
         })

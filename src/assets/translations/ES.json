@@ -10,6 +10,10 @@
     "p1": "Peru", 
     "e1": "Ecuador",
 
+    "Showcase Chile": "Región de Valparaíso",
+    "Showcase Ecuador": "Región Cotopaxi",
+    "Showcase Peru": "Región Metropolitana, Perú",
+
     "Unavailable": "Indisponible",
     "Available": "Disponible",
     "Running": "Ejecutando",
@@ -61,8 +65,5 @@
     "Available RIESGOS stories for the Andes region": "Escenarios disponibles de RIESGOS para la región de los Andes",
     "The stories are developed for the following hazards and their interactions, ": "Las escenarios se desarrollan para los siguientes peligros y sus interacciones, ",
     "considering the following \"elements at risk\".": "considerando los siguientes \"elementos en riesgo\".",
-    "Showcase": "Escenario",
-    "Showcase Chile": "Escenario Chile",
-    "Showcase Ecuador": "Escenario Ecuador",
-    "Showcase Peru": "Escenario Peru"
+    "Showcase": "Escenario"
 }

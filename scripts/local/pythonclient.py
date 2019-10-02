@@ -37,14 +37,14 @@ catalogueService = WpsServer(
         ('zmin', '0'),
         ('mmax', '9.0'),
         ('mmin', '6.0'),
-        ('input-boundingbox', BoundingBoxDataInput([-80, -35, -70, -25]))
+        ('input-boundingbox', BoundingBoxDataInput([-35,-80,   -25,-70]))
     ],
     [('selectedRows', False, 'application/vnd.geo+json')]
 )
 
 catOutputs = catalogueService.execute()
 selectedRows = json.loads(catOutputs[0].data[0])
-selectedRow = selectedRows.features[0]
+selectedRow = selectedRows['features'][0]
 
 print(f"catalogue returned the data {selectedRow}")
 
@@ -55,7 +55,7 @@ print(f"catalogue returned the data {selectedRow}")
 eqsimService = WpsServer(
     'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
-    [('quakeMLFile'), ComplexDataInput(selectedRow)],
+    [('quakeMLFile', ComplexDataInput(str([selectedRow])))],
     [('shakeMapFile', True, 'text/xml')],
 )
 

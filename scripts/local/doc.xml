@@ -1,69 +1,18 @@
 <wps100:Execute xmlns:wps100="http://www.opengis.net/wps/1.0.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="WPS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_request.xsd">
-    <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess</ows110:Identifier>
+    <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess</ows110:Identifier>
     <wps100:DataInputs>
         <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">tlat</ows110:Identifier>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">quakeMLFile</ows110:Identifier>
             <wps100:Data>
-                <wps100:LiteralData>-35.00</wps100:LiteralData>
-            </wps100:Data>
-        </wps100:Input>
-        <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">tlon</ows110:Identifier>
-            <wps100:Data>
-                <wps100:LiteralData>5.00</wps100:LiteralData>
-            </wps100:Data>
-        </wps100:Input>
-        <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">etype</ows110:Identifier>
-            <wps100:Data>
-                <wps100:LiteralData>expert</wps100:LiteralData>
-            </wps100:Data>
-        </wps100:Input>
-        <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">p</ows110:Identifier>
-            <wps100:Data>
-                <wps100:LiteralData>0.1</wps100:LiteralData>
-            </wps100:Data>
-        </wps100:Input>
-        <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">zmax</ows110:Identifier>
-            <wps100:Data>
-                <wps100:LiteralData>100</wps100:LiteralData>
-            </wps100:Data>
-        </wps100:Input>
-        <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">zmin</ows110:Identifier>
-            <wps100:Data>
-                <wps100:LiteralData>0</wps100:LiteralData>
-            </wps100:Data>
-        </wps100:Input>
-        <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">mmax</ows110:Identifier>
-            <wps100:Data>
-                <wps100:LiteralData>9.0</wps100:LiteralData>
-            </wps100:Data>
-        </wps100:Input>
-        <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">mmin</ows110:Identifier>
-            <wps100:Data>
-                <wps100:LiteralData>6.0</wps100:LiteralData>
-            </wps100:Data>
-        </wps100:Input>
-        <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">input-boundingbox</ows110:Identifier>
-            <wps100:Data>
-                <wps100:BoundingBoxData crs="epsg:4326" dimensions="2">
-                    <ows110:LowerCorner xmlns:ows110="http://www.opengis.net/ows/1.1">-73.5 -34</ows110:LowerCorner>
-                    <ows110:UpperCorner xmlns:ows110="http://www.opengis.net/ows/1.1">-70.5 -29.0</ows110:UpperCorner>
-                </wps100:BoundingBoxData>
+                <wps100:ComplexData>[{\'type\': \'Feature\', \'geometry\': {\'type\': \'Point\', \'coordinates\': [-71.7235, -30.4383]}, \'properties\': {\'publicID\': \'quakeml:quakeledger/CHOA_110\', \'preferredOriginID\': \'quakeml:quakeledger/CHOA_110\', \'preferredMagnitudeID\': \'quakeml:quakeledger/CHOA_110\', \'type\': \'earthquake\', \'description.text\': \'expert\', \'origin.publicID\': \'quakeml:quakeledger/CHOA_110\', \'origin.time.value\': \'2018-01-01T00:00:00.000000Z\', \'origin.depth.value\': \'28.0\', \'origin.creationInfo.value\': \'GFZ\', \'magnitude.publicID\': \'quakeml:quakeledger/CHOA_110\', \'magnitude.mag.value\': \'8.0\', \'magnitude.type\': \'MW\', \'magnitude.creationInfo.value\': \'GFZ\', \'focalMechanism.publicID\': \'quakeml:quakeledger/CHOA_110\', \'focalMechanism.nodalPlanes.nodalPlane1.strike.value\': \'9.0\', \'focalMechanism.nodalPlanes.nodalPlane1.dip.value\': \'18.0\', \'focalMechanism.nodalPlanes.nodalPlane1.rake.value\': \'90.0\', \'focalMechanism.nodalPlanes.preferredPlane\': \'nodalPlane1\'}, \'id\': \'quakeml:quakeledger/CHOA_110\'}]</wps100:ComplexData>
             </wps100:Data>
         </wps100:Input>
     </wps100:DataInputs>
     <wps100:ResponseForm>
         <wps100:ResponseDocument storeExecuteResponse="true" status="true" lineage="false">
-            <wps100:Output mimeType="application/vnd.geo+json" asReference="false">
-                <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">selectedRows</ows110:Identifier>
+            <wps100:Output mimeType="text/xml" asReference="true">
+                <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">shakeMapFile</ows110:Identifier>
             </wps100:Output>
         </wps100:ResponseDocument>
     </wps100:ResponseForm>

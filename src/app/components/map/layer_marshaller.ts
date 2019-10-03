@@ -1,7 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Product } from 'src/app/wps/wps.datatypes';
-import { isWmsData, isVectorLayerData, isBboxLayerData, BboxLayerData, VectorLayerData, WmsLayerData } from './mappable_wpsdata';
+import { Product, ProductDescription } from 'src/app/wps/wps.datatypes';
+import { isWmsData, isVectorLayerData, isBboxLayerData, BboxLayerData, VectorLayerData, WmsLayerData, WmsLayerDescription } from './mappable_wpsdata';
 import { featureCollection } from '@turf/helpers';
 import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@ukis/map-ol';
@@ -140,15 +140,30 @@ export class LayerMarshaller  {
     }
 
     makeWmsLayers(product: WmsLayerData): Observable<ProductRasterLayer[]> {
-
-        let val;
         if (product.description.type === 'complex') {
-            val = product.value[0];
+            const parseProcesses$: Observable<ProductRasterLayer[]>[] = [];
+            for (const val of product.value) {
+                parseProcesses$.push(this.makeWmsLayersFromValue(val, product.uid, product.description));
+            }
+            return forkJoin(...parseProcesses$).pipe(map((results: ProductRasterLayer[][]) => {
+                const newLayers: ProductRasterLayer[] = [];
+                for (const result of results) {
+                    for (const layer of result) {
+                        newLayers.push(layer);
+                    }
+                }
+                return newLayers;
+            }));
         } else if (product.description.type === 'literal') {
-            val = product.value;
+            const val = product.value;
+            return this.makeWmsLayersFromValue(val, product.uid, product.description);
         } else {
             throw new Error(`Could not find a value in product ${product}`);
         }
+
+    }
+
+    private makeWmsLayersFromValue(val: string, uid: string, description: WmsLayerDescription): Observable<ProductRasterLayer[]> {
 
         let wmsParameters$: Observable<WmsParameters>;
         if (val.includes('GetMap')) {
@@ -184,7 +199,7 @@ export class LayerMarshaller  {
                             BBOX: paras.bbox,
                             SRS: paras.srs,
                             TRANSPARENT: 'TRUE',
-                            STYLES: product.description.styles ? product.description.styles[0] : '',
+                            STYLES: description.styles ? description.styles[0] : '',
                         },
                         legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
                             `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
@@ -196,14 +211,14 @@ export class LayerMarshaller  {
                         }
                     });
                     // layer.crossOrigin = 'anonymous';
-                    if (product.description.styles) {
+                    if (description.styles) {
                         layer.actions = [
                             {title: 'switch style', icon: 'switch', action: (layer) => {
                                 console.log('switching style for layer', layer);
                             }}
                         ];
                     }
-                    layer.productId = product.uid;
+                    layer.productId = uid;
                     layers.push(layer);
                 }
             }
@@ -211,7 +226,6 @@ export class LayerMarshaller  {
             return layers;
         }));
     }
-
 
     private parseGetMapUrl(urlString: string): Observable<WmsParameters> {
 
@@ -222,25 +236,25 @@ export class LayerMarshaller  {
         url.searchParams.set('scs', this.mapSvc.getProjection().getCode());
 
         let layers: string[] = [];
-        const layersString = url.searchParams.get('layers');
+        const layersString = url.searchParams.get('layers') || url.searchParams.get('LAYERS');
         if (layersString) {
             layers = layersString.split(',');
         }
 
         let width = 600;
-        const widthString = url.searchParams.get('width');
+        const widthString = url.searchParams.get('width') || url.searchParams.get('WIDTH');
         if (widthString) {
             width = parseInt(widthString, 10);
         }
 
         let height = 400;
-        const heightString = url.searchParams.get('height');
+        const heightString = url.searchParams.get('height') || url.searchParams.get('WIDTH');
         if (heightString) {
             height = parseInt(heightString, 10);
         }
 
         let bbox: number[] = [];
-        const bboxString = url.searchParams.get('bbox');
+        const bboxString = url.searchParams.get('bbox') || url.searchParams.get('BBOX');
         if (bboxString) {
             bbox = bboxString.split(',').map(s => parseInt(s, 10));
         }
@@ -248,13 +262,13 @@ export class LayerMarshaller  {
         return of({
             origin: url.origin,
             path: url.pathname,
-            version: url.searchParams.get('Version') || '1.1.1',
+            version: url.searchParams.get('Version') || url.searchParams.get('VERSION') || '1.1.1',
             layers: layers,
             width: width,
             height: height,
-            format: url.searchParams.get('format') || 'image/png',
+            format: url.searchParams.get('format') || url.searchParams.get('FORMAT') || 'image/png',
             bbox: bbox,
-            srs: url.searchParams.get('srs') || this.mapSvc.getProjection().getCode(),
+            srs: url.searchParams.get('srs') || url.searchParams.get('SRS') || this.mapSvc.getProjection().getCode(),
         });
     }
 

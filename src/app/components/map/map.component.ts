@@ -251,7 +251,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 attribution: '&copy, <a href="http://sig.minenergia.cl">sig.minenergia.cl</a>',
                 legendImg: 'http://sig.minenergia.cl/geoserver/men/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=lt_sic_728861dd_ef2a_4159_bac9_f5012a351115',
                 opacity: 0.3,
-                bbox: [-92.270, -44.104, -48.017, -24.388],
+                // bbox: [-92.270, -44.104, -48.017, -24.388],
                 visible: false
             });
             layers.push(powerlineLayer);

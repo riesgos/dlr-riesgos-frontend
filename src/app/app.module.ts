@@ -40,6 +40,8 @@ import { FormStringselectFieldComponent } from './components/config_wizard/form-
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
+import { GraphvizcompComponent } from './components/graphvizcomp/graphvizcomp.component';
+import { ShowgraphComponent } from './components/showgraph/showgraph.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,9 @@ import { LanguageSwitcherComponent } from './components/language-switcher/langua
     VarDirective,
     ScreenshotComponent,
     FormStringselectFieldComponent,
-    LanguageSwitcherComponent
+    LanguageSwitcherComponent,
+    GraphvizcompComponent,
+    ShowgraphComponent
   ],
   imports: [
     BrowserModule,

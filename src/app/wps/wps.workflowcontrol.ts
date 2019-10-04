@@ -93,7 +93,7 @@ export class WorkflowControl {
         const outputDescriptions = outputProducts.map(p => p.description) as WpsDataDescription[];
 
         process = this.setProcessState(process.id, new ProcessStateRunning()) as WpsProcess;
-        let requestCounter = 0; console.log(`wps.workflowcontrol/executeWps: starting process ${process.id} ...`)
+        let requestCounter = 0;
         return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescriptions, 2000,
 
             (response: any) => {
@@ -106,7 +106,6 @@ export class WorkflowControl {
         ).pipe(
 
             map((outputs: WpsData[]) => {
-                console.log(`wps.workflowcontrol/executeWps: obtained results for process ${process.id} ...`)
                 // Ugly little hack: if outputDescription contained any information that has been lost in translation
                 // through marshalling and unmarshalling, we add it here back in.
                 for (let i = 0; i < outputs.length; i++) {

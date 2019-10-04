@@ -105,7 +105,6 @@ export class WpsEffects {
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
-            console.log(toGraphvizDestructured(processes, products, graph));
             return new WpsDataUpdate({processes, products, graph});
 
         })
@@ -122,7 +121,6 @@ export class WpsEffects {
             for (const prod of newProducts) {
                 this.wfc.provideProduct(prod.uid, prod.value);
             }
-
             return this.wfc.execute(process.id,
                 (response, counter) => {
                     if (counter < 1) {
@@ -135,7 +133,6 @@ export class WpsEffects {
             }).pipe(map(success => [success, process.id] ));
         }),
         switchMap(([success, processId]: [boolean, string]) => {
-
             const actions: Action[] = [];
 
             const processes = this.wfc.getProcesses();

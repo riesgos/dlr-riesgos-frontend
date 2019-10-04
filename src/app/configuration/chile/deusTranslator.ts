@@ -45,19 +45,19 @@ export const DeusTranslator: WatchingProcess = {
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch (newProduct.uid) {
             case fragilityRef.uid:
-                console.log(`DeusTranslator adding value for ${newProduct.uid}...`);
+                // console.log(`DeusTranslator adding value for ${newProduct.uid}...`);
                 return [{
                     ...fragilityRefDeusInput,
                     value: newProduct.value
                 }];
             case shakemapXmlRefOutput.uid:
-                console.log(`DeusTranslator adding value for ${newProduct.uid}...`);
+                // console.log(`DeusTranslator adding value for ${newProduct.uid}...`);
                 return [{
                     ...shakemapRefDeusInput,
                     value: newProduct.value
                 }];
             case exposureRef.uid:
-                console.log(`DeusTranslator adding value for ${newProduct.uid}...`);
+                // console.log(`DeusTranslator adding value for ${newProduct.uid}...`);
                 const exposureDeus = {
                     ...exposureRefDeusInput,
                     value: newProduct.value

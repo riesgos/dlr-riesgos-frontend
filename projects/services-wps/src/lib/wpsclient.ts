@@ -3,7 +3,7 @@ import { WpsMarshaller100 } from './wps100/wps_marshaller_1.0.0';
 import { WpsFactory200 } from './wps200/wps_2.0_factory';
 import { Cache } from './utils/cache';
 import { Observable, timer, of, throwError } from 'rxjs';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { map, catchError, switchMap, tap, share } from 'rxjs/operators';
 // import { Jsonix } from '@boundlessgeo/jsonix'; //let Jsonix = require('jsonix').Jsonix;
 
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
@@ -15,7 +15,6 @@ import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; import { doAfter, do
 import { Injectable, Inject } from '@angular/core';
 const WPS_2_0 = WPS_2_0_Factory.WPS_2_0; // const WPS_2_0 = require('ogc-schemas/lib/WPS_2_0').WPS_2_0;
 import * as JsonixModule from './jsonix/jsonix';
-console.log(JsonixModule);
 const Jsonix = JsonixModule.Jsonix;
 
 
@@ -35,8 +34,8 @@ export class WpsClient {
     private xmlunmarshaller;
     private wpsmarshaller: WpsMarshaller;
     private cache: Cache;
-
-
+    
+    
     constructor(
         @Inject('WpsVersion') version: WpsVerion = '1.0.0',
         private webclient: HttpClient,
@@ -100,6 +99,7 @@ export class WpsClient {
                 return pollEveryUntil(
                     getStateRequest,
                     (stateResponse) => {
+                        console.log(`wpsclient.executeAsync: polling for results from process ${processId} ...`)
                         const resultsObtained = stateResponse[0].description.type !== 'status';
                         return resultsObtained;
                     },
@@ -108,6 +108,7 @@ export class WpsClient {
                 );
             }),
             tap((response: WpsResult[]) => {
+                console.log(`wpsclient.executeAsync: got results from process ${processId} ...`)
                 for (const result of response) {
                     if (result.description.type === 'error') {
                         console.log('server responded with 200, but body contained an error-result: ', result);
@@ -141,7 +142,8 @@ export class WpsClient {
                 const jsonResponse = this.xmlunmarshaller.unmarshalString(xmlResponse);
                 const output = this.wpsmarshaller.unmarshalExecuteResponse(jsonResponse);
                 return output;
-            })
+            }),
+            share()  // turning hot: to make sure that multiple subscribers dont cause multiple requests
         );
     }
 

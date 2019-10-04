@@ -1,5 +1,5 @@
-import { Observable, timer, of, forkJoin } from 'rxjs';
-import { switchMap, tap, filter, take, debounceTime, min, map } from 'rxjs/operators';
+import { Observable, timer, of, forkJoin, empty } from 'rxjs';
+import { switchMap, tap, filter, take, debounceTime, min, map, expand } from 'rxjs/operators';
 import { HttpRequest } from '@angular/common/http';
 import { Predicate } from '@angular/core';
 
@@ -68,29 +68,63 @@ export function doAndWait<T>(task: Observable<T>, minWaitTime: number = 1000): O
     );
 }
 
-export function pollUntil<T>(task: Observable<T>, predicate: Predicate<T>): Observable<T> {
-    const taskWithRetry = task.pipe(
+export function pollUntil<T>(task$: Observable<T>, predicate: Predicate<T>): Observable<T> {
+    const taskWithRetry$ = task$.pipe(
         switchMap((result: T) => {
             if (predicate(result)) {
+                console.log('obtained expected answer. returning result...');
                 return of(result);
             } else {
-                return taskWithRetry;
+                console.log('false answer. trying again ...');
+                return taskWithRetry$;
             }
         })
     );
-    return taskWithRetry;
+    return taskWithRetry$;
 }
 
 
 
+// export function pollEveryUntil<T>(
+//     task$: Observable<T>, predicate: Predicate<T>, doWhile?: (t: T | null) => any, minWaitTime: number = 1000): Observable<T> {
+
+//     doWhile(null);
+
+//     const taskWithMinWaitTime$ = task$.pipe(
+//         debounceTime(minWaitTime),
+//         tap(result => {
+//             console.log('doing the doWhile ...');
+//             doWhile(result);
+//         })
+//     );
+
+//     return pollUntil(taskWithMinWaitTime$, predicate);
+// }
+
 export function pollEveryUntil<T>(
-    task: Observable<T>, predicate: Predicate<T>, doWhile?: (t: T | null) => any, minWaitTime: number = 1000): Observable<T> {
+    task$: Observable<T>, predicate: Predicate<T>, doWhile?: (t: T | null) => any, minWaitTime: number = 1000): Observable<T> {
 
     doWhile(null);
 
-    const taskWithMinWaitTime = doAndWait(task, minWaitTime).pipe(
-        tap(result => doWhile(result))
+    const tappedTask$ = task$.pipe(
+        tap(r => doWhile(r))
     );
 
-    return pollUntil(taskWithMinWaitTime, predicate);
+    const requestTakesAtLeast$ = forkJoin({req: tappedTask$, timer: timer(minWaitTime)}).pipe(
+        map(r => r.req)
+    );
+
+    const polledRequest$ = requestTakesAtLeast$.pipe(
+        switchMap(response => {
+            if (predicate(response)) {
+                console.log(`obtained correct answer ${response}`);
+                return of(response);
+            } else {
+                console.log(`obtained false answer ${response}. trying again...`);
+                return polledRequest$;
+            }
+        })
+    );
+
+    return polledRequest$;
 }

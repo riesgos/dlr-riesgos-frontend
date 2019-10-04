@@ -283,7 +283,6 @@ export class LayerMarshaller  {
         return this.httpClient.get(urlString, { headers, responseType: 'text' }).pipe(
             map(result => {
                 const resultJson = new WMSCapabilities().read(result);
-                console.log(resultJson);
                 return {
                     origin: url.origin,
                     path: url.pathname,

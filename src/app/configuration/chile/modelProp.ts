@@ -75,7 +75,7 @@ export const VulnerabilityModel: WizardableProcess & WpsProcess = {
     requiredProducts: [schema, assetcategory, losscategory, taxonomies].map(p => p.uid),
     providedProducts: [fragilityRef.uid],
     wizardProperties: {
-        shape: 'earthquake',
+        shape: 'vulnerability',
         providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
         providerUrl: 'https://www.gfz-potsdam.de/en/'
     },

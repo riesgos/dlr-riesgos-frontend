@@ -99,7 +99,7 @@ export class WpsClient {
                 return pollEveryUntil(
                     getStateRequest,
                     (stateResponse) => {
-                        console.log(`wpsclient.executeAsync: polling for results from process ${processId} ...`)
+                        console.log(`wpsclient.executeAsync: polling for results from process ${processId} ...`);
                         const resultsObtained = stateResponse[0].description.type !== 'status';
                         return resultsObtained;
                     },
@@ -108,7 +108,7 @@ export class WpsClient {
                 );
             }),
             tap((response: WpsResult[]) => {
-                console.log(`wpsclient.executeAsync: got results from process ${processId} ...`)
+                console.log(`wpsclient.executeAsync: got results from process ${processId} ...`);
                 for (const result of response) {
                     if (result.description.type === 'error') {
                         console.log('server responded with 200, but body contained an error-result: ', result);

@@ -78,8 +78,8 @@ export const LaharWps: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
     wpsVersion: '1.0.0',
     wizardProperties: {
-        providerName: 'EOMAP GMBH',
-        providerUrl: 'https://www.eomap.com/',
+        providerName: 'TUM',
+        providerUrl: 'https://www.tum.de/nc/en/',
         shape: 'avalance'
     }
 };

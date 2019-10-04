@@ -117,6 +117,6 @@ export const Reliability: WpsProcess & WizardableProcess = {
     wizardProperties: {
         providerName: 'TUM',
         providerUrl: 'https://www.tum.de/nc/en/',
-        shape: 'critical_infrastructure'
+        shape: 'dot-circle'
     }
 }

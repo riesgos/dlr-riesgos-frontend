@@ -68,20 +68,19 @@ export function toGraphvizDestructured(processes: Process[], products: Product[]
 
     lines.push('digraph G {');
 
-    for (let process of processes) {
+    for (const process of processes) {
         const attrs = attrsFromProcessStateTypes(process.state.type);
-        attrs.push("shape=box");
+        attrs.push('shape=box');
         attrs.push('label="' + process.name + '"');
-        lines.push('    "' + process.id + '" ['+ attrs.join(',') + '];');
+        lines.push('    "' + process.id + '" [' + attrs.join(',') + '];');
     }
     for (let product of products) {
-        lines.push('    "' + product.uid + '" [label="' +product.description['id'] + '", shape=oval];');
-        
+        lines.push('    "' + product.uid + '" [label="' + product.description['id'] + '", shape=oval];');
     }
 
     lines.push('');
 
-    for (let e of graph.edges()) {
+    for (const e of graph.edges()) {
         lines.push('   "' + e.v + '" -> "' + e.w + '" [];');
     }
     lines.push('}');

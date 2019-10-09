@@ -108,13 +108,13 @@ export const geomerFloodWcsProvider: WatchingProcess = {
                 const directionProduct = allProducts.find(prd => prd.uid === direction.uid);
                 return [{
                     ... durationTiff,
-                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&amp;REQUEST=GetCoverage&amp;VERSION=2.0.1&amp;CoverageId=rain_cotopaxi:duration_latacunga_city&amp;format=image/geotiff'
+                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=rain_cotopaxi:duration_latacunga_city&format=image/geotiff'
                 }, {
                     ... velocityTiff,
-                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&amp;REQUEST=GetCoverage&amp;VERSION=2.0.1&amp;CoverageId=rain_cotopaxi:v_at_wdmax_latacunga_city&amp;format=image/geotiff'
+                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=rain_cotopaxi:v_at_wdmax_latacunga_city&format=image/geotiff'
                 }, {
                     ... depthTiff,
-                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&amp;REQUEST=GetCoverage&amp;VERSION=2.0.1&amp;CoverageId=rain_cotopaxi:wd_max_latacunga_city&amp;format=image/geotiff'
+                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=rain_cotopaxi:wd_max_latacunga_city&format=image/geotiff'
                 }];
             default:
                 return [];

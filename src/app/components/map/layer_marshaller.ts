@@ -77,6 +77,8 @@ export class LayerMarshaller  {
     }
 
     makeBboxLayer(product: BboxLayerData): Observable<ProductVectorLayer> {
+        const bboxArray: [number, number, number, number] =
+        [product.value.lllon, product.value.lllat, product.value.urlon, product.value.urlat];
         const layer: ProductVectorLayer = new ProductVectorLayer({
             id: `${product.description.id}_result_layer`,
             name: `${product.description.name}`,
@@ -84,11 +86,11 @@ export class LayerMarshaller  {
             opacity: 1,
             type: 'geojson',
             filtertype: 'Overlays',
-            data: featureCollection([bboxPolygon(product.value)]),
+            data: featureCollection([bboxPolygon(bboxArray)]),
             options: {},
             popup: {
                 asyncPupup: (obj, callback) => {
-                    const html = JSON.stringify(product.value);
+                    const html = JSON.stringify(bboxArray);
                     callback(html);
                 }
             }

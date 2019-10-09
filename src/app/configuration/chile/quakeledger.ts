@@ -13,7 +13,11 @@ export const inputBoundingbox: BboxUconfProduct & BboxLayerData & WpsData = {
         type: 'bbox',
         reference: false,
         description: 'Please select an area of interest',
-        defaultValue: [-73.5, -34, -70.5, -29.0],
+        defaultValue: {
+            crs: 'EPSG:4326',
+            lllon: -73.5, lllat: -34,
+            urlon: -70.5, urlat: -29.0
+        },
         wizardProperties: {
             name: 'AOI',
             fieldtype: 'bbox',

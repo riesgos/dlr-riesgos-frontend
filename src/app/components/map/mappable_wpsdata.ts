@@ -1,4 +1,5 @@
 import { ProductDescription, Product } from 'src/app/wps/wps.datatypes';
+import { WpsBboxData, WpsBboxValue } from 'projects/services-wps/src/public-api';
 
 
 
@@ -11,6 +12,7 @@ export interface BboxLayerDescription extends ProductDescription {
 
 export interface BboxLayerData extends Product {
     description: BboxLayerDescription;
+    value: WpsBboxValue | null;
 }
 
 

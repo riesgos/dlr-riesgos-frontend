@@ -25,6 +25,27 @@ export interface WpsData {
 export type WpsInput = WpsData;
 export type WpsResult = WpsData;
 
+export interface WpsBboxDescription {
+    id: ProductId;
+    type: 'bbox';
+    reference: boolean;
+    format?: WpsDataFormat;
+    description?: string;
+    defaultValue?: any;
+}
+
+export interface WpsBboxValue {
+    crs: string;
+    lllon: number;
+    lllat: number;
+    urlon: number;
+    urlat: number;
+}
+
+export interface WpsBboxData {
+    description: WpsBboxDescription;
+    value: WpsBboxValue;
+}
 
 export interface WpsCapability {
     id: string;

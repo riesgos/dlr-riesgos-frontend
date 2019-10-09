@@ -1,4 +1,4 @@
-import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability } from '../wps_datatypes';
+import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability, WpsBboxValue } from '../wps_datatypes';
 import {
     WPSCapabilitiesType, IWpsExecuteProcessBody, Execute, DataInputsType,
     InputType, ResponseFormType, DataType, IWpsExecuteResponse, DocumentOutputDefinitionType,
@@ -231,10 +231,11 @@ export class WpsMarshaller100 implements WpsMarshaller {
                 };
                 break;
             case 'bbox':
+                const values: WpsBboxValue = input.value;
                 data = {
                     boundingBoxData: {
-                        lowerCorner: [input.value[1], input.value[0]],
-                        upperCorner: [input.value[3], input.value[2]]
+                        lowerCorner: [values.lllat, values.lllon],
+                        upperCorner: [values.urlat, values.urlon]
                     }
                 };
                 break;

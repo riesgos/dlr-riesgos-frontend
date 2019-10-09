@@ -15,7 +15,11 @@ export const inputBoundingboxPeru: UserconfigurableProduct & BboxLayerData & Wps
         type: 'bbox',
         reference: false,
         description: 'Please select an area of interest',
-        defaultValue: [-86.5, -20.5, -68.5, -0.6],
+        defaultValue: {
+            crs: 'EPSG:4326',
+            lllon: -86.5, lllat: -20.5,
+            urlon: -68.5, urlat: -0.6
+        },
         wizardProperties: {
             name: 'AOI',
             fieldtype: 'bbox',

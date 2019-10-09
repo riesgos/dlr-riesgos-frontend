@@ -1,5 +1,6 @@
 import { FeatureCollection } from '@turf/helpers';
 import { Product, ProductDescription } from 'src/app/wps/wps.datatypes';
+import { WpsBboxData, WpsBboxValue } from 'projects/services-wps/src/public-api';
 
 
 
@@ -54,6 +55,7 @@ export interface StringSelectUconfProduct extends Product {
 
 export interface BboxUconfProduct extends Product {
     description: BboxUconfPD;
+    value: WpsBboxValue | null;
 }
 
 export interface FeatureSelectUconfProduct extends Product {

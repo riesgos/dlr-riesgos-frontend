@@ -25,6 +25,7 @@ import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
+import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
 
 
 @Component({
@@ -111,8 +112,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 return this.interactionState.getValue().mode === 'bbox';
             },
             onBoxEnd: () => {
-                const coords = dragBox.getGeometry().flatCoordinates;
-                const box = [coords[0], coords[5], coords[4], coords[1]];
+                const lons = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[0]);
+                const lats = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[1]);
+                const minLon = Math.min(... lons);
+                const maxLon = Math.max(... lons);
+                const minLat = Math.min(... lats);
+                const maxLat = Math.max(... lats);
+                const box: WpsBboxValue = {
+                    crs: 'EPSG:4326',
+                    lllat: minLat.toFixed(1) as unknown as number,
+                    lllon: minLon.toFixed(1) as unknown as number,
+                    urlat: maxLat.toFixed(1) as unknown as number,
+                    urlon: maxLon.toFixed(1) as unknown as number
+                    // lllat: coords[0][0][1].toFixed(1),
+                    // lllon: coords[0][0][0].toFixed(1),
+                    // urlat: coords[0][2][1].toFixed(1),
+                    // urlon: coords[0][2][0].toFixed(1)
+                };
                 const product: Product = {
                     ...this.interactionState.getValue().product,
                     value: box

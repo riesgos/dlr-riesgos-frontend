@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { debounceTime } from 'rxjs/operators';
+import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
 
 @Component({
     selector: 'ukis-form-bbox-field',
@@ -22,7 +23,9 @@ export class FormBboxFieldComponent implements OnInit {
     ) {    }
 
     ngOnInit() {
-        this.formControl = new FormControl(this.parameter.value || this.parameter.description.defaultValue, [Validators.required]);
+        const initialBbox: WpsBboxValue = this.parameter.value || this.parameter.description.defaultValue;
+        const stringVal = `${initialBbox.lllon}, ${initialBbox.lllat}, ${initialBbox.urlon}, ${initialBbox.urlat}`;
+        this.formControl = new FormControl(stringVal, [Validators.required]);
         this.formControl.valueChanges.pipe(
             debounceTime(500)
         ).subscribe(newVal => {
@@ -30,9 +33,16 @@ export class FormBboxFieldComponent implements OnInit {
                 if (typeof newVal === 'string') {
                     newVal = newVal.split(',').map(v => parseFloat(v));
                 }
+                const bbox: WpsBboxValue = {
+                    crs: 'EPSG:4326',
+                    lllon: newVal[0],
+                    lllat: newVal[1],
+                    urlon: newVal[2],
+                    urlat: newVal[3],
+                }
                 this.store.dispatch(new InteractionCompleted(
                     {product: {...this.parameter,
-                        value: newVal
+                        value: bbox
                     }}
                 ));
             }

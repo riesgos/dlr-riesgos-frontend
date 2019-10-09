@@ -82,7 +82,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
             for (const layer of this.currentOverlays) {
                 if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
-                    layer.opacity = 0.9;
+                    layer.opacity = 0.6;
                 } else {
                     layer.opacity = 0.2;
                 }

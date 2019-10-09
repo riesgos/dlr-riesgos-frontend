@@ -178,7 +178,7 @@ export const ExposureModel: WizardableProcess & WpsProcess = {
   requiredProducts: [lonmin, lonmax, latmin, latmax, querymode, schema, assettype].map(p => p.uid),
   providedProducts: [exposureRef.uid],
   wizardProperties: {
-    shape: 'earthquake',
+    shape: 'dot-circle',
     providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
     providerUrl: 'https://www.gfz-potsdam.de/en/'
   },

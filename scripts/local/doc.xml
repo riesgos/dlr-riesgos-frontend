@@ -1,18 +1,27 @@
 <wps100:Execute xmlns:wps100="http://www.opengis.net/wps/1.0.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="WPS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_request.xsd">
-    <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess</ows110:Identifier>
+    <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess</ows110:Identifier>
     <wps100:DataInputs>
         <wps100:Input>
-            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">quakeMLFile</ows110:Identifier>
-            <wps100:Data>
-                <wps100:ComplexData>[{\'type\': \'Feature\', \'geometry\': {\'type\': \'Point\', \'coordinates\': [-71.7235, -30.4383]}, \'properties\': {\'publicID\': \'quakeml:quakeledger/CHOA_110\', \'preferredOriginID\': \'quakeml:quakeledger/CHOA_110\', \'preferredMagnitudeID\': \'quakeml:quakeledger/CHOA_110\', \'type\': \'earthquake\', \'description.text\': \'expert\', \'origin.publicID\': \'quakeml:quakeledger/CHOA_110\', \'origin.time.value\': \'2018-01-01T00:00:00.000000Z\', \'origin.depth.value\': \'28.0\', \'origin.creationInfo.value\': \'GFZ\', \'magnitude.publicID\': \'quakeml:quakeledger/CHOA_110\', \'magnitude.mag.value\': \'8.0\', \'magnitude.type\': \'MW\', \'magnitude.creationInfo.value\': \'GFZ\', \'focalMechanism.publicID\': \'quakeml:quakeledger/CHOA_110\', \'focalMechanism.nodalPlanes.nodalPlane1.strike.value\': \'9.0\', \'focalMechanism.nodalPlanes.nodalPlane1.dip.value\': \'18.0\', \'focalMechanism.nodalPlanes.nodalPlane1.rake.value\': \'90.0\', \'focalMechanism.nodalPlanes.preferredPlane\': \'nodalPlane1\'}, \'id\': \'quakeml:quakeledger/CHOA_110\'}]</wps100:ComplexData>
-            </wps100:Data>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">duration-h</ows110:Identifier>
+            <wps100:Reference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&amp;REQUEST=GetCoverage&amp;VERSION=2.0.1&amp;CoverageId=rain_cotopaxi:duration_latacunga_city&amp;format=image/geotiff"/>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">vsmax-ms</ows110:Identifier>
+            <wps100:Reference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&amp;REQUEST=GetCoverage&amp;VERSION=2.0.1&amp;CoverageId=rain_cotopaxi:v_at_wdmax_latacunga_city&amp;format=image/geotiff"/>
+        </wps100:Input>
+        <wps100:Input>
+            <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">wdmax-cm</ows110:Identifier>
+            <wps100:Reference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&amp;REQUEST=GetCoverage&amp;VERSION=2.0.1&amp;CoverageId=rain_cotopaxi:wd_max_latacunga_city&amp;format=image/geotiff"/>
         </wps100:Input>
     </wps100:DataInputs>
     <wps100:ResponseForm>
         <wps100:ResponseDocument storeExecuteResponse="true" status="true" lineage="false">
-            <wps100:Output mimeType="text/xml" asReference="true">
-                <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">shakeMapFile</ows110:Identifier>
+            <wps100:Output mimeType="application/json" asReference="false">
+                <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">damage_manzanas</ows110:Identifier>
+            </wps100:Output>
+            <wps100:Output mimeType="application/json" asReference="false">
+                <ows110:Identifier xmlns:ows110="http://www.opengis.net/ows/1.1">damage_buildings</ows110:Identifier>
             </wps100:Output>
         </wps100:ResponseDocument>
     </wps100:ResponseForm>

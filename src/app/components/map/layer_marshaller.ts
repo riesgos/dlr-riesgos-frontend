@@ -83,7 +83,7 @@ export class LayerMarshaller  {
             id: `${product.description.id}_result_layer`,
             name: `${product.description.name}`,
             removable: false,
-            opacity: 1,
+            opacity: 0.6,
             type: 'geojson',
             filtertype: 'Overlays',
             data: featureCollection([bboxPolygon(bboxArray)]),
@@ -109,7 +109,7 @@ export class LayerMarshaller  {
                 const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.description.id}_result_layer`,
                     name: `${product.description.name}`,
-                    opacity: 1,
+                    opacity: 0.6,
                     removable: false,
                     type: 'geojson',
                     filtertype: 'Overlays',
@@ -186,7 +186,7 @@ export class LayerMarshaller  {
                     const layer: ProductRasterLayer = new ProductRasterLayer({
                         id: `${layername}_result_layer`,
                         name: `${layername}`,
-                        opacity: 1,
+                        opacity: 0.6,
                         removable: false,
                         type: 'wms',
                         filtertype: 'Overlays',

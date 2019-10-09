@@ -36,7 +36,8 @@
     "Groundmotion Simulation": "Simulación de movimiento de tierra",
     "Simulates the ground motion caused by a given eathquake": "Simula el movimiento del suelo causado por un terremoto dado",
     "Vulnerability after EQ": "Vulnerabilidad post-terremoto",
-    "This service updates the vulnerability from the previous step using a given earthquake.": "Este servicio actualiza la vulnerabilidad del paso anterior usando un terremoto dado.",
+    "Damage after EQ": "Daño post-terremoto",
+    "This service outputs damage caused by a given earthquake.": "Este servicio genera daños causados por un terremoto dado.",
     "Earthquake/tsunami interaction": "Interacción terremoto / tsunami",
     "Relates a tsunami to a given earthquake": "Relaciona un tsunami con un terremoto dado",
 

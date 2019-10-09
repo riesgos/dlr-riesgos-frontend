@@ -219,12 +219,16 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     LaharWps,
+                    // VulnerabilityModel,
+                    // ExposureModel,
                     geomerFlood,
                     geomerFloodWcsProvider,
                     FlooddamageProcess
                 ];
                 products = [
                     direction, intensity, parameter, laharWms,
+                    schema, assetcategory, losscategory, taxonomies,
+                    lonmin, lonmax, latmin, latmax, querymode, assettype,
                     hydrologicalSimulation,
                     durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings
                 ];

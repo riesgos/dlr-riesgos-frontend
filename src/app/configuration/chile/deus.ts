@@ -68,8 +68,8 @@ export const Deus: WizardableProcess & WpsProcess = {
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',
     state: new ProcessStateUnavailable(),
-    name: 'Vulnerability after EQ',
-    description: 'This service updates the vulnerability from the previous step using a given earthquake.',
+    name: 'Damage after EQ',
+    description: 'This service outputs damage caused by a given earthquake.',
     requiredProducts: [loss, schema, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
     providedProducts: [damage, transition, updated_exposure].map(p => p.uid),
     wizardProperties: {

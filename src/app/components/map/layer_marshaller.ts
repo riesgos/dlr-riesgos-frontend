@@ -221,6 +221,9 @@ export class LayerMarshaller  {
                         ];
                     }
                     layer.productId = uid;
+                    if (uid !== 'ShakygroundProcess_shakeMapFile_wms') { // @TODO: shakyground wms muss auch ACCESS-CONTROL-... mitgeben
+                        layer['crossOrigin'] = 'anonymous';
+                    }
                     layers.push(layer);
                 }
             }

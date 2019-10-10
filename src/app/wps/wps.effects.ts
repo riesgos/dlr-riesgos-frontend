@@ -26,7 +26,8 @@ import { Deus, loss, damage, transition, updated_exposure } from '../configurati
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
 import { Reliability, country, hazard, damage_consumer_areas } from '../configuration/chile/reliability';
-import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/equador/damageAssessment';
+import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/equador/floodDamage';
+import { LaharExposureModel, LaharVulnerabilityModel, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, LaharDeusTranslator } from '../configuration/equador/laharDamage';
 
 
 
@@ -219,8 +220,10 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     LaharWps,
-                    // VulnerabilityModel,
-                    // ExposureModel,
+                    LaharVulnerabilityModel,
+                    LaharExposureModel,
+                    LaharDeusTranslator,
+                    // Deus,
                     geomerFlood,
                     geomerFloodWcsProvider,
                     FlooddamageProcess,
@@ -229,7 +232,9 @@ export class WpsEffects {
                 products = [
                     direction, intensity, parameter, laharWms,
                     schema, assetcategory, losscategory, taxonomies,
-                    lonmin, lonmax, latmin, latmax, querymode, assettype,
+                    lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymode, assettype,
+                    fragilityRef, exposureRef,
+                    fragilityRefDeusInput, exposureRefDeusInput,
                     hydrologicalSimulation,
                     durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings,
                     damageManzanasGeojson

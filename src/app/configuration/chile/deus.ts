@@ -5,6 +5,11 @@ import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { fragilityRef } from './modelProp';
 import { fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from './deusTranslator';
+import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Feature as olFeature } from 'ol/Feature';
+import { FeatureCollection, feature, MultiPolygon, Polygon } from '@turf/helpers';
+import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 
 
 
@@ -40,13 +45,38 @@ export const damage: WpsData & Product = {
     value: null
 };
 
-export const transition: WpsData & Product = {
+export const transition: VectorLayerData & WpsData & Product = {
     uid: 'transition',
     description: {
         id: 'transition',
         reference: false,
         type: 'complex',
-        format: 'application/json'
+        format: 'application/json',
+        name: 'damage/transition',
+        vectorLayerAttributes: {
+            style: (feature: olFeature, resolution: number) => {
+                const props = feature.getProperties();
+                return new olStyle({
+                  fill: new olFill({
+                    color: [255, 0, 0, 0.3],
+                  }),
+                  stroke: new olStroke({
+                    color: [255, 0, 0, 1],
+                    witdh: 2
+                  })
+                });
+            },
+            text: (props: object) => {
+                const anchor = document.createElement('div');
+                const data: Bardata[] = [
+                    {label: 'A', value: 2},
+                    {label: 'B', value: 4},
+                    {label: 'C', value: 1}
+                ];
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'category', '$');
+                return `<h3>Damage</h3>${anchor.innerHTML}`;
+            }
+        }
     },
     value: null
 };

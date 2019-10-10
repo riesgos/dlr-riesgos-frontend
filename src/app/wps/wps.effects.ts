@@ -28,6 +28,7 @@ import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRe
 import { Reliability, country, hazard, damage_consumer_areas } from '../configuration/chile/reliability';
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/equador/floodDamage';
 import { LaharExposureModel, LaharVulnerabilityModel, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, LaharDeusTranslator } from '../configuration/equador/laharDamage';
+import { FakeDeus } from '../configuration/others/fakeDeus';
 
 
 
@@ -199,7 +200,8 @@ export class WpsEffects {
                     EqSelection,
                     Shakyground,
                     DeusTranslator,
-                    Deus,
+                    // Deus,
+                    FakeDeus,
                     TsService,
                     Reliability,
                     PhysicalImpactAssessment

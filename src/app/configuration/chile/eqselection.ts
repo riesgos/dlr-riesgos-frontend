@@ -35,9 +35,9 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerData & 
                     })
                 });
             },
-            text: (feature: olFeature) => {
-                return JSON.stringify(feature);
-            }
+            text: (props: object) => {
+                return JSON.stringify(props);
+              }
         },
         wizardProperties: {
             fieldtype: 'select',

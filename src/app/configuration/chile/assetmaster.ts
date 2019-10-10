@@ -160,8 +160,8 @@ export const exposureRef: VectorLayerData & WpsData & Product = {
           })
         });
       },
-      text: (feature: olFeature) => {
-        return JSON.stringify(feature.properties);
+      text: (props: object) => {
+        return JSON.stringify(props);
       }
     }
   },

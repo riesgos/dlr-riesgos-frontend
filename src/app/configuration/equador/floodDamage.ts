@@ -78,8 +78,8 @@ export const damageManzanasGeojson: VectorLayerData & WpsData & Product = {
                   })
                 });
               },
-              text: (feature: olFeature) => {
-                return JSON.stringify(feature.getProperties());
+              text: (props: object) => {
+                return JSON.stringify(props);
               }
         }
     },

@@ -96,8 +96,8 @@ export const damage_consumer_areas: WpsData & Product & VectorLayerData = {
                   })
                 });
               },
-              text: (feature: olFeature) => {
-                return JSON.stringify(feature.getProperties());
+              text: (props: object) => {
+                return JSON.stringify(props);
               }
         }
     },

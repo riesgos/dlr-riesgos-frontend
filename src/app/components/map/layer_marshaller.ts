@@ -126,6 +126,9 @@ export class LayerMarshaller  {
                     }
                 });
                 layer.productId = product.uid;
+                if (product.description.description) {
+                    layer.description = product.description.description;
+                }
                 return layer;
             })
         );
@@ -225,6 +228,10 @@ export class LayerMarshaller  {
                     // @TODO: shakyground wms muss auch ACCESS-CONTROL-... mitgeben
                     if (uid !== 'ShakygroundProcess_shakeMapFile_wms') { 
                         layer['crossOrigin'] = 'anonymous';
+                    }
+
+                    if (description.description) {
+                        layer.description = description.description;
                     }
 
                     layers.push(layer);

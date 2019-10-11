@@ -35,6 +35,7 @@ export interface VectorLayerDescription extends ProductDescription {
         text?: any;
         sldFile?: string
     };
+    description?: string;
 }
 
 export interface VectorLayerData extends Product {
@@ -58,6 +59,7 @@ export interface WmsLayerDescription extends ProductDescription {
     type: 'complex' | 'literal';
     styles?: string[];
     id: string;
+    description?: string;
 }
 
 export interface WmsLayerData extends Product {

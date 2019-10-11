@@ -59,7 +59,8 @@ export const damage: VectorLayerData & WpsData & Product = {
             text: (props: object) => {
                 return `<h4>Damage ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
             }
-        }
+        },
+        description: 'Concrete damage in USD.'
     },
     value: null
 };
@@ -107,10 +108,9 @@ export const transition: VectorLayerData & WpsData & Product = {
                 ];
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', '% buildings');
                 return `<h4>Transitions ${props['name']}</h4>${anchor.innerHTML}`;
-
-                return JSON.stringify(props, null, 2);
             }
-        }
+        },
+        description: 'Change from previous state to current one'
     },
     value: null
 };
@@ -176,7 +176,8 @@ export const updated_exposure: VectorLayerData & WpsData & Product = {
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', '# buildings');
                 return `<h4>Exposure ${props['name']}</h4>${anchor.innerHTML}`;
             }
-        }
+        },
+        description: 'Amount of goods that are exposed to a hazard.'
     },
     value: null
 };

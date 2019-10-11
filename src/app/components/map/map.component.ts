@@ -33,6 +33,9 @@ import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    providers: [
+        MapOlService, LayersService, MapStateService
+    ]
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 

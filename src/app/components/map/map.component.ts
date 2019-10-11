@@ -32,10 +32,7 @@ import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
     selector: 'ukis-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    providers: [
-        MapOlService, LayersService, MapStateService
-    ]
+    encapsulation: ViewEncapsulation.None
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 

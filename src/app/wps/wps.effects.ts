@@ -13,7 +13,7 @@ import { QuakeLedger, inputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
 import { inputBoundingboxPeru, QuakeLedgerPeru } from '../configuration/peru/quakeledger';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
-import { TsService, epicenter, lat, lon, mag } from '../configuration/chile/tsService';
+import { TsService, epicenter, lat, lon, mag, TsServiceTranslator } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
@@ -202,6 +202,7 @@ export class WpsEffects {
                     DeusTranslator,
                     // Deus,
                     FakeDeus,
+                    TsServiceTranslator,
                     TsService,
                     Reliability,
                     PhysicalImpactAssessment
@@ -247,6 +248,7 @@ export class WpsEffects {
                     QuakeLedgerPeru,
                     EqSelection,
                     Shakyground,
+                    TsServiceTranslator,
                     TsService
                 ];
                 products = [

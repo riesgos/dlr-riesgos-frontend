@@ -48,21 +48,12 @@ export const epicenter: WpsData & Product = {
 };
 
 
-
-export const TsService: WizardableProcess & WpsProcess & WatchingProcess = {
+export const TsServiceTranslator: WatchingProcess = {
+    id: 'TS_service_translator',
+    name: 'TS_service_translator',
+    requiredProducts: [selectedEq.uid],
+    providedProducts: [lat, lon, mag].map(p => p.uid),
     state: new ProcessStateUnavailable(),
-    id: 'get_scenario',
-    url: 'http://tsunami-wps.awi.de/wps',
-    name: 'Earthquake/tsunami interaction',
-    description: 'Relates a tsunami to a given earthquake',
-    requiredProducts: [selectedEq, lat, lon, mag].map(p => p.uid),
-    providedProducts: [epicenter.uid],
-    wpsVersion: '1.0.0',
-    wizardProperties: {
-        shape: 'tsunami',
-        providerName: 'Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research',
-        providerUrl: 'https://www.awi.de/en/'
-    },
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         let outprods: Product[] = [];
         if (newProduct.uid === 'EqSelection_quakeMLFile') {
@@ -79,5 +70,23 @@ export const TsService: WizardableProcess & WpsProcess & WatchingProcess = {
             outprods = outprods.concat(newProds);
         }
         return outprods;
+    }
+};
+
+
+
+export const TsService: WizardableProcess & WpsProcess = {
+    state: new ProcessStateUnavailable(),
+    id: 'get_scenario',
+    url: 'http://tsunami-wps.awi.de/wps',
+    name: 'Earthquake/tsunami interaction',
+    description: 'Relates a tsunami to a given earthquake',
+    requiredProducts: [lat, lon, mag].map(p => p.uid),
+    providedProducts: [epicenter.uid],
+    wpsVersion: '1.0.0',
+    wizardProperties: {
+        shape: 'tsunami',
+        providerName: 'Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research',
+        providerUrl: 'https://www.awi.de/en/'
     }
 };

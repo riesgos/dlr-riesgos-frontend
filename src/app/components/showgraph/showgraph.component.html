@@ -1,7 +1,7 @@
 <button class="btn btn-outline" (click)="showModal=true">Graph</button>
 
 
-<clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'xl'">
+<clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'xl'" style='z-index: 1000001;'>
     <h3 class="modal-title">{{ 'Current state' | translate }}</h3>
     <div class="modal-body">
         <app-graphvizcomp [dotString]="dotString$ | async"></app-graphvizcomp>

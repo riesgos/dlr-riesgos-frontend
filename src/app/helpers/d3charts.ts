@@ -89,6 +89,9 @@ export function createBarchart(
 
     const labels = data.map(dp => dp.label);
     const values = data.map(dp => dp.value);
+    const minVal = Math.min(...values);
+    const maxVal = Math.max(...values);
+    const range = maxVal - minVal;
 
     const xScale = d3.scaleBand()
         .domain(labels)
@@ -110,7 +113,7 @@ export function createBarchart(
         .style('font-size', '14px');
 
     const yScale = d3.scaleLinear()
-        .domain([Math.min(...values) - 1, Math.max(...values)])
+        .domain([minVal - 0.2 * range, maxVal])
         .range([height, 0]);
 
     const yAxisCallback = d3.axisLeft(yScale);

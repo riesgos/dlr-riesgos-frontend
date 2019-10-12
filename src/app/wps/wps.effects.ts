@@ -3,7 +3,7 @@ import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen,
         ClickRunProcess, WpsDataUpdate, RestartingFromProcess, RestaringScenario } from './wps.actions';
 import { toGraphviz, toGraphvizDestructured } from './wps.graphviz';
-import { map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { map, switchMap, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -116,7 +116,7 @@ export class WpsEffects {
     @Effect()
     runProcessClicked$ = this.actions$.pipe(
         ofType<WpsActions>(EWpsActionTypes.clickRunProduct),
-        switchMap((action: ClickRunProcess) =>  {
+        mergeMap((action: ClickRunProcess) =>  {
 
             const newProducts = action.payload.productsProvided;
             const process = action.payload.process;
@@ -132,9 +132,11 @@ export class WpsEffects {
                             graph: this.wfc.getGraph()
                         }));
                     }
-            }).pipe(map(success => [success, process.id] ));
+            }).pipe(map(success => {
+                return [success, process.id];
+            }));
         }),
-        switchMap(([success, processId]: [boolean, string]) => {
+        mergeMap(([success, processId]: [boolean, string]) => {
             const actions: Action[] = [];
 
             const processes = this.wfc.getProcesses();

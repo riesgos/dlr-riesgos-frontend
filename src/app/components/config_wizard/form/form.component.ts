@@ -33,9 +33,9 @@ export class FormComponent implements OnInit {
 
     this.formGroup = new FormGroup(controls);
 
-    this.formGroup.valueChanges.subscribe((newVal) => {
-      console.log('value has changed: ', newVal);
-    });
+    // this.formGroup.valueChanges.subscribe((newVal) => {
+    //   console.log('value has changed: ', newVal);
+    // });
   }
 
   onSubmitClicked() {

@@ -3,7 +3,7 @@ import { WpsMarshaller100 } from './wps100/wps_marshaller_1.0.0';
 import { WpsFactory200 } from './wps200/wps_2.0_factory';
 import { Cache } from './utils/cache';
 import { Observable, timer, of, throwError } from 'rxjs';
-import { map, catchError, switchMap, tap, share } from 'rxjs/operators';
+import { map, catchError, switchMap, tap, share, mergeMap } from 'rxjs/operators';
 import { Jsonix } from '@boundlessgeo/jsonix';
 
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
@@ -11,7 +11,7 @@ import * as XLink_1_0_Factory from 'w3c-schemas/lib/XLink_1_0'; const XLink_1_0 
 import * as OWS_1_1_0_Factory from 'ogc-schemas/lib/OWS_1_1_0'; const OWS_1_1_0 = OWS_1_1_0_Factory.OWS_1_1_0;
 import * as OWS_2_0_Factory from 'ogc-schemas/lib/OWS_2_0'; const OWS_2_0 = OWS_2_0_Factory.OWS_2_0;
 import * as WPS_1_0_0_Factory from 'ogc-schemas/lib/WPS_1_0_0'; const WPS_1_0_0 = WPS_1_0_0_Factory.WPS_1_0_0;
-import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; import { doAfter, doUntil, repeat, repeatUntil, pollUntil, pollEveryUntil } from './utils/polling';
+import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; import { pollEveryUntil } from './utils/polling';
 import { Injectable, Inject } from '@angular/core';
 const WPS_2_0 = WPS_2_0_Factory.WPS_2_0; // const WPS_2_0 = require('ogc-schemas/lib/WPS_2_0').WPS_2_0;
 
@@ -84,7 +84,6 @@ export class WpsClient {
 
         const cacheKey = this.cache.makeKey({url, id: processId, inputs, outputs});
         if (this.caching)  {
-            console.log('searching for data in cache ...');
             const cachedResponse = this.cache.get(cacheKey);
             if (cachedResponse) {
                 console.log('found data in cache.');
@@ -93,12 +92,11 @@ export class WpsClient {
         }
 
         return executeRequest.pipe(
-            switchMap(executeResponse => {
+            mergeMap(executeResponse => {
                 const getStateRequest = this.checkState(executeResponse[0].value);
                 return pollEveryUntil(
                     getStateRequest,
                     (stateResponse) => {
-                        console.log(`wpsclient.executeAsync: polling for results from process ${processId} ...`);
                         const resultsObtained = stateResponse[0].description.type !== 'status';
                         return resultsObtained;
                     },
@@ -107,7 +105,6 @@ export class WpsClient {
                 );
             }),
             tap((response: WpsResult[]) => {
-                console.log(`wpsclient.executeAsync: got results from process ${processId} ...`);
                 for (const result of response) {
                     if (result.description.type === 'error') {
                         console.log('server responded with 200, but body contained an error-result: ', result);

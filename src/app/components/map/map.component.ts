@@ -20,7 +20,7 @@ import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@uki
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
 import { ProductLayer } from './map.types';
-import { switchMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
@@ -94,7 +94,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         // listening for products that can be displayed in the map
         const sub4 = this.store.pipe(
             select(getMapableProducts),
-            switchMap((products: Product[]) => {
+            mergeMap((products: Product[]) => {
                 console.log('the following products can now be displayed on the map', products);
                 return this.layerMarshaller.productsToLayers(products);
             })

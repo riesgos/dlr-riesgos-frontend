@@ -128,7 +128,7 @@ export class WorkflowControl {
                 this.setProcessState(process.id, new ProcessStateCompleted());
             }),
 
-            map((output: WpsData[]) => {
+            map((outputs: WpsData[]) => {
                 return true;
             }),
 

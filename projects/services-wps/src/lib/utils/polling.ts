@@ -8,10 +8,16 @@ import { Predicate } from '@angular/core';
 export function pollEveryUntil<T>(
     task$: Observable<T>, predicate: Predicate<T>, doWhile?: (t: T | null) => any, minWaitTime: number = 1000): Observable<T> {
 
-    doWhile(null);
+    if (doWhile) {
+        doWhile(null);
+    }
 
     const tappedTask$ = task$.pipe(
-        tap(r => doWhile(r))
+        tap(r => {
+            if (doWhile) {
+                doWhile(r);
+            }
+        })
     );
 
     const requestTakesAtLeast$ = forkJoin({req: tappedTask$, timer: timer(minWaitTime)}).pipe(

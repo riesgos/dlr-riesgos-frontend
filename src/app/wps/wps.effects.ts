@@ -29,6 +29,8 @@ import { Reliability, country, hazard, damage_consumer_areas } from '../configur
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/equador/floodDamage';
 import { LaharExposureModel, LaharVulnerabilityModel, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, LaharDeusTranslator } from '../configuration/equador/laharDamage';
 import { FakeDeus } from '../configuration/others/fakeDeus';
+import { WpsClient } from 'projects/services-wps/src/public-api';
+import { VulnerabilityAndExposure } from '../configuration/chile/vulnAndExpCombined';
 
 
 
@@ -196,8 +198,9 @@ export class WpsEffects {
         switch (scenario) {
             case 'c1':
                 processes = [
-                    ExposureModel,
-                    VulnerabilityModel,
+                    // ExposureModel,
+                    // VulnerabilityModel,
+                    new VulnerabilityAndExposure(new WpsClient('1.0.0', this.httpClient, false)),
                     QuakeLedger,
                     EqSelection,
                     Shakyground,

@@ -20,7 +20,6 @@ export class WizardPageComponent implements OnInit {
 
   @Input() process: WpsProcess & WizardableProcess;
   parameters$: Observable<UserconfigurableProduct[]>;
-  private _parameters: UserconfigurableProduct[];
 
 
   constructor(
@@ -30,23 +29,8 @@ export class WizardPageComponent implements OnInit {
   ngOnInit() {
     this.parameters$ = this.store.pipe(
       select(getInputsForProcess, {processId: this.process.id}),
-      map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableProduct(i)) as UserconfigurableProduct[] ),
-      tap((parameters: UserconfigurableProduct[]) => this._parameters = parameters)
+      map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableProduct(i)) as UserconfigurableProduct[] )
     );
-  }
-
-  onSubmitClicked() {
-    for (let i = 0; i < this._parameters.length; i++) {
-      if (this._parameters[i].value === null) {
-        if (this._parameters[i].description.defaultValue) {
-          this._parameters[i] = {
-            ...this._parameters[i],
-            value: this._parameters[i].description.defaultValue
-          };
-        }
-      }
-    }
-    this.store.dispatch(new ClickRunProcess({productsProvided: this._parameters, process: this.process }));
   }
 
   onReconfigureClicked() {

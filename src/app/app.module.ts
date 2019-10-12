@@ -42,6 +42,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 import { GraphvizcompComponent } from './components/graphvizcomp/graphvizcomp.component';
 import { ShowgraphComponent } from './components/showgraph/showgraph.component';
+import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { ShowgraphComponent } from './components/showgraph/showgraph.component';
     FormStringselectFieldComponent,
     LanguageSwitcherComponent,
     GraphvizcompComponent,
-    ShowgraphComponent
+    ShowgraphComponent,
+    BboxfieldComponent
   ],
   imports: [
     BrowserModule,

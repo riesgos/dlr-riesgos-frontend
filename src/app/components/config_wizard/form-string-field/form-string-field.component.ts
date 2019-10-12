@@ -12,15 +12,12 @@ import { ProductsProvided } from 'src/app/wps/wps.actions';
 })
 export class FormStringFieldComponent implements OnInit {
 
-
+  @Input() control: FormControl;
   @Input() parameter: StringUconfProduct;
-  formControl: FormControl;
 
   constructor(private store: Store<State>) {}
 
   ngOnInit() {
-    this.formControl = new FormControl(this.parameter.value || this.parameter.description.defaultValue,
-      {updateOn: 'blur', validators: [Validators.required]});
     // this.formControl.valueChanges.pipe(
     //   debounceTime(1500),
     // ).subscribe(val => {
@@ -35,15 +32,15 @@ export class FormStringFieldComponent implements OnInit {
     // })
   }
 
-  onFocussed(focussed: boolean): void {
-    if (!focussed) {
-      this.store.dispatch(new ProductsProvided({
-        products: [{
-          ...this.parameter,
-          value: this.formControl.value
-        }]
-      }));
-    }
-  }
+  // onFocussed(focussed: boolean): void {
+  //   if (!focussed) {
+  //     this.store.dispatch(new ProductsProvided({
+  //       products: [{
+  //         ...this.parameter,
+  //         value: this.formControl.value
+  //       }]
+  //     }));
+  //   }
+  // }
 
 }

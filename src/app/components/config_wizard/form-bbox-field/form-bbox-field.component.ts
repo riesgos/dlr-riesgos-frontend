@@ -15,47 +15,51 @@ import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
 export class FormBboxFieldComponent implements OnInit {
 
     @Input() parameter: BboxUconfProduct;
-    public formControl: FormControl;
+    @Input() control: FormControl;
+    public stringcontrol: FormControl;
     public disabled = false;
 
     constructor(
         private store: Store<State>
-    ) {    }
+    ) {
+    }
 
     ngOnInit() {
         const initialBbox: WpsBboxValue = this.parameter.value || this.parameter.description.defaultValue;
-        const stringVal = `${initialBbox.lllon}, ${initialBbox.lllat}, ${initialBbox.urlon}, ${initialBbox.urlat}`;
-        this.formControl = new FormControl(stringVal, [Validators.required]);
-        this.formControl.valueChanges.pipe(
+        const stringVal = this.bboxToString(initialBbox);
+        this.stringcontrol = new FormControl(stringVal, [Validators.required]);
+        this.stringcontrol.valueChanges.pipe(
             debounceTime(500)
-        ).subscribe(newVal => {
-            if (this.formControl.valid) {
-                if (typeof newVal === 'string') {
-                    newVal = newVal.split(',').map(v => parseFloat(v));
-                }
-                const bbox: WpsBboxValue = {
-                    crs: 'EPSG:4326',
-                    lllon: newVal[0],
-                    lllat: newVal[1],
-                    urlon: newVal[2],
-                    urlat: newVal[3],
-                }
-                this.store.dispatch(new InteractionCompleted(
-                    {product: {...this.parameter,
-                        value: bbox
-                    }}
-                ));
+        ).subscribe((newVal: string) => {
+            if (this.stringcontrol.valid) {
+                const bbox = this.stringToBbox(newVal);
+                this.control.setValue(bbox);
             }
         });
     }
 
+    private bboxToString(bbox: WpsBboxValue): string {
+        return `${bbox.lllon}, ${bbox.lllat}, ${bbox.urlon}, ${bbox.urlat}`;
+    }
+
+    private stringToBbox(bbox: string): WpsBboxValue {
+        const array = bbox.split(',').map(v => parseFloat(v));
+        const newbbox: WpsBboxValue = {
+            crs: 'EPSG:4326',
+            lllon: array[0],
+            lllat: array[1],
+            urlon: array[2],
+            urlat: array[3],
+        };
+        return newbbox;
+    }
 
     onClick(event) {
         this.store.dispatch(new InteractionStarted({
             mode: 'bbox',
             product: {
                 ...this.parameter,
-                value: this.formControl.value
+                value: this.control.value
             }
         }));
     }

@@ -1,16 +1,19 @@
-<form  clrForm>
+<form [formGroup]="formGroup" (ngSubmit)="onSubmitClicked()" clrForm>
     <div [style.opacity]="disabled ? 0.3 : 1.0" [style.pointer-events]="disabled ? 'none' : 'inherit'">
 
         
         <div *ngFor="let parameter of parameters">
             <ng-container [ngSwitch]="parameter.description.wizardProperties.fieldtype">
-                <div *ngSwitchCase="'string'"  ><ukis-form-string-field [parameter]="parameter"></ukis-form-string-field></div>
-                <div *ngSwitchCase="'stringselect'"><ukis-form-stringselect-field   [parameter]="parameter"></ukis-form-stringselect-field></div>
-                <div *ngSwitchCase="'select'"  ><ukis-form-featureselect-field [parameter]="parameter"></ukis-form-featureselect-field></div>
-                <div *ngSwitchCase="'bbox'"    ><ukis-form-bbox-field   [parameter]="parameter"></ukis-form-bbox-field></div>
-                <div *ngSwitchDefault          ><ukis-form-string-field [parameter]="parameter"></ukis-form-string-field></div>
+                <div *ngSwitchCase="'string'"><ukis-form-string-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter"></ukis-form-string-field></div>
+                <div *ngSwitchCase="'stringselect'"><ukis-form-stringselect-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter"></ukis-form-stringselect-field></div>
+                <div *ngSwitchCase="'select'"><ukis-form-featureselect-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter"></ukis-form-featureselect-field></div>
+                <div *ngSwitchCase="'bbox'"><ukis-form-bbox-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter"></ukis-form-bbox-field></div>
+                <div *ngSwitchDefault><ukis-form-string-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter"></ukis-form-string-field></div>
             </ng-container>
         </div>
     
+        <ng-container *ngIf="!disabled">
+            <button type="submit" [disabled]="!formGroup.valid" class="btn btn-outline">{{'Submit' | translate}}</button>
+        </ng-container>
     </div>
 </form>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { FeatureSelectUconfPD, FeatureSelectUconfProduct } from '../userconfigurable_wpsdata';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -13,36 +13,27 @@ import { featureCollection } from '@turf/helpers';
 })
 export class FormFeatureSelectFieldComponent implements OnInit {
 
+  @Input() control: FormControl;
   @Input() parameter: FeatureSelectUconfProduct;
-  private options: { [k: string]: any };
-  public selectionStrings: string[];
-  public activeSelection: string;
+  public options: { [k: string]: any };
+  // public selectionStrings: string[];
+  // public activeSelection: string;
 
 
   constructor(private store: Store<State>) { }
 
   ngOnInit() {
     this.options = this.parameter.description.options;
-    this.selectionStrings = Object.keys(this.options);
-    if (this.parameter.value) {
-      this.activeSelection = this.parameter.value[0].features[0].id as string;
-    } else if (this.parameter.description.defaultValue) {
-      this.activeSelection = this.parameter.description.defaultValue[0].features[0].id as string;
-    } else {
-      this.activeSelection = this.parameter.description.options[0];
-    }
+    this.control.valueChanges.subscribe((newVal: any) => {
+      const newValFeatureCollection = featureCollection([newVal]);
+      this.store.dispatch(new InteractionCompleted(
+        { product: { ...this.parameter,
+          value: [newValFeatureCollection]
+        }}
+      ));
+    });
   }
 
-
-  onChange(newValString) {
-    const newVal = this.options[newValString];
-    const newValFeatureCollection = featureCollection([newVal]);
-    this.store.dispatch(new InteractionCompleted(
-      { product: { ...this.parameter,
-        value: [newValFeatureCollection]
-      }}
-    ));
-  }
 
   onClick(event) {
     this.store.dispatch(new InteractionStarted({

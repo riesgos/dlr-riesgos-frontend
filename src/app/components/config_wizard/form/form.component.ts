@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, RequiredValidator, Validators } from '@angular/forms';
 import { UserconfigurableProductDescription, UserconfigurableProduct } from '../userconfigurable_wpsdata';
+import { WizardableProcess } from '../wizardable_processes';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
+import { ClickRunProcess } from 'src/app/wps/wps.actions';
 
 @Component({
   selector: 'ukis-form',
@@ -9,12 +13,37 @@ import { UserconfigurableProductDescription, UserconfigurableProduct } from '../
 })
 export class FormComponent implements OnInit {
 
-
+  @Input() process: WizardableProcess;
   @Input() parameters: UserconfigurableProduct[];
-  @Input() disabled: boolean = false;
+  @Input() disabled: boolean = false;  // <------------ @TODO: can we infer this from formgroup?
+  public formGroup: FormGroup;
 
-  constructor() { }
+  constructor(
+    private store: Store<State>
+  ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    const controls = {};
+
+    for (const parameter of this.parameters) {
+      const key = parameter.uid;
+      const startValue = parameter.value || parameter.description.defaultValue || null;
+      controls[key] = new FormControl(startValue, [Validators.required]);
+    }
+
+    this.formGroup = new FormGroup(controls);
+
+    this.formGroup.valueChanges.subscribe((newVal) => {
+      console.log('value has changed: ', newVal);
+    });
+  }
+
+  onSubmitClicked() {
+    for (const parameter of this.parameters) {
+      const formControl = this.formGroup.get(parameter.uid);
+      parameter.value = formControl.value;
+    }
+    this.store.dispatch(new ClickRunProcess({productsProvided: this.parameters, process: this.process }));
+  }
 
 }

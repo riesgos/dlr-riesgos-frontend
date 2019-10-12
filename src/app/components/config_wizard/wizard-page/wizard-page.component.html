@@ -11,8 +11,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'available'">
-            <ukis-form [parameters]="parameters$ | async"></ukis-form>
-            <button class="btn btn-outline" (click)="onSubmitClicked()" i18n>{{'Submit' | translate}}</button>
+            <ukis-form [process]="process" [parameters]="parameters$ | async"></ukis-form>
         </ng-container>
 
 

@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import {  StringSelectUconfProduct } from '../userconfigurable_wpsdata';
 import { ProductsProvided } from 'src/app/wps/wps.actions';
+import { FormControl } from '@angular/forms';
 
 @Component({
     selector: 'ukis-form-stringselect-field',
@@ -11,21 +12,22 @@ import { ProductsProvided } from 'src/app/wps/wps.actions';
 })
 export class FormStringselectFieldComponent implements OnInit {
 
+    @Input() control: FormControl;
     @Input() parameter: StringSelectUconfProduct;
     public options: string[];
-    public activeSelection: string;
 
 
     constructor(private store: Store<State>) { }
 
     ngOnInit() {
         this.options = this.parameter.description.options;
-        this.activeSelection = this.parameter.value || this.parameter.description.defaultValue || this.parameter.description.options[0];
+        if (this.control.value === null) {
+            this.control.setValue(this.options[0]);
+        }
     }
 
 
     onChange(newValString) {
-        this.activeSelection = newValString;
         this.store.dispatch(new ProductsProvided({
             products: [{
                 ...this.parameter,

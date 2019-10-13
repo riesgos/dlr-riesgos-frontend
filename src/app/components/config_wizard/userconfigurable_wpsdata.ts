@@ -33,6 +33,10 @@ export interface BboxUconfPD extends ProductDescription {
     defaultValue: any;
 }
 
+export const isBboxUconfPD = (descr: ProductDescription): descr is BboxUconfPD => {
+    return descr['wizardProperties'] && descr['wizardProperties']['fieldtype'] === 'bbox';
+};
+
 export interface FeatureSelectUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
@@ -61,6 +65,10 @@ export interface BboxUconfProduct extends Product {
     description: BboxUconfPD;
     value: WpsBboxValue | null;
 }
+
+export const isBboxUconfProd = (prod: Product): prod is BboxUconfProduct => {
+    return isBboxUconfPD(prod.description);
+};
 
 export interface FeatureSelectUconfProduct extends Product {
     description: FeatureSelectUconfPD;

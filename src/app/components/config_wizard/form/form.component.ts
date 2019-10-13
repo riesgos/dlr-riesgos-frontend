@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, RequiredValidator, Validators } from '@angular/forms';
-import { UserconfigurableProductDescription, UserconfigurableProduct } from '../userconfigurable_wpsdata';
+import { UserconfigurableProductDescription, UserconfigurableProduct, isBboxUconfProd } from '../userconfigurable_wpsdata';
 import { WizardableProcess } from '../wizardable_processes';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -36,25 +36,17 @@ export class FormComponent implements OnInit {
 
     this.formGroup = new FormGroup(controls);
 
-    this.formGroup.valueChanges.pipe(
-      debounceTime(500)
-    ).subscribe((newData) => {
-      console.log('value has changed: ', newData);
-      const immediatelyDispatchedProducts: Product[] = [];
-      for (const key in newData) {
-        if (newData[key]) {
-          const val = newData[key];
-          if (isBbox(val)) {
-            const prod = this.parameters.find(p => p.uid === key);
-            immediatelyDispatchedProducts.push({
-              ... prod,
-              value: val
-            });
-          }
-        }
+    for (const parameter of this.parameters) {
+      if (isBboxUconfProd(parameter)) {
+        const control = this.formGroup.get(parameter.uid);
+        control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
+          this.store.dispatch(new ProductsProvided({products: [{
+            ...parameter,
+            value: newVal
+          }]}));
+        });
       }
-      this.store.dispatch(new ProductsProvided({products: immediatelyDispatchedProducts}));
-    });
+    }
   }
 
   onSubmitClicked() {

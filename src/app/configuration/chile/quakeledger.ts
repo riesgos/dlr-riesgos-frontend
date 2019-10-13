@@ -210,7 +210,7 @@ export const QuakeLedger: WizardableProcess & WpsProcess = {
 
     wizardProperties: {
         shape: 'earthquake',
-        providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
+        providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/'
     }
 };

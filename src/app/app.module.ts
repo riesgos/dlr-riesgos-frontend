@@ -43,6 +43,7 @@ import { LanguageSwitcherComponent } from './components/language-switcher/langua
 import { GraphvizcompComponent } from './components/graphvizcomp/graphvizcomp.component';
 import { ShowgraphComponent } from './components/showgraph/showgraph.component';
 import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/bboxfield/bboxfield.component';
+import { RouteDocumentationComponent } from './route-components/route-documentation/route-documentation.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/b
     LanguageSwitcherComponent,
     GraphvizcompComponent,
     ShowgraphComponent,
-    BboxfieldComponent
+    BboxfieldComponent,
+    RouteDocumentationComponent
   ],
   imports: [
     BrowserModule,

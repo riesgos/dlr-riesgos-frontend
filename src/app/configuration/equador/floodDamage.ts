@@ -50,7 +50,7 @@ export const FlooddamageProcess: WpsProcess & WizardableProcess = {
     // providedProducts: [damageManzanas, damageBuildings].map(p => p.uid), // <-- damageBuildings is way too big to fit in browser memory!
     providedProducts: [damageManzanas].map(p => p.uid),
     wizardProperties: {
-        providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
+        providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
         shape: 'dot-circle'
     }

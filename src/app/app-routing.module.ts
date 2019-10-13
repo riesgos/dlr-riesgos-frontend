@@ -3,6 +3,7 @@ import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
+import { RouteDocumentationComponent } from './route-components/route-documentation/route-documentation.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
   {
     path: 'scenarios',
     component: ScenariosComponent
+  },
+  {
+    path: 'documentation',
+    component: RouteDocumentationComponent
   }
 ];
 

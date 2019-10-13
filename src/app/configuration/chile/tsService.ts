@@ -86,7 +86,7 @@ export const TsService: WizardableProcess & WpsProcess = {
     wpsVersion: '1.0.0',
     wizardProperties: {
         shape: 'tsunami',
-        providerName: 'Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research',
+        providerName: 'Alfred Wegener Institute',
         providerUrl: 'https://www.awi.de/en/'
     }
 };

@@ -179,7 +179,7 @@ export const ExposureModel: WizardableProcess & WpsProcess = {
   providedProducts: [exposureRef.uid],
   wizardProperties: {
     shape: 'dot-circle',
-    providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
+    providerName: 'Helmholtz Centre Potsdam',
     providerUrl: 'https://www.gfz-potsdam.de/en/'
   },
   state: new ProcessStateUnavailable()

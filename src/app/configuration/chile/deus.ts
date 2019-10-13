@@ -193,7 +193,7 @@ export const Deus: WizardableProcess & WpsProcess = {
     requiredProducts: [loss, schema, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
     providedProducts: [damage, transition, updated_exposure].map(p => p.uid),
     wizardProperties: {
-        providerName: 'Helmholtz Centre Potsdam German Research Centre for Geosciences',
+        providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
         shape: 'dot-circle'
     }

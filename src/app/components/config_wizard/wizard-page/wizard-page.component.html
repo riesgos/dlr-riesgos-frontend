@@ -1,5 +1,4 @@
-
-<p class="p3">{{process.description | translate}}</p>
+<app-read-more [text]="process.description | translate" [threshold]="10"></app-read-more>
 
 <ng-container *ngIf="process.wizardProperties.providerUrl">
     <p class="p3" style="white-space: no-wrap;">

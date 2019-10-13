@@ -44,6 +44,7 @@ import { GraphvizcompComponent } from './components/graphvizcomp/graphvizcomp.co
 import { ShowgraphComponent } from './components/showgraph/showgraph.component';
 import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 import { RouteDocumentationComponent } from './route-components/route-documentation/route-documentation.component';
+import { ReadMoreComponent } from './components/read-more/read-more.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { RouteDocumentationComponent } from './route-components/route-documentat
     GraphvizcompComponent,
     ShowgraphComponent,
     BboxfieldComponent,
-    RouteDocumentationComponent
+    RouteDocumentationComponent,
+    ReadMoreComponent
   ],
   imports: [
     BrowserModule,

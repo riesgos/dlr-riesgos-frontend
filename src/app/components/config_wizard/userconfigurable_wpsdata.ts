@@ -8,7 +8,8 @@ import { WpsBboxData, WpsBboxValue } from 'projects/services-wps/src/public-api'
 export interface StringUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
-        fieldtype: 'string'
+        fieldtype: 'string',
+        description?: string
     };
     defaultValue: string;
 }
@@ -17,6 +18,7 @@ export interface StringSelectUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'stringselect',
+        description?: string
     };
     options: string[];
     defaultValue: string;
@@ -25,7 +27,8 @@ export interface StringSelectUconfPD extends ProductDescription {
 export interface BboxUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
-        fieldtype: 'bbox'
+        fieldtype: 'bbox',
+        description?: string
     };
     defaultValue: any;
 }
@@ -34,6 +37,7 @@ export interface FeatureSelectUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'select',
+        description?: string
     };
     options: {[key: string]: any};
     defaultValue: [FeatureCollection];

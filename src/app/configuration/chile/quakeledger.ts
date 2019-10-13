@@ -21,6 +21,7 @@ export const inputBoundingbox: BboxUconfProduct & BboxLayerData & WpsData = {
         wizardProperties: {
             name: 'AOI',
             fieldtype: 'bbox',
+            description: 'You can also select a boundingbox by clicking and dragging on the map.'
         },
     },
     value: null

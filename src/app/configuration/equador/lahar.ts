@@ -48,6 +48,15 @@ export const parameter: StringSelectUconfProduct & WpsData = {
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'parameter',
+            description: `
+            <ol>
+                <li>MaxHeight [m]: Maximum flow height, that the lahar can reach during the event</li>
+                <li>MaxVelocity [m/s]: Maximum flow velocity, that the lahar can reach during the event</li>
+                <li>MaxPressure [kPa]: Maximum flow pressure, that the lahar can reach during the event</li>
+                <li>MaxErosion [m]: Maximum depth of erosion, that the lahar can entrain during the event</li>
+                <li>Deposition [m]: Height of deposited material after the lahar event</li>
+            </ol>
+            `
         }
     },
     value: null
@@ -72,7 +81,7 @@ export const LaharWps: WizardableProcess & WpsProcess = {
     id: 'gs:LaharModel',
     url: 'http://91.250.85.221/geoserver/riesgos/wps',
     name: 'Lahar',
-    description: 'Simulates the path a lahar would take',
+    description: 'The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.',
     requiredProducts: [direction, intensity, parameter].map(p => p.uid),
     providedProducts: [laharWms.uid],
     state: new ProcessStateUnavailable(),

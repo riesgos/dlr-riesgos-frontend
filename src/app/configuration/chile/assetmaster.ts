@@ -10,119 +10,89 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 
 
-export const lonmin: StringUconfProduct & WpsData = {
+export const lonmin: Product & WpsData = {
   uid: 'user_lonmin',
   description: {
     id: 'lonmin',
     type: 'literal',
-    wizardProperties: {
-      fieldtype: 'string',
-      name: 'lonmin'
-    },
     reference: false,
     defaultValue: '-71.8'
   },
-  value: null
+  value: '-71.8'
 };
 
 
-export const lonmax: StringUconfProduct & WpsData = {
+export const lonmax: Product & WpsData = {
   uid: 'user_lonmax',
   description: {
     id: 'lonmax',
     type: 'literal',
-    wizardProperties: {
-      fieldtype: 'string',
-      name: 'lonmax'
-    },
     reference: false,
     defaultValue: '-71.4'
   },
-  value: null
+  value: '-71.4'
 };
 
 
-export const latmin: StringUconfProduct & WpsData = {
+export const latmin: Product & WpsData = {
   uid: 'user_latmin',
   description: {
     id: 'latmin',
     type: 'literal',
-    wizardProperties: {
-      fieldtype: 'string',
-      name: 'latmin'
-    },
     reference: false,
     defaultValue: '-33.2'
   },
-  value: null
+  value:  '-33.2'
 };
 
 
-export const latmax: StringUconfProduct & WpsData = {
+export const latmax: Product & WpsData = {
   uid: 'user_latmax',
   description: {
     id: 'latmax',
     type: 'literal',
-    wizardProperties: {
-      fieldtype: 'string',
-      name: 'latmax'
-    },
     reference: false,
     defaultValue: '-33.0'
   },
-  value: null
+  value: '-33.0'
 };
 
 
-export const schema: StringSelectUconfProduct & WpsData = {
+export const schema: Product & WpsData = {
   uid: 'user_schema',
   description: {
     id: 'schema',
-    options: ['SARA_v1.0'],
     defaultValue: 'SARA_v1.0',
     reference: false,
-    type: 'literal',
-    wizardProperties: {
-      fieldtype: 'stringselect',
-      name: 'Schema'
-    }
+    type: 'literal'
   },
-  value: null
+  value: 'SARA_v1.0'
 };
 
 
 
-export const assettype: StringSelectUconfProduct & WpsData = {
+export const assettype: Product & WpsData = {
   uid: 'user_assettype',
   description: {
     id: 'assettype',
-    options: ['res'],
     defaultValue: 'res',
     reference: false,
     type: 'literal',
-    wizardProperties: {
-      fieldtype: 'stringselect',
-      name: 'Schema'
-    }
   },
-  value: null
+  value: 'res'
 };
 
 
-export const querymode: StringSelectUconfProduct & WpsData = {
+export const querymode: Product & WpsData = {
   uid: 'user_querymode',
   description: {
     id: 'querymode',
-    options: ['intersects', 'within'],
+    // options: ['intersects', 'within'],
     defaultValue: 'intersects',
     reference: false,
-    type: 'literal',
-    wizardProperties: {
-      fieldtype: 'stringselect',
-      name: 'Querymode'
-    }
+    type: 'literal'
   },
-  value: null
+  value: 'intersects'
 };
 
 

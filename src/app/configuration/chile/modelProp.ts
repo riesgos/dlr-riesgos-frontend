@@ -6,51 +6,37 @@ import { schema } from './assetmaster';
 
 
 
-export const assetcategory: StringSelectUconfProduct & WpsData = {
+export const assetcategory: Product & WpsData = {
     uid: 'user_assetcategory',
     description: {
         id: 'assetcategory',
-        options: ['buildings'],
         defaultValue: 'buildings',
         reference: false,
-        type: 'literal',
-        wizardProperties: {
-            fieldtype: 'stringselect',
-            name: 'assetcategory'
-        }
+        type: 'literal'
     },
-    value: null
+    value: 'buildings'
 };
 
-export const losscategory: StringSelectUconfProduct & WpsData = {
+export const losscategory: Product & WpsData = {
     uid: 'user_losscategory',
     description: {
         id: 'losscategory',
-        options: ['structural'],
         defaultValue: 'structural',
         reference: false,
-        type: 'literal',
-        wizardProperties: {
-            fieldtype: 'stringselect',
-            name: 'losscategory'
-        }
+        type: 'literal'
     },
-    value: null
+    value: 'structural'
 };
 
-export const taxonomies: StringUconfProduct & WpsData = {
+export const taxonomies: Product & WpsData = {
     uid: 'user_taxonomies',
     description: {
         id: 'taxonomies',
         reference: false,
         type: 'literal',
-        defaultValue: '',
-        wizardProperties: {
-            fieldtype: 'string',
-            name: 'taxonomies'
-        }
+        defaultValue: 'none'
     },
-    value: null
+    value: 'none'
 };
 
 

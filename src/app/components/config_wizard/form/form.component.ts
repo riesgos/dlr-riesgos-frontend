@@ -4,7 +4,10 @@ import { UserconfigurableProductDescription, UserconfigurableProduct } from '../
 import { WizardableProcess } from '../wizardable_processes';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ClickRunProcess } from 'src/app/wps/wps.actions';
+import { ClickRunProcess, ProductsProvided } from 'src/app/wps/wps.actions';
+import { Product } from 'src/app/wps/wps.datatypes';
+import { isBbox } from '@ukis/services-wps/src/lib/wps_datatypes';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'ukis-form',
@@ -15,7 +18,7 @@ export class FormComponent implements OnInit {
 
   @Input() process: WizardableProcess;
   @Input() parameters: UserconfigurableProduct[];
-  @Input() disabled: boolean = false;  // <------------ @TODO: can we infer this from formgroup?
+  @Input() disabled = false;  // <------------ @TODO: can we infer this from formgroup?
   public formGroup: FormGroup;
 
   constructor(
@@ -33,9 +36,25 @@ export class FormComponent implements OnInit {
 
     this.formGroup = new FormGroup(controls);
 
-    // this.formGroup.valueChanges.subscribe((newVal) => {
-    //   console.log('value has changed: ', newVal);
-    // });
+    this.formGroup.valueChanges.pipe(
+      debounceTime(500)
+    ).subscribe((newData) => {
+      console.log('value has changed: ', newData);
+      const immediatelyDispatchedProducts: Product[] = [];
+      for (const key in newData) {
+        if (newData[key]) {
+          const val = newData[key];
+          if (isBbox(val)) {
+            const prod = this.parameters.find(p => p.uid === key);
+            immediatelyDispatchedProducts.push({
+              ... prod,
+              value: val
+            });
+          }
+        }
+      }
+      this.store.dispatch(new ProductsProvided({products: immediatelyDispatchedProducts}));
+    });
   }
 
   onSubmitClicked() {

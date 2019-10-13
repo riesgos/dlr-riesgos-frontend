@@ -17,6 +17,9 @@ export class ReadMoreComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    if (!this.text) {
+      this.text = '';
+    }
     const words = this.text.split(' ');
     this.isExpandable = (words.length > this.threshold);
     if (!this.isExpandable) {

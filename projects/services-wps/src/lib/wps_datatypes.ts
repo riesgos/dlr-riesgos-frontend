@@ -42,6 +42,16 @@ export interface WpsBboxValue {
     urlat: number;
 }
 
+export const isBbox = (obj: object): obj is WpsBboxValue => {
+    return (
+        obj.hasOwnProperty('crs') &&
+        obj.hasOwnProperty('lllon') &&
+        obj.hasOwnProperty('lllat') &&
+        obj.hasOwnProperty('urlon') &&
+        obj.hasOwnProperty('urlat')
+    );
+}
+
 export interface WpsBboxData {
     description: WpsBboxDescription;
     value: WpsBboxValue;

@@ -87,7 +87,7 @@ export class LayerMarshaller  {
             type: 'geojson',
             filtertype: 'Overlays',
             data: featureCollection([bboxPolygon(bboxArray)]),
-            options: {},
+            options: { style: undefined },
             popup: {
                 asyncPupup: (obj, callback) => {
                     const html = JSON.stringify(bboxArray);
@@ -203,7 +203,7 @@ export class LayerMarshaller  {
                             FORMAT: paras.format,
                             BBOX: paras.bbox,
                             SRS: paras.srs,
-                            TRANSPARENT: 'TRUE',
+                            TRANSPARENT: true,
                             STYLES: description.styles ? description.styles[0] : '',
                         },
                         legendImg: `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS` +

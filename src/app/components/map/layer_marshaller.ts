@@ -129,6 +129,9 @@ export class LayerMarshaller  {
                 if (product.description.description) {
                     layer.description = product.description.description;
                 }
+                if (product.description.name === 'available earthquakes') {
+                    layer.legendImg = 'assets/layer-preview/eq_legend.png';
+                }
                 return layer;
             })
         );

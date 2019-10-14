@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, RequiredValidator, Validators } from '@angular/forms';
 import { UserconfigurableProductDescription, UserconfigurableProduct, isBboxUconfProd } from '../userconfigurable_wpsdata';
 import { WizardableProcess } from '../wizardable_processes';
@@ -8,18 +8,20 @@ import { ClickRunProcess, ProductsProvided } from 'src/app/wps/wps.actions';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { isBbox } from '@ukis/services-wps/src/lib/wps_datatypes';
 import { debounceTime } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'ukis-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
 
   @Input() process: WizardableProcess;
   @Input() parameters: UserconfigurableProduct[];
   @Input() disabled = false;  // <------------ @TODO: can we infer this from formgroup?
   public formGroup: FormGroup;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private store: Store<State>
@@ -39,14 +41,19 @@ export class FormComponent implements OnInit {
     for (const parameter of this.parameters) {
       if (isBboxUconfProd(parameter)) {
         const control = this.formGroup.get(parameter.uid);
-        control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
+        const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
           this.store.dispatch(new ProductsProvided({products: [{
             ...parameter,
             value: newVal
           }]}));
         });
+        this.subscriptions.push(sub$);
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.map(s => s.unsubscribe());
   }
 
   onSubmitClicked() {

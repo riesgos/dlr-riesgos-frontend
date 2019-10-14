@@ -61,8 +61,13 @@ export class WorkflowControl {
 
     private executeCustom(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
 
-        const process = this.getCustomProcess(id);
+        let process = this.getCustomProcess(id);
         const inputs = this.getProcessInputs(id);
+
+        process = this.setProcessState(process.id, new ProcessStateRunning()) as CustomProcess;
+        if (doWhileRequesting) {
+            doWhileRequesting(null, 0);
+        }
 
         return process.execute(inputs).pipe(
             tap((outputs: Product[]) => {

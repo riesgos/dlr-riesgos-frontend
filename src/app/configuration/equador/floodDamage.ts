@@ -40,6 +40,7 @@ export const damageBuildings: WpsData & Product = {
 
 
 export const FlooddamageProcess: WpsProcess & WizardableProcess = {
+    uid: 'FloodService',
     id: 'org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     description: 'Process to compute the damage of a flood in ecuador.',
@@ -90,7 +91,7 @@ export const damageManzanasGeojson: VectorLayerData & WpsData & Product = {
  * translates Flooddamage's output: needs to be converted to proper coodinate system to be actual geojson.
  */
 export const FlooddamageTranslator: WatchingProcess = {
-    id: 'ecuadorFlooddamageTranslator',
+    uid: 'ecuadorFlooddamageTranslator',
     name: 'ecuadorFlooddamageTranslator',
     requiredProducts: [damageManzanas].map(p => p.uid),
     providedProducts: [damageManzanasGeojson].map(p => p.uid),

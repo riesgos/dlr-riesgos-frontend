@@ -32,6 +32,7 @@ export const shakemapXmlRefOutput: WpsData & Product = {
 
 export const Shakyground: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
+    uid: 'Shakyground',
     id: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     name: 'Groundmotion Simulation',

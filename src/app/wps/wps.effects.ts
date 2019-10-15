@@ -59,7 +59,7 @@ export class WpsEffects {
             const wpsUpdate = new WpsDataUpdate({processes, products, graph});
             actions.push(wpsUpdate);
             if (processes.length > 0) {
-                const processClicked = new NewProcessClicked({processId: processes[0].id});
+                const processClicked = new NewProcessClicked({processId: processes[0].uid});
                 actions.push(processClicked);
             }
 
@@ -94,7 +94,7 @@ export class WpsEffects {
             const wpsUpdate = new WpsDataUpdate({processes, products, graph});
             actions.push(wpsUpdate);
             if (processes.length > 0) {
-                const processClicked = new NewProcessClicked({processId: processes[0].id});
+                const processClicked = new NewProcessClicked({processId: processes[0].uid});
                 actions.push(processClicked);
             }
 
@@ -129,7 +129,7 @@ export class WpsEffects {
             for (const prod of newProducts) {
                 this.wfc.provideProduct(prod.uid, prod.value);
             }
-            return this.wfc.execute(process.id,
+            return this.wfc.execute(process.uid,
                 (response, counter) => {
                     if (counter < 1) {
                         this.store$.dispatch(new WpsDataUpdate({
@@ -139,7 +139,7 @@ export class WpsEffects {
                         }));
                     }
             }).pipe(map(success => {
-                return [success, process.id];
+                return [success, process.uid];
             }));
         }),
         mergeMap(([success, processId]: [boolean, string]) => {
@@ -172,7 +172,7 @@ export class WpsEffects {
         ofType<WpsActions>(EWpsActionTypes.restartingFromProcess),
         map((action: RestartingFromProcess) => {
 
-            this.wfc.invalidateProcess(action.payload.process.id);
+            this.wfc.invalidateProcess(action.payload.process.uid);
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();

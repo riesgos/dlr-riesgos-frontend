@@ -85,7 +85,7 @@ const fakeEqs =  [
 
 export const QuakeLedgerPeru: WizardableProcess & CustomProcess = {
     state: new ProcessStateUnavailable(),
-    id: 'org.n52.wps.python.algorithm.QuakeMLProcessBBox',
+    uid: 'org.n52.wps.python.algorithm.QuakeMLProcessBBox',
     name: 'Earthquake Catalogue',
     requiredProducts: [inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid),
     providedProducts: [selectedEqs.uid],

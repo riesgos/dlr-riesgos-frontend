@@ -164,6 +164,7 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
 
 
 export const TsDeus: WizardableProcess & WpsProcess = {
+    uid: 'TS-DEUS',
     id: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',

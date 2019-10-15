@@ -52,7 +52,7 @@ export const tsWms: WpsData & Product = {
 
 
 export const TsServiceTranslator: WatchingProcess = {
-    id: 'TS_service_translator',
+    uid: 'TS_service_translator',
     name: 'TS_service_translator',
     requiredProducts: [selectedEq.uid],
     providedProducts: [lat, lon, mag].map(p => p.uid),
@@ -80,6 +80,7 @@ export const TsServiceTranslator: WatchingProcess = {
 
 export const TsWmsService: WpsProcess = {
     state: new ProcessStateUnavailable(),
+    uid: 'get_scenario',
     id: 'get_scenario',
     url: 'http://tsunami-wps.awi.de/wps',
     name: 'Earthquake/tsunami interaction',
@@ -103,6 +104,7 @@ export const tsShakemap: WpsData & Product = {
 
 
 export const TsShakemapService: WpsProcess = {
+    uid: 'get_tsunamap',
     id: 'get_tsunamap',
     description: 'Input is earthquake epicenter (lon,lat) with magnitude, output is the nearest Tsunami epicenter and Inundation in shakemap format',
     name: 'get_tsunamap',
@@ -114,7 +116,7 @@ export const TsShakemapService: WpsProcess = {
 };
 
 export class TsService implements WizardableProcess, CustomProcess {
-    id = 'ts-service';
+    uid = 'ts-service';
     name = 'TS-Service';
     requiredProducts = TsWmsService.requiredProducts;
     providedProducts = [tsWms, tsShakemap].map(p => p.uid);

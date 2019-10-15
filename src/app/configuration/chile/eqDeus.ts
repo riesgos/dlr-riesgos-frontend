@@ -183,6 +183,7 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
 
 export const EqDeus: WizardableProcess & WpsProcess = {
     id: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
+    uid: 'EQ-DEUS',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',
     state: new ProcessStateUnavailable(),

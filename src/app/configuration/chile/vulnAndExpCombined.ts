@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 
 
 export class VulnerabilityAndExposure implements CustomProcess, WizardableProcess {
-    id = 'VulnerabilityAndExposure';
+    uid = 'VulnerabilityAndExposure';
     name = 'Exposure (extended)';
     requiredProducts = [
         lonmin, lonmax, latmin, latmax, assettype, schema, querymode,

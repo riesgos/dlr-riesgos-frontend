@@ -18,6 +18,7 @@ export const physicalImpact: VectorLayerData = {
 
 
 export const PhysicalImpactAssessment: WizardableProcess & WpsProcess = {
+    uid: 'PIA',
     id: 'org.n52.dlr.riesgos.algorithm.PhysicalImpactAssessment',
     name: 'Physical Impact',
     description: '',

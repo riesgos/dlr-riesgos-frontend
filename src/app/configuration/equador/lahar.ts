@@ -78,6 +78,7 @@ export const laharWms: WmsLayerData & WpsData = {
 
 
 export const LaharWps: WizardableProcess & WpsProcess = {
+    uid: 'LaharModel',
     id: 'gs:LaharModel',
     url: 'http://91.250.85.221/geoserver/riesgos/wps',
     name: 'Lahar',

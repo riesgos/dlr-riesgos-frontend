@@ -24,7 +24,7 @@ export class FocusEffects {
                 return p.state.type === ProcessStateTypes.available;
             });
             if (activeProcess) {
-                return new NewProcessClicked({processId: activeProcess.id});
+                return new NewProcessClicked({processId: activeProcess.uid});
             }
         })
     );

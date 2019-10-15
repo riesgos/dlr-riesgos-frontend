@@ -25,10 +25,10 @@ export class WorkflowControl {
         this.graph = new Graph({ directed: true });
         for (const process of processes) {
             for (const inProdId of process.requiredProducts) {
-                this.graph.setEdge(inProdId, process.id);
+                this.graph.setEdge(inProdId, process.uid);
             }
             for (const outProdId of process.providedProducts) {
-                this.graph.setEdge(process.id, outProdId);
+                this.graph.setEdge(process.uid, outProdId);
             }
         }
 
@@ -42,7 +42,7 @@ export class WorkflowControl {
         this.processes = this.processes.map(p => {
             return {
                 ...p,
-                state: this.calculateState(p.id)
+                state: this.calculateState(p.uid)
             };
         });
     }
@@ -64,7 +64,7 @@ export class WorkflowControl {
         let process = this.getCustomProcess(id);
         const inputs = this.getProcessInputs(id);
 
-        process = this.setProcessState(process.id, new ProcessStateRunning()) as CustomProcess;
+        process = this.setProcessState(process.uid, new ProcessStateRunning()) as CustomProcess;
         if (doWhileRequesting) {
             doWhileRequesting(null, 0);
         }
@@ -74,7 +74,7 @@ export class WorkflowControl {
                 for (const product of outputs) {
                     this.provideProduct(product.uid, product.value);
                 }
-                this.setProcessState(process.id, new ProcessStateCompleted());
+                this.setProcessState(process.uid, new ProcessStateCompleted());
             }),
 
             map((outputs: Product[]) => {
@@ -82,7 +82,7 @@ export class WorkflowControl {
             }),
 
             catchError((error) => {
-                this.setProcessState(process.id, new ProcessStateError(error.message));
+                this.setProcessState(process.uid, new ProcessStateError(error.message));
                 console.error(error);
                 return of(false);
             })
@@ -90,14 +90,14 @@ export class WorkflowControl {
 
     }
 
-    private executeWps(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
+    private executeWps(uid: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
 
-        let process = this.getWpsProcess(id);
-        const inputs = this.getProcessInputs(id) as WpsData[];
+        let process = this.getWpsProcess(uid);
+        const inputs = this.getProcessInputs(uid) as WpsData[];
         const outputProducts = this.getProducts(process.providedProducts) as (Product & WpsData)[];
         const outputDescriptions = outputProducts.map(p => p.description) as WpsDataDescription[];
 
-        process = this.setProcessState(process.id, new ProcessStateRunning()) as WpsProcess;
+        process = this.setProcessState(process.uid, new ProcessStateRunning()) as WpsProcess;
         let requestCounter = 0;
         return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescriptions, 2000,
 
@@ -130,7 +130,7 @@ export class WorkflowControl {
                 for (const product of products) {
                     this.provideProduct(product.uid, product.value);
                 }
-                this.setProcessState(process.id, new ProcessStateCompleted());
+                this.setProcessState(process.uid, new ProcessStateCompleted());
             }),
 
             map((outputs: WpsData[]) => {
@@ -138,7 +138,7 @@ export class WorkflowControl {
             }),
 
             catchError((error) => {
-                this.setProcessState(process.id, new ProcessStateError(error.message));
+                this.setProcessState(process.uid, new ProcessStateError(error.message));
                 console.error(error);
                 return of(false);
             })
@@ -151,7 +151,7 @@ export class WorkflowControl {
         if (!ids) {
             return this.processes;
         } else {
-            return this.processes.filter(p => ids.includes(p.id));
+            return this.processes.filter(p => ids.includes(p.uid));
         }
     }
 
@@ -258,7 +258,7 @@ export class WorkflowControl {
     private getWpsProcess(id: ProcessId): WpsProcess {
         const process = this.getProcess(id);
         if (!isWpsProcess(process)) {
-            throw new Error(`is not a WpsProcess: ${process.id}`);
+            throw new Error(`is not a WpsProcess: ${process.uid}`);
         } else {
             return process;
         }
@@ -267,7 +267,7 @@ export class WorkflowControl {
     private getCustomProcess(id: ProcessId): CustomProcess {
         const process = this.getProcess(id);
         if (!isCustomProcess(process)) {
-            throw new Error(`is not a CustomProcess: ${process.id}`);
+            throw new Error(`is not a CustomProcess: ${process.uid}`);
         } else {
             return process;
         }
@@ -275,7 +275,7 @@ export class WorkflowControl {
 
 
     public getProcess(id: ProcessId): Process {
-        const process = this.processes.find(p => p.id === id);
+        const process = this.processes.find(p => p.uid === id);
         if (!process) {
             throw new Error(`no such process: ${id}`);
         }
@@ -284,7 +284,7 @@ export class WorkflowControl {
 
 
     private isProcess(id: string): boolean {
-        return this.processes.map(p => p.id).includes(id);
+        return this.processes.map(p => p.uid).includes(id);
     }
 
 
@@ -299,7 +299,7 @@ export class WorkflowControl {
 
     private setProcessState(id: ProcessId, state: ProcessState): Process {
         this.processes = this.processes.map(process => {
-            if (process.id === id) {
+            if (process.uid === id) {
                 return {
                     ...process,
                     state
@@ -339,9 +339,9 @@ export class WorkflowControl {
 
     private getProcessesInExecutionOrder(processes: Process[]): Process[] {
         const allIds = alg.topsort(this.graph);
-        const processIds = processes.map(proc => proc.id);
+        const processIds = processes.map(proc => proc.uid);
         const sortedProcessIds = allIds.filter(id => processIds.includes(id));
-        const sortedProcesses = sortedProcessIds.map(id => processes.find(proc => proc.id === id) );
+        const sortedProcesses = sortedProcessIds.map(id => processes.find(proc => proc.uid === id) );
         return sortedProcesses;
     }
 
@@ -386,7 +386,7 @@ export class WorkflowControl {
 
 
     private checkDataIntegrity(processes: Process[], products: Product[]): void {
-        const processIds = processes.map(p => p.id);
+        const processIds = processes.map(p => p.uid);
         const productIds = products.map(p => p.uid);
 
         const requiredProducts: string[] = [];

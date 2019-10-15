@@ -37,7 +37,7 @@ export const exposureRefDeusInput = {
 
 
 export const DeusTranslator: WatchingProcess = {
-    id: 'DeusTranslator',
+    uid: 'DeusTranslator',
     name: 'DeusTranslator',
     requiredProducts: [fragilityRef, shakemapXmlRefOutput, exposureRef].map(p => p.uid),
     providedProducts: [fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),

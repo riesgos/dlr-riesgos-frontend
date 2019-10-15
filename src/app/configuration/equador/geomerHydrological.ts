@@ -21,7 +21,7 @@ export const hydrologicalSimulation: WmsLayerData & WpsData = {
 
 
 export const geomerFlood: WizardableProcess & CustomProcess = {
-    id: 'geomerHydrological',
+    uid: 'geomerHydrological',
     name: 'Flood',
     requiredProducts: [direction, laharWms].map(p => p.uid),
     providedProducts: [hydrologicalSimulation.uid],
@@ -97,7 +97,7 @@ export const depthTiff: WpsData & Product = {
 
 
 export const geomerFloodWcsProvider: WatchingProcess = {
-    id: 'geomerFloodWcsProvider',
+    uid: 'geomerFloodWcsProvider',
     name: 'geomerFloodWcsProvider',
     requiredProducts: [direction, hydrologicalSimulation].map(pr => pr.uid),
     providedProducts: [durationTiff, velocityTiff, depthTiff].map(pr => pr.uid),

@@ -53,6 +53,7 @@ export const fragilityRef: WpsData & Product = {
 
 
 export const VulnerabilityModel: WizardableProcess & WpsProcess = {
+    uid: 'Vulnerability',
     id: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',

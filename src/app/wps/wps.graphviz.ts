@@ -47,7 +47,7 @@ export function toGraphviz(wfc: WorkflowControl): string {
         const attrs = attrsFromProcessStateTypes(process.state.type);
         attrs.push("shape=box");
         attrs.push('label="' + process.name + '"');
-        lines.push('    "' + process.id + '" ['+ attrs.join(',') + '];');
+        lines.push('    "' + process.uid + '" ['+ attrs.join(',') + '];');
     }
     for (let product of wfc.getProducts()) {
         lines.push('    "' + product.uid + '" [label="' +product.description['id'] + '", shape=oval];');
@@ -72,7 +72,7 @@ export function toGraphvizDestructured(processes: Process[], products: Product[]
         const attrs = attrsFromProcessStateTypes(process.state.type);
         attrs.push('shape=box');
         attrs.push('label="' + process.name + '"');
-        lines.push('    "' + process.id + '" [' + attrs.join(',') + '];');
+        lines.push('    "' + process.uid + '" [' + attrs.join(',') + '];');
     }
     for (let product of products) {
         lines.push('    "' + product.uid + '" [label="' + product.description['id'] + '", shape=oval];');

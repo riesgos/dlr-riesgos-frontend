@@ -88,7 +88,7 @@ export const getMapableProducts = createSelector(
 
 
 export const getProcessById = (id: ProcessId, processes: Process[]): Process => {
-    const process = processes.find(p => p.id === id);
+    const process = processes.find(p => p.uid === id);
     if (process === undefined) {
         throw new Error(`Could not find process ${id}`);
     }

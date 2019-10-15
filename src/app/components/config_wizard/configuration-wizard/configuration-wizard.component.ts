@@ -41,12 +41,12 @@ export class ConfigurationWizardComponent implements OnInit {
     ngOnInit() { }
 
     onBlockClicked(event, processDescr: Process) {
-        this.store.dispatch(new NewProcessClicked({ processId: processDescr.id }));
+        this.store.dispatch(new NewProcessClicked({ processId: processDescr.uid }));
     }
 
     hasFocus(processDescr: Process): Observable<boolean> {
         return this.focussedPageId$.pipe(distinctUntilChanged()).pipe(
-            map(id => id === processDescr.id)
+            map(id => id === processDescr.uid)
         );
     }
 

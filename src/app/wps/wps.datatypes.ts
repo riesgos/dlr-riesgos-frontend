@@ -54,7 +54,7 @@ export type ProcessState = ProcessStateUnavailable | ProcessStateAvailable |
 
 
 export interface Process {
-    readonly id: ProcessId;
+    readonly uid: ProcessId;
     readonly name: string;
     readonly requiredProducts: ProductId[];
     readonly providedProducts: ProductId[];
@@ -68,6 +68,7 @@ export const isProcess = (o: any): o is Process => {
 
 
 export interface WpsProcess extends Process {
+    readonly id: string;
     readonly description: string;
     readonly url: string;
     readonly wpsVersion: WpsVerion;

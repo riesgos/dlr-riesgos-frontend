@@ -140,6 +140,7 @@ export const exposureRef: VectorLayerData & WpsData & Product = {
 
 
 export const ExposureModel: WizardableProcess & WpsProcess = {
+  uid: 'Exposure',
   id: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
   url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
   wpsVersion: '1.0.0',

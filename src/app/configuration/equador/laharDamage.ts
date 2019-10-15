@@ -40,7 +40,7 @@ export const LaharVulnerabilityModel = {
 
 
 export const LaharDeusTranslator: WatchingProcess = {
-    id: 'LaharDeusTranslator',
+    uid: 'LaharDeusTranslator',
     name: 'LaharDeusTranslator',
     requiredProducts: [fragilityRef, exposureRef].map(p => p.uid),
     providedProducts: [fragilityRefDeusInput, exposureRefDeusInput].map(p => p.uid),

@@ -62,7 +62,7 @@ export const selectedEq: WpsData & Product = {
 
 
 export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = {
-    id: 'EqSelection',
+    uid: 'EqSelection',
     name: 'Select earthquake',
     state: { type: ProcessStateTypes.unavailable },
     requiredProducts: [selectedEqs, userinputSelectedEq].map(p => p.uid),

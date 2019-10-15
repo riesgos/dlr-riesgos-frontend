@@ -45,6 +45,7 @@ import { ShowgraphComponent } from './components/showgraph/showgraph.component';
 import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 import { RouteDocumentationComponent } from './route-components/route-documentation/route-documentation.component';
 import { ReadMoreComponent } from './components/read-more/read-more.component';
+import { Action } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -89,8 +90,20 @@ import { ReadMoreComponent } from './components/read-more/read-more.component';
     HttpClientModule,
     FeatureTablesModule,
     StoreDevtoolsModule.instrument({
-      maxAge: 25, // Retains last 25 states
+      maxAge: 10, // Retains last 25 states
       logOnly: environment.production, // Restrict extension to log-only mode
+      actionSanitizer: (action: Action, id: number) => {
+        if (action['payload']) {
+          return {
+            ... action,
+            payload: 'some payload'
+          };
+        }
+        return action;
+      },
+      stateSanitizer: (state: any, id: number) => {
+        return 'somestate';
+      },
     }),
     TranslateModule.forRoot({
       loader: {

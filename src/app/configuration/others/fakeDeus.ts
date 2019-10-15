@@ -1,6 +1,6 @@
 import { CustomProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { fragilityRefDeusInput, exposureRefDeusInput, shakemapRefDeusInput } from '../chile/deusTranslator';
-import { damage, updated_exposure, transition, Deus } from '../chile/deus';
+import { eqDamage, eqUpdatedExposure, eqTransition, EqDeus } from '../chile/eqDeus';
 import { Observable, of } from 'rxjs';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 
@@ -44,25 +44,25 @@ const updated_exposureJson = {
 
 export const FakeDeus: CustomProcess & WizardableProcess = {
     id: 'fakeDeus',
-    name: Deus.name,
-    requiredProducts: Deus.requiredProducts,
-    providedProducts: Deus.providedProducts,
-    wizardProperties: Deus.wizardProperties,
+    name: EqDeus.name,
+    requiredProducts: EqDeus.requiredProducts,
+    providedProducts: EqDeus.providedProducts,
+    wizardProperties: EqDeus.wizardProperties,
     state: new ProcessStateUnavailable(),
     execute: (inuts: Product[]): Observable<Product[]> => {
 
         const fakeDamage = {
-            ...damage,
+            ...eqDamage,
             value: [damageJson]
         };
 
         const fakeTransition = {
-            ...transition,
+            ...eqTransition,
             value: [transitionJson]
         };
 
         const fakeExposure = {
-            ...updated_exposure,
+            ...eqUpdatedExposure,
             value: [updated_exposureJson]
         };
 

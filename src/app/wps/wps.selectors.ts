@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { WpsState } from './wps.state';
+import { WpsState, WpsScenarioState } from './wps.state';
 import { ProductId, WpsData } from 'projects/services-wps/src/public-api';
 import { Product, Process, ProcessId } from './wps.datatypes';
 import { ProductsProvided } from './wps.actions';
@@ -11,11 +11,20 @@ const getWpsState = (state: State) => {
     return state.wpsState;
 };
 
-const getCurrentScenarioState = (wpsState: WpsState) => {
-    const currentScenario = wpsState.currentScenario;
-    const scenarioData = wpsState.scenarioData[currentScenario];
+const getScenarioState = (wpsState: WpsState, scenario: string): WpsScenarioState | undefined => {
+    const scenarioData = wpsState.scenarioData[scenario];
     return scenarioData;
 };
+
+const getCurrentScenarioState = (wpsState: WpsState): WpsScenarioState => {
+    const currentScenario = wpsState.currentScenario;
+    return getScenarioState(wpsState, currentScenario);
+};
+
+export const getScenarioWpsState = createSelector(
+    getWpsState,
+    (s: WpsState, args: {scenario: string}) => getScenarioState(s, args.scenario)
+);
 
 export const getCurrentScenarioWpsState = createSelector(
     getWpsState,

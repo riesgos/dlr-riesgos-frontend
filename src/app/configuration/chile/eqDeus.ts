@@ -1,9 +1,7 @@
-import { WpsProcess, ProcessStateUnavailable, Product, WatchingProcess } from 'src/app/wps/wps.datatypes';
-import { shakemapXmlRefOutput } from './shakyground';
-import { schema, exposureRef } from './assetmaster';
+import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
+import { schema} from './assetmaster';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { fragilityRef } from './modelProp';
 import { fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from './deusTranslator';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -34,7 +32,7 @@ export const loss: WpsData & Product = {
     value: 'testinputs/loss_sara.json'
 };
 
-export const damage: VectorLayerData & WpsData & Product = {
+export const eqDamage: VectorLayerData & WpsData & Product = {
     uid: 'damage',
     description: {
         id: 'damage',
@@ -57,7 +55,7 @@ export const damage: VectorLayerData & WpsData & Product = {
                 });
             },
             text: (props: object) => {
-                return `<h4>Damage ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
+                return `<h4>Loss ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
             }
         },
         description: 'Concrete damage in USD.'
@@ -65,7 +63,7 @@ export const damage: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const transition: VectorLayerData & WpsData & Product = {
+export const eqTransition: VectorLayerData & WpsData & Product = {
     uid: 'transition',
     description: {
         id: 'transition',
@@ -115,14 +113,14 @@ export const transition: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const updated_exposure: VectorLayerData & WpsData & Product = {
+export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
     uid: 'updated_exposure',
     description: {
         id: 'updated_exposure',
         reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'exposure',
+        name: 'updated exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -174,7 +172,7 @@ export const updated_exposure: VectorLayerData & WpsData & Product = {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', '# buildings');
-                return `<h4>Exposure ${props['name']}</h4>${anchor.innerHTML}`;
+                return `<h4>Updated exposure ${props['name']}</h4>${anchor.innerHTML}`;
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'
@@ -183,7 +181,7 @@ export const updated_exposure: VectorLayerData & WpsData & Product = {
 };
 
 
-export const Deus: WizardableProcess & WpsProcess = {
+export const EqDeus: WizardableProcess & WpsProcess = {
     id: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',
@@ -191,7 +189,7 @@ export const Deus: WizardableProcess & WpsProcess = {
     name: 'Multihazard damage estimation / EQ',
     description: 'This service outputs damage caused by a given earthquake.',
     requiredProducts: [loss, schema, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
-    providedProducts: [damage, transition, updated_exposure].map(p => p.uid),
+    providedProducts: [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid),
     wizardProperties: {
         providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/',

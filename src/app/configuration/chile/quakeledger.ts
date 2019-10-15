@@ -94,20 +94,16 @@ export const zmax: StringUconfProduct & WpsData = {
 };
 
 
-export const p: StringUconfProduct & WpsData = {
+export const p: Product & WpsData = {
     uid: 'user_p',
     description: {
         id: 'p',
         description: 'p',
         type: 'literal',
-        wizardProperties: {
-            name: 'p',
-            fieldtype: 'string',
-        },
         reference: false,
         defaultValue: '0.1',
     },
-    value: null
+    value: '0.1'
 };
 
 

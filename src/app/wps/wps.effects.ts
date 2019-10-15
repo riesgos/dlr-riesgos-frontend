@@ -13,7 +13,7 @@ import { QuakeLedger, inputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
 import { inputBoundingboxPeru, QuakeLedgerPeru } from '../configuration/peru/quakeledger';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
-import { TsService, epicenter, lat, lon, mag, TsServiceTranslator } from '../configuration/chile/tsService';
+import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
@@ -22,7 +22,7 @@ import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityR
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerFlood, durationTiff,
     velocityTiff, depthTiff, geomerFloodWcsProvider } from '../configuration/equador/geomerHydrological';
-import { Deus, loss, damage, transition, updated_exposure } from '../configuration/chile/deus';
+import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure } from '../configuration/chile/eqDeus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
 import { Reliability, country, hazard, damage_consumer_areas } from '../configuration/chile/reliability';
@@ -31,6 +31,10 @@ import { LaharExposureModel, LaharVulnerabilityModel, lonminEcuador, lonmaxEcuad
 import { FakeDeus } from '../configuration/others/fakeDeus';
 import { WpsClient } from 'projects/services-wps/src/public-api';
 import { VulnerabilityAndExposure } from '../configuration/chile/vulnAndExpCombined';
+import { getScenarioWpsState } from './wps.selectors';
+import { WpsScenarioState } from './wps.state';
+import { Observable } from 'rxjs';
+import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
 
 
 
@@ -44,7 +48,7 @@ export class WpsEffects {
         switchMap((action: RestaringScenario) => {
 
             const newScenario = action.payload.scenario;
-            const [procs, prods] = this.loadScenarioData(action.payload.scenario);
+            const [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
 
             this.wfc = new WorkflowControl(procs, prods, this.httpClient);
             const processes = this.wfc.getProcesses();
@@ -78,7 +82,7 @@ export class WpsEffects {
                 procs = scenarioData.processStates;
                 prods = scenarioData.productValues;
             } else {
-                [procs, prods] = this.loadScenarioData(action.payload.scenario);
+                [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
             }
 
             this.wfc = new WorkflowControl(procs, prods, this.httpClient);
@@ -190,27 +194,36 @@ export class WpsEffects {
     }
 
 
-    private loadScenarioData(scenario: string): [Process[], Product[]] {
+    private loadScenarioData(scenario: string): Observable<[Process[], Product[]]> {
         // @TODO: per default, load data from store.
+        return this.store$.select(getScenarioWpsState, {scenario}).pipe(map((scenarioState: WpsScenarioState) => {
+            if (scenarioState) {
+                return [scenarioState.processStates, scenarioState.productValues];
+            } else {
+                return this.loadScenarioDataFresh(scenario);
+            }
+        }));
+    }
 
+
+    private loadScenarioDataFresh(scenario: string): [Process[], Product[]] {
         let processes: Process[] = [];
         let products: Product[] = [];
         switch (scenario) {
             case 'c1':
                 processes = [
-                    // ExposureModel,
-                    // VulnerabilityModel,
                     new VulnerabilityAndExposure(new WpsClient('1.0.0', this.httpClient, false)),
                     QuakeLedger,
                     EqSelection,
                     Shakyground,
                     DeusTranslator,
-                    // Deus,
+                    // EqDeus,
                     FakeDeus,
                     TsServiceTranslator,
-                    TsService,
+                    new TsService(this.httpClient),
+                    TsDeus,
                     Reliability,
-                    PhysicalImpactAssessment
+                    // PhysicalImpactAssessment
                 ];
                 products = [
                     lonmin, lonmax, latmin, latmax, assettype, schema, querymode, exposureRef,
@@ -218,11 +231,12 @@ export class WpsEffects {
                     inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
-                    loss, damage, transition, updated_exposure,
-                    lat, lon, mag, epicenter,
+                    loss, eqDamage, eqTransition, eqUpdatedExposure,
+                    tsDamage, tsTransition, tsUpdatedExposure,
+                    lat, lon, mag, tsWms, tsShakemap,
                     fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
-                    country, hazard, damage_consumer_areas,
-                    physicalImpact
+                    country, hazard, damage_consumer_areas
+                    // physicalImpact
                 ];
                 break;
             case 'e1':
@@ -251,16 +265,22 @@ export class WpsEffects {
             case 'p1':
                 processes = [
                     QuakeLedgerPeru,
+                    new VulnerabilityAndExposure(new WpsClient('1.0.0', this.httpClient, false)),
                     EqSelection,
                     Shakyground,
+                    DeusTranslator,
+                    // Deus,
+                    FakeDeus,
                     TsServiceTranslator,
-                    TsService
+                    new TsService(this.httpClient),
+                    Reliability,
+                    PhysicalImpactAssessment
                 ];
                 products = [
                     inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
-                    lat, lon, mag, epicenter
+                    lat, lon, mag, tsWms
                 ];
                 break;
             default:

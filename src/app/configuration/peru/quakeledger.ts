@@ -36,59 +36,6 @@ etype.description.options = ['observed', 'stochastic'];
 etype.description.defaultValue = 'observed';
 
 
-const fakeEqs =  [
-    {
-        'type': 'FeatureCollection',
-        'features': [
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [
-                        -77.68, -12.62
-                    ]
-                },
-                'properties': {
-                    'origin.publicID': '1',
-                    'origin.depth.value': '28.0',
-                    'magnitude.mag.value': '8.0',
-                },
-                'id': '1'
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [
-                        -78.19, -11.77
-                    ]
-                },
-                'properties': {
-                    'origin.publicID': '2',
-                    'origin.depth.value': '28.0',
-                    'magnitude.mag.value': '8.0',
-                },
-                'id': '2'
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [
-                        -78.70, -10.93
-                    ]
-                },
-                'properties': {
-                    'origin.publicID': '3',
-                    'origin.depth.value': '28.0',
-                    'magnitude.mag.value': '8.0',
-                },
-                'id': '3'
-            },
-        ]
-    }
-];
-
 
 export const QuakeLedgerPeru: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
@@ -101,14 +48,6 @@ export const QuakeLedgerPeru: WizardableProcess & WpsProcess = {
         providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/'
     },
-
-    // execute: (inputs: Product[]): Observable<Product[]> => {
-    //     return of([{
-    //         ... selectedEqs,
-    //         value: fakeEqs
-    //     }]);
-    // },
-
     description: '',
     id: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?',

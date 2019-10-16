@@ -93,16 +93,16 @@ import { Action } from '@ngrx/store';
       maxAge: 2, // Retains last x states
       logOnly: environment.production, // Restrict extension to log-only mode
       actionSanitizer: (action: Action, id: number) => {
-        // if (action['payload']) {
-        //   return {
-        //     ... action,
-        //     payload: 'some payload'
-        //   };
-        // }
+        if (action['payload']) {
+          return {
+            ... action,
+            payload: 'some payload'
+          };
+        }
         return action;
       },
       stateSanitizer: (state: State, id: number) => {
-        return state.interactionState;
+        return 'somestate'; //state.interactionState;
       },
     }),
     TranslateModule.forRoot({

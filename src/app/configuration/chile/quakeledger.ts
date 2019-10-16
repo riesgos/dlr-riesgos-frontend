@@ -101,9 +101,9 @@ export const p: Product & WpsData = {
         description: 'p',
         type: 'literal',
         reference: false,
-        defaultValue: '0.1',
+        defaultValue: '0.0',
     },
-    value: '0.1'
+    value: '0.0'
 };
 
 

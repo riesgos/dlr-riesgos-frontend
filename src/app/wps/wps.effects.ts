@@ -11,7 +11,7 @@ import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
 import { QuakeLedger, inputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
-import { inputBoundingboxPeru, QuakeLedgerPeru } from '../configuration/peru/quakeledger';
+import { inputBoundingboxPeru, QuakeLedgerPeru, etypePeru } from '../configuration/peru/quakeledger';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
@@ -241,6 +241,31 @@ export class WpsEffects {
                     // physicalImpact
                 ];
                 break;
+            case 'p1':
+                processes = [
+                    new VulnerabilityAndExposure( this.httpClient),
+                    QuakeLedgerPeru,
+                    EqSelection,
+                    Shakyground,
+                    DeusTranslator,
+                    // Deus,
+                    FakeDeus,
+                    TsServiceTranslator,
+                    new TsService(this.httpClient),
+                    Reliability
+                ];
+                products = [
+                    lonmin, lonmax, latmin, latmax, assettype, querymode, schema, assetcategory, losscategory, taxonomies,
+                    fragilityRef, exposureRef,
+                    fragilityRefDeusInput, exposureRefDeusInput, shakemapRefDeusInput,
+                    loss, eqDamage, eqTransition, eqUpdatedExposure,
+                    inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etypePeru, tlon, tlat,
+                    selectedEqs, userinputSelectedEq,
+                    selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
+                    lat, lon, mag, tsWms, tsShakemap,
+                    country, hazard, damage_consumer_areas
+                ];
+                break;
             case 'e1':
                 processes = [
                     VeiProvider,
@@ -262,36 +287,20 @@ export class WpsEffects {
                     schema, assetcategory, losscategory, taxonomies,
                     lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymode, assettype,
                     fragilityRef, exposureRef,
-                    fragilityRefDeusInput, exposureRefDeusInput,
+                    fragilityRefDeusInput, exposureRefDeusInput, fragilityRefDeusInput,
                     hydrologicalSimulation,
                     durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings,
                     damageManzanasGeojson
                 ];
                 break;
-            case 'p1':
-                processes = [
-                    QuakeLedgerPeru,
-                    new VulnerabilityAndExposure( this.httpClient),
-                    EqSelection,
-                    Shakyground,
-                    DeusTranslator,
-                    // Deus,
-                    FakeDeus,
-                    TsServiceTranslator,
-                    new TsService(this.httpClient),
-                    Reliability,
-                    PhysicalImpactAssessment
-                ];
-                products = [
-                    inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
-                    selectedEqs, userinputSelectedEq,
-                    selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
-                    lat, lon, mag, tsWms
-                ];
-                break;
             default:
                 throw new Error(`Unknown scenario ${scenario}`);
         }
+
+        const resetProducts = products.map(prd => {return {
+            ...prd,
+            value: null
+        }; });
 
         return [processes, products];
     }

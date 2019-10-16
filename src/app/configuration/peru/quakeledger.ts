@@ -29,6 +29,13 @@ export const inputBoundingboxPeru: UserconfigurableProduct & BboxLayerData & Wps
 };
 
 
+export const etypePeru = {
+    ... etype,
+};
+etype.description.options = ['observed', 'stochastic'];
+etype.description.defaultValue = 'observed';
+
+
 const fakeEqs =  [
     {
         'type': 'FeatureCollection',
@@ -83,11 +90,11 @@ const fakeEqs =  [
 ];
 
 
-export const QuakeLedgerPeru: WizardableProcess & CustomProcess = {
+export const QuakeLedgerPeru: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
-    uid: 'org.n52.wps.python.algorithm.QuakeMLProcessBBox',
+    uid: 'Quakeledger Peru',
     name: 'Earthquake Catalogue',
-    requiredProducts: [inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid),
+    requiredProducts: [inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etypePeru, tlon, tlat].map(prd => prd.uid),
     providedProducts: [selectedEqs.uid],
     wizardProperties: {
         shape: 'earthquake',
@@ -95,11 +102,16 @@ export const QuakeLedgerPeru: WizardableProcess & CustomProcess = {
         providerUrl: 'https://www.gfz-potsdam.de/en/'
     },
 
-    execute: (inputs: Product[]): Observable<Product[]> => {
-        return of([{
-            ... selectedEqs,
-            value: fakeEqs
-        }]);
-    },
+    // execute: (inputs: Product[]): Observable<Product[]> => {
+    //     return of([{
+    //         ... selectedEqs,
+    //         value: fakeEqs
+    //     }]);
+    // },
+
+    description: '',
+    id: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
+    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?',
+    wpsVersion: '1.0.0'
 
 };

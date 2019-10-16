@@ -287,7 +287,7 @@ export class WpsEffects {
                     schema, assetcategory, losscategory, taxonomies,
                     lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymode, assettype,
                     fragilityRef, exposureRef,
-                    fragilityRefDeusInput, exposureRefDeusInput, fragilityRefDeusInput,
+                    fragilityRefDeusInput, exposureRefDeusInput,
                     hydrologicalSimulation,
                     durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings,
                     damageManzanasGeojson
@@ -297,10 +297,10 @@ export class WpsEffects {
                 throw new Error(`Unknown scenario ${scenario}`);
         }
 
-        const resetProducts = products.map(prd => {return {
-            ...prd,
-            value: null
-        }; });
+        // const resetProducts = products.map(prd => {return {
+        //     ...prd,
+        //     value: null
+        // }; });
 
         return [processes, products];
     }

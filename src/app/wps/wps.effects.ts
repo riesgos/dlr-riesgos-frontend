@@ -212,7 +212,7 @@ export class WpsEffects {
         switch (scenario) {
             case 'c1':
                 processes = [
-                    new VulnerabilityAndExposure(new WpsClient('1.0.0', this.httpClient, false)),
+                    new VulnerabilityAndExposure(this.httpClient),
                     QuakeLedger,
                     EqSelection,
                     Shakyground,
@@ -265,7 +265,7 @@ export class WpsEffects {
             case 'p1':
                 processes = [
                     QuakeLedgerPeru,
-                    new VulnerabilityAndExposure(new WpsClient('1.0.0', this.httpClient, false)),
+                    new VulnerabilityAndExposure( this.httpClient),
                     EqSelection,
                     Shakyground,
                     DeusTranslator,

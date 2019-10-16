@@ -5,6 +5,7 @@ import { assetcategory, losscategory, taxonomies, fragilityRef, VulnerabilityMod
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsClient, WpsData } from 'projects/services-wps/src/public-api';
 import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -19,8 +20,11 @@ export class VulnerabilityAndExposure implements CustomProcess, WizardableProces
     providedProducts = [exposureRef, fragilityRef].map(p => p.uid);
     state = new ProcessStateUnavailable();
     wizardProperties = ExposureModel.wizardProperties;
+    private wpsClient: WpsClient;
 
-    constructor(private wpsClient: WpsClient) {}
+    constructor(private http: HttpClient) {
+        this.wpsClient = new WpsClient('1.0.0', http, false);
+    }
 
     execute = (inputs: Product[]): Observable<Product[]> => {
 

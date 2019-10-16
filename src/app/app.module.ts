@@ -7,7 +7,7 @@ import { UkisComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
-import { reducers, effects } from './ngrx_register';
+import { reducers, effects, State } from './ngrx_register';
 import { EffectsModule } from '@ngrx/effects';
 import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
 import { GlobalFooterComponent } from './components/global-footer/global-footer.component';
@@ -90,19 +90,19 @@ import { Action } from '@ngrx/store';
     HttpClientModule,
     FeatureTablesModule,
     StoreDevtoolsModule.instrument({
-      maxAge: 10, // Retains last 25 states
+      maxAge: 2, // Retains last x states
       logOnly: environment.production, // Restrict extension to log-only mode
       actionSanitizer: (action: Action, id: number) => {
-        if (action['payload']) {
-          return {
-            ... action,
-            payload: 'some payload'
-          };
-        }
+        // if (action['payload']) {
+        //   return {
+        //     ... action,
+        //     payload: 'some payload'
+        //   };
+        // }
         return action;
       },
-      stateSanitizer: (state: any, id: number) => {
-        return 'somestate';
+      stateSanitizer: (state: State, id: number) => {
+        return state.interactionState;
       },
     }),
     TranslateModule.forRoot({

@@ -43,7 +43,7 @@ export interface FeatureSelectUconfPD extends ProductDescription {
         fieldtype: 'select',
         description?: string
     };
-    options: {[key: string]: any};
+    options: {[key: string]: FeatureCollection};
     defaultValue: [FeatureCollection];
 }
 

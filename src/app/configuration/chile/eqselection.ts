@@ -7,6 +7,7 @@ import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { selectedEqs } from './quakeledger';
+import { FeatureCollection, featureCollection } from '@turf/helpers';
 
 
 
@@ -14,7 +15,7 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerData & 
     uid: 'user_selectedRow',
     description: {
         id: 'selectedRow',
-        options: [],
+        options: {},
         defaultValue: null,
         reference: false,
         type: 'complex',
@@ -84,13 +85,14 @@ export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = 
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch (newProduct.uid) {
 
-            case 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess_selectedRows':
+            case selectedEqs.uid:
                 const options = {};
                 for (const feature of newProduct.value[0].features) {
-                    options[feature.id] = feature;
+                    options[feature.id] = featureCollection([feature]);
                 }
 
                 userinputSelectedEq.description.options = options;
+                userinputSelectedEq.description.defaultValue = [Object.values(options)[0]];
 
                 return [userinputSelectedEq];
 

@@ -4,8 +4,8 @@
     {{parameter.description.wizardProperties.name}}:
   </label>
     
-  <select class="clr-col-md-9" clrSelect [formControl]="control" (click)="onClick($event)">
-      <option *ngFor="let item of options | keyvalue" [ngValue]="item.value">{{item.key}}</option>
+  <select class="clr-col-md-9" clrSelect [formControl]="stringControl" (focus)="onFocus(true)" (blur)="onFocus(false)">
+      <option *ngFor="let item of stringOptions" [ngValue]="item">{{item}}</option>
   </select>
 
   <clr-control-helper>{{parameter.description.description}}</clr-control-helper>

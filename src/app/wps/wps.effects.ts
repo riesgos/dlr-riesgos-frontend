@@ -15,7 +15,7 @@ import { inputBoundingboxPeru, QuakeLedgerPeru } from '../configuration/peru/qua
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
-import { LaharWps, direction, laharWms, intensity, parameter } from '../configuration/equador/lahar';
+import { LaharWps, direction, laharWms, vei, parameter } from '../configuration/equador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
         assettype, schema, querymode } from '../configuration/chile/assetmaster';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityRef } from '../configuration/chile/modelProp';
@@ -35,6 +35,8 @@ import { getScenarioWpsState } from './wps.selectors';
 import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
 import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
+import { VeiProvider, selectableVei } from '../configuration/equador/vei';
+import { AshfallService, ashfall } from '../configuration/equador/ashfall';
 
 
 
@@ -241,7 +243,9 @@ export class WpsEffects {
                 break;
             case 'e1':
                 processes = [
+                    VeiProvider,
                     LaharWps,
+                    AshfallService,
                     LaharVulnerabilityModel,
                     LaharExposureModel,
                     LaharDeusTranslator,
@@ -252,7 +256,9 @@ export class WpsEffects {
                     FlooddamageTranslator
                 ];
                 products = [
-                    direction, intensity, parameter, laharWms,
+                    selectableVei, vei,
+                    ashfall,
+                    direction, parameter, laharWms,
                     schema, assetcategory, losscategory, taxonomies,
                     lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymode, assettype,
                     fragilityRef, exposureRef,

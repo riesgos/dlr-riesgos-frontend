@@ -1,5 +1,5 @@
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public-api';
@@ -21,18 +21,13 @@ export const direction: StringSelectUconfProduct & WpsData = {
     value: null
 };
 
-export const intensity: StringSelectUconfProduct & WpsData = {
-    uid: 'user_intensity',
+export const vei: Product & WpsData = {
+    uid: 'intensity',
     description: {
         id: 'intensity',
         reference: false,
         type: 'literal',
-        options: ['VEI1', 'VEI2', 'VEI3', 'VEI4'],
         defaultValue: 'VEI1',
-        wizardProperties: {
-            fieldtype: 'stringselect',
-            name: 'intensity',
-        }
     },
     value: null
 };
@@ -83,7 +78,7 @@ export const LaharWps: WizardableProcess & WpsProcess = {
     url: 'http://91.250.85.221/geoserver/riesgos/wps',
     name: 'Lahar',
     description: 'The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.',
-    requiredProducts: [direction, intensity, parameter].map(p => p.uid),
+    requiredProducts: [direction, vei, parameter].map(p => p.uid),
     providedProducts: [laharWms.uid],
     state: new ProcessStateUnavailable(),
     wpsVersion: '1.0.0',

@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { intensity } from '../equador/lahar';
+import { vei } from '../equador/lahar';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { p } from './quakeledger';

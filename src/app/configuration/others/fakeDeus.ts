@@ -1,8 +1,9 @@
-import { CustomProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { fragilityRefDeusInput, exposureRefDeusInput, shakemapRefDeusInput } from '../chile/deusTranslator';
 import { eqDamage, eqUpdatedExposure, eqTransition, EqDeus } from '../chile/eqDeus';
 import { Observable, of } from 'rxjs';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { HttpClient } from '@angular/common/http';
 
 
 const damageJson = {
@@ -33,14 +34,25 @@ const updated_exposureJson = {
     };
 
 
-export const FakeDeus: CustomProcess & WizardableProcess = {
-    uid: 'fakeDeus',
-    name: EqDeus.name,
-    requiredProducts: EqDeus.requiredProducts,
-    providedProducts: EqDeus.providedProducts,
-    wizardProperties: EqDeus.wizardProperties,
-    state: new ProcessStateUnavailable(),
-    execute: (inuts: Product[]): Observable<Product[]> => {
+export class FakeDeus implements ExecutableProcess, WizardableProcess {
+
+    readonly uid = 'fakeDeus';
+    readonly name: string;
+    readonly requiredProducts: string[];
+    readonly providedProducts: string[];
+    readonly wizardProperties: { providerName: string; providerUrl: string; shape: "dot-circle"; };
+    readonly state: ProcessStateUnavailable;
+
+    constructor(http: HttpClient) {
+        const deus = new EqDeus(http);
+        this.name = deus.name;
+        this.requiredProducts = deus.requiredProducts;
+        this.providedProducts = deus.providedProducts;
+        this.wizardProperties = deus.wizardProperties;
+        this.state = new ProcessStateUnavailable();
+    }
+
+    execute(inuts: Product[], outputs: Product[], doWhileExecuting?): Observable<Product[]> {
 
         const fakeDamage = {
             ...eqDamage,
@@ -59,4 +71,4 @@ export const FakeDeus: CustomProcess & WizardableProcess = {
 
         return of([fakeDamage, fakeTransition, fakeExposure]);
     }
-};
+}

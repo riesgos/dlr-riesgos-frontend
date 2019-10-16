@@ -2,6 +2,7 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { ProcessStateAvailable, WpsProcess } from 'src/app/wps/wps.datatypes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { shakemapXmlRefOutput } from './shakyground';
+import { HttpClient } from '@angular/common/http';
 
 
 export const physicalImpact: VectorLayerData = {
@@ -17,19 +18,26 @@ export const physicalImpact: VectorLayerData = {
 };
 
 
-export const PhysicalImpactAssessment: WizardableProcess & WpsProcess = {
-    uid: 'PIA',
-    id: 'org.n52.dlr.riesgos.algorithm.PhysicalImpactAssessment',
-    name: 'Physical Impact',
-    description: '',
-    url: 'http://riesgos.dlr.de/wps/WebProcessingService',
-    wpsVersion: '1.0.0',
-    requiredProducts: [shakemapXmlRefOutput.uid],
-    providedProducts: [physicalImpact.uid],
-    state: new ProcessStateAvailable(),
-    wizardProperties: {
+export class PhysicalImpactAssessment extends WpsProcess implements WizardableProcess {
+
+    readonly wizardProperties = {
         providerName: 'German Aerospace Center (DLR)',
         providerUrl: 'https://www.dlr.de',
-        shape: 'dot-circle'
+        shape: 'dot-circle' as 'dot-circle'
+    };
+
+    constructor(http: HttpClient) {
+        super(
+            'PIA',
+            'Physical Impact',
+            [shakemapXmlRefOutput.uid],
+            [physicalImpact.uid],
+            'org.n52.dlr.riesgos.algorithm.PhysicalImpactAssessment',
+            '',
+            'http://riesgos.dlr.de/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateAvailable()
+        );
     }
 };

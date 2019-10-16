@@ -1,4 +1,4 @@
-import { WatchingProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
+import { AutorunningProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { fragilityRef, VulnerabilityModel } from '../chile/modelProp';
 import { fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../chile/deusTranslator';
 import { shakemapXmlRefOutput } from '../chile/shakyground';
@@ -27,19 +27,17 @@ export const latmaxEcuador = {
 latmaxEcuador.description.defaultValue = '-0.4';
 
 
-export const LaharExposureModel = {
-    ... ExposureModel,
-    name: 'Lahar exposure model'
-};
+export class LaharExposureModel extends ExposureModel {
+    name: 'Lahar exposure model';
+}
 
 
-export const LaharVulnerabilityModel = {
-    ... VulnerabilityModel,
-    name: 'Lahar vulnerability model'
-};
+export class LaharVulnerabilityModel extends VulnerabilityModel {
+    name: 'Lahar vulnerability model';
+}
 
 
-export const LaharDeusTranslator: WatchingProcess = {
+export const LaharDeusTranslator: AutorunningProcess = {
     uid: 'LaharDeusTranslator',
     name: 'LaharDeusTranslator',
     requiredProducts: [fragilityRef, exposureRef].map(p => p.uid),

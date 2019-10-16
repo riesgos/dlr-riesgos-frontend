@@ -1,4 +1,4 @@
-import { CustomProcess, ProcessStateUnavailable, Product, WatchingProcess, ProcessStateAvailable } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, ProcessStateUnavailable, Product, AutorunningProcess, ProcessStateAvailable } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Observable, of } from 'rxjs';
@@ -20,7 +20,7 @@ export const hydrologicalSimulation: WmsLayerData & WpsData = {
 };
 
 
-export const geomerFlood: WizardableProcess & CustomProcess = {
+export const geomerFlood: WizardableProcess & ExecutableProcess = {
     uid: 'geomerHydrological',
     name: 'Flood',
     requiredProducts: [direction, laharWms].map(p => p.uid),
@@ -96,7 +96,7 @@ export const depthTiff: WpsData & Product = {
 };
 
 
-export const geomerFloodWcsProvider: WatchingProcess = {
+export const geomerFloodWcsProvider: AutorunningProcess = {
     uid: 'geomerFloodWcsProvider',
     name: 'geomerFloodWcsProvider',
     requiredProducts: [direction, hydrologicalSimulation].map(pr => pr.uid),

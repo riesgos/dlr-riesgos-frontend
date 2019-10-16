@@ -8,6 +8,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -181,19 +182,26 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
 };
 
 
-export const EqDeus: WizardableProcess & WpsProcess = {
-    id: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
-    uid: 'EQ-DEUS',
-    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-    wpsVersion: '1.0.0',
-    state: new ProcessStateUnavailable(),
-    name: 'Multihazard damage estimation / EQ',
-    description: 'This service outputs damage caused by a given earthquake.',
-    requiredProducts: [loss, schema, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
-    providedProducts: [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid),
-    wizardProperties: {
+export class EqDeus extends WpsProcess implements WizardableProcess {
+
+    readonly wizardProperties = {
         providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
-        shape: 'dot-circle'
+        shape: 'dot-circle' as 'dot-circle'
+    };
+
+    constructor(http: HttpClient) {
+        super(
+            'EQ-DEUS',
+            'Multihazard damage estimation / EQ',
+            [loss, schema, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
+            [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid),
+            'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
+            'This service outputs damage caused by a given earthquake.',
+            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable()
+        );
     }
-};
+}

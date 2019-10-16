@@ -1,4 +1,4 @@
-import { WpsProcess, ProcessStateUnavailable, WatchingProcess, Product, CustomProcess } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, AutorunningProcess, Product, ExecutableProcess } from '../../wps/wps.datatypes';
 import { UserconfigurableProduct, StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
@@ -83,7 +83,7 @@ const fakeEqs =  [
 ];
 
 
-export const QuakeLedgerPeru: WizardableProcess & CustomProcess = {
+export const QuakeLedgerPeru: WizardableProcess & ExecutableProcess = {
     state: new ProcessStateUnavailable(),
     uid: 'org.n52.wps.python.algorithm.QuakeMLProcessBBox',
     name: 'Earthquake Catalogue',

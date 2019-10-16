@@ -1,8 +1,9 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
 import { StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
+import { HttpClient } from '@angular/common/http';
 
 
 export const inputBoundingbox: BboxUconfProduct & BboxLayerData & WpsData = {
@@ -195,20 +196,29 @@ export const selectedEqs: VectorLayerData & WpsData = {
 
 
 
-export const QuakeLedger: WizardableProcess & WpsProcess = {
-    state: new ProcessStateUnavailable(),
-    uid: 'Quakeledger',
-    id: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
-    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-    name: 'Earthquake Catalogue',
-    description: 'Catalogue of historical earthquakes.',
-    requiredProducts: [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid),
-    providedProducts: [selectedEqs.uid],
-    wpsVersion: '1.0.0',
+export class QuakeLedger extends WpsProcess implements WizardableProcess {
 
-    wizardProperties: {
-        shape: 'earthquake',
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/'
+    readonly wizardProperties: WizzardProperties;
+
+    constructor(http: HttpClient) {
+        super(
+            'Quakeledger',
+            'Earthquake Catalogue',
+            [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid),
+            [selectedEqs.uid],
+            'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
+            'Catalogue of historical earthquakes.',
+            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable(),
+        );
+
+        this.wizardProperties = {
+            shape: 'earthquake',
+            providerName: 'Helmholtz Centre Potsdam',
+            providerUrl: 'https://www.gfz-potsdam.de/en/'
+        };
     }
+
 };

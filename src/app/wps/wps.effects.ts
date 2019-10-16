@@ -50,7 +50,7 @@ export class WpsEffects {
             const newScenario = action.payload.scenario;
             const [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
 
-            this.wfc = new WorkflowControl(procs, prods, this.httpClient);
+            this.wfc = new WorkflowControl(procs, prods);
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
@@ -85,7 +85,7 @@ export class WpsEffects {
                 [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
             }
 
-            this.wfc = new WorkflowControl(procs, prods, this.httpClient);
+            this.wfc = new WorkflowControl(procs, prods);
             const processes = this.wfc.getProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
@@ -212,17 +212,17 @@ export class WpsEffects {
         switch (scenario) {
             case 'c1':
                 processes = [
-                    new VulnerabilityAndExposure(new WpsClient('1.0.0', this.httpClient, false)),
-                    QuakeLedger,
+                    new VulnerabilityAndExposure(this.httpClient),
+                    new QuakeLedger(this.httpClient),
                     EqSelection,
-                    Shakyground,
+                    new Shakyground(this.httpClient),
                     DeusTranslator,
-                    // EqDeus,
-                    FakeDeus,
+                    //EqDeus,
+                    new FakeDeus(this.httpClient),
                     TsServiceTranslator,
                     new TsService(this.httpClient),
-                    TsDeus,
-                    Reliability,
+                    new TsDeus(this.httpClient),
+                    new Reliability(this.httpClient),
                     // PhysicalImpactAssessment
                 ];
                 products = [
@@ -241,14 +241,14 @@ export class WpsEffects {
                 break;
             case 'e1':
                 processes = [
-                    LaharWps,
-                    LaharVulnerabilityModel,
-                    LaharExposureModel,
+                    new LaharWps(this.httpClient),
+                    new LaharVulnerabilityModel(this.httpClient),
+                    new LaharExposureModel(this.httpClient),
                     LaharDeusTranslator,
                     // Deus,
                     geomerFlood,
                     geomerFloodWcsProvider,
-                    FlooddamageProcess,
+                    new FlooddamageProcess(this.httpClient),
                     FlooddamageTranslator
                 ];
                 products = [
@@ -265,16 +265,16 @@ export class WpsEffects {
             case 'p1':
                 processes = [
                     QuakeLedgerPeru,
-                    new VulnerabilityAndExposure(new WpsClient('1.0.0', this.httpClient, false)),
+                    new VulnerabilityAndExposure(this.httpClient),
                     EqSelection,
-                    Shakyground,
+                    new Shakyground(this.httpClient),
                     DeusTranslator,
                     // Deus,
-                    FakeDeus,
+                    new FakeDeus(this.httpClient),
                     TsServiceTranslator,
                     new TsService(this.httpClient),
-                    Reliability,
-                    PhysicalImpactAssessment
+                    new Reliability(this.httpClient),
+                    new PhysicalImpactAssessment(this.httpClient)
                 ];
                 products = [
                     inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,

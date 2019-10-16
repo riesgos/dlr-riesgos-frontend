@@ -3,13 +3,14 @@ import { WpsData } from '@ukis/services-wps/src/public-api';
 import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { loss, eqUpdatedExposure, eqDamage } from './eqDeus';
 import { schema } from './assetmaster';
 import { fragilityRefDeusInput } from './deusTranslator';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -163,19 +164,28 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
 
 
 
-export const TsDeus: WizardableProcess & WpsProcess = {
-    uid: 'TS-DEUS',
-    id: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
-    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-    wpsVersion: '1.0.0',
-    state: new ProcessStateUnavailable(),
-    name: 'Multihazard damage estimation / TS',
-    description: 'This service outputs damage caused by a given earthquake.',
-    requiredProducts: [eqDamage, schema, fragilityRefDeusInput, tsShakemap, eqUpdatedExposure].map(p => p.uid),
-    providedProducts: [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid),
-    wizardProperties: {
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/',
-        shape: 'dot-circle'
+export class TsDeus extends WpsProcess implements WizardableProcess {
+
+    readonly wizardProperties: WizzardProperties;
+
+    constructor(http: HttpClient) {
+        super(
+            'TS-DEUS',
+            'Multihazard damage estimation / TS',
+            [eqDamage, schema, fragilityRefDeusInput, tsShakemap, eqUpdatedExposure].map(p => p.uid),
+            [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid),
+            'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
+            'This service outputs damage caused by a given earthquake.',
+            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable(),
+        );
+        this.wizardProperties = {
+            providerName: 'Helmholtz Centre Potsdam',
+            providerUrl: 'https://www.gfz-potsdam.de/en/',
+            shape: 'dot-circle'
+        };
     }
-};
+
+}

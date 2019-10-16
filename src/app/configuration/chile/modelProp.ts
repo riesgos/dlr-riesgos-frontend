@@ -1,8 +1,9 @@
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { StringSelectUconfProduct, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { schema } from './assetmaster';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -52,19 +53,28 @@ export const fragilityRef: WpsData & Product = {
   };
 
 
-export const VulnerabilityModel: WizardableProcess & WpsProcess = {
-    uid: 'Vulnerability',
-    id: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
-    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-    wpsVersion: '1.0.0',
-    name: 'EQ Vulnerability Model',
-    description: '',
-    requiredProducts: [schema, assetcategory, losscategory, taxonomies].map(p => p.uid),
-    providedProducts: [fragilityRef.uid],
-    wizardProperties: {
-        shape: 'dot-circle',
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/'
-    },
-    state: new ProcessStateUnavailable()
-};
+export class VulnerabilityModel extends WpsProcess implements WizardableProcess {
+
+    readonly wizardProperties: WizzardProperties;
+
+    constructor(http: HttpClient) {
+        super(
+            'Vulnerability',
+            'EQ Vulnerability Model',
+            [schema, assetcategory, losscategory, taxonomies].map(p => p.uid),
+            [fragilityRef.uid],
+            'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
+            '',
+            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable(),
+        );
+
+        this.wizardProperties = {
+            shape: 'dot-circle',
+            providerName: 'Helmholtz Centre Potsdam',
+            providerUrl: 'https://www.gfz-potsdam.de/en/'
+        };
+    }
+}

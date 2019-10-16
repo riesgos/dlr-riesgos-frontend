@@ -1,4 +1,4 @@
-import { CustomProcess, ProcessStateUnavailable, Product, WatchingProcess } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
 import { fragilityRef } from './modelProp';
 import { shakemapXmlRefOutput } from './shakyground';
 import { exposureRef } from './assetmaster';
@@ -36,7 +36,7 @@ export const exposureRefDeusInput = {
 };
 
 
-export const DeusTranslator: WatchingProcess = {
+export const DeusTranslator: AutorunningProcess = {
     uid: 'DeusTranslator',
     name: 'DeusTranslator',
     requiredProducts: [fragilityRef, shakemapXmlRefOutput, exposureRef].map(p => p.uid),

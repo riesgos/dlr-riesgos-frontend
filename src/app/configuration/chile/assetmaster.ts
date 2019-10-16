@@ -8,6 +8,7 @@ import {
 } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { HttpClient } from '@angular/common/http';
 
 
 export const lonmin: Product & WpsData = {
@@ -139,22 +140,29 @@ export const exposureRef: VectorLayerData & WpsData & Product = {
 };
 
 
-export const ExposureModel: WizardableProcess & WpsProcess = {
-  uid: 'Exposure',
-  id: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-  url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-  wpsVersion: '1.0.0',
-  name: 'EQ Exposure Model',
-  description: '',
-  requiredProducts: [lonmin, lonmax, latmin, latmax, querymode, schema, assettype].map(p => p.uid),
-  providedProducts: [exposureRef.uid],
-  wizardProperties: {
-    shape: 'dot-circle',
+export class ExposureModel extends WpsProcess implements WizardableProcess {
+
+  readonly wizardProperties = {
+    shape: 'dot-circle' as 'dot-circle',
     providerName: 'Helmholtz Centre Potsdam',
     providerUrl: 'https://www.gfz-potsdam.de/en/'
-  },
-  state: new ProcessStateUnavailable()
-};
+  };
+
+  constructor(httpClient: HttpClient) {
+    super(
+      'Exposure',
+      'EQ Exposure Model',
+      [lonmin, lonmax, latmin, latmax, querymode, schema, assettype].map(p => p.uid),
+      [exposureRef.uid],
+      'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
+      '',
+      'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+      '1.0.0',
+      httpClient,
+      new ProcessStateUnavailable(),
+    );
+  }
+}
 
 
 

@@ -1,6 +1,6 @@
 import { WizardPageComponent } from 'src/app/components/config_wizard/wizard-page/wizard-page.component';
-import { WpsProcess, ProcessStateUnavailable, Product, WatchingProcess } from 'src/app/wps/wps.datatypes';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WpsProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
+import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
@@ -8,6 +8,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { FeatureCollection, feature, MultiPolygon, Polygon } from '@turf/helpers';
 import proj4 from 'proj4';  // requires "allowSyntheticDefaultImports": true
+import { HttpClient } from '@angular/common/http';
 
 
 proj4.defs('EPSG:32717', '+proj=utm +zone=17 +south +datum=WGS84 +units=m +no_defs');
@@ -39,22 +40,31 @@ export const damageBuildings: WpsData & Product = {
 };
 
 
-export const FlooddamageProcess: WpsProcess & WizardableProcess = {
-    uid: 'FloodService',
-    id: 'org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess',
-    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-    description: 'Process to compute the damage of a flood in ecuador.',
-    name: 'Flood damage',
-    wpsVersion: '1.0.0',
-    state: new ProcessStateUnavailable(),
-    requiredProducts: [durationTiff, velocityTiff, depthTiff].map(p => p.uid),
-    // providedProducts: [damageManzanas, damageBuildings].map(p => p.uid), // <-- damageBuildings is way too big to fit in browser memory!
-    providedProducts: [damageManzanas].map(p => p.uid),
-    wizardProperties: {
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/',
-        shape: 'dot-circle'
+export class FlooddamageProcess extends WpsProcess implements WizardableProcess {
+    
+    readonly wizardProperties: WizzardProperties;
+
+    constructor(http: HttpClient) {
+        super(
+            'FloodService',
+            'Flood damage',
+            [durationTiff, velocityTiff, depthTiff].map(p => p.uid),
+            // [damageManzanas, damageBuildings].map(p => p.uid), // <-- damageBuildings is way too big to fit in browser memory!
+            [damageManzanas].map(p => p.uid),
+            'org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess',
+            'Process to compute the damage of a flood in ecuador.',
+            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable(),
+        );
+        this.wizardProperties = {
+            providerName: 'Helmholtz Centre Potsdam',
+            providerUrl: 'https://www.gfz-potsdam.de/en/',
+            shape: 'dot-circle'
+        }
     }
+
 };
 
 export const damageManzanasGeojson: VectorLayerData & WpsData & Product = {
@@ -90,7 +100,7 @@ export const damageManzanasGeojson: VectorLayerData & WpsData & Product = {
 /**
  * translates Flooddamage's output: needs to be converted to proper coodinate system to be actual geojson.
  */
-export const FlooddamageTranslator: WatchingProcess = {
+export const FlooddamageTranslator: AutorunningProcess = {
     uid: 'ecuadorFlooddamageTranslator',
     name: 'ecuadorFlooddamageTranslator',
     requiredProducts: [damageManzanas].map(p => p.uid),

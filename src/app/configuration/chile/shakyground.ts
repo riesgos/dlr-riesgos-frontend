@@ -1,8 +1,9 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { selectedEq } from './eqselection';
+import { HttpClient } from '@angular/common/http';
 
 
 export const shakemapWmsOutput: WpsData & WmsLayerData = {
@@ -30,19 +31,28 @@ export const shakemapXmlRefOutput: WpsData & Product = {
 };
 
 
-export const Shakyground: WizardableProcess & WpsProcess = {
-    state: new ProcessStateUnavailable(),
-    uid: 'Shakyground',
-    id: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
-    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-    name: 'Groundmotion Simulation',
-    description: 'Simulates the ground motion caused by a given eathquake',
-    requiredProducts: [selectedEq].map(p => p.uid),
-    providedProducts: [shakemapWmsOutput, shakemapXmlRefOutput].map(p => p.uid),
-    wpsVersion: '1.0.0',
-    wizardProperties: {
-        shape: 'earthquake',
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/'
-    },
-};
+export class Shakyground extends WpsProcess implements WizardableProcess {
+
+    readonly wizardProperties: WizzardProperties;
+
+    constructor(http: HttpClient) {
+        super(
+            'Shakyground',
+            'Groundmotion Simulation',
+            [selectedEq].map(p => p.uid),
+            [shakemapWmsOutput, shakemapXmlRefOutput].map(p => p.uid),
+            'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
+            'Simulates the ground motion caused by a given eathquake',
+            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable()
+        );
+        this.wizardProperties = {
+            shape: 'earthquake',
+            providerName: 'Helmholtz Centre Potsdam',
+            providerUrl: 'https://www.gfz-potsdam.de/en/'
+        };
+    }
+
+}

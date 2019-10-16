@@ -1,5 +1,5 @@
 import { FeatureSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WatchingProcess, ProcessStateTypes, Product, CustomProcess } from 'src/app/wps/wps.datatypes';
+import { AutorunningProcess, ProcessStateTypes, Product, ExecutableProcess } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { Observable, of } from 'rxjs';
@@ -61,7 +61,7 @@ export const selectedEq: WpsData & Product = {
 
 
 
-export const EqSelection: WizardableProcess & CustomProcess & WatchingProcess = {
+export const EqSelection: WizardableProcess & ExecutableProcess & AutorunningProcess = {
     uid: 'EqSelection',
     name: 'Select earthquake',
     state: { type: ProcessStateTypes.unavailable },

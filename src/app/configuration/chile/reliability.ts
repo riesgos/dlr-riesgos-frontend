@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { intensity } from '../equador/lahar';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
@@ -8,6 +8,7 @@ import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { shakemapRefDeusInput } from './deusTranslator';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -105,19 +106,27 @@ export const damage_consumer_areas: WpsData & Product & VectorLayerData = {
 }
 
 
-export const Reliability: WpsProcess & WizardableProcess = {
-    uid: 'Reliability',
-    url: 'http://91.250.85.221/wps/WebProcessingService',
-    id: 'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
-    name: 'System reliability after EQ',
-    description: 'Process for evaluating the reliability of infrastructure networks',
-    wpsVersion: '1.0.0',
-    state: new ProcessStateUnavailable(),
-    requiredProducts: [shakemapRefDeusInput, country, hazard].map(p => p.uid),
-    providedProducts: [damage_consumer_areas].map(p => p.uid),
-    wizardProperties: {
-        providerName: 'TUM',
-        providerUrl: 'https://www.tum.de/nc/en/',
-        shape: 'dot-circle'
+export class Reliability extends WpsProcess implements WizardableProcess {
+
+    readonly wizardProperties: WizzardProperties;
+
+    constructor(http: HttpClient) {
+        super(
+            'Reliability',
+            'System reliability after EQ',
+            [shakemapRefDeusInput, country, hazard].map(p => p.uid),
+            [damage_consumer_areas].map(p => p.uid),
+            'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
+            'Process for evaluating the reliability of infrastructure networks',
+            'http://91.250.85.221/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable(),
+        );
+        this.wizardProperties = {
+            providerName: 'TUM',
+            providerUrl: 'https://www.tum.de/nc/en/',
+            shape: 'dot-circle'
+        };
     }
 }

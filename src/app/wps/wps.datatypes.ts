@@ -1,6 +1,8 @@
-import { WpsDataDescription, WpsVerion, ProductId, WpsData } from 'projects/services-wps/src/public-api';
+import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient } from 'projects/services-wps/src/public-api';
 import { UserconfigurableProductDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, tap, catchError } from 'rxjs/operators';
 
 
 export type ProductDescription = object;
@@ -58,7 +60,7 @@ export interface Process {
     readonly name: string;
     readonly requiredProducts: ProductId[];
     readonly providedProducts: ProductId[];
-    readonly state: ProcessState;
+    state: ProcessState;
 }
 
 
@@ -67,32 +69,117 @@ export const isProcess = (o: any): o is Process => {
 };
 
 
-export interface WpsProcess extends Process {
-    readonly id: string;
-    readonly description: string;
-    readonly url: string;
-    readonly wpsVersion: WpsVerion;
+export interface ExecutableProcess extends Process {
+    execute(
+        inputs: Product[],
+        outputs?: Product[],
+        doWhileExecuting?: (response: any, counter: number) => void):
+        Observable<Product[]>;
 }
 
-export const isWpsProcess = (p: Process): p is WpsProcess => {
-    return p.hasOwnProperty('url') && p.hasOwnProperty('state') && p.hasOwnProperty('wpsVersion');
-};
-
-
-export interface CustomProcess extends Process {
-    execute: (inputs: Product[]) => Observable<Product[]>;
-}
-
-export const isCustomProcess = (p: Process): p is CustomProcess => {
+export const isExecutableProcess = (p: Process): p is ExecutableProcess => {
     return p.hasOwnProperty('execute');
 };
 
 
-export interface WatchingProcess extends Process {
+export interface AutorunningProcess extends Process {
     onProductAdded(newProduct: Product, allProducts: Product[]): Product[];
 }
 
 
-export const isWatchingProcess = (process: Process): process is WatchingProcess => {
+export const isAutorunningProcess = (process: Process): process is AutorunningProcess => {
     return process.hasOwnProperty('onProductAdded');
+};
+
+
+export class WpsProcess implements ExecutableProcess {
+
+    private wpsClient: WpsClient;
+
+    constructor(
+        readonly uid: string,
+        readonly name: string,
+        readonly requiredProducts: string[],
+        readonly providedProducts: string[],
+        readonly id: string,
+        readonly description: string,
+        readonly url: string,
+        readonly wpsVersion: WpsVerion,
+        httpClient: HttpClient,
+        public state = new ProcessStateUnavailable(),
+        ) {
+        this.wpsClient = new WpsClient(this.wpsVersion, httpClient, false);
+    }
+
+    public execute(
+        inutProducts: (Product & WpsData)[],
+        outputProducts?: (Product & WpsData)[],
+        doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
+
+            const wpsInputs = inutProducts as WpsData[];
+            const wpsOutputDescriptions = outputProducts.map(o => o.description) as WpsDataDescription[];
+
+            let requestCounter = 0;
+            return this.wpsClient.executeAsync(this.url, this.id, wpsInputs, wpsOutputDescriptions, 2000,
+                (response: any) => {
+                    if (doWhileExecuting) {
+                        doWhileExecuting(response, requestCounter);
+                    }
+                    requestCounter += 1;
+                }
+            ).pipe(
+
+                map((outputs: WpsData[]) => {
+                    // Ugly little hack: if outputDescription contained any information that has been lost in translation
+                    // through marshalling and unmarshalling, we add it here back in.
+                    for (let i = 0; i < outputs.length; i++) {
+                        const outputDescription = wpsOutputDescriptions[i];
+                        const output = outputs[i];
+                        for (const key in outputDescription) {
+                            if (!output.description.hasOwnProperty(key)) {
+                                output.description[key] = outputDescription[key];
+                            }
+                        }
+                    }
+
+                    const products = this.assignWpsDataToProducts(outputs, outputProducts);
+                    return products;
+                }),
+
+                catchError((error) => {
+                    console.error(error);
+                    return throwError(error);
+                })
+            );
+
+    }
+
+    private assignWpsDataToProducts(wpsData: WpsData[], initialProds: (Product & WpsData)[]): Product[] {
+        const out: Product[] = [];
+
+        for (const prod of initialProds) {
+            const equivalentWpsData = wpsData.find(data => {
+                return (
+                    data.description.id === prod.description.id &&
+                    // data.description.format === prod.description.format && // <- not ok? format can change from 'wms' to 'string', like in service-ts!
+                    data.description.reference === prod.description.reference &&
+                    data.description.type === prod.description.type
+                );
+            });
+
+            if (equivalentWpsData) {
+                out.push({
+                    ...equivalentWpsData,
+                    uid: prod.uid
+                });
+            }
+
+        }
+
+        return out;
+    }
+}
+
+export const isWpsProcess = (p: Process): p is WpsProcess => {
+    return p.hasOwnProperty('url') && p.hasOwnProperty('state') && p.hasOwnProperty('wpsVersion');
 };

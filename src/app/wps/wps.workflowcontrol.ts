@@ -1,12 +1,9 @@
-import { Process, Product, ProcessId, ProcessState, isWatchingProcess, isWpsProcess, WpsProcess,
+import { Process, Product, ProcessId, ProcessState, isAutorunningProcess,
     ProcessStateRunning, ProcessStateCompleted, ProcessStateError, ProcessStateTypes,
-    ProcessStateUnavailable, ProcessStateAvailable, isCustomProcess, CustomProcess } from './wps.datatypes';
+    ProcessStateUnavailable, ProcessStateAvailable, isExecutableProcess, ExecutableProcess } from './wps.datatypes';
 import { Graph, alg } from 'graphlib';
-import { ProductId, WpsData, WpsDataDescription } from 'projects/services-wps/src/lib/wps_datatypes';
-import { HttpClient } from '@angular/common/http';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { WpsClient } from 'projects/services-wps/src/public-api';
 
 
 export class WorkflowControl {
@@ -14,13 +11,10 @@ export class WorkflowControl {
     private processes: Process[];
     private products: Product[];
     private graph: Graph;
-    private wpsClient: WpsClient;
 
-    constructor(processes: Process[], products: Product[], httpClient: HttpClient) {
+    constructor(processes: Process[], products: Product[]) {
 
         this.checkDataIntegrity(processes, products);
-
-        this.wpsClient = new WpsClient('1.0.0', httpClient);
 
         this.graph = new Graph({ directed: true });
         for (const process of processes) {
@@ -39,37 +33,32 @@ export class WorkflowControl {
 
         this.products = products;
         this.processes = this.getProcessesInExecutionOrder(processes);
-        this.processes = this.processes.map(p => {
-            return {
-                ...p,
-                state: this.calculateState(p.uid)
-            };
-        });
+        this.processes.map(p => p.state = this.calculateState(p.uid));
     }
 
 
     execute(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
         const process = this.getProcess(id);
-        if (isWpsProcess(process)) {
-            return this.executeWps(id, doWhileRequesting);
-        } else if (isCustomProcess(process)) {
-            return this.executeCustom(id, doWhileRequesting);
+        if (isExecutableProcess(process)) {
+            return this.doExecute(id, doWhileRequesting);
         } else {
             throw new Error(`Tried to execute a non-executable process ${id}`);
         }
     }
 
-    private executeCustom(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
+    private doExecute(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
 
-        let process = this.getCustomProcess(id);
+        let process = this.getExecutableProcess(id);
         const inputs = this.getProcessInputs(id);
+        const outputs = this.getProcessOutpus(id);
 
-        process = this.setProcessState(process.uid, new ProcessStateRunning()) as CustomProcess;
+        process = this.setProcessState(process.uid, new ProcessStateRunning()) as ExecutableProcess;
         if (doWhileRequesting) {
             doWhileRequesting(null, 0);
         }
 
-        return process.execute(inputs).pipe(
+        return process.execute(inputs, outputs, doWhileRequesting).pipe(
+
             tap((outputs: Product[]) => {
                 for (const product of outputs) {
                     this.provideProduct(product.uid, product.value);
@@ -90,63 +79,6 @@ export class WorkflowControl {
 
     }
 
-    private executeWps(uid: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
-
-        let process = this.getWpsProcess(uid);
-        const inputs = this.getProcessInputs(uid) as WpsData[];
-        const outputProducts = this.getProducts(process.providedProducts) as (Product & WpsData)[];
-        const outputDescriptions = outputProducts.map(p => p.description) as WpsDataDescription[];
-
-        process = this.setProcessState(process.uid, new ProcessStateRunning()) as WpsProcess;
-        let requestCounter = 0;
-        return this.wpsClient.executeAsync(process.url, process.id, inputs, outputDescriptions, 2000,
-
-            (response: any) => {
-                if (doWhileRequesting) {
-                    doWhileRequesting(response, requestCounter);
-                }
-                requestCounter += 1;
-            }
-
-        ).pipe(
-
-            map((outputs: WpsData[]) => {
-                // Ugly little hack: if outputDescription contained any information that has been lost in translation
-                // through marshalling and unmarshalling, we add it here back in.
-                for (let i = 0; i < outputs.length; i++) {
-                    const outputDescription = outputDescriptions[i];
-                    const output = outputs[i];
-                    for (const key in outputDescription) {
-                        if (!output.description.hasOwnProperty(key)) {
-                            output.description[key] = outputDescription[key];
-                        }
-                    }
-                }
-                return outputs;
-            }),
-
-            tap((outputs: WpsData[]) => {
-                const products = this.assignWpsDataToProducts(outputs, outputProducts);
-                for (const product of products) {
-                    this.provideProduct(product.uid, product.value);
-                }
-                this.setProcessState(process.uid, new ProcessStateCompleted());
-            }),
-
-            map((outputs: WpsData[]) => {
-                return true;
-            }),
-
-            catchError((error) => {
-                this.setProcessState(process.uid, new ProcessStateError(error.message));
-                console.error(error);
-                return of(false);
-            })
-        );
-
-    }
-
-
     getProcesses(ids?: ProcessId[]): Process[] {
         if (!ids) {
             return this.processes;
@@ -156,7 +88,7 @@ export class WorkflowControl {
     }
 
 
-    getProducts(ids?: ProductId[]): Product[] {
+    getProducts(ids?: string[]): Product[] {
         if (!ids) {
             return this.products;
         } else {
@@ -169,7 +101,7 @@ export class WorkflowControl {
     }
 
 
-    provideProduct(id: ProductId, value: any): void {
+    provideProduct(id: string, value: any): void {
         // @TODO: providing a new input-product to an already completed processes should set its state back to available.
 
         // set new value
@@ -177,7 +109,7 @@ export class WorkflowControl {
 
         // allow watching processes to add or change further products
         for (const process of this.processes) {
-            if (isWatchingProcess(process)) {
+            if (isAutorunningProcess(process)) {
                 const additionalProducts = process.onProductAdded(newProduct, this.products);
                 for (const additionalProduct of additionalProducts) {
                     this.updateProduct(additionalProduct); // @TODO: maybe even call provideProduct recursively here?
@@ -254,19 +186,16 @@ export class WorkflowControl {
         return products;
     }
 
-
-    private getWpsProcess(id: ProcessId): WpsProcess {
+    private getProcessOutpus(id: ProcessId): Product[] {
         const process = this.getProcess(id);
-        if (!isWpsProcess(process)) {
-            throw new Error(`is not a WpsProcess: ${process.uid}`);
-        } else {
-            return process;
-        }
+        const productIds = process.requiredProducts;
+        const products = productIds.map(prodId => this.getProduct(prodId));
+        return products;
     }
 
-    private getCustomProcess(id: ProcessId): CustomProcess {
+    private getExecutableProcess(id: ProcessId): ExecutableProcess {
         const process = this.getProcess(id);
-        if (!isCustomProcess(process)) {
+        if (!isExecutableProcess(process)) {
             throw new Error(`is not a CustomProcess: ${process.uid}`);
         } else {
             return process;
@@ -288,7 +217,7 @@ export class WorkflowControl {
     }
 
 
-    private getProduct(id: ProductId): Product {
+    private getProduct(id: string): Product {
         const product = this.products.find(p => p.uid === id);
         if (!product) {
             throw new Error(`no such product: ${id}`);
@@ -298,12 +227,9 @@ export class WorkflowControl {
 
 
     private setProcessState(id: ProcessId, state: ProcessState): Process {
-        this.processes = this.processes.map(process => {
+        this.processes.map(process => {
             if (process.uid === id) {
-                return {
-                    ...process,
-                    state
-                };
+                process.state = state;
             }
             return process;
         });
@@ -311,7 +237,7 @@ export class WorkflowControl {
     }
 
 
-    private setProductValue(id: ProductId, value: any): Product {
+    private setProductValue(id: string, value: any): Product {
         this.products = this.products.map(product => {
             if (product.uid === id) {
                 return {
@@ -376,7 +302,7 @@ export class WorkflowControl {
     }
 
 
-    private hasProvidingProcess(id: ProductId): boolean {
+    private hasProvidingProcess(id: string): boolean {
         const inEdges = this.graph.inEdges(id);
         if (inEdges.length < 1) {
             return false;
@@ -435,28 +361,4 @@ export class WorkflowControl {
         return duplicates;
     }
 
-    private assignWpsDataToProducts(wpsData: WpsData[], initialProds: (Product & WpsData)[]): Product[] {
-        const out: Product[] = [];
-
-        for (const prod of initialProds) {
-            const equivalentWpsData = wpsData.find(data => {
-                return (
-                    data.description.id === prod.description.id &&
-                    // data.description.format === prod.description.format && // <- not ok? format can change from 'wms' to 'string', like in service-ts!
-                    data.description.reference === prod.description.reference &&
-                    data.description.type === prod.description.type
-                );
-            });
-
-            if (equivalentWpsData) {
-                out.push({
-                    ...equivalentWpsData,
-                    uid: prod.uid
-                });
-            }
-
-        }
-
-        return out;
-    }
 }

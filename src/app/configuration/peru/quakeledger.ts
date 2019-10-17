@@ -1,32 +1,39 @@
 import { WpsProcess, ProcessStateUnavailable, WatchingProcess, Product, CustomProcess } from '../../wps/wps.datatypes';
-import { UserconfigurableProduct, StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { UserconfigurableProduct, StringSelectUconfProduct, BboxUconfProduct, BboxUconfPD } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { VectorLayerData, BboxLayerData, BboxLayerDescription } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable, of } from 'rxjs';
-import { WpsData } from 'projects/services-wps/src/public-api';
+import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps/src/public-api';
 import { selectedEqs, mmin, mmax, zmin, zmax, p, etype, tlon, tlat } from '../chile/quakeledger';
 
 
-export const inputBoundingboxPeru: UserconfigurableProduct & BboxLayerData & WpsData = {
-    uid: 'user_input-boundingbox',
-    description: {
-        id: 'input-boundingbox',
-        name: 'eq-selection: boundingbox',
-        type: 'bbox',
-        reference: false,
-        description: 'Please select an area of interest',
-        defaultValue: {
-            crs: 'EPSG:4326',
-            lllon: -86.5, lllat: -20.5,
-            urlon: -68.5, urlat: -0.6
+
+export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerData, WpsData {
+    description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
+    value: WpsBboxValue;
+    uid = 'user_input-boundingbox_peru';
+
+    constructor() {
+        this.description = {
+            id: 'input-boundingbox',
+            name: 'eq-selection: boundingbox',
+            type: 'bbox',
+            reference: false,
+            description: 'Please select an area of interest',
+            defaultValue: {
+                crs: 'EPSG:4326',
+                lllon: -86.5, lllat: -20.5,
+                urlon: -68.5, urlat: -0.6
+            },
+            wizardProperties: {
+                name: 'AOI',
+                fieldtype: 'bbox',
+                description: 'You can also select a boundingbox by clicking and dragging on the map.'
+            },
         },
-        wizardProperties: {
-            name: 'AOI',
-            fieldtype: 'bbox',
-        },
-    },
-    value: null
-};
+        this.value = null;
+    }
+}
 
 
 export const etypePeru = {
@@ -51,7 +58,7 @@ export const QuakeLedgerPeru: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
     uid: 'Quakeledger Peru',
     name: 'Earthquake Catalogue',
-    requiredProducts: [inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etypePeru, tlon, tlat].map(prd => prd.uid),
+    requiredProducts: [mmin, mmax, zmin, zmax, p, etypePeru, tlon, tlat].map(prd => prd.uid).concat(['user_input-boundingbox_peru']),
     providedProducts: [selectedEqs.uid],
     wizardProperties: {
         shape: 'earthquake',

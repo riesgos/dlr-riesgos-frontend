@@ -9,9 +9,9 @@ import { Store, Action, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
-import { QuakeLedger, inputBoundingbox, mmin, mmax, zmin,
+import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
-import { inputBoundingboxPeru, QuakeLedgerPeru, etypePeru } from '../configuration/peru/quakeledger';
+import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru } from '../configuration/peru/quakeledger';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
@@ -215,7 +215,7 @@ export class WpsEffects {
                 products = [
                     lonmin, lonmax, latmin, latmax, assettype, schema, querymode, exposureRef,
                     assetcategory, losscategory, taxonomies, fragilityRef,
-                    inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
+                    new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     loss, eqDamage, eqTransition, eqUpdatedExposure,
@@ -244,7 +244,7 @@ export class WpsEffects {
                     fragilityRef, exposureRef,
                     fragilityRefDeusInput, exposureRefDeusInput, shakemapRefDeusInput,
                     loss, eqDamage, eqTransition, eqUpdatedExposure,
-                    inputBoundingboxPeru, mmin, mmax, zmin, zmax, p, etypePeru, tlon, tlat,
+                    new InputBoundingboxPeru(), mmin, mmax, zmin, zmax, p, etypePeru, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     lat, lon, mag, tsWms, tsShakemap,

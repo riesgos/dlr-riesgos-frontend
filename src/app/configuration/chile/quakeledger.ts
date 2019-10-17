@@ -9,27 +9,32 @@ import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
-export const inputBoundingbox: BboxUconfProduct & BboxLayerData & WpsData = {
-    uid: 'user_input-boundingbox',
-    description: {
-        id: 'input-boundingbox',
-        name: 'eq-selection: boundingbox',
-        type: 'bbox',
-        reference: false,
-        description: 'Please select an area of interest',
-        defaultValue: {
-            crs: 'EPSG:4326',
-            lllon: -73.5, lllat: -34,
-            urlon: -70.5, urlat: -29.0
+export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsData {
+    description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
+    value: WpsBboxValue;
+    uid = 'user_input-boundingbox';
+
+    constructor() {
+        this.description = {
+            id: 'input-boundingbox',
+            name: 'eq-selection: boundingbox',
+            type: 'bbox',
+            reference: false,
+            description: 'Please select an area of interest',
+            defaultValue: {
+                crs: 'EPSG:4326',
+                lllon: -73.5, lllat: -34,
+                urlon: -70.5, urlat: -29.0
+            },
+            wizardProperties: {
+                name: 'AOI',
+                fieldtype: 'bbox',
+                description: 'You can also select a boundingbox by clicking and dragging on the map.'
+            },
         },
-        wizardProperties: {
-            name: 'AOI',
-            fieldtype: 'bbox',
-            description: 'You can also select a boundingbox by clicking and dragging on the map.'
-        },
-    },
-    value: null
-};
+        this.value = null;
+    }
+}
 
 export const mmin: StringUconfProduct & WpsData = {
     uid: 'user_mmin',

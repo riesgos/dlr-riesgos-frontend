@@ -70,6 +70,8 @@
     "considering the following \"elements at risk\".": "considerando los siguientes \"elementos en riesgo\".",
     "Showcase": "Escenario",
 
+    "Documentation": "Documentación",
+    "Opacity": "Opacidad",
 
     "Flood": "Inundación",
     "Flood damage": "Daños por inundación",
@@ -78,11 +80,22 @@
 
     "Please select an area of interest": "Seleccione un área de interés",
     "minimum magnitude": "magnitud mínima",
+    "maximum magnitude": "magnitud máxima",
+    "minimum depth": "profundidad mínima",
+    "maximum depth": "profundidad máxima",
+    "etype": "subcategoría",
 
     "Powerlines": "Líneas eléctricas",
     "Hillshade": "Sombreado",
 
     "TS-Service": "Simulación de tsunami",
+
+
+    "Tsunami Flood Layers (CITSU)": "Carta de inundación por tsunami", 
+    "eq-selection: boundingbox": "Quadro delimitador",
+    "selected earthquake": "Terremoto elegido",
+    "available earthquakes": "Terremotos disponibles",
+    "ESRI Imagery": "imágenes ESRI",
 
     "Don't show this again": "No muestres esto otra vez"
 }

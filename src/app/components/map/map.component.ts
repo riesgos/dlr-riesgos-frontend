@@ -48,8 +48,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         public mapSvc: MapOlService,
         private store: Store<State>,
         private layerMarshaller: LayerMarshaller,
-        public layersSvc: LayersService,
-        private translator: TranslateService
+        public layersSvc: LayersService
     ) {
         this.controls = { attribution: true, scaleLine: true };
     }
@@ -247,7 +246,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const relief = new RasterLayer({
             id: 'shade',
-            name: this.translator.instant('Hillshade'),
+            name: 'Hillshade',
             type: 'wms',
             url: 'https://ows.terrestris.de/osm/service?',
             params: {
@@ -256,7 +255,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 FORMAT: 'image/png'
             },
             bbox: [-180, -56, 180, 60],
-            description: this.translator.instant('SRTM30 Hillshade - by terrestris'),
+            description: 'SRTM30 Hillshade - by terrestris',
             attribution: '&copy, <a href="http://www.terrestris.de">terrestris</a>',
             legendImg: 'assets/layer-preview/hillshade-96px.jpg',
             opacity: 0.3,
@@ -269,13 +268,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
             const powerlineLayer = new RasterLayer({
                 id: 'powerlines',
-                name: this.translator.instant('Powerlines'),
+                name: 'Powerlines',
                 type: 'wms',
                 url: 'http://sig.minenergia.cl/geoserver/men/wms?',
                 params: {
                     LAYERS: 'men:lt_sic_728861dd_ef2a_4159_bac9_f5012a351115'
                 },
-                description: this.translator.instant('SIC-Übertragungsleitung (Línea de Transmisión SIC)'),
+                description: 'SIC-Übertragungsleitung (Línea de Transmisión SIC)',
                 attribution: '&copy, <a href="http://sig.minenergia.cl">sig.minenergia.cl</a>',
                 legendImg: 'http://sig.minenergia.cl/geoserver/men/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=lt_sic_728861dd_ef2a_4159_bac9_f5012a351115',
                 opacity: 0.3,
@@ -288,7 +287,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const shoaLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'shoaLayers',
-                name: this.translator.instant('Tsunami Flood Layers (CITSU)'),
+                name: 'Tsunami Flood Layers (CITSU)',
                 layers: [
                     new CustomLayer({
                         custom_layer: new olVectorLayer({
@@ -297,7 +296,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 format: new KML()
                             })
                         }),
-                        name: this.translator.instant('Taltal (SHOA)'),
+                        name: 'Taltal (SHOA)',
                         id: 'Taltal_SHOA',
                         type: 'custom',
                         // bbox: [-70.553, -25.472, -70.417, -25.334],
@@ -313,7 +312,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 format: new KML()
                             })
                         }),
-                        name: this.translator.instant('Valparaiso (SHOA)'),
+                        name: 'Valparaiso (SHOA)',
                         id: 'Valparaiso_SHOA',
                         type: 'custom',
                         // bbox: [-71.949, -33.230, -71.257, -32.720],

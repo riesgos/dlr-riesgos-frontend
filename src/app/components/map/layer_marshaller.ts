@@ -16,7 +16,6 @@ import { SldParserService } from 'projects/sld-parser/src/public-api';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer } from './map.types';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
-import { TranslateService } from '@ngx-translate/core';
 
 
 interface WmsParameters {
@@ -40,8 +39,7 @@ export class LayerMarshaller  {
         private mapSvc: MapOlService,
         public mapStateSvc: MapStateService,
         private sldParser: SldParserService,
-        private store: Store<State>,
-        private translator: TranslateService
+        private store: Store<State>
         ) {}
 
 
@@ -97,7 +95,7 @@ export class LayerMarshaller  {
         [product.value.lllon, product.value.lllat, product.value.urlon, product.value.urlat];
         const layer: ProductVectorLayer = new ProductVectorLayer({
             id: `${product.description.id}_result_layer`,
-            name: this.translator.instant(`${product.description.name}`),
+            name: `${product.description.name}`,
             removable: false,
             opacity: 0.6,
             type: 'geojson',
@@ -124,7 +122,7 @@ export class LayerMarshaller  {
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.description.id}_result_layer`,
-                    name: this.translator.instant(`${product.description.name}`),
+                    name: `${product.description.name}`,
                     opacity: 0.6,
                     removable: false,
                     type: 'geojson',
@@ -207,7 +205,7 @@ export class LayerMarshaller  {
                     // @TODO: convert all searchparameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
                         id: `${layername}_result_layer`,
-                        name: this.translator.instant(`${layername}`),
+                        name: `${layername}`,
                         opacity: 0.6,
                         removable: false,
                         type: 'wms',

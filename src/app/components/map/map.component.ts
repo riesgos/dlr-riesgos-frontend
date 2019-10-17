@@ -77,13 +77,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             if (focussedProcessId !== 'some initial focus') {
                 const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
                 const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
-
                 for (const layer of currentOverlays) {
                     if (inputs.includes((layer as ProductLayer).productId) || outputs.includes((layer as ProductLayer).productId)) {
                         layer.opacity = 0.6;
-                        layer.visible = true;
                     } else {
-                        layer.visible = false;
+                        layer.opacity = 0.2;
                     }
                     this.layersSvc.updateLayer(layer, 'Overlays');
                 }
@@ -94,9 +92,25 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         // listening for products that can be displayed in the map
         const sub3 = this.store.pipe(
             select(getMapableProducts),
+
+            // translate to layers
             switchMap((products: Product[]) => {
                 return this.layerMarshaller.productsToLayers(products);
+            }),
+
+            // keep user's visibility-settings
+            withLatestFrom(this.layersSvc.getOverlays()),
+            map(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
+                for (const oldLayer of oldOverlays) {
+                    const newLayer = newOverlays.find(nl => nl.productId === oldLayer.productId);
+                    if (newLayer) {
+                        newLayer.visible = oldLayer.visible;
+                    }
+                }
+                return newOverlays;
             })
+
+        // add to map
         ).subscribe((newOverlays: ProductLayer[]) => {
             this.layersSvc.removeOverlays();
             newOverlays.map(l => this.layersSvc.addLayer(l, l.filtertype));

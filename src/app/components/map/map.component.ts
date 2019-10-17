@@ -41,7 +41,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
     private geoJson = new GeoJSON();
     private interactionState: BehaviorSubject<InteractionState>;
-    private currentOverlays: ProductLayer[];
     private subs: Subscription[] = [];
 
     constructor(
@@ -53,7 +52,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         private translator: TranslateService
     ) {
         this.controls = { attribution: true, scaleLine: true };
-        this.currentOverlays = [];
     }
 
 
@@ -69,40 +67,42 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub1);
 
         // listening for focus-change
-        const sub3 = this.store.pipe(
+        const sub2 = this.store.pipe(
             select(getFocussedProcessId),
-            withLatestFrom(this.store.pipe(select(getGraph)))
-        ).subscribe(([focussedProcessId, graph]: [string, Graph]) => {
+            withLatestFrom(
+                this.store.pipe(select(getGraph)),
+                this.layersSvc.getOverlays()
+            ),
+        ).subscribe(([focussedProcessId, graph, currentOverlays]: [string, Graph, Layer[]]) => {
             if (focussedProcessId !== 'some initial focus') {
                 const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
                 const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
 
-                for (const layer of this.currentOverlays) {
-                    if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
+                for (const layer of currentOverlays) {
+                    if (inputs.includes((layer as ProductLayer).productId) || outputs.includes((layer as ProductLayer).productId)) {
                         layer.opacity = 0.6;
                         layer.visible = true;
                     } else {
-                        layer.opacity = 0.0;
                         layer.visible = false;
                     }
                     this.layersSvc.updateLayer(layer, 'Overlays');
                 }
             }
         });
-        this.subs.push(sub3);
+        this.subs.push(sub2);
 
         // listening for products that can be displayed in the map
-        const sub4 = this.store.pipe(
+        const sub3 = this.store.pipe(
             select(getMapableProducts),
             mergeMap((products: Product[]) => {
+                console.log('now displaying on map: ', products)
                 return this.layerMarshaller.productsToLayers(products);
             })
         ).subscribe((newOverlays: ProductLayer[]) => {
-            this.currentOverlays = newOverlays;
             this.layersSvc.removeOverlays();
             newOverlays.map(l => this.layersSvc.addLayer(l, l.filtertype));
         });
-        this.subs.push(sub4);
+        this.subs.push(sub3);
 
 
         // adding dragbox interaction and hooking it into the store

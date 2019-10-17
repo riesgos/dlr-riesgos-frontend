@@ -37,7 +37,7 @@ export class WorkflowControl {
             throw new Error('Process graphs with cycles are not supported');
         }
 
-        this.products = products;
+        this.products = this.getProductsInExecutionOrder(products);
         this.processes = this.getProcessesInExecutionOrder(processes);
         this.processes = this.processes.map(p => {
             return {
@@ -345,6 +345,14 @@ export class WorkflowControl {
         return sortedProcesses;
     }
 
+    private getProductsInExecutionOrder(products: Product[]): Product[] {
+        const allIds = alg.topsort(this.graph);
+        const productIds = products.map(prod => prod.uid);
+        const sortedProductIds = allIds.filter(id => productIds.includes(id));
+        const sortedProducts = sortedProductIds.map(id => products.find(prod => prod.uid === id));
+        return sortedProducts;
+    }
+
 
     private calculateState(id: ProcessId): ProcessState {
 
@@ -415,11 +423,11 @@ export class WorkflowControl {
             throw new Error(`Duplicate products: ${productDuplicates}`);
         }
 
-        for (const product of products) {
-            if (product.value) {
-                console.log("product already has a value", product);
-            }
-        }
+        // for (const product of products) {
+        //     if (product.value) {
+        //         console.log("product already has a value", product);
+        //     }
+        // }
     }
 
     private getDuplicates(arr: string[]): string[] {

@@ -1,13 +1,13 @@
 <clr-input-container [class.clr-error]="control.invalid && (control.dirty || control.touched)">
     
     <label class="clr-col-md-3">
-      {{parameter.description.wizardProperties.name}}:
+      {{parameter.description.wizardProperties.name | translate}}:
     </label>
 
     <input class="clr-col-md-9" type="text" clrInput  [formControl]="stringcontrol" [value]="stringcontrol.value" (click)="onClick($event)"/>
 
 
-    <clr-control-helper>{{parameter.description.description}}</clr-control-helper>
+    <clr-control-helper>{{parameter.description.description | translate}}</clr-control-helper>
     <clr-control-error>Invalid input</clr-control-error>
 
 </clr-input-container>

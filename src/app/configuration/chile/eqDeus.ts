@@ -11,16 +11,6 @@ import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelp
 
 
 
-// export const fragility: WpsData & Product = {
-//     uid: 'fragility',
-//     description: {
-//         id: 'fragility',
-//         reference: false,
-//         type: 'complex',
-//         format: 'application/json'
-//     },
-//     value: null
-// };
 
 export const loss: WpsData & Product = {
     uid: 'loss',

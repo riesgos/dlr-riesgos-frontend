@@ -3,6 +3,7 @@ import { StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct } from '
 import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 export const inputBoundingbox: BboxUconfProduct & BboxLayerData & WpsData = {
@@ -174,9 +175,11 @@ export const selectedEqs: VectorLayerData & WpsData = {
             text: (properties) => {
                 let text = `<h3>Available earthquakes</h3>`;
                 const selectedProperties = {
+                    Magnitude: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    Depth: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' m',
+                    // Latitude: toDecimalPlaces(1, 1),
+                    // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],
-                    Magnitude: Math.round(properties['magnitude.mag.value'] * 100) / 100,
-                    Depth: Math.round(properties['origin.depth.value'] * 100) / 100 + ' m'
                 };
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {

@@ -14,7 +14,7 @@
     <div class="clr-row scenarios-view">
       <div class="clr-col-12 clr-col-sm-12 clr-col-md-4 clr-col-lg-4" *ngFor="let scenario of scenarios">
         <div class="card" [ngClass]="{'disabled': scenario.disabled}" [tabindex]="scenario.disabled? '-1': null"
-          [title]="scenario.disabled? 'Showcase not Implemented!': scenario.title">
+          [title]="scenario.disabled? 'Showcase not Implemented!': ( scenario.title | translate )">
           <a [routerLink]="['/map']" [queryParams]="{id: scenario.id}" title="{{ scenario.id | translate }}"
             [ngClass]="{'disabled': scenario.disabled}" [tabindex]="scenario.disabled? '-1': null">
             <div class="card-img">
@@ -31,10 +31,10 @@
             </span>
 
 
-            <a role="button" class="info-icon" (click)="showModal(scenario)" [ngClass]="{'disabled': scenario.disabled}"
+            <!-- <a role="button" class="info-icon" (click)="showModal(scenario)" [ngClass]="{'disabled': scenario.disabled}"
               [tabindex]="scenario.disabled? '-1': null">
               <clr-icon shape="info-standard"></clr-icon>
-            </a>
+            </a> -->
           </div>
         </div>
       </div>

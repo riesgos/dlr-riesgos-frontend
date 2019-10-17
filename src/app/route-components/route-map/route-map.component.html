@@ -14,4 +14,12 @@
     class="left">
     <h3 class="clr-vertical-nav-header is-highlight">{{'Configuration Wizard' | translate}}</h3>
     <ukis-configuration-wizard [navExpanded]="!collapsedConfigurationWizard"></ukis-configuration-wizard>
+
+    <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers" style="position: absolute; bottom: 0px;">
+        <clr-icon shape="cog" title="{{'Configuration' | translate}}" clrVerticalNavIcon></clr-icon>
+        <span class="p1">{{'Configuration' | translate}}</span>
+        <clr-vertical-nav-group-children class="padding title-ellipsis">
+            <ukis-save-buttons></ukis-save-buttons>
+        </clr-vertical-nav-group-children>
+    </clr-vertical-nav-group>
 </clr-vertical-nav>

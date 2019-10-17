@@ -74,5 +74,11 @@
     "Flood": "Inundación",
     "Flood damage": "Daños por inundación",
 
-    "Current state": "Estado actual"
+    "Current state": "Estado actual",
+
+    "Please select an area of interest": "Seleccione un área de interés",
+    "minimum magnitude": "magnitud mínima",
+
+    "Powerlines": "Líneas eléctricas",
+    "Hillshade": "Sombreado"
 }

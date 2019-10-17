@@ -16,6 +16,7 @@ import { SldParserService } from 'projects/sld-parser/src/public-api';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer } from './map.types';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
+import { TranslateService } from '@ngx-translate/core';
 
 
 interface WmsParameters {
@@ -39,7 +40,8 @@ export class LayerMarshaller  {
         private mapSvc: MapOlService,
         public mapStateSvc: MapStateService,
         private sldParser: SldParserService,
-        private store: Store<State>
+        private store: Store<State>,
+        private translator: TranslateService
         ) {}
 
 
@@ -52,15 +54,29 @@ export class LayerMarshaller  {
         for (const product of products) {
             obsables.push(this.toLayers(product));
         }
-        return forkJoin(...obsables).pipe(map((results: ProductLayer[][]) => {
-            const newLayers: ProductLayer[] = [];
-            for (const result of results) {
-                for (const layer of result) {
-                    newLayers.push(layer);
+        return forkJoin(...obsables).pipe(
+
+            // flatten
+            map((results: ProductLayer[][]) => {
+                const newLayers: ProductLayer[] = [];
+                for (const result of results) {
+                    for (const layer of result) {
+                        newLayers.push(layer);
+                    }
                 }
-            }
-            return newLayers;
-        }));
+                return newLayers;
+            }),
+
+            // sort again to original order
+            map((newLayers: ProductLayer[]) => {
+                const sortedLayers: ProductLayer[] = [];
+                for (const prod of products) {
+                    const associatedLayer = newLayers.find(l => l.productId === prod.uid);
+                    sortedLayers.push(associatedLayer);
+                }
+                return sortedLayers;
+            })
+        );
     }
 
 
@@ -81,7 +97,7 @@ export class LayerMarshaller  {
         [product.value.lllon, product.value.lllat, product.value.urlon, product.value.urlat];
         const layer: ProductVectorLayer = new ProductVectorLayer({
             id: `${product.description.id}_result_layer`,
-            name: `${product.description.name}`,
+            name: this.translator.instant(`${product.description.name}`),
             removable: false,
             opacity: 0.6,
             type: 'geojson',
@@ -108,7 +124,7 @@ export class LayerMarshaller  {
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.description.id}_result_layer`,
-                    name: `${product.description.name}`,
+                    name: this.translator.instant(`${product.description.name}`),
                     opacity: 0.6,
                     removable: false,
                     type: 'geojson',
@@ -191,7 +207,7 @@ export class LayerMarshaller  {
                     // @TODO: convert all searchparameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
                         id: `${layername}_result_layer`,
-                        name: `${layername}`,
+                        name: this.translator.instant(`${layername}`),
                         opacity: 0.6,
                         removable: false,
                         type: 'wms',
@@ -219,17 +235,17 @@ export class LayerMarshaller  {
                         }
                     });
                     // layer.crossOrigin = 'anonymous';
-                    if (description.styles) {
-                        layer.actions = [
-                            {title: 'switch style', icon: 'switch', action: (layer) => {
-                                console.log('switching style for layer', layer);
-                            }}
-                        ];
-                    }
+                    // if (description.styles) {
+                    //     layer.actions = [
+                    //         {title: 'switch style', icon: 'switch', action: (layer) => {
+                    //             console.log('switching style for layer', layer);
+                    //         }}
+                    //     ];
+                    // }
                     layer.productId = uid;
 
                     // @TODO: shakyground wms muss auch ACCESS-CONTROL-... mitgeben
-                    if (uid !== 'ShakygroundProcess_shakeMapFile_wms') { 
+                    if (uid !== 'ShakygroundProcess_shakeMapFile_wms') {
                         layer['crossOrigin'] = 'anonymous';
                     }
 

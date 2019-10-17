@@ -23,3 +23,12 @@ export function ninetyPercentLowerThan(data: number[]): number {
     }
     return data.length;
 }
+
+export function toDecimalPlaces(value: number, decimalPlaces: number): string {
+    switch (typeof value) {
+        case 'number':
+            return value.toFixed(decimalPlaces);
+        case 'string':
+            return parseFloat(value).toFixed(decimalPlaces);
+    }
+}

@@ -10,7 +10,7 @@ import { osm, esri_world_imagery } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getMapableProducts, getScenario, getGraph } from 'src/app/wps/wps.selectors';
+import { getMapableProducts, getScenario, getGraph, getProducts } from 'src/app/wps/wps.selectors';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -20,12 +20,13 @@ import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@uki
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
 import { ProductLayer } from './map.types';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, map, withLatestFrom } from 'rxjs/operators';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -40,7 +41,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
     private geoJson = new GeoJSON();
     private interactionState: BehaviorSubject<InteractionState>;
-    private graph: BehaviorSubject<Graph>;
     private currentOverlays: ProductLayer[];
     private subs: Subscription[] = [];
 
@@ -50,6 +50,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         private store: Store<State>,
         private layerMarshaller: LayerMarshaller,
         public layersSvc: LayersService,
+        private translator: TranslateService
     ) {
         this.controls = { attribution: true, scaleLine: true };
         this.currentOverlays = [];
@@ -67,26 +68,25 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         this.subs.push(sub1);
 
-        // listening for changes in graph
-        this.graph = new BehaviorSubject<Graph>(null);
-        const sub2 = this.store.pipe(select(getGraph)).subscribe((graph: Graph) => {
-            this.graph.next(graph);
-        });
-        this.subs.push(sub2);
-
         // listening for focus-change
-        const sub3 = this.store.pipe(select(getFocussedProcessId)).subscribe((focussedProcessId: string) => {
-            const graph = this.graph.getValue();
-            const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
-            const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
-
-            for (const layer of this.currentOverlays) {
-                if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
-                    layer.opacity = 0.6;
-                } else {
-                    layer.opacity = 0.2;
+        const sub3 = this.store.pipe(
+            select(getFocussedProcessId),
+            withLatestFrom(this.store.pipe(select(getGraph)))
+        ).subscribe(([focussedProcessId, graph]: [string, Graph]) => {
+            if (focussedProcessId !== 'some initial focus') {
+                const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
+                const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
+    
+                for (const layer of this.currentOverlays) {
+                    if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
+                        layer.opacity = 0.6;
+                        layer.visible = true;
+                    } else {
+                        layer.opacity = 0.0;
+                        layer.visible = false;
+                    }
+                    this.layersSvc.updateLayer(layer, 'Overlays');
                 }
-                this.layersSvc.updateLayer(layer, 'Overlays');
             }
         });
         this.subs.push(sub3);
@@ -95,7 +95,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub4 = this.store.pipe(
             select(getMapableProducts),
             mergeMap((products: Product[]) => {
-                console.log('the following products can now be displayed on the map', products);
                 return this.layerMarshaller.productsToLayers(products);
             })
         ).subscribe((newOverlays: ProductLayer[]) => {
@@ -235,7 +234,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const relief = new RasterLayer({
             id: 'shade',
-            name: 'Hillshade',
+            name: this.translator.instant('Hillshade'),
             type: 'wms',
             url: 'https://ows.terrestris.de/osm/service?',
             params: {
@@ -244,7 +243,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 FORMAT: 'image/png'
             },
             bbox: [-180, -56, 180, 60],
-            description: 'SRTM30 Hillshade - by terrestris',
+            description: this.translator.instant('SRTM30 Hillshade - by terrestris'),
             attribution: '&copy, <a href="http://www.terrestris.de">terrestris</a>',
             legendImg: 'assets/layer-preview/hillshade-96px.jpg',
             opacity: 0.3,
@@ -257,13 +256,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
             const powerlineLayer = new RasterLayer({
                 id: 'powerlines',
-                name: 'Powerlines',
+                name: this.translator.instant('Powerlines'),
                 type: 'wms',
                 url: 'http://sig.minenergia.cl/geoserver/men/wms?',
                 params: {
                     LAYERS: 'men:lt_sic_728861dd_ef2a_4159_bac9_f5012a351115'
                 },
-                description: 'SIC-Übertragungsleitung (Línea de Transmisión SIC)',
+                description: this.translator.instant('SIC-Übertragungsleitung (Línea de Transmisión SIC)'),
                 attribution: '&copy, <a href="http://sig.minenergia.cl">sig.minenergia.cl</a>',
                 legendImg: 'http://sig.minenergia.cl/geoserver/men/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=lt_sic_728861dd_ef2a_4159_bac9_f5012a351115',
                 opacity: 0.3,
@@ -276,7 +275,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const shoaLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'shoaLayers',
-                name: 'Tsunami Flood Layers (CITSU)',
+                name: this.translator.instant('Tsunami Flood Layers (CITSU)'),
                 layers: [
                     new CustomLayer({
                         custom_layer: new olVectorLayer({
@@ -285,7 +284,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 format: new KML()
                             })
                         }),
-                        name: 'Taltal (SHOA)',
+                        name: this.translator.instant('Taltal (SHOA)'),
                         id: 'Taltal_SHOA',
                         type: 'custom',
                         // bbox: [-70.553, -25.472, -70.417, -25.334],
@@ -301,7 +300,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 format: new KML()
                             })
                         }),
-                        name: 'Valparaiso (SHOA)',
+                        name: this.translator.instant('Valparaiso (SHOA)'),
                         id: 'Valparaiso_SHOA',
                         type: 'custom',
                         // bbox: [-71.949, -33.230, -71.257, -32.720],

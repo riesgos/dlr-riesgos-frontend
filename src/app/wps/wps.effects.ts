@@ -57,14 +57,7 @@ export class WpsEffects {
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
 
-            const actions: Action[] = [];
-            const wpsUpdate = new WpsDataUpdate({processes, products, graph});
-            actions.push(wpsUpdate);
-            if (processes.length > 0) {
-                const processClicked = new NewProcessClicked({processId: processes[0].uid});
-                actions.push(processClicked);
-            }
-
+            const actions: Action[] = [new WpsDataUpdate({processes, products, graph})];
             return actions;
         })
     );
@@ -92,14 +85,7 @@ export class WpsEffects {
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
 
-            const actions: Action[] = [];
-            const wpsUpdate = new WpsDataUpdate({processes, products, graph});
-            actions.push(wpsUpdate);
-            if (processes.length > 0) {
-                const processClicked = new NewProcessClicked({processId: processes[0].uid});
-                actions.push(processClicked);
-            }
-
+            const actions: Action[] = [new WpsDataUpdate({processes, products, graph})];
             return actions;
         })
     );

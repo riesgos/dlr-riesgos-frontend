@@ -107,7 +107,6 @@ export function toGraphvizDestructured(processes: Process[], products: Product[]
         lines.push('   "' + e.v + '" -> "' + e.w + '" [];');
     }
     lines.push('}');
-    console.log(lines.join('\n'))
     return lines.join('\n');
 }
 

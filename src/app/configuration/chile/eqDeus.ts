@@ -94,7 +94,7 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                     {label: '3', value: props['transitions']['n_buildings'][1]},
                     {label: '4', value: props['transitions']['n_buildings'][0]}
                 ];
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', '% buildings');
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', 'n. buildings');
                 return `<h4>Transitions ${props['name']}</h4>${anchor.innerHTML}`;
             }
         },

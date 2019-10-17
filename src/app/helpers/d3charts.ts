@@ -126,7 +126,7 @@ export function createBarchart(
 
     yAxis.append('text')
         .attr('class', 'axis-label')
-        .attr('transform', `translate(-30, ${height / 2})rotate(-90)`)
+        .attr('transform', `translate(-40, ${(height / 2) - 20})rotate(-90)`)
         .text(ylabel)
         .style('fill', 'black')
         .style('font-size', '14px');

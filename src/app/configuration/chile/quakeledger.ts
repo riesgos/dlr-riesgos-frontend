@@ -1,8 +1,11 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
-import { StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
+import {
+    StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct,
+    BboxUconfPD
+} from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { VectorLayerData, BboxLayerData, BboxLayerDescription } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from 'projects/services-wps/src/public-api';
+import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps/src/public-api';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
@@ -121,8 +124,8 @@ export const etype: StringSelectUconfProduct & WpsData = {
             fieldtype: 'stringselect'
         },
         options: [
-                // 'deaggregation', 'observed', 'stochastic',  <--- deactivated
-                'expert']
+            // 'deaggregation', 'observed', 'stochastic',  <--- deactivated
+            'expert']
     },
     value: null
 };
@@ -205,7 +208,7 @@ export const QuakeLedger: WizardableProcess & WpsProcess = {
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     name: 'Earthquake Catalogue',
     description: 'Catalogue of historical earthquakes.',
-    requiredProducts: [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid),
+    requiredProducts: ['user_input-boundingbox'].concat([mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid)),
     providedProducts: [selectedEqs.uid],
     wpsVersion: '1.0.0',
 

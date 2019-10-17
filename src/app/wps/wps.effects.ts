@@ -49,7 +49,6 @@ export class WpsEffects {
         ofType<WpsActions>(EWpsActionTypes.restartingScenario),
         switchMap((action: RestaringScenario) => {
 
-            const newScenario = action.payload.scenario;
             const [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
 
             this.wfc = new WorkflowControl(procs, prods, this.httpClient);

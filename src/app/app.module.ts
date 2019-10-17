@@ -46,6 +46,7 @@ import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/b
 import { RouteDocumentationComponent } from './route-components/route-documentation/route-documentation.component';
 import { ReadMoreComponent } from './components/read-more/read-more.component';
 import { Action } from '@ngrx/store';
+import { TextModalComponent } from './components/text-modal/text-modal.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { Action } from '@ngrx/store';
     ShowgraphComponent,
     BboxfieldComponent,
     RouteDocumentationComponent,
-    ReadMoreComponent
+    ReadMoreComponent,
+    TextModalComponent
   ],
   imports: [
     BrowserModule,

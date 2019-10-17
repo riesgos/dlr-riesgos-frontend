@@ -13,16 +13,6 @@
 <clr-vertical-nav [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsedConfigurationWizard"
     class="left">
 
-    <!-- <div>
-        <div>
-            
-        </div>
-
-        <div style="position: absolute; bottom: 0px; background: white;">
-            
-        </div>
-    </div> -->
-
     <h3 class="clr-vertical-nav-header is-highlight">{{'Configuration Wizard' | translate}}</h3>
     <ukis-configuration-wizard [navExpanded]="!collapsedConfigurationWizard"></ukis-configuration-wizard>
 
@@ -35,3 +25,6 @@
     </clr-vertical-nav-group>
 
 </clr-vertical-nav>
+
+
+<ukis-text-modal></ukis-text-modal>

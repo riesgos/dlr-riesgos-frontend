@@ -1,0 +1,17 @@
+<clr-modal [(clrModalOpen)]="showModal" [clrModalClosable]="false">
+    <h3 class="modal-title">{{ 'RIESGOS Demonstrator' | translate }}</h3>
+    <div class="modal-body">
+        <h4>{{ 'Quickstart' | translate }}:</h4>
+        <p>{{ 'How to use this site ...' | translate }}</p>
+    
+        <p>{{ 'More on how to use this' | translate }}</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline btn-primary" (click)="hideModalSave()">
+                {{ 'Don\'t show this again' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="showModal = false">
+                {{ 'Close' | translate }}
+        </button>
+    </div>
+</clr-modal>

@@ -54,11 +54,37 @@ export const etypePeru = {
 };
 
 
+export const tlonPeru: Product & WpsData = {
+    uid: 'user_tlon',
+    description: {
+        id: 'tlon',
+        description: 'longitude [decimal degrees]',
+        defaultValue: '-77.00',
+        reference: false,
+        type: 'literal'
+    },
+    value: '-77.00'
+};
+
+
+export const tlatPeru: Product & WpsData = {
+    uid: 'user_tlat',
+    description: {
+        id: 'tlat',
+        description: 'latitude [decimal degrees]',
+        defaultValue: '-12.00',
+        reference: false,
+        type: 'literal'
+    },
+    value: '-12.00'
+};
+
+
 export const QuakeLedgerPeru: WizardableProcess & WpsProcess = {
     state: new ProcessStateUnavailable(),
     uid: 'Quakeledger Peru',
     name: 'Earthquake Catalogue',
-    requiredProducts: [mmin, mmax, zmin, zmax, p, etypePeru, tlon, tlat].map(prd => prd.uid).concat(['user_input-boundingbox_peru']),
+    requiredProducts: [mmin, mmax, zmin, zmax, p, etypePeru, tlonPeru, tlatPeru].map(prd => prd.uid).concat(['user_input-boundingbox_peru']),
     providedProducts: [selectedEqs.uid],
     wizardProperties: {
         shape: 'earthquake',

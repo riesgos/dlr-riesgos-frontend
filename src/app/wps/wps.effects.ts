@@ -11,7 +11,7 @@ import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
-import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru } from '../configuration/peru/quakeledger';
+import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru } from '../configuration/peru/quakeledger';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
@@ -228,7 +228,7 @@ export class WpsEffects {
                 break;
             case 'p1':
                 processes = [
-                    new VulnerabilityAndExposure( this.httpClient),
+                    new VulnerabilityAndExposure(this.httpClient),
                     QuakeLedgerPeru,
                     EqSelection,
                     Shakyground,
@@ -244,7 +244,7 @@ export class WpsEffects {
                     fragilityRef, exposureRef,
                     fragilityRefDeusInput, exposureRefDeusInput, shakemapRefDeusInput,
                     loss, eqDamage, eqTransition, eqUpdatedExposure,
-                    new InputBoundingboxPeru(), mmin, mmax, zmin, zmax, p, etypePeru, tlon, tlat,
+                    new InputBoundingboxPeru(), mmin, mmax, zmin, zmax, p, etypePeru, tlonPeru, tlatPeru,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     lat, lon, mag, tsWms, tsShakemap,

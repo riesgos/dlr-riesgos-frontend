@@ -135,37 +135,29 @@ export const etype: StringSelectUconfProduct & WpsData = {
     value: null
 };
 
-export const tlon: StringUconfProduct & WpsData = {
+export const tlon: Product & WpsData = {
     uid: 'user_tlon',
     description: {
         id: 'tlon',
         description: 'longitude [decimal degrees]',
-        defaultValue: '5.00',
+        defaultValue: '-71.5',
         reference: false,
-        wizardProperties: {
-            name: 'tlon',
-            fieldtype: 'string',
-        },
         type: 'literal'
     },
-    value: null
+    value: '-71.5'
 };
 
 
-export const tlat: StringUconfProduct & WpsData = {
+export const tlat: Product & WpsData = {
     uid: 'user_tlat',
     description: {
         id: 'tlat',
         description: 'latitude [decimal degrees]',
-        defaultValue: '-35.00',
+        defaultValue: '-33.1',
         reference: false,
-        wizardProperties: {
-            name: 'tlat',
-            fieldtype: 'string',
-        },
         type: 'literal'
     },
-    value: null
+    value: '-33.1'
 };
 
 

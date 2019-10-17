@@ -76,7 +76,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             if (focussedProcessId !== 'some initial focus') {
                 const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
                 const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
-    
+
                 for (const layer of this.currentOverlays) {
                     if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
                         layer.opacity = 0.6;

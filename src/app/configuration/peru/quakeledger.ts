@@ -30,11 +30,21 @@ export const inputBoundingboxPeru: UserconfigurableProduct & BboxLayerData & Wps
 
 
 export const etypePeru = {
-    ... etype,
+    uid: 'user_etype',
+    description: {
+        id: 'etype',
+        description: 'etype',
+        defaultValue: 'observed', // 'deaggregation',
+        reference: false,
+        type: 'literal',
+        wizardProperties: {
+            name: 'Catalogue type',
+            fieldtype: 'stringselect'
+        },
+        options: ['observed', 'stochastic']
+    },
+    value: null
 };
-etype.description.options = ['observed', 'stochastic'];
-etype.description.defaultValue = 'observed';
-
 
 
 export const QuakeLedgerPeru: WizardableProcess & WpsProcess = {

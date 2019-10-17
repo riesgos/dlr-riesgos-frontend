@@ -232,17 +232,9 @@ export class LayerMarshaller  {
                             }
                         }
                     });
-                    // layer.crossOrigin = 'anonymous';
-                    // if (description.styles) {
-                    //     layer.actions = [
-                    //         {title: 'switch style', icon: 'switch', action: (layer) => {
-                    //             console.log('switching style for layer', layer);
-                    //         }}
-                    //     ];
-                    // }
                     layer.productId = uid;
 
-                    // @TODO: shakyground wms muss auch ACCESS-CONTROL-... mitgeben
+                    // @TODO: warum funzt das fuer shakyground nicht?
                     if (uid !== 'ShakygroundProcess_shakeMapFile_wms') {
                         layer['crossOrigin'] = 'anonymous';
                     }

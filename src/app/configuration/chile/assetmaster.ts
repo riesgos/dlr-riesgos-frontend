@@ -149,7 +149,7 @@ export const ExposureModel: WizardableProcess & WpsProcess = {
   requiredProducts: [lonmin, lonmax, latmin, latmax, querymode, schema, assettype].map(p => p.uid),
   providedProducts: [exposureRef.uid],
   wizardProperties: {
-    shape: 'dot-circle',
+    shape: 'building',
     providerName: 'Helmholtz Centre Potsdam',
     providerUrl: 'https://www.gfz-potsdam.de/en/'
   },

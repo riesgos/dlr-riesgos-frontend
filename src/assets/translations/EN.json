@@ -11,6 +11,10 @@
 
     "TS-Service": "Tsunami Simulation",
 
+    "Exposure (extended)": "Exposure",
+    "Multihazard damage estimation / EQ": "Earthquake damage",
+    "Multihazard damage estimation / TS": "Tsunami damage",
+
     "etype": "subcategory",
 
     "Unavailable": "Downstream",

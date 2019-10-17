@@ -91,7 +91,7 @@ export const QuakeLedgerPeru: WizardableProcess & WpsProcess = {
         providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/'
     },
-    description: '',
+    description: 'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
     id: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?',
     wpsVersion: '1.0.0'

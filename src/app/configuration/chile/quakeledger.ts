@@ -204,7 +204,7 @@ export const QuakeLedger: WizardableProcess & WpsProcess = {
     id: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     name: 'Earthquake Catalogue',
-    description: 'Catalogue of historical earthquakes.',
+    description: 'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
     requiredProducts: ['user_input-boundingbox'].concat([mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid)),
     providedProducts: [selectedEqs.uid],
     wpsVersion: '1.0.0',

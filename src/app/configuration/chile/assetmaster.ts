@@ -8,6 +8,7 @@ import {
 } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 
 
 export const lonmin: Product & WpsData = {
@@ -131,7 +132,21 @@ export const exposureRef: VectorLayerData & WpsData & Product = {
         });
       },
       text: (props: object) => {
-        return JSON.stringify(props);
+
+        const taxonomies = props['expo']['Taxonomy'];
+        const buildings = props['expo']['Buildings'];
+        const keys = Object.keys(taxonomies);
+        const barchartData: Bardata[] = [];
+        for (const key of keys) {
+          barchartData.push({
+            label: taxonomies[key],
+            value: buildings[key]
+          });
+        }
+
+        const anchor = document.createElement('div');
+        const anchorUpdated = createBarchart(anchor, barchartData, 600, 400, 'taxonomy', 'buildings', 45);
+        return `<h4>Exposure ${props['name']}</h4>${anchor.innerHTML}`;
       }
     }
   },

@@ -33,6 +33,7 @@
     "EQ Exposure Model": "Modelo de exposición",
     "EQ Vulnerability Model": "Modelo de vulnerabilidad",
     "Catalogue of historical earthquakes.": "Catálogo de terremotos históricos.",
+    "Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Catálogo de terremotos. Ingrese aquí los parámetros que determinan qué terremotos serían apropiados para su simulación.",
     "Groundmotion Simulation": "Simulación de movimiento de tierra",
     "Simulates the ground motion caused by a given eathquake": "Simula el movimiento del suelo causado por un terremoto dado",
     "Vulnerability after EQ": "Vulnerabilidad post-terremoto",
@@ -90,7 +91,7 @@
 
     "Powerlines": "Líneas eléctricas",
     "Hillshade": "Sombreado",
-
+    "Exposure": "Exposición",
     "TS-Service": "Simulación de tsunami",
 
 

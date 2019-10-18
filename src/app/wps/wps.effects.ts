@@ -15,19 +15,19 @@ import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru } 
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
-import { LaharWps, direction, laharWms, vei, parameter, laharShakemap } from '../configuration/equador/lahar';
+import { LaharWps, direction, laharWms, vei, parameter, laharShakemap } from '../configuration/ecuador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
-        assettype, schema, querymode } from '../configuration/chile/assetmaster';
+        assettype, schema, querymode } from '../configuration/chile/exposure';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityRef } from '../configuration/chile/modelProp';
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerFlood, durationTiff,
-    velocityTiff, depthTiff, geomerFloodWcsProvider } from '../configuration/equador/geomerHydrological';
+    velocityTiff, depthTiff, geomerFloodWcsProvider } from '../configuration/ecuador/geomerHydrological';
 import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure } from '../configuration/chile/eqDeus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
 import { Reliability, country, hazard, damage_consumer_areas } from '../configuration/chile/reliability';
-import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/equador/floodDamage';
-import { LaharExposureModel, LaharVulnerabilityModel, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, LaharDeusTranslator } from '../configuration/equador/laharDamage';
+import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
+import { LaharDeusTranslator, laharTransition, LaharDeus, laharDamage, laharUpdatedExposure  } from '../configuration/ecuador/laharDamage';
 import { FakeDeus } from '../configuration/others/fakeDeus';
 import { WpsClient } from 'projects/services-wps/src/public-api';
 import { VulnerabilityAndExposure } from '../configuration/chile/vulnAndExpCombined';
@@ -35,8 +35,10 @@ import { getScenarioWpsState } from './wps.selectors';
 import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
 import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
-import { VeiProvider, selectableVei } from '../configuration/equador/vei';
-import { AshfallService, ashfall } from '../configuration/equador/ashfall';
+import { VeiProvider, selectableVei } from '../configuration/ecuador/vei';
+import { AshfallService, ashfall } from '../configuration/ecuador/ashfall';
+import { LaharExposureModel, schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador } from '../configuration/ecuador/exposure';
+import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
 
 
 
@@ -259,7 +261,7 @@ export class WpsEffects {
                     LaharVulnerabilityModel,
                     LaharExposureModel,
                     LaharDeusTranslator,
-                    // Deus,
+                    LaharDeus,
                     geomerFlood,
                     geomerFloodWcsProvider,
                     FlooddamageProcess,
@@ -269,10 +271,11 @@ export class WpsEffects {
                     selectableVei, vei,
                     ashfall,
                     direction, parameter, laharWms, laharShakemap,
-                    schema, assetcategory, losscategory, taxonomies,
-                    lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymode, assettype,
+                    schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
+                    assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
                     fragilityRef, exposureRef,
                     fragilityRefDeusInput, exposureRefDeusInput,
+                    laharDamage, laharTransition, laharUpdatedExposure,
                     hydrologicalSimulation,
                     durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings,
                     damageManzanasGeojson

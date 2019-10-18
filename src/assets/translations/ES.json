@@ -103,6 +103,23 @@
     "Simulates a tsunami based on the earlier selected earthquake-parameters.": "Simula un tsunami basado en los parámetros de terremoto seleccionados anteriormente.",
 
 
+    "Ashfall Service": "Ceniza",
+    "Lahar vulnerability model": "Vulnerabilidad de Lahar",
+    "Lahar exposure model": "Exposición de Lahar",
+    "Multihazard damage estimation / Lahar": "Daños por lahar",
+    "This service outputs damage caused by a given lahar.": "Este servicio genera daños causados por un lahar dado.",
+
+    "Lahar VEI mio maxheight": "Profundidád máxima de lahar",
+    "Lahar VEI mio maxpressure": "Presión máxima de lahar",
+    "Lahar VEI mio maxvelocity": "Velocidad máxima de lahar",
+    "Lahar VEI mio maxerosion": "Erosión máxima de lahar",
+    "Lahar VEI mio maxdeposition": "Deposición máxima de lahar",
+
+
+
+    "The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.": "El servicio lahar anticipa el área inundada por lahares del volcán Cotopaxi y se basa en resultados de simulación calculados previamente para la altura del flujo, la velocidad del flujo, la presión del flujo, la erosión y la deposición. El software de simulación utilizado para el modelado de lahar es el modelo numérico basado físicamente RAMMS :: DEBRIS FLOW.",
+
+
     "Tsunami Flood Layers (CITSU)": "Carta de inundación por tsunami", 
     "eq-selection: boundingbox": "Quadro delimitador",
     "selected earthquake": "Terremoto elegido",

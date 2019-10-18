@@ -11,7 +11,7 @@ import {
 } from './chile/quakeledger';
 import { debounceTime, map, filter, switchMap } from 'rxjs/operators';
 import { Product, Process } from '../wps/wps.datatypes';
-import { schema, ExposureModel, lonmin, lonmax, latmin, latmax, querymode, assettype, exposureRef } from './chile/assetmaster';
+import { schema, ExposureModel, lonmin, lonmax, latmin, latmax, querymode, assettype, exposureRef } from './chile/exposure';
 import { assetcategory, losscategory, taxonomies, VulnerabilityModel, fragilityRef } from './chile/modelProp';
 import { Observable } from 'rxjs';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from './chile/shakyground';

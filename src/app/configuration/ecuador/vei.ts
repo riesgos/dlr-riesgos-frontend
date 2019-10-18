@@ -35,7 +35,7 @@ export const VeiProvider: WizardableProcess & CustomProcess = {
     wizardProperties: {
         providerName: '',
         providerUrl: '',
-        shape: 'avalance',
+        shape: 'volcanoe',
     },
     execute: (products: Product[]): Observable<Product[]> => {
         const selectedVeiProd = products.find(p => p.uid === selectableVei.uid);

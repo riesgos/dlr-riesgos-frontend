@@ -5,7 +5,7 @@ import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelp
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { loss, eqUpdatedExposure, eqDamage } from './eqDeus';
-import { schema } from './assetmaster';
+import { schema } from './exposure';
 import { fragilityRefDeusInput } from './deusTranslator';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';

@@ -1,8 +1,12 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { schema} from './exposure';
-import { WpsData } from 'projects/services-wps/src/public-api';
+import { WatchingProcess, ProcessStateUnavailable, Product, WpsProcess } from 'src/app/wps/wps.datatypes';
+import { fragilityRef, } from '../chile/modelProp';
+import { exposureRef } from '../chile/exposure';
+import { fragilityRefDeusInput, exposureRefDeusInput } from '../chile/deusTranslator';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from './deusTranslator';
+import { laharShakemap } from './lahar';
+import { losscategoryEcuador } from './vulnerability';
+import { schemaEcuador } from './exposure';
+import { WpsData } from '@ukis/services-wps/src/public-api';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -11,19 +15,37 @@ import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelp
 
 
 
-
-export const loss: WpsData & Product = {
-    uid: 'loss',
-    description: {
-        id: 'loss',
-        reference: false,
-        type: 'literal'
-    },
-    value: 'testinputs/loss_sara.json'
+export const LaharDeusTranslator: WatchingProcess = {
+    uid: 'LaharDeusTranslator',
+    name: 'LaharDeusTranslator',
+    requiredProducts: [fragilityRef, exposureRef].map(p => p.uid),
+    providedProducts: [fragilityRefDeusInput, exposureRefDeusInput].map(p => p.uid),
+    state: new ProcessStateUnavailable(),
+    onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
+        switch (newProduct.uid) {
+            case fragilityRef.uid:
+                return [{
+                    ...fragilityRefDeusInput,
+                    value: newProduct.value
+                }];
+            case exposureRef.uid:
+                const exposureDeus = {
+                    ...exposureRefDeusInput,
+                    value: newProduct.value
+                };
+                delete exposureDeus.description.vectorLayerAttributes; // To avoid displaying exposure on map twice
+                delete exposureDeus.description.name;
+                return [exposureDeus];
+            default:
+                return [];
+        }
+    }
 };
 
-export const eqDamage: VectorLayerData & WpsData & Product = {
-    uid: 'damage',
+
+
+export const laharDamage: VectorLayerData & WpsData & Product = {
+    uid: 'lahar_damage',
     description: {
         id: 'damage',
         reference: false,
@@ -53,8 +75,8 @@ export const eqDamage: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const eqTransition: VectorLayerData & WpsData & Product = {
-    uid: 'transition',
+export const laharTransition: VectorLayerData & WpsData & Product = {
+    uid: 'lahar_transition',
     description: {
         id: 'transition',
         reference: false,
@@ -103,8 +125,8 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
-    uid: 'updated_exposure',
+export const laharUpdatedExposure: VectorLayerData & WpsData & Product = {
+    uid: 'lahar_updated_exposure',
     description: {
         id: 'updated_exposure',
         reference: false,
@@ -171,16 +193,21 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
 };
 
 
-export const EqDeus: WizardableProcess & WpsProcess = {
+
+
+
+
+
+export const LaharDeus: WizardableProcess & WpsProcess = {
     id: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
-    uid: 'EQ-DEUS',
+    uid: 'Lahar-DEUS',
     url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
     wpsVersion: '1.0.0',
     state: new ProcessStateUnavailable(),
-    name: 'Multihazard damage estimation / EQ',
-    description: 'This service outputs damage caused by a given earthquake.',
-    requiredProducts: [loss, schema, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
-    providedProducts: [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid),
+    name: 'Multihazard damage estimation / Lahar',
+    description: 'This service outputs damage caused by a given lahar.',
+    requiredProducts: [losscategoryEcuador, schemaEcuador, fragilityRefDeusInput, laharShakemap, exposureRefDeusInput].map(p => p.uid),
+    providedProducts: [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid),
     wizardProperties: {
         providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/',

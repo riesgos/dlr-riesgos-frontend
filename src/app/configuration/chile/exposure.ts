@@ -98,7 +98,7 @@ export const querymode: Product & WpsData = {
 
 
 export const exposureRef: VectorLayerData & WpsData & Product = {
-  uid: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess_selecteRowsXml',
+  uid: 'AssetmasterProcess_Exposure',
   description: {
     id: 'selectedRowsGeoJson',
     type: 'complex',

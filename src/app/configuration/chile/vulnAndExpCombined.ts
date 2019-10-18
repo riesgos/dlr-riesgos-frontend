@@ -1,6 +1,6 @@
 import { CustomProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { Observable, forkJoin } from 'rxjs';
-import { lonmin, lonmax, latmin, latmax, assettype, schema, querymode, exposureRef, ExposureModel } from './assetmaster';
+import { lonmin, lonmax, latmin, latmax, assettype, schema, querymode, exposureRef, ExposureModel } from './exposure';
 import { assetcategory, losscategory, taxonomies, fragilityRef, VulnerabilityModel } from './modelProp';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsClient, WpsData } from 'projects/services-wps/src/public-api';

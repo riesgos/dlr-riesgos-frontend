@@ -24,7 +24,6 @@ import { FormComponent } from './components/config_wizard/form/form.component';
 import { FormFeatureSelectFieldComponent } from './components/config_wizard/form-featureselect-field/form-featureselect-field.component';
 import { FormStringFieldComponent } from './components/config_wizard/form-string-field/form-string-field.component';
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
-import { FeatureTablesModule } from 'projects/feature-tables/src/public_api';
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
 import { MapOlModule } from '@ukis/map-ol';
@@ -90,7 +89,6 @@ import { TextModalComponent } from './components/text-modal/text-modal.component
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FeatureTablesModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

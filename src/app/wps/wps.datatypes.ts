@@ -59,6 +59,7 @@ export interface Process {
     readonly requiredProducts: ProductId[];
     readonly providedProducts: ProductId[];
     readonly state: ProcessState;
+    readonly description?: string;
 }
 
 

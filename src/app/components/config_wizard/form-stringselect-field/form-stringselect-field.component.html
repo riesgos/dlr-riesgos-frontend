@@ -8,7 +8,7 @@
       <option *ngFor="let str of options" [value]="str">{{str}}</option>
   </select>
 
-  <clr-control-helper>{{parameter.description.description | translate}}</clr-control-helper>
+  <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
   <clr-control-error>Invalid input</clr-control-error>
 
 </clr-select-container>

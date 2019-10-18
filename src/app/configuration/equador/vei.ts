@@ -28,13 +28,14 @@ export const selectableVei: StringSelectUconfProduct & WpsData = {
 export const VeiProvider: WizardableProcess & CustomProcess = {
     uid: 'vei_provider',
     name: 'VEI Selection',
+    description: 'The Volcanic Explosivity Index (VEI) is a relative measure of the explosiveness of volcanic eruptions. Volume of products, eruption cloud height, and qualitative observations are used to determine the explosivity value.',
     requiredProducts: [selectableVei.uid],
     providedProducts: [vei.uid],
     state: new ProcessStateUnavailable(),
     wizardProperties: {
         providerName: '',
         providerUrl: '',
-        shape: 'avalance'
+        shape: 'avalance',
     },
     execute: (products: Product[]): Observable<Product[]> => {
         const selectedVeiProd = products.find(p => p.uid === selectableVei.uid);

@@ -43,7 +43,7 @@ export const parameter: StringSelectUconfProduct & WpsData = {
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'parameter',
-            description: `
+            signpost: `
             <ol>
                 <li>MaxHeight [m]: Maximum flow height, that the lahar can reach during the event</li>
                 <li>MaxVelocity [m/s]: Maximum flow velocity, that the lahar can reach during the event</li>

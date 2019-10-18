@@ -53,8 +53,6 @@ export class LayerMarshaller  {
             obsables.push(this.toLayers(product));
         }
         return forkJoin(...obsables).pipe(
-
-            // flatten
             map((results: ProductLayer[][]) => {
                 const newLayers: ProductLayer[] = [];
                 for (const result of results) {
@@ -63,16 +61,6 @@ export class LayerMarshaller  {
                     }
                 }
                 return newLayers;
-            }),
-
-            // sort again to original order
-            map((newLayers: ProductLayer[]) => {
-                const sortedLayers: ProductLayer[] = [];
-                for (const prod of products) {
-                    const associatedLayer = newLayers.find(l => l.productId === prod.uid);
-                    sortedLayers.push(associatedLayer);
-                }
-                return sortedLayers;
             })
         );
     }

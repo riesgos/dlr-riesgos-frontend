@@ -20,7 +20,6 @@ export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsDat
             name: 'eq-selection: boundingbox',
             type: 'bbox',
             reference: false,
-            description: 'Please select an area of interest',
             defaultValue: {
                 crs: 'EPSG:4326',
                 lllon: -73.5, lllat: -34,
@@ -29,6 +28,7 @@ export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsDat
             wizardProperties: {
                 name: 'AOI',
                 fieldtype: 'bbox',
+                description: 'Please select an area of interest',
                 signpost: 'You can also select a boundingbox by clicking and dragging on the map.'
             },
         },
@@ -44,8 +44,8 @@ export const mmin: StringUconfProduct & WpsData = {
         wizardProperties: {
             name: 'mmin',
             fieldtype: 'string',
+            description: 'minimum magnitude',
         },
-        description: 'minimum magnitude',
         reference: false,
         defaultValue: '6.0',
     },
@@ -61,8 +61,8 @@ export const mmax: StringUconfProduct & WpsData = {
         wizardProperties: {
             name: 'mmax',
             fieldtype: 'string',
+            description: 'maximum magnitude',
         },
-        description: 'maximum magnitude',
         reference: false,
         defaultValue: '9.0',
     },
@@ -90,11 +90,11 @@ export const zmax: StringUconfProduct & WpsData = {
     uid: 'user_zmax',
     description: {
         id: 'zmax',
-        description: 'maximum depth',
         defaultValue: '100',
         type: 'literal',
         wizardProperties: {
             name: 'zmax',
+            description: 'maximum depth',
             fieldtype: 'string',
         },
         reference: false

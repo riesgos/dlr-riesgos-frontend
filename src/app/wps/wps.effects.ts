@@ -15,7 +15,7 @@ import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru } 
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
-import { LaharWps, direction, laharWms, vei, parameter } from '../configuration/equador/lahar';
+import { LaharWps, direction, laharWms, vei, parameter, laharShakemap } from '../configuration/equador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
         assettype, schema, querymode } from '../configuration/chile/assetmaster';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityRef } from '../configuration/chile/modelProp';
@@ -268,7 +268,7 @@ export class WpsEffects {
                 products = [
                     selectableVei, vei,
                     ashfall,
-                    direction, parameter, laharWms,
+                    direction, parameter, laharWms, laharShakemap,
                     schema, assetcategory, losscategory, taxonomies,
                     lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymode, assettype,
                     fragilityRef, exposureRef,

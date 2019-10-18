@@ -59,9 +59,9 @@ export const parameter: StringSelectUconfProduct & WpsData = {
 
 
 export const laharWms: WmsLayerData & WpsData = {
-    uid: 'gs:LaharModel_result',
+    uid: 'lahar_wms',
     description: {
-        id: 'result',
+        id: 'wms',
         name: 'laharWms',
         type: 'literal',  // this is deliberate. layer-wps returns this value as a litteral, not as a complex.
         reference: false,
@@ -71,6 +71,17 @@ export const laharWms: WmsLayerData & WpsData = {
 };
 
 
+export const laharShakemap: Product & WpsData = {
+    uid: 'lahar_shakemap',
+    description: {
+        id: 'shakemap',
+        format: 'application/xml',
+        reference: false,
+        type: 'literal'
+    },
+    value: null,
+};
+
 
 export const LaharWps: WizardableProcess & WpsProcess = {
     uid: 'LaharModel',
@@ -79,7 +90,7 @@ export const LaharWps: WizardableProcess & WpsProcess = {
     name: 'Lahar',
     description: 'The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.',
     requiredProducts: [direction, vei, parameter].map(p => p.uid),
-    providedProducts: [laharWms.uid],
+    providedProducts: [laharWms, laharShakemap].map(p => p.uid),
     state: new ProcessStateUnavailable(),
     wpsVersion: '1.0.0',
     wizardProperties: {

@@ -15,6 +15,12 @@
     "Multihazard damage estimation / EQ": "Earthquake damage",
     "Multihazard damage estimation / TS": "Tsunami damage",
 
+    "arrivalTimes": "Arrival times",
+    "epiCenter": "Epicenter",
+    "mwh": "Maximum wave-height",
+    "mwhLand": "Maximum wave-height land",
+    "N :primary tif": "Shakemap",
+
     "etype": "subcategory",
 
     "Unavailable": "Downstream",

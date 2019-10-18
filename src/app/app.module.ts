@@ -46,6 +46,7 @@ import { RouteDocumentationComponent } from './route-components/route-documentat
 import { ReadMoreComponent } from './components/read-more/read-more.component';
 import { Action } from '@ngrx/store';
 import { TextModalComponent } from './components/text-modal/text-modal.component';
+import { HelpersModule } from '@ukis/helpers/src/public-api';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { TextModalComponent } from './components/text-modal/text-modal.component
         useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/translations/', '.json'),
         deps: [HttpClient]
       }
-    })
+    }),
+    HelpersModule
   ],
   providers: [
     AlertService, FooterService, ProgressService, LayerMarshaller,

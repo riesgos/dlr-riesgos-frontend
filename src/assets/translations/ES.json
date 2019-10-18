@@ -94,6 +94,12 @@
     "Exposure": "Exposición",
     "TS-Service": "Simulación de tsunami",
 
+    "arrivalTimes": "Tiempos de llegada",
+    "epiCenter": "Epicentro",
+    "mwh": "Altura máxima de ola",
+    "mwhLand": "Altura máxima de ola en tierra",
+    "N :primary tif": "Shakemap",
+
 
     "Tsunami Flood Layers (CITSU)": "Carta de inundación por tsunami", 
     "eq-selection: boundingbox": "Quadro delimitador",

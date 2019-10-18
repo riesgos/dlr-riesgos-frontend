@@ -98,7 +98,9 @@
     "epiCenter": "Epicentro",
     "mwh": "Altura máxima de ola",
     "mwhLand": "Altura máxima de ola en tierra",
-    "N :primary tif": "Shakemap",
+    "primary tif": "Shakemap",
+
+    "Simulates a tsunami based on the earlier selected earthquake-parameters.": "Simula un tsunami basado en los parámetros de terremoto seleccionados anteriormente.",
 
 
     "Tsunami Flood Layers (CITSU)": "Carta de inundación por tsunami", 

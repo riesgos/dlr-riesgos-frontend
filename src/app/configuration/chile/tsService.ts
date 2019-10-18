@@ -121,8 +121,8 @@ export class TsService implements WizardableProcess, CustomProcess {
     requiredProducts = TsWmsService.requiredProducts;
     providedProducts = [tsWms, tsShakemap].map(p => p.uid);
     state = new ProcessStateUnavailable();
+    description = 'Simulates a tsunami based on the earlier selected earthquake-parameters.';
     wizardProperties = {
-        //shape: 'tsunami',
         providerName: 'Alfred Wegener Institute',
         providerUrl: 'https://www.awi.de/en/',
         shape: 'tsunami' as 'tsunami'

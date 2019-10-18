@@ -27,6 +27,7 @@ export class WizardPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log("prozess: ", this.process)
     this.parameters$ = this.store.pipe(
       select(getInputsForProcess, {processId: this.process.uid}),
       map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableProduct(i)) as UserconfigurableProduct[] )

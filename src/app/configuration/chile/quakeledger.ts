@@ -74,12 +74,12 @@ export const zmin: StringUconfProduct & WpsData = {
     uid: 'user_zmin',
     description: {
         id: 'zmin',
-        description: 'minimum depth',
         defaultValue: '0',
         type: 'literal',
         wizardProperties: {
             name: 'zmin',
             fieldtype: 'string',
+            description: 'minimum depth',
         },
         reference: false
     },

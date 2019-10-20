@@ -116,6 +116,9 @@
     "Lahar VEI mio maxdeposition": "Deposición máxima de lahar",
 
 
+    "How to use this site ...": "El asistente de configuración en el lado izquierdo de la pantalla contiene una lista de todos los procesos por los que pasará en orden. Los procesos se colorean de acuerdo con su estado actual. Si un proceso requiere que tome decisiones sobre entradas, éstas pueden ingresarse en un formulario. Cuando esté contento con su selección, presione 'enviar' para ejecutar el proceso.",
+    "More on how to use this": "A medida que avanza en el proceso, se acumularán más y más resultados en el lado derecho. Los resultados se muestran en el mapa y se enumeran en el control de capa. En el control de capas, puede cambiar el orden de las capas, alterar su opacidad, etc. También puede encontrar más información en 'Capas adicionales'",
+
 
     "The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.": "El servicio lahar anticipa el área inundada por lahares del volcán Cotopaxi y se basa en resultados de simulación calculados previamente para la altura del flujo, la velocidad del flujo, la presión del flujo, la erosión y la deposición. El software de simulación utilizado para el modelado de lahar es el modelo numérico basado físicamente RAMMS :: DEBRIS FLOW.",
 

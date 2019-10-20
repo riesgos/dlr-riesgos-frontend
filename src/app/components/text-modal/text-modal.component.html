@@ -1,10 +1,11 @@
-<clr-modal [(clrModalOpen)]="showModal" [clrModalClosable]="false">
+<clr-modal [(clrModalOpen)]="showModal" [clrModalClosable]="false" [clrModalSize]="'xl'">
     <h3 class="modal-title">{{ 'RIESGOS Demonstrator' | translate }}</h3>
     <div class="modal-body">
         <h4>{{ 'Quickstart' | translate }}:</h4>
-        <p>{{ 'How to use this site ...' | translate }}</p>
+        <p><img src="assets/images/processwizard.png" align="left" style="height:300px;margin: 7px;">{{ 'How to use this site ...' | translate }}</p>
     
-        <p>{{ 'More on how to use this' | translate }}</p>
+        <p>{{ 'More on how to use this' | translate }}<img src="assets/images/map.png" align="right"  style="height:300px;margin: 7px;"></p>
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline btn-primary" (click)="hideModalSave()">

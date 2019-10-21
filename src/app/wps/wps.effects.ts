@@ -239,7 +239,7 @@ export class WpsEffects {
                     // Deus,
                     FakeDeus,
                     TsServiceTranslator,
-                    new TsService(this.httpClient),
+                    // new TsService(this.httpClient),
                     // Reliability
                 ];
                 products = [
@@ -250,7 +250,8 @@ export class WpsEffects {
                     new InputBoundingboxPeru(), mmin, mmax, zmin, zmax, p, etypePeru, tlonPeru, tlatPeru,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
-                    lat, lon, mag, tsWms, tsShakemap,
+                    lat, lon, mag,
+                    // tsWms, tsShakemap,
                     country, hazard,
                     // damage_consumer_areas
                 ];

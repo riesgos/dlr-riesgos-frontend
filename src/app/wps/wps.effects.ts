@@ -211,7 +211,7 @@ export class WpsEffects {
                     TsServiceTranslator,
                     new TsService(this.httpClient),
                     // TsDeus,
-                    Reliability,
+                    // Reliability,
                     // PhysicalImpactAssessment
                 ];
                 products = [
@@ -224,7 +224,8 @@ export class WpsEffects {
                     // tsDamage, tsTransition, tsUpdatedExposure,
                     lat, lon, mag, tsWms, tsShakemap,
                     fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
-                    country, hazard, damage_consumer_areas
+                    country, hazard,
+                    // damage_consumer_areas
                     // physicalImpact
                 ];
                 break;
@@ -239,7 +240,7 @@ export class WpsEffects {
                     FakeDeus,
                     TsServiceTranslator,
                     new TsService(this.httpClient),
-                    Reliability
+                    // Reliability
                 ];
                 products = [
                     lonmin, lonmax, latmin, latmax, assettype, querymode, schema, assetcategory, losscategory, taxonomies,
@@ -250,7 +251,8 @@ export class WpsEffects {
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     lat, lon, mag, tsWms, tsShakemap,
-                    country, hazard, damage_consumer_areas
+                    country, hazard,
+                    // damage_consumer_areas
                 ];
                 break;
             case 'e1':

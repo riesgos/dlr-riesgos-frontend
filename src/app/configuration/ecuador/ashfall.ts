@@ -18,7 +18,7 @@ export const ashfall: Product & WpsData = {
 export const AshfallService: WizardableProcess & WpsProcess = {
     uid: 'ashfall-service',
     id: 'ashfall-service-id',
-    url: 'https://www.igepn.edu.ec',
+    url: 'http://riesgos.dlr.de/wps/WebProcessingService?',
     wpsVersion: '1.0.0',
     description: '',
     name: 'Ashfall Service',

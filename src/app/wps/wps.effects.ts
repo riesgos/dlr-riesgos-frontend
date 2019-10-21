@@ -210,7 +210,7 @@ export class WpsEffects {
                     FakeDeus,
                     TsServiceTranslator,
                     new TsService(this.httpClient),
-                    TsDeus,
+                    // TsDeus,
                     Reliability,
                     // PhysicalImpactAssessment
                 ];
@@ -221,7 +221,7 @@ export class WpsEffects {
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     loss, eqDamage, eqTransition, eqUpdatedExposure,
-                    tsDamage, tsTransition, tsUpdatedExposure,
+                    // tsDamage, tsTransition, tsUpdatedExposure,
                     lat, lon, mag, tsWms, tsShakemap,
                     fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
                     country, hazard, damage_consumer_areas

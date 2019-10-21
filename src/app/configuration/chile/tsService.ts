@@ -140,23 +140,29 @@ export class TsService implements WizardableProcess, CustomProcess {
 
         const proc1$ = this.wpsClient.executeAsync(
             TsWmsService.url, TsWmsService.id, inputsWms, [tsWms.description], 2000, null);
-        const proc2$ = this.wpsClient.executeAsync(
-            TsShakemapService.url, TsShakemapService.id, inputsShkmp, [tsShakemap.description], 2000, null);
+        // const proc2$ = this.wpsClient.executeAsync(
+        //     TsShakemapService.url, TsShakemapService.id, inputsShkmp, [tsShakemap.description], 2000, null);
 
-        return forkJoin(proc1$, proc2$).pipe(
-            map((results: WpsData[][]) => {
-                const flattened: WpsData[] = [];
-                for (const result of results) {
-                    for (const data of result) {
-                        flattened.push(data);
-                    }
-                }
-                return flattened;
-            }),
+        return proc1$.pipe(
             map((wpsData: WpsData[]) => {
                 return this.assignWpsDataToProducts(wpsData, [tsWms, tsShakemap]);
             })
         );
+
+        // return forkJoin(proc1$, proc2$).pipe(
+        //     map((results: WpsData[][]) => {
+        //         const flattened: WpsData[] = [];
+        //         for (const result of results) {
+        //             for (const data of result) {
+        //                 flattened.push(data);
+        //             }
+        //         }
+        //         return flattened;
+        //     }),
+        //     map((wpsData: WpsData[]) => {
+        //         return this.assignWpsDataToProducts(wpsData, [tsWms, tsShakemap]);
+        //     })
+        // );
     }
 
     private assignWpsDataToProducts(wpsData: WpsData[], initialProds: (Product & WpsData)[]): Product[] {

@@ -6,12 +6,12 @@ import { State } from 'src/app/ngrx_register';
 import { getCurrentScenarioWpsState } from 'src/app/wps/wps.selectors';
 import { WpsScenarioState } from 'src/app/wps/wps.state';
 import { WpsDataUpdate, RestaringScenario } from 'src/app/wps/wps.actions';
+import { meta } from '@turf/turf';
 
 
-interface StorageRow {
+interface StorageMetadata {
     name: string;
     date: Date;
-    data: WpsScenarioState;
 }
 
 @Component({
@@ -25,9 +25,10 @@ export class SaveButtonComponent implements OnInit {
     showRestoreModal = false;
     showStoreModal = false;
     nameControl: FormControl;
-    dataStorage: StorageRow[] = [];
-    selectedStorageRow: StorageRow;
     private currentState: WpsScenarioState;
+    private storageMetadata: StorageMetadata[] = [];
+    private selectedStorageMetadata: StorageMetadata;
+    private storageMetadataKey = 'RIESGOS_STORAGE_METADATA';
 
     constructor(
         private storageService: UtilStoreService,
@@ -40,24 +41,22 @@ export class SaveButtonComponent implements OnInit {
         this.store.pipe(select(getCurrentScenarioWpsState)).subscribe((state: WpsScenarioState) => {
             this.currentState = state;
         });
+        this.storageMetadata = this.getStorageMetadata();
     }
 
     storeRow(): void {
         const name = this.nameControl.value;
         const data = this.currentState;
-        this.dataStorage.push({
-            name: name,
-            data: data,
-            date: new Date()
-        });
+        this.storeData(name, data);
         this.showStoreModal = false;
     }
 
     restoreSelectedRow(): void {
-        if (this.selectedStorageRow) {
-            const processes = this.selectedStorageRow.data.processStates;
-            const products = this.selectedStorageRow.data.productValues;
-            const graph = this.selectedStorageRow.data.graph;
+        if (this.selectedStorageMetadata) {
+            const stateToRestore = this.restoreData(this.selectedStorageMetadata);
+            const processes = stateToRestore.processStates;
+            const products = stateToRestore.productValues;
+            const graph = stateToRestore.graph;
             this.store.dispatch(new WpsDataUpdate({processes, products, graph}));
         }
         this.showRestoreModal = false;
@@ -67,6 +66,30 @@ export class SaveButtonComponent implements OnInit {
         const currentScenario = this.currentState.scenario;
         this.store.dispatch(new RestaringScenario({scenario: currentScenario}));
         this.showResetModal = false;
+    }
+
+    private storeData(name: string, data: WpsScenarioState): void {
+        const metadata: StorageMetadata = { name: name, date: new Date() };
+        this.storageMetadata.push(metadata);
+        this.storeStorageMetadata(this.storageMetadata);
+        this.storageService.local(name, data);
+    }
+
+    private restoreData(storageMetadata: StorageMetadata): WpsScenarioState {
+        return this.storageService.local(storageMetadata.name);
+    }
+
+    private getStorageMetadata(): StorageMetadata[] {
+        const metadata = this.storageService.local(this.storageMetadataKey);
+        if (!metadata) {
+            return [];
+        } else {
+            return metadata;
+        }
+    }
+
+    private storeStorageMetadata(storageMetadata: StorageMetadata[]): void {
+        this.storageService.local(this.storageMetadataKey, storageMetadata);
     }
 
 }

@@ -55,10 +55,8 @@ export const ashfall: WpsData & Product & VectorLayerData = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
                 const thickness = props.thickness;
-                // const hue = hueRange(0, 180, 80, 240, thickness);
-                // const rgb = HSVtoRGB({h: hue, s: 0.8, v: 1.0});
 
-                const range = d3interp.interpolate("blue", "red");
+                const range = d3interp.interpolate('blue', 'red');
                 const colorString = range(thickness / 80.0);
 
 

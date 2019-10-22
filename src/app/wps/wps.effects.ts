@@ -208,7 +208,7 @@ export class WpsEffects {
                     TsServiceTranslator,
                     new TsService(this.httpClient),
                     // TsDeus,
-                    // Reliability,
+                    // new Reliability(this.httpClient),
                     // PhysicalImpactAssessment
                 ];
                 products = [

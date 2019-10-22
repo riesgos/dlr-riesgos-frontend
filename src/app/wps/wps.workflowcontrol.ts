@@ -388,6 +388,9 @@ export class WorkflowControl {
         return duplicates;
     }
 
+    /**
+     * does a shallow copy of public/readable properties.
+     */
     private toSimpleProcess(process: Process): ImmutableProcess {
         // return {
         //     uid: process.uid,
@@ -398,9 +401,19 @@ export class WorkflowControl {
         // };
 
         // simply shallow copying
-        return {
+        const copy = {
             ... process
         };
+
+        // cleaning up. @TODO: how can we do this better? Currently TS/JS does not differentiate between public and private.
+        if (typeof copy['http'] !== 'undefined') {
+            delete copy['http'];
+        }
+        if (typeof copy['wpsClient'] !== 'undefined') {
+            delete copy['wpsClient'];
+        }
+
+        return copy;
     }
 
 }

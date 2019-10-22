@@ -4,6 +4,7 @@ import { Process, Product, ProcessId, ProcessState, isAutorunningProcess,
 import { Graph, alg } from 'graphlib';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { isWizardableProcess } from '../components/config_wizard/wizardable_processes';
 
 
 export class WorkflowControl {
@@ -392,26 +393,33 @@ export class WorkflowControl {
      * does a shallow copy of public/readable properties.
      */
     private toSimpleProcess(process: Process): ImmutableProcess {
-        // return {
-        //     uid: process.uid,
-        //     name: process.name,
-        //     providedProducts: process.providedProducts,
-        //     requiredProducts: process.requiredProducts,
-        //     state: process.state,
-        // };
+
+        const copy = {
+            uid: process.uid,
+            name: process.name,
+            providedProducts: process.providedProducts,
+            requiredProducts: process.requiredProducts,
+            state: process.state,
+        };
+        if (isWizardableProcess(process)) {
+            copy['wizardProperties'] = process['wizardProperties'];
+        }
 
         // simply shallow copying
-        const copy = {
-            ... process
-        };
+        // const copy = {
+        //     ... process
+        // };
 
         // cleaning up. @TODO: how can we do this better? Currently TS/JS does not differentiate between public and private.
-        if (typeof copy['http'] !== 'undefined') {
-            delete copy['http'];
-        }
-        if (typeof copy['wpsClient'] !== 'undefined') {
-            delete copy['wpsClient'];
-        }
+        // if (typeof copy['http'] !== 'undefined') {
+        //     delete copy['http'];
+        // }
+        // if (typeof copy['httpClient'] !== 'undefined') {
+        //     delete copy['httpClient'];
+        // }
+        // if (typeof copy['wpsClient'] !== 'undefined') {
+        //     delete copy['wpsClient'];
+        // }
 
         return copy;
     }

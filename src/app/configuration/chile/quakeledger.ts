@@ -164,7 +164,7 @@ export const tlat: Product & WpsData = {
 
 
 export const selectedEqs: VectorLayerData & WpsData = {
-    uid: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess_selectedRows',
+    uid: 'QuakeledgerProcess_selectedRows',
     description: {
         id: 'selectedRows',
         name: 'available earthquakes',

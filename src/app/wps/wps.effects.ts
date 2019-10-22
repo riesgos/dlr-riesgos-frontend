@@ -212,16 +212,18 @@ export class WpsEffects {
                     // PhysicalImpactAssessment
                 ];
                 products = [
-                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode, exposureRef,
-                    assetcategory, losscategory, taxonomies, fragilityRef,
+                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
+                    assetcategory, losscategory, taxonomies,
+                    exposureRef, fragilityRef,
+                    fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
                     new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     loss, eqDamage, eqTransition, eqUpdatedExposure,
-                    // tsDamage, tsTransition, tsUpdatedExposure,
-                    lat, lon, mag, tsWms, tsShakemap,
-                    fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
+                    lat, lon, mag,
+                    tsWms, tsShakemap,
                     country, hazard,
+                    // tsDamage, tsTransition, tsUpdatedExposure,
                     // damage_consumer_areas
                     // physicalImpact
                 ];
@@ -240,16 +242,17 @@ export class WpsEffects {
                     // Reliability
                 ];
                 products = [
-                    lonmin, lonmax, latmin, latmax, assettype, querymode, schema, assetcategory, losscategory, taxonomies,
+                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
+                    assetcategory, losscategory, taxonomies,
                     fragilityRef, exposureRef,
-                    fragilityRefDeusInput, exposureRefDeusInput, shakemapRefDeusInput,
-                    loss, eqDamage, eqTransition, eqUpdatedExposure,
+                    fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
                     new InputBoundingboxPeru(), mmin, mmax, zmin, zmax, p, etypePeru, tlonPeru, tlatPeru,
+                    loss, eqDamage, eqTransition, eqUpdatedExposure,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     lat, lon, mag,
-                    // tsWms, tsShakemap,
                     country, hazard,
+                    // tsWms, tsShakemap,
                     // damage_consumer_areas
                 ];
                 break;

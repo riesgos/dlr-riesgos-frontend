@@ -332,6 +332,13 @@ export class WorkflowControl {
 
 
     private checkDataIntegrity(processes: Process[], products: Product[]): void {
+
+        for (const process of processes) {
+            if (! isExecutableProcess(process) && ! isAutorunningProcess(process)) {
+                throw new Error(`process ${process.uid} is neither executable nor autorunning. `);
+            }
+        }
+
         const processIds = processes.map(p => p.uid);
         const productIds = products.map(p => p.uid);
 

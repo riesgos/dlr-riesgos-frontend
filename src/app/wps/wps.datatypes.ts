@@ -51,25 +51,26 @@ export class ProcessStateError {
 }
 
 export type ProcessState = ProcessStateUnavailable | ProcessStateAvailable |
-                            ProcessStateRunning | ProcessStateCompleted | ProcessStateError;
+ProcessStateRunning | ProcessStateCompleted | ProcessStateError;
 
-export interface Process {
+
+export interface ImmutableProcess {
     readonly uid: ProcessId;
     readonly name: string;
     readonly requiredProducts: ProductId[];
     readonly providedProducts: ProductId[];
-    state: ProcessState;
+    readonly state: ProcessState;
     description?: string;
+}
+export interface Process extends ImmutableProcess {
+    state: ProcessState;
 }
 
 
 export const isProcess = (o: any): o is Process => {
-    return o.hasOwnProperty('id') &&  o.hasOwnProperty('requiredProducts') &&  o.hasOwnProperty('providedProduct');
+    return o.hasOwnProperty('uid') &&  o.hasOwnProperty('requiredProducts') &&  o.hasOwnProperty('providedProduct');
 };
 
-export interface ImmutableProcess extends Process {
-    readonly state: ProcessState;
-}
 
 
 export interface ExecutableProcess extends Process {
@@ -81,7 +82,7 @@ export interface ExecutableProcess extends Process {
 }
 
 export const isExecutableProcess = (p: Process): p is ExecutableProcess => {
-    return p.hasOwnProperty('execute');
+    return  (typeof p['execute'] === 'function');
 };
 
 
@@ -115,11 +116,11 @@ export class WpsProcess implements ExecutableProcess {
     }
 
     public execute(
-        inutProducts: (Product & WpsData)[],
-        outputProducts?: (Product & WpsData)[],
+        inutProducts: Product[],
+        outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-            const wpsInputs = inutProducts as WpsData[];
+            const wpsInputs = inutProducts.map(prod => this.prodToWpsData(prod));
             const wpsOutputDescriptions = outputProducts.map(o => o.description) as WpsDataDescription[];
 
             let requestCounter = 0;
@@ -145,7 +146,7 @@ export class WpsProcess implements ExecutableProcess {
                         }
                     }
 
-                    const products = this.assignWpsDataToProducts(outputs, outputProducts);
+                    const products = this.assignWpsDataToProducts(outputs, outputProducts as (Product & WpsData)[]);
                     return products;
                 }),
 
@@ -180,6 +181,11 @@ export class WpsProcess implements ExecutableProcess {
         }
 
         return out;
+    }
+
+    private prodToWpsData(product: Product): (Product & WpsData) {
+        // @TODO
+        return product as (Product & WpsData);
     }
 }
 

@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect } from '@ngrx/effects';
 import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen,
         ClickRunProcess, WpsDataUpdate, RestartingFromProcess, RestaringScenario } from './wps.actions';
-import { toGraphviz, toGraphvizDestructured } from './wps.graphviz';
 import { map, switchMap, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Store, Action, select } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { WorkflowControl } from './wps.workflowcontrol';
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
@@ -29,14 +27,12 @@ import { Reliability, country, hazard, damage_consumer_areas } from '../configur
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
 import { LaharDeusTranslator, laharTransition, LaharDeus, laharDamage, laharUpdatedExposure  } from '../configuration/ecuador/laharDamage';
 import { FakeDeus } from '../configuration/others/fakeDeus';
-import { WpsClient } from 'projects/services-wps/src/public-api';
 import { VulnerabilityAndExposure } from '../configuration/chile/vulnAndExpCombined';
 import { getScenarioWpsState } from './wps.selectors';
 import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
-import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
 import { VeiProvider, selectableVei } from '../configuration/ecuador/vei';
-import { AshfallService, ashfall } from '../configuration/ecuador/ashfall';
+import { AshfallService, ashfall, probability, AshfallTranslator, ashfallVei } from '../configuration/ecuador/ashfall';
 import { LaharExposureModel, schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador } from '../configuration/ecuador/exposure';
 import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
 
@@ -74,9 +70,11 @@ export class WpsEffects {
             let procs: Process[];
             let prods: Product[];
             if (state.wpsState.scenarioData[newScenario]) {
+                let _;
                 const scenarioData = state.wpsState.scenarioData[newScenario];
-                procs = scenarioData.processStates;
-                prods = scenarioData.productValues;
+                // because processes are more than the ImmutableProcesses stored in the state-store: 
+                prods = scenarioData.productValues; // getting products from state-store ...
+                [procs, _] = this.loadScenarioDataFresh(action.payload.scenario); // ... but processes from registry.
             } else {
                 [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
             }
@@ -179,7 +177,6 @@ export class WpsEffects {
         private store$: Store<State>,
         private httpClient: HttpClient,
         ) {
-        // this.wfc = new WorkflowControl([], [], this.httpClient);
     }
 
 
@@ -259,8 +256,9 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     VeiProvider,
-                    new AshfallService(this.httpClient),
                     new LaharWps(this.httpClient),
+                    AshfallTranslator,
+                    new AshfallService(this.httpClient),
                     new LaharVulnerabilityModel(this.httpClient),
                     new LaharExposureModel(this.httpClient),
                     LaharDeusTranslator,
@@ -271,7 +269,7 @@ export class WpsEffects {
                     FlooddamageTranslator
                 ];
                 products = [
-                    selectableVei, vei,
+                    selectableVei, vei, probability, ashfallVei,
                     ashfall,
                     direction, parameter, laharWms, laharShakemap,
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
@@ -287,11 +285,6 @@ export class WpsEffects {
             default:
                 throw new Error(`Unknown scenario ${scenario}`);
         }
-
-        // const resetProducts = products.map(prd => {return {
-        //     ...prd,
-        //     value: null
-        // }; });
 
         return [processes, products];
     }

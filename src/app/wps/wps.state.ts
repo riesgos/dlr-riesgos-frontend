@@ -1,6 +1,5 @@
-import { Process, Product, ProcessId, ImmutableProcess } from './wps.datatypes';
-import { ProductId } from 'projects/services-wps/src/public-api';
-import { Graph, alg } from 'graphlib';
+import { Product, ImmutableProcess } from './wps.datatypes';
+import { Graph } from 'graphlib';
 
 
 export type Scenario = string;
@@ -21,6 +20,13 @@ export interface WpsState {
 
 
 export const initialWpsState: WpsState = {
-    currentScenario: 'c1',
-    scenarioData: {}
+    currentScenario: 'none',
+    scenarioData: {
+        'none': {
+            scenario: 'none',
+            graph: new Graph(),
+            processStates: [],
+            productValues: []
+        }
+    }
 };

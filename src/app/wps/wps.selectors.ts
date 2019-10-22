@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { WpsState, WpsScenarioState } from './wps.state';
 import { ProductId, WpsData } from 'projects/services-wps/src/public-api';
-import { Product, Process, ProcessId } from './wps.datatypes';
+import { Product, Process, ProcessId, ImmutableProcess } from './wps.datatypes';
 import { ProductsProvided } from './wps.actions';
 import { isVectorLayerData, isBboxLayerData, isWmsData } from '../components/map/mappable_wpsdata';
 
@@ -87,7 +87,7 @@ export const getMapableProducts = createSelector(
 
 
 
-export const getProcessById = (id: ProcessId, processes: Process[]): Process => {
+export const getProcessById = (id: ProcessId, processes: ImmutableProcess[]): ImmutableProcess => {
     const process = processes.find(p => p.uid === id);
     if (process === undefined) {
         throw new Error(`Could not find process ${id}`);
@@ -104,7 +104,7 @@ export const getProductById = (id: ProductId, products: Product[]): Product => {
 };
 
 
-export const filterInputsForProcess = (process: Process, products: Product[]): Product[] => {
+export const filterInputsForProcess = (process: ImmutableProcess, products: Product[]): Product[] => {
     const filteredProducts = process.requiredProducts.map(pid => getProductById(pid, products));
     return filteredProducts;
 };

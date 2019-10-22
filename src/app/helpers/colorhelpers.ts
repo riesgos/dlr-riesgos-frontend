@@ -2,9 +2,9 @@
 
 export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
     const degree = (currentVal - startVal) / (endVal - startVal);
-    const degreeTop = Math.max(degree, 1);
-    const r = degree * 255;
-    const g = (1 - degree) * 255;
+    const degreeTop = Math.max(Math.min(degree, 1), 0);
+    const r = degreeTop * 255;
+    const g = (1 - degreeTop) * 255;
     const b = 125;
     return [r, g, b];
 }
@@ -31,4 +31,39 @@ export function toDecimalPlaces(value: number, decimalPlaces: number): string {
         case 'string':
             return parseFloat(value).toFixed(decimalPlaces);
     }
+}
+
+export function hueRange(startVal: number, startHue: number, endVal: number, endHue: number, currentVal: number): number {
+    const degree = (currentVal - startVal) / (endVal - startVal);
+    const degreeTop = Math.max(Math.min(degree, 1), 0);
+    const hue = degreeTop * (endHue - startHue) + startHue;
+    return hue;
+}
+
+export function HSVtoRGB(hsv: {h: number, s: number, v: number}): {r: number, g: number, b: number} {
+    const s = hsv.s;
+    const v = hsv.v;
+    const h = hsv.h;
+
+    let r;
+    let g;
+    let b;
+    const i = Math.floor(h * 6);
+    const f = h * 6 - i;
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+    return {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
+    };
 }

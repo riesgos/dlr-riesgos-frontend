@@ -67,7 +67,7 @@ export interface Process extends ImmutableProcess {
 }
 
 
-export const isProcess = (o: any): o is Process => {
+export const isImmutableProcess = (o: any): o is ImmutableProcess => {
     return o.hasOwnProperty('uid') &&  o.hasOwnProperty('requiredProducts') &&  o.hasOwnProperty('providedProduct');
 };
 

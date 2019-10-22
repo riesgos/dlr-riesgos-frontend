@@ -40,7 +40,7 @@ export const AshfallTranslator: AutorunningProcess = {
         }
     }
 
-}
+};
 
 
 export const ashfall: WpsData & Product & VectorLayerData = {
@@ -119,7 +119,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             'Ashfall Service',
             [ashfallVei.uid, probability.uid],
             [ashfall.uid],
-            'ashfall-service-id',
+            'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
             '',
             'http://riesgos.dlr.de/wps/WebProcessingService?',
             '1.0.0',

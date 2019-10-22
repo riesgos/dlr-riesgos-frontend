@@ -192,7 +192,7 @@ export class WorkflowControl {
 
     private getProcessOutpus(id: ProcessId): Product[] {
         const process = this.getProcess(id);
-        const productIds = process.requiredProducts;
+        const productIds = process.providedProducts;
         const products = productIds.map(prodId => this.getProduct(prodId));
         return products;
     }
@@ -389,12 +389,17 @@ export class WorkflowControl {
     }
 
     private toSimpleProcess(process: Process): ImmutableProcess {
+        // return {
+        //     uid: process.uid,
+        //     name: process.name,
+        //     providedProducts: process.providedProducts,
+        //     requiredProducts: process.requiredProducts,
+        //     state: process.state,
+        // };
+
+        // simply shallow copying
         return {
-            uid: process.uid,
-            name: process.name,
-            providedProducts: process.providedProducts,
-            requiredProducts: process.requiredProducts,
-            state: process.state,
+            ... process
         };
     }
 

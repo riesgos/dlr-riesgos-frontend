@@ -74,9 +74,10 @@ export interface Bardata {
 }
 
 export function createBarchart(
-    anchorSelector: any, data: Bardata[], width: number, height: number, xlabel: string, ylabel: string) {
+    anchorSelector: any, data: Bardata[], width: number, height: number, xlabel: string, ylabel: string,
+    xAxisAngle = 0, yAxisAngle = 0) {
 
-    const margins = { top: 30, right: 30, bottom: 50, left: 50 };
+    const margins = { top: 30, right: 30, bottom: 70, left: 50 };
 
     const anchor = d3.select(anchorSelector);
 
@@ -107,6 +108,13 @@ export function createBarchart(
         .attr('transform', `translate(0, ${height})`)
         .call(xAxisCallback);
 
+    xAxis.selectAll('text')
+        .attr('y', 0)
+        .attr('x', 9)
+        .attr('dy', '.35em')
+        .attr('transform', `rotate(${xAxisAngle})`)
+        .style('text-anchor', 'start');
+
     xAxis.append('text')
         .attr('class', 'axis-label')
         .attr('transform', `translate(${width / 2}, 30)`)
@@ -124,9 +132,16 @@ export function createBarchart(
         .attr('class', 'y-axis')
         .call(yAxisCallback);
 
+    yAxis.selectAll('text')
+        .attr('y', 0)
+        .attr('x', 9)
+        .attr('dy', '.35em')
+        .attr('transform', `rotate(${yAxisAngle})`)
+        .style('text-anchor', 'start');
+
     yAxis.append('text')
         .attr('class', 'axis-label')
-        .attr('transform', `translate(-30, ${height / 2})rotate(-90)`)
+        .attr('transform', `translate(-40, ${(height / 2) - 20})rotate(-90)`)
         .text(ylabel)
         .style('fill', 'black')
         .style('font-size', '14px');

@@ -132,6 +132,7 @@ export class TsService implements WizardableProcess, ExecutableProcess {
     uid = 'ts-service';
     name = 'TS-Service';
     state: ProcessState;
+    description = 'Simulates a tsunami based on the earlier selected earthquake-parameters.';
 
     wizardProperties = {
         providerName: 'Alfred Wegener Institute',
@@ -160,19 +161,21 @@ export class TsService implements WizardableProcess, ExecutableProcess {
         const outputsShkmp = outputs.filter(i => this.tsShakemapService.providedProducts.includes(i.uid));
 
         const proc1$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);
-        const proc2$ = this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting);
+        // const proc2$ = this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting);
 
-        return forkJoin(proc1$, proc2$).pipe(
-            map((results: Product[][]) => {
-                const flattened: Product[] = [];
-                for (const result of results) {
-                    for (const data of result) {
-                        flattened.push(data);
-                    }
-                }
-                return flattened;
-            })
-        );
+        return proc1$;
+
+        // return forkJoin(proc1$, proc2$).pipe(
+        //     map((results: Product[][]) => {
+        //         const flattened: Product[] = [];
+        //         for (const result of results) {
+        //             for (const data of result) {
+        //                 flattened.push(data);
+        //             }
+        //         }
+        //         return flattened;
+        //     })
+        // );
     }
 
 }

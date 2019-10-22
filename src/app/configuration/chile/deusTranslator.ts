@@ -1,7 +1,7 @@
 import { ExecutableProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
 import { fragilityRef } from './modelProp';
 import { shakemapXmlRefOutput } from './shakyground';
-import { exposureRef } from './assetmaster';
+import { exposureRef } from './exposure';
 
 /**
  * The Process 'DeusTranslator' serves as a helper: Deus expects it's inputs to have other ids than what the inputs really have.

@@ -52,15 +52,17 @@ export class LayerMarshaller  {
         for (const product of products) {
             obsables.push(this.toLayers(product));
         }
-        return forkJoin(...obsables).pipe(map((results: ProductLayer[][]) => {
-            const newLayers: ProductLayer[] = [];
-            for (const result of results) {
-                for (const layer of result) {
-                    newLayers.push(layer);
+        return forkJoin(...obsables).pipe(
+            map((results: ProductLayer[][]) => {
+                const newLayers: ProductLayer[] = [];
+                for (const result of results) {
+                    for (const layer of result) {
+                        newLayers.push(layer);
+                    }
                 }
-            }
-            return newLayers;
-        }));
+                return newLayers;
+            })
+        );
     }
 
 
@@ -218,18 +220,10 @@ export class LayerMarshaller  {
                             }
                         }
                     });
-                    // layer.crossOrigin = 'anonymous';
-                    if (description.styles) {
-                        layer.actions = [
-                            {title: 'switch style', icon: 'switch', action: (layer) => {
-                                console.log('switching style for layer', layer);
-                            }}
-                        ];
-                    }
                     layer.productId = uid;
 
-                    // @TODO: shakyground wms muss auch ACCESS-CONTROL-... mitgeben
-                    if (uid !== 'ShakygroundProcess_shakeMapFile_wms') { 
+                    // @TODO: warum funzt das fuer shakyground nicht?
+                    if (uid !== 'ShakygroundProcess_shakeMapFile_wms') {
                         layer['crossOrigin'] = 'anonymous';
                     }
 

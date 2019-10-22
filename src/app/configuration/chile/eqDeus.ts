@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { schema} from './assetmaster';
+import { schema} from './exposure';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from './deusTranslator';
@@ -12,16 +12,6 @@ import { HttpClient } from '@angular/common/http';
 
 
 
-// export const fragility: WpsData & Product = {
-//     uid: 'fragility',
-//     description: {
-//         id: 'fragility',
-//         reference: false,
-//         type: 'complex',
-//         format: 'application/json'
-//     },
-//     value: null
-// };
 
 export const loss: WpsData & Product = {
     uid: 'loss',
@@ -105,7 +95,7 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                     {label: '3', value: props['transitions']['n_buildings'][1]},
                     {label: '4', value: props['transitions']['n_buildings'][0]}
                 ];
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', '% buildings');
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', 'n. buildings');
                 return `<h4>Transitions ${props['name']}</h4>${anchor.innerHTML}`;
             }
         },

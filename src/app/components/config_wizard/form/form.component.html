@@ -6,14 +6,14 @@
             <ng-container [ngSwitch]="parameter.description.wizardProperties.fieldtype">
                 <div *ngSwitchCase="'string'">
                     <div class="clr-row">
-                        <div class="clr-col-10">
+                        <div class="clr-col-8">
                             <ukis-form-string-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter">
                             </ukis-form-string-field>
                         </div>
-                        <div class="clr-col-2" *ngIf="parameter.description.wizardProperties.description">
+                        <div class="clr-col-4" *ngIf="parameter.description.wizardProperties.signpost">
                             <clr-signpost>
                                 <clr-signpost-content *clrIfOpen>
-                                    <p [innerHTML]="parameter.description.wizardProperties.description | translate"></p>
+                                    <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
                                 </clr-signpost-content>
                             </clr-signpost>
                         </div>
@@ -21,15 +21,15 @@
                 </div>
                 <div *ngSwitchCase="'stringselect'">
                     <div class="clr-row">
-                        <div class="clr-col-10">
+                        <div class="clr-col-8">
                             <ukis-form-stringselect-field [control]="formGroup.get(parameter.uid)"
                                 [parameter]="parameter">
                             </ukis-form-stringselect-field>
                         </div>
-                        <div class="clr-col-2" *ngIf="parameter.description.wizardProperties.description">
+                        <div class="clr-col-4" *ngIf="parameter.description.wizardProperties.signpost">
                             <clr-signpost>
                                 <clr-signpost-content *clrIfOpen>
-                                    <p [innerHTML]="parameter.description.wizardProperties.description | translate"></p>
+                                    <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
                                 </clr-signpost-content>
                             </clr-signpost>
                         </div>
@@ -37,15 +37,15 @@
                 </div>
                 <div *ngSwitchCase="'select'">
                     <div class="clr-row">
-                        <div class="clr-col-10">
+                        <div class="clr-col-8">
                             <ukis-form-featureselect-field [control]="formGroup.get(parameter.uid)"
                                 [parameter]="parameter">
                             </ukis-form-featureselect-field>
                         </div>
-                        <div class="clr-col-2" *ngIf="parameter.description.wizardProperties.description">
+                        <div class="clr-col-4" *ngIf="parameter.description.wizardProperties.signpost">
                             <clr-signpost>
                                 <clr-signpost-content *clrIfOpen>
-                                    <p [innerHTML]="parameter.description.wizardProperties.description | translate"></p>
+                                    <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
                                 </clr-signpost-content>
                             </clr-signpost>
                         </div>
@@ -53,14 +53,14 @@
                 </div>
                 <div *ngSwitchCase="'bbox'">
                     <div class="clr-row">
-                        <div class="clr-col-10">
+                        <div class="clr-col-8">
                             <ukis-form-bbox-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter">
                             </ukis-form-bbox-field>
                         </div>
-                        <div class="clr-col-2" *ngIf="parameter.description.wizardProperties.description">
+                        <div class="clr-col-4" *ngIf="parameter.description.wizardProperties.signpost">
                             <clr-signpost>
                                 <clr-signpost-content *clrIfOpen>
-                                    <p [innerHTML]="parameter.description.wizardProperties.description | translate"></p>
+                                    <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
                                 </clr-signpost-content>
                             </clr-signpost>
                         </div>
@@ -68,14 +68,14 @@
                 </div>
                 <div *ngSwitchDefault>
                     <div class="clr-row">
-                        <div class="clr-col-10">
+                        <div class="clr-col-8">
                             <ukis-form-string-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter">
                             </ukis-form-string-field>
                         </div>
-                        <div class="clr-col-2" *ngIf="parameter.description.wizardProperties.description">
+                        <div class="clr-col-4" *ngIf="parameter.description.wizardProperties.signpost">
                             <clr-signpost>
                                 <clr-signpost-content *clrIfOpen>
-                                    <p [innerHTML]="parameter.description.wizardProperties.description | translate"></p>
+                                    <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
                                 </clr-signpost-content>
                             </clr-signpost>
                         </div>

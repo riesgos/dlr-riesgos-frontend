@@ -1,8 +1,9 @@
 import { ExecutableProcess, ProcessStateUnavailable, Product, ProcessState } from 'src/app/wps/wps.datatypes';
 import { Observable, forkJoin } from 'rxjs';
-import { ExposureModel } from './assetmaster';
-import { VulnerabilityModel } from './modelProp';
+import { lonmin, lonmax, latmin, latmax, assettype, schema, querymode, exposureRef, ExposureModel } from './exposure';
+import { assetcategory, losscategory, taxonomies, fragilityRef, VulnerabilityModel } from './modelProp';
 import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WpsClient, WpsData } from 'projects/services-wps/src/public-api';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 

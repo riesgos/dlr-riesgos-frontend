@@ -5,6 +5,27 @@
     "e1": "Ecuador",
 
 
+    "Showcase Chile": "Valparaíso region",
+    "Showcase Ecuador": "Quito / Cotopaxi region",
+    "Showcase Peru": "Metropolitan Lima",
+
+    "TS-Service": "Tsunami Simulation",
+
+    "Exposure (extended)": "Exposure",
+    "Multihazard damage estimation / EQ": "Earthquake damage",
+    "Multihazard damage estimation / TS": "Tsunami damage",
+
+    "arrivalTimes": "Arrival times",
+    "epiCenter": "Epicenter",
+    "mwh": "Maximum wave-height",
+    "mwhLand": "Maximum wave-height land",
+    "primary tif": "Shakemap",
+
+    "How to use this site ...": "The configuration wizard on the left side of the screen contains a list of all processes that you will step through in order. Processes are colored according to their current state. If a process requires you to make decisions about inputs, these can be entered in a form. When you are content with your selection, hit 'run' to execute the process.",
+    "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'Additional layers'",
+
+    "etype": "subcategory",
+
     "Unavailable": "Downstream",
     "Available": "Ready",
     "This process can not be configured yet.": "This process still requires inputs from upstream."

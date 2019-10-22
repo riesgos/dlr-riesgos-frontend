@@ -1,32 +1,41 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
-import { StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { VectorLayerData, BboxLayerData } from 'src/app/components/map/mappable_wpsdata';
+import {
+    StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct,
+    BboxUconfPD
+} from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { VectorLayerData, BboxLayerData, BboxLayerDescription } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from 'projects/services-wps/src/public-api';
+import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps/src/public-api';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 
 
-export const inputBoundingbox: BboxUconfProduct & BboxLayerData & WpsData = {
-    uid: 'user_input-boundingbox',
-    description: {
-        id: 'input-boundingbox',
-        name: 'eq-selection: boundingbox',
-        type: 'bbox',
-        reference: false,
-        description: 'Please select an area of interest',
-        defaultValue: {
-            crs: 'EPSG:4326',
-            lllon: -73.5, lllat: -34,
-            urlon: -70.5, urlat: -29.0
+export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsData {
+    description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
+    value: WpsBboxValue;
+    uid = 'user_input-boundingbox';
+
+    constructor() {
+        this.description = {
+            id: 'input-boundingbox',
+            name: 'eq-selection: boundingbox',
+            type: 'bbox',
+            reference: false,
+            defaultValue: {
+                crs: 'EPSG:4326',
+                lllon: -73.5, lllat: -34,
+                urlon: -70.5, urlat: -29.0
+            },
+            wizardProperties: {
+                name: 'AOI',
+                fieldtype: 'bbox',
+                description: 'Please select an area of interest',
+                signpost: 'You can also select a boundingbox by clicking and dragging on the map.'
+            },
         },
-        wizardProperties: {
-            name: 'AOI',
-            fieldtype: 'bbox',
-            description: 'You can also select a boundingbox by clicking and dragging on the map.'
-        },
-    },
-    value: null
-};
+        this.value = null;
+    }
+}
 
 export const mmin: StringUconfProduct & WpsData = {
     uid: 'user_mmin',
@@ -36,8 +45,8 @@ export const mmin: StringUconfProduct & WpsData = {
         wizardProperties: {
             name: 'mmin',
             fieldtype: 'string',
+            description: 'minimum magnitude',
         },
-        description: 'minimum magnitude',
         reference: false,
         defaultValue: '6.0',
     },
@@ -53,8 +62,8 @@ export const mmax: StringUconfProduct & WpsData = {
         wizardProperties: {
             name: 'mmax',
             fieldtype: 'string',
+            description: 'maximum magnitude',
         },
-        description: 'maximum magnitude',
         reference: false,
         defaultValue: '9.0',
     },
@@ -66,12 +75,12 @@ export const zmin: StringUconfProduct & WpsData = {
     uid: 'user_zmin',
     description: {
         id: 'zmin',
-        description: 'minimum depth',
         defaultValue: '0',
         type: 'literal',
         wizardProperties: {
             name: 'zmin',
             fieldtype: 'string',
+            description: 'minimum depth',
         },
         reference: false
     },
@@ -82,11 +91,11 @@ export const zmax: StringUconfProduct & WpsData = {
     uid: 'user_zmax',
     description: {
         id: 'zmax',
-        description: 'maximum depth',
         defaultValue: '100',
         type: 'literal',
         wizardProperties: {
             name: 'zmax',
+            description: 'maximum depth',
             fieldtype: 'string',
         },
         reference: false
@@ -102,9 +111,9 @@ export const p: Product & WpsData = {
         description: 'p',
         type: 'literal',
         reference: false,
-        defaultValue: '0.1',
+        defaultValue: '0.0',
     },
-    value: '0.1'
+    value: '0.0'
 };
 
 
@@ -121,43 +130,35 @@ export const etype: StringSelectUconfProduct & WpsData = {
             fieldtype: 'stringselect'
         },
         options: [
-                // 'deaggregation', 'observed', 'stochastic',  <--- deactivated
-                'expert']
+            // 'deaggregation', 'observed', 'stochastic',  <--- deactivated
+            'expert']
     },
     value: null
 };
 
-export const tlon: StringUconfProduct & WpsData = {
+export const tlon: Product & WpsData = {
     uid: 'user_tlon',
     description: {
         id: 'tlon',
         description: 'longitude [decimal degrees]',
-        defaultValue: '5.00',
+        defaultValue: '-71.5',
         reference: false,
-        wizardProperties: {
-            name: 'tlon',
-            fieldtype: 'string',
-        },
         type: 'literal'
     },
-    value: null
+    value: '-71.5'
 };
 
 
-export const tlat: StringUconfProduct & WpsData = {
+export const tlat: Product & WpsData = {
     uid: 'user_tlat',
     description: {
         id: 'tlat',
         description: 'latitude [decimal degrees]',
-        defaultValue: '-35.00',
+        defaultValue: '-33.1',
         reference: false,
-        wizardProperties: {
-            name: 'tlat',
-            fieldtype: 'string',
-        },
         type: 'literal'
     },
-    value: null
+    value: '-33.1'
 };
 
 
@@ -175,9 +176,11 @@ export const selectedEqs: VectorLayerData & WpsData = {
             text: (properties) => {
                 let text = `<h3>Available earthquakes</h3>`;
                 const selectedProperties = {
+                    Magnitude: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    Depth: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' m',
+                    // Latitude: toDecimalPlaces(1, 1),
+                    // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],
-                    Magnitude: Math.round(properties['magnitude.mag.value'] * 100) / 100,
-                    Depth: Math.round(properties['origin.depth.value'] * 100) / 100 + ' m'
                 };
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {
@@ -204,10 +207,10 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
         super(
             'Quakeledger',
             'Earthquake Catalogue',
-            [inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid),
+            ['user_input-boundingbox'].concat([mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid)),
             [selectedEqs.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
-            'Catalogue of historical earthquakes.',
+            'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,

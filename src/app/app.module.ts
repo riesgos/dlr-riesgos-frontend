@@ -7,7 +7,7 @@ import { UkisComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
-import { reducers, effects } from './ngrx_register';
+import { reducers, effects, State } from './ngrx_register';
 import { EffectsModule } from '@ngrx/effects';
 import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
 import { GlobalFooterComponent } from './components/global-footer/global-footer.component';
@@ -24,7 +24,6 @@ import { FormComponent } from './components/config_wizard/form/form.component';
 import { FormFeatureSelectFieldComponent } from './components/config_wizard/form-featureselect-field/form-featureselect-field.component';
 import { FormStringFieldComponent } from './components/config_wizard/form-string-field/form-string-field.component';
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
-import { FeatureTablesModule } from 'projects/feature-tables/src/public_api';
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
 import { MapOlModule } from '@ukis/map-ol';
@@ -46,6 +45,8 @@ import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/b
 import { RouteDocumentationComponent } from './route-components/route-documentation/route-documentation.component';
 import { ReadMoreComponent } from './components/read-more/read-more.component';
 import { Action } from '@ngrx/store';
+import { TextModalComponent } from './components/text-modal/text-modal.component';
+import { HelpersModule } from '@ukis/helpers/src/public-api';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { Action } from '@ngrx/store';
     ShowgraphComponent,
     BboxfieldComponent,
     RouteDocumentationComponent,
-    ReadMoreComponent
+    ReadMoreComponent,
+    TextModalComponent
   ],
   imports: [
     BrowserModule,
@@ -88,30 +90,14 @@ import { Action } from '@ngrx/store';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FeatureTablesModule,
-    StoreDevtoolsModule.instrument({
-      maxAge: 10, // Retains last 25 states
-      logOnly: environment.production, // Restrict extension to log-only mode
-      actionSanitizer: (action: Action, id: number) => {
-        if (action['payload']) {
-          return {
-            ... action,
-            payload: 'some payload'
-          };
-        }
-        return action;
-      },
-      stateSanitizer: (state: any, id: number) => {
-        return 'somestate';
-      },
-    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/translations/', '.json'),
         deps: [HttpClient]
       }
-    })
+    }),
+    HelpersModule
   ],
   providers: [
     AlertService, FooterService, ProgressService, LayerMarshaller,

@@ -1,9 +1,8 @@
 import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import { StringSelectUconfProduct, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { schema } from './assetmaster';
 import { HttpClient } from '@angular/common/http';
+import { schema } from './exposure';
 
 
 
@@ -42,7 +41,7 @@ export const taxonomies: Product & WpsData = {
 
 
 export const fragilityRef: WpsData & Product = {
-    uid: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess_selectedRows',
+    uid: 'ModelpropProcess_Fragility',
     description: {
       id: 'selectedRows',
       type: 'complex',

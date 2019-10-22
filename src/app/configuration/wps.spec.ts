@@ -6,12 +6,12 @@ import { HttpClient, HttpXhrBackend, HttpHandler, XhrFactory } from '@angular/co
 import { ProductsProvided, ScenarioChosen, ClickRunProcess } from '../wps/wps.actions';
 import { getProcessStates, getProducts, getProduct, getCurrentScenarioWpsState } from '../wps/wps.selectors';
 import {
-  QuakeLedger, inputBoundingbox, mmin, mmax, zmin, zmax, p,
+  QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p,
   etype, tlon, tlat, selectedEqs
 } from './chile/quakeledger';
 import { debounceTime, map, filter, switchMap } from 'rxjs/operators';
 import { Product, Process } from '../wps/wps.datatypes';
-import { schema, ExposureModel, lonmin, lonmax, latmin, latmax, querymode, assettype, exposureRef } from './chile/assetmaster';
+import { schema, ExposureModel, lonmin, lonmax, latmin, latmax, querymode, assettype, exposureRef } from './chile/exposure';
 import { assetcategory, losscategory, taxonomies, VulnerabilityModel, fragilityRef } from './chile/modelProp';
 import { Observable } from 'rxjs';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from './chile/shakyground';
@@ -55,7 +55,7 @@ fdescribe('WPS-service integration', () => {
   it('EQ-service should work as expected', (done) => {
 
     const inputs = [
-      inputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat
+      InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat
     ].map(i => {
       return {
         ...i,

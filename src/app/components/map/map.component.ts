@@ -10,7 +10,7 @@ import { osm, esri_world_imagery } from '@ukis/base-layers-raster';
 import { MapOlService } from '@ukis/map-ol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getMapableProducts, getScenario, getGraph } from 'src/app/wps/wps.selectors';
+import { getMapableProducts, getScenario, getGraph, getProducts } from 'src/app/wps/wps.selectors';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -20,12 +20,13 @@ import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@uki
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
 import { ProductLayer } from './map.types';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, map, withLatestFrom, switchMap } from 'rxjs/operators';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -40,8 +41,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
     private geoJson = new GeoJSON();
     private interactionState: BehaviorSubject<InteractionState>;
-    private graph: BehaviorSubject<Graph>;
-    private currentOverlays: ProductLayer[];
     private subs: Subscription[] = [];
 
     constructor(
@@ -49,10 +48,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         public mapSvc: MapOlService,
         private store: Store<State>,
         private layerMarshaller: LayerMarshaller,
-        public layersSvc: LayersService,
+        public layersSvc: LayersService
     ) {
         this.controls = { attribution: true, scaleLine: true };
-        this.currentOverlays = [];
     }
 
 
@@ -67,43 +65,56 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         this.subs.push(sub1);
 
-        // listening for changes in graph
-        this.graph = new BehaviorSubject<Graph>(null);
-        const sub2 = this.store.pipe(select(getGraph)).subscribe((graph: Graph) => {
-            this.graph.next(graph);
+        // listening for focus-change
+        const sub2 = this.store.pipe(
+            select(getFocussedProcessId),
+            withLatestFrom(
+                this.store.pipe(select(getGraph)),
+                this.layersSvc.getOverlays()
+            ),
+        ).subscribe(([focussedProcessId, graph, currentOverlays]: [string, Graph, Layer[]]) => {
+            if (focussedProcessId !== 'some initial focus') {
+                const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
+                const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
+                for (const layer of currentOverlays) {
+                    if (inputs.includes((layer as ProductLayer).productId) || outputs.includes((layer as ProductLayer).productId)) {
+                        layer.opacity = 0.6;
+                    } else {
+                        layer.opacity = 0.2;
+                    }
+                    this.layersSvc.updateLayer(layer, 'Overlays');
+                }
+            }
         });
         this.subs.push(sub2);
 
-        // listening for focus-change
-        const sub3 = this.store.pipe(select(getFocussedProcessId)).subscribe((focussedProcessId: string) => {
-            const graph = this.graph.getValue();
-            const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
-            const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
-
-            for (const layer of this.currentOverlays) {
-                if (inputs.includes(layer.productId) || outputs.includes(layer.productId)) {
-                    layer.opacity = 0.6;
-                } else {
-                    layer.opacity = 0.2;
-                }
-                this.layersSvc.updateLayer(layer, 'Overlays');
-            }
-        });
-        this.subs.push(sub3);
-
         // listening for products that can be displayed in the map
-        const sub4 = this.store.pipe(
+        const sub3 = this.store.pipe(
             select(getMapableProducts),
-            mergeMap((products: Product[]) => {
-                console.log('the following products can now be displayed on the map', products);
+
+            // translate to layers
+            switchMap((products: Product[]) => {
                 return this.layerMarshaller.productsToLayers(products);
+            }),
+
+            // keep user's visibility-settings
+            withLatestFrom(this.layersSvc.getOverlays()),
+            map(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
+                for (const oldLayer of oldOverlays) {
+                    const newLayer = newOverlays.find(nl => nl.productId === oldLayer.productId);
+                    if (newLayer) {
+                        newLayer.visible = oldLayer.visible;
+                    }
+                }
+                return newOverlays;
             })
+
+        // add to map
         ).subscribe((newOverlays: ProductLayer[]) => {
-            this.currentOverlays = newOverlays;
             this.layersSvc.removeOverlays();
             newOverlays.map(l => this.layersSvc.addLayer(l, l.filtertype));
         });
-        this.subs.push(sub4);
+        this.subs.push(sub3);
 
 
         // adding dragbox interaction and hooking it into the store

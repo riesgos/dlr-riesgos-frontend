@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 export interface WizzardProperties {
-    shape: 'dot-circle' | 'earthquake' | 'avalance' | 'tsunami' | 'volcanoe' | 'critical_infrastructure' | 'vulnerability' | 'exposure';
+    shape: 'dot-circle' | 'earthquake' | 'avalance' | 'tsunami' | 'volcanoe' | 'critical_infrastructure' | 'vulnerability' | 'exposure' | 'bolt' | 'flame' | 'bullseye' | 'target' | 'router' | 'building';
     providerName: string;
     providerUrl: string;
 }

@@ -1,14 +1,14 @@
 <clr-select-container>
     
   <label class="clr-col-md-3">
-    {{parameter.description.wizardProperties.name}}:
+    {{parameter.description.wizardProperties.name | translate}}:
   </label>
 
   <select class="clr-col-md-9" [formControl]="control" clrSelect>
       <option *ngFor="let str of options" [value]="str">{{str}}</option>
   </select>
 
-  <clr-control-helper>{{parameter.description.description}}</clr-control-helper>
+  <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
   <clr-control-error>Invalid input</clr-control-error>
 
 </clr-select-container>

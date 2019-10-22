@@ -9,7 +9,8 @@ export interface StringUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'string',
-        description?: string
+        description?: string,
+        signpost?: string,
     };
     defaultValue: string;
 }
@@ -18,7 +19,8 @@ export interface StringSelectUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'stringselect',
-        description?: string
+        description?: string,
+        signpost?: string,
     };
     options: string[];
     defaultValue: string;
@@ -28,7 +30,8 @@ export interface BboxUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'bbox',
-        description?: string
+        description?: string,
+        signpost?: string,
     };
     defaultValue: any;
 }
@@ -41,9 +44,10 @@ export interface FeatureSelectUconfPD extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'select',
-        description?: string
+        description?: string,
+        signpost?: string,
     };
-    options: {[key: string]: any};
+    options: {[key: string]: FeatureCollection};
     defaultValue: [FeatureCollection];
 }
 

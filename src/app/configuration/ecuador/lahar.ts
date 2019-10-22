@@ -1,5 +1,5 @@
 import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public-api';
@@ -22,18 +22,13 @@ export const direction: StringSelectUconfProduct & WpsData = {
     value: null
 };
 
-export const intensity: StringSelectUconfProduct & WpsData = {
-    uid: 'user_intensity',
+export const vei: Product & WpsData = {
+    uid: 'intensity',
     description: {
         id: 'intensity',
         reference: false,
         type: 'literal',
-        options: ['VEI1', 'VEI2', 'VEI3', 'VEI4'],
         defaultValue: 'VEI1',
-        wizardProperties: {
-            fieldtype: 'stringselect',
-            name: 'intensity',
-        }
     },
     value: null
 };
@@ -49,7 +44,7 @@ export const parameter: StringSelectUconfProduct & WpsData = {
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'parameter',
-            description: `
+            signpost: `
             <ol>
                 <li>MaxHeight [m]: Maximum flow height, that the lahar can reach during the event</li>
                 <li>MaxVelocity [m/s]: Maximum flow velocity, that the lahar can reach during the event</li>
@@ -65,9 +60,9 @@ export const parameter: StringSelectUconfProduct & WpsData = {
 
 
 export const laharWms: WmsLayerData & WpsData = {
-    uid: 'gs:LaharModel_result',
+    uid: 'lahar_wms',
     description: {
-        id: 'result',
+        id: 'wms',
         name: 'laharWms',
         type: 'literal',  // this is deliberate. layer-wps returns this value as a litteral, not as a complex.
         reference: false,
@@ -76,6 +71,17 @@ export const laharWms: WmsLayerData & WpsData = {
     value: null
 };
 
+
+export const laharShakemap: Product & WpsData = {
+    uid: 'lahar_shakemap',
+    description: {
+        id: 'shakemap',
+        format: 'application/xml',
+        reference: false,
+        type: 'literal'
+    },
+    value: null,
+};
 
 
 export class LaharWps extends WpsProcess implements WizardableProcess {

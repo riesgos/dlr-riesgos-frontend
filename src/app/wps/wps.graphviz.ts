@@ -64,7 +64,7 @@ export function toGraphviz(wfc: WorkflowControl): string {
 
     lines.push('digraph G {');
 
-    for (let process of wfc.getProcesses()) {
+    for (let process of wfc.getImmutableProcesses()) {
         const attrs = attrsFromProcessStateTypes(process.state.type);
         attrs.push("shape=box");
         attrs.push('label="' + process.name + '"');

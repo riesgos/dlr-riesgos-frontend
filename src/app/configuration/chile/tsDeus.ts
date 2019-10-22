@@ -3,7 +3,7 @@ import { WpsData } from '@ukis/services-wps/src/public-api';
 import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
-import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { loss, eqUpdatedExposure, eqDamage } from './eqDeus';
 import { schema } from './exposure';
 import { fragilityRefDeusInput } from './deusTranslator';
@@ -166,7 +166,7 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
 
 export class TsDeus extends WpsProcess implements WizardableProcess {
 
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
         super(

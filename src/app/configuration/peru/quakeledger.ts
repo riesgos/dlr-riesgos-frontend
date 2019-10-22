@@ -1,10 +1,11 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess } from '../../wps/wps.datatypes';
 import { UserconfigurableProduct, StringSelectUconfProduct, BboxUconfProduct, BboxUconfPD } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData, BboxLayerDescription } from 'src/app/components/map/mappable_wpsdata';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable, of } from 'rxjs';
 import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps/src/public-api';
 import { selectedEqs, mmin, mmax, zmin, zmax, p, etype, tlon, tlat } from '../chile/quakeledger';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -79,21 +80,28 @@ export const tlatPeru: Product & WpsData = {
     value: '-12.00'
 };
 
+export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
 
-export const QuakeLedgerPeru: WizardableProcess & ExecutableProcess = {
-    state: new ProcessStateUnavailable(),
-    uid: 'Quakeledger Peru',
-    name: 'Earthquake Catalogue',
-    requiredProducts: [mmin, mmax, zmin, zmax, p, etypePeru, tlonPeru, tlatPeru].map(prd => prd.uid).concat(['user_input-boundingbox_peru']),
-    providedProducts: [selectedEqs.uid],
-    wizardProperties: {
-        shape: 'earthquake',
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/'
-    },
-    description: 'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
-    id: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
-    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?',
-    wpsVersion: '1.0.0'
+    wizardProperties: WizardProperties;
 
-};
+    constructor(http: HttpClient) {
+        super(
+            'Quakeledger Peru',
+            'Earthquake Catalogue',
+            [mmin, mmax, zmin, zmax, p, etypePeru, tlonPeru, tlatPeru].map(prd => prd.uid).concat(['user_input-boundingbox_peru']),
+            [selectedEqs.uid],
+            'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
+            'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
+            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable(),
+        );
+        this.wizardProperties = {
+            shape: 'earthquake',
+            providerName: 'Helmholtz Centre Potsdam',
+            providerUrl: 'https://www.gfz-potsdam.de/en/'
+        };
+    }
+
+}

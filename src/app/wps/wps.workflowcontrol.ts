@@ -1,6 +1,6 @@
 import { Process, Product, ProcessId, ProcessState, isAutorunningProcess,
     ProcessStateRunning, ProcessStateCompleted, ProcessStateError, ProcessStateTypes,
-    ProcessStateUnavailable, ProcessStateAvailable, isExecutableProcess, ExecutableProcess } from './wps.datatypes';
+    ProcessStateUnavailable, ProcessStateAvailable, isExecutableProcess, ExecutableProcess, ImmutableProcess } from './wps.datatypes';
 import { Graph, alg } from 'graphlib';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -37,7 +37,7 @@ export class WorkflowControl {
     }
 
 
-    execute(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
+    public execute(id: ProcessId, doWhileRequesting?: (response: any, counter: number) => void): Observable<boolean> {
         const process = this.getProcess(id);
         if (isExecutableProcess(process)) {
             return this.doExecute(id, doWhileRequesting);
@@ -79,7 +79,11 @@ export class WorkflowControl {
 
     }
 
-    getProcesses(ids?: ProcessId[]): Process[] {
+    public getImmutableProcesses(ids?: ProcessId[]): ImmutableProcess[] {
+        return this.getProcesses(ids).map(proc => this.toSimpleProcess(proc));
+    }
+
+    private getProcesses(ids?: ProcessId[]): Process[] {
         if (!ids) {
             return this.processes;
         } else {
@@ -88,7 +92,7 @@ export class WorkflowControl {
     }
 
 
-    getProducts(ids?: string[]): Product[] {
+    public getProducts(ids?: string[]): Product[] {
         if (!ids) {
             return this.products;
         } else {
@@ -96,12 +100,12 @@ export class WorkflowControl {
         }
     }
 
-    getGraph(): Graph {
+    public getGraph(): Graph {
         return this.graph;
     }
 
 
-    provideProduct(id: string, value: any): void {
+    public provideProduct(id: string, value: any): void {
         // @TODO: providing a new input-product to an already completed processes should set its state back to available.
 
         // set new value
@@ -122,24 +126,24 @@ export class WorkflowControl {
     }
 
 
-    getActiveProcesses(): Process[] {
-        return this.processes.filter(p => p.state.type === ProcessStateTypes.available);
+    public getActiveProcesses(): ImmutableProcess[] {
+        return this.processes.filter(p => p.state.type === ProcessStateTypes.available).map(proc => this.toSimpleProcess(proc));
     }
 
 
-    getActiveProcess(): Process | undefined {
-        return this.processes.find(p => p.state.type === ProcessStateTypes.available);
+    public getActiveProcess(): ImmutableProcess | undefined {
+        return this.toSimpleProcess(this.processes.find(p => p.state.type === ProcessStateTypes.available));
     }
 
 
-    getNextActiveChildProcess(id: ProcessId): Process | undefined {
+    public getNextActiveChildProcess(id: ProcessId): ImmutableProcess | undefined {
         const productIds: string[] = this.graph.outEdges(id).map(edge => edge.w);
         for (const productId of productIds) {
             const childProcessIds: ProcessId[] = this.graph.outEdges(productId).map(edge => edge.w);
             for (const childProcessId of childProcessIds) {
                 const childProcess = this.getProcess(childProcessId);
                 if (childProcess.state.type === ProcessStateTypes.available) {
-                    return childProcess;
+                    return this.toSimpleProcess(childProcess);
                 }
             }
         }
@@ -161,7 +165,7 @@ export class WorkflowControl {
     }
 
 
-    invalidateProcess(id: ProcessId): void {
+    public invalidateProcess(id: ProcessId): void {
 
         const outputEdges = this.graph.outEdges(id);
         for (const outputEdge of outputEdges) {
@@ -203,7 +207,15 @@ export class WorkflowControl {
     }
 
 
-    public getProcess(id: ProcessId): Process {
+    public getImmutableProcess(id: ProcessId): ImmutableProcess {
+        const process = this.processes.find(p => p.uid === id);
+        if (!process) {
+            throw new Error(`no such process: ${id}`);
+        }
+        return this.toSimpleProcess(process);
+    }
+
+    private getProcess(id: ProcessId): Process {
         const process = this.processes.find(p => p.uid === id);
         if (!process) {
             throw new Error(`no such process: ${id}`);
@@ -367,6 +379,16 @@ export class WorkflowControl {
         }
 
         return duplicates;
+    }
+
+    private toSimpleProcess(process: Process): ImmutableProcess {
+        return {
+            uid: process.uid,
+            name: process.name,
+            providedProducts: process.providedProducts,
+            requiredProducts: process.requiredProducts,
+            state: process.state,
+        };
     }
 
 }

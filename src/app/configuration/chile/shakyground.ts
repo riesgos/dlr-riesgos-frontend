@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
-import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { selectedEq } from './eqselection';
@@ -33,7 +33,7 @@ export const shakemapXmlRefOutput: WpsData & Product = {
 
 export class Shakyground extends WpsProcess implements WizardableProcess {
 
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
         super(

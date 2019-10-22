@@ -2,7 +2,7 @@ import { ExecutableProcess, ProcessStateUnavailable, Product, ProcessState } fro
 import { Observable, forkJoin } from 'rxjs';
 import { lonmin, lonmax, latmin, latmax, assettype, schema, querymode, exposureRef, ExposureModel } from './exposure';
 import { assetcategory, losscategory, taxonomies, fragilityRef, VulnerabilityModel } from './modelProp';
-import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsClient, WpsData } from 'projects/services-wps/src/public-api';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -19,7 +19,7 @@ export class VulnerabilityAndExposure implements ExecutableProcess, WizardablePr
     private exposureModel: ExposureModel;
     readonly requiredProducts: string[];
     readonly providedProducts: string[];
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
     readonly state: ProcessState;
 
     constructor(private httpClient: HttpClient) {

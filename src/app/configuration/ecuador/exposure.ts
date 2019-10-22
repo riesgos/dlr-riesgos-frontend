@@ -1,7 +1,8 @@
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WpsData } from '@ukis/services-wps/src/public-api';
 import { exposureRef } from '../chile/exposure';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -89,22 +90,28 @@ export const querymodeEcuador: Product & WpsData = {
 };
 
 
+export class LaharExposureModel extends WpsProcess implements WizardableProcess {
 
+  wizardProperties: WizardProperties;
 
-export const LaharExposureModel: WizardableProcess & WpsProcess = {
-    uid: 'LaharExposure',
-    id: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-    url: 'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-    wpsVersion: '1.0.0',
-    name: 'Lahar exposure model',
-    description: '',
-    requiredProducts: [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador,
-        querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
-    providedProducts: [exposureRef.uid],
-    wizardProperties: {
+  constructor(http: HttpClient) {
+    super(
+      'LaharExposure',
+      'Lahar exposure model',
+      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
+      [exposureRef.uid],
+      'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
+      '',
+      'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+      '1.0.0',
+      http,
+      new ProcessStateUnavailable()
+    );
+    this.wizardProperties = {
         shape: 'building',
         providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/'
-    },
-    state: new ProcessStateUnavailable()
-};
+    };
+  }
+
+}

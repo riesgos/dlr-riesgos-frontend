@@ -1,6 +1,6 @@
 import { WizardPageComponent } from 'src/app/components/config_wizard/wizard-page/wizard-page.component';
 import { WpsProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
-import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
@@ -42,7 +42,7 @@ export const damageBuildings: WpsData & Product = {
 
 export class FlooddamageProcess extends WpsProcess implements WizardableProcess {
     
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
         super(

@@ -1,4 +1,4 @@
-import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { HttpClient } from '@angular/common/http';
@@ -54,7 +54,7 @@ export const fragilityRef: WpsData & Product = {
 
 export class VulnerabilityModel extends WpsProcess implements WizardableProcess {
 
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
         super(

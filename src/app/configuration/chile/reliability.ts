@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { vei } from '../ecuador/lahar';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
@@ -108,7 +108,7 @@ export const damage_consumer_areas: WpsData & Product & VectorLayerData = {
 
 export class Reliability extends WpsProcess implements WizardableProcess {
 
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
         super(

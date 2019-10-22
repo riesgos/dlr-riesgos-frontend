@@ -54,7 +54,7 @@ export class WpsEffects {
             const [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
 
             this.wfc = new WorkflowControl(procs, prods);
-            const processes = this.wfc.getProcesses();
+            const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
 
@@ -82,7 +82,7 @@ export class WpsEffects {
             }
 
             this.wfc = new WorkflowControl(procs, prods);
-            const processes = this.wfc.getProcesses();
+            const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
 
@@ -99,7 +99,7 @@ export class WpsEffects {
             for (const product of action.payload.products) {
                 this.wfc.provideProduct(product.uid, product.value);
             }
-            const processes = this.wfc.getProcesses();
+            const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
             return new WpsDataUpdate({processes, products, graph});
@@ -122,7 +122,7 @@ export class WpsEffects {
                 (response, counter) => {
                     if (counter < 1) {
                         this.store$.dispatch(new WpsDataUpdate({
-                            processes: this.wfc.getProcesses(),
+                            processes: this.wfc.getImmutableProcesses(),
                             products: this.wfc.getProducts(),
                             graph: this.wfc.getGraph()
                         }));
@@ -134,7 +134,7 @@ export class WpsEffects {
         mergeMap(([success, processId]: [boolean, string]) => {
             const actions: Action[] = [];
 
-            const processes = this.wfc.getProcesses();
+            const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
             const wpsUpdate = new WpsDataUpdate({processes, products, graph});
@@ -162,7 +162,7 @@ export class WpsEffects {
         map((action: RestartingFromProcess) => {
 
             this.wfc.invalidateProcess(action.payload.process.uid);
-            const processes = this.wfc.getProcesses();
+            const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
             return new WpsDataUpdate({processes, products, graph});
@@ -232,12 +232,12 @@ export class WpsEffects {
             case 'p1':
                 processes = [
                     new VulnerabilityAndExposure(this.httpClient),
-                    QuakeLedgerPeru,
+                    new QuakeLedgerPeru(this.httpClient),
                     EqSelection,
-                    Shakyground,
+                    new Shakyground(this.httpClient),
                     DeusTranslator,
                     // Deus,
-                    FakeDeus,
+                    new FakeDeus(this.httpClient),
                     TsServiceTranslator,
                     // new TsService(this.httpClient),
                     // Reliability
@@ -259,12 +259,12 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     VeiProvider,
-                    AshfallService,
+                    new AshfallService(this.httpClient),
                     new LaharWps(this.httpClient),
                     new LaharVulnerabilityModel(this.httpClient),
                     new LaharExposureModel(this.httpClient),
                     LaharDeusTranslator,
-                    LaharDeus,
+                    new LaharDeus(this.httpClient),
                     geomerFlood,
                     geomerFloodWcsProvider,
                     new FlooddamageProcess(this.httpClient),

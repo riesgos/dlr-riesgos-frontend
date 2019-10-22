@@ -1,4 +1,4 @@
-import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
@@ -86,13 +86,13 @@ export const laharShakemap: Product & WpsData = {
 
 export class LaharWps extends WpsProcess implements WizardableProcess {
 
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
         super(
             'LaharModel',
             'Lahar',
-            [direction, intensity, parameter].map(p => p.uid),
+            [direction, vei, parameter].map(p => p.uid),
             [laharWms.uid],
             'gs:LaharModel',
             'The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.',

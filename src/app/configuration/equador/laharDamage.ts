@@ -2,7 +2,7 @@ import { AutorunningProcess, ProcessStateUnavailable, Product } from 'src/app/wp
 import { fragilityRef, VulnerabilityModel } from '../chile/modelProp';
 import { fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../chile/deusTranslator';
 import { shakemapXmlRefOutput } from '../chile/shakyground';
-import { exposureRef, ExposureModel, lonmin, lonmax, latmin, latmax } from '../chile/assetmaster';
+import { exposureRef, ExposureModel, lonmin, lonmax, latmin, latmax } from '../chile/exposure';
 
 
 export const lonminEcuador = {

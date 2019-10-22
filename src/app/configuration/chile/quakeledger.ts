@@ -4,7 +4,7 @@ import {
     BboxUconfPD
 } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData, BboxLayerDescription } from 'src/app/components/map/mappable_wpsdata';
-import { WizardableProcess, WizzardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps/src/public-api';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
@@ -201,7 +201,7 @@ export const selectedEqs: VectorLayerData & WpsData = {
 
 export class QuakeLedger extends WpsProcess implements WizardableProcess {
 
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
         super(

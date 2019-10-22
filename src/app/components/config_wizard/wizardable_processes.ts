@@ -3,7 +3,7 @@ import { WpsVerion } from '@ukis/services-wps/src/public-api';
 import { HttpClient } from '@angular/common/http';
 
 
-export interface WizzardProperties {
+export interface WizardProperties {
     shape: 'dot-circle' | 'earthquake' | 'avalance' | 'tsunami' | 'volcanoe' | 'critical_infrastructure' | 'vulnerability' | 'exposure' | 'bolt' | 'flame' | 'bullseye' | 'target' | 'router' | 'building';
     providerName: string;
     providerUrl: string;
@@ -11,7 +11,7 @@ export interface WizzardProperties {
 
 
 export interface WizardableProcess extends Process {
-    readonly wizardProperties: WizzardProperties;
+    readonly wizardProperties: WizardProperties;
 }
 
 

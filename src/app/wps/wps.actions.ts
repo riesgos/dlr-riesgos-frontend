@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Product, Process, ProcessId } from './wps.datatypes';
+import { Product, ImmutableProcess, ProcessId } from './wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public-api';
 import { Scenario } from './wps.state';
 import { Graph } from 'graphlib';
@@ -28,14 +28,14 @@ export class ProductsProvided implements Action {
 
 export class ClickRunProcess implements Action {
     type: string = EWpsActionTypes.clickRunProduct;
-    constructor(public payload: {productsProvided: Product[], process: Process}) {}
+    constructor(public payload: {productsProvided: Product[], process: ImmutableProcess}) {}
 }
 
 
 
 export class RestartingFromProcess implements Action {
     type: string = EWpsActionTypes.restartingFromProcess;
-    constructor(public payload: {process: Process}) {}
+    constructor(public payload: {process: ImmutableProcess}) {}
 }
 
 export class RestaringScenario implements Action {
@@ -46,7 +46,7 @@ export class RestaringScenario implements Action {
 
 export class WpsDataUpdate implements Action {
     type: string = EWpsActionTypes.wpsDataUpdate;
-    constructor(public payload: {processes: Process[], products: Product[], graph: Graph}) {}
+    constructor(public payload: {processes: ImmutableProcess[], products: Product[], graph: Graph}) {}
 }
 
 

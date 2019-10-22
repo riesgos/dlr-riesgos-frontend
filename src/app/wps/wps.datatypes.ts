@@ -53,20 +53,23 @@ export class ProcessStateError {
 export type ProcessState = ProcessStateUnavailable | ProcessStateAvailable |
                             ProcessStateRunning | ProcessStateCompleted | ProcessStateError;
 
-
-
 export interface Process {
     readonly uid: ProcessId;
     readonly name: string;
     readonly requiredProducts: ProductId[];
     readonly providedProducts: ProductId[];
     state: ProcessState;
+    description?: string;
 }
 
 
 export const isProcess = (o: any): o is Process => {
     return o.hasOwnProperty('id') &&  o.hasOwnProperty('requiredProducts') &&  o.hasOwnProperty('providedProduct');
 };
+
+export interface ImmutableProcess extends Process {
+    readonly state: ProcessState;
+}
 
 
 export interface ExecutableProcess extends Process {

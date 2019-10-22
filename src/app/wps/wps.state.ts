@@ -1,4 +1,4 @@
-import { Process, Product, ProcessId } from './wps.datatypes';
+import { Process, Product, ProcessId, ImmutableProcess } from './wps.datatypes';
 import { ProductId } from 'projects/services-wps/src/public-api';
 import { Graph, alg } from 'graphlib';
 
@@ -7,7 +7,7 @@ export type Scenario = string;
 
 export interface WpsScenarioState {
     scenario: Scenario;
-    processStates: Process[];
+    processStates: ImmutableProcess[];
     productValues: Product[];
     graph: Graph;
 }

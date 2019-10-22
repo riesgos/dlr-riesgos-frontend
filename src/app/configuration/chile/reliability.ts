@@ -3,7 +3,6 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { vei } from '../ecuador/lahar';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { p } from './quakeledger';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { shakemapRefDeusInput } from './deusTranslator';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -95,10 +94,10 @@ export const damage_consumer_areas: WpsData & Product & VectorLayerData = {
                     witdh: 2
                   })
                 });
-              },
-              text: (props: object) => {
-                return JSON.stringify(props);
-              }
+            },
+            text: (props: object) => {
+            return JSON.stringify(props);
+            }
         }
     },
     value: null

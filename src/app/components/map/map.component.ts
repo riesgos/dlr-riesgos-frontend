@@ -73,16 +73,20 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.layersSvc.getOverlays()
             ),
         ).subscribe(([focussedProcessId, graph, currentOverlays]: [string, Graph, Layer[]]) => {
-            if (focussedProcessId !== 'some initial focus') {
-                const inputs = graph.inEdges(focussedProcessId).map(edge => edge.v);
-                const outputs = graph.outEdges(focussedProcessId).map(edge => edge.w);
-                for (const layer of currentOverlays) {
-                    if (inputs.includes((layer as ProductLayer).productId) || outputs.includes((layer as ProductLayer).productId)) {
-                        layer.opacity = 0.6;
-                    } else {
-                        layer.opacity = 0.2;
+            if (graph && focussedProcessId !== 'some initial focus') {
+                const inEdges = graph.inEdges(focussedProcessId);
+                const outEdges = graph.outEdges(focussedProcessId);
+                if (inEdges && outEdges) {
+                    const inputs = inEdges.map(edge => edge.v);
+                    const outputs = outEdges.map(edge => edge.w);
+                    for (const layer of currentOverlays) {
+                        if (inputs.includes((layer as ProductLayer).productId) || outputs.includes((layer as ProductLayer).productId)) {
+                            layer.opacity = 0.6;
+                        } else {
+                            layer.opacity = 0.2;
+                        }
+                        this.layersSvc.updateLayer(layer, 'Overlays');
                     }
-                    this.layersSvc.updateLayer(layer, 'Overlays');
                 }
             }
         });

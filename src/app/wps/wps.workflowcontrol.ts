@@ -400,6 +400,7 @@ export class WorkflowControl {
             providedProducts: process.providedProducts,
             requiredProducts: process.requiredProducts,
             state: process.state,
+            description: process.description
         };
         if (isWizardableProcess(process)) {
             copy['wizardProperties'] = process['wizardProperties'];

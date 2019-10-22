@@ -54,20 +54,19 @@
 
         <p>{{'Please select a state that you want to restore.' | translate}}</p>
 
-        <clr-datagrid [(clrDgSingleSelected)]="selectedStorageRow">
+        <clr-datagrid [(clrDgSingleSelected)]="selectedStorageMetadata">
             <clr-dg-column>{{'Name' | translate}}</clr-dg-column>
             <clr-dg-column>{{'Creation date' | translate}}</clr-dg-column>
             <clr-dg-column>{{'Data' | translate}}</clr-dg-column>
 
-            <clr-dg-row *clrDgItems="let row of dataStorage" [clrDgItem]="row">
-                <clr-dg-cell>{{row.name}}</clr-dg-cell>
-                <clr-dg-cell>{{row.date | date }}</clr-dg-cell>
-                <clr-dg-cell>{{row.data.length }} products</clr-dg-cell>
+            <clr-dg-row *clrDgItems="let row of storageMetadata" [clrDgItem]="row">
+                <clr-dg-cell>{{ row.name }}</clr-dg-cell>
+                <clr-dg-cell>{{ row.date | date }}</clr-dg-cell>
             </clr-dg-row>
 
-            <clr-dg-footer>{{dataStorage.length}} <span>{{'entries' | translate}}</span></clr-dg-footer>
+            <clr-dg-footer>{{storageMetadata.length}} <span>{{'entries' | translate}}</span></clr-dg-footer>
         </clr-datagrid>
-        <span>{{'Selected row:' | translate}}</span> <span *ngIf="selectedStorageRow">{{selectedStorageRow.name}}</span>
+        <span>{{'Selected row:' | translate}}</span> <span *ngIf="selectedStorageMetadata">{{selectedStorageMetadata.name}}</span>
 
     </div>
     <div class="modal-footer">

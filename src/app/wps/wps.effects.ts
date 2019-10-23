@@ -238,7 +238,7 @@ export class WpsEffects {
                     // Deus,
                     new FakeDeus(this.httpClient),
                     TsServiceTranslator,
-                    // new TsService(this.httpClient),
+                    new TsService(this.httpClient),
                     // Reliability
                 ];
                 products = [
@@ -252,7 +252,7 @@ export class WpsEffects {
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     lat, lon, mag,
                     country, hazard,
-                    // tsWms, tsShakemap,
+                    tsWms, tsShakemap,
                     // damage_consumer_areas
                 ];
                 break;

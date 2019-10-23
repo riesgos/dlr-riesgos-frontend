@@ -8,6 +8,7 @@ import { toDecimalPlaces, linInterpolateHue } from 'src/app/helpers/colorhelpers
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
 // import * as d3interp from 'd3-interpolate';
 
 
@@ -43,6 +44,8 @@ export const AshfallTranslator: AutorunningProcess = {
 };
 
 
+const allDepths = [];
+
 export const ashfall: WpsData & Product & VectorLayerData = {
     uid: 'ashfall',
     description: {
@@ -55,9 +58,13 @@ export const ashfall: WpsData & Product & VectorLayerData = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
                 const thickness = props.thickness;
+                allDepths.push(thickness);
 
                 const hue = linInterpolateHue(0, 170, 100, 280, thickness);
                 const colorString = `hsl(${hue}, 50%, 50%)`;
+
+                // we can also repeat labels along each polygon-segment, roughly like this:
+                // https://stackoverflow.com/questions/38391780/multiple-text-labels-along-a-linestring-feature
 
                 return new olStyle({
                   fill: new olFill({
@@ -80,21 +87,24 @@ export const ashfall: WpsData & Product & VectorLayerData = {
                 });
             },
             text: (properties) => {
-                let text = `<h3>Ashfall</h3>`;
-                const selectedProperties = {
-                    Thickness: toDecimalPlaces(properties['thickness'] as number, 1) + ' mm',
-                    VEI: toDecimalPlaces(properties['vei'] as number, 1),
-                    Probability: properties['prob']
-                };
-                text += '<table class="table"><tbody>';
-                for (const property in selectedProperties) {
-                    if (selectedProperties[property]) {
-                        const propertyValue = selectedProperties[property];
-                        text += `<tr><td>${property}</td> <td>${propertyValue}</td></tr>`;
+                const thickness = properties['thickness'];
+                if (thickness) {
+                    allDepths.sort();
+                    const nextBiggerThickness = allDepths.find(d => +d > +thickness);
+                    let thicknessText: string;
+                    if (nextBiggerThickness) {
+                        thicknessText = `${toDecimalPlaces(thickness as number, 1)} - ${toDecimalPlaces(nextBiggerThickness as number, 1)} mm`;
+                    } else {
+                        thicknessText = `> ${toDecimalPlaces(thickness as number, 1)} mm`;
                     }
+
+                    const selectedProperties = {
+                        Thickness: thicknessText,
+                        VEI: toDecimalPlaces(properties['vei'] as number, 1),
+                        Probability: properties['prob'] + ' %'
+                    };
+                    return createKeyValueTableHtml('Ashfall', selectedProperties);
                 }
-                text += '</tbody></table>';
-                return text;
             }
         }
     },

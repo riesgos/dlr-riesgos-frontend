@@ -28,3 +28,20 @@ export function deepCopy<T>(obj: T, callStacksize = 0): T {
     }
     return newObj;
 }
+
+export function createKeyValueTableHtml(header: string, data: object): string {
+    const rows: {key: string, val: string}[] = [];
+    for (const key in data) {
+        rows.push({key: key, val: data[key]});
+    };
+
+    const htmlRows = rows.map(row => {
+        return `<tr><td>${row.key}</td><td>${row.val}</td></tr>`;
+    });
+    return `
+        <h4>${header}</h4>
+        <table class="table">
+            <tbody>${htmlRows.join(' ')}</tbody>
+        </table>
+    `;
+}

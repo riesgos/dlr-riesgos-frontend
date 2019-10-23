@@ -4,11 +4,11 @@ import { vei } from './lahar';
 import { WpsData } from '@ukis/services-wps/src/public-api';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, linInterpolateHue } from 'src/app/helpers/colorhelpers';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import * as d3interp from 'd3-interpolate';
+// import * as d3interp from 'd3-interpolate';
 
 
 export const ashfallVei: Product & WpsData = {
@@ -56,9 +56,8 @@ export const ashfall: WpsData & Product & VectorLayerData = {
                 const props = feature.getProperties();
                 const thickness = props.thickness;
 
-                const range = d3interp.interpolate('blue', 'red');
-                const colorString = range(thickness / 80.0);
-
+                const hue = linInterpolateHue(0, 170, 100, 280, thickness);
+                const colorString = `hsl(${hue}, 50%, 50%)`;
 
                 return new olStyle({
                   fill: new olFill({
@@ -67,6 +66,16 @@ export const ashfall: WpsData & Product & VectorLayerData = {
                   stroke: new olStroke({
                     color: [0, 0, 0, 1],
                     witdh: 2
+                  }),
+                  text: new olText({
+                    font: 'bold 14px Calibri,sans-serif',
+                    text: toDecimalPlaces(props['thickness'] as number, 1) + ' mm',
+                    fill: new olFill({color: [0, 0, 0, 1]}),
+                    stroke: new olStroke({color: colorString, width: 1}),
+                    placement: 'line',
+                    textAlign: 'left'
+                    // maxAngle: maxAngle,
+                    // overflow: true,
                   })
                 });
             },
@@ -75,6 +84,7 @@ export const ashfall: WpsData & Product & VectorLayerData = {
                 const selectedProperties = {
                     Thickness: toDecimalPlaces(properties['thickness'] as number, 1) + ' mm',
                     VEI: toDecimalPlaces(properties['vei'] as number, 1),
+                    Probability: properties['prob']
                 };
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {

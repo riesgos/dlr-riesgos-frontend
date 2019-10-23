@@ -26,8 +26,8 @@ export class SaveButtonComponent implements OnInit {
     showStoreModal = false;
     nameControl: FormControl;
     private currentState: WpsScenarioState;
-    private storageMetadata: StorageMetadata[] = [];
-    private selectedStorageMetadata: StorageMetadata;
+    public storageMetadata: StorageMetadata[] = [];
+    public selectedStorageMetadata: StorageMetadata;
     private storageMetadataKey = 'RIESGOS_STORAGE_METADATA';
 
     constructor(

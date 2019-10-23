@@ -33,7 +33,7 @@ export function toDecimalPlaces(value: number, decimalPlaces: number): string {
     }
 }
 
-export function hueRange(startVal: number, startHue: number, endVal: number, endHue: number, currentVal: number): number {
+export function linInterpolateHue(startVal: number, startHue: number, endVal: number, endHue: number, currentVal: number): number {
     const degree = (currentVal - startVal) / (endVal - startVal);
     const degreeTop = Math.max(Math.min(degree, 1), 0);
     const hue = degreeTop * (endHue - startHue) + startHue;

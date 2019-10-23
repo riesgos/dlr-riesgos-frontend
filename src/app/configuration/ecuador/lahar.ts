@@ -93,7 +93,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             'LaharModel',
             'Lahar',
             [direction, vei, parameter].map(p => p.uid),
-            [laharWms.uid],
+            [laharWms.uid, laharShakemap.uid],
             'gs:LaharModel',
             'The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.',
             'http://91.250.85.221/geoserver/riesgos/wps',
@@ -107,4 +107,4 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             shape: 'avalance'
         };
     }
-};
+}

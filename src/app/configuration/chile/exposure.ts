@@ -1,4 +1,4 @@
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
@@ -157,11 +157,7 @@ export const exposureRef: VectorLayerData & WpsData & Product = {
 
 export class ExposureModel extends WpsProcess implements WizardableProcess {
 
-  readonly wizardProperties = {
-    shape: 'dot-circle' as 'dot-circle',
-    providerName: 'Helmholtz Centre Potsdam',
-    providerUrl: 'https://www.gfz-potsdam.de/en/'
-  };
+  readonly wizardProperties: WizardProperties;
 
   constructor(httpClient: HttpClient) {
     super(
@@ -176,6 +172,11 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       httpClient,
       new ProcessStateUnavailable(),
     );
+    this.wizardProperties = {
+      shape: 'building',
+      providerName: 'Helmholtz Centre Potsdam',
+      providerUrl: 'https://www.gfz-potsdam.de/en/'
+    };
   }
 }
 

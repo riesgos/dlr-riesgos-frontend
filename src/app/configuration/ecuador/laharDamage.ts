@@ -16,11 +16,22 @@ import { HttpClient } from '@angular/common/http';
 
 
 
+
+export const laharShakemapDeusInput: WpsData & Product = {
+    ...laharShakemap,
+    description: {
+        ...laharShakemap.description,
+        id: 'intensity'
+    },
+    uid: 'deusTranslator_laharShakemap'
+};
+
+
 export const LaharDeusTranslator: AutorunningProcess = {
     uid: 'LaharDeusTranslator',
     name: 'LaharDeusTranslator',
-    requiredProducts: [fragilityRef, exposureRef].map(p => p.uid),
-    providedProducts: [fragilityRefDeusInput, exposureRefDeusInput].map(p => p.uid),
+    requiredProducts: [fragilityRef, exposureRef, laharShakemap].map(p => p.uid),
+    providedProducts: [fragilityRefDeusInput, exposureRefDeusInput, laharShakemapDeusInput].map(p => p.uid),
     state: new ProcessStateUnavailable(),
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch (newProduct.uid) {
@@ -37,6 +48,11 @@ export const LaharDeusTranslator: AutorunningProcess = {
                 delete exposureDeus.description.vectorLayerAttributes; // To avoid displaying exposure on map twice
                 delete exposureDeus.description.name;
                 return [exposureDeus];
+            case laharShakemap.uid:
+                return [{
+                    ... laharShakemapDeusInput,
+                    value: newProduct.value
+                }];
             default:
                 return [];
         }
@@ -202,7 +218,7 @@ export class LaharDeus extends WpsProcess implements WizardableProcess {
         super(
             'Lahar-DEUS',
             'Multihazard damage estimation / Lahar',
-            [losscategoryEcuador, schemaEcuador, fragilityRefDeusInput, laharShakemap, exposureRefDeusInput].map(p => p.uid),
+            [losscategoryEcuador, schemaEcuador, fragilityRefDeusInput, laharShakemapDeusInput, exposureRefDeusInput].map(p => p.uid),
             [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given lahar.',

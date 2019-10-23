@@ -1,44 +1,44 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { vei } from '../ecuador/lahar';
-import { WpsData } from 'projects/services-wps/src/public-api';
+import { HttpClient } from '@angular/common/http';
+import { WpsData } from '@ukis/services-wps/src/public-api';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { shakemapRefDeusInput } from './deusTranslator';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { shakemapRefDeusInput } from '../chile/deusTranslator';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { HttpClient } from '@angular/common/http';
+import { laharShakemap } from './lahar';
 
 
 
-export const countryChile: WpsData & Product = {
-    uid: 'systemreliability_country_chile',
+export const countryEcuador: WpsData & Product = {
+    uid: 'systemreliability_country_ecuador',
     description: {
         id: 'country',
-        defaultValue: 'chile',
+        defaultValue: 'ecuador',
         description: 'What country are we working in?',
         reference: false,
         type: 'literal',
-        format: 'application/text'
+        format: 'application/text',
     },
-    value: 'chile'
+    value: 'ecuador'
 };
 
 
-export const hazardEq: WpsData & Product = {
-    uid: 'systemreliability_hazard_eq',
+export const hazardLahar: WpsData & Product = {
+    uid: 'systemreliability_hazard_lahar',
     description: {
         id: 'hazard',
-        defaultValue: 'earthquake',
+        defaultValue: 'lahar',
         description: 'What hazard are we dealing with?',
         reference: false,
         type: 'literal',
-        format: 'application/text'
+        format: 'application/text',
     },
-    value: 'earthquake'
+    value: 'lahar'
 };
 
-export const damageConsumerAreas: WpsData & Product & VectorLayerData = {
+export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
     uid: 'systemreliability_damage_consumerareas',
     description: {
         id: 'damage_consumer_areas',
@@ -86,19 +86,19 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerData = {
         }
     },
     value: null
-}
+};
 
 
-export class EqReliability extends WpsProcess implements WizardableProcess {
+export class LaharReliability extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
         super(
             'Reliability',
-            'System reliability after EQ',
-            [shakemapRefDeusInput, countryChile, hazardEq].map(p => p.uid),
-            [damageConsumerAreas].map(p => p.uid),
+            'System reliability after Lahar',
+            [laharShakemap, countryEcuador, hazardLahar].map(p => p.uid),
+            [damageConsumerAreasEcuador].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
             'Process for evaluating the reliability of infrastructure networks',
             'http://91.250.85.221/wps/WebProcessingService',

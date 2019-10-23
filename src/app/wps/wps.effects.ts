@@ -23,9 +23,9 @@ import { hydrologicalSimulation, geomerFlood, durationTiff,
 import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure } from '../configuration/chile/eqDeus';
 import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
-import { Reliability, country, hazard, damage_consumer_areas } from '../configuration/chile/reliability';
+import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from '../configuration/chile/reliability';
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
-import { LaharDeusTranslator, laharTransition, LaharDeus, laharDamage, laharUpdatedExposure  } from '../configuration/ecuador/laharDamage';
+import { LaharDeusTranslator, laharTransition, LaharDeus, laharDamage, laharUpdatedExposure, laharShakemapDeusInput  } from '../configuration/ecuador/laharDamage';
 import { FakeDeus } from '../configuration/others/fakeDeus';
 import { VulnerabilityAndExposure } from '../configuration/chile/vulnAndExpCombined';
 import { getScenarioWpsState } from './wps.selectors';
@@ -35,6 +35,10 @@ import { VeiProvider, selectableVei } from '../configuration/ecuador/vei';
 import { AshfallService, ashfall, probability, AshfallTranslator, ashfallVei } from '../configuration/ecuador/ashfall';
 import { LaharExposureModel, schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador } from '../configuration/ecuador/exposure';
 import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
+import { LaharReliability, hazardLahar, countryEcuador, damageConsumerAreasEcuador } from '../configuration/ecuador/reliability';
+import { lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru } from '../configuration/peru/exposure';
+import { VulnerabilityAndExposurePeru } from '../configuration/peru/vulnAndExpCombined';
+import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from '../configuration/peru/vulnerability';
 
 
 
@@ -208,7 +212,7 @@ export class WpsEffects {
                     TsServiceTranslator,
                     new TsService(this.httpClient),
                     // TsDeus,
-                    // new Reliability(this.httpClient),
+                    new EqReliability(this.httpClient),
                     // PhysicalImpactAssessment
                 ];
                 products = [
@@ -222,15 +226,15 @@ export class WpsEffects {
                     loss, eqDamage, eqTransition, eqUpdatedExposure,
                     lat, lon, mag,
                     tsWms, tsShakemap,
-                    country, hazard,
+                    countryChile, hazardEq,
+                    damageConsumerAreas,
                     // tsDamage, tsTransition, tsUpdatedExposure,
-                    // damage_consumer_areas
                     // physicalImpact
                 ];
                 break;
             case 'p1':
                 processes = [
-                    new VulnerabilityAndExposure(this.httpClient),
+                    new VulnerabilityAndExposurePeru(this.httpClient),
                     new QuakeLedgerPeru(this.httpClient),
                     EqSelection,
                     new Shakyground(this.httpClient),
@@ -242,8 +246,8 @@ export class WpsEffects {
                     // Reliability
                 ];
                 products = [
-                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
-                    assetcategory, losscategory, taxonomies,
+                    lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
+                    assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
                     fragilityRef, exposureRef,
                     fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
                     new InputBoundingboxPeru(), mmin, mmax, zmin, zmax, p, etypePeru, tlonPeru, tlatPeru,
@@ -251,7 +255,7 @@ export class WpsEffects {
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     lat, lon, mag,
-                    country, hazard,
+                    // country, hazard,
                     tsWms, tsShakemap,
                     // damage_consumer_areas
                 ];
@@ -266,6 +270,7 @@ export class WpsEffects {
                     new LaharExposureModel(this.httpClient),
                     LaharDeusTranslator,
                     new LaharDeus(this.httpClient),
+                    new LaharReliability(this.httpClient),
                     geomerFlood,
                     geomerFloodWcsProvider,
                     new FlooddamageProcess(this.httpClient),
@@ -278,9 +283,11 @@ export class WpsEffects {
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
                     assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
                     fragilityRef, exposureRef,
-                    fragilityRefDeusInput, exposureRefDeusInput,
+                    fragilityRefDeusInput, exposureRefDeusInput, laharShakemapDeusInput,
                     laharDamage, laharTransition, laharUpdatedExposure,
+                    countryEcuador, hazardLahar,
                     hydrologicalSimulation,
+                    damageConsumerAreasEcuador,
                     durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings,
                     damageManzanasGeojson
                 ];

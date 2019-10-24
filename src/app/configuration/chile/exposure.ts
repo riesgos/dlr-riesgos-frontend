@@ -146,8 +146,8 @@ export const exposureRef: VectorLayerData & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBarchart(anchor, barchartData, 600, 400, 'taxonomy', 'buildings', 45);
-        return `<h4>Exposure ${props['name']}</h4>${anchor.innerHTML}`;
+        const anchorUpdated = createBarchart(anchor, barchartData, 600, 400, 'taxonomia', 'edificios', 45);
+        return `<h4>Exposición ${props['name']}</h4>${anchor.innerHTML}`;
       }
     }
   },

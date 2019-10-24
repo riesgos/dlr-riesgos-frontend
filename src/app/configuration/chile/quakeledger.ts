@@ -174,10 +174,10 @@ export const selectedEqs: VectorLayerData & WpsData = {
         vectorLayerAttributes: {
             sldFile: '/assets/styles/QuakeledgerStyle.sld',
             text: (properties) => {
-                let text = `<h3>Available earthquakes</h3>`;
+                let text = `<h3>Terremotos disponibles</h3>`;
                 const selectedProperties = {
-                    Magnitude: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
-                    Depth: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' m',
+                    Magnitud: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' m',
                     // Latitude: toDecimalPlaces(1, 1),
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],

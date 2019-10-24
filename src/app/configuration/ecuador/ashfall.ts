@@ -100,11 +100,11 @@ export const ashfall: WpsData & Product & VectorLayerData = {
                     }
 
                     const selectedProperties = {
-                        Thickness: thicknessText,
+                        Profundidad: thicknessText,
                         VEI: toDecimalPlaces(properties['vei'] as number, 1),
-                        Probability: properties['prob'] + ' %'
+                        Probabilidad: properties['prob'] + ' %'
                     };
-                    return createKeyValueTableHtml('Ashfall', selectedProperties);
+                    return createKeyValueTableHtml('Ceniza', selectedProperties);
                 }
             }
         }

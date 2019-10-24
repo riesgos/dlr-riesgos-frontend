@@ -46,7 +46,7 @@ export const eqDamage: VectorLayerData & WpsData & Product = {
                 });
             },
             text: (props: object) => {
-                return `<h4>Loss ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
+                return `<h4>Pérdida ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
             }
         },
         description: 'Concrete damage in USD.'
@@ -95,8 +95,8 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                     {label: '3', value: props['transitions']['n_buildings'][1]},
                     {label: '4', value: props['transitions']['n_buildings'][0]}
                 ];
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', 'n. buildings');
-                return `<h4>Transitions ${props['name']}</h4>${anchor.innerHTML}`;
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', 'n. edificios');
+                return `<h4>Transiciónes ${props['name']}</h4>${anchor.innerHTML}`;
             }
         },
         description: 'Change from previous state to current one'

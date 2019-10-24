@@ -85,7 +85,7 @@ export const laharDamage: VectorLayerData & WpsData & Product = {
                 });
             },
             text: (props: object) => {
-                return `<h4>Loss ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
+                return `<h4>Pérdida ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
             }
         },
         description: 'Concrete damage in USD.'
@@ -134,8 +134,8 @@ export const laharTransition: VectorLayerData & WpsData & Product = {
                     {label: '3', value: props['transitions']['n_buildings'][1]},
                     {label: '4', value: props['transitions']['n_buildings'][0]}
                 ];
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', 'n. buildings');
-                return `<h4>Transitions ${props['name']}</h4>${anchor.innerHTML}`;
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', 'n. edificios');
+                return `<h4>Transiciones ${props['name']}</h4>${anchor.innerHTML}`;
             }
         },
         description: 'Change from previous state to current one'
@@ -201,8 +201,8 @@ export const laharUpdatedExposure: VectorLayerData & WpsData & Product = {
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', '# buildings');
-                return `<h4>Updated exposure ${props['name']}</h4>${anchor.innerHTML}`;
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '# edificios');
+                return `<h4>Exposición actualizada ${props['name']}</h4>${anchor.innerHTML}`;
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'

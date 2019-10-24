@@ -82,7 +82,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
                 });
             },
             text: (props: object) => {
-            return JSON.stringify(props);
+                return JSON.stringify(props);
             }
         }
     },

@@ -8,6 +8,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { selectedEqs } from './quakeledger';
 import { FeatureCollection, featureCollection } from '@turf/helpers';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
@@ -36,8 +37,24 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerData & 
                     })
                 });
             },
-            text: (props: object) => {
-                return JSON.stringify(props);
+            text: (properties: object) => {
+                let text = `<h3>Terremoto elegido</h3>`;
+                const selectedProperties = {
+                    Magnitud: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' m',
+                    // Latitude: toDecimalPlaces(1, 1),
+                    // Longitude: toDecimalPlaces(2, 1),
+                    Id: properties['origin.publicID'],
+                };
+                text += '<table class="table"><tbody>';
+                for (const property in selectedProperties) {
+                    if (selectedProperties[property]) {
+                        const propertyValue = selectedProperties[property];
+                        text += `<tr><td>${property}</td> <td>${propertyValue}</td></tr>`;
+                    }
+                }
+                text += '</tbody></table>';
+                return text;
               }
         },
         wizardProperties: {

@@ -116,11 +116,11 @@ export class WpsProcess implements ExecutableProcess {
     }
 
     public execute(
-        inutProducts: Product[],
+        inputProducts: Product[],
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-            const wpsInputs = inutProducts.map(prod => this.prodToWpsData(prod));
+            const wpsInputs = inputProducts.map(prod => this.prodToWpsData(prod));
             const wpsOutputDescriptions = outputProducts.map(o => o.description) as WpsDataDescription[];
 
             let requestCounter = 0;

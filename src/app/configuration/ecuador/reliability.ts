@@ -8,6 +8,7 @@ import { shakemapRefDeusInput } from '../chile/deusTranslator';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { laharShakemap } from './lahar';
+import { Observable } from 'rxjs';
 
 
 
@@ -112,4 +113,28 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             shape: 'router'
         };
     }
+
+    execute(inputProducts: Product[], outputProducts: Product[], doWhileExecuting): Observable<Product[]> {
+
+        const shakemap = inputProducts.find(p => p.uid === laharShakemap.uid) as (WpsData & Product);
+        const complexShakemap: WpsData & Product = {
+            uid: shakemap.uid,
+            value: shakemap.value,
+            description: {
+                id: 'intensity',
+                format: 'text/xml',
+                reference: false,
+                type: 'complex'
+            }
+        };
+
+        const newInputProducts = [
+            inputProducts.find(p => p.uid === countryEcuador.uid),
+            inputProducts.find(p => p.uid === hazardLahar.uid),
+            complexShakemap
+        ];
+
+        return super.execute(newInputProducts, outputProducts, doWhileExecuting);
+    }
+
 }

@@ -223,10 +223,6 @@ export class LayerMarshaller  {
                     layer.productId = uid;
 
                     layer['crossOrigin'] = 'anonymous';
-                    // @TODO: warum funzt das fuer shakyground nicht?
-                    // if (uid !== 'ShakygroundProcess_shakeMapFile_wms') {
-                    //     layer['crossOrigin'] = 'anonymous';
-                    // }
 
                     if (description.description) {
                         layer.description = description.description;

@@ -30,6 +30,8 @@
 
     "This is a demonstrator!": "This is a demonstrator - the data displayed here is not ready for production use. ",
 
+    "System reliability after Lahar": "Critical infrastructure - power supply",
+    "System reliability after EQ": "Critical infrastructure - power supply",
 
     "etype": "subcategory",
 

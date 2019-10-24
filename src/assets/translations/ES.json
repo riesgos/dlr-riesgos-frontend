@@ -122,8 +122,8 @@
     "This is a demonstrator!": "Este es un demostrador: los datos que se muestran aquí no están listos para su uso en producción.",
 
     "The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.": "El servicio lahar anticipa el área inundada por lahares del volcán Cotopaxi y se basa en resultados de simulación calculados previamente para la altura del flujo, la velocidad del flujo, la presión del flujo, la erosión y la deposición. El software de simulación utilizado para el modelado de lahar es el modelo numérico basado físicamente RAMMS :: DEBRIS FLOW.",
-    "mhwLand global": "Altura máxima de ola en tierra - valor global",
-    "mhwLand local": "Altura máxima de ola en tierra - valor local",
+    "mwhLand global": "Altura máxima de ola en tierra - valor global",
+    "mwhLand local": "Altura máxima de ola en tierra - valor local",
 
     "Transition": "Transición",
     

@@ -8,6 +8,7 @@ import { shakemapRefDeusInput } from './deusTranslator';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
 
 
 
@@ -81,7 +82,13 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerData = {
                 });
             },
             text: (props: object) => {
-            return JSON.stringify(props);
+                const selectedProps = {
+                    'Name': props['Name'],
+                    'Area': props['AREA'],
+                    'Population': props['population'],
+                    'Prob. disruption': props['Prob_Disruption'],
+                };
+                return createKeyValueTableHtml('System reliability', selectedProps);
             }
         }
     },

@@ -3,12 +3,11 @@ import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.da
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { HttpClient } from '@angular/common/http';
 import { schemaPeru } from './exposure';
-import { fragilityRef } from '../chile/modelProp';
 
 
 
 export const assetcategoryPeru: Product & WpsData = {
-    uid: 'assetcategory_peru',
+    uid: 'user_assetcategoryPeru',
     description: {
         id: 'assetcategory',
         defaultValue: 'buildings',
@@ -19,7 +18,7 @@ export const assetcategoryPeru: Product & WpsData = {
 };
 
 export const losscategoryPeru: Product & WpsData = {
-    uid: 'losscategory_peru',
+    uid: 'user_losscategoryPeru',
     description: {
         id: 'losscategory',
         defaultValue: 'structural',
@@ -30,7 +29,7 @@ export const losscategoryPeru: Product & WpsData = {
 };
 
 export const taxonomiesPeru: Product & WpsData = {
-    uid: 'taxonomies_peru',
+    uid: 'user_taxonomiesPeru',
     description: {
         id: 'taxonomies',
         reference: false,
@@ -41,6 +40,17 @@ export const taxonomiesPeru: Product & WpsData = {
 };
 
 
+export const fragilityRefPeru: WpsData & Product = {
+    uid: 'ModelpropProcess_FragilityPeru',
+    description: {
+      id: 'selectedRows',
+      type: 'complex',
+      reference: true,
+      format: 'application/json'
+    },
+    value: null
+  };
+
 
 export class VulnerabilityModelPeru extends WpsProcess implements WizardableProcess {
 
@@ -48,10 +58,10 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
 
     constructor(http: HttpClient) {
         super(
-            'Vulnerability Peru',
+            'Vulnerability',
             'EQ Vulnerability Model',
             [schemaPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru].map(p => p.uid),
-            [fragilityRef.uid],
+            [fragilityRefPeru.uid],
             'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
             '',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

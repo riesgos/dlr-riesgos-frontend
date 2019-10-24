@@ -9,7 +9,8 @@ import { State } from 'src/app/ngrx_register';
 import { WorkflowControl } from './wps.workflowcontrol';
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
-import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru } from '../configuration/peru/quakeledger';
+import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru, mminPeru, mmaxPeru,
+    zminPeru, zmaxPeru, pPeru, selectedEqsPeru } from '../configuration/peru/quakeledger';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
@@ -21,11 +22,12 @@ import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/c
 import { hydrologicalSimulation, geomerFlood, durationTiff,
     velocityTiff, depthTiff, geomerFloodWcsProvider } from '../configuration/ecuador/geomerHydrological';
 import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure } from '../configuration/chile/eqDeus';
-import { PhysicalImpactAssessment, physicalImpact } from '../configuration/chile/pia';
 import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from '../configuration/chile/reliability';
-import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator, damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
-import { LaharDeusTranslator, laharTransition, LaharDeus, laharDamage, laharUpdatedExposure, laharShakemapDeusInput  } from '../configuration/ecuador/laharDamage';
+import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator,
+    damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
+import { LaharDeusTranslator, laharTransition, LaharDeus, laharDamage,
+    laharUpdatedExposure, laharShakemapDeusInput  } from '../configuration/ecuador/laharDamage';
 import { FakeDeus } from '../configuration/others/fakeDeus';
 import { VulnerabilityAndExposure } from '../configuration/chile/vulnAndExpCombined';
 import { getScenarioWpsState } from './wps.selectors';
@@ -33,12 +35,23 @@ import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
 import { VeiProvider, selectableVei } from '../configuration/ecuador/vei';
 import { AshfallService, ashfall, probability, AshfallTranslator, ashfallVei } from '../configuration/ecuador/ashfall';
-import { LaharExposureModel, schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador } from '../configuration/ecuador/exposure';
-import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
+import { LaharExposureModel, schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador,
+    latmaxEcuador, querymodeEcuador, assettypeEcuador } from '../configuration/ecuador/exposure';
+import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador,
+    taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
 import { LaharReliability, hazardLahar, countryEcuador, damageConsumerAreasEcuador } from '../configuration/ecuador/reliability';
-import { lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru } from '../configuration/peru/exposure';
+import { lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru,
+    querymodePeru, exposureRefPeru } from '../configuration/peru/exposure';
 import { VulnerabilityAndExposurePeru } from '../configuration/peru/vulnAndExpCombined';
-import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from '../configuration/peru/vulnerability';
+import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru, fragilityRefPeru } from '../configuration/peru/modelProp';
+import { TsServiceTranslatorPeru, latPeru, lonPeru, magPeru, TsServicePeru,
+    tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
+import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../configuration/peru/eqselection';
+import { fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInputPeru,
+    DeusTranslatorPeru } from '../configuration/peru/deusTranslator';
+import { shakemapWmsOutputPeru, shakemapXmlRefOutputPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
+import { FakeDeusPeru } from '../configuration/peru/fakeDeus';
+import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru } from '../configuration/peru/eqDeus';
 
 
 
@@ -207,7 +220,7 @@ export class WpsEffects {
                     EqSelection,
                     new Shakyground(this.httpClient),
                     DeusTranslator,
-                    //EqDeus,
+                    // EqDeus,
                     new FakeDeus(this.httpClient),
                     TsServiceTranslator,
                     new TsService(this.httpClient),
@@ -236,27 +249,27 @@ export class WpsEffects {
                 processes = [
                     new VulnerabilityAndExposurePeru(this.httpClient),
                     new QuakeLedgerPeru(this.httpClient),
-                    EqSelection,
-                    new Shakyground(this.httpClient),
-                    DeusTranslator,
+                    EqSelectionPeru,
+                    new ShakygroundPeru(this.httpClient),
+                    DeusTranslatorPeru,
                     // Deus,
-                    new FakeDeus(this.httpClient),
-                    TsServiceTranslator,
-                    new TsService(this.httpClient),
+                    new FakeDeusPeru(this.httpClient),
+                    TsServiceTranslatorPeru,
+                    new TsServicePeru(this.httpClient),
                     // Reliability
                 ];
                 products = [
                     lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
-                    fragilityRef, exposureRef,
-                    fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
-                    new InputBoundingboxPeru(), mmin, mmax, zmin, zmax, p, etypePeru, tlonPeru, tlatPeru,
-                    loss, eqDamage, eqTransition, eqUpdatedExposure,
-                    selectedEqs, userinputSelectedEq,
-                    selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
-                    lat, lon, mag,
+                    fragilityRefPeru, exposureRefPeru,
+                    fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInputPeru,
+                    new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
+                    lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
+                    selectedEqsPeru, userinputSelectedEqPeru,
+                    selectedEqPeru, shakemapWmsOutputPeru, shakemapXmlRefOutputPeru,
+                    latPeru, lonPeru, magPeru,
                     // country, hazard,
-                    tsWms, tsShakemap,
+                    tsWmsPeru, tsShakemapPeru,
                     // damage_consumer_areas
                 ];
                 break;

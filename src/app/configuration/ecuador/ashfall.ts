@@ -58,7 +58,7 @@ export const ashfall: WpsData & Product & VectorLayerData = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
                 const thickness = props.thickness;
-                allDepths.push(thickness); console.log("thickness: ", thickness)
+                allDepths.push(thickness);
 
                 const hue = linInterpolateHue(0, 170, 100, 280, thickness);
                 const colorString = `hsl(${hue}, 50%, 50%)`;

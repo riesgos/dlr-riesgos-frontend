@@ -1,9 +1,8 @@
 import { ExecutableProcess, ProcessStateUnavailable, Product, ProcessState } from 'src/app/wps/wps.datatypes';
 import { Observable, forkJoin } from 'rxjs';
 import { ExposureModelPeru } from './exposure';
-import { VulnerabilityModelPeru } from './vulnerability';
+import { VulnerabilityModelPeru } from './modelProp';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsClient, WpsData } from 'projects/services-wps/src/public-api';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 

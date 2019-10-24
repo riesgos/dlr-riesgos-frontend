@@ -13,51 +13,52 @@ import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 
 
 
-export const laharShakemapDeusInput: WpsData & Product = {
-    ...laharShakemap,
-    description: {
-        ...laharShakemap.description,
-        id: 'intensity'
-    },
-    uid: 'deusTranslator_laharShakemap'
-};
+// export const laharShakemapDeusInput: WpsData & Product = {
+//     ...laharShakemap,
+//     description: {
+//         ...laharShakemap.description,
+//         id: 'intensity'
+//     },
+//     uid: 'deusTranslator_laharShakemap'
+// };
 
 
-export const LaharDeusTranslator: AutorunningProcess = {
-    uid: 'LaharDeusTranslator',
-    name: 'LaharDeusTranslator',
-    requiredProducts: [fragilityRef, exposureRef, laharShakemap].map(p => p.uid),
-    providedProducts: [fragilityRefDeusInput, exposureRefDeusInput, laharShakemapDeusInput].map(p => p.uid),
-    state: new ProcessStateUnavailable(),
-    onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        switch (newProduct.uid) {
-            case fragilityRef.uid:
-                return [{
-                    ...fragilityRefDeusInput,
-                    value: newProduct.value
-                }];
-            case exposureRef.uid:
-                const exposureDeus = {
-                    ...exposureRefDeusInput,
-                    value: newProduct.value
-                };
-                delete exposureDeus.description.vectorLayerAttributes; // To avoid displaying exposure on map twice
-                delete exposureDeus.description.name;
-                return [exposureDeus];
-            case laharShakemap.uid:
-                return [{
-                    ... laharShakemapDeusInput,
-                    value: newProduct.value
-                }];
-            default:
-                return [];
-        }
-    }
-};
+// export const LaharDeusTranslator: AutorunningProcess = {
+//     uid: 'LaharDeusTranslator',
+//     name: 'LaharDeusTranslator',
+//     requiredProducts: [fragilityRef, exposureRef, laharShakemap].map(p => p.uid),
+//     providedProducts: [fragilityRefDeusInput, exposureRefDeusInput, laharShakemapDeusInput].map(p => p.uid),
+//     state: new ProcessStateUnavailable(),
+//     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
+//         switch (newProduct.uid) {
+//             case fragilityRef.uid:
+//                 return [{
+//                     ...fragilityRefDeusInput,
+//                     value: newProduct.value
+//                 }];
+//             case exposureRef.uid:
+//                 const exposureDeus = {
+//                     ...exposureRefDeusInput,
+//                     value: newProduct.value
+//                 };
+//                 delete exposureDeus.description.vectorLayerAttributes; // To avoid displaying exposure on map twice
+//                 delete exposureDeus.description.name;
+//                 return [exposureDeus];
+//             case laharShakemap.uid:
+//                 return [{
+//                     ... laharShakemapDeusInput,
+//                     value: newProduct.value
+//                 }];
+//             default:
+//                 return [];
+//         }
+//     }
+// };
 
 
 
@@ -218,7 +219,7 @@ export class LaharDeus extends WpsProcess implements WizardableProcess {
         super(
             'Lahar-DEUS',
             'Multihazard damage estimation / Lahar',
-            [losscategoryEcuador, schemaEcuador, fragilityRefDeusInput, laharShakemapDeusInput, exposureRefDeusInput].map(p => p.uid),
+            [schemaEcuador, fragilityRef, laharShakemap, exposureRef].map(p => p.uid),
             [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given lahar.',
@@ -231,7 +232,47 @@ export class LaharDeus extends WpsProcess implements WizardableProcess {
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle'
-        }
+        };
+    }
+
+    execute(inputProducts: Product[], outputProducts: Product[], doWhileExecuting): Observable<Product[]> {
+
+        const newInputProducts = inputProducts.map(prod => {
+            switch (prod.uid) {
+                case fragilityRef.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'fragility'
+                        }
+                    };
+                case exposureRef.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'exposure'
+                        }
+                    };
+                case laharShakemap.uid:
+                    const complexShakemap: WpsData & Product = {
+                        uid: prod.uid,
+                        value: prod.value,
+                        description: {
+                            id: 'intensity',
+                            format: 'text/xml',
+                            reference: false,
+                            type: 'complex'
+                        }
+                    };
+                    return complexShakemap;
+                case schemaEcuador.uid:
+                    return prod;
+            }
+        });
+
+        return super.execute(newInputProducts, outputProducts, doWhileExecuting);
     }
 
 }

@@ -26,8 +26,8 @@ import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRe
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from '../configuration/chile/reliability';
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator,
     damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
-import { LaharDeusTranslator, laharTransition, LaharDeus, laharDamage,
-    laharUpdatedExposure, laharShakemapDeusInput  } from '../configuration/ecuador/laharDamage';
+import { laharTransition, LaharDeus, laharDamage,
+    laharUpdatedExposure  } from '../configuration/ecuador/laharDamage';
 import { FakeDeus } from '../configuration/others/fakeDeus';
 import { VulnerabilityAndExposure } from '../configuration/chile/vulnAndExpCombined';
 import { getScenarioWpsState } from './wps.selectors';
@@ -281,7 +281,6 @@ export class WpsEffects {
                     new AshfallService(this.httpClient),
                     new LaharVulnerabilityModel(this.httpClient),
                     new LaharExposureModel(this.httpClient),
-                    LaharDeusTranslator,
                     new LaharDeus(this.httpClient),
                     new LaharReliability(this.httpClient),
                     geomerFlood,
@@ -296,7 +295,6 @@ export class WpsEffects {
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
                     assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
                     fragilityRef, exposureRef,
-                    fragilityRefDeusInput, exposureRefDeusInput, laharShakemapDeusInput,
                     laharDamage, laharTransition, laharUpdatedExposure,
                     countryEcuador, hazardLahar,
                     hydrologicalSimulation,

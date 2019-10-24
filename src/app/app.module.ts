@@ -47,6 +47,7 @@ import { ReadMoreComponent } from './components/read-more/read-more.component';
 import { Action } from '@ngrx/store';
 import { TextModalComponent } from './components/text-modal/text-modal.component';
 import { HelpersModule } from '@ukis/helpers/src/public-api';
+import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { HelpersModule } from '@ukis/helpers/src/public-api';
     BboxfieldComponent,
     RouteDocumentationComponent,
     ReadMoreComponent,
-    TextModalComponent
+    TextModalComponent,
+    DisclaimerComponent
   ],
   imports: [
     BrowserModule,

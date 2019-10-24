@@ -1,0 +1,21 @@
+
+<div style="margin: 0.25rem 0.5rem 0.25rem 0;">
+    <clr-alert [clrAlertType]="'warning'" [clrAlertClosable]="false">
+        <clr-alert-item>
+            <span class="alert-text">
+
+                    <div *ngIf="isExpanded">
+                        {{ 'This is a demonstrator!' | translate }}
+                        <clr-icon shape="caret right" (click)="isExpanded = false"></clr-icon>
+                    </div>
+                    
+                    <div *ngIf="!isExpanded">
+                        <clr-icon shape="caret left" (click)="isExpanded = true"></clr-icon>
+                    </div>
+                
+            </span>
+        </clr-alert-item>
+    </clr-alert>
+</div>
+
+

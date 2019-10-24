@@ -184,7 +184,7 @@ export class EqDeusPeru extends WpsProcess implements WizardableProcess {
         super(
             'EQ-DEUS Peru',
             'Multihazard damage estimation / EQ',
-            [lossPeru, schemaPeru, fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInputPeru].map(p => p.uid),
+            [schemaPeru, fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInputPeru].map(p => p.uid),
             [eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given earthquake.',

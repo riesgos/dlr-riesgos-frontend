@@ -51,7 +51,7 @@ import { fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInp
     DeusTranslatorPeru } from '../configuration/peru/deusTranslator';
 import { shakemapWmsOutputPeru, shakemapXmlRefOutputPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
 import { FakeDeusPeru } from '../configuration/peru/fakeDeus';
-import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru } from '../configuration/peru/eqDeus';
+import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeusPeru } from '../configuration/peru/eqDeus';
 
 
 
@@ -252,8 +252,8 @@ export class WpsEffects {
                     EqSelectionPeru,
                     new ShakygroundPeru(this.httpClient),
                     DeusTranslatorPeru,
-                    // Deus,
-                    new FakeDeusPeru(this.httpClient),
+                    new EqDeusPeru(this.httpClient),
+                    // new FakeDeusPeru(this.httpClient),
                     TsServiceTranslatorPeru,
                     new TsServicePeru(this.httpClient),
                     // Reliability

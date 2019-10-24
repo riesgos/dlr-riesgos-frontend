@@ -14,9 +14,9 @@ export const lonminPeru: Product & WpsData = {
     id: 'lonmin',
     type: 'literal',
     reference: false,
-    defaultValue: '-71.8'
+    defaultValue: '-88'
   },
-  value: '-71.8'
+  value: '-88'
 };
 
 
@@ -26,9 +26,9 @@ export const lonmaxPeru: Product & WpsData = {
     id: 'lonmax',
     type: 'literal',
     reference: false,
-    defaultValue: '-71.4'
+    defaultValue: '-66'
   },
-  value: '-71.4'
+  value: '-66'
 };
 
 
@@ -38,9 +38,9 @@ export const latminPeru: Product & WpsData = {
     id: 'latmin',
     type: 'literal',
     reference: false,
-    defaultValue: '-33.2'
+    defaultValue: '-21'
   },
-  value:  '-33.2'
+  value:  '-21'
 };
 
 
@@ -50,9 +50,9 @@ export const latmaxPeru: Product & WpsData = {
     id: 'latmax',
     type: 'literal',
     reference: false,
-    defaultValue: '-33.0'
+    defaultValue: '-0'
   },
-  value: '-33.0'
+  value: '-0'
 };
 
 

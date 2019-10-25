@@ -66,9 +66,9 @@ export class ScenariosComponent implements OnInit {
     public translator: TranslateService
   ) {
     this.scenarios = [
-      { id: 'c1', title: 'Showcase Chile', preview: `assets/images/tsunami_en.jpg`, content: '', index: 1 },
-      { id: 'e1', title: 'Showcase Ecuador', preview: `assets/images/lahar_en.jpg`, content: '', index: 2 },
-      { id: 'p1', title: 'Showcase Peru',  preview: `assets/images/tsunami_en.jpg`, content: '', index: 3 }];
+      { id: 'c1', title: 'Showcase Chile', preview: `assets/images/tsunami`, content: '', index: 1 },
+      { id: 'e1', title: 'Showcase Ecuador', preview: `assets/images/lahar`, content: '', index: 2 },
+      { id: 'p1', title: 'Showcase Peru',  preview: `assets/images/tsunami`, content: '', index: 3 }];
   }
 
   ngOnInit() {

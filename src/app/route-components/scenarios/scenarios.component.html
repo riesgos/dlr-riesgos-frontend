@@ -18,7 +18,7 @@
           <a [routerLink]="['/map']" [queryParams]="{id: scenario.id}" title="{{ scenario.id | translate }}"
             [ngClass]="{'disabled': scenario.disabled}" [tabindex]="scenario.disabled? '-1': null">
             <div class="card-img">
-              <img [src]="scenario.preview" alt="ukis logo white">
+              <img [src]="scenario.preview + '_' + (translator.currentLang | lowercase) + '.jpg'" alt="ukis logo white">
             </div>
           </a>
 

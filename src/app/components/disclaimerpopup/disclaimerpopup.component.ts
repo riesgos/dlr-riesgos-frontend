@@ -8,18 +8,18 @@ import { UtilStoreService } from '@ukis/services-util-store';
 })
 export class DisclaimerpopupComponent implements OnInit {
 
-  showModal: boolean;
+  showModal: boolean = true;
   showModalKey = 'RIESGOS_SHOW_DISCLAIMER';
 
   constructor(private storageService: UtilStoreService) { }
 
   ngOnInit() {
-    const storedVal = this.storageService.local(this.showModalKey);
-    if (storedVal !== null) {
-      this.showModal = storedVal;
-    } else {
-      this.showModal = true;
-    }
+    // const storedVal = this.storageService.local(this.showModalKey);
+    // if (storedVal !== null) {
+    //   this.showModal = storedVal;
+    // } else {
+    //   this.showModal = true;
+    // }
   }
 
   hideModalSave() {

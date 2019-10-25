@@ -82,8 +82,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     for (const layer of currentOverlays) {
                         if (inputs.includes((layer as ProductLayer).productId) || outputs.includes((layer as ProductLayer).productId)) {
                             layer.opacity = 0.6;
+                            layer.hasFocus = true;
                         } else {
-                            layer.opacity = 0.2;
+                            layer.opacity = 0.1;
+                            layer.hasFocus = false;
                         }
                         this.layersSvc.updateLayer(layer, 'Overlays');
                     }
@@ -101,17 +103,29 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 return this.layerMarshaller.productsToLayers(products);
             }),
 
-            // keep user's visibility-settings
             withLatestFrom(this.layersSvc.getOverlays()),
             map(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
+
+                // keep user's visibility-settings
                 for (const oldLayer of oldOverlays) {
                     const newLayer = newOverlays.find(nl => nl.productId === oldLayer.productId);
                     if (newLayer) {
                         newLayer.visible = oldLayer.visible;
+                        newLayer.hasFocus = oldLayer.hasFocus;
                     }
                 }
+
+                // set hasFocus=true for new layers
+                for (const newLayer of newOverlays) {
+                    const oldLayer = oldOverlays.find(ol => ol.productId === newLayer.productId);
+                    if (!oldLayer) {
+                        newLayer.hasFocus = true;
+                    }
+                }
+
                 return newOverlays;
             })
+
 
         // add to map
         ).subscribe((newOverlays: ProductLayer[]) => {

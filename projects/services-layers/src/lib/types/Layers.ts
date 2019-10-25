@@ -63,6 +63,8 @@ export interface ILayerOptions {
   filtertype?: 'Baselayers' | 'Overlays' | 'Layers';
   opacity?: number;
   visible?: boolean;
+  hasFocus?: boolean;
+  icon?: string;
   removable?: boolean;
   continuousWorld?: boolean;
   attribution?: string;
@@ -150,6 +152,8 @@ export class Layer implements ILayerOptions {
   opacity = 1;
   visible = true;
   removable = false;
+  hasFocus?: boolean;
+  icon?: string;
 
   filtertype?: 'Baselayers' | 'Overlays' | 'Layers' = 'Layers';
   continuousWorld = false;

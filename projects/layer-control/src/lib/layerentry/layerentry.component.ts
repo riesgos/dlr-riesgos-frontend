@@ -5,11 +5,21 @@ import { LayerGroup, Layer, RasterLayer, isRasterLayertype, WmsLayertype, WmtsLa
   isVectorLayer, LayersService, VectorLayer} from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import {  } from '@ukis/services-layers';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'ukis-layerentry',
   templateUrl: './layerentry.component.html',
-  styleUrls: ['./layerentry.component.scss']
+  styleUrls: ['./layerentry.component.scss'],
+  animations: [
+    trigger('layerHasFocus', [
+      state('true', style({background: 'linear-gradient(to bottom, transparent 95%, #0092d1 95%) no-repeat'})),
+      state('false', style({background: '#ededed'})),
+      transition('false => true', [ animate('300ms ease-in') ]),
+      transition('true => false', [ animate('300ms ease-out') ]),
+      transition(':enter', [ animate('300ms ease-in') ]),
+    ])
+  ]
 })
 export class LayerentryComponent implements OnInit {
   @Input('layersSvc') layersSvc: LayersService;

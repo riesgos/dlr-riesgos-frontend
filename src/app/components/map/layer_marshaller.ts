@@ -95,7 +95,9 @@ export class LayerMarshaller  {
                     const html = JSON.stringify(bboxArray);
                     callback(html);
                 }
-            }
+            },
+            // icon: 'caret',
+            hasFocus: false
         });
         layer.productId = product.uid;
         return of(layer);
@@ -125,7 +127,9 @@ export class LayerMarshaller  {
                             const html = product.description.vectorLayerAttributes.text(obj);
                             callback(html);
                         }
-                    }
+                    },
+                    // icon: 'caret',
+                    hasFocus: false
                 });
                 layer.productId = product.uid;
                 if (product.description.description) {
@@ -218,7 +222,9 @@ export class LayerMarshaller  {
                             asyncPupup: (obj, callback) => {
                                 this.getFeatureInfoPopup(obj, this.mapSvc, callback);
                             }
-                        }
+                        },
+                        // icon: 'caret',
+                        hasFocus: false
                     });
                     layer.productId = uid;
 

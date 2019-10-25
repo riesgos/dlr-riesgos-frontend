@@ -2,11 +2,9 @@
   <div class="head">
     
     <!-- layer expand icon -->
-    <clr-icon shape="angle" [dir]="openProperties?'down':'right'" class="iconButton"
+    <clr-icon [attr.shape]="layer.icon || 'angle'" [dir]="openProperties?'down':'right'" class="iconButton"
     [ngClass]="{'disabled': is_expandable()}" (click)="showProperties()" title="Details"></clr-icon>
 
-    <clr-icon *ngIf="layer.icon" [attr.shape]="layer.icon"></clr-icon>
-    
     <!-- layer title -->
     <div #ref class="item-title-replacement title" (click)="showProperties()" [title]="getLayerName(layer)" [@layerHasFocus]="layer.hasFocus">
       <ng-content></ng-content>

@@ -96,7 +96,7 @@ export class LayerMarshaller  {
                     callback(html);
                 }
             },
-            // icon: 'caret',
+            icon: 'tsunami',
             hasFocus: false
         });
         layer.productId = product.uid;
@@ -128,7 +128,7 @@ export class LayerMarshaller  {
                             callback(html);
                         }
                     },
-                    // icon: 'caret',
+                    icon: 'tsunami',
                     hasFocus: false
                 });
                 layer.productId = product.uid;
@@ -223,7 +223,7 @@ export class LayerMarshaller  {
                                 this.getFeatureInfoPopup(obj, this.mapSvc, callback);
                             }
                         },
-                        // icon: 'caret',
+                        icon: 'tsunami',
                         hasFocus: false
                     });
                     layer.productId = uid;

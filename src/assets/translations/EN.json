@@ -28,7 +28,9 @@
     "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'Additional layers'",
 
 
-    "This is a demonstrator!": "This is a demonstrator - the data displayed here is not ready for production use. ",
+    "This is a demonstrator!": "This is a prototype. The information presented in no case is suitable for planning or other practical applications.",
+    "Disclaimer": "Disclaimer",
+    "DisclaimerText": "",
 
     "System reliability after Lahar": "Infrastructure - power supply",
     "System reliability after EQ": "Infrastructure - power supply",

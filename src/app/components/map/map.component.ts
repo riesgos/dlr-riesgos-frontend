@@ -211,7 +211,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         this.subs.push(sub6);
 
-        this.printAllLayers("all layers after scenario-change");
+        // this.printAllLayers("all layers after scenario-change");
     }
 
     ngOnDestroy() {

@@ -48,6 +48,7 @@ import { Action } from '@ngrx/store';
 import { TextModalComponent } from './components/text-modal/text-modal.component';
 import { HelpersModule } from '@ukis/helpers/src/public-api';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
+import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { DisclaimerComponent } from './components/disclaimer/disclaimer.componen
     RouteDocumentationComponent,
     ReadMoreComponent,
     TextModalComponent,
-    DisclaimerComponent
+    DisclaimerComponent,
+    DisclaimerpopupComponent
   ],
   imports: [
     BrowserModule,

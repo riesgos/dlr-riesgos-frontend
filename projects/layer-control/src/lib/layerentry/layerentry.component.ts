@@ -13,8 +13,8 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   styleUrls: ['./layerentry.component.scss'],
   animations: [
     trigger('layerHasFocus', [
-      state('true', style({background: 'linear-gradient(to bottom, transparent 95%, #0092d1 95%) no-repeat'})),
-      state('false', style({background: '#ededed'})),
+      state('true', style({'font-weight': '500', 'background': '#d2d2d2'})),
+      state('false', style({'font-weight': '100', 'background': '#ededed'})),
       transition('false => true', [ animate('300ms ease-in') ]),
       transition('true => false', [ animate('300ms ease-out') ]),
       transition(':enter', [ animate('300ms ease-in') ]),

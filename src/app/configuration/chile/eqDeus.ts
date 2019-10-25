@@ -162,8 +162,8 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'damage-state', '# buildings');
-                return `<h4>Updated exposure ${props['name']}</h4>${anchor.innerHTML}`;
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '# edificios');
+                return `<h4>Exposición actualizada ${props['name']}</h4>${anchor.innerHTML}`;
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'

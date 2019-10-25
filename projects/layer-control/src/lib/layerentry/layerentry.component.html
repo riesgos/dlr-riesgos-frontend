@@ -1,5 +1,9 @@
 <div class="layer">
   <div class="head">
+
+
+
+
     <!-- layer expand icon -->
     <clr-icon shape="angle" [dir]="openProperties?'down':'right'" class="iconButton"
       [ngClass]="{'disabled': is_expandable()}" (click)="showProperties()" title="Details"></clr-icon>
@@ -9,7 +13,7 @@
       <ng-content></ng-content>
     </div>
     <span *ngIf="ref.children.length == 0" class="title" [title]="getLayerName(layer)" (click)="showProperties()">
-      {{getLayerName(layer) | stripnumbers | translate }}
+      {{ getLayerName(layer) | stripnumbers | translate }}
     </span>
 
     <!-- setLayerIndex // for reversed layergroups on ngFor up is down -->

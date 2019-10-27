@@ -96,7 +96,7 @@ export class LayerMarshaller  {
                     callback(html);
                 }
             },
-            icon: 'tsunami',
+            icon: product.description.icon,
             hasFocus: false
         });
         layer.productId = product.uid;
@@ -128,7 +128,7 @@ export class LayerMarshaller  {
                             callback(html);
                         }
                     },
-                    icon: 'tsunami',
+                    icon: product.description.icon,
                     hasFocus: false
                 });
                 layer.productId = product.uid;
@@ -223,7 +223,7 @@ export class LayerMarshaller  {
                                 this.getFeatureInfoPopup(obj, this.mapSvc, callback);
                             }
                         },
-                        icon: 'tsunami',
+                        icon: description.icon,
                         hasFocus: false
                     });
                     layer.productId = uid;

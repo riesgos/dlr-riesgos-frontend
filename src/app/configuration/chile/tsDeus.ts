@@ -6,11 +6,11 @@ import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { loss, eqUpdatedExposure, eqDamage } from './eqDeus';
 import { schema } from './exposure';
-import { fragilityRefDeusInput } from './deusTranslator';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
+import { fragilityRef } from './modelProp';
 
 
 
@@ -175,7 +175,7 @@ export class TsDeus extends WpsProcess implements WizardableProcess {
         super(
             'TS-DEUS',
             'Multihazard damage estimation / TS',
-            [eqDamage, schema, fragilityRefDeusInput, tsShakemap, eqUpdatedExposure].map(p => p.uid),
+            [eqDamage, schema, fragilityRef, tsShakemap, eqUpdatedExposure].map(p => p.uid),
             [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given earthquake.',

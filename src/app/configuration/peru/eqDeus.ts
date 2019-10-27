@@ -1,14 +1,16 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { schemaPeru } from './exposure';
+import { schemaPeru, exposureRefPeru } from './exposure';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInputPeru } from './deusTranslator';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
+import { fragilityRefPeru } from './modelProp';
+import { shakemapXmlRefOutputPeru } from './shakyground';
+import { Observable } from 'rxjs';
 
 
 
@@ -187,7 +189,7 @@ export class EqDeusPeru extends WpsProcess implements WizardableProcess {
         super(
             'EQ-DEUS Peru',
             'Multihazard damage estimation / EQ',
-            [schemaPeru, fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInputPeru].map(p => p.uid),
+            [schemaPeru, fragilityRefPeru, shakemapXmlRefOutputPeru, exposureRefPeru].map(p => p.uid),
             [eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given earthquake.',
@@ -196,5 +198,35 @@ export class EqDeusPeru extends WpsProcess implements WizardableProcess {
             http,
             new ProcessStateUnavailable()
         );
+    }
+
+
+    execute(
+        inputProducts: Product[],
+        outputProducts?: Product[],
+        doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
+
+        const shemaInstance = inputProducts.find(p => p.uid === schemaPeru.uid);
+        const renamedFragility = {
+            ... inputProducts.find(p => p.uid === fragilityRefPeru.uid),
+            uid: 'fragility'
+        };
+        const renamedShakemap = {
+            ... inputProducts.find(p => p.uid === shakemapXmlRefOutputPeru.uid),
+            uid: 'intensity'
+        };
+        const renamedExposure = {
+            ... inputProducts.find(p => p.uid === exposureRefPeru.uid),
+            uid: 'exposure'
+        };
+
+        const newInputs = [
+            shemaInstance,
+            renamedFragility,
+            renamedShakemap,
+            renamedExposure
+        ];
+
+        return super.execute(newInputs, outputProducts, doWhileExecuting);
     }
 }

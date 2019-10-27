@@ -1,14 +1,16 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { schema} from './exposure';
+import { schema, exposureRef} from './exposure';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from './deusTranslator';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { fragilityRef } from './modelProp';
+import { shakemapXmlRefOutput } from './shakyground';
 
 
 
@@ -187,7 +189,7 @@ export class EqDeus extends WpsProcess implements WizardableProcess {
         super(
             'EQ-DEUS',
             'Multihazard damage estimation / EQ',
-            [schema, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput].map(p => p.uid),
+            [schema, fragilityRef, shakemapXmlRefOutput, exposureRef].map(p => p.uid),
             [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given earthquake.',
@@ -196,5 +198,34 @@ export class EqDeus extends WpsProcess implements WizardableProcess {
             http,
             new ProcessStateUnavailable()
         );
+    }
+
+    execute(
+        inputProducts: Product[],
+        outputProducts?: Product[],
+        doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
+
+        const shemaInstance = inputProducts.find(p => p.uid === schema.uid);
+        const renamedFragility = {
+            ... inputProducts.find(p => p.uid === fragilityRef.uid),
+            uid: 'fragility'
+        };
+        const renamedShakemap = {
+            ... inputProducts.find(p => p.uid === shakemapXmlRefOutput.uid),
+            uid: 'intensity'
+        };
+        const renamedExposure = {
+            ... inputProducts.find(p => p.uid === exposureRef.uid),
+            uid: 'exposure'
+        };
+
+        const newInputs = [
+            shemaInstance,
+            renamedFragility,
+            renamedShakemap,
+            renamedExposure
+        ];
+
+        return super.execute(newInputs, outputProducts, doWhileExecuting);
     }
 }

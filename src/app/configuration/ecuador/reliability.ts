@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { WpsData } from '@ukis/services-wps/src/public-api';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { shakemapRefDeusInput } from '../chile/deusTranslator';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { laharShakemap } from './lahar';

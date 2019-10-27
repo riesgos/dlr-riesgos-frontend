@@ -22,7 +22,6 @@ import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/c
 import { hydrologicalSimulation, geomerFlood, durationTiff,
     velocityTiff, depthTiff, geomerFloodWcsProvider } from '../configuration/ecuador/geomerHydrological';
 import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure } from '../configuration/chile/eqDeus';
-import { DeusTranslator, fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput } from '../configuration/chile/deusTranslator';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from '../configuration/chile/reliability';
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator,
     damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
@@ -47,8 +46,6 @@ import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru, fragilityRefPeru }
 import { TsServiceTranslatorPeru, latPeru, lonPeru, magPeru, TsServicePeru,
     tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../configuration/peru/eqselection';
-import { fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInputPeru,
-    DeusTranslatorPeru } from '../configuration/peru/deusTranslator';
 import { shakemapWmsOutputPeru, shakemapXmlRefOutputPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
 import { FakeDeusPeru } from '../configuration/peru/fakeDeus';
 import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeusPeru } from '../configuration/peru/eqDeus';
@@ -219,7 +216,6 @@ export class WpsEffects {
                     new QuakeLedger(this.httpClient),
                     EqSelection,
                     new Shakyground(this.httpClient),
-                    DeusTranslator,
                     // EqDeus,
                     new FakeDeus(this.httpClient),
                     TsServiceTranslator,
@@ -232,7 +228,6 @@ export class WpsEffects {
                     lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
                     assetcategory, losscategory, taxonomies,
                     exposureRef, fragilityRef,
-                    fragilityRefDeusInput, shakemapRefDeusInput, exposureRefDeusInput,
                     new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
@@ -251,7 +246,6 @@ export class WpsEffects {
                     new QuakeLedgerPeru(this.httpClient),
                     EqSelectionPeru,
                     new ShakygroundPeru(this.httpClient),
-                    DeusTranslatorPeru,
                     new EqDeusPeru(this.httpClient),
                     // new FakeDeusPeru(this.httpClient),
                     TsServiceTranslatorPeru,
@@ -262,7 +256,6 @@ export class WpsEffects {
                     lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
                     fragilityRefPeru, exposureRefPeru,
-                    fragilityRefDeusInputPeru, shakemapRefDeusInputPeru, exposureRefDeusInputPeru,
                     new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
                     lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
                     selectedEqsPeru, userinputSelectedEqPeru,

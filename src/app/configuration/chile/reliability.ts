@@ -4,11 +4,12 @@ import { vei } from '../ecuador/lahar';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { shakemapRefDeusInput } from './deusTranslator';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import { shakemapXmlRefOutput } from './shakyground';
+import { Observable } from 'rxjs';
 
 
 
@@ -105,7 +106,7 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
         super(
             'Reliability',
             'System reliability after EQ',
-            [shakemapRefDeusInput, countryChile, hazardEq].map(p => p.uid),
+            [shakemapXmlRefOutput, countryChile, hazardEq].map(p => p.uid),
             [damageConsumerAreas].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
             'Process for evaluating the reliability of infrastructure networks',
@@ -119,5 +120,24 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
             providerUrl: 'https://www.tum.de/nc/en/',
             shape: 'router'
         };
+    }
+
+    execute(
+        inputProducts: Product[],
+        outputProducts?: Product[],
+        doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
+
+        const newInputs = inputProducts.map(p => {
+            if (p.uid === shakemapXmlRefOutput.uid) {
+                return {
+                    ... p,
+                    uid: 'intensity'
+                };
+            } else {
+                return p;
+            }
+        });
+
+        return super.execute(newInputs, outputProducts, doWhileExecuting);
     }
 }

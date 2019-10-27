@@ -1,7 +1,6 @@
 import { AutorunningProcess, ProcessStateUnavailable, Product, WpsProcess } from 'src/app/wps/wps.datatypes';
 import { fragilityRef, } from '../chile/modelProp';
 import { exposureRef } from '../chile/exposure';
-import { fragilityRefDeusInput, exposureRefDeusInput } from '../chile/deusTranslator';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { laharShakemap } from './lahar';
 import { losscategoryEcuador } from './vulnerability';

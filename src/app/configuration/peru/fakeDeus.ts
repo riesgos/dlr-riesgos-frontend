@@ -1,5 +1,4 @@
 import { ExecutableProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { fragilityRefDeusInputPeru, exposureRefDeusInputPeru, shakemapRefDeusInputPeru } from './deusTranslator';
 import { eqDamagePeru, eqUpdatedExposurePeru, eqTransitionPeru, EqDeusPeru } from './eqDeus';
 import { Observable, of } from 'rxjs';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';

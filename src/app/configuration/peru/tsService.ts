@@ -7,7 +7,7 @@ import { selectedEqPeru } from './eqselection';
 
 
 
-export const latPeru: WpsData & Product = {
+const latPeru: WpsData & Product = {
     uid: 'auto_lat_peru',
     description: {
         id: 'lat',
@@ -17,7 +17,7 @@ export const latPeru: WpsData & Product = {
     value: null
 };
 
-export const lonPeru: WpsData & Product = {
+const lonPeru: WpsData & Product = {
     uid: 'auto_lon_peru',
     description: {
         id: 'lon',
@@ -27,7 +27,7 @@ export const lonPeru: WpsData & Product = {
     value: null
 };
 
-export const magPeru: WpsData & Product = {
+const magPeru: WpsData & Product = {
     uid: 'auto_mag_peru',
     description: {
         id: 'mag',
@@ -48,33 +48,6 @@ export const tsWmsPeru: WpsData & Product = {
     },
     value: null
 };
-
-
-export const TsServiceTranslatorPeru: AutorunningProcess = {
-    uid: 'TS_service_translator_peru',
-    name: 'TS_service_translator',
-    requiredProducts: [selectedEqPeru.uid],
-    providedProducts: [latPeru, lonPeru, magPeru].map(p => p.uid),
-    state: new ProcessStateUnavailable(),
-    onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        let outprods: Product[] = [];
-        if (newProduct.uid === selectedEqPeru.uid) {
-            const newProds = [{
-                ... lonPeru,
-                value: newProduct.value[0].features[0].geometry.coordinates[0]
-            }, {
-                ...latPeru,
-                value: newProduct.value[0].features[0].geometry.coordinates[1]
-            }, {
-                ...magPeru,
-                value: newProduct.value[0].features[0].properties['magnitude.mag.value']
-            }];
-            outprods = outprods.concat(newProds);
-        }
-        return outprods;
-    }
-};
-
 
 
 export class TsWmsServicePeru extends WpsProcess {
@@ -148,15 +121,27 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
         this.state = new ProcessStateUnavailable();
         this.tsWmsService = new TsWmsServicePeru(httpClient);
         this.tsShakemapService = new TsShakemapServicePeru(httpClient);
-        this.requiredProducts = this.tsWmsService.requiredProducts.concat(this.tsShakemapService.requiredProducts);
+        this.requiredProducts = [selectedEqPeru.uid],
         this.providedProducts = this.tsWmsService.providedProducts.concat(this.tsShakemapService.providedProducts);
     }
 
     execute = (inputs: Product[], outputs: Product[], doWhileExecuting): Observable<Product[]> => {
 
-        const inputsWms = inputs.filter(i => this.tsWmsService.requiredProducts.includes(i.uid));
+        const theSelectedEq = inputs.find(p => p.uid === selectedEqPeru.uid);
+        const newInputs = [{
+            ... lonPeru,
+            value: theSelectedEq.value[0].features[0].geometry.coordinates[0]
+        }, {
+            ...latPeru,
+            value: theSelectedEq.value[0].features[0].geometry.coordinates[1]
+        }, {
+            ...magPeru,
+            value: theSelectedEq.value[0].features[0].properties['magnitude.mag.value']
+        }];
+
+        const inputsWms = newInputs;
         const outputsWms = outputs.filter(i => this.tsWmsService.providedProducts.includes(i.uid));
-        const inputsShkmp = inputs.filter(i => this.tsShakemapService.requiredProducts.includes(i.uid));
+        const inputsShkmp = newInputs;
         const outputsShkmp = outputs.filter(i => this.tsShakemapService.providedProducts.includes(i.uid));
 
         const proc1$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);

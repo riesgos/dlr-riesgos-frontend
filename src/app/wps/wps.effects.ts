@@ -12,7 +12,7 @@ import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin,
 import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru, mminPeru, mmaxPeru,
     zminPeru, zmaxPeru, pPeru, selectedEqsPeru } from '../configuration/peru/quakeledger';
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
-import { TsService, tsWms, lat, lon, mag, TsServiceTranslator, tsShakemap } from '../configuration/chile/tsService';
+import { TsService, tsWms, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { LaharWps, direction, laharWms, vei, parameter, laharShakemap } from '../configuration/ecuador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
@@ -43,8 +43,7 @@ import { lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPe
     querymodePeru, exposureRefPeru } from '../configuration/peru/exposure';
 import { VulnerabilityAndExposurePeru } from '../configuration/peru/vulnAndExpCombined';
 import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru, fragilityRefPeru } from '../configuration/peru/modelProp';
-import { TsServiceTranslatorPeru, latPeru, lonPeru, magPeru, TsServicePeru,
-    tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
+import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../configuration/peru/eqselection';
 import { shakemapWmsOutputPeru, shakemapXmlRefOutputPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
 import { FakeDeusPeru } from '../configuration/peru/fakeDeus';
@@ -218,7 +217,6 @@ export class WpsEffects {
                     new Shakyground(this.httpClient),
                     // EqDeus,
                     new FakeDeus(this.httpClient),
-                    TsServiceTranslator,
                     new TsService(this.httpClient),
                     // TsDeus,
                     new EqReliability(this.httpClient),
@@ -232,7 +230,6 @@ export class WpsEffects {
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
                     loss, eqDamage, eqTransition, eqUpdatedExposure,
-                    lat, lon, mag,
                     tsWms, tsShakemap,
                     countryChile, hazardEq,
                     damageConsumerAreas,
@@ -248,7 +245,6 @@ export class WpsEffects {
                     new ShakygroundPeru(this.httpClient),
                     new EqDeusPeru(this.httpClient),
                     // new FakeDeusPeru(this.httpClient),
-                    TsServiceTranslatorPeru,
                     new TsServicePeru(this.httpClient),
                     // Reliability
                 ];
@@ -260,7 +256,6 @@ export class WpsEffects {
                     lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
                     selectedEqsPeru, userinputSelectedEqPeru,
                     selectedEqPeru, shakemapWmsOutputPeru, shakemapXmlRefOutputPeru,
-                    latPeru, lonPeru, magPeru,
                     // country, hazard,
                     tsWmsPeru, tsShakemapPeru,
                     // damage_consumer_areas

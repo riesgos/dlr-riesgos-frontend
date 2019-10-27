@@ -4,11 +4,10 @@ import { WpsData, WpsClient } from 'projects/services-wps/src/public-api';
 import { selectedEq } from './eqselection';
 import { Observable, forkJoin } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
 
 
 
-export const lat: WpsData & Product = {
+const lat: WpsData & Product = {
     uid: 'auto_lat',
     description: {
         id: 'lat',
@@ -18,7 +17,7 @@ export const lat: WpsData & Product = {
     value: null
 };
 
-export const lon: WpsData & Product = {
+const lon: WpsData & Product = {
     uid: 'auto_lon',
     description: {
         id: 'lon',
@@ -28,7 +27,7 @@ export const lon: WpsData & Product = {
     value: null
 };
 
-export const mag: WpsData & Product = {
+const mag: WpsData & Product = {
     uid: 'auto_mag',
     description: {
         id: 'mag',
@@ -49,33 +48,6 @@ export const tsWms: WpsData & Product = {
     },
     value: null
 };
-
-
-export const TsServiceTranslator: AutorunningProcess = {
-    uid: 'TS_service_translator',
-    name: 'TS_service_translator',
-    requiredProducts: [selectedEq.uid],
-    providedProducts: [lat, lon, mag].map(p => p.uid),
-    state: new ProcessStateUnavailable(),
-    onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        let outprods: Product[] = [];
-        if (newProduct.uid === 'EqSelection_quakeMLFile') {
-            const newProds = [{
-                ... lon,
-                value: newProduct.value[0].features[0].geometry.coordinates[0]
-            }, {
-                ...lat,
-                value: newProduct.value[0].features[0].geometry.coordinates[1]
-            }, {
-                ...mag,
-                value: newProduct.value[0].features[0].properties['magnitude.mag.value']
-            }];
-            outprods = outprods.concat(newProds);
-        }
-        return outprods;
-    }
-};
-
 
 
 export class TsWmsService extends WpsProcess {
@@ -149,15 +121,28 @@ export class TsService implements WizardableProcess, ExecutableProcess {
         this.state = new ProcessStateUnavailable();
         this.tsWmsService = new TsWmsService(httpClient);
         this.tsShakemapService = new TsShakemapService(httpClient);
-        this.requiredProducts = this.tsWmsService.requiredProducts.concat(this.tsShakemapService.requiredProducts);
+        this.requiredProducts = [selectedEq.uid],
         this.providedProducts = this.tsWmsService.providedProducts.concat(this.tsShakemapService.providedProducts);
     }
 
     execute = (inputs: Product[], outputs: Product[], doWhileExecuting): Observable<Product[]> => {
 
-        const inputsWms = inputs.filter(i => this.tsWmsService.requiredProducts.includes(i.uid));
+        const theSelectedEq = inputs.find(p => p.uid === selectedEq.uid);
+        const newInputs = [{
+            ... lon,
+            value: theSelectedEq.value[0].features[0].geometry.coordinates[0]
+        }, {
+            ...lat,
+            value: theSelectedEq.value[0].features[0].geometry.coordinates[1]
+        }, {
+            ...mag,
+            value: theSelectedEq.value[0].features[0].properties['magnitude.mag.value']
+        }];
+
+
+        const inputsWms = newInputs;
         const outputsWms = outputs.filter(i => this.tsWmsService.providedProducts.includes(i.uid));
-        const inputsShkmp = inputs.filter(i => this.tsShakemapService.requiredProducts.includes(i.uid));
+        const inputsShkmp = newInputs;
         const outputsShkmp = outputs.filter(i => this.tsShakemapService.providedProducts.includes(i.uid));
 
         const proc1$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);

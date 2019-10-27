@@ -45,6 +45,7 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerData = {
         id: 'damage_consumer_areas',
         format: 'application/vnd.geo+json',
         name: 'Damage to consumer areas',
+        icon: 'router',
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {

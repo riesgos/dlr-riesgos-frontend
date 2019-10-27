@@ -50,6 +50,7 @@ export const ashfall: WpsData & Product & VectorLayerData = {
     uid: 'ashfall',
     description: {
         id: 'ashfall',
+        icon: 'volcanoe',
         reference: false,
         type: 'complex',
         format: 'application/vnd.geo+json',

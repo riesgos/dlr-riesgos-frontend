@@ -10,6 +10,7 @@ export const shakemapWmsOutput: WpsData & WmsLayerData = {
     uid: 'ShakygroundProcess_shakeMapFile_wms',
     description: {
         id: 'shakeMapFile',
+        icon: 'earthquake',
         name: 'shakemap',
         type: 'complex',
         reference: false,

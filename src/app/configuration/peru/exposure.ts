@@ -98,6 +98,7 @@ export const exposureRefPeru: VectorLayerData & WpsData & Product = {
   uid: 'AssetmasterProcess_Exposure_Peru',
   description: {
     id: 'selectedRowsGeoJson',
+    icon: 'building',
     type: 'complex',
     reference: false,
     format: 'application/json',

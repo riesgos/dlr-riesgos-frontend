@@ -1,5 +1,6 @@
 import { ProductDescription, Product } from 'src/app/wps/wps.datatypes';
 import { WpsBboxData, WpsBboxValue } from 'projects/services-wps/src/public-api';
+import { shape } from '../config_wizard/wizardable_processes';
 
 
 
@@ -7,6 +8,7 @@ export interface BboxLayerDescription extends ProductDescription {
     type: 'bbox';
     name: string;
     id: string;
+    icon?: shape;
 }
 
 
@@ -36,6 +38,7 @@ export interface VectorLayerDescription extends ProductDescription {
         sldFile?: string
     };
     description?: string;
+    icon?: shape;
 }
 
 export interface VectorLayerData extends Product {
@@ -60,6 +63,7 @@ export interface WmsLayerDescription extends ProductDescription {
     styles?: string[];
     id: string;
     description?: string;
+    icon?: shape;
 }
 
 export interface WmsLayerData extends Product {

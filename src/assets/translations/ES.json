@@ -119,7 +119,7 @@
     "How to use this site ...": "El asistente de configuración en el lado izquierdo de la pantalla contiene una lista de todos los procesos por los que pasará la simulación. Los procesos se colorean de acuerdo al estado actual de la simulación. Si un proceso requiere seleccionar opciones para ejecutarse, éste tendrá un formulario para seleccionarlas. Cuando esté satisfecho son su selección, presione \"enviar\" para ejecutar el proceso.",
     "More on how to use this": "A medida que avanza la simulación, los resultados se acumularán en el control de capas, al lado derecho de la pantalla. Los resultados se muestran en el mapa y se enumeran en el control de capas. En el control de capas, puede cambiar el orden de las capas, alterar su opacidad, etc. En \"Capas adicionales\" puede encontrar más información.",
 
-    "This is a demonstrator!": "Este es un demostrador: los datos que se muestran aquí no están listos para su uso en producción.",
+    "This is a demonstrator!": "Este es un prototipo. La información presentada en ningún caso es apto para la planificación u otras aplicaciones prácticas.",
 
     "The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.": "El servicio lahar anticipa el área inundada por lahares del volcán Cotopaxi y se basa en resultados de simulación calculados previamente para la altura del flujo, la velocidad del flujo, la presión del flujo, la erosión y la deposición. El software de simulación utilizado para el modelado de lahar es el modelo numérico basado físicamente RAMMS :: DEBRIS FLOW.",
     "mwhLand global": "Altura máxima de ola en tierra - valor global",
@@ -130,6 +130,10 @@
     "Transition": "Transición",
     
     "Quickstart": "Inicio rápido",
+
+    "Disclaimer": "Descargo de responsabilidad",
+    "DisclaimerText": "Este es el prototipo de una herramienta de exploración multiriesgo y aún se encuentra en fase de construcción. IMPORTANTE: los resultados mostrados todavía no están consolidados y en ningún caso son aptos para la planificación u otras aplicaciones prácticas.",
+    "Understood and accept": "Entendido y aceptado",
 
     "System reliability after Lahar": "Infraestructura – red eléctrica",
 

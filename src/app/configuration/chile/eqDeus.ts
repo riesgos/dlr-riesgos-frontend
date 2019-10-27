@@ -49,7 +49,8 @@ export const eqDamage: VectorLayerData & WpsData & Product = {
                 return `<h4>Pérdida ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
             }
         },
-        description: 'Concrete damage in USD.'
+        description: 'Concrete damage in USD.',
+        icon: 'dot-circle'
     },
     value: null
 };
@@ -58,6 +59,7 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
     uid: 'transition',
     description: {
         id: 'transition',
+        icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',
@@ -110,6 +112,7 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
         id: 'updated_exposure',
         reference: false,
         type: 'complex',
+        icon: 'dot-circle',
         format: 'application/json',
         name: 'updated exposure',
         vectorLayerAttributes: {

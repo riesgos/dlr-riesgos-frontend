@@ -63,6 +63,7 @@ export const laharWms: WmsLayerData & WpsData = {
     uid: 'lahar_wms',
     description: {
         id: 'wms',
+        icon: 'avalance',
         name: 'laharWms',
         type: 'literal',  // this is deliberate. layer-wps returns this value as a litteral, not as a complex.
         reference: false,

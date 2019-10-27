@@ -71,6 +71,7 @@ export const damageManzanasGeojson: VectorLayerData & WpsData & Product = {
     uid: 'damageManzanasGeojson',
     description: {
         id: 'damage_manzanas',
+        icon: 'tsunami',
         reference: false,
         type: 'complex',
         format: 'application/vnd.geo+json',

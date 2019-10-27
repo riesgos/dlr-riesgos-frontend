@@ -27,6 +27,7 @@ export const eqDamagePeru: VectorLayerData & WpsData & Product = {
     uid: 'damagePeru',
     description: {
         id: 'damage',
+        icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',
@@ -59,6 +60,7 @@ export const eqTransitionPeru: VectorLayerData & WpsData & Product = {
     description: {
         id: 'transition',
         reference: false,
+        icon: 'dot-circle',
         type: 'complex',
         format: 'application/json',
         name: 'transition',
@@ -109,6 +111,7 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
     description: {
         id: 'updated_exposure',
         reference: false,
+        icon: 'dot-circle',
         type: 'complex',
         format: 'application/json',
         name: 'updated exposure',

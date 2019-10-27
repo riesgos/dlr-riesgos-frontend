@@ -20,6 +20,7 @@ export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsDat
             id: 'input-boundingbox',
             name: 'eq-selection: boundingbox',
             type: 'bbox',
+            icon: 'earthquake',
             reference: false,
             defaultValue: {
                 crs: 'EPSG:4326',
@@ -167,6 +168,7 @@ export const selectedEqs: VectorLayerData & WpsData = {
     uid: 'QuakeledgerProcess_selectedRows',
     description: {
         id: 'selectedRows',
+        icon: 'earthquake',
         name: 'available earthquakes',
         format: 'application/vnd.geo+json',
         reference: false,

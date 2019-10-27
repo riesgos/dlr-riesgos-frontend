@@ -3,8 +3,11 @@ import { WpsVerion } from '@ukis/services-wps/src/public-api';
 import { HttpClient } from '@angular/common/http';
 
 
+export type shape = 'dot-circle' | 'earthquake' | 'avalance' | 'tsunami' | 'volcanoe'
+| 'critical_infrastructure' | 'vulnerability' | 'exposure' | 'bolt' | 'flame' | 'bullseye' | 'target' | 'router' | 'building';
+
 export interface WizardProperties {
-    shape: 'dot-circle' | 'earthquake' | 'avalance' | 'tsunami' | 'volcanoe' | 'critical_infrastructure' | 'vulnerability' | 'exposure' | 'bolt' | 'flame' | 'bullseye' | 'target' | 'router' | 'building';
+    shape: shape;
     providerName: string;
     providerUrl: string;
 }

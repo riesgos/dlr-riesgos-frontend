@@ -15,6 +15,7 @@ export const userinputSelectedEqPeru: FeatureSelectUconfProduct & VectorLayerDat
     uid: 'user_selectedRowPeru',
     description: {
         id: 'selectedRow',
+        icon: 'earthquake',
         options: {},
         defaultValue: null,
         reference: false,

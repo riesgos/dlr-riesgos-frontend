@@ -66,6 +66,7 @@ export const laharDamage: VectorLayerData & WpsData & Product = {
     uid: 'lahar_damage',
     description: {
         id: 'damage',
+        icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',
@@ -97,6 +98,7 @@ export const laharTransition: VectorLayerData & WpsData & Product = {
     uid: 'lahar_transition',
     description: {
         id: 'transition',
+        icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',
@@ -147,6 +149,7 @@ export const laharUpdatedExposure: VectorLayerData & WpsData & Product = {
     uid: 'lahar_updated_exposure',
     description: {
         id: 'updated_exposure',
+        icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',

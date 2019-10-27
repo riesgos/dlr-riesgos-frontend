@@ -43,6 +43,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
     uid: 'systemreliability_damage_consumerareas',
     description: {
         id: 'damage_consumer_areas',
+        icon: 'router',
         format: 'application/vnd.geo+json',
         name: 'Damage to consumer areas',
         reference: false,

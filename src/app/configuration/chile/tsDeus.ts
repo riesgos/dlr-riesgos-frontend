@@ -19,6 +19,7 @@ export const tsDamage: VectorLayerData & WpsData & Product = {
     description: {
         id: 'damage',
         reference: false,
+        icon: 'tsunami',
         type: 'complex',
         format: 'application/json',
         name: 'damage',
@@ -49,6 +50,7 @@ export const tsTransition: VectorLayerData & WpsData & Product = {
     uid: 'tsTransition',
     description: {
         id: 'transition',
+        icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',
@@ -99,6 +101,7 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
     uid: 'tsUpdatedExposure',
     description: {
         id: 'updated_exposure',
+        icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',

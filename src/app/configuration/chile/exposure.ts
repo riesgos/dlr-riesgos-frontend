@@ -104,6 +104,7 @@ export const exposureRef: VectorLayerData & WpsData & Product = {
     id: 'selectedRowsGeoJson',
     type: 'complex',
     reference: false,
+    icon: 'building',
     format: 'application/json',
     name: 'Exposure',
     vectorLayerAttributes: {

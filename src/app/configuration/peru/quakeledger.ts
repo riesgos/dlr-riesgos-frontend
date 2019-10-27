@@ -16,6 +16,7 @@ export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerData, Wp
     constructor() {
         this.description = {
             id: 'input-boundingbox',
+            icon: 'earthquake',
             name: 'eq-selection: boundingbox',
             type: 'bbox',
             reference: false,
@@ -167,6 +168,7 @@ export const selectedEqsPeru: VectorLayerData & WpsData = {
     uid: 'QuakeledgerProcess_selectedRowsPeru',
     description: {
         id: 'selectedRows',
+        icon: 'earthquake',
         name: 'available earthquakes',
         format: 'application/vnd.geo+json',
         reference: false,

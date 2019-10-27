@@ -12,6 +12,7 @@ export const physicalImpact: VectorLayerData = {
         format: 'application/vnd.geo+json',
         name: 'Physical Impact',
         type: 'complex',
+        icon: 'dot-circle',
         vectorLayerAttributes: {}
     },
     value: null

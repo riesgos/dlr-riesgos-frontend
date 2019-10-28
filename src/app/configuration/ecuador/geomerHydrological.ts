@@ -38,19 +38,24 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
             return of([{
                 ...hydrologicalSimulation,
                 value: [
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_at_wdmax_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326'
+                        'https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_vei4_north&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
+                        'https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_atwdmax_vei4_north&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
+                        'https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_vei4_north&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
+                        'https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_vei4_south&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
+                        'https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_atwdmax_vei4_south&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
+                        'https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_vei4_south&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326'
                 ]
             }]);
         } else {
             return of([{
                 ...hydrologicalSimulation,
                 value: [
+                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
+                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_at_wdmax_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
+                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
                     'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_latacunga_city&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
                     'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_at_wdmax_latacunga_city&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
                     'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_latacunga_city&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326'
-                    // 'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?version=1.3.0&service=wms&request=GetCapabilities'
                 ]
             }]);
         }

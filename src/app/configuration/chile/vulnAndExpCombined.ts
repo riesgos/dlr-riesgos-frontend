@@ -43,7 +43,7 @@ export class VulnerabilityAndExposure implements ExecutableProcess, WizardablePr
         const proc1$ = this.vulnerabilityModel.execute(inputsVul, outputsVul, doWhileExecuting);
         const proc2$ = this.exposureModel.execute(inputsExp, outputsExp, doWhileExecuting);
 
-        return forkJoin(proc1$, proc2$).pipe(
+        return forkJoin([proc1$, proc2$]).pipe(
             map((results: Product[][]) => {
                 const flattened: Product[] = [];
                 for (const result of results) {

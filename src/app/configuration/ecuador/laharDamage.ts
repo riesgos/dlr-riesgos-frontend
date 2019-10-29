@@ -13,6 +13,7 @@ import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { laharHeightShakemapRef } from './laharWrapper';
 
 
 
@@ -176,7 +177,7 @@ export class LaharDeus extends WpsProcess implements WizardableProcess {
         super(
             'Lahar-DEUS',
             'Multihazard damage estimation / Lahar',
-            [schemaEcuador, fragilityRef, laharShakemap, exposureRef].map(p => p.uid),
+            [schemaEcuador, fragilityRef, laharHeightShakemapRef, exposureRef].map(p => p.uid),
             [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given lahar.',

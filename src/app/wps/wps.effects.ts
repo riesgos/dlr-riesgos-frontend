@@ -14,7 +14,7 @@ import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru, m
 import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
 import { TsService, tsWms, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
-import { LaharWps, direction, laharWms, vei, parameter, laharShakemap } from '../configuration/ecuador/lahar';
+import { direction, vei } from '../configuration/ecuador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
         assettype, schema, querymode } from '../configuration/chile/exposure';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityRef } from '../configuration/chile/modelProp';
@@ -48,6 +48,7 @@ import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../con
 import { shakemapWmsOutputPeru, shakemapXmlRefOutputPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
 import { FakeDeusPeru } from '../configuration/peru/fakeDeus';
 import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeusPeru } from '../configuration/peru/eqDeus';
+import { LaharWrapper, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef } from '../configuration/ecuador/laharWrapper';
 
 
 
@@ -264,7 +265,7 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     VeiProvider,
-                    new LaharWps(this.httpClient),
+                    new LaharWrapper(this.httpClient),
                     new AshfallService(this.httpClient),
                     new LaharVulnerabilityModel(this.httpClient),
                     new LaharExposureModel(this.httpClient),
@@ -278,7 +279,8 @@ export class WpsEffects {
                 products = [
                     selectableVei, vei, probability,
                     ashfall,
-                    direction, parameter, laharWms, laharShakemap,
+                    direction,
+                    laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
                     assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
                     fragilityRef, exposureRef,

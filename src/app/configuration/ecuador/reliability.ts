@@ -7,6 +7,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { laharShakemap } from './lahar';
 import { Observable } from 'rxjs';
+import { laharVelocityShakemapRef, laharHeightShakemapRef } from './laharWrapper';
 
 
 
@@ -97,7 +98,7 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
         super(
             'Reliability',
             'System reliability after Lahar',
-            [laharShakemap, countryEcuador, hazardLahar].map(p => p.uid),
+            [laharHeightShakemapRef, laharVelocityShakemapRef, countryEcuador, hazardLahar].map(p => p.uid),
             [damageConsumerAreasEcuador].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
             'Process for evaluating the reliability of infrastructure networks',

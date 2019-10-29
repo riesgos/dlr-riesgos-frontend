@@ -24,7 +24,7 @@ export const hydrologicalSimulation: WmsLayerData & WpsData = {
 export const geomerFlood: WizardableProcess & ExecutableProcess = {
     uid: 'geomerHydrological',
     name: 'Flood',
-    requiredProducts: [direction, laharWms, vei].map(p => p.uid),
+    requiredProducts: [direction, vei].map(p => p.uid),
     providedProducts: [hydrologicalSimulation.uid],
     state: new ProcessStateUnavailable(),
     wizardProperties: {

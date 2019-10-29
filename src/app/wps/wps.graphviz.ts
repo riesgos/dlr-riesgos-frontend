@@ -91,13 +91,13 @@ export function toGraphvizDestructured(processes: Process[], products: Product[]
     for (const process of processes) {
         const attrs = attrsFromProcessStateTypes(process.state.type);
         attrs.push('shape=box');
-        attrs.push('label="' + sanitizeLabel(process.name) + '"');
+        attrs.push('label="' + sanitizeLabel(process.name || process.uid) + '"');
         lines.push('    "' + sanitizeLabel(process.uid) + '" [' + attrs.join(',') + '];');
     }
     for (const product of products) {
         const attrs = attrsFromProductState(product);
         attrs.push('shape=oval');
-        attrs.push('label="' + sanitizeLabel(product.description['id']) + '"');
+        attrs.push('label="' + sanitizeLabel(product.description['name'] || product.uid) + '"');
         lines.push('    "' + sanitizeLabel(product.uid) + '" [' + attrs.join(',') + '];');
     }
 

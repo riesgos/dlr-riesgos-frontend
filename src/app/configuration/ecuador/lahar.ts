@@ -78,8 +78,8 @@ export const laharShakemap: Product & WpsData = {
     description: {
         id: 'shakemap',
         format: 'application/xml',
-        reference: false,
-        type: 'literal'
+        reference: true,
+        type: 'complex'
     },
     value: null,
 };
@@ -95,7 +95,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             'Lahar',
             [direction, vei, parameter].map(p => p.uid),
             [laharWms.uid, laharShakemap.uid],
-            'gs:LaharModel',
+            'gs:UnderDev',
             'The lahar service anticipates the area inundated by lahars of Cotopaxi volcano and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.',
             'http://91.250.85.221/geoserver/riesgos/wps',
             '1.0.0',

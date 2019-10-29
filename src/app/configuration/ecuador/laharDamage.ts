@@ -16,51 +16,6 @@ import { Observable } from 'rxjs';
 
 
 
-
-// export const laharShakemapDeusInput: WpsData & Product = {
-//     ...laharShakemap,
-//     description: {
-//         ...laharShakemap.description,
-//         id: 'intensity'
-//     },
-//     uid: 'deusTranslator_laharShakemap'
-// };
-
-
-// export const LaharDeusTranslator: AutorunningProcess = {
-//     uid: 'LaharDeusTranslator',
-//     name: 'LaharDeusTranslator',
-//     requiredProducts: [fragilityRef, exposureRef, laharShakemap].map(p => p.uid),
-//     providedProducts: [fragilityRefDeusInput, exposureRefDeusInput, laharShakemapDeusInput].map(p => p.uid),
-//     state: new ProcessStateUnavailable(),
-//     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-//         switch (newProduct.uid) {
-//             case fragilityRef.uid:
-//                 return [{
-//                     ...fragilityRefDeusInput,
-//                     value: newProduct.value
-//                 }];
-//             case exposureRef.uid:
-//                 const exposureDeus = {
-//                     ...exposureRefDeusInput,
-//                     value: newProduct.value
-//                 };
-//                 delete exposureDeus.description.vectorLayerAttributes; // To avoid displaying exposure on map twice
-//                 delete exposureDeus.description.name;
-//                 return [exposureDeus];
-//             case laharShakemap.uid:
-//                 return [{
-//                     ... laharShakemapDeusInput,
-//                     value: newProduct.value
-//                 }];
-//             default:
-//                 return [];
-//         }
-//     }
-// };
-
-
-
 export const laharDamage: VectorLayerData & WpsData & Product = {
     uid: 'lahar_damage',
     description: {
@@ -258,17 +213,14 @@ export class LaharDeus extends WpsProcess implements WizardableProcess {
                         }
                     };
                 case laharShakemap.uid:
-                    const complexShakemap: WpsData & Product = {
-                        uid: prod.uid,
-                        value: prod.value,
+                    return {
+                        ... prod,
                         description: {
-                            id: 'intensity',
+                            ... prod.description,
                             format: 'text/xml',
-                            reference: false,
-                            type: 'complex'
+                            id: 'intensity'
                         }
                     };
-                    return complexShakemap;
                 case schemaEcuador.uid:
                     return prod;
             }

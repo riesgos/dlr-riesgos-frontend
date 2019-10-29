@@ -115,23 +115,22 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
 
     execute(inputProducts: Product[], outputProducts: Product[], doWhileExecuting): Observable<Product[]> {
 
-        const shakemap = inputProducts.find(p => p.uid === laharShakemap.uid) as (WpsData & Product);
-        const complexShakemap: WpsData & Product = {
-            uid: shakemap.uid,
-            value: shakemap.value,
-            description: {
-                id: 'intensity',
-                format: 'text/xml',
-                reference: false,
-                type: 'complex'
+        const newInputProducts = inputProducts.map(prod => {
+            switch (prod.uid) {
+                case laharShakemap.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            format: 'text/xml',
+                            id: 'intensity'
+                        }
+                    };
+                case countryEcuador.uid:
+                case hazardLahar.uid:
+                    return prod;
             }
-        };
-
-        const newInputProducts = [
-            inputProducts.find(p => p.uid === countryEcuador.uid),
-            inputProducts.find(p => p.uid === hazardLahar.uid),
-            complexShakemap
-        ];
+        });
 
         return super.execute(newInputProducts, outputProducts, doWhileExecuting);
     }

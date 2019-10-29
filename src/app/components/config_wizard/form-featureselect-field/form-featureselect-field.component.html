@@ -1,14 +1,34 @@
-<clr-select-container>
+<div class="container">
+  <div class="one">
+      <clr-select-container>
+          <label class="clr-col-md-3">
+            {{parameter.description.wizardProperties.name | translate}}:
+          </label>
+          <select class="clr-col-md-9" clrSelect [formControl]="stringControl">
+              <option *ngFor="let item of stringOptions" [ngValue]="item">{{item}}</option>
+          </select>
+          <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
+          <clr-control-error>Invalid input</clr-control-error>
+        </clr-select-container>
+  </div>
 
-  <label class="clr-col-md-3">
-    {{parameter.description.wizardProperties.name | translate}}:
-  </label>
-    
-  <select class="clr-col-md-9" clrSelect [formControl]="stringControl" (focus)="onFocus(true)" (blur)="onFocus(false)">
-      <option *ngFor="let item of stringOptions" [ngValue]="item">{{item}}</option>
-  </select>
+  <ng-container *ngIf="(featureSelectionOngoing$ | async) as ongoing; else activateButton">
+        <div class="two">
+          <clr-icon shape="map-marker" [title]="'select on map' | translate" (click)="activateFeatureselectInteraction(false)" [style.color]="'#004c8a'"></clr-icon>
+        </div>
+  </ng-container>
+  <ng-template #activateButton>
+      <div class="two">
+        <clr-icon shape="map-marker" [title]="'select on map' | translate" (click)="activateFeatureselectInteraction(true)" [style.color]="'#575757'"></clr-icon>
+      </div>
+  </ng-template>
 
-  <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
-  <clr-control-error>Invalid input</clr-control-error>
+</div>
 
-</clr-select-container>
+
+
+
+
+
+
+

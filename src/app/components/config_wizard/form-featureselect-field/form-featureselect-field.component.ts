@@ -1,10 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { FeatureSelectUconfProduct } from '../userconfigurable_wpsdata';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { FeatureCollection } from '@turf/helpers';
 import { InteractionCompleted, InteractionStarted } from 'src/app/interactions/interactions.actions';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { InteractionState } from 'src/app/interactions/interactions.state';
 
 @Component({
   selector: 'ukis-form-featureselect-field',
@@ -12,6 +15,8 @@ import { InteractionCompleted, InteractionStarted } from 'src/app/interactions/i
   styleUrls: ['./form-featureselect-field.component.css']
 })
 export class FormFeatureSelectFieldComponent implements OnInit {
+
+  public featureSelectionOngoing$: Observable<boolean>;
 
   @Input() control: FormControl;
   @Input() parameter: FeatureSelectUconfProduct;
@@ -40,7 +45,17 @@ export class FormFeatureSelectFieldComponent implements OnInit {
       }}));
     });
 
-    
+    this.featureSelectionOngoing$ = this.store.pipe(
+      select('interactionState'),
+      map((currentInteractionState: InteractionState) => {
+        switch (currentInteractionState.mode) {
+          case 'featureselection':
+            return true;
+          default:
+            return false;
+        }
+      })
+    );
   }
 
   private findValForString(key: string): any {
@@ -53,9 +68,8 @@ export class FormFeatureSelectFieldComponent implements OnInit {
   }
 
 
-  onFocus(focus: boolean) {
-    console.log(`has focus: ${focus}`)
-    if (focus) {
+  activateFeatureselectInteraction(startInteraction: boolean): void {
+    if (startInteraction) {
       this.store.dispatch(new InteractionStarted({
         mode: 'featureselection',
         product: { ... this.parameter }

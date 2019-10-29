@@ -20,14 +20,13 @@ export class InteractionstatemonitorComponent implements OnInit {
     this.message$ = this.store.pipe(
       select('interactionState'),
       map((currentInteractionState: InteractionState) => {
-        console.log('new mode: ', currentInteractionState.mode);
         switch (currentInteractionState.mode) {
           case 'normal':
             return '';
           case 'featureselection':
-            return 'you can now select a feature on the map';
+            return 'instructions featureselection';
           case 'bbox':
-            return 'you can now drag a box on the map';
+            return 'instructions bbox';
         }
       })
     );

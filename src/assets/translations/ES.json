@@ -128,8 +128,13 @@
     "You can also select a boundingbox by clicking and dragging on the map.": "También puede seleccionar un cuadro delimitador haciendo clic y arrastrando en el mapa.",
 
     "Transition": "Transición",
-    
     "Quickstart": "Inicio rápido",
+
+
+    "instructions bbox": "Ahora puede arrastrar un cuadro en el mapa.",
+    "instructions featureselection": "Ahora puede seleccionar un elemento en el mapa.",
+    "select on map": "Seleccionar en mapa",
+
 
     "Disclaimer": "Descargo de responsabilidad",
     "DisclaimerText": "Este es el prototipo de una herramienta de exploración multiriesgo y aún se encuentra en fase de construcción. IMPORTANTE: los resultados mostrados todavía no están consolidados y en ningún caso son aptos para la planificación u otras aplicaciones prácticas.",

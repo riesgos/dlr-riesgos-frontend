@@ -33,7 +33,7 @@ import { getScenarioWpsState } from './wps.selectors';
 import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
 import { VeiProvider, selectableVei } from '../configuration/ecuador/vei';
-import { AshfallService, ashfall, probability, AshfallTranslator, ashfallVei } from '../configuration/ecuador/ashfall';
+import { AshfallService, ashfall, probability } from '../configuration/ecuador/ashfall';
 import { LaharExposureModel, schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador,
     latmaxEcuador, querymodeEcuador, assettypeEcuador } from '../configuration/ecuador/exposure';
 import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador,
@@ -265,7 +265,6 @@ export class WpsEffects {
                 processes = [
                     VeiProvider,
                     new LaharWps(this.httpClient),
-                    AshfallTranslator,
                     new AshfallService(this.httpClient),
                     new LaharVulnerabilityModel(this.httpClient),
                     new LaharExposureModel(this.httpClient),
@@ -277,7 +276,7 @@ export class WpsEffects {
                     FlooddamageTranslator
                 ];
                 products = [
-                    selectableVei, vei, probability, ashfallVei,
+                    selectableVei, vei, probability,
                     ashfall,
                     direction, parameter, laharWms, laharShakemap,
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,

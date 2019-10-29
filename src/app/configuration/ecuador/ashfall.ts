@@ -9,39 +9,10 @@ import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userc
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
-// import * as d3interp from 'd3-interpolate';
+import { Observable } from 'rxjs';
 
 
-export const ashfallVei: Product & WpsData = {
-    uid: 'ashfall_vei',
-    description: {
-        id: 'vei',
-        type: 'literal',
-        reference: false,
-    },
-    value: null,
-};
 
-
-export const AshfallTranslator: AutorunningProcess = {
-    name: 'ashfall_translator',
-    uid: 'ashfall_translator',
-    state: new ProcessStateUnavailable(),
-    requiredProducts: [vei.uid],
-    providedProducts: [ashfallVei.uid],
-    onProductAdded: (newProd: Product, allProds: Product[]) => {
-        switch (newProd.uid) {
-            case vei.uid:
-                return [{
-                    ...ashfallVei,
-                    value: (newProd.value as string).replace('VEI', '')
-                }];
-            default:
-                return [];
-        }
-    }
-
-};
 
 
 const allDepths = [];
@@ -139,7 +110,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         super(
             'ashfall-service',
             'Ashfall Service',
-            [ashfallVei.uid, probability.uid],
+            [vei.uid, probability.uid],
             [ashfall.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
             '',
@@ -153,5 +124,26 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             providerUrl: 'https://www.igepn.edu.ec',
             shape: 'volcanoe'
         };
+    }
+
+    execute(inputProducts: Product[], outputProducts: Product[], doWhileExecuting): Observable<Product[]> {
+
+        const newInputProducts = inputProducts.map(prod => {
+            switch (prod.uid) {
+                case vei.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ...prod.description,
+                            id: 'vei'
+                        },
+                        value: (prod.value as string).replace('VEI', '')
+                    };
+                case probability.uid:
+                    return prod;
+            }
+        });
+
+        return super.execute(newInputProducts, outputProducts, doWhileExecuting);
     }
 }

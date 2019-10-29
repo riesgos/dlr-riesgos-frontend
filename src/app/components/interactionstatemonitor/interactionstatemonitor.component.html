@@ -1,0 +1,10 @@
+ <ng-container *ngIf="message$ | async as message">
+     <clr-alert [clrAlertClosable]="false" [clrAlertAppLevel]="true">
+        <clr-alert-item>
+            <span class="alert-text">
+                {{ message | translate }}
+            </span>
+        </clr-alert-item> 
+    </clr-alert>
+ </ng-container>
+

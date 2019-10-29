@@ -48,6 +48,7 @@ import { Action } from '@ngrx/store';
 import { TextModalComponent } from './components/text-modal/text-modal.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
+import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaime
     ReadMoreComponent,
     TextModalComponent,
     DisclaimerComponent,
-    DisclaimerpopupComponent
+    DisclaimerpopupComponent,
+    InteractionstatemonitorComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, HostBinding } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, HostBinding, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ActivatedRoute } from '@angular/router';
@@ -12,6 +12,7 @@ import { MapStateService } from '@ukis/services-map-state';
   selector: 'ukis-route-map',
   templateUrl: './route-map.component.html',
   styleUrls: ['./route-map.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   providers: [
       MapOlService, LayersService, MapStateService
   ]

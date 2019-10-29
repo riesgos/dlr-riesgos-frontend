@@ -46,7 +46,6 @@ import { RouteDocumentationComponent } from './route-components/route-documentat
 import { ReadMoreComponent } from './components/read-more/read-more.component';
 import { Action } from '@ngrx/store';
 import { TextModalComponent } from './components/text-modal/text-modal.component';
-import { HelpersModule } from '@ukis/helpers/src/public-api';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
 
@@ -102,7 +101,6 @@ import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaime
       }
     }),
     !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 10 }) : [],
-    HelpersModule
   ],
   providers: [
     AlertService, FooterService, ProgressService, LayerMarshaller,

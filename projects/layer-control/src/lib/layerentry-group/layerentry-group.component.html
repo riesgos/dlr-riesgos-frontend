@@ -10,7 +10,7 @@
       <ng-content></ng-content>
     </div>
     <span *ngIf="ref.children.length == 0" class="title" [title]="getLayerName(group)" (click)="showProperties()">
-      {{getLayerName(group) | stripnumbers | translate }}
+      {{getLayerName(group)  | translate }}
     </span>
 
     <!-- setLayerGroupIndex // for reversed layergroups on ngFor up is down -->
@@ -61,7 +61,7 @@
         <ukis-layerentry [expanded]="openAllLayersProperties" [layersSvc]="layersSvc" [mapState]="mapState"
           [layer]="layer" [group]="group" (update)="layerUpdate($event, group)">
           <span class="move-item" cdkDragHandle>
-            {{layer.displayName || layer.name | stripnumbers | translate }}
+            {{layer.displayName || layer.name  | translate }}
           </span>
         </ukis-layerentry>
       </div>

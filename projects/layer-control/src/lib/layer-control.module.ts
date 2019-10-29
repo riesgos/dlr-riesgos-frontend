@@ -17,7 +17,6 @@ import { BaseLayerControlComponent } from './base-layer-control/base-layer-contr
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
-import { HelpersModule } from '@ukis/helpers/src/public-api';
 
 
 
@@ -29,7 +28,7 @@ import { HelpersModule } from '@ukis/helpers/src/public-api';
       useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/translations/', '.json'),
       deps: [HttpClient]
     }
-  }), HelpersModule],
+  })],
   exports: [LayerControlComponent, LayerentryComponent, LayerentryGroupComponent, ObjTypePipe, ReversePipe, reverseForOf, BaseLayerControlComponent],
 })
 export class LayerControlModule { }

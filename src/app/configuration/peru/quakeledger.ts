@@ -28,8 +28,7 @@ export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerData, Wp
             },
             wizardProperties: {
                 name: 'AOI',
-                fieldtype: 'bbox',
-                signpost: 'You can also select a boundingbox by clicking and dragging on the map.'
+                fieldtype: 'bbox'
             },
         },
         this.value = null;

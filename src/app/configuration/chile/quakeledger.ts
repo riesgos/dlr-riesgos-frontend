@@ -30,8 +30,7 @@ export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsDat
             wizardProperties: {
                 name: 'AOI',
                 fieldtype: 'bbox',
-                description: 'Please select an area of interest',
-                signpost: 'You can also select a boundingbox by clicking and dragging on the map.'
+                description: 'Please select an area of interest'
             },
         },
         this.value = null;

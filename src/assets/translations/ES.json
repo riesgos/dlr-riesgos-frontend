@@ -109,11 +109,29 @@
     "Multihazard damage estimation / Lahar": "Daños por lahar",
     "This service outputs damage caused by a given lahar.": "Este servicio genera daños causados por un lahar dado.",
 
-    "Lahar VEI mio maxheight": "Profundidád máxima de lahar",
-    "Lahar VEI mio maxpressure": "Presión máxima de lahar",
-    "Lahar VEI mio maxvelocity": "Velocidad máxima de lahar",
-    "Lahar VEI mio maxerosion": "Erosión máxima de lahar",
-    "Lahar VEI mio maxdeposition": "Deposición máxima de lahar",
+    "Lahar_S_VEI3mio_maxheight_25m": "Profundidád máxima de lahar",
+    "Lahar_S_VEI3mio_maxpressure_25m": "Presión máxima de lahar",
+    "Lahar_S_VEI3mio_maxvelocity_25m": "Velocidad máxima de lahar",
+    "Lahar_S_VEI3mio_maxerosion_25m": "Erosión máxima de lahar",
+    "Lahar_S_VEI3mio_maxdeposition_25m": "Deposición máxima de lahar",
+
+    "Lahar_S_VEI20mio_maxheight_25m": "Profundidád máxima de lahar",
+    "Lahar_S_VEI20mio_maxpressure_25m": "Presión máxima de lahar",
+    "Lahar_S_VEI20mio_maxvelocity_25m": "Velocidad máxima de lahar",
+    "Lahar_S_VEI20mio_maxerosion_25m": "Erosión máxima de lahar",
+    "Lahar_S_VEI20mio_maxdeposition_25m": "Deposición máxima de lahar",
+
+    "Lahar_S_VEI30mio_maxheight_25m": "Profundidád máxima de lahar",
+    "Lahar_S_VEI30mio_maxpressure_25m": "Presión máxima de lahar",
+    "Lahar_S_VEI30mio_maxvelocity_25m": "Velocidad máxima de lahar",
+    "Lahar_S_VEI30mio_maxerosion_25m": "Erosión máxima de lahar",
+    "Lahar_S_VEI30mio_maxdeposition_25m": "Deposición máxima de lahar",
+
+    "Lahar_S_VEI40mio_maxheight_25m": "Profundidád máxima de lahar",
+    "Lahar_S_VEI40mio_maxpressure_25m": "Presión máxima de lahar",
+    "Lahar_S_VEI40mio_maxvelocity_25m": "Velocidad máxima de lahar",
+    "Lahar_S_VEI40mio_maxerosion_25m": "Erosión máxima de lahar",
+    "Lahar_S_VEI40mio_maxdeposition_25m": "Deposición máxima de lahar",
 
 
     "How to use this site ...": "El asistente de configuración en el lado izquierdo de la pantalla contiene una lista de todos los procesos por los que pasará la simulación. Los procesos se colorean de acuerdo al estado actual de la simulación. Si un proceso requiere seleccionar opciones para ejecutarse, éste tendrá un formulario para seleccionarlas. Cuando esté satisfecho son su selección, presione \"enviar\" para ejecutar el proceso.",

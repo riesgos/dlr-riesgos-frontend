@@ -94,7 +94,7 @@ export function createBarchart(
     const maxVal = Math.max(...values);
     const range = maxVal - minVal;
     const scaleMinVal = Math.max(0, minVal - 0.2 * range);
-    const scaleMaxVal = maxVal;
+    const scaleMaxVal = Math.max(maxVal, 1);
 
     const xScale = d3.scaleBand()
         .domain(labels)

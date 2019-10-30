@@ -2,12 +2,14 @@ import { Component, OnInit, ViewEncapsulation, HostBinding, AfterViewInit, OnDes
 import { DragBox } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
 import { Vector as olVectorLayer } from 'ol/layer';
+import TileLayer from 'ol/layer/Tile';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection, transformExtent } from 'ol/proj';
+import { MapOlService } from '@ukis/map-ol';
+import { TileArcGISRest as olTileArcGISRest } from 'ol/source';
 import { MapStateService } from '@ukis/services-map-state';
 import { osm, esri_world_imagery } from '@ukis/base-layers-raster';
-import { MapOlService } from '@ukis/map-ol';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getMapableProducts, getScenario, getGraph, getProducts } from 'src/app/wps/wps.selectors';
@@ -344,6 +346,70 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 bbox: [-76.202, -33.397, -67.490, -24.899]
             });
             layers.push(shoaLayers);
+        }
+
+        if (scenario === 'p1') {
+
+            const idepLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'idepLayers',
+                name: 'Infraestructura de datos geoespeciales fundamentales',
+                layers: [
+                    new CustomLayer({
+                        custom_layer: new TileLayer({
+                            source: new olTileArcGISRest({
+                                url: 'http://mapas.geoidep.gob.pe/geoidep/rest/services/Demarcacion_Territorial/MapServer',
+                                params: {
+                                    LAYERS: 'show:0'
+                                }
+                            })
+                        }),
+                        name: 'Departementos',
+                        id: 'departementos_idep',
+                        type: 'custom',
+                        visible: false,
+                        opacity: 0.6,
+                        attribution: '&copy, <a href="http://mapas.geoidep.gob.pe/">Instituto Geográfico Nacional</a>',
+                        popup: true
+                    }),
+                    new CustomLayer({
+                        custom_layer: new TileLayer({
+                            source: new olTileArcGISRest({
+                                url: 'http://mapas.geoidep.gob.pe/geoidep/rest/services/Demarcacion_Territorial/MapServer',
+                                params: {
+                                    LAYERS: 'show:1'
+                                }
+                            })
+                        }),
+                        name: 'Provincias',
+                        id: 'provincias_idep',
+                        type: 'custom',
+                        visible: false,
+                        opacity: 0.6,
+                        attribution: '&copy, <a href="http://mapas.geoidep.gob.pe/">Instituto Geográfico Nacional</a>',
+                        popup: true
+                    }),
+                    new CustomLayer({
+                        custom_layer: new TileLayer({
+                            source: new olTileArcGISRest({
+                                url: 'http://mapas.geoidep.gob.pe/geoidep/rest/services/Demarcacion_Territorial/MapServer',
+                                params: {
+                                    LAYERS: 'show:2'
+                                }
+                            })
+                        }),
+                        name: 'Distritos',
+                        id: 'distritos_idep',
+                        type: 'custom',
+                        visible: false,
+                        opacity: 0.6,
+                        attribution: '&copy, <a href="http://mapas.geoidep.gob.pe/">Instituto Geográfico Nacional</a>',
+                        popup: true
+                    })
+                ]
+            });
+            layers.push(idepLayers);
+
         }
 
 

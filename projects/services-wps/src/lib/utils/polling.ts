@@ -1,5 +1,5 @@
-import { Observable, timer, of, forkJoin } from 'rxjs';
-import { tap, map, mergeMap } from 'rxjs/operators';
+import { Observable, timer, of, forkJoin, throwError } from 'rxjs';
+import { tap, map, mergeMap, retryWhen, delay } from 'rxjs/operators';
 import { Predicate } from '@angular/core';
 
 
@@ -37,4 +37,31 @@ export function pollEveryUntil<T>(
     );
 
     return polledRequest$;
+}
+
+
+export function delayedRetry(delayMs: number, maxRetries = 3) {
+    let attempts = 1;
+
+    return (src$: Observable<any>) => {
+        return src$.pipe(
+            // If an error occurs ...
+            retryWhen((errors$: Observable<any>) => {
+                return errors$.pipe(
+                    delay(delayMs), // <- in any case, first wait a little while ...
+                    mergeMap(errors => {
+                        if (attempts <= maxRetries) {
+                            console.log('http-error. Retrying ...');
+                            attempts += 1;
+                            return of(errors); // <- an observable causes request to be retried
+                        } else {
+                            console.log(`Persisten http-errors after ${attempts} retries! Giving up.`);
+                            throw errors; // an error causes request to be given up on.
+                        }
+                    })
+                );
+            })
+        );
+    };
+
 }

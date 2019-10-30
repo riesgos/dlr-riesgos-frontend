@@ -15,6 +15,30 @@
     "Multihazard damage estimation / EQ": "Earthquake damage",
     "Multihazard damage estimation / TS": "Tsunami damage",
 
+    "Lahar_S_VEI10mio_maxheight_25m": "Lahar: maximum depth",
+    "Lahar_S_VEI10mio_maxpressure_25m": "Lahar: maximum preassure",
+    "Lahar_S_VEI10mio_maxvelocity_25m": "Lahar: maximum velocity",
+    "Lahar_S_VEI10mio_maxerosion_25m": "Lahar: maximum erosion",
+    "Lahar_S_VEI10mio_maxdeposition_25m": "Lahar: maximum deposition",
+
+    "Lahar_S_VEI20mio_maxheight_25m": "Lahar: maximum depth",
+    "Lahar_S_VEI20mio_maxpressure_25m": "Lahar: maximum preassure",
+    "Lahar_S_VEI20mio_maxvelocity_25m": "Lahar: maximum velocity",
+    "Lahar_S_VEI20mio_maxerosion_25m": "Lahar: maximum erosion",
+    "Lahar_S_VEI20mio_maxdeposition_25m": "Lahar: maximum deposition",
+
+    "Lahar_S_VEI30mio_maxheight_25m": "Lahar: maximum depth",
+    "Lahar_S_VEI30mio_maxpressure_25m": "Lahar: maximum preassure",
+    "Lahar_S_VEI30mio_maxvelocity_25m": "Lahar: maximum velocity",
+    "Lahar_S_VEI30mio_maxerosion_25m": "Lahar: maximum erosion",
+    "Lahar_S_VEI30mio_maxdeposition_25m": "Lahar: maximum deposition",
+
+    "Lahar_S_VEI40mio_maxheight_25m": "Lahar: maximum depth",
+    "Lahar_S_VEI40mio_maxpressure_25m": "Lahar: maximum preassure",
+    "Lahar_S_VEI40mio_maxvelocity_25m": "Lahar: maximum velocity",
+    "Lahar_S_VEI40mio_maxerosion_25m": "Lahar: maximum erosion",
+    "Lahar_S_VEI40mio_maxdeposition_25m": "Lahar: maximum deposition",
+
     "arrivalTimes": "Arrival times",
     "epiCenter": "Epicenter",
     "mwh": "Maximum wave-height",

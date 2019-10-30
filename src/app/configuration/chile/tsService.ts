@@ -4,6 +4,7 @@ import { WpsData, WpsClient } from 'projects/services-wps/src/public-api';
 import { selectedEq } from './eqselection';
 import { Observable, forkJoin } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 
 
 
@@ -38,10 +39,12 @@ const mag: WpsData & Product = {
 };
 
 
-export const tsWms: WpsData & Product = {
+export const tsWms: WpsData & WmsLayerData = {
     uid: 'get_scenario_epiCenter',
     description: {
         id: 'epiCenter',
+        name: 'ts-wms',
+        icon: 'tsunami',
         reference: false,
         format: 'application/WMS',
         type: 'literal',

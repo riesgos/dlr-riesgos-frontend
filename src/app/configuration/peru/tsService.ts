@@ -4,6 +4,7 @@ import { WpsData } from 'projects/services-wps/src/public-api';
 import { Observable, forkJoin } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';
+import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 
 
 
@@ -38,10 +39,12 @@ const magPeru: WpsData & Product = {
 };
 
 
-export const tsWmsPeru: WpsData & Product = {
+export const tsWmsPeru: WpsData & WmsLayerData = {
     uid: 'get_scenario_epiCenter_peru',
     description: {
         id: 'epiCenter',
+        name: 'ts-wms',
+        icon: 'tsunami',
         reference: false,
         format: 'application/WMS',
         type: 'literal',

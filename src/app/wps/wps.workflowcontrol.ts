@@ -5,6 +5,7 @@ import { Graph, alg } from 'graphlib';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { isWizardableProcess } from '../components/config_wizard/wizardable_processes';
+import { ErrorParserService } from '../error-parser.service';
 
 
 export class WorkflowControl {
@@ -13,7 +14,7 @@ export class WorkflowControl {
     private products: Product[];
     private graph: Graph;
 
-    constructor(processes: Process[], products: Product[]) {
+    constructor(processes: Process[], products: Product[], private errorParser: ErrorParserService) {
 
         this.checkDataIntegrity(processes, products);
 
@@ -72,7 +73,8 @@ export class WorkflowControl {
             }),
 
             catchError((error) => {
-                this.setProcessState(process.uid, new ProcessStateError(error.message));
+                const parsedErrormessage = this.errorParser.parse(error);
+                this.setProcessState(process.uid, new ProcessStateError(parsedErrormessage));
                 return of(false);
             })
         );

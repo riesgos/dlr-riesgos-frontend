@@ -49,6 +49,7 @@ import { shakemapWmsOutputPeru, shakemapXmlRefOutputPeru, ShakygroundPeru } from
 import { FakeDeusPeru } from '../configuration/peru/fakeDeus';
 import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeusPeru } from '../configuration/peru/eqDeus';
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef } from '../configuration/ecuador/laharWrapper';
+import { ErrorParserService } from '../error-parser.service';
 
 
 
@@ -63,7 +64,7 @@ export class WpsEffects {
 
             const [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
 
-            this.wfc = new WorkflowControl(procs, prods);
+            this.wfc = new WorkflowControl(procs, prods, this.errorParser);
             const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
@@ -93,7 +94,7 @@ export class WpsEffects {
                 [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
             }
 
-            this.wfc = new WorkflowControl(procs, prods);
+            this.wfc = new WorkflowControl(procs, prods, this.errorParser);
             const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
@@ -190,6 +191,7 @@ export class WpsEffects {
         private actions$: Actions,
         private store$: Store<State>,
         private httpClient: HttpClient,
+        private errorParser: ErrorParserService
         ) {
     }
 

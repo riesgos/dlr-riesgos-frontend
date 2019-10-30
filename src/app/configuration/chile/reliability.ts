@@ -131,7 +131,10 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
             if (p.uid === shakemapXmlRefOutput.uid) {
                 return {
                     ... p,
-                    uid: 'intensity'
+                    description: {
+                        ... p.description,
+                        id: 'intensity'
+                    }
                 };
             } else {
                 return p;

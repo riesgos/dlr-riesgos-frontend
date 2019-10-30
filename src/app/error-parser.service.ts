@@ -21,10 +21,32 @@ export class ErrorParserService {
   }
 
   private parseHttpError(error: HttpErrorResponse): string {
-    return error.message;
+    if (error.error && typeof error.error === 'string' && error.error.startsWith('<?xml')) {
+      return `HTTP-error ${error.status}: ` + this.parseXmlError(error.error);
+    }
+    return `HTTP-error ${error.status}: ` + error.error || error.message;
   }
 
   private parseBodyError(error: HttpResponse<any>): string {
-    return error.body;
+    // @TODO: if an error hides behind a url-reference, resolve this reference and read out the error-message.
+    if (typeof error.body === 'string') {
+      if (error.body.startsWith('<?xml')) {
+        return this.parseXmlError(error.body);
+      }
+      return error.body;
+    } else {
+      return JSON.stringify(error.body);
+    }
+  }
+
+  private parseXmlError(xml: string): string {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+    const messages = xmlDoc.getElementsByTagName('ows:ExceptionText');
+    if (messages && messages.length) {
+      return messages[0].childNodes[0].nodeValue;
+    } else {
+      return xml;
+    }
   }
 }

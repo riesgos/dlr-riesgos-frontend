@@ -18,7 +18,7 @@ import { ProgressService } from './components/global-progress/progress.service';
 import { FooterService } from './components/global-footer/footer.service';
 import { AlertService } from './components/global-alert/alert.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ConfigurationWizardComponent } from './components/config_wizard/configuration-wizard/configuration-wizard.component';
 import { FormComponent } from './components/config_wizard/form/form.component';
 import { FormFeatureSelectFieldComponent } from './components/config_wizard/form-featureselect-field/form-featureselect-field.component';

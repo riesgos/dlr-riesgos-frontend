@@ -73,7 +73,6 @@ export class WorkflowControl {
 
             catchError((error) => {
                 this.setProcessState(process.uid, new ProcessStateError(error.message));
-                console.error(error);
                 return of(false);
             })
         );

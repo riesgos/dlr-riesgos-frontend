@@ -46,17 +46,17 @@ export function delayedRetry(delayMs: number, maxRetries = 3) {
     return (src$: Observable<any>) => {
         return src$.pipe(
             // If an error occurs ...
-            retryWhen((errors$: Observable<any>) => {
-                return errors$.pipe(
+            retryWhen((error$: Observable<any>) => {
+                return error$.pipe(
                     delay(delayMs), // <- in any case, first wait a little while ...
-                    mergeMap(errors => {
+                    mergeMap(error => {
                         if (attempts <= maxRetries) {
                             console.log('http-error. Retrying ...');
                             attempts += 1;
-                            return of(errors); // <- an observable causes request to be retried
+                            return of(error); // <- an observable causes request to be retried
                         } else {
-                            console.log(`Persisten http-errors after ${attempts} retries! Giving up.`);
-                            throw errors; // an error causes request to be given up on.
+                            console.log(`Persistent http-errors after ${attempts} attempts. Giving up.`);
+                            throw error; // an error causes request to be given up on.
                         }
                     })
                 );

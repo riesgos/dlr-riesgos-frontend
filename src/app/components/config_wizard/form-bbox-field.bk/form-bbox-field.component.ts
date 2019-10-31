@@ -21,6 +21,7 @@ export class FormBboxFieldComponent implements OnInit {
 
     @Input() parameter: BboxUconfProduct;
     @Input() control: FormControl;
+    public stringcontrol: FormControl;
     public disabled = false;
 
     constructor(
@@ -30,7 +31,16 @@ export class FormBboxFieldComponent implements OnInit {
 
     ngOnInit() {
         const initialBbox: WpsBboxValue = this.parameter.value || this.parameter.description.defaultValue;
-        // this.control.setValue(initialBbox);
+        const stringVal = this.bboxToString(initialBbox);
+        this.stringcontrol = new FormControl(stringVal, [Validators.required]);
+        this.stringcontrol.valueChanges.pipe(
+            debounceTime(500)
+        ).subscribe((newVal: string) => {
+            if (this.stringcontrol.valid) {
+                const bbox = this.stringToBbox(newVal);
+                this.control.setValue(bbox);
+            }
+        });
 
         this.bboxSelectionOngoing$ = this.store.pipe(
             select('interactionState'),
@@ -44,6 +54,23 @@ export class FormBboxFieldComponent implements OnInit {
             })
           );
     }
+
+    private bboxToString(bbox: WpsBboxValue): string {
+        return `${bbox.lllon}, ${bbox.lllat}, ${bbox.urlon}, ${bbox.urlat}`;
+    }
+
+    private stringToBbox(bbox: string): WpsBboxValue {
+        const array = bbox.split(',').map(v => parseFloat(v));
+        const newbbox: WpsBboxValue = {
+            crs: 'EPSG:4326',
+            lllon: array[0],
+            lllat: array[1],
+            urlon: array[2],
+            urlat: array[3],
+        };
+        return newbbox;
+    }
+
 
     activateBboxselectInteraction(startInteraction: boolean): void {
         if (startInteraction) {

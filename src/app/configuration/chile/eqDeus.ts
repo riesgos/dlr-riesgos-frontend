@@ -205,26 +205,36 @@ export class EqDeus extends WpsProcess implements WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const shemaInstance = inputProducts.find(p => p.uid === schema.uid);
-        const renamedFragility = {
-            ... inputProducts.find(p => p.uid === fragilityRef.uid),
-            uid: 'fragility'
-        };
-        const renamedShakemap = {
-            ... inputProducts.find(p => p.uid === shakemapXmlRefOutput.uid),
-            uid: 'intensity'
-        };
-        const renamedExposure = {
-            ... inputProducts.find(p => p.uid === exposureRef.uid),
-            uid: 'exposure'
-        };
-
-        const newInputs = [
-            shemaInstance,
-            renamedFragility,
-            renamedShakemap,
-            renamedExposure
-        ];
+        const newInputs = inputProducts.map(prod => {
+            switch (prod.uid) {
+                case fragilityRef.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'fragility'
+                        }
+                    };
+                case shakemapXmlRefOutput.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'intensity'
+                        }
+                    };
+                case exposureRef.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'exposure'
+                        }
+                    };
+                default:
+                    return prod;
+            }
+        });
 
         return super.execute(newInputs, outputProducts, doWhileExecuting);
     }

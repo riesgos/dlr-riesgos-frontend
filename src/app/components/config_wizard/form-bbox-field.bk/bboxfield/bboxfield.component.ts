@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Directive, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, forwardRef, Directive } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 
 
@@ -23,7 +23,6 @@ function validateNumeric(control: AbstractControl): ValidationErrors | null {
   selector: 'ukis-bboxfield',
   templateUrl: './bboxfield.component.html',
   styleUrls: ['./bboxfield.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => BboxfieldComponent),

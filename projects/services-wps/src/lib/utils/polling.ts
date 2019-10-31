@@ -50,7 +50,10 @@ export function delayedRetry(delayMs: number, maxRetries = 3) {
                 return error$.pipe(
                     delay(delayMs), // <- in any case, first wait a little while ...
                     mergeMap(error => {
-                        if (attempts <= maxRetries) {
+                        if (error.status && error.status === 400) {
+                            // In case of a server error, repeating won't help.
+                            throw error;
+                        } else if (attempts <= maxRetries) {
                             console.log('http-error. Retrying ...');
                             attempts += 1;
                             return of(error); // <- an observable causes request to be retried

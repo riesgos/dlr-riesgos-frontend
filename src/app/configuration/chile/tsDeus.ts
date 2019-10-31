@@ -11,6 +11,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRef } from './modelProp';
+import { Observable } from 'rxjs';
 
 
 
@@ -189,6 +190,45 @@ export class TsDeus extends WpsProcess implements WizardableProcess {
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle'
         };
+    }
+
+    execute(
+        inputProducts: Product[],
+        outputProducts?: Product[],
+        doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
+
+        const newInputs = inputProducts.map(prod => {
+            switch (prod.uid) {
+                case fragilityRef.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'fragility'
+                        }
+                    };
+                case tsShakemap.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'intensity'
+                        }
+                    };
+                case eqUpdatedExposure.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'exposure'
+                        }
+                    };
+                default:
+                    return prod;
+            }
+        });
+
+        return super.execute(newInputs, outputProducts, doWhileExecuting);
     }
 
 }

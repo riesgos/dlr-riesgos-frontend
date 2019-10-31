@@ -50,6 +50,7 @@ import { FakeDeusPeru } from '../configuration/peru/fakeDeus';
 import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeusPeru } from '../configuration/peru/eqDeus';
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef } from '../configuration/ecuador/laharWrapper';
 import { ErrorParserService } from '../error-parser.service';
+import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
 
 
 
@@ -218,10 +219,10 @@ export class WpsEffects {
                     new QuakeLedger(this.httpClient),
                     EqSelection,
                     new Shakyground(this.httpClient),
-                    // EqDeus,
-                    new FakeDeus(this.httpClient),
+                    new EqDeus(this.httpClient),
+                    // new FakeDeus(this.httpClient),
                     new TsService(this.httpClient),
-                    // TsDeus,
+                    new TsDeus(this.httpClient),
                     new EqReliability(this.httpClient),
                     // PhysicalImpactAssessment
                 ];
@@ -236,7 +237,7 @@ export class WpsEffects {
                     tsWms, tsShakemap,
                     countryChile, hazardEq,
                     damageConsumerAreas,
-                    // tsDamage, tsTransition, tsUpdatedExposure,
+                    tsDamage, tsTransition, tsUpdatedExposure,
                     // physicalImpact
                 ];
                 break;

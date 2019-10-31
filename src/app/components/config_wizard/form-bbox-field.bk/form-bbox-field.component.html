@@ -2,13 +2,15 @@
   <div class="one">
     <clr-input-container [class.clr-error]="control.invalid && (control.dirty || control.touched)">
 
-      <label>
+      <label class="clr-col-md-3">
         {{parameter.description.wizardProperties.name | translate}}:
       </label>
 
-      <ukis-bboxfield clrInput [formControl]="control"></ukis-bboxfield>
+      <input class="clr-col-md-9" type="text" clrInput [formControl]="stringcontrol" [value]="stringcontrol.value"/>
 
-      <clr-control-helper style="margin-top: 20px; margin-bottom: 5px;">{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
+
+      <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
+      <clr-control-error>Invalid input</clr-control-error>
 
     </clr-input-container>
   </div>

@@ -6,10 +6,6 @@
     max-width: 50px;
 }
 
-.clr-input {
-    border-bottom: none;
-}
-
 .container {
     width: 100%;
     margin: auto;
@@ -19,27 +15,39 @@
 .a {
     display: table-cell;
     width: 25%;
-    max-width: 50px;
-    border-bottom: 1px solid #999999;
 }
 
 .b {
     display: table-cell;
     width: 25%;
-    max-width: 50px;
-    border-bottom: 1px solid #999999;
 }
 
 .c {
     display: table-cell;
     width: 25%;
-    max-width: 50px;
-    border-bottom: 1px solid #999999;
 }
 
 .d {
     display: table-cell;
     width: 25%;
-    max-width: 50px;
-    border-bottom: 1px solid #999999;
 }
+
+// .a {
+//     margin-left: 0%;
+//     width: 25%;
+// }
+
+// .b {
+//     margin-left: 25%;
+//     width: 25%;
+// }
+
+// .c {
+//     margin-left: 50%;
+//     width: 25%;
+// }
+
+// .d {
+//     margin-left: 75%;
+//     width: 25%;
+// }

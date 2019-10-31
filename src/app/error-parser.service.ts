@@ -15,6 +15,8 @@ export class ErrorParserService {
         return this.parseHttpError(error);
       } else if (typeof error.status !== 'undefined' && error.status === 200) {
         return this.parseBodyError(error);
+      } else if (typeof error === 'object' && error.message) {
+        return 'An error has occured. ' + error.message;
       } else {
         return 'Unknown error';
       }
@@ -41,7 +43,7 @@ export class ErrorParserService {
 
   private parseXmlError(xml: string): string {
     const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xml, "text/xml");
+    const xmlDoc = parser.parseFromString(xml, 'text/xml');
     const messages = xmlDoc.getElementsByTagName('ows:ExceptionText');
     if (messages && messages.length) {
       return messages[0].childNodes[0].nodeValue;

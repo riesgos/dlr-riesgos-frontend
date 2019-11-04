@@ -19,6 +19,7 @@ function validateNumeric(control: AbstractControl): ValidationErrors | null {
   }
 }
 
+
 @Component({
   selector: 'ukis-bboxfield',
   templateUrl: './bboxfield.component.html',
@@ -47,12 +48,20 @@ export class BboxfieldComponent implements OnInit, ControlValueAccessor {
 
     this.bboxFormGroup.valueChanges.subscribe(newVals => {
       if (this.onChangeCallback && this.bboxFormGroup.valid) {
-        this.onChangeCallback({
-          lllon: newVals.lllon,
-          lllat: newVals.lllat,
-          urlon: newVals.urlon,
-          urlat: newVals.urlat,
-        });
+        if (+newVals.lllon <= +newVals.urlon) {
+          this.bboxFormGroup.get('lllon').setErrors({});
+          this.bboxFormGroup.get('urlon').setErrors({});
+        } else if (+newVals.lllat <= +newVals.urlat) {
+          this.bboxFormGroup.get('lllat').setErrors({});
+          this.bboxFormGroup.get('urlat').setErrors({});
+        } else {
+          this.onChangeCallback({
+            lllon: newVals.lllon,
+            lllat: newVals.lllat,
+            urlon: newVals.urlon,
+            urlat: newVals.urlat,
+          });
+        }
       }
     });
   }
@@ -79,5 +88,9 @@ export class BboxfieldComponent implements OnInit, ControlValueAccessor {
     } else {
       this.bboxFormGroup.enable();
     }
+  }
+
+  onFocus(): void {
+    this.onTouchedCallback();
   }
 }

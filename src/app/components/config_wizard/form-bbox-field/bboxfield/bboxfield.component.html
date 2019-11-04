@@ -2,25 +2,25 @@
     <div class="a">
         <clr-input-container>
             <label>lonmin</label>
-            <input clrInput formControlName="lllon" />
+            <input clrInput formControlName="lllon" (focus)="onFocus()"/>
         </clr-input-container>
     </div>
     <div class="b">
         <clr-input-container>
             <label>latmin</label>
-            <input clrInput formControlName="lllat" />
+            <input clrInput formControlName="lllat" (focus)="onFocus()"/>
         </clr-input-container>
     </div>
     <div class="c">
         <clr-input-container>
             <label>lonmax</label>
-            <input clrInput formControlName="urlon" />
+            <input clrInput formControlName="urlon" (focus)="onFocus()"/>
         </clr-input-container>
     </div>
     <div class="d">
         <clr-input-container>
             <label>latmax</label>
-            <input clrInput formControlName="urlat" />
+            <input clrInput formControlName="urlat" (focus)="onFocus()"/>
         </clr-input-container>
     </div>
 </form>

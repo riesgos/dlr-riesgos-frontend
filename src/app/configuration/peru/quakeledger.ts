@@ -20,7 +20,6 @@ export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerData, Wp
             name: 'eq-selection: boundingbox',
             type: 'bbox',
             reference: false,
-            description: 'Please select an area of interest',
             defaultValue: {
                 crs: 'EPSG:4326',
                 lllon: -86.5, lllat: -20.5,
@@ -28,7 +27,8 @@ export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerData, Wp
             },
             wizardProperties: {
                 name: 'AOI',
-                fieldtype: 'bbox'
+                fieldtype: 'bbox',
+                description: 'Please select an area of interest',
             },
         },
         this.value = null;
@@ -206,7 +206,7 @@ export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
         super(
             'Quakeledger Peru',
             'Earthquake Catalogue',
-            [mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru].map(prd => prd.uid).concat(['user_input-boundingbox_peru']),
+            ['user_input-boundingbox_peru'].concat([mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru].map(prd => prd.uid)),
             [selectedEqsPeru.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
             'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',

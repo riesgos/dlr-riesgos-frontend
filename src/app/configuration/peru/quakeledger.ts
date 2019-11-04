@@ -11,7 +11,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerData, WpsData {
     description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
     value: WpsBboxValue;
-    uid = 'user_input-boundingbox_peru';
+    uid = 'input-boundingbox_peru';
 
     constructor() {
         this.description = {
@@ -206,7 +206,7 @@ export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
         super(
             'Quakeledger Peru',
             'Earthquake Catalogue',
-            ['user_input-boundingbox_peru'].concat([mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru].map(prd => prd.uid)),
+            ['input-boundingbox_peru'].concat([mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru].map(prd => prd.uid)),
             [selectedEqsPeru.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
             'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',

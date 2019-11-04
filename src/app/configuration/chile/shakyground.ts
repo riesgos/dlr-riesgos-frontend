@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 export const shakemapWmsOutput: WpsData & WmsLayerData = {
-    uid: 'ShakygroundProcess_shakeMapFile_wms',
+    uid: 'Shakyground_wms',
     description: {
         id: 'shakeMapFile',
         icon: 'earthquake',
@@ -21,7 +21,7 @@ export const shakemapWmsOutput: WpsData & WmsLayerData = {
 };
 
 export const shakemapXmlRefOutput: WpsData & Product = {
-    uid: 'ShakygroundProcess_shakeMapFile_shakemap',
+    uid: 'Shakyground_shakemap',
     description: {
         id: 'shakeMapFile',
         type: 'complex',

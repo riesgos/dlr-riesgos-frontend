@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 export const lonminEcuador: Product & WpsData = {
-  uid: 'user_lonmin',
+  uid: 'lonmin',
   description: {
     id: 'lonmin',
     type: 'literal',

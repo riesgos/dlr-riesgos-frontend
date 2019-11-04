@@ -7,7 +7,7 @@ import { schemaPeru } from './exposure';
 
 
 export const assetcategoryPeru: Product & WpsData = {
-    uid: 'user_assetcategoryPeru',
+    uid: 'assetcategoryPeru',
     description: {
         id: 'assetcategory',
         defaultValue: 'buildings',
@@ -18,7 +18,7 @@ export const assetcategoryPeru: Product & WpsData = {
 };
 
 export const losscategoryPeru: Product & WpsData = {
-    uid: 'user_losscategoryPeru',
+    uid: 'losscategoryPeru',
     description: {
         id: 'losscategory',
         defaultValue: 'structural',
@@ -29,7 +29,7 @@ export const losscategoryPeru: Product & WpsData = {
 };
 
 export const taxonomiesPeru: Product & WpsData = {
-    uid: 'user_taxonomiesPeru',
+    uid: 'taxonomiesPeru',
     description: {
         id: 'taxonomies',
         reference: false,

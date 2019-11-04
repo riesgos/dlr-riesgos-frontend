@@ -13,7 +13,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerData & WpsData = {
-    uid: 'user_selectedRow',
+    uid: 'eq_selectedRow',
     description: {
         id: 'selectedRow',
         icon: 'earthquake',
@@ -93,7 +93,7 @@ export const EqSelection: WizardableProcess & ExecutableProcess & AutorunningPro
     },
 
     execute: (inputs: Product[]): Observable<Product[]> => {
-        const eqVal = inputs.find(i => i.uid === 'user_selectedRow').value;
+        const eqVal = inputs.find(i => i.uid === 'eq_selectedRow').value;
         return of([{
             ...selectedEq,
             value: eqVal

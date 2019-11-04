@@ -4,8 +4,8 @@
   "scripts": {
     "start": "ng serve --sourceMap",
     "serve": "ng serve --aot --sourceMap --port=4200 --host=0.0.0.0",
-    "build:dev": "ng build --prod=true",
-    "build": "ng build ",
+    "build:dev": "ng build",
+    "build": "ng build --prod=true",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

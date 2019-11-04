@@ -116,7 +116,11 @@ export class WpsClient {
             tap((response: WpsResult[]) => {
                 if (this.caching) {
                     console.log('storing data in cache.');
-                    this.cache.set(cacheKey, response);
+                    try {
+                        this.cache.set(cacheKey, response);
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
             }),
         );

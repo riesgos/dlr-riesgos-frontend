@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { schemaPeru, exposureRefPeru } from './exposure';
+import { schemaPeru, exposurePeru } from './exposure';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
@@ -198,7 +198,7 @@ export class EqDeusPeru extends WpsProcess implements WizardableProcess {
         super(
             'EQ-DEUS Peru',
             'Multihazard damage estimation / EQ',
-            [schemaPeru, fragilityRefPeru, shakemapXmlRefOutputPeru, exposureRefPeru].map(p => p.uid),
+            [schemaPeru, fragilityRefPeru, shakemapXmlRefOutputPeru, exposurePeru].map(p => p.uid),
             [eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given earthquake.',
@@ -209,32 +209,42 @@ export class EqDeusPeru extends WpsProcess implements WizardableProcess {
         );
     }
 
-
     execute(
         inputProducts: Product[],
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const shemaInstance = inputProducts.find(p => p.uid === schemaPeru.uid);
-        const renamedFragility = {
-            ... inputProducts.find(p => p.uid === fragilityRefPeru.uid),
-            uid: 'fragility'
-        };
-        const renamedShakemap = {
-            ... inputProducts.find(p => p.uid === shakemapXmlRefOutputPeru.uid),
-            uid: 'intensity'
-        };
-        const renamedExposure = {
-            ... inputProducts.find(p => p.uid === exposureRefPeru.uid),
-            uid: 'exposure'
-        };
-
-        const newInputs = [
-            shemaInstance,
-            renamedFragility,
-            renamedShakemap,
-            renamedExposure
-        ];
+        const newInputs = inputProducts.map(prod => {
+            switch (prod.uid) {
+                case fragilityRefPeru.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'fragility'
+                        }
+                    };
+                case shakemapXmlRefOutputPeru.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'intensity'
+                        }
+                    };
+                case exposurePeru.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            id: 'exposure'
+                        },
+                        value: prod.value[0]
+                    };
+                default:
+                    return prod;
+            }
+        });
 
         return super.execute(newInputs, outputProducts, doWhileExecuting);
     }

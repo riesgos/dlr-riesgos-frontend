@@ -3,6 +3,7 @@ import { UserconfigurableProductDescription } from 'src/app/components/config_wi
 import { Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, tap, catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 
 export type ProductDescription = object;
@@ -112,7 +113,8 @@ export class WpsProcess implements ExecutableProcess {
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
         ) {
-        this.wpsClient = new WpsClient(this.wpsVersion, httpClient, false);
+        const caching = environment.production ? false : true;
+        this.wpsClient = new WpsClient(this.wpsVersion, httpClient, caching);
     }
 
     public execute(

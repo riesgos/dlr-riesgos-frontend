@@ -176,7 +176,7 @@ export class TsDeus extends WpsProcess implements WizardableProcess {
         super(
             'TS-DEUS',
             'Multihazard damage estimation / TS',
-            [eqDamage, schema, fragilityRef, tsShakemap, eqUpdatedExposure].map(p => p.uid),
+            [schema, fragilityRef, tsShakemap, eqUpdatedExposure].map(p => p.uid),
             [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given earthquake.',
@@ -212,6 +212,7 @@ export class TsDeus extends WpsProcess implements WizardableProcess {
                         ... prod,
                         description: {
                             ... prod.description,
+                            format: 'text/xml',
                             id: 'intensity'
                         }
                     };
@@ -221,7 +222,8 @@ export class TsDeus extends WpsProcess implements WizardableProcess {
                         description: {
                             ... prod.description,
                             id: 'exposure'
-                        }
+                        },
+                        value: prod.value[0]
                     };
                 default:
                     return prod;

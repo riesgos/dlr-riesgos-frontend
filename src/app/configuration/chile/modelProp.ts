@@ -7,7 +7,7 @@ import { schema } from './exposure';
 
 
 export const assetcategory: Product & WpsData = {
-    uid: 'user_assetcategory',
+    uid: 'assetcategory',
     description: {
         id: 'assetcategory',
         defaultValue: 'buildings',
@@ -18,7 +18,7 @@ export const assetcategory: Product & WpsData = {
 };
 
 export const losscategory: Product & WpsData = {
-    uid: 'user_losscategory',
+    uid: 'losscategory',
     description: {
         id: 'losscategory',
         defaultValue: 'structural',
@@ -29,7 +29,7 @@ export const losscategory: Product & WpsData = {
 };
 
 export const taxonomies: Product & WpsData = {
-    uid: 'user_taxonomies',
+    uid: 'taxonomies',
     description: {
         id: 'taxonomies',
         reference: false,

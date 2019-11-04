@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsData {
     description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
     value: WpsBboxValue;
-    uid = 'user_input-boundingbox';
+    uid = 'input-boundingbox';
 
     constructor() {
         this.description = {
@@ -38,7 +38,7 @@ export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsDat
 }
 
 export const mmin: StringUconfProduct & WpsData = {
-    uid: 'user_mmin',
+    uid: 'mmin',
     description: {
         id: 'mmin',
         type: 'literal',
@@ -55,7 +55,7 @@ export const mmin: StringUconfProduct & WpsData = {
 
 
 export const mmax: StringUconfProduct & WpsData = {
-    uid: 'user_mmax',
+    uid: 'mmax',
     description: {
         id: 'mmax',
         type: 'literal',
@@ -72,7 +72,7 @@ export const mmax: StringUconfProduct & WpsData = {
 
 
 export const zmin: StringUconfProduct & WpsData = {
-    uid: 'user_zmin',
+    uid: 'zmin',
     description: {
         id: 'zmin',
         defaultValue: '0',
@@ -88,7 +88,7 @@ export const zmin: StringUconfProduct & WpsData = {
 };
 
 export const zmax: StringUconfProduct & WpsData = {
-    uid: 'user_zmax',
+    uid: 'zmax',
     description: {
         id: 'zmax',
         defaultValue: '100',
@@ -105,7 +105,7 @@ export const zmax: StringUconfProduct & WpsData = {
 
 
 export const p: Product & WpsData = {
-    uid: 'user_p',
+    uid: 'p',
     description: {
         id: 'p',
         description: 'p',
@@ -118,7 +118,7 @@ export const p: Product & WpsData = {
 
 
 export const etype: StringSelectUconfProduct & WpsData = {
-    uid: 'user_etype',
+    uid: 'etype',
     description: {
         id: 'etype',
         description: 'etype',
@@ -137,7 +137,7 @@ export const etype: StringSelectUconfProduct & WpsData = {
 };
 
 export const tlon: Product & WpsData = {
-    uid: 'user_tlon',
+    uid: 'tlon',
     description: {
         id: 'tlon',
         description: 'longitude [decimal degrees]',
@@ -150,7 +150,7 @@ export const tlon: Product & WpsData = {
 
 
 export const tlat: Product & WpsData = {
-    uid: 'user_tlat',
+    uid: 'tlat',
     description: {
         id: 'tlat',
         description: 'latitude [decimal degrees]',
@@ -208,7 +208,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
         super(
             'Quakeledger',
             'Earthquake Catalogue',
-            ['user_input-boundingbox'].concat([mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid)),
+            ['input-boundingbox'].concat([mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid)),
             [selectedEqs.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
             'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',

@@ -12,7 +12,7 @@ import { FeatureCollection, featureCollection } from '@turf/helpers';
 
 
 export const userinputSelectedEqPeru: FeatureSelectUconfProduct & VectorLayerData & WpsData = {
-    uid: 'user_selectedRowPeru',
+    uid: 'selectedRowPeru',
     description: {
         id: 'selectedRow',
         icon: 'earthquake',

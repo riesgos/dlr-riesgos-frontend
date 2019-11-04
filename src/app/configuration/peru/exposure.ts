@@ -9,7 +9,7 @@ import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 
 
 export const lonminPeru: Product & WpsData = {
-  uid: 'user_lonmin',
+  uid: 'lonmin',
   description: {
     id: 'lonmin',
     type: 'literal',
@@ -21,7 +21,7 @@ export const lonminPeru: Product & WpsData = {
 
 
 export const lonmaxPeru: Product & WpsData = {
-  uid: 'user_lonmax',
+  uid: 'lonmax',
   description: {
     id: 'lonmax',
     type: 'literal',
@@ -33,7 +33,7 @@ export const lonmaxPeru: Product & WpsData = {
 
 
 export const latminPeru: Product & WpsData = {
-  uid: 'user_latmin',
+  uid: 'latmin',
   description: {
     id: 'latmin',
     type: 'literal',
@@ -45,7 +45,7 @@ export const latminPeru: Product & WpsData = {
 
 
 export const latmaxPeru: Product & WpsData = {
-  uid: 'user_latmax',
+  uid: 'latmax',
   description: {
     id: 'latmax',
     type: 'literal',
@@ -57,7 +57,7 @@ export const latmaxPeru: Product & WpsData = {
 
 
 export const schemaPeru: Product & WpsData = {
-  uid: 'user_schema',
+  uid: 'schema',
   description: {
     id: 'schema',
     defaultValue: 'SARA_v1.0',
@@ -70,7 +70,7 @@ export const schemaPeru: Product & WpsData = {
 
 
 export const assettypePeru: Product & WpsData = {
-  uid: 'user_assettype',
+  uid: 'assettype',
   description: {
     id: 'assettype',
     defaultValue: 'res',
@@ -82,7 +82,7 @@ export const assettypePeru: Product & WpsData = {
 
 
 export const querymodePeru: Product & WpsData = {
-  uid: 'user_querymode',
+  uid: 'querymode',
   description: {
     id: 'querymode',
     // options: ['intersects', 'within'],
@@ -94,7 +94,7 @@ export const querymodePeru: Product & WpsData = {
 };
 
 
-export const exposureRefPeru: VectorLayerData & WpsData & Product = {
+export const exposurePeru: VectorLayerData & WpsData & Product = {
   uid: 'AssetmasterProcess_Exposure_Peru',
   description: {
     id: 'selectedRowsGeoJson',
@@ -161,7 +161,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       'ExposurePeru',
       'EQ Exposure Model',
       [lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, querymodePeru, schemaPeru, assettypePeru].map(p => p.uid),
-      [exposureRefPeru.uid],
+      [exposurePeru.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       '',
       'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

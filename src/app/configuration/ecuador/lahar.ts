@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 export const direction: StringSelectUconfProduct & WpsData = {
-    uid: 'user_direction',
+    uid: 'direction',
     description: {
         id: 'direction',
         reference: false,
@@ -34,7 +34,7 @@ export const vei: Product & WpsData = {
 };
 
 export const parameter: StringSelectUconfProduct & WpsData = {
-    uid: 'user_parameter',
+    uid: 'parameter',
     description: {
         id: 'parameter',
         reference: false,

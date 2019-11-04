@@ -8,7 +8,7 @@ import { WpsData } from '@ukis/services-wps/src/public-api';
 
 
 export const selectableVei: StringSelectUconfProduct & WpsData = {
-    uid: 'user_intensity',
+    uid: 'selectable_intensity',
     description: {
         id: 'intensity',
         reference: false,

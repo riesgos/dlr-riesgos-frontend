@@ -13,7 +13,7 @@ import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 
 
 export const lonmin: Product & WpsData = {
-  uid: 'user_lonmin',
+  uid: 'lonmin',
   description: {
     id: 'lonmin',
     type: 'literal',
@@ -25,7 +25,7 @@ export const lonmin: Product & WpsData = {
 
 
 export const lonmax: Product & WpsData = {
-  uid: 'user_lonmax',
+  uid: 'lonmax',
   description: {
     id: 'lonmax',
     type: 'literal',
@@ -37,7 +37,7 @@ export const lonmax: Product & WpsData = {
 
 
 export const latmin: Product & WpsData = {
-  uid: 'user_latmin',
+  uid: 'latmin',
   description: {
     id: 'latmin',
     type: 'literal',
@@ -49,7 +49,7 @@ export const latmin: Product & WpsData = {
 
 
 export const latmax: Product & WpsData = {
-  uid: 'user_latmax',
+  uid: 'latmax',
   description: {
     id: 'latmax',
     type: 'literal',
@@ -61,7 +61,7 @@ export const latmax: Product & WpsData = {
 
 
 export const schema: Product & WpsData = {
-  uid: 'user_schema',
+  uid: 'schema',
   description: {
     id: 'schema',
     defaultValue: 'SARA_v1.0',
@@ -74,7 +74,7 @@ export const schema: Product & WpsData = {
 
 
 export const assettype: Product & WpsData = {
-  uid: 'user_assettype',
+  uid: 'assettype',
   description: {
     id: 'assettype',
     defaultValue: 'res',
@@ -86,7 +86,7 @@ export const assettype: Product & WpsData = {
 
 
 export const querymode: Product & WpsData = {
-  uid: 'user_querymode',
+  uid: 'querymode',
   description: {
     id: 'querymode',
     // options: ['intersects', 'within'],

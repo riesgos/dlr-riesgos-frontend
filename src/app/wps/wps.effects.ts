@@ -40,7 +40,7 @@ import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador,
     taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
 import { LaharReliability, hazardLahar, countryEcuador, damageConsumerAreasEcuador } from '../configuration/ecuador/reliability';
 import { lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru,
-    querymodePeru, exposureRefPeru } from '../configuration/peru/exposure';
+    querymodePeru, exposurePeru } from '../configuration/peru/exposure';
 import { VulnerabilityAndExposurePeru } from '../configuration/peru/vulnAndExpCombined';
 import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru, fragilityRefPeru } from '../configuration/peru/modelProp';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
@@ -51,6 +51,7 @@ import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeus
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef } from '../configuration/ecuador/laharWrapper';
 import { ErrorParserService } from '../error-parser.service';
 import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -255,7 +256,7 @@ export class WpsEffects {
                 products = [
                     lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
-                    fragilityRefPeru, exposureRefPeru,
+                    fragilityRefPeru, exposurePeru,
                     new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
                     lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
                     selectedEqsPeru, userinputSelectedEqPeru,

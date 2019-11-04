@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { schema, exposureRef} from './exposure';
+import { schema, exposure} from './exposure';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
@@ -129,13 +129,22 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
                     'D3': 0,
                     'D4': 0
                 };
+                let total = 0;
                 for (let i = 0; i < expo.Damage.length; i++) {
                     const damageClass = expo.Damage[i];
                     const nrBuildings = expo.Buildings[i];
                     counts[damageClass] += nrBuildings;
+                    total += nrBuildings;
                 }
 
-                const [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                let r: number;
+                let g: number;
+                let b: number;
+                if (total === 0) {
+                    r = b = g = 0;
+                } else {
+                    [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                }
 
                 return new olStyle({
                   fill: new olFill({
@@ -189,7 +198,7 @@ export class EqDeus extends WpsProcess implements WizardableProcess {
         super(
             'EQ-DEUS',
             'Multihazard damage estimation / EQ',
-            [schema, fragilityRef, shakemapXmlRefOutput, exposureRef].map(p => p.uid),
+            [schema, fragilityRef, shakemapXmlRefOutput, exposure].map(p => p.uid),
             [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given earthquake.',
@@ -223,13 +232,14 @@ export class EqDeus extends WpsProcess implements WizardableProcess {
                             id: 'intensity'
                         }
                     };
-                case exposureRef.uid:
+                case exposure.uid:
                     return {
                         ... prod,
                         description: {
                             ... prod.description,
                             id: 'exposure'
-                        }
+                        },
+                        value: prod.value[0]
                     };
                 default:
                     return prod;

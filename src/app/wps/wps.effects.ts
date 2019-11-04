@@ -15,7 +15,7 @@ import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configu
 import { TsService, tsWms, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { direction, vei } from '../configuration/ecuador/lahar';
-import { ExposureModel, lonmin, lonmax, latmin, latmax, exposureRef,
+import { ExposureModel, lonmin, lonmax, latmin, latmax, exposure,
         assettype, schema, querymode } from '../configuration/chile/exposure';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityRef } from '../configuration/chile/modelProp';
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
@@ -229,7 +229,7 @@ export class WpsEffects {
                 products = [
                     lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
                     assetcategory, losscategory, taxonomies,
-                    exposureRef, fragilityRef,
+                    exposure, fragilityRef,
                     new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
@@ -286,7 +286,7 @@ export class WpsEffects {
                     laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
                     assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
-                    fragilityRef, exposureRef,
+                    fragilityRef, exposure,
                     laharDamage, laharTransition, laharUpdatedExposure,
                     countryEcuador, hazardLahar,
                     hydrologicalSimulation,

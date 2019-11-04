@@ -42,10 +42,12 @@ export class FormComponent implements OnInit, OnDestroy {
       if (isBboxUconfProd(parameter)) {
         const control = this.formGroup.get(parameter.uid);
         const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
-          this.store.dispatch(new ProductsProvided({products: [{
-            ...parameter,
-            value: newVal
-          }]}));
+          if (control.valid) {
+            this.store.dispatch(new ProductsProvided({products: [{
+              ...parameter,
+              value: newVal
+            }]}));
+          }
         });
         this.subscriptions.push(sub$);
       }

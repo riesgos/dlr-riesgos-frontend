@@ -288,13 +288,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: 'powerlines',
                 name: 'Powerlines',
                 type: 'wms',
-                url: 'http://sig.minenergia.cl/geoserver/men/wms?',
+                url: 'http://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?',
                 params: {
-                    LAYERS: 'men:lt_sic_728861dd_ef2a_4159_bac9_f5012a351115'
+                    LAYERS: 'sic_20181016234835'
                 },
-                description: 'SIC-Übertragungsleitung (Línea de Transmisión SIC)',
-                attribution: '&copy, <a href="http://sig.minenergia.cl">sig.minenergia.cl</a>',
-                legendImg: 'http://sig.minenergia.cl/geoserver/men/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=lt_sic_728861dd_ef2a_4159_bac9_f5012a351115',
+                description: 'Línea de Transmisión SIC',
+                attribution: '&copy, <a href="http://energiamaps.cne.cl">energiamaps.cne.cl/</a>',
+                legendImg: 'http://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?service=wms&request=GetLegendGraphic&LAYER=sic_20181016234835&FORMAT=image/png',
                 opacity: 0.3,
                 // bbox: [-92.270, -44.104, -48.017, -24.388],
                 visible: false

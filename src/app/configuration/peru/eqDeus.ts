@@ -129,13 +129,22 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                     'D3': 0,
                     'D4': 0
                 };
+                let total = 0;
                 for (let i = 0; i < expo.Damage.length; i++) {
                     const damageClass = expo.Damage[i];
                     const nrBuildings = expo.Buildings[i];
                     counts[damageClass] += nrBuildings;
+                    total += nrBuildings;
                 }
 
-                const [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                let r: number;
+                let g: number;
+                let b: number;
+                if (total === 0) {
+                    r = g = b = 0;
+                } else {
+                    [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                }
 
                 return new olStyle({
                   fill: new olFill({

@@ -1,6 +1,6 @@
 import { AutorunningProcess, ProcessStateUnavailable, Product, WpsProcess } from 'src/app/wps/wps.datatypes';
 import { fragilityRef, } from '../chile/modelProp';
-import { exposureRef } from '../chile/exposure';
+import { exposure } from '../chile/exposure';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { laharShakemap } from './lahar';
 import { losscategoryEcuador } from './vulnerability';
@@ -177,7 +177,7 @@ export class LaharDeus extends WpsProcess implements WizardableProcess {
         super(
             'Lahar-DEUS',
             'Multihazard damage estimation / Lahar',
-            [schemaEcuador, fragilityRef, laharHeightShakemapRef, exposureRef].map(p => p.uid),
+            [schemaEcuador, fragilityRef, laharHeightShakemapRef, exposure].map(p => p.uid),
             [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service outputs damage caused by a given lahar.',
@@ -205,7 +205,7 @@ export class LaharDeus extends WpsProcess implements WizardableProcess {
                             id: 'fragility'
                         }
                     };
-                case exposureRef.uid:
+                case exposure.uid:
                     return {
                         ... prod,
                         description: {

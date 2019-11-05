@@ -9,7 +9,7 @@ import {
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
+import { Bardata, createBarchart, createBigBarchart } from 'src/app/helpers/d3charts';
 
 
 export const lonmin: Product & WpsData = {
@@ -147,7 +147,7 @@ export const exposure: VectorLayerData & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBarchart(anchor, barchartData, 400, 300, 'taxonomia', 'edificios', 45);
+        const anchorUpdated = createBigBarchart(anchor, barchartData, 400, 300, 'taxonomia', 'edificios');
         return `<h4>Exposición ${props['name']}</h4>${anchor.innerHTML}`;
       }
     }

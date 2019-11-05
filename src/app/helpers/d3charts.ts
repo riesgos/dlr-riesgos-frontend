@@ -109,13 +109,14 @@ export function createBarchart(
         .call(xAxisCallback);
 
     xAxis.selectAll('text')
+        .attr('class', 'xAxisText')
         .attr('y', 0)
         .attr('x', 9)
         .attr('dy', '.35em')
         .attr('transform', `rotate(${xAxisAngle})`)
         .style('text-anchor', 'start');
 
-    xAxis.append('text')
+    const xAxisLabel = xAxis.append('text')
         .attr('class', 'axis-label')
         .attr('transform', `translate(${width / 2}, 30)`)
         .text(xlabel)
@@ -133,8 +134,9 @@ export function createBarchart(
         .call(yAxisCallback);
 
     yAxis.selectAll('text')
+        .attr('text-anchor', 'end')
         .attr('y', 0)
-        .attr('x', 9)
+        .attr('x', -25)
         .attr('dy', '.35em')
         .attr('transform', `rotate(${yAxisAngle})`)
         .style('text-anchor', 'start');

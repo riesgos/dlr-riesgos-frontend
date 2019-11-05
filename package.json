@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "installLibrary": "node scripts/installLibraryDependencies",
+    "installLibrary": "node scripts/installLibraryDependencies"
   },
   "private": true,
   "dependencies": {

@@ -10,7 +10,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "installLibrary": "node scripts/installLibraryDependencies",
-    "translate": "ng xi18n  --output-path locale"
   },
   "private": true,
   "dependencies": {

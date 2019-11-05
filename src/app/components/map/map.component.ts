@@ -110,7 +110,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 // keep user's visibility-settings
                 for (const oldLayer of oldOverlays) {
-                    const newLayer = newOverlays.find(nl => nl.productId === oldLayer.productId);
+                    const newLayer = newOverlays.find(nl => nl.id === oldLayer.id );
                     if (newLayer) {
                         newLayer.visible = oldLayer.visible;
                         newLayer.hasFocus = oldLayer.hasFocus;
@@ -119,7 +119,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 // set hasFocus=true for new layers
                 for (const newLayer of newOverlays) {
-                    const oldLayer = oldOverlays.find(ol => ol.productId === newLayer.productId);
+                    const oldLayer = oldOverlays.find(ol => ol.id === newLayer.id);
                     if (!oldLayer) {
                         newLayer.hasFocus = true;
                     }

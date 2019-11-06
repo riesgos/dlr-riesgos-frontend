@@ -1,6 +1,6 @@
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WpsData } from '@ukis/services-wps/src/public-api';
-import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { Product, WpsProcess, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
@@ -10,8 +10,10 @@ import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { fragilityRef } from './modelProp';
+import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { Observable } from 'rxjs';
+import { Deus } from './deus';
+import { switchMap } from 'rxjs/operators';
 
 
 
@@ -106,7 +108,7 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
         reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'updated exposure',
+        name: 'ts exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -168,28 +170,36 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
 
 
 
-export class TsDeus extends WpsProcess implements WizardableProcess {
 
+
+export class TsDeus implements ExecutableProcess, WizardableProcess {
+
+    readonly state: ProcessState;
+    readonly uid: string;
+    readonly name: string;
+    readonly requiredProducts: string[];
+    readonly providedProducts: string[];
+    readonly description?: string;
     readonly wizardProperties: WizardProperties;
 
+    private vulnerabilityProcess: VulnerabilityModel;
+    private deusProcess: Deus;
+
     constructor(http: HttpClient) {
-        super(
-            'TS-DEUS',
-            'Multihazard damage estimation / TS',
-            [schema, fragilityRef, tsShakemap, eqUpdatedExposure].map(p => p.uid),
-            [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid),
-            'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
-            'This service outputs damage caused by a given earthquake.',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-            '1.0.0',
-            http,
-            new ProcessStateUnavailable(),
-        );
+        this.state = new ProcessStateUnavailable();
+        this.uid = 'TS-Deus';
+        this.name = 'Multihazard damage estimation / TS';
+        this.requiredProducts = [tsShakemap, eqUpdatedExposure].map(p => p.uid);
+        this.providedProducts = [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid);
+        this.description = 'This service outputs damage caused by a given earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            shape: 'dot-circle'
+            shape: 'dot-circle' as 'dot-circle'
         };
+
+        this.vulnerabilityProcess = new VulnerabilityModel(http);
+        this.deusProcess = new Deus(http);
     }
 
     execute(
@@ -197,40 +207,16 @@ export class TsDeus extends WpsProcess implements WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const newInputs = inputProducts.map(prod => {
-            switch (prod.uid) {
-                case fragilityRef.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            id: 'fragility'
-                        }
-                    };
-                case tsShakemap.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            format: 'text/xml',
-                            id: 'intensity'
-                        }
-                    };
-                case eqUpdatedExposure.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            id: 'exposure'
-                        },
-                        value: prod.value[0]
-                    };
-                default:
-                    return prod;
-            }
-        });
+        const vulnerabilityInputs = [];
+        const vulnerabilityOutputs = [];
 
-        return super.execute(newInputs, outputProducts, doWhileExecuting);
+        return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
+            .pipe(
+                switchMap((results: Product[]) => {
+                    const deusInputs = [];
+                    const deusOutputs = [];
+                    return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
+                })
+            );
     }
-
 }

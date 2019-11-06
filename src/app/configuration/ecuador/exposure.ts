@@ -1,7 +1,7 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WpsData } from '@ukis/services-wps/src/public-api';
-import { exposure } from '../chile/exposure';
+import { initialExposure } from '../chile/exposure';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -99,7 +99,7 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
       'LaharExposure',
       'Lahar exposure model',
       [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
-      [exposure.uid],
+      [initialExposure.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       '',
       'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

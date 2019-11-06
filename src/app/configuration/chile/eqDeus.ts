@@ -1,7 +1,7 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { schema, exposure} from './exposure';
+import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
+import { schema, initialExposure} from './exposure';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -9,8 +9,10 @@ import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { fragilityRef } from './modelProp';
+import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { shakemapXmlRefOutput } from './shakyground';
+import { Deus } from './deus';
+import { switchMap } from 'rxjs/operators';
 
 
 
@@ -116,7 +118,7 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
         type: 'complex',
         icon: 'dot-circle',
         format: 'application/json',
-        name: 'updated exposure',
+        name: 'eq exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -186,27 +188,34 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
 };
 
 
-export class EqDeus extends WpsProcess implements WizardableProcess {
+export class EqDeus implements ExecutableProcess, WizardableProcess {
 
-    readonly wizardProperties = {
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/',
-        shape: 'dot-circle' as 'dot-circle'
-    };
+    readonly state: ProcessState;
+    readonly uid: string;
+    readonly name: string;
+    readonly requiredProducts: string[];
+    readonly providedProducts: string[];
+    readonly description?: string;
+    readonly wizardProperties: WizardProperties;
+
+    private vulnerabilityProcess: VulnerabilityModel;
+    private deusProcess: Deus;
 
     constructor(http: HttpClient) {
-        super(
-            'EQ-DEUS',
-            'Multihazard damage estimation / EQ',
-            [schema, fragilityRef, shakemapXmlRefOutput, exposure].map(p => p.uid),
-            [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid),
-            'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
-            'This service outputs damage caused by a given earthquake.',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-            '1.0.0',
-            http,
-            new ProcessStateUnavailable()
-        );
+        this.state = new ProcessStateUnavailable();
+        this.uid = 'EQ-Deus';
+        this.name = 'Multihazard damage estimation / EQ';
+        this.requiredProducts = [shakemapXmlRefOutput, initialExposure].map(p => p.uid);
+        this.providedProducts = [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid);
+        this.description = 'This service outputs damage caused by a given earthquake.';
+        this.wizardProperties = {
+            providerName: 'Helmholtz Centre Potsdam',
+            providerUrl: 'https://www.gfz-potsdam.de/en/',
+            shape: 'dot-circle' as 'dot-circle'
+        };
+
+        this.vulnerabilityProcess = new VulnerabilityModel(http);
+        this.deusProcess = new Deus(http);
     }
 
     execute(
@@ -214,38 +223,16 @@ export class EqDeus extends WpsProcess implements WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const newInputs = inputProducts.map(prod => {
-            switch (prod.uid) {
-                case fragilityRef.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            id: 'fragility'
-                        }
-                    };
-                case shakemapXmlRefOutput.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            id: 'intensity'
-                        }
-                    };
-                case exposure.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            id: 'exposure'
-                        },
-                        value: prod.value[0]
-                    };
-                default:
-                    return prod;
-            }
-        });
+        const vulnerabilityInputs = [];
+        const vulnerabilityOutputs = [];
 
-        return super.execute(newInputs, outputProducts, doWhileExecuting);
+        return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
+            .pipe(
+                switchMap((results: Product[]) => {
+                    const deusInputs = [];
+                    const deusOutputs = [];
+                    return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
+                })
+            );
     }
 }

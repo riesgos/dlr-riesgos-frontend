@@ -98,8 +98,8 @@ export const querymode: Product & WpsData = {
 };
 
 
-export const exposure: VectorLayerData & WpsData & Product = {
-  uid: 'AssetmasterProcess_Exposure',
+export const initialExposure: VectorLayerData & WpsData & Product = {
+  uid: 'initial_Exposure',
   description: {
     id: 'selectedRowsGeoJson',
     type: 'complex',
@@ -165,7 +165,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       'Exposure',
       'EQ Exposure Model',
       [lonmin, lonmax, latmin, latmax, querymode, schema, assettype].map(p => p.uid),
-      [exposure.uid],
+      [initialExposure.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       '',
       'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

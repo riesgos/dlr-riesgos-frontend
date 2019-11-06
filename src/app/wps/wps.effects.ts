@@ -15,7 +15,7 @@ import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configu
 import { TsService, tsWms, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { direction, vei } from '../configuration/ecuador/lahar';
-import { ExposureModel, lonmin, lonmax, latmin, latmax, exposure,
+import { ExposureModel, lonmin, lonmax, latmin, latmax, initialExposure,
         assettype, schema, querymode } from '../configuration/chile/exposure';
 import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityRef } from '../configuration/chile/modelProp';
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
@@ -28,7 +28,6 @@ import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTransla
 import { laharTransition, LaharDeus, laharDamage,
     laharUpdatedExposure  } from '../configuration/ecuador/laharDamage';
 import { FakeDeus } from '../configuration/others/fakeDeus';
-import { VulnerabilityAndExposure } from '../configuration/chile/vulnAndExpCombined';
 import { getScenarioWpsState } from './wps.selectors';
 import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
@@ -40,8 +39,7 @@ import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador,
     taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
 import { LaharReliability, hazardLahar, countryEcuador, damageConsumerAreasEcuador } from '../configuration/ecuador/reliability';
 import { lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru,
-    querymodePeru, exposurePeru } from '../configuration/peru/exposure';
-import { VulnerabilityAndExposurePeru } from '../configuration/peru/vulnAndExpCombined';
+    querymodePeru, exposurePeru, ExposureModelPeru } from '../configuration/peru/exposure';
 import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru, fragilityRefPeru } from '../configuration/peru/modelProp';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../configuration/peru/eqselection';
@@ -216,7 +214,7 @@ export class WpsEffects {
         switch (scenario) {
             case 'c1':
                 processes = [
-                    new VulnerabilityAndExposure(this.httpClient),
+                    new ExposureModel(this.httpClient),
                     new QuakeLedger(this.httpClient),
                     EqSelection,
                     new Shakyground(this.httpClient),
@@ -230,7 +228,7 @@ export class WpsEffects {
                 products = [
                     lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
                     assetcategory, losscategory, taxonomies,
-                    exposure, fragilityRef,
+                    initialExposure,
                     new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
@@ -244,7 +242,7 @@ export class WpsEffects {
                 break;
             case 'p1':
                 processes = [
-                    new VulnerabilityAndExposurePeru(this.httpClient),
+                    new ExposureModelPeru(this.httpClient),
                     new QuakeLedgerPeru(this.httpClient),
                     EqSelectionPeru,
                     new ShakygroundPeru(this.httpClient),
@@ -256,7 +254,7 @@ export class WpsEffects {
                 products = [
                     lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
-                    fragilityRefPeru, exposurePeru,
+                    exposurePeru,
                     new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
                     lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
                     selectedEqsPeru, userinputSelectedEqPeru,
@@ -287,7 +285,7 @@ export class WpsEffects {
                     laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
                     assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
-                    fragilityRef, exposure,
+                    fragilityRef, initialExposure,
                     laharDamage, laharTransition, laharUpdatedExposure,
                     countryEcuador, hazardLahar,
                     hydrologicalSimulation,

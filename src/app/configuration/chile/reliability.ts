@@ -8,7 +8,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
-import { shakemapXmlRefOutput } from './shakyground';
+import { eqShakemapRef } from './shakyground';
 import { Observable } from 'rxjs';
 
 
@@ -106,7 +106,7 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
         super(
             'Reliability',
             'System reliability after EQ',
-            [shakemapXmlRefOutput, countryChile, hazardEq].map(p => p.uid),
+            [eqShakemapRef, countryChile, hazardEq].map(p => p.uid),
             [damageConsumerAreas].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
             'Process for evaluating the reliability of infrastructure networks',
@@ -128,7 +128,7 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
         const newInputs = inputProducts.map(p => {
-            if (p.uid === shakemapXmlRefOutput.uid) {
+            if (p.uid === eqShakemapRef.uid) {
                 return {
                     ... p,
                     description: {

@@ -9,8 +9,8 @@ import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { fragilityRef, VulnerabilityModel } from './modelProp';
-import { shakemapXmlRefOutput } from './shakyground';
+import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
+import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
 
@@ -205,7 +205,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
         this.state = new ProcessStateUnavailable();
         this.uid = 'EQ-Deus';
         this.name = 'Multihazard damage estimation / EQ';
-        this.requiredProducts = [shakemapXmlRefOutput, initialExposure].map(p => p.uid);
+        this.requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
         this.providedProducts = [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid);
         this.description = 'This service outputs damage caused by a given earthquake.';
         this.wizardProperties = {
@@ -223,14 +223,49 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const vulnerabilityInputs = [];
-        const vulnerabilityOutputs = [];
+        const vulnerabilityInputs = [
+            assetcategory,
+            losscategory,
+            taxonomies,
+            {
+                ... schema,
+                value: 'SARA_v1.0'
+            }
+        ];
+        const vulnerabilityOutputs = [fragilityRef];
 
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
             .pipe(
-                switchMap((results: Product[]) => {
-                    const deusInputs = [];
-                    const deusOutputs = [];
+                switchMap((resultProducts: Product[]) => {
+                    const fragility = resultProducts.find(prd => prd.uid === fragilityRef.uid);
+                    const shakemap = inputProducts.find(prd => prd.uid === eqShakemapRef.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === initialExposure.uid);
+
+                    const deusInputs = [{
+                            ... schema,
+                            value: 'SARA_v1.0'
+                        }, {
+                            ... fragility,
+                            description: {
+                                ... fragilityRef.description,
+                                id: 'fragility'
+                            }
+                        }, {
+                            ... shakemap,
+                            description: {
+                                ...shakemap.description,
+                                id: 'intensity'
+                            }
+                        }, {
+                            ... exposure,
+                            description: {
+                                ... exposure.description,
+                                id: 'exposure'
+                            },
+                            value: exposure.value[0]
+                        }
+                    ];
+                    const deusOutputs = outputProducts;
                     return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
                 })
             );

@@ -5,15 +5,16 @@ import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelp
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { loss, eqUpdatedExposure, eqDamage } from './eqDeus';
-import { schema } from './exposure';
+import { schema, initialExposure } from './exposure';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { fragilityRef, VulnerabilityModel } from './modelProp';
+import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
 import { Observable } from 'rxjs';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
+import { eqShakemapRef } from './shakyground';
 
 
 
@@ -121,13 +122,22 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
                     'D3': 0,
                     'D4': 0
                 };
+                let total = 0;
                 for (let i = 0; i < expo.Damage.length; i++) {
                     const damageClass = expo.Damage[i];
                     const nrBuildings = expo.Buildings[i];
                     counts[damageClass] += nrBuildings;
+                    total += nrBuildings;
                 }
 
-                const [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                let r: number;
+                let g: number;
+                let b: number;
+                if (total === 0) {
+                    r = b = g = 0;
+                } else {
+                    [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                }
 
                 return new olStyle({
                   fill: new olFill({
@@ -207,14 +217,51 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const vulnerabilityInputs = [];
-        const vulnerabilityOutputs = [];
+        const vulnerabilityInputs = [
+            assetcategory,
+            losscategory,
+            taxonomies,
+            {
+                ... schema,
+                value: 'SUPPASRI2013_v2.0'
+            }
+        ];
+        const vulnerabilityOutputs = [fragilityRef];
 
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
             .pipe(
-                switchMap((results: Product[]) => {
-                    const deusInputs = [];
-                    const deusOutputs = [];
+                switchMap((resultProducts: Product[]) => {
+
+                    const fragility = resultProducts.find(prd => prd.uid === fragilityRef.uid);
+                    const shakemap = inputProducts.find(prd => prd.uid === tsShakemap.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === eqUpdatedExposure.uid);
+
+                    const deusInputs = [{
+                            ... schema,
+                            value: 'SUPPASRI2013_v2.0'
+                        }, {
+                            ... fragility,
+                            description: {
+                                ... fragilityRef.description,
+                                id: 'fragility'
+                            }
+                        }, {
+                            ... shakemap,
+                            description: {
+                                ...shakemap.description,
+                                format: 'text/xml',
+                                id: 'intensity'
+                            }
+                        }, {
+                            ... exposure,
+                            description: {
+                                ... exposure.description,
+                                id: 'exposure'
+                            },
+                            value: exposure.value[0]
+                        }
+                    ];
+                    const deusOutputs = outputProducts;
                     return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
                 })
             );

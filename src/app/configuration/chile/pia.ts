@@ -1,7 +1,7 @@
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { ProcessStateAvailable, WpsProcess } from 'src/app/wps/wps.datatypes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { shakemapXmlRefOutput } from './shakyground';
+import { eqShakemapRef } from './shakyground';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -31,7 +31,7 @@ export class PhysicalImpactAssessment extends WpsProcess implements WizardablePr
         super(
             'PIA',
             'Physical Impact',
-            [shakemapXmlRefOutput.uid],
+            [eqShakemapRef.uid],
             [physicalImpact.uid],
             'org.n52.dlr.riesgos.algorithm.PhysicalImpactAssessment',
             '',

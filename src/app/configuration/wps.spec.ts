@@ -14,7 +14,7 @@ import { Product, Process } from '../wps/wps.datatypes';
 import { schema, ExposureModel, lonmin, lonmax, latmin, latmax, querymode, assettype, initialExposure } from './chile/exposure';
 import { assetcategory, losscategory, taxonomies, VulnerabilityModel, fragilityRef } from './chile/modelProp';
 import { Observable } from 'rxjs';
-import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from './chile/shakyground';
+import { Shakyground, shakemapWmsOutput, eqShakemapRef } from './chile/shakyground';
 import { selectedEq, EqSelection, userinputSelectedEq } from './chile/eqselection';
 
 

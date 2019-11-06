@@ -20,7 +20,7 @@ export const shakemapWmsOutput: WpsData & WmsLayerData = {
     value: null
 };
 
-export const shakemapXmlRefOutput: WpsData & Product = {
+export const eqShakemapRef: WpsData & Product = {
     uid: 'Shakyground_shakemap',
     description: {
         id: 'shakeMapFile',
@@ -41,7 +41,7 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
             'Shakyground',
             'Groundmotion Simulation',
             [selectedEq].map(p => p.uid),
-            [shakemapWmsOutput, shakemapXmlRefOutput].map(p => p.uid),
+            [shakemapWmsOutput, eqShakemapRef].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
             'Simulates the ground motion caused by a given eathquake',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

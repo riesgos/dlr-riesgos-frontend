@@ -11,7 +11,7 @@ import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
 import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru, mminPeru, mmaxPeru,
     zminPeru, zmaxPeru, pPeru, selectedEqsPeru } from '../configuration/peru/quakeledger';
-import { Shakyground, shakemapWmsOutput, shakemapXmlRefOutput } from '../configuration/chile/shakyground';
+import { Shakyground, shakemapWmsOutput, eqShakemapRef } from '../configuration/chile/shakyground';
 import { TsService, tsWms, tsShakemap } from '../configuration/chile/tsService';
 import { Process, Product } from './wps.datatypes';
 import { direction, vei } from '../configuration/ecuador/lahar';
@@ -27,7 +27,6 @@ import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTransla
     damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
 import { laharTransition, LaharDeus, laharDamage,
     laharUpdatedExposure  } from '../configuration/ecuador/laharDamage';
-import { FakeDeus } from '../configuration/others/fakeDeus';
 import { getScenarioWpsState } from './wps.selectors';
 import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
@@ -39,17 +38,16 @@ import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador,
     taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
 import { LaharReliability, hazardLahar, countryEcuador, damageConsumerAreasEcuador } from '../configuration/ecuador/reliability';
 import { lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru,
-    querymodePeru, exposurePeru, ExposureModelPeru } from '../configuration/peru/exposure';
-import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru, fragilityRefPeru } from '../configuration/peru/modelProp';
+    querymodePeru, initialExposurePeru, ExposureModelPeru } from '../configuration/peru/exposure';
+import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from '../configuration/peru/modelProp';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../configuration/peru/eqselection';
-import { shakemapWmsOutputPeru, shakemapXmlRefOutputPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
-import { FakeDeusPeru } from '../configuration/peru/fakeDeus';
+import { shakemapWmsOutputPeru, eqShakemapRefPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
 import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeusPeru } from '../configuration/peru/eqDeus';
-import { LaharWrapper, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef } from '../configuration/ecuador/laharWrapper';
+import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
+    laharVelocityWms, laharVelocityShakemapRef } from '../configuration/ecuador/laharWrapper';
 import { ErrorParserService } from '../error-parser.service';
 import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
-import { environment } from 'src/environments/environment';
 
 
 
@@ -87,7 +85,7 @@ export class WpsEffects {
             if (state.wpsState.scenarioData[newScenario]) {
                 let _;
                 const scenarioData = state.wpsState.scenarioData[newScenario];
-                // because processes are more than the ImmutableProcesses stored in the state-store: 
+                // because processes are more than the ImmutableProcesses stored in the state-store:
                 prods = scenarioData.productValues; // getting products from state-store ...
                 [procs, _] = this.loadScenarioDataFresh(action.payload.scenario); // ... but processes from registry.
             } else {
@@ -231,7 +229,7 @@ export class WpsEffects {
                     initialExposure,
                     new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
-                    selectedEq, shakemapWmsOutput, shakemapXmlRefOutput,
+                    selectedEq, shakemapWmsOutput, eqShakemapRef,
                     loss, eqDamage, eqTransition, eqUpdatedExposure,
                     tsWms, tsShakemap,
                     countryChile, hazardEq,
@@ -254,11 +252,11 @@ export class WpsEffects {
                 products = [
                     lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
-                    exposurePeru,
+                    initialExposurePeru,
                     new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
                     lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
                     selectedEqsPeru, userinputSelectedEqPeru,
-                    selectedEqPeru, shakemapWmsOutputPeru, shakemapXmlRefOutputPeru,
+                    selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
                     // country, hazard,
                     tsWmsPeru, tsShakemapPeru,
                     // damage_consumer_areas

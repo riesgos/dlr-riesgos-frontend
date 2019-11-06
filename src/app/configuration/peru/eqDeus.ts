@@ -1,16 +1,18 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { schemaPeru, exposurePeru } from './exposure';
+import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
+import { schemaPeru, initialExposurePeru } from './exposure';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
-import { fragilityRefPeru } from './modelProp';
-import { shakemapXmlRefOutputPeru } from './shakyground';
+import { fragilityRefPeru, VulnerabilityModelPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './modelProp';
+import { eqShakemapRefPeru } from './shakyground';
 import { Observable } from 'rxjs';
+import { Deus } from '../chile/deus';
+import { switchMap } from 'rxjs/operators';
 
 
 
@@ -186,27 +188,37 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
 };
 
 
-export class EqDeusPeru extends WpsProcess implements WizardableProcess {
 
-    readonly wizardProperties = {
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/',
-        shape: 'dot-circle' as 'dot-circle'
-    };
+
+
+export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
+
+    readonly state: ProcessState;
+    readonly uid: string;
+    readonly name: string;
+    readonly requiredProducts: string[];
+    readonly providedProducts: string[];
+    readonly description?: string;
+    readonly wizardProperties: WizardProperties;
+
+    private vulnerabilityProcess: VulnerabilityModelPeru;
+    private deusProcess: Deus;
 
     constructor(http: HttpClient) {
-        super(
-            'EQ-DEUS Peru',
-            'Multihazard damage estimation / EQ',
-            [schemaPeru, fragilityRefPeru, shakemapXmlRefOutputPeru, exposurePeru].map(p => p.uid),
-            [eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru].map(p => p.uid),
-            'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
-            'This service outputs damage caused by a given earthquake.',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-            '1.0.0',
-            http,
-            new ProcessStateUnavailable()
-        );
+        this.state = new ProcessStateUnavailable();
+        this.uid = 'EQ-Deus';
+        this.name = 'Multihazard damage estimation / EQ';
+        this.requiredProducts = [eqShakemapRefPeru, initialExposurePeru].map(p => p.uid);
+        this.providedProducts = [eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru].map(p => p.uid);
+        this.description = 'This service outputs damage caused by a given earthquake.';
+        this.wizardProperties = {
+            providerName: 'Helmholtz Centre Potsdam',
+            providerUrl: 'https://www.gfz-potsdam.de/en/',
+            shape: 'dot-circle' as 'dot-circle'
+        };
+
+        this.vulnerabilityProcess = new VulnerabilityModelPeru(http);
+        this.deusProcess = new Deus(http);
     }
 
     execute(
@@ -214,38 +226,51 @@ export class EqDeusPeru extends WpsProcess implements WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const newInputs = inputProducts.map(prod => {
-            switch (prod.uid) {
-                case fragilityRefPeru.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            id: 'fragility'
-                        }
-                    };
-                case shakemapXmlRefOutputPeru.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            id: 'intensity'
-                        }
-                    };
-                case exposurePeru.uid:
-                    return {
-                        ... prod,
-                        description: {
-                            ... prod.description,
-                            id: 'exposure'
-                        },
-                        value: prod.value[0]
-                    };
-                default:
-                    return prod;
+        const vulnerabilityInputs = [
+            assetcategoryPeru,
+            losscategoryPeru,
+            taxonomiesPeru,
+            {
+                ... schemaPeru,
+                value: 'SARA_v1.0'
             }
-        });
+        ];
+        const vulnerabilityOutputs = [fragilityRefPeru];
 
-        return super.execute(newInputs, outputProducts, doWhileExecuting);
+        return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
+            .pipe(
+                switchMap((resultProducts: Product[]) => {
+                    const fragility = resultProducts.find(prd => prd.uid === fragilityRefPeru.uid);
+                    const shakemap = inputProducts.find(prd => prd.uid === eqShakemapRefPeru.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === initialExposurePeru.uid);
+
+                    const deusInputs = [{
+                            ... schemaPeru,
+                            value: 'SARA_v1.0'
+                        }, {
+                            ... fragility,
+                            description: {
+                                ... fragility.description,
+                                id: 'fragility'
+                            }
+                        }, {
+                            ... shakemap,
+                            description: {
+                                ...shakemap.description,
+                                id: 'intensity'
+                            }
+                        }, {
+                            ... exposure,
+                            description: {
+                                ... exposure.description,
+                                id: 'exposure'
+                            },
+                            value: exposure.value[0]
+                        }
+                    ];
+                    const deusOutputs = outputProducts;
+                    return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
+                })
+            );
     }
 }

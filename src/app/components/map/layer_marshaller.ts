@@ -82,7 +82,7 @@ export class LayerMarshaller  {
         const bboxArray: [number, number, number, number] =
         [product.value.lllon, product.value.lllat, product.value.urlon, product.value.urlat];
         const layer: ProductVectorLayer = new ProductVectorLayer({
-            id: `${product.description.id}_result_layer`,
+            id: `${product.uid}_${product.description.id}_result_layer`,
             name: `${product.description.name}`,
             removable: false,
             opacity: 0.6,
@@ -111,7 +111,7 @@ export class LayerMarshaller  {
                 const bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({
-                    id: `${product.description.id}_result_layer`,
+                    id: `${product.uid}_${product.description.id}_result_layer`,
                     name: `${product.description.name}`,
                     opacity: 0.6,
                     removable: false,
@@ -196,7 +196,7 @@ export class LayerMarshaller  {
                 for (const layername of paras.layers) {
                     // @TODO: convert all searchparameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
-                        id: `${layername}_result_layer`,
+                        id: `${uid}_${layername}_result_layer`,
                         name: `${layername}`,
                         opacity: 0.6,
                         removable: false,

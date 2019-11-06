@@ -86,7 +86,7 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerData = {
             text: (props: object) => {
                 const selectedProps = {
                     'Nombre': props['Name'],
-                    'Superficie': props['AREA'],
+                    'Superficie': props['Area'],
                     'Población': props['population'],
                     'Prob. de interrupción': props['Prob_Disruption'],
                 };
@@ -95,7 +95,7 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerData = {
         }
     },
     value: null
-}
+};
 
 
 export class EqReliability extends WpsProcess implements WizardableProcess {
@@ -108,7 +108,7 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
             'System reliability after EQ',
             [eqShakemapRef, countryChile, hazardEq].map(p => p.uid),
             [damageConsumerAreas].map(p => p.uid),
-            'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
+            'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess',
             'Process for evaluating the reliability of infrastructure networks',
             'http://91.250.85.221/wps/WebProcessingService',
             '1.0.0',

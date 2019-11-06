@@ -29,6 +29,7 @@ import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
 import { TranslateService } from '@ngx-translate/core';
+import { image } from 'd3';
 
 
 @Component({
@@ -358,7 +359,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new olTileArcGISRest({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/rest/services/Demarcacion_Territorial/MapServer',
                                 params: {
-                                    LAYERS: 'show:0'
+                                    layers: 'show:0'
                                 }
                             })
                         }),

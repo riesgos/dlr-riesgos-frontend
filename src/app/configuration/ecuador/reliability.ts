@@ -8,6 +8,7 @@ import { Feature as olFeature } from 'ol/Feature';
 import { laharShakemap } from './lahar';
 import { Observable } from 'rxjs';
 import { laharVelocityShakemapRef, laharHeightShakemapRef } from './laharWrapper';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
 
 
 
@@ -82,7 +83,13 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
                 });
             },
             text: (props: object) => {
-                return JSON.stringify(props);
+                const selectedProps = {
+                    'Nombre': props['Name'],
+                    'Superficie': props['Area'],
+                    'Población': props['population'],
+                    'Prob. de interrupción': props['Prob_Disruption'],
+                };
+                return createKeyValueTableHtml('Suministro eléctrico', selectedProps);
             }
         }
     },
@@ -100,7 +107,7 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             'System reliability after Lahar',
             [laharHeightShakemapRef, laharVelocityShakemapRef, countryEcuador, hazardLahar].map(p => p.uid),
             [damageConsumerAreasEcuador].map(p => p.uid),
-            'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityProcess',
+            'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess',
             'Process for evaluating the reliability of infrastructure networks',
             'http://91.250.85.221/wps/WebProcessingService',
             '1.0.0',
@@ -118,13 +125,22 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
 
         const newInputProducts = inputProducts.map(prod => {
             switch (prod.uid) {
-                case laharShakemap.uid:
+                case laharHeightShakemapRef.uid:
                     return {
                         ... prod,
                         description: {
                             ... prod.description,
                             format: 'text/xml',
-                            id: 'intensity'
+                            id: 'height'
+                        }
+                    };
+                case laharVelocityShakemapRef.uid:
+                    return {
+                        ... prod,
+                        description: {
+                            ... prod.description,
+                            format: 'text/xml',
+                            id: 'velocity'
                         }
                     };
                 case countryEcuador.uid:

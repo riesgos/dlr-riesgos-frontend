@@ -28,13 +28,13 @@ export const loss: WpsData & Product = {
 };
 
 export const eqDamage: VectorLayerData & WpsData & Product = {
-    uid: 'damage',
+    uid: 'eq_damage',
     description: {
         id: 'damage',
         reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'damage',
+        name: 'eq-damage',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -60,14 +60,14 @@ export const eqDamage: VectorLayerData & WpsData & Product = {
 };
 
 export const eqTransition: VectorLayerData & WpsData & Product = {
-    uid: 'transition',
+    uid: 'eq_transition',
     description: {
         id: 'transition',
         icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'transition',
+        name: 'eq-transition',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -111,14 +111,14 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
 };
 
 export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
-    uid: 'updated_exposure',
+    uid: 'eq_updated_exposure',
     description: {
         id: 'updated_exposure',
         reference: false,
         type: 'complex',
         icon: 'dot-circle',
         format: 'application/json',
-        name: 'eq exposure',
+        name: 'eq-exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -218,7 +218,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
         this.uid = 'EQ-Deus';
         this.name = 'Multihazard damage estimation / EQ';
         this.requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
-        this.providedProducts = [eqUpdatedExposure, eqUpdatedExposureRef].map(p => p.uid);
+        this.providedProducts = [eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExposureRef].map(p => p.uid);
         this.description = 'This service outputs damage caused by a given earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',

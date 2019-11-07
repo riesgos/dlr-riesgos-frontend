@@ -1,11 +1,11 @@
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WpsData } from '@ukis/services-wps/src/public-api';
-import { Product, WpsProcess, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
+import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { loss, eqDamage, eqUpdatedExposureRef } from './eqDeus';
-import { schema, initialExposure } from './exposure';
+import { eqUpdatedExposureRef } from './eqDeus';
+import { schema } from './exposure';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -14,19 +14,18 @@ import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomi
 import { Observable } from 'rxjs';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
-import { eqShakemapRef } from './shakyground';
 
 
 
 export const tsDamage: VectorLayerData & WpsData & Product = {
-    uid: 'tsDamage',
+    uid: 'ts_damage',
     description: {
         id: 'damage',
         reference: false,
-        icon: 'tsunami',
+        icon: 'dot-circle',
         type: 'complex',
         format: 'application/json',
-        name: 'damage',
+        name: 'ts-damage',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -51,14 +50,14 @@ export const tsDamage: VectorLayerData & WpsData & Product = {
 };
 
 export const tsTransition: VectorLayerData & WpsData & Product = {
-    uid: 'tsTransition',
+    uid: 'ts_transition',
     description: {
         id: 'transition',
         icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'transition',
+        name: 'ts-transition',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -102,14 +101,14 @@ export const tsTransition: VectorLayerData & WpsData & Product = {
 };
 
 export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
-    uid: 'tsUpdatedExposure',
+    uid: 'ts_updated_exposure',
     description: {
         id: 'updated_exposure',
         icon: 'dot-circle',
         reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'ts exposure',
+        name: 'ts-exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -120,7 +119,9 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
                     'D1': 0,
                     'D2': 0,
                     'D3': 0,
-                    'D4': 0
+                    'D4': 0,
+                    'D5': 0,
+                    'D6': 0
                 };
                 let total = 0;
                 for (let i = 0; i < expo.Damage.length; i++) {
@@ -158,7 +159,9 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
                     'D1': 0,
                     'D2': 0,
                     'D3': 0,
-                    'D4': 0
+                    'D4': 0,
+                    'D5': 0,
+                    'D6': 0
                 };
                 for (let i = 0; i < expo.Damage.length; i++) {
                     const damageClass = expo.Damage[i];
@@ -200,7 +203,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.uid = 'TS-Deus';
         this.name = 'Multihazard damage estimation / TS';
         this.requiredProducts = [tsShakemap, eqUpdatedExposureRef].map(p => p.uid);
-        this.providedProducts = [tsUpdatedExposure].map(p => p.uid);
+        this.providedProducts = [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid);
         this.description = 'This service outputs damage caused by a given earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',

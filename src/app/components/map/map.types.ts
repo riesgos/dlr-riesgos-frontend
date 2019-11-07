@@ -3,10 +3,12 @@ import { VectorLayer, RasterLayer, Layer } from '@ukis/services-layers';
 
 export class ProductVectorLayer extends VectorLayer {
     productId: string;
+    attribution = '';
 }
 
 export class ProductRasterLayer extends RasterLayer {
     productId: string;
+    attribution = '';
 }
 
 

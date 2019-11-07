@@ -19,6 +19,8 @@ export class CesiummapComponent implements OnInit, AfterViewInit {
   @Input() layersSvc: LayersService;
   @Input() mapState: MapStateService;
   @Input() controls;
+  public cesiumOn = false;
+  private ol3d;
 
   constructor(
     private mapSvc: MapOlService
@@ -28,9 +30,14 @@ export class CesiummapComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-      const ol3d = new OLCesium({map: this.mapSvc.map});
-      const scene = ol3d.getCesiumScene();
+      this.ol3d = new OLCesium({map: this.mapSvc.map});
+      const scene = this.ol3d.getCesiumScene();
       scene.terrainProvider = Cesium.createWorldTerrain({});
-      ol3d.setEnabled(true);
+      this.ol3d.setEnabled(this.cesiumOn);
+    }
+
+    toggleView() {
+      this.cesiumOn = !this.cesiumOn;
+      this.ol3d.setEnabled(this.cesiumOn);
     }
 }

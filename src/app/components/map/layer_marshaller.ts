@@ -84,6 +84,7 @@ export class LayerMarshaller  {
         const layer: ProductVectorLayer = new ProductVectorLayer({
             id: `${product.uid}_${product.description.id}_result_layer`,
             name: `${product.description.name}`,
+            attribution: '',
             removable: false,
             opacity: 0.6,
             type: 'geojson',
@@ -113,6 +114,7 @@ export class LayerMarshaller  {
                 const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.uid}_${product.description.id}_result_layer`,
                     name: `${product.description.name}`,
+                    attribution: '',
                     opacity: 0.6,
                     removable: false,
                     type: 'geojson',
@@ -198,6 +200,7 @@ export class LayerMarshaller  {
                     const layer: ProductRasterLayer = new ProductRasterLayer({
                         id: `${uid}_${layername}_result_layer`,
                         name: `${layername}`,
+                        attribution: '',
                         opacity: 0.6,
                         removable: false,
                         type: 'wms',

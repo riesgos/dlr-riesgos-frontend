@@ -4,7 +4,7 @@ import { Product, WpsProcess, ProcessStateUnavailable, ExecutableProcess, Proces
 import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { loss, eqUpdatedExposure, eqDamage } from './eqDeus';
+import { loss, eqDamage, eqUpdatedExposureRef } from './eqDeus';
 import { schema, initialExposure } from './exposure';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -199,8 +199,8 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard damage estimation / TS';
-        this.requiredProducts = [tsShakemap, eqUpdatedExposure].map(p => p.uid);
-        this.providedProducts = [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid);
+        this.requiredProducts = [tsShakemap, eqUpdatedExposureRef].map(p => p.uid);
+        this.providedProducts = [tsUpdatedExposure].map(p => p.uid);
         this.description = 'This service outputs damage caused by a given earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',
@@ -234,7 +234,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
 
                     const fragility = resultProducts.find(prd => prd.uid === fragilityRef.uid);
                     const shakemap = inputProducts.find(prd => prd.uid === tsShakemap.uid);
-                    const exposure = inputProducts.find(prd => prd.uid === eqUpdatedExposure.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === eqUpdatedExposureRef.uid);
 
                     const deusInputs = [{
                             ... schema,
@@ -258,7 +258,6 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
                                 ... exposure.description,
                                 id: 'exposure'
                             },
-                            value: exposure.value[0]
                         }
                     ];
                     const deusOutputs = outputProducts;

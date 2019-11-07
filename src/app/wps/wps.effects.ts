@@ -21,7 +21,7 @@ import { VulnerabilityModel, assetcategory, losscategory, taxonomies, fragilityR
 import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/chile/eqselection';
 import { hydrologicalSimulation, geomerFlood, durationTiff,
     velocityTiff, depthTiff, geomerFloodWcsProvider } from '../configuration/ecuador/geomerHydrological';
-import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure } from '../configuration/chile/eqDeus';
+import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExposureRef } from '../configuration/chile/eqDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from '../configuration/chile/reliability';
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator,
     damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
@@ -217,7 +217,6 @@ export class WpsEffects {
                     EqSelection,
                     new Shakyground(this.httpClient),
                     new EqDeus(this.httpClient),
-                    // new FakeDeus(this.httpClient),
                     new TsService(this.httpClient),
                     new TsDeus(this.httpClient),
                     new EqReliability(this.httpClient),
@@ -230,7 +229,7 @@ export class WpsEffects {
                     new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, eqShakemapRef,
-                    loss, eqDamage, eqTransition, eqUpdatedExposure,
+                    loss, eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExposureRef,
                     tsWms, tsShakemap,
                     countryChile, hazardEq,
                     damageConsumerAreas,

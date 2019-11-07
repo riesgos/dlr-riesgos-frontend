@@ -187,6 +187,18 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
     value: null
 };
 
+export const eqUpdatedExposureRef: WpsData & Product = {
+    uid: 'updated_exposure_ref',
+    description: {
+        id: 'updated_exposure',
+        reference: true,
+        type: 'complex',
+        format: 'application/json',
+        description: 'Amount of goods that are exposed to a hazard.'
+    },
+    value: null
+};
+
 
 export class EqDeus implements ExecutableProcess, WizardableProcess {
 
@@ -206,7 +218,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
         this.uid = 'EQ-Deus';
         this.name = 'Multihazard damage estimation / EQ';
         this.requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
-        this.providedProducts = [eqDamage, eqTransition, eqUpdatedExposure].map(p => p.uid);
+        this.providedProducts = [eqUpdatedExposure, eqUpdatedExposureRef].map(p => p.uid);
         this.description = 'This service outputs damage caused by a given earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',

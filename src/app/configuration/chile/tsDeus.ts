@@ -205,7 +205,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            shape: 'dot-circle' as 'dot-circle'
+            shape: 'dot-circle'
         };
 
         this.vulnerabilityProcess = new VulnerabilityModel(http);
@@ -238,7 +238,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
 
                     const deusInputs = [{
                             ... schema,
-                            value: 'SUPPASRI2013_v2.0'
+                            value:  'SARA_v1.0' // <-- because last exposure still used SARA!
                         }, {
                             ... fragility,
                             description: {

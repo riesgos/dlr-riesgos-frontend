@@ -6,8 +6,11 @@ import TileLayer from 'ol/layer/Tile';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection, transformExtent } from 'ol/proj';
+import {getWidth} from 'ol/extent';
 import { MapOlService } from '@ukis/map-ol';
 import { TileArcGISRest as olTileArcGISRest } from 'ol/source';
+import TileWMS from 'ol/source/TileWMS';
+import TileGrid from 'ol/tilegrid/TileGrid';
 import { MapStateService } from '@ukis/services-map-state';
 import { osm, esri_world_imagery } from '@ukis/base-layers-raster';
 import { Store, select } from '@ngrx/store';
@@ -31,6 +34,8 @@ import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
 import { TranslateService } from '@ngx-translate/core';
 import { image } from 'd3';
 
+
+const mapProjection = 'EPSG:4326';
 
 @Component({
     selector: 'ukis-map',
@@ -151,7 +156,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 const minLat = Math.min(... lats);
                 const maxLat = Math.max(... lats);
                 const box: WpsBboxValue = {
-                    crs: 'EPSG:4326',
+                    crs: mapProjection,
                     lllat: minLat.toFixed(1) as unknown as number,
                     lllon: minLon.toFixed(1) as unknown as number,
                     urlat: maxLat.toFixed(1) as unknown as number,
@@ -222,7 +227,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         // listening for change in scenario - afterViewInit
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             this.mapSvc.setZoom(8);
-            this.mapSvc.setProjection(getProjection('EPSG:4326'));
+            this.mapSvc.setProjection(getProjection(mapProjection));
             const center = this.getCenter(scenario);
             this.mapSvc.setCenter(center, true);
         });
@@ -349,6 +354,27 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (scenario === 'p1') {
 
+            // To make the IDEP-layers display labels in the same way as on ...
+            // http://mapas.geoidep.gob.pe/mapasperu/?config=viewer_wms&wmsuri=http://sigr.regioncajamarca.gob.pe:6080/arcgis/rest/services/Map/Informacion_Base/MapServer&wmstitle=Informaci%C3%B3n%20Base&t=1
+            // ... we need to adjust the wms-tilegrid.
+            const tileWidth = 1920;
+            const tileHeight = 948;
+            const view = this.mapSvc.map.getView();
+            const startZoom = view.getMinZoom();
+            const endZoom = view.getMaxZoom();
+            const resolutions = new Array(endZoom + 1);
+            const projExtent = getProjection(mapProjection).getExtent();
+            const startResolution = getWidth(projExtent) / tileWidth;
+            for (let z = startZoom; z <= endZoom; z++) {
+                resolutions[z] = startResolution / Math.pow(2, z); // view.getResolutionForZoom(z);
+            }
+
+            const idepTileGrid = new TileGrid({
+                extent: [-86, -21, -68, 1],
+                resolutions,
+                tileSize: [tileWidth, tileHeight]
+            });
+
             const idepLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'idepLayers',
@@ -356,11 +382,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 layers: [
                     new CustomLayer({
                         custom_layer: new TileLayer({
-                            source: new olTileArcGISRest({
-                                url: 'http://mapas.geoidep.gob.pe/geoidep/rest/services/Demarcacion_Territorial/MapServer',
+                            source: new TileWMS({
+                                url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: 'show:0'
-                                }
+                                    layers: '0',
+                                    tiled: true
+                                },
+                                tileGrid: idepTileGrid
                             })
                         }),
                         name: 'Departementos',
@@ -373,11 +401,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     }),
                     new CustomLayer({
                         custom_layer: new TileLayer({
-                            source: new olTileArcGISRest({
-                                url: 'http://mapas.geoidep.gob.pe/geoidep/rest/services/Demarcacion_Territorial/MapServer',
+                            source: new TileWMS({
+                                url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    LAYERS: 'show:1'
-                                }
+                                    layers: '1',
+                                    tiled: true
+                                },
+                                tileGrid: idepTileGrid
                             })
                         }),
                         name: 'Provincias',
@@ -390,11 +420,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     }),
                     new CustomLayer({
                         custom_layer: new TileLayer({
-                            source: new olTileArcGISRest({
-                                url: 'http://mapas.geoidep.gob.pe/geoidep/rest/services/Demarcacion_Territorial/MapServer',
+                            source: new TileWMS({
+                                url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    LAYERS: 'show:2'
-                                }
+                                    layers: '2',
+                                    tiled: true
+                                },
+                                tileGrid: idepTileGrid
                             })
                         }),
                         name: 'Distritos',

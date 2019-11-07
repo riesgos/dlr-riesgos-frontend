@@ -49,6 +49,7 @@ import { TextModalComponent } from './components/text-modal/text-modal.component
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
 import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
+import { CesiummapComponent } from './components/cesiummap/cesiummap.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { InteractionstatemonitorComponent } from './components/interactionstatem
     TextModalComponent,
     DisclaimerComponent,
     DisclaimerpopupComponent,
-    InteractionstatemonitorComponent
+    InteractionstatemonitorComponent,
+    CesiummapComponent
   ],
   imports: [
     BrowserModule,

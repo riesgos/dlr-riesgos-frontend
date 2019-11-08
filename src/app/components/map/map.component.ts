@@ -24,7 +24,7 @@ import { LayerMarshaller } from './layer_marshaller';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
-import { ProductLayer, ProductRasterLayer } from './map.types';
+import { ProductLayer, ProductRasterLayer, ProductVectorLayer } from './map.types';
 import { mergeMap, map, withLatestFrom, switchMap } from 'rxjs/operators';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
@@ -445,43 +445,14 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (scenario === 'e1') {
 
-            const layer = new ProductRasterLayer({
-                id: `lahartest_result_layer`,
-                name: `lahartest_result_layer`,
-                attribution: '',
-                opacity: 0.6,
-                removable: false,
-                type: 'wms',
-                filtertype: 'Overlays',
-                visible: true,
-                url: `http://91.250.85.221/geoserver/riesgos/wms/reflect?`,
-                params: {
-                    VERSION: '1.3.0',
-                    LAYERS: 'Lahar_S_VEI60mio_maxvelocity_25m',
-                    // WIDTH: paras.width,
-                    // HEIGHT: paras.height,
-                    // FORMAT: paras.format,
-                    // BBOX: paras.bbox,
-                    // SRS: paras.srs,
-                    TRANSPARENT: true,
-                    STYLES: '',
-                },
-                legendImg: `http://91.250.85.221/geoserver/riesgos/wms/reflect?REQUEST=GetLegendGraphic&SERVICE=WMS` +
-                    `&VERSION=1.3.0&STYLES=default&FORMAT=image/png&BGCOLOR=0xFFFFFF` +
-                    `&TRANSPARENT=TRUE&LAYER=Lahar_S_VEI60mio_maxvelocity_25m`,
-                // popup: {
-                //     asyncPupup: (obj, callback) => {
-                //         this.getFeatureInfoPopup(obj, this.mapSvc, callback);
-                //     }
-                // },
-                icon: 'lahar',
-                hasFocus: false
+            const layer = new ProductVectorLayer({
+                id: 'testVectorLayer',
+                name: 'testVectorLayer',
+                type: 'geojson',
+                
             });
-            layer.productId = 'theTestLahar';
-            layer.description = '';
-            layer['crossOrigin'] = 'anonymous';
 
-            // this.layersSvc.addLayer(layer, 'Overlays', false);
+            this.layersSvc.addLayer(layer, 'Overlays', false);
         }
 
         return layers;

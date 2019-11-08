@@ -23,11 +23,7 @@ import { LayerMarshaller } from './layer_marshaller';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
-<<<<<<< HEAD
-import { ProductLayer, ProductRasterLayer, ProductVectorLayer } from './map.types';
-=======
 import { ProductLayer, ProductRasterLayer } from './map.types';
->>>>>>> master
 import { mergeMap, map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';

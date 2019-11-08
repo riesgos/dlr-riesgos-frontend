@@ -45,7 +45,7 @@ import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../con
 import { shakemapWmsOutputPeru, eqShakemapRefPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
 import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeusPeru } from '../configuration/peru/eqDeus';
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
-    laharVelocityWms, laharVelocityShakemapRef } from '../configuration/ecuador/laharWrapper';
+    laharVelocityWms, laharVelocityShakemapRef, laharPressureWms, laharErosionWms, laharDepositionWms } from '../configuration/ecuador/laharWrapper';
 import { ErrorParserService } from '../error-parser.service';
 import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
 
@@ -280,6 +280,7 @@ export class WpsEffects {
                     ashfall,
                     direction,
                     laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
+                    laharPressureWms, laharErosionWms, laharDepositionWms,
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
                     assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
                     fragilityRef, initialExposure,

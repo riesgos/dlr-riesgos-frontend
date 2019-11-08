@@ -23,7 +23,11 @@ import { LayerMarshaller } from './layer_marshaller';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
+<<<<<<< HEAD
 import { ProductLayer, ProductRasterLayer, ProductVectorLayer } from './map.types';
+=======
+import { ProductLayer, ProductRasterLayer } from './map.types';
+>>>>>>> master
 import { mergeMap, map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
@@ -380,7 +384,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new TileWMS({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: '0',
+                                    layers: '2',
                                     tiled: true
                                 },
                                 tileGrid: idepTileGrid
@@ -399,7 +403,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new TileWMS({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: '1',
+                                    layers: '0',
                                     tiled: true
                                 },
                                 tileGrid: idepTileGrid
@@ -418,7 +422,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new TileWMS({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: '2',
+                                    layers: '1',
                                     tiled: true
                                 },
                                 tileGrid: idepTileGrid
@@ -431,7 +435,49 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         opacity: 0.6,
                         attribution: '&copy, <a href="http://mapas.geoidep.gob.pe/">Instituto Geográfico Nacional</a>',
                         popup: true
-                    })
+                    }),
+                    new ProductRasterLayer({
+                        id: 'distribPeru',
+                        name: 'distribución',
+                        description: 'Concesiones de Distribución',
+                        attribution: 'http://mapas.geoidep.gob.pe',
+                        url: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?',
+                        type: 'wms',
+                        params: {
+                            LAYERS: '0'
+                        },
+                        legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=0&FORMAT=image/png',
+                        opacity: 0.3,
+                        visible: false
+                    }),
+                    new ProductRasterLayer({
+                        id: 'generacionPeru',
+                        name: 'generación',
+                        description: 'Concesiones de Generación',
+                        attribution: 'http://mapas.geoidep.gob.pe',
+                        url: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?',
+                        type: 'wms',
+                        params: {
+                            LAYERS: '1'
+                        },
+                        legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=1&FORMAT=image/png',
+                        opacity: 0.3,
+                        visible: false
+                    }),
+                    new ProductRasterLayer({
+                        id: 'transmissionPeru',
+                        name: 'transmisión',
+                        description: 'Concesiones de Transmisión',
+                        attribution: 'http://mapas.geoidep.gob.pe',
+                        url: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?',
+                        type: 'wms',
+                        params: {
+                            LAYERS: '3'
+                        },
+                        legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=3&FORMAT=image/png',
+                        opacity: 0.3,
+                        visible: false
+                    }),
                 ]
             });
             layers.push(idepLayers);
@@ -439,79 +485,45 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (scenario === 'e1') {
+            const sniLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'sniLayers',
+                name: 'Sistema Nacional de Información',
+                layers: [
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/geojson/linea_transmision_ecuador.geojson',
+                                format: new GeoJSON()
+                            })
+                        }),
+                        name: 'transmisión',
+                        id: 'transmision',
+                        type: 'custom',
+                        visible: false,
+                        attribution: '&copy, <a href="http://geoportal.regulacionelectrica.gob.ec/visor/index.html">regulacionelectrica.gob.ec</a>',
+                        // legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                        popup: true
+                    }),
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/geojson/linea_subtransmision_ecuador.geojson',
+                                format: new GeoJSON()
+                            })
+                        }),
+                        name: 'subtransmisión',
+                        id: 'subtransmision',
+                        type: 'custom',
+                        visible: false,
+                        attribution: '&copy, <a href="http://geoportal.regulacionelectrica.gob.ec/visor/index.html">regulacionelectrica.gob.ec</a>',
+                        // legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                        popup: true
+                    })
 
-            const layer = new VectorLayer({
-                     id: `vectorTest`,
-                     name: `vectorTest`,
-                     attribution: '',
-                     opacity: 0.6,
-                     removable: false,
-                     type: 'geojson',
-                     filtertype: 'Overlays',
-                     data: {
-                        "type": "FeatureCollection",
-                        "features": [
-                          {
-                            "type": "Feature",
-                            "properties": {},
-                            "geometry": {
-                              "type": "Polygon",
-                              "coordinates": [
-                                [
-                                  [
-                                    -80.1727294921875,
-                                    -1.307259612275665
-                                  ],
-                                  [
-                                    -79.91455078125,
-                                    -1.99910598312332
-                                  ],
-                                  [
-                                    -78.59069824218749,
-                                    -1.9387168550573113
-                                  ],
-                                  [
-                                    -79.4696044921875,
-                                    -0.48888566912309733
-                                  ],
-                                  [
-                                    -80.1727294921875,
-                                    -1.307259612275665
-                                  ]
-                                ]
-                              ]
-                            }
-                          }
-                        ]
-                      },
-                     bbox: [ -84.04541015625, -5.200364681183464, -75.52001953125, 2.3065056838291094 ],
-                     options: {
-                          style: (feature: olFeature, resolution: number) => {
-                             return new olStyle({
-                                 image: new olCircle({
-                                     radius: 30,
-                                     fill: new olFill({
-                                         color: 'blue'
-                                     }),
-                                     stroke: new olStroke({
-                                         color: 'white',
-                                         witdh: 1
-                                     })
-                                 })
-                             });
-                         }
-                     },
-                     // popup: {
-                     //     asyncPupup: (obj, callback) => {
-                     //         const html = product.description.vectorLayerAttributes.text(obj);
-                     //         callback(html);
-                     //     }
-                     // },
-                     icon: 'lahar',
-                     hasFocus: false
-                 });
-                 
-                this.layersSvc.addLayer(layer, 'Overlays', false);
+                ]
+            });
+            layers.push(sniLayers);
         }
 
         return layers;

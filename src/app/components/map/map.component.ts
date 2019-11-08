@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, HostBinding, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
 import { DragBox } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
 import { Vector as olVectorLayer } from 'ol/layer';
 import TileLayer from 'ol/layer/Tile';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
-import { get as getProjection, transformExtent } from 'ol/proj';
+import { get as getProjection } from 'ol/proj';
 import {getWidth} from 'ol/extent';
 import { MapOlService } from '@ukis/map-ol';
-import { TileArcGISRest as olTileArcGISRest } from 'ol/source';
 import TileWMS from 'ol/source/TileWMS';
 import TileGrid from 'ol/tilegrid/TileGrid';
 import { MapStateService } from '@ukis/services-map-state';
@@ -21,18 +20,18 @@ import { InteractionCompleted } from 'src/app/interactions/interactions.actions'
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './layer_marshaller';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
 import { ProductLayer, ProductRasterLayer, ProductVectorLayer } from './map.types';
 import { mergeMap, map, withLatestFrom, switchMap } from 'rxjs/operators';
-import tBbox from '@turf/bbox';
-import tBuffer from '@turf/buffer';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
-import { TranslateService } from '@ngx-translate/core';
-import { image } from 'd3';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Feature as olFeature } from 'ol/Feature';
+import { FeatureCollection, featureCollection } from '@turf/helpers';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 const mapProjection = 'EPSG:4326';
@@ -161,10 +160,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     lllon: minLon.toFixed(1) as unknown as number,
                     urlat: maxLat.toFixed(1) as unknown as number,
                     urlon: maxLon.toFixed(1) as unknown as number
-                    // lllat: coords[0][0][1].toFixed(1),
-                    // lllon: coords[0][0][0].toFixed(1),
-                    // urlat: coords[0][2][1].toFixed(1),
-                    // urlon: coords[0][2][0].toFixed(1)
                 };
                 const product: Product = {
                     ...this.interactionState.getValue().product,
@@ -445,14 +440,78 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (scenario === 'e1') {
 
-            const layer = new ProductVectorLayer({
-                id: 'testVectorLayer',
-                name: 'testVectorLayer',
-                type: 'geojson',
-                
-            });
-
-            this.layersSvc.addLayer(layer, 'Overlays', false);
+            const layer = new VectorLayer({
+                     id: `vectorTest`,
+                     name: `vectorTest`,
+                     attribution: '',
+                     opacity: 0.6,
+                     removable: false,
+                     type: 'geojson',
+                     filtertype: 'Overlays',
+                     data: {
+                        "type": "FeatureCollection",
+                        "features": [
+                          {
+                            "type": "Feature",
+                            "properties": {},
+                            "geometry": {
+                              "type": "Polygon",
+                              "coordinates": [
+                                [
+                                  [
+                                    -80.1727294921875,
+                                    -1.307259612275665
+                                  ],
+                                  [
+                                    -79.91455078125,
+                                    -1.99910598312332
+                                  ],
+                                  [
+                                    -78.59069824218749,
+                                    -1.9387168550573113
+                                  ],
+                                  [
+                                    -79.4696044921875,
+                                    -0.48888566912309733
+                                  ],
+                                  [
+                                    -80.1727294921875,
+                                    -1.307259612275665
+                                  ]
+                                ]
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                     bbox: [ -84.04541015625, -5.200364681183464, -75.52001953125, 2.3065056838291094 ],
+                     options: {
+                          style: (feature: olFeature, resolution: number) => {
+                             return new olStyle({
+                                 image: new olCircle({
+                                     radius: 30,
+                                     fill: new olFill({
+                                         color: 'blue'
+                                     }),
+                                     stroke: new olStroke({
+                                         color: 'white',
+                                         witdh: 1
+                                     })
+                                 })
+                             });
+                         }
+                     },
+                     // popup: {
+                     //     asyncPupup: (obj, callback) => {
+                     //         const html = product.description.vectorLayerAttributes.text(obj);
+                     //         callback(html);
+                     //     }
+                     // },
+                     icon: 'lahar',
+                     hasFocus: false
+                 });
+                 
+                this.layersSvc.addLayer(layer, 'Overlays', false);
         }
 
         return layers;

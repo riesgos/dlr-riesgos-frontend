@@ -24,7 +24,7 @@ import { LayerMarshaller } from './layer_marshaller';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
-import { ProductLayer } from './map.types';
+import { ProductLayer, ProductRasterLayer } from './map.types';
 import { mergeMap, map, withLatestFrom, switchMap } from 'rxjs/operators';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
@@ -385,7 +385,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new TileWMS({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: '0',
+                                    layers: '2',
                                     tiled: true
                                 },
                                 tileGrid: idepTileGrid
@@ -404,7 +404,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new TileWMS({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: '1',
+                                    layers: '0',
                                     tiled: true
                                 },
                                 tileGrid: idepTileGrid
@@ -423,7 +423,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new TileWMS({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: '2',
+                                    layers: '1',
                                     tiled: true
                                 },
                                 tileGrid: idepTileGrid
@@ -436,13 +436,96 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         opacity: 0.6,
                         attribution: '&copy, <a href="http://mapas.geoidep.gob.pe/">Instituto Geográfico Nacional</a>',
                         popup: true
-                    })
+                    }),
+                    new ProductRasterLayer({
+                        id: 'distribPeru',
+                        name: 'distribución',
+                        description: 'Concesiones de Distribución',
+                        attribution: 'http://mapas.geoidep.gob.pe',
+                        url: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?',
+                        type: 'wms',
+                        params: {
+                            LAYERS: '0'
+                        },
+                        legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=0&FORMAT=image/png',
+                        opacity: 0.3,
+                        visible: false
+                    }),
+                    new ProductRasterLayer({
+                        id: 'generacionPeru',
+                        name: 'generación',
+                        description: 'Concesiones de Generación',
+                        attribution: 'http://mapas.geoidep.gob.pe',
+                        url: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?',
+                        type: 'wms',
+                        params: {
+                            LAYERS: '1'
+                        },
+                        legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=1&FORMAT=image/png',
+                        opacity: 0.3,
+                        visible: false
+                    }),
+                    new ProductRasterLayer({
+                        id: 'transmissionPeru',
+                        name: 'transmisión',
+                        description: 'Concesiones de Transmisión',
+                        attribution: 'http://mapas.geoidep.gob.pe',
+                        url: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?',
+                        type: 'wms',
+                        params: {
+                            LAYERS: '3'
+                        },
+                        legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=3&FORMAT=image/png',
+                        opacity: 0.3,
+                        visible: false
+                    }),
                 ]
             });
             layers.push(idepLayers);
 
         }
 
+        if (scenario === 'e1') {
+            const sniLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'sniLayers',
+                name: 'Sistema Nacional de Información',
+                layers: [
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/geojson/linea_transmision_ecuador.geojson',
+                                format: new GeoJSON()
+                            })
+                        }),
+                        name: 'transmisión',
+                        id: 'transmision',
+                        type: 'custom',
+                        visible: false,
+                        attribution: '&copy, <a href="http://geoportal.regulacionelectrica.gob.ec/visor/index.html">regulacionelectrica.gob.ec</a>',
+                        // legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                        popup: true
+                    }),
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/geojson/linea_subtransmision_ecuador.geojson',
+                                format: new GeoJSON()
+                            })
+                        }),
+                        name: 'subtransmisión',
+                        id: 'subtransmision',
+                        type: 'custom',
+                        visible: false,
+                        attribution: '&copy, <a href="http://geoportal.regulacionelectrica.gob.ec/visor/index.html">regulacionelectrica.gob.ec</a>',
+                        // legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                        popup: true
+                    })
+
+                ]
+            });
+            layers.push(sniLayers);
+        }
 
         return layers;
     }

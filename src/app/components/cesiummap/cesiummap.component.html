@@ -1,2 +1,6 @@
 <ukis-map-ol [layersSvc]="layersSvc" [mapState]="mapState" [controls]="controls" id="olMap"></ukis-map-ol>
-<button (click)="toggleView()">toggle 3d view</button>
+<div #toggleCesiumButton id="toggleCesiumButton" class="toggleCesiumButton ol-control ol-unselectable">
+    <button type="button" (click)="toggleView()">
+        <clr-icon shape="world"></clr-icon>
+    </button>
+</div>

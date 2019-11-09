@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import * as Cesium from 'cesium/Build/Cesium/Cesium';
 window['CESIUM_BASE_URL'] = '/assets/cesium';
 Cesium.buildModuleUrl.setBaseUrl('/assets/cesium/');
@@ -8,6 +8,8 @@ import OLCesium from 'ol-cesium';
 import { LayersService } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import { MapOlService } from '@ukis/map-ol';
+import Control from 'ol/control/Control';
+
 
 @Component({
   selector: 'ukis-map-ol-cesium',
@@ -21,6 +23,7 @@ export class CesiummapComponent implements OnInit, AfterViewInit {
   @Input() controls;
   public cesiumOn = false;
   private ol3d;
+  @ViewChild('toggleCesiumButton', {static: false}) toggleCesiumButton: ElementRef;
 
   constructor(
     private mapSvc: MapOlService
@@ -34,6 +37,11 @@ export class CesiummapComponent implements OnInit, AfterViewInit {
       const scene = this.ol3d.getCesiumScene();
       scene.terrainProvider = Cesium.createWorldTerrain({});
       this.ol3d.setEnabled(this.cesiumOn);
+
+      const toggleControl = new Control({
+        element: this.toggleCesiumButton.nativeElement,
+      });
+      this.mapSvc.map.addControl(toggleControl);
     }
 
     toggleView() {

@@ -520,6 +520,24 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 ]
             });
             layers.push(sniLayers);
+
+
+            const test = new CustomLayer({
+                custom_layer: new olVectorLayer({
+                    source: new olVectorSource({
+                        url: 'assets/data/geojson/linea_transmision_ecuador.geojson',
+                        format: new GeoJSON()
+                    })
+                }),
+                name: 'transmisión',
+                id: 'transmision',
+                type: 'custom',
+                visible: true,
+                attribution: '&copy, <a href="http://geoportal.regulacionelectrica.gob.ec/visor/index.html">regulacionelectrica.gob.ec</a>',
+                // legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                popup: true
+            });
+            this.layersSvc.addLayer(test, 'Overlays');
         }
 
         return layers;

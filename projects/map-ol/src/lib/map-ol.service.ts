@@ -65,7 +65,7 @@ export class MapOlService {
     this.map = new olMap();
     this.view = new olView();
     this.temp = {};
-    this.EPSG = 'EPSG:3857'; // 'EPSG:4326'; EPSG:3857
+    this.EPSG = 'EPSG:4326'; // 'EPSG:4326'; EPSG:3857
     // this.createMap();
   }
 

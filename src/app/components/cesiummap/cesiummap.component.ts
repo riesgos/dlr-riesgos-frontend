@@ -9,6 +9,8 @@ import { LayersService } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import { MapOlService } from '@ukis/map-ol';
 import Control from 'ol/control/Control';
+import { AlertService } from '../global-alert/alert.service';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -24,6 +26,7 @@ export class CesiummapComponent implements OnInit, AfterViewInit {
   public cesiumOn = false;
   private ol3d;
   @ViewChild('toggleCesiumButton', {static: false}) toggleCesiumButton: ElementRef;
+  public message$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   constructor(
     private mapSvc: MapOlService
@@ -47,5 +50,10 @@ export class CesiummapComponent implements OnInit, AfterViewInit {
     toggleView() {
       this.cesiumOn = !this.cesiumOn;
       this.ol3d.setEnabled(this.cesiumOn);
+      if (this.cesiumOn) {
+        this.message$.next('no interactions');
+      } else {
+        this.message$.next(null);
+      }
     }
 }

@@ -1,4 +1,15 @@
+<ng-container *ngIf="message$ | async as message">
+    <clr-alert [clrAlertClosable]="false" [clrAlertAppLevel]="true">
+        <clr-alert-item>
+            <span class="alert-text">
+                {{ message | translate }}
+            </span>
+        </clr-alert-item> 
+    </clr-alert>
+</ng-container>
+
 <ukis-map-ol [layersSvc]="layersSvc" [mapState]="mapState" [controls]="controls" id="olMap"></ukis-map-ol>
+
 <div #toggleCesiumButton id="toggleCesiumButton" class="toggleCesiumButton ol-control ol-unselectable">
     <button type="button" (click)="toggleView()">
         <clr-icon shape="world"></clr-icon>

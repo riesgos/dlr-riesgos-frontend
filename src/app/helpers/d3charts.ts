@@ -178,7 +178,31 @@ export function createBigBarchart(
             y: data.map(dp => dp.value)
         }];
 
-        Plotly.newPlot(anchorSelector, newData, {}, {staticPlot: true});
+        const layout = {
+            xaxis: {
+                title: {
+                    text: xlabel,
+                    font: {
+                        family: 'Metropolis, "Avenir Next", "Helvetica Neue", Arial, sans-serif',
+                        size: 12,
+                        color: '#7f7f7f'
+                    }
+                }
+            },
+            yaxis: {
+                title: {
+                    text: ylabel,
+                    font: {
+                        family: 'Metropolis, "Avenir Next", "Helvetica Neue", Arial, sans-serif',
+                        size: 12,
+                        color: '#7f7f7f'
+                    }
+                }
+            }
+        };
+
+
+        Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }
 
 

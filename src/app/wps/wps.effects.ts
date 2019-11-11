@@ -43,11 +43,15 @@ import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from '../configur
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../configuration/peru/eqselection';
 import { shakemapWmsOutputPeru, eqShakemapRefPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
-import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, EqDeusPeru } from '../configuration/peru/eqDeus';
+import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
+    EqDeusPeru, eqUpdatedExposureRefPeru } from '../configuration/peru/eqDeus';
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
-    laharVelocityWms, laharVelocityShakemapRef, laharPressureWms, laharErosionWms, laharDepositionWms } from '../configuration/ecuador/laharWrapper';
+    laharVelocityWms, laharVelocityShakemapRef, laharPressureWms,
+    laharErosionWms, laharDepositionWms } from '../configuration/ecuador/laharWrapper';
 import { ErrorParserService } from '../error-parser.service';
 import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
+import { TsDeusPeru, tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru } from '../configuration/peru/tsDeus';
+import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from '../configuration/peru/reliability';
 
 
 
@@ -244,9 +248,9 @@ export class WpsEffects {
                     EqSelectionPeru,
                     new ShakygroundPeru(this.httpClient),
                     new EqDeusPeru(this.httpClient),
-                    // new FakeDeusPeru(this.httpClient),
                     new TsServicePeru(this.httpClient),
-                    // Reliability
+                    new TsDeusPeru(this.httpClient),
+                    new EqReliabilityPeru(this.httpClient)
                 ];
                 products = [
                     lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
@@ -256,9 +260,10 @@ export class WpsEffects {
                     lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
                     selectedEqsPeru, userinputSelectedEqPeru,
                     selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
-                    // country, hazard,
-                    tsWmsPeru, tsShakemapPeru,
-                    // damage_consumer_areas
+                    tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,
+                    tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru,
+                    countryPeru, hazardEqPeru,
+                    damageConsumerAreasPeru
                 ];
                 break;
             case 'e1':

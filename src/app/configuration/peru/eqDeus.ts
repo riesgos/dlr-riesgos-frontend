@@ -35,7 +35,7 @@ export const eqDamagePeru: VectorLayerData & WpsData & Product = {
         reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'damage',
+        name: 'eq-damage',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -67,7 +67,7 @@ export const eqTransitionPeru: VectorLayerData & WpsData & Product = {
         icon: 'dot-circle',
         type: 'complex',
         format: 'application/json',
-        name: 'transition',
+        name: 'eq-transition',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -118,7 +118,7 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
         icon: 'dot-circle',
         type: 'complex',
         format: 'application/json',
-        name: 'updated exposure',
+        name: 'eq-exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();

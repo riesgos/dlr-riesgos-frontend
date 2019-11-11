@@ -12,3 +12,10 @@
 .modal-content-wrapper {
     z-index: 1001 !important;
 }
+
+
+/* to fix an error in displaying Plotly-popups */
+.main-svg {
+    position: absolute;
+    top: 0px;
+}

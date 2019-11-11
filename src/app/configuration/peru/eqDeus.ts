@@ -6,7 +6,7 @@ import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
-import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
+import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, damageRage } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './modelProp';
 import { eqShakemapRefPeru } from './shakyground';
@@ -39,7 +39,7 @@ export const eqDamagePeru: VectorLayerData & WpsData & Product = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = redGreenRange(0, 50, props.loss_value);
+                const [r, g, b] = redGreenRange(0, 1, props.loss_value);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.3],
@@ -51,7 +51,7 @@ export const eqDamagePeru: VectorLayerData & WpsData & Product = {
                 });
             },
             text: (props: object) => {
-                return `<h4>Pérdida ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
+                return `<h4>Pérdida ${props['name']}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             }
         },
         description: 'Concrete damage in USD.'
@@ -139,13 +139,15 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                     total += nrBuildings;
                 }
 
+                const dr = damageRage(Object.values(counts));
+
                 let r: number;
                 let g: number;
                 let b: number;
                 if (total === 0) {
-                    r = g = b = 0;
+                    r = b = g = 0;
                 } else {
-                    [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = redGreenRange(0, 1, dr);
                 }
 
                 return new olStyle({

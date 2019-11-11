@@ -4,7 +4,9 @@ import { BboxLayerData, BboxLayerDescription, VectorLayerData } from 'src/app/co
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps/src/public-api';
 import { HttpClient } from '@angular/common/http';
-import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, linInterpolateHue, redGreenRange } from 'src/app/helpers/colorhelpers';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Feature as olFeature } from 'ol/Feature';
 
 
 
@@ -173,12 +175,36 @@ export const selectedEqsPeru: VectorLayerData & WpsData = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            sldFile: '/assets/styles/QuakeledgerStyle.sld',
+            style: (feature: olFeature, resolution: number) => {
+
+                const props = feature.getProperties();
+                const magnitude = props['magnitude.mag.value'];
+                const depth = props['origin.depth.value'];
+
+                const text = depth + ' km';
+                const radius = linInterpolateHue(7, 5, 9, 20, magnitude);
+                const [r, g, b] = redGreenRange(5, 60, depth);
+
+                return new olStyle({
+                    image: new olCircle({
+                        radius: radius,
+                        fill: new olFill({
+                            color: [r, g, b, 0.5]
+                        }),
+                        stroke: new olStroke({
+                            color: [r, g, b, 1]
+                        }),
+                        text: new olText({
+                            text: text
+                        })
+                    })
+                });
+            },
             text: (properties) => {
                 let text = `<h3>Terremotos disponibles</h3>`;
                 const selectedProperties = {
                     Magnitud: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
-                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' m',
+                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                     // Latitude: toDecimalPlaces(1, 1),
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],

@@ -1,5 +1,16 @@
 
 
+export function damageRage(damageStates: number[]) {
+    const maxDamage = damageStates.length;
+    const nrBuildingsTotal = damageStates.reduce((carry, current) => carry + current, 0);
+    let weightedSum = 0;
+    for (let d = 0; d < maxDamage; d++) {
+        weightedSum += d * damageStates[d] / nrBuildingsTotal;
+    }
+    return (1 / maxDamage) * weightedSum;
+}
+
+
 export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
     const degree = (currentVal - startVal) / (endVal - startVal);
     const degreeTop = Math.max(Math.min(degree, 1), 0);
@@ -38,6 +49,13 @@ export function linInterpolateHue(startVal: number, startHue: number, endVal: nu
     const degreeTop = Math.max(Math.min(degree, 1), 0);
     const hue = degreeTop * (endHue - startHue) + startHue;
     return hue;
+}
+
+export function linInterpolate(startVal: number, endVal: number, currentVal: number): number {
+    const degree = (currentVal - startVal) / (endVal - startVal);
+    const degreeTop = Math.max(Math.min(degree, 1), 0);
+    const intp = degreeTop * (endVal - startVal) + startVal;
+    return intp;
 }
 
 export function HSVtoRGB(hsv: {h: number, s: number, v: number}): {r: number, g: number, b: number} {

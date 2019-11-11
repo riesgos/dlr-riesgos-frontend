@@ -10,6 +10,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { Bardata, createBarchart, createBigBarchart } from 'src/app/helpers/d3charts';
+import { damageRage, redGreenRange } from 'src/app/helpers/colorhelpers';
 
 
 export const lonmin: Product & WpsData = {
@@ -109,18 +110,34 @@ export const initialExposure: VectorLayerData & WpsData & Product = {
     name: 'Exposure',
     vectorLayerAttributes: {
       style: (feature: olFeature, resolution: number) => {
-
-        let pop = 10000;
         const props = feature.getProperties();
-        if (props.expo && props.expo.Population) {
-          const popObj = feature.getProperties().expo.Population;
-          pop = Object.values(popObj).reduce((carry: number, current: number) => carry + current, 0) as number;
+
+        const expo = props.expo;
+        const counts = {
+            'D0': 0,
+            'D1': 0,
+            'D2': 0,
+            'D3': 0,
+            'D4': 0
+        };
+        let total = 0;
+        for (let i = 0; i < expo.Damage.length; i++) {
+            const damageClass = expo.Damage[i];
+            const nrBuildings = expo.Buildings[i];
+            counts[damageClass] += nrBuildings;
+            total += nrBuildings;
         }
-        const pop0 = 50000;
-        const pop1 = 400000;
-        const r = 255 * (pop - pop0) / (pop1 - pop0);
-        const g = 255 * (1 - (pop - pop0) / (pop1 - pop0));
-        const b = 200;
+
+        const dr = damageRage(Object.values(counts));
+
+        let r: number;
+        let g: number;
+        let b: number;
+        if (total === 0) {
+            r = b = g = 0;
+        } else {
+            [r, g, b] = redGreenRange(0, 1, dr);
+        }
 
         return new olStyle({
           fill: new olFill({

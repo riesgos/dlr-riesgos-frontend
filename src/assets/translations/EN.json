@@ -62,6 +62,17 @@
 
     "etype": "subcategory",
 
+    "Exposure": "Initial exposure",
+    "eq-exposure": "Exposure and damage / EQ",
+    "eq-transition": "Damage transitions / EQ",
+    "eq-damage": "Loss / EQ",
+    "ts-exposure": "Exposure and damage / TS",
+    "ts-transition": "Damage transitions / TS",
+    "ts-damage": "Loss / TS",
+    "lahar-exposure": "Exposure and damage / lahar",
+    "lahar-transitions": "Damage transitions / lahar",
+    "lahar-damage": "Loss / lahar",
+
     "Unavailable": "Downstream",
     "Available": "Ready",
     "This process can not be configured yet.": "This process still requires inputs from upstream."

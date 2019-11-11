@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import Plotly from 'plotly.js/dist/plotly';
 
 
 export interface Scatterpoint {
@@ -73,8 +74,14 @@ export interface Bardata {
     value: number;
 }
 
-
 export function createBarchart(
+    anchorSelector: any, data: Bardata[], width: number, height: number, xlabel: string, ylabel: string,
+    xAxisAngle = 0, yAxisAngle = 0) {
+
+        return createBigBarchart(anchorSelector, data, width, height, xlabel, ylabel);
+}
+
+export function createBarchartOld(
     anchorSelector: any, data: Bardata[], width: number, height: number, xlabel: string, ylabel: string,
     xAxisAngle = 0, yAxisAngle = 0) {
 
@@ -163,6 +170,43 @@ export function createBarchart(
 }
 
 export function createBigBarchart(
+    anchorSelector: any, data: Bardata[], width: number, height: number, xlabel: string, ylabel: string) {
+
+        const newData = [{
+            type: 'bar',
+            x: data.map(dp => dp.label),
+            y: data.map(dp => dp.value)
+        }];
+
+        const layout = {
+            xaxis: {
+                title: {
+                    text: xlabel,
+                    font: {
+                        family: 'Metropolis, "Avenir Next", "Helvetica Neue", Arial, sans-serif',
+                        size: 12,
+                        color: '#7f7f7f'
+                    }
+                }
+            },
+            yaxis: {
+                title: {
+                    text: ylabel,
+                    font: {
+                        family: 'Metropolis, "Avenir Next", "Helvetica Neue", Arial, sans-serif',
+                        size: 12,
+                        color: '#7f7f7f'
+                    }
+                }
+            }
+        };
+
+
+        Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
+}
+
+
+export function createBigBarchartOld(
     anchorSelector: any, data: Bardata[], width: number, height: number, xlabel: string, ylabel: string) {
 
     const margins = { top: 30, right: 30, bottom: 70, left: 50 };

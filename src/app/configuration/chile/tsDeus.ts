@@ -1,7 +1,7 @@
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WpsData } from '@ukis/services-wps/src/public-api';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
-import { redGreenRange, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
+import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqUpdatedExposureRef } from './eqDeus';
@@ -29,7 +29,7 @@ export const tsDamage: VectorLayerData & WpsData & Product = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = redGreenRange(0, 50, props.loss_value);
+                const [r, g, b] = redGreenRange(0, 1, props.loss_value);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.3],
@@ -41,7 +41,7 @@ export const tsDamage: VectorLayerData & WpsData & Product = {
                 });
             },
             text: (props: object) => {
-                return `<h4>Pérdida ${props['name']}</h4><p>${props['loss_value']} ${props['loss_unit']}</p>`;
+                return `<h4>Pérdida ${props['name']}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             }
         },
         description: 'Concrete damage in USD.'

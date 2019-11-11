@@ -1,41 +1,31 @@
-import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
-import { schemaPeru, initialExposurePeru } from './exposure';
-import { WpsData } from 'projects/services-wps/src/public-api';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WpsData } from '@ukis/services-wps/src/public-api';
+import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
+import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { eqUpdatedExposureRefPeru } from './eqDeus';
+import { schemaPeru } from './exposure';
+import { tsShakemapPeru } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
-import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, damageRage } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './modelProp';
-import { eqShakemapRefPeru } from './shakyground';
 import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
 import { switchMap } from 'rxjs/operators';
 
 
 
-
-export const lossPeru: WpsData & Product = {
-    uid: 'lossPeru',
-    description: {
-        id: 'loss',
-        reference: false,
-        type: 'literal'
-    },
-    value: 'testinputs/loss_sara.json'
-};
-
-export const eqDamagePeru: VectorLayerData & WpsData & Product = {
-    uid: 'damagePeru',
+export const tsDamagePeru: VectorLayerData & WpsData & Product = {
+    uid: 'ts_damage_peru',
     description: {
         id: 'damage',
-        icon: 'dot-circle',
         reference: false,
+        icon: 'dot-circle',
         type: 'complex',
         format: 'application/json',
-        name: 'damage',
+        name: 'ts-damage',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -59,15 +49,15 @@ export const eqDamagePeru: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const eqTransitionPeru: VectorLayerData & WpsData & Product = {
-    uid: 'transitionPeru',
+export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
+    uid: 'ts_transition_peru',
     description: {
         id: 'transition',
-        reference: false,
         icon: 'dot-circle',
+        reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'transition',
+        name: 'ts-transition',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -101,7 +91,7 @@ export const eqTransitionPeru: VectorLayerData & WpsData & Product = {
                     {label: '3', value: props['transitions']['n_buildings'][1]},
                     {label: '4', value: props['transitions']['n_buildings'][0]}
                 ];
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', 'n. edificios');
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '% edificios');
                 return `<h4>Transiciones ${props['name']}</h4>${anchor.innerHTML}`;
             }
         },
@@ -110,15 +100,15 @@ export const eqTransitionPeru: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
-    uid: 'updated_exposurePeru',
+export const tsUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
+    uid: 'ts_updated_exposure_peru',
     description: {
         id: 'updated_exposure',
-        reference: false,
         icon: 'dot-circle',
+        reference: false,
         type: 'complex',
         format: 'application/json',
-        name: 'updated exposure',
+        name: 'ts-exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -129,7 +119,9 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                     'D1': 0,
                     'D2': 0,
                     'D3': 0,
-                    'D4': 0
+                    'D4': 0,
+                    'D5': 0,
+                    'D6': 0
                 };
                 let total = 0;
                 for (let i = 0; i < expo.Damage.length; i++) {
@@ -139,15 +131,13 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                     total += nrBuildings;
                 }
 
-                const dr = damageRage(Object.values(counts));
-
                 let r: number;
                 let g: number;
                 let b: number;
                 if (total === 0) {
                     r = b = g = 0;
                 } else {
-                    [r, g, b] = redGreenRange(0, 1, dr);
+                    [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
                 }
 
                 return new olStyle({
@@ -169,7 +159,9 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                     'D1': 0,
                     'D2': 0,
                     'D3': 0,
-                    'D4': 0
+                    'D4': 0,
+                    'D5': 0,
+                    'D6': 0
                 };
                 for (let i = 0; i < expo.Damage.length; i++) {
                     const damageClass = expo.Damage[i];
@@ -189,21 +181,11 @@ export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const eqUpdatedExposureRefPeru: WpsData & Product = {
-    uid: 'updated_exposure_ref_peru',
-    description: {
-        id: 'updated_exposure',
-        reference: true,
-        type: 'complex',
-        format: 'application/json',
-        description: 'Amount of goods that are exposed to a hazard.'
-    },
-    value: null
-};
 
 
 
-export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
+
+export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
 
     readonly state: ProcessState;
     readonly uid: string;
@@ -218,15 +200,15 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
 
     constructor(http: HttpClient) {
         this.state = new ProcessStateUnavailable();
-        this.uid = 'EQ-Deus';
-        this.name = 'Multihazard damage estimation / EQ';
-        this.requiredProducts = [eqShakemapRefPeru, initialExposurePeru].map(p => p.uid);
-        this.providedProducts = [eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, eqUpdatedExposureRefPeru].map(p => p.uid);
+        this.uid = 'TS-Deus';
+        this.name = 'Multihazard damage estimation / TS';
+        this.requiredProducts = [tsShakemapPeru, eqUpdatedExposureRefPeru].map(p => p.uid);
+        this.providedProducts = [tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru].map(p => p.uid);
         this.description = 'This service outputs damage caused by a given earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            shape: 'dot-circle' as 'dot-circle'
+            shape: 'dot-circle'
         };
 
         this.vulnerabilityProcess = new VulnerabilityModelPeru(http);
@@ -244,7 +226,7 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
             taxonomiesPeru,
             {
                 ... schemaPeru,
-                value: 'SARA_v1.0'
+                value: 'SUPPASRI2013_v2.0'
             }
         ];
         const vulnerabilityOutputs = [fragilityRefPeru];
@@ -252,23 +234,25 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
             .pipe(
                 switchMap((resultProducts: Product[]) => {
+
                     const fragility = resultProducts.find(prd => prd.uid === fragilityRefPeru.uid);
-                    const shakemap = inputProducts.find(prd => prd.uid === eqShakemapRefPeru.uid);
-                    const exposure = inputProducts.find(prd => prd.uid === initialExposurePeru.uid);
+                    const shakemap = inputProducts.find(prd => prd.uid === tsShakemapPeru.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === eqUpdatedExposureRefPeru.uid);
 
                     const deusInputs = [{
                             ... schemaPeru,
-                            value: 'SARA_v1.0'
+                            value:  'SARA_v1.0' // <-- because last exposure still used SARA!
                         }, {
                             ... fragility,
                             description: {
-                                ... fragility.description,
+                                ... fragilityRefPeru.description,
                                 id: 'fragility'
                             }
                         }, {
                             ... shakemap,
                             description: {
                                 ...shakemap.description,
+                                format: 'text/xml',
                                 id: 'intensity'
                             }
                         }, {
@@ -277,7 +261,6 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
                                 ... exposure.description,
                                 id: 'exposure'
                             },
-                            value: exposure.value[0]
                         }
                     ];
                     const deusOutputs = outputProducts;

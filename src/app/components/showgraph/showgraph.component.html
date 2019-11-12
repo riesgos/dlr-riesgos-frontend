@@ -7,15 +7,15 @@
         <clr-tabs clrLayout="vertical">
 
             <clr-tab>
-                <button clrTabLink [id]="processesOnlyLink">{{ 'Processes only' | translate }}</button>
-                <clr-tab-content *clrIfActive [id]="processesOnlyContent">
+                <button clrTabLink>{{ 'Processes only' | translate }}</button>
+                <clr-tab-content *clrIfActive>
                     <app-graphvizcomp [dotString]="dotStringPO$ | async"></app-graphvizcomp>
                 </clr-tab-content>
             </clr-tab>
             
             <clr-tab>
-                <button clrTabLink [id]="fullViewLink">{{ 'Full view' | translate }}</button>
-                <clr-tab-content *clrIfActive [id]="fullViewContent">
+                <button clrTabLink>{{ 'Full view' | translate }}</button>
+                <clr-tab-content *clrIfActive>
                     <app-graphvizcomp [dotString]="dotStringFull$ | async"></app-graphvizcomp>
                 </clr-tab-content>
             </clr-tab>

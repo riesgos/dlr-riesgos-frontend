@@ -237,7 +237,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
             ['input-boundingbox'].concat([mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid)),
             [selectedEqs.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
-            'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
+            'Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,

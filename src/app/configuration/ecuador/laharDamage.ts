@@ -191,7 +191,7 @@ export class LaharDeus extends WpsProcess implements WizardableProcess {
             [schemaEcuador, fragilityRef, laharHeightShakemapRef, initialExposure].map(p => p.uid),
             [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
-            'This service outputs damage caused by the selected lahar.',
+            'This service returns damage caused by the selected lahar.',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,

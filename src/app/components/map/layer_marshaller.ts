@@ -325,7 +325,7 @@ export class LayerMarshaller  {
         const evt = obj.evt;
         const viewResolution = mapSvc.map.getView().getResolution() ||
             // throws exception: mapSvc.map.getView().getResolutionForExtent(this.mapSvc.getCurrentExtent()) ||
-            mapSvc.map.getView().getResolutionForZoom();
+            mapSvc.map.getView().getResolutionForZoom(this.mapStateSvc.getMapState().value.zoom);
         const properties: any = {};
         const url = source.getGetFeatureInfoUrl(
             evt.coordinate, viewResolution, mapSvc.EPSG,

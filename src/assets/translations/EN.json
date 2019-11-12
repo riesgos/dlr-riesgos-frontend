@@ -1,5 +1,5 @@
 {
-    "Pilot region description": "To understand, describe and quantify multi-risk situations RIESGOS works with stories (specific case studies) in selected pilot regions in Chile, Ecuador and Peru. These stories represent realistic multi-risk situations with cascading effects. Please select one of the following:",
+    "Pilot region description": "To understand, describe, and quantify multi-risk situations, RIESGOS works with stories (specific case studies) in selected pilot regions in Chile, Ecuador, and Peru. These stories represent realistic multi-risk situations with cascading effects. Please select one of the following:",
     "c1": "Chile",
     "p1": "Peru", 
     "e1": "Ecuador",
@@ -50,17 +50,22 @@
 
     "How to use this site ...": "The configuration wizard on the left side of the screen contains a list of all processes that you will step through in order. Processes are colored according to their current state. If a process requires you to make decisions about inputs, these can be entered in a form. When you are content with your selection, hit 'run' to execute the process.",
     "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'Additional layers'",
-    "instructions bbox": "You can now draw a  box on the map.",
-    "instructions featureselection": "You can now select a feature on the map.",
+    "instructions bbox": "You can now draw a  bounding box on the map.",
+    "instructions featureselection": "You can now select a point of interest on the map.",
 
-    "This is a demonstrator!": "This is a prototype. The information presented in no case is suitable for planning or other practical applications.",
+    "This is a demonstrator!": "This is a prototype. The information presented here is not suitable for planning or other practical applications.",
     "Disclaimer": "Disclaimer",
-    "DisclaimerText": "",
+    "DisclaimerText": "This is the prototype of a multi-risk exploration tool and still under development. IMPORTANT: the results shown here are not yet consolidated and therefore not suitable for planning or other practical applications.",
+    "Understood and accept": "Understood and accepted",
 
     "System reliability after Lahar": "Infrastructure - power supply",
     "System reliability after EQ": "Infrastructure - power supply",
 
     "etype": "subcategory",
+
+    "Process for evaluating the reliability of infrastructure networks": "This is a process for evaluating the reliability of infrastructure networks.",
+    "Process to compute the damage of a flood in ecuador.": "This is a process to compute the damage of a flood in Ecuador.",
+    "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Enter here the parameters to narrow down your selection of earthquakes from the catalogue.",
 
     "Exposure": "Initial exposure",
     "eq-exposure": "Exposure and damage / EQ",

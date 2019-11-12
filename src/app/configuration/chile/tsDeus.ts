@@ -204,7 +204,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.name = 'Multihazard damage estimation / TS';
         this.requiredProducts = [tsShakemap, eqUpdatedExposureRef].map(p => p.uid);
         this.providedProducts = [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid);
-        this.description = 'This service outputs damage caused by the selected earthquake.';
+        this.description = 'This service returns damage caused by the selected earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',

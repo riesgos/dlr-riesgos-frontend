@@ -6,6 +6,9 @@ import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { map } from 'rxjs/operators';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import { FeatureCollection } from '@turf/helpers';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
@@ -49,6 +52,9 @@ export const tsWmsPeru: WpsData & WmsLayerData = {
         reference: false,
         format: 'application/WMS',
         type: 'literal',
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            return createKeyValueTableHtml('Tsunami', {'mhw': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+        }
     },
     value: null
 };

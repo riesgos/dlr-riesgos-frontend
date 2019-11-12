@@ -4,6 +4,9 @@ import { WpsData } from 'projects/services-wps/src/public-api';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { selectedEqPeru } from './eqselection';
 import { HttpClient } from '@angular/common/http';
+import { FeatureCollection } from '@turf/helpers';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 export const shakemapWmsOutputPeru: WpsData & WmsLayerData = {
@@ -15,7 +18,10 @@ export const shakemapWmsOutputPeru: WpsData & WmsLayerData = {
         type: 'complex',
         reference: false,
         format: 'application/WMS',
-        styles: ['shakemap-pga', 'another style']
+        styles: ['shakemap-pga', 'another style'],
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            return createKeyValueTableHtml('EQ', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s²'});
+        }
     },
     value: null
 };

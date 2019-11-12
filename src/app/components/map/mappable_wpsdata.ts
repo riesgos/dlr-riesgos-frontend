@@ -1,6 +1,7 @@
 import { ProductDescription, Product } from 'src/app/wps/wps.datatypes';
 import { WpsBboxData, WpsBboxValue } from 'projects/services-wps/src/public-api';
 import { shape } from '../config_wizard/wizardable_processes';
+import { FeatureCollection } from '@turf/helpers';
 
 
 
@@ -64,6 +65,7 @@ export interface WmsLayerDescription extends ProductDescription {
     id: string;
     description?: string;
     icon?: shape;
+    featureInfoRenderer?: (featureInfo: FeatureCollection) => string;
 }
 
 export interface WmsLayerData extends Product {

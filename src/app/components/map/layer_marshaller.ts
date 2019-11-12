@@ -2,7 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Product, ProductDescription } from 'src/app/wps/wps.datatypes';
 import { isWmsData, isVectorLayerData, isBboxLayerData, BboxLayerData, VectorLayerData, WmsLayerData, WmsLayerDescription } from './mappable_wpsdata';
-import { featureCollection } from '@turf/helpers';
+import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@ukis/map-ol';
 import { WMSCapabilities } from 'ol/format';
@@ -223,7 +223,7 @@ export class LayerMarshaller  {
                             `&TRANSPARENT=TRUE&LAYER=${layername}`,
                         popup: {
                             asyncPupup: (obj, callback) => {
-                                this.getFeatureInfoPopup(obj, this.mapSvc, callback);
+                                this.getFeatureInfoPopup(obj, callback, description.featureInfoRenderer);
                             }
                         },
                         icon: description.icon,
@@ -320,25 +320,30 @@ export class LayerMarshaller  {
     /**
      * @TODO: move this functionality to the WMS-Output-object
      */
-    private getFeatureInfoPopup(obj, mapSvc, callback) {
+    private getFeatureInfoPopup(obj, callback, featureInfoRenderer?: (featureInfo: FeatureCollection) => string) {
         const source = obj.source;
         const evt = obj.evt;
-        const viewResolution = mapSvc.map.getView().getResolution() ||
+        const viewResolution = this.mapSvc.map.getView().getResolution() ||
             // throws exception: mapSvc.map.getView().getResolutionForExtent(this.mapSvc.getCurrentExtent()) ||
-            mapSvc.map.getView().getResolutionForZoom(this.mapStateSvc.getMapState().value.zoom);
+            this.mapSvc.map.getView().getResolutionForZoom(this.mapStateSvc.getMapState().value.zoom);
         const properties: any = {};
         const url = source.getGetFeatureInfoUrl(
-            evt.coordinate, viewResolution, mapSvc.EPSG,
+            evt.coordinate, viewResolution, this.mapSvc.EPSG,
             { INFO_FORMAT: 'application/json' }
         );
 
-        this.httpClient.get(url).subscribe(response => {
-            const html = this.formatFeatureCollectionToTable(response);
+        this.httpClient.get(url).subscribe((response: FeatureCollection) => {
+            let html;
+            if (featureInfoRenderer) {
+                html = featureInfoRenderer(response);
+            } else {
+                html = this.formatFeatureCollectionToTable(response);
+            }
             callback(html);
         });
     }
 
-    private formatFeatureCollectionToTable(collection): string {
+    private formatFeatureCollectionToTable(collection: any): string {
         let html = '';
 
         if(collection.id) html += `<h3>${collection.id}</h3>`;
@@ -373,10 +378,5 @@ export class LayerMarshaller  {
 
         return html;
     }
-
-
-
-
-
 
 }

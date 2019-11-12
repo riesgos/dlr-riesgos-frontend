@@ -70,7 +70,7 @@ export class ConfigurationWizardComponent implements OnInit {
         return value;
     }
 
-    getClassForLable(stateType) {
+    getClassForLabel(stateType) {
         return {
             'label-unavailable': stateType === 'unavailable',
             'label-info': stateType === 'available',

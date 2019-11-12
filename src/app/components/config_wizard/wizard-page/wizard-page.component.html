@@ -12,7 +12,7 @@
 
         <ng-container *ngSwitchCase="'unavailable'">
             <p class="p3">
-                <span class="label" i18n>{{'This process can not be configured yet.' | translate}}</span>
+                <span class="label" >{{'This process can not be configured yet.' | translate}}</span>
             </p>
         </ng-container>
 
@@ -22,12 +22,12 @@
 
 
         <ng-container *ngSwitchCase="'running'">
-            <span class="spinner spinner-inline" i18n>{{'Loading...' | translate}}</span>
+            <span class="spinner spinner-inline" >{{'Loading...' | translate}}</span>
         </ng-container>
 
         <ng-container *ngSwitchCase="'completed'">
             <ukis-form [parameters]="parameters$ | async" [disabled]="true"> </ukis-form>
-            <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>{{'Reconfigure' | translate}}</button>
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" >{{'Reconfigure' | translate}}</button>
         </ng-container>
 
         <ng-container *ngSwitchCase="'error'">
@@ -46,7 +46,7 @@
             </div>
 
 
-            <button class="btn btn-outline" (click)="onReconfigureClicked()" i18n>{{'Retry' | translate}}</button>
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" >{{'Retry' | translate}}</button>
         </ng-container>
 
     </ng-container>

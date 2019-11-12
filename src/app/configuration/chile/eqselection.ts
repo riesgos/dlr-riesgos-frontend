@@ -93,7 +93,7 @@ export const EqSelection: WizardableProcess & ExecutableProcess & AutorunningPro
     },
 
     execute: (inputs: Product[]): Observable<Product[]> => {
-        const eqVal = inputs.find(i => i.uid === 'eq_selectedRow').value;
+        const eqVal = inputs.find(i => i.uid === userinputSelectedEq.uid).value;
         return of([{
             ...selectedEq,
             value: eqVal

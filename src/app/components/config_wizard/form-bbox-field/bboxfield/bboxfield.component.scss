@@ -18,30 +18,13 @@
     display: table-row;
 }
 
-.a {
+.content {
     display: table-cell;
     width: 25%;
     max-width: 50px;
     border-bottom: 1px solid #999999;
+    .clr-form-control {
+        margin-bottom: 0rem;
+    }
 }
 
-.b {
-    display: table-cell;
-    width: 25%;
-    max-width: 50px;
-    border-bottom: 1px solid #999999;
-}
-
-.c {
-    display: table-cell;
-    width: 25%;
-    max-width: 50px;
-    border-bottom: 1px solid #999999;
-}
-
-.d {
-    display: table-cell;
-    width: 25%;
-    max-width: 50px;
-    border-bottom: 1px solid #999999;
-}

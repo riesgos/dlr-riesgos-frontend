@@ -26,12 +26,6 @@
         "dist/*",
         "projects/*",
         "node_modules/@ukis/*"
-      ],
-      "helpers": [
-        "dist/helpers"
-      ],
-      "helpers/*": [
-        "dist/helpers/*"
       ]
     }
   }

@@ -303,7 +303,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 legendImg: 'http://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?service=wms&request=GetLegendGraphic&LAYER=sic_20181016234835&FORMAT=image/png',
                 opacity: 0.3,
                 // bbox: [-92.270, -44.104, -48.017, -24.388],
-                visible: false
+                visible: false,
+                // @ts-ignore
+                crossOrigin: 'anonymous'
             });
             layers.push(powerlineLayer);
 
@@ -317,7 +319,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/kml/citsu_taltal_2da_Ed_2012.kml',
-                                format: new KML()
+                                format: new KML(),
+                                crossOrigin: 'anonymous'
                             })
                         }),
                         name: 'Taltal (SHOA)',
@@ -333,7 +336,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/kml/citsu_valparaiso_vinna.kml',
-                                format: new KML()
+                                format: new KML(),
+                                crossOrigin: 'anonymous'
                             })
                         }),
                         name: 'Valparaiso (SHOA)',
@@ -388,7 +392,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                     layers: '2',
                                     tiled: true
                                 },
-                                tileGrid: idepTileGrid
+                                tileGrid: idepTileGrid,
+                                crossOrigin: 'anonymous'
                             })
                         }),
                         name: 'Departementos',
@@ -407,7 +412,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                     layers: '0',
                                     tiled: true
                                 },
-                                tileGrid: idepTileGrid
+                                tileGrid: idepTileGrid,
+                                crossOrigin: 'anonymous'
                             })
                         }),
                         name: 'Provincias',
@@ -416,7 +422,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         visible: false,
                         opacity: 0.6,
                         attribution: '&copy, <a href="http://mapas.geoidep.gob.pe/">Instituto Geográfico Nacional</a>',
-                        popup: true
+                        popup: true,
                     }),
                     new CustomLayer({
                         custom_layer: new TileLayer({
@@ -426,7 +432,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                     layers: '1',
                                     tiled: true
                                 },
-                                tileGrid: idepTileGrid
+                                tileGrid: idepTileGrid,
+                                crossOrigin: 'anonymous'
                             })
                         }),
                         name: 'Distritos',
@@ -449,7 +456,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         },
                         legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=0&FORMAT=image/png',
                         opacity: 0.3,
-                        visible: false
+                        visible: false,
+                        // @ts-ignore
+                        crossOrigin: 'anonymous'
                     }),
                     new ProductRasterLayer({
                         id: 'generacionPeru',
@@ -463,7 +472,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         },
                         legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=1&FORMAT=image/png',
                         opacity: 0.3,
-                        visible: false
+                        visible: false,
+                        // @ts-ignore
+                        crossOrigin: 'anonymous'
                     }),
                     new ProductRasterLayer({
                         id: 'transmissionPeru',
@@ -477,7 +488,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         },
                         legendImg: 'http://mapas.geoidep.gob.pe/geoidep/services/Electricidad/MapServer/WMSServer?service=wms&request=GetLegendGraphic&LAYER=3&FORMAT=image/png',
                         opacity: 0.3,
-                        visible: false
+                        visible: false,
+                        // @ts-ignore
+                        crossOrigin: 'anonymous'
                     }),
                 ]
             });
@@ -495,7 +508,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/linea_transmision_ecuador.geojson',
-                                format: new GeoJSON()
+                                format: new GeoJSON(),
+                                crossOrigin: 'anonymous'
                             })
                         }),
                         name: 'transmisión',
@@ -510,7 +524,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/linea_subtransmision_ecuador.geojson',
-                                format: new GeoJSON()
+                                format: new GeoJSON(),
+                                crossOrigin: 'anonymous'
                             })
                         }),
                         name: 'subtransmisión',

@@ -4,7 +4,23 @@
 <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'xl'" style='z-index: 1000001;'>
     <h3 class="modal-title">{{ 'Current state' | translate }}</h3>
     <div class="modal-body">
-        <app-graphvizcomp [dotString]="dotString$ | async"></app-graphvizcomp>
+        <clr-tabs  clrLayout="vertical">
+
+            <clr-tab>
+                <button clrTabLink [id]="processesOnlyLink">{{ 'Processes only' | translate }}</button>
+                <clr-tab-content *clrIfActive [id]="processesOnlyContent">
+                    <app-graphvizcomp [dotString]="dotStringPO$ | async"></app-graphvizcomp>
+                </clr-tab-content>
+            </clr-tab>
+            
+            <clr-tab>
+                <button clrTabLink [id]="fullViewLink">{{ 'Full view' | translate }}</button>
+                <clr-tab-content *clrIfActive [id]="fullViewContent">
+                    <app-graphvizcomp [dotString]="dotStringFull$ | async"></app-graphvizcomp>
+                </clr-tab-content>
+            </clr-tab>
+            
+        </clr-tabs>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline" (click)="showModal = false">{{'Close' | translate}}</button>

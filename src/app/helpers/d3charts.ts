@@ -1,4 +1,3 @@
-import * as d3 from 'd3';
 import Plotly from 'plotly.js/dist/plotly';
 
 

@@ -78,7 +78,27 @@ export function createBarchart(
     anchorSelector: any, data: Bardata[], width: number, height: number, xlabel: string, ylabel: string,
     xAxisAngle = 0, yAxisAngle = 0) {
 
-        return createBigBarchart(anchorSelector, data, width, height, xlabel, ylabel);
+        const newData = [{
+            type: 'bar',
+            x: data.map(dp => dp.label),
+            y: data.map(dp => dp.value)
+        }];
+
+        const layout = {
+            xaxis: {
+                title: {
+                    text: xlabel
+                }
+            },
+            yaxis: {
+                title: {
+                    text: ylabel
+                }
+            }
+        };
+
+
+        Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }
 
 export function createBarchartOld(
@@ -181,24 +201,24 @@ export function createBigBarchart(
         const layout = {
             xaxis: {
                 title: {
-                    text: xlabel,
-                    font: {
-                        family: 'Metropolis, "Avenir Next", "Helvetica Neue", Arial, sans-serif',
-                        size: 12,
-                        color: '#7f7f7f'
-                    }
+                    text: xlabel
                 }
             },
             yaxis: {
                 title: {
-                    text: ylabel,
-                    font: {
-                        family: 'Metropolis, "Avenir Next", "Helvetica Neue", Arial, sans-serif',
-                        size: 12,
-                        color: '#7f7f7f'
-                    }
+                    text: ylabel
                 }
-            }
+            },
+            autosize: false,
+            width: width,
+            height: height,
+            margin: {
+                l: 50,
+                r: 30,
+                b: 130,
+                t: 0,
+                pad: 0
+            },
         };
 
 

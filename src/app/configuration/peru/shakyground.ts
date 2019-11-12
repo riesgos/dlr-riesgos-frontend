@@ -43,7 +43,7 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
             [selectedEqPeru].map(p => p.uid),
             [shakemapWmsOutputPeru, eqShakemapRefPeru].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
-            'Simulates the ground motion caused by a given eathquake',
+            'Simulates the ground motion caused by the selected earthquake',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,

@@ -63,7 +63,7 @@ export class TsWmsServicePeru extends WpsProcess {
             [latPeru, lonPeru, magPeru].map(p => p.uid),
             [tsWmsPeru.uid],
             'get_scenario',
-            'Relates a tsunami to a given earthquake',
+            'Relates a tsunami to the selected earthquake',
             'http://tsunami-wps.awi.de/wps',
             '1.0.0',
             http,

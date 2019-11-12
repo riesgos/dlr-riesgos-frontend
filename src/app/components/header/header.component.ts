@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ukis-header',
@@ -7,7 +8,9 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
   @Input('ukis-title') title: string;
-  constructor() { }
+  constructor(
+    public translator: TranslateService
+  ) { }
 
   ngOnInit() {
   }

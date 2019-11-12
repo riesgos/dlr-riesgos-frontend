@@ -221,7 +221,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
         this.name = 'Multihazard damage estimation / EQ';
         this.requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
         this.providedProducts = [eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExposureRef].map(p => p.uid);
-        this.description = 'This service outputs damage caused by a given earthquake.';
+        this.description = 'This service outputs damage caused by the selected earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',

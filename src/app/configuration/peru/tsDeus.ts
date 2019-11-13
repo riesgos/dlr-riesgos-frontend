@@ -14,6 +14,8 @@ import { fragilityRefPeru, VulnerabilityModelPeru, assetcategoryPeru, losscatego
 import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
 import { switchMap } from 'rxjs/operators';
+import { FeatureCollection } from '@turf/helpers';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
 
 
 
@@ -42,6 +44,13 @@ export const tsDamagePeru: VectorLayerData & WpsData & Product = {
             },
             text: (props: object) => {
                 return `<h4>Pérdida ${props['name']}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+            },
+            summary: (value: [FeatureCollection]) => {
+                const features = value[0].features;
+                const damages = features.map(f => f.properties['loss_value']);
+                const totalDamage = damages.reduce((carry, current) => carry + current, 0);
+                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
+                return createKeyValueTableHtml('', {'daño total': totalDamageFormatted});
             }
         },
         description: 'Concrete damage in USD.'

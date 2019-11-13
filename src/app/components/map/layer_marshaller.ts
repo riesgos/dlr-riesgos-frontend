@@ -111,10 +111,19 @@ export class LayerMarshaller  {
                 const data = product.value[0];
                 const bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
 
+                let description = '';
+                if (product.description.description) {
+                    description = product.description.description;
+                }
+                if (product.description.vectorLayerAttributes.summary) {
+                    description += '<br/>' + product.description.vectorLayerAttributes.summary(product.value);
+                }
+
                 const layer: ProductVectorLayer = new ProductVectorLayer({
                     id: `${product.uid}_${product.description.id}_result_layer`,
                     name: `${product.description.name}`,
                     attribution: '',
+                    description: description,
                     opacity: 0.6,
                     removable: false,
                     type: 'geojson',
@@ -134,9 +143,7 @@ export class LayerMarshaller  {
                     hasFocus: false
                 });
                 layer.productId = product.uid;
-                if (product.description.description) {
-                    layer.description = product.description.description;
-                }
+                
                 if (product.description.name === 'available earthquakes') {
                     layer.legendImg = 'assets/layer-preview/eq_legend.png';
                 }
@@ -235,6 +242,11 @@ export class LayerMarshaller  {
 
                     if (description.description) {
                         layer.description = description.description;
+                    }
+
+                    // special wish by theresa...
+                    if (layername.match(/Lahar_S_VEI\d\dmio_(maxvelocity|maxpressure|maxerosion|deposition)_\d\dm$/)) {
+                        layer.visible = false;
                     }
 
                     layers.push(layer);

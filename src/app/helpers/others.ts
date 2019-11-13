@@ -38,8 +38,14 @@ export function createKeyValueTableHtml(header: string, data: object): string {
     const htmlRows = rows.map(row => {
         return `<tr><td>${row.key}</td><td>${row.val}</td></tr>`;
     });
+
+    let headerFormatted = '';
+    if (header !== '') {
+        headerFormatted = `<h4>${header}</h4>`;
+    }
+
     return `
-        <h4>${header}</h4>
+        ${headerFormatted}
         <table class="table">
             <tbody>${htmlRows.join(' ')}</tbody>
         </table>

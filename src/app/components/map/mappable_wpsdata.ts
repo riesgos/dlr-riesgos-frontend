@@ -36,7 +36,8 @@ export interface VectorLayerDescription extends ProductDescription {
     vectorLayerAttributes: {
         style?: any;
         text?: any;
-        sldFile?: string
+        sldFile?: string,
+        summary?: (value: any) => string,
     };
     description?: string;
     icon?: shape;

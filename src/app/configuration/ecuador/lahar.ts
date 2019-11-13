@@ -4,6 +4,9 @@ import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { HttpClient } from '@angular/common/http';
+import { FeatureCollection } from '@turf/helpers';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 export const direction: StringSelectUconfProduct & WpsData = {
@@ -68,6 +71,13 @@ export const laharWms: WmsLayerData & WpsData = {
         type: 'literal',  // this is deliberate. layer-wps returns this value as a litteral, not as a complex.
         reference: false,
         format: 'application/WMS',
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)});
+            } else {
+                return '';
+            }
+        }
     },
     value: null
 };

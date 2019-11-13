@@ -51,3 +51,29 @@ export function createKeyValueTableHtml(header: string, data: object): string {
         </table>
     `;
 }
+
+export function createHeaderTableHtml(headerRow: string[], rows: string[][]): string {
+    const headersFormatted = headerRow.map(he => `<th>${he}</th>`);
+    const rowsFormatted = rows.map(row => {
+        const colsFormatted = row.map(re => `<td>${re}</td>`);
+        return `<tr>${colsFormatted.join('')}</tr>`;
+    });
+    return `
+        <table class='table'>
+            <tr>${headersFormatted.join('')}</tr>
+            ${rowsFormatted.join('')}
+        </table>
+    `;
+}
+
+export function createTableHtml(rows: string[][]): string {
+    const rowsFormatted = rows.map(row => {
+        const colsFormatted = row.map(re => `<td>${re}</td>`);
+        return `<tr>${colsFormatted.join('')}</tr>`;
+    });
+    return `
+        <table class='table'>
+            ${rowsFormatted.join('')}
+        </table>
+    `;
+}

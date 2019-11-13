@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import { createKeyValueTableHtml, createHeaderTableHtml } from 'src/app/helpers/others';
 
 
 
@@ -183,6 +183,25 @@ export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
                 }
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '# edificios');
                 return `<h4>Exposición actualizada ${props['name']}</h4>${anchor.innerHTML}`;
+            },
+            summary: (value: [FeatureCollection]) => {
+                const counts = {
+                    'D0': 0,
+                    'D1': 0,
+                    'D2': 0,
+                    'D3': 0,
+                    'D4': 0,
+                    'D5': 0,
+                    'D6': 0
+                };
+                for (const feature of value[0].features) {
+                    for (let i = 0; i < feature.properties.expo.Damage.length; i++) {
+                        const damageClass = feature.properties.expo.Damage[i];
+                        const nrBuildings = feature.properties.expo.Buildings[i];
+                        counts[damageClass] += nrBuildings;
+                    }
+                }
+                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 2))]);
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'

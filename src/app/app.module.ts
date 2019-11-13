@@ -50,6 +50,7 @@ import { DisclaimerComponent } from './components/disclaimer/disclaimer.componen
 import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
 import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
 import { CesiummapComponent } from './components/cesiummap/cesiummap.component';
+import { HelpersModule } from '@ukis/helpers/src/public-api';
 
 @NgModule({
   declarations: [
@@ -105,6 +106,7 @@ import { CesiummapComponent } from './components/cesiummap/cesiummap.component';
       }
     }),
     !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 10 }) : [],
+    HelpersModule
   ],
   providers: [
     AlertService, FooterService, ProgressService, LayerMarshaller,

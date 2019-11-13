@@ -69,3 +69,28 @@ export function createBigBarchart(
         Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }
 
+export function createConfusionMatrix(
+    anchorSelector: any, data: number[][], width: number, height: number, xlabel: string, ylabel: string) {
+
+    const newData = [{
+        type: 'heatmap',
+        z: data
+    }];
+
+    const layout = {
+        xaxis: {
+            title: {
+                text: xlabel
+            }
+        },
+        yaxis: {
+            title: {
+                text: ylabel
+            }
+        },
+        width: width,
+        height: height,
+    };
+
+    Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
+}

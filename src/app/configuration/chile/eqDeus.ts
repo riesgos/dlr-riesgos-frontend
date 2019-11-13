@@ -5,7 +5,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
+import { createBarchart, Bardata, createConfusionMatrix } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, damageRage } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -14,7 +14,7 @@ import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection, Feature } from '@turf/helpers';
-import { createKeyValueTableHtml, createHeaderTableHtml } from 'src/app/helpers/others';
+import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
 
 
 
@@ -101,17 +101,46 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                 });
             },
             text: (props: object) => {
-                const anchor = document.createElement('div');
 
-                const expo = props['expo'];
-                const data: Bardata[] = [
-                    {label: '1', value: props['transitions']['n_buildings'][3]},
-                    {label: '2', value: props['transitions']['n_buildings'][2]},
-                    {label: '3', value: props['transitions']['n_buildings'][1]},
-                    {label: '4', value: props['transitions']['n_buildings'][0]}
-                ];
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', 'n. edificios');
+                const matrix = Array.from(Array(5), _ => Array(5).fill(0));
+                const fromDamageState = props['transitions']['from_damage_state'];
+                const nrBuildings = props['transitions']['n_buildings'];
+                const toDamageState = props['transitions']['to_damage_state'];
+                for (let i = 0; i < fromDamageState.length; i++) {
+                    const r = fromDamageState[i];
+                    const c = toDamageState[i];
+                    const nr = nrBuildings[i];
+                    matrix[r][c] += nr;
+                }
+                for (let r = 0; r < matrix.length; r++) {
+                    for (let c = 0; c < matrix[0].length; c++) {
+                        matrix[r][c] = toDecimalPlaces(matrix[r][c], 2);
+                    }
+                }
+
+                const anchor = document.createElement('div');
+                const anchorUpdated = createConfusionMatrix(anchor, matrix, 300, 200, 'estado inicial', 'estado final');
                 return `<h4>Transiciónes ${props['name']}</h4>${anchor.innerHTML}`;
+            },
+            summary: (value: [FeatureCollection]) => {
+                const matrix = Array.from(Array(5), _ => Array(5).fill(0));
+                for (const feature of value[0].features) {
+                    const fromDamageState = feature.properties['transitions']['from_damage_state'];
+                    const nrBuildings = feature.properties['transitions']['n_buildings'];
+                    const toDamageState = feature.properties['transitions']['to_damage_state'];
+                    for (let i = 0; i < fromDamageState.length; i++) {
+                        const r = fromDamageState[i];
+                        const c = toDamageState[i];
+                        const nr = nrBuildings[i];
+                        matrix[r][c] += nr;
+                    }
+                }
+                for (let r = 0; r < matrix.length; r++) {
+                    for (let c = 0; c < matrix[0].length; c++) {
+                        matrix[r][c] = toDecimalPlaces(matrix[r][c], 2);
+                    }
+                }
+                return createTableHtml(matrix);
             }
         },
         description: 'Change from previous state to current one'

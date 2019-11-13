@@ -245,7 +245,7 @@ export class LayerMarshaller  {
                     }
 
                     // special wish by theresa...
-                    if (layername.match(/Lahar_S_VEI\d\dmio_(maxvelocity|maxpressure|maxerosion|deposition)_\d\dm$/)) {
+                    if (layername.match(/Lahar_(N|S)_VEI\d\dmio_(maxvelocity|maxpressure|maxerosion|deposition)_\d\dm$/)) {
                         layer.visible = false;
                     }
 

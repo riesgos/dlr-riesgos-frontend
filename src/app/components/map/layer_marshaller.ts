@@ -16,6 +16,8 @@ import { SldParserService } from 'projects/sld-parser/src/public-api';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer } from './map.types';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
+import { ClrShapeDownload } from '@clr/icons/shapes/essential-shapes';
+import { download } from 'src/app/helpers/others';
 
 
 interface WmsParameters {
@@ -140,10 +142,20 @@ export class LayerMarshaller  {
                         }
                     },
                     icon: product.description.icon,
-                    hasFocus: false
+                    hasFocus: false,
+                    actions: [{
+                        icon: 'download',
+                        title: 'download',
+                        action: (theLayer: any) => {
+                            const data = theLayer.data;
+                            if (data) {
+                                download(data, `data_${theLayer.name}.json`);
+                            }
+                        }
+                    }]
                 });
                 layer.productId = product.uid;
-                
+
                 if (product.description.name === 'available earthquakes') {
                     layer.legendImg = 'assets/layer-preview/eq_legend.png';
                 }

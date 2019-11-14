@@ -231,7 +231,7 @@ export const tsUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '# edificios');
+                const anchorUpdated = createBarchart(anchor, data, 500, 500, 'estado de daño', '# edificios');
                 return `<h4>Exposición actualizada ${props['name']}</h4>${anchor.innerHTML}`;
             },
             summary: (value: [FeatureCollection]) => {

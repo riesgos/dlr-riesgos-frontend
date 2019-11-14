@@ -26,7 +26,9 @@ export function createBarchart(
                 title: {
                     text: ylabel
                 }
-            }
+            },
+            width: width,
+            height: height,
         };
 
 

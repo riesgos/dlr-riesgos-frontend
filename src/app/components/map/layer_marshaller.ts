@@ -138,6 +138,7 @@ export class LayerMarshaller  {
                     popup: {
                         asyncPupup: (obj, callback) => {
                             const html = product.description.vectorLayerAttributes.text(obj);
+                            console.log('popup html: ', html);
                             callback(html);
                         }
                     },

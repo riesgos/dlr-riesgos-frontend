@@ -20,7 +20,14 @@ export function redGreenRange(startVal: number, endVal: number, currentVal: numb
     return [r, g, b];
 }
 
-
+export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
+    const degree = (currentVal - startVal) / (endVal - startVal);
+    const degreeTop = Math.max(Math.min(degree, 1), 0);
+    const r = (1 - degreeTop) * 255;
+    const g = degreeTop * 255;
+    const b = 125;
+    return [r, g, b];
+}
 
 export function ninetyPercentLowerThan(data: number[]): number {
     const total = data.reduce((carry, current) => carry + current, 0);

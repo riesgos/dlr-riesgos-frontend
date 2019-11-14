@@ -1,8 +1,8 @@
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WpsData } from '@ukis/services-wps/src/public-api';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
-import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces } from 'src/app/helpers/colorhelpers';
-import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
+import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { Bardata, createBarchart, createConfusionMatrix } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqUpdatedExposureRefPeru } from './eqDeus';
 import { schemaPeru } from './exposure';
@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml, createHeaderTableHtml } from 'src/app/helpers/others';
+import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
 
 
 
@@ -71,14 +71,16 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = {
-                    '4': props.transitions.n_buildings[0],
-                    '3': props.transitions.n_buildings[1],
-                    '2': props.transitions.n_buildings[2],
-                    '1': props.transitions.n_buildings[3],
-                };
+                const counts = Array(7).fill(0);
+                const nrBuildings = props['transitions']['n_buildings'];
+                const states = props['transitions']['to_damage_state'];
+                for (let i = 0; i < states.length; i++) {
+                    const nr = nrBuildings[i];
+                    const state = states[i];
+                    counts[state] += nr;
+                }
 
-                const [r, g, b] = redGreenRange(0, 3, ninetyPercentLowerThan(Object.values(counts)));
+                const [r, g, b] = greenRedRange(0, 7, ninetyPercentLowerThan(Object.values(counts)));
 
                 return new olStyle({
                   fill: new olFill({
@@ -91,17 +93,65 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
                 });
             },
             text: (props: object) => {
-                const anchor = document.createElement('div');
 
-                const expo = props['expo'];
-                const data: Bardata[] = [
-                    {label: '1', value: props['transitions']['n_buildings'][3]},
-                    {label: '2', value: props['transitions']['n_buildings'][2]},
-                    {label: '3', value: props['transitions']['n_buildings'][1]},
-                    {label: '4', value: props['transitions']['n_buildings'][0]}
-                ];
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '% edificios');
-                return `<h4>Transiciones ${props['name']}</h4>${anchor.innerHTML}`;
+                const matrix = Array.from(Array(7), _ => Array(7).fill(0));
+                const fromDamageState = props['transitions']['from_damage_state'];
+                const nrBuildings = props['transitions']['n_buildings'];
+                const toDamageState = props['transitions']['to_damage_state'];
+                for (let i = 0; i < fromDamageState.length; i++) {
+                    const r = fromDamageState[i];
+                    const c = toDamageState[i];
+                    const nr = nrBuildings[i];
+                    matrix[r][c] += nr;
+                }
+
+                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                for (let r = 0; r < labeledMatrix.length; r++) {
+                    for (let c = 0; c < labeledMatrix[0].length; c++) {
+                        if (r === 0 && c === 0) {
+                            labeledMatrix[r][c] = '<b>from/to</b>';
+                        } else if (r === 0) {
+                            labeledMatrix[r][c] = `<b>${c - 1}</b>`;
+                        } else if (c === 0) {
+                            labeledMatrix[r][c] = `<b>${r - 1}</b>`;
+                        } else if (r > 0 && c > 0) {
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 2);
+                        }
+                    }
+                }
+
+                return `<h4>Transiciónes ${props['name']}</h4>${createTableHtml(labeledMatrix)}`;
+            },
+            summary: (value: [FeatureCollection]) => {
+                const matrix = Array.from(Array(7), _ => Array(7).fill(0));
+                for (const feature of value[0].features) {
+                    const fromDamageState = feature.properties['transitions']['from_damage_state'];
+                    const nrBuildings = feature.properties['transitions']['n_buildings'];
+                    const toDamageState = feature.properties['transitions']['to_damage_state'];
+                    for (let i = 0; i < fromDamageState.length; i++) {
+                        const r = fromDamageState[i];
+                        const c = toDamageState[i];
+                        const nr = nrBuildings[i];
+                        matrix[r][c] += nr;
+                    }
+                }
+
+                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                for (let r = 0; r < labeledMatrix.length; r++) {
+                    for (let c = 0; c < labeledMatrix[0].length; c++) {
+                        if (r === 0 && c === 0) {
+                            labeledMatrix[r][c] = '<b>from/to</b>';
+                        } else if (r === 0) {
+                            labeledMatrix[r][c] = `<b>${c - 1}</b>`;
+                        } else if (c === 0) {
+                            labeledMatrix[r][c] = `<b>${r - 1}</b>`;
+                        } else if (r > 0 && c > 0) {
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 2);
+                        }
+                    }
+                }
+
+                return createTableHtml(labeledMatrix);
             }
         },
         description: 'Change from previous state to current one'
@@ -146,7 +196,7 @@ export const tsUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                 if (total === 0) {
                     r = b = g = 0;
                 } else {
-                    [r, g, b] = redGreenRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = redGreenRange(6, 0, ninetyPercentLowerThan(Object.values(counts)));
                 }
 
                 return new olStyle({

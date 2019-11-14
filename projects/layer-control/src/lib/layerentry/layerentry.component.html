@@ -6,10 +6,14 @@
     [ngClass]="{'disabled': is_expandable()}" (click)="showProperties()" title="Details"></clr-icon>
 
     <!-- layer title -->
-    <div #ref class="item-title-replacement title" (click)="showProperties()" [title]="getLayerName(layer)" [@layerHasFocus]="layer.hasFocus">
+    <div #ref class="item-title-replacement title" (click)="showProperties()" [title]="getLayerName(layer)" 
+      [style.color]="layer.hasFocus ? '#004c8a': '#575757'"
+      [style.font-weight]="layer.hasFocus? 'bolder' : 'normal'">
       <ng-content></ng-content>
     </div>
-    <span *ngIf="ref.children.length == 0" class="title" [title]="getLayerName(layer)" (click)="showProperties()">
+    <span *ngIf="ref.children.length == 0" class="title" [title]="getLayerName(layer)" (click)="showProperties()" 
+      [style.color]="layer.hasFocus ? '#004c8a': '#575757'"
+      [style.font-weight]="layer.hasFocus? 'bolder' : 'normal'">
       {{ getLayerName(layer) | regexTranslate | translate }}
     </span>
 

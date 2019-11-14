@@ -6,7 +6,7 @@ import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata, createConfusionMatrix } from 'src/app/helpers/d3charts';
-import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, damageRage } from 'src/app/helpers/colorhelpers';
+import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, damageRage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
@@ -81,14 +81,16 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = {
-                    '4': props.transitions.n_buildings[0],
-                    '3': props.transitions.n_buildings[1],
-                    '2': props.transitions.n_buildings[2],
-                    '1': props.transitions.n_buildings[3],
-                };
+                const counts = Array(5).fill(0);
+                const nrBuildings = props['transitions']['n_buildings'];
+                const states = props['transitions']['to_damage_state'];
+                for (let i = 0; i < states.length; i++) {
+                    const nr = nrBuildings[i];
+                    const state = states[i];
+                    counts[state] += nr;
+                }
 
-                const [r, g, b] = redGreenRange(0, 3, ninetyPercentLowerThan(Object.values(counts)));
+                const [r, g, b] = greenRedRange(0, 5, ninetyPercentLowerThan(Object.values(counts)));
 
                 return new olStyle({
                   fill: new olFill({
@@ -112,15 +114,23 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                     const nr = nrBuildings[i];
                     matrix[r][c] += nr;
                 }
-                for (let r = 0; r < matrix.length; r++) {
-                    for (let c = 0; c < matrix[0].length; c++) {
-                        matrix[r][c] = toDecimalPlaces(matrix[r][c], 2);
+
+                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                for (let r = 0; r < labeledMatrix.length; r++) {
+                    for (let c = 0; c < labeledMatrix[0].length; c++) {
+                        if (r === 0 && c === 0) {
+                            labeledMatrix[r][c] = '<b>from/to</b>';
+                        } else if (r === 0) {
+                            labeledMatrix[r][c] = `<b>${c - 1}</b>`;
+                        } else if (c === 0) {
+                            labeledMatrix[r][c] = `<b>${r - 1}</b>`;
+                        } else if (r > 0 && c > 0) {
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 2);
+                        }
                     }
                 }
 
-                const anchor = document.createElement('div');
-                const anchorUpdated = createConfusionMatrix(anchor, matrix, 300, 200, 'estado inicial', 'estado final');
-                return `<h4>Transiciónes ${props['name']}</h4>${anchor.innerHTML}`;
+                return `<h4>Transiciónes ${props['name']}</h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const matrix = Array.from(Array(5), _ => Array(5).fill(0));
@@ -135,12 +145,23 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                         matrix[r][c] += nr;
                     }
                 }
-                for (let r = 0; r < matrix.length; r++) {
-                    for (let c = 0; c < matrix[0].length; c++) {
-                        matrix[r][c] = toDecimalPlaces(matrix[r][c], 2);
+                
+                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                for (let r = 0; r < labeledMatrix.length; r++) {
+                    for (let c = 0; c < labeledMatrix[0].length; c++) {
+                        if (r === 0 && c === 0) {
+                            labeledMatrix[r][c] = '<b>from/to</b>';
+                        } else if (r === 0) {
+                            labeledMatrix[r][c] = `<b>${c - 1}</b>`;
+                        } else if (c === 0) {
+                            labeledMatrix[r][c] = `<b>${r - 1}</b>`;
+                        } else if (r > 0 && c > 0) {
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 2);
+                        }
                     }
                 }
-                return createTableHtml(matrix);
+
+                return createTableHtml(labeledMatrix);
             }
         },
         description: 'Change from previous state to current one'

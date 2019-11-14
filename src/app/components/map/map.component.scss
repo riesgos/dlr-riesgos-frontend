@@ -19,3 +19,13 @@
     position: absolute;
     top: 0px;
 }
+
+.plot {
+    .heatmap .mlayer {
+        .hm {
+            image {
+                background-color: aqua;
+            }
+        }
+    }
+}

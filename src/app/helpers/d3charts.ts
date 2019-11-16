@@ -1,5 +1,4 @@
 import Plotly from 'plotly.js/dist/plotly';
-import * as d3 from 'd3';
 
 export interface Bardata {
     label: string;

@@ -53,7 +53,9 @@ export const tsWmsPeru: WpsData & WmsLayerData = {
         format: 'application/WMS',
         type: 'literal',
         featureInfoRenderer: (fi: FeatureCollection) => {
-            return createKeyValueTableHtml('Tsunami', {'mhw': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+            if (fi.features && fi.features[0] && fi.features[0].properties['GRAY_INDEX']) {
+                return createKeyValueTableHtml('Tsunami', {'mwh': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+            }
         }
     },
     value: null

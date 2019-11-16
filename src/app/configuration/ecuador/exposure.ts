@@ -17,7 +17,6 @@ export const lonminEcuador: Product & WpsData = {
   value: '-79'
 };
 
-
 export const lonmaxEcuador: Product & WpsData = {
   uid: 'lahar_lonmax',
   description: {
@@ -55,14 +54,12 @@ export const schemaEcuador: Product & WpsData = {
   uid: 'ecuador_schema',
   description: {
     id: 'schema',
-    defaultValue: 'SARA_v1.0',
+    defaultValue: 'Torres_Corredor_et_al_2017',
     reference: false,
     type: 'literal'
   },
-  value: 'SARA_v1.0'
+  value: 'Torres_Corredor_et_al_2017'
 };
-
-
 
 export const assettypeEcuador: Product & WpsData = {
   uid: 'ecuador_assettype',
@@ -74,8 +71,6 @@ export const assettypeEcuador: Product & WpsData = {
   },
   value: 'res'
 };
-
-
 
 export const querymodeEcuador: Product & WpsData = {
   uid: 'ecuador_querymode',

@@ -9,6 +9,8 @@ import { Feature as olFeature } from 'ol/Feature';
 import { FeatureCollection, feature, MultiPolygon, Polygon } from '@turf/helpers';
 import proj4 from 'proj4';  // requires "allowSyntheticDefaultImports": true
 import { HttpClient } from '@angular/common/http';
+import { greenRedRange } from 'src/app/helpers/colorhelpers';
+import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 
 
 proj4.defs('EPSG:32717', '+proj=utm +zone=17 +south +datum=WGS84 +units=m +no_defs');
@@ -80,19 +82,50 @@ export const damageManzanasGeojson: VectorLayerData & WpsData & Product = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
+                const inundation = props['inundation'];
+                let [r, g, b] = greenRedRange(0, 50, inundation);
+
                 return new olStyle({
                   fill: new olFill({
-                    color: [255, 0, 0, 0.3],
+                    color: [r, g, b, 0.3],
                   }),
                   stroke: new olStroke({
-                    color: [255, 0, 0, 1],
+                    color: [r, g, b, 1],
                     witdh: 2
                   })
                 });
               },
               text: (props: object) => {
-                return JSON.stringify(props);
-              }
+                const anchor = document.createElement('div');
+
+                const counts = {
+                    'Prob. D1': props['proba_d1_predicted'],
+                    'Prob. D2': props['proba_d2_predicted'],
+                    'Prob. D3': props['proba_d3_predicted'],
+                    'Prob. D4': props['proba_d4_predicted']
+                };
+                const data: Bardata[] = [];
+                for (const damageClass in counts) {
+                    data.push({label: damageClass, value: counts[damageClass]});
+                }
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', 'probabilidad');
+                return `<h4>Exposición actualizada</h4>${anchor.innerHTML}`;
+              },
+              legendEntries: [{
+                  feature: {
+                      "type": "Feature",
+                      "properties": {'inundation': 26},
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [ [
+                            [ 5.627918243408203, 50.963075942052164 ],
+                            [ 5.627875328063965, 50.958886259879264 ],
+                            [ 5.635471343994141, 50.95634523633128 ],
+                            [ 5.627918243408203, 50.963075942052164 ] ] ]
+                      }
+                  },
+                  text: 'color: profundidad de inundación'
+              }]
         }
     },
     value: null

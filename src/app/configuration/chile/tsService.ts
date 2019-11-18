@@ -2,7 +2,7 @@ import { WpsProcess, ProcessStateUnavailable, AutorunningProcess, Product, Execu
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsClient } from 'projects/services-wps/src/public-api';
 import { selectedEq } from './eqselection';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { map } from 'rxjs/operators';
@@ -160,19 +160,19 @@ export class TsService implements WizardableProcess, ExecutableProcess {
         const proc1$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);
         const proc2$ = this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting);
 
-        // return proc1$;
+        return concat(proc1$, proc2$);
 
-        return forkJoin(proc1$, proc2$).pipe(
-            map((results: Product[][]) => {
-                const flattened: Product[] = [];
-                for (const result of results) {
-                    for (const data of result) {
-                        flattened.push(data);
-                    }
-                }
-                return flattened;
-            })
-        );
+        // return forkJoin(proc1$, proc2$).pipe(
+        //     map((results: Product[][]) => {
+        //         const flattened: Product[] = [];
+        //         for (const result of results) {
+        //             for (const data of result) {
+        //                 flattened.push(data);
+        //             }
+        //         }
+        //         return flattened;
+        //     })
+        // );
     }
 
 }

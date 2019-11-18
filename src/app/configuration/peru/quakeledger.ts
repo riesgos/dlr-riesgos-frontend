@@ -50,7 +50,7 @@ export const etypePeru = {
             name: 'Catalogue type',
             fieldtype: 'stringselect'
         },
-        options: ['observed', 'stochastic']
+        options: ['observed', 'stochastic', 'expert']
     },
     value: null
 };
@@ -223,6 +223,10 @@ export const selectedEqsPeru: VectorLayerData & WpsData = {
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],
                 };
+                if (properties['origin.time.value'] && etypePeru.value === 'observed') {
+                    const date = new Date(Date.parse(properties['origin.time.value']));
+                    selectedProperties['Fecha'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear}`;
+                }
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {
                     if (selectedProperties[property]) {

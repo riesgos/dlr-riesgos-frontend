@@ -1,11 +1,11 @@
 import { WpsProcess, ProcessStateUnavailable, AutorunningProcess, Product, ExecutableProcess, ProcessState } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';
 import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { map } from 'rxjs/operators';
+import { map, delay, switchMap } from 'rxjs/operators';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
@@ -159,18 +159,19 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
         const proc1$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);
         const proc2$ = this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting);
 
+        return concat(proc1$, proc2$);
 
-        return forkJoin(proc1$, proc2$).pipe(
-            map((results: Product[][]) => {
-                const flattened: Product[] = [];
-                for (const result of results) {
-                    for (const data of result) {
-                        flattened.push(data);
-                    }
-                }
-                return flattened;
-            })
-        );
+        // return forkJoin(proc1$, proc2$).pipe(
+        //     map((results: Product[][]) => {
+        //         const flattened: Product[] = [];
+        //         for (const result of results) {
+        //             for (const data of result) {
+        //                 flattened.push(data);
+        //             }
+        //         }
+        //         return flattened;
+        //     })
+        // );
     }
 
 }

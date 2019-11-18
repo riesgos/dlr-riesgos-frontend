@@ -41,14 +41,11 @@
 
     "arrivalTimes": "Arrival times",
     "epiCenter": "Epicenter",
-    "mwh": "Maximum wave-height",
-    "mwhLand": "Maximum wave-height land",
-    "mwhLand_global": "Maximum wave-height land / global",
-    "mwhLand_local": "Maximum wave-height land / local",
+    "mwh": "Maximum tsunami amplitude",
+    "mwhLand": "Maximum flow depth",
+    "mwhLand_global": "Maximum flow depth / 100m",
+    "mwhLand_local": "Maximum flow depth / 10m",
     "primary tif": "Shakemap",
-
-    "mhwLand global": "Maximum wave height on land / global",
-    "mhwLand local": "Maximum wave height on land / local",
 
     "How to use this site ...": "The configuration wizard on the left side of the screen contains a list of all processes that you will step through in order. Processes are colored according to their current state. If a process requires you to make decisions about inputs, these can be entered in a form. When you are content with your selection, hit 'run' to execute the process.",
     "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'Additional layers'",

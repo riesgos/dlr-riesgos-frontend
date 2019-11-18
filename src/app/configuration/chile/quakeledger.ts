@@ -211,6 +211,10 @@ export const selectedEqs: VectorLayerData & WpsData = {
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],
                 };
+                if (properties['origin.time.value'] && etype.value === 'observed') {
+                    const date = new Date(Date.parse(properties['origin.time.value']));
+                    selectedProperties['Fecha'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear}`;
+                }
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {
                     if (selectedProperties[property]) {

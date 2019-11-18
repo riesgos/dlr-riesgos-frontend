@@ -40,7 +40,7 @@ export const eqDamage: VectorLayerData & WpsData & Product = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value);
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value / 1000000);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.5],
@@ -126,7 +126,7 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>de\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -157,7 +157,7 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>de\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {

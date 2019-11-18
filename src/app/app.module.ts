@@ -83,7 +83,7 @@ import { HelpersModule } from '@ukis/helpers/src/public-api';
     DisclaimerComponent,
     DisclaimerpopupComponent,
     InteractionstatemonitorComponent,
-    CesiummapComponent
+    CesiummapComponent,
   ],
   imports: [
     BrowserModule,

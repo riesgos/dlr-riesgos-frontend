@@ -18,20 +18,43 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { HelpersModule } from '@ukis/helpers/src/public-api';
+import { VectorLegendComponent } from './vector-legend/vector-legend.component';
 
 
 
 @NgModule({
-  declarations: [LayerControlComponent, LayerentryComponent, LayerentryGroupComponent, ObjTypePipe, ReversePipe, reverseForOf, BaseLayerControlComponent],
-  imports: [CommonModule, ClarityModule, FormsModule, DragDropModule, TranslateModule.forRoot({
-    loader: {
-      provide: TranslateLoader,
-      useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/translations/', '.json'),
-      deps: [HttpClient]
-    }
-  }),
-  HelpersModule
+  declarations: [
+    LayerControlComponent,
+    LayerentryComponent,
+    LayerentryGroupComponent,
+    ObjTypePipe,
+    ReversePipe,
+    reverseForOf,
+    BaseLayerControlComponent,
+    VectorLegendComponent
   ],
-  exports: [LayerControlComponent, LayerentryComponent, LayerentryGroupComponent, ObjTypePipe, ReversePipe, reverseForOf, BaseLayerControlComponent],
+  imports: [
+    CommonModule,
+    ClarityModule,
+    FormsModule,
+    DragDropModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/translations/', '.json'),
+        deps: [HttpClient]
+      }
+    }),
+    HelpersModule
+  ],
+  exports: [
+    LayerControlComponent,
+    LayerentryComponent,
+    LayerentryGroupComponent,
+    ObjTypePipe,
+    ReversePipe,
+    reverseForOf,
+    BaseLayerControlComponent
+  ],
 })
 export class LayerControlModule { }

@@ -30,6 +30,7 @@ export class LayerentryComponent implements OnInit {
   public activeTabs = {
     'settings': false,
     'legend': true,
+    'styleLegend': false,
     'description': false,
     'changeStyle': false
   };

@@ -114,6 +114,7 @@ export class MapOlService {
     this.map.setView(_view);
     this.map.set('controls', []);
     this.view = this.map.getView();
+
     return {
       map: this.map,
       view: this.view

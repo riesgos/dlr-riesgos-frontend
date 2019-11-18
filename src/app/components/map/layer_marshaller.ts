@@ -42,7 +42,7 @@ export class LayerMarshaller  {
         public mapStateSvc: MapStateService,
         private sldParser: SldParserService,
         private store: Store<State>
-        ) {}
+        ) { }
 
 
     productsToLayers(products: Product[]): Observable<ProductLayer[]> {
@@ -342,9 +342,9 @@ export class LayerMarshaller  {
     private getFeatureInfoPopup(obj, callback, featureInfoRenderer?: (featureInfo: FeatureCollection) => string) {
         const source = obj.source;
         const evt = obj.evt;
-        const viewResolution = this.mapSvc.map.getView().getResolution() ||
-            this.mapSvc.map.getView().getResolutionForZoom(this.mapStateSvc.getMapState().value.zoom + 1);
-        console.log(`zoom: ${this.mapStateSvc.getMapState().value.zoom} resolution: ${viewResolution}`)
+
+        const viewResolution = this.mapSvc.map.getView().getResolution();
+        console.log(`resolution: ${viewResolution}`)
         const properties: any = {};
         const url = source.getGetFeatureInfoUrl(
             evt.coordinate, viewResolution, this.mapSvc.EPSG,

@@ -2,6 +2,7 @@ import { ProductDescription, Product } from 'src/app/wps/wps.datatypes';
 import { WpsBboxData, WpsBboxValue } from 'projects/services-wps/src/public-api';
 import { shape } from '../config_wizard/wizardable_processes';
 import { FeatureCollection } from '@turf/helpers';
+import { LegendElement } from '@ukis/layer-control/src/lib/vector-legend/vector-legend.component';
 
 
 
@@ -36,8 +37,9 @@ export interface VectorLayerDescription extends ProductDescription {
     vectorLayerAttributes: {
         style?: any;
         text?: any;
-        sldFile?: string,
         summary?: (value: any) => string,
+        sldFile?: string,
+        legendEntries?: LegendElement[]
     };
     description?: string;
     icon?: shape;

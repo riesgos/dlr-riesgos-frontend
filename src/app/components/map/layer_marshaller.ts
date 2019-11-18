@@ -151,9 +151,10 @@ export class LayerMarshaller  {
                 });
                 layer.productId = product.uid;
 
-                if (product.description.name === 'available earthquakes') {
-                    layer.legendImg = 'assets/layer-preview/eq_legend.png';
+                if (product.description.vectorLayerAttributes.legendEntries) {
+                    layer.lengendEntries = product.description.vectorLayerAttributes.legendEntries;
                 }
+
                 return layer;
             })
         );

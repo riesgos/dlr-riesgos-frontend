@@ -1,1 +1,6 @@
-<div #canvasDiv></div>
+<div> 
+    <div *ngFor="let entry of entries" class="ukisLegendRow clr-row">
+        <ukis-canvas [canvas]="entry.canvas" class="ukisLegendImage clr-col-sm-auto"></ukis-canvas>
+        <span class="ukisLegendText clr-col-sm-auto">{{entry.text}}</span>
+    </div>
+</div>

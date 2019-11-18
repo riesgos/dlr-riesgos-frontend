@@ -1,3 +1,5 @@
+import { LegendElement } from '@ukis/layer-control/src/lib/vector-legend/vector-legend.component';
+
 export interface IAnyObject {
   [k: string]: any;
 }
@@ -136,6 +138,7 @@ export interface IVectorLayerOptions extends ILayerOptions {
   /** true if show popup or set Array with keys of properties to show in popup  */
   cluster?: boolean | IAnyObject;
   type: TVectorLayertype;
+  legendEntries?: LegendElement[];
 }
 
 export interface ICustomLayerOptions extends ILayerOptions {
@@ -263,6 +266,7 @@ export class VectorLayer extends Layer implements IVectorLayerOptions {
    * */
   options?: IVectorLayerOptions['options'];
   cluster?: IVectorLayerOptions['cluster'];
+  legendEntries?: LegendElement[];
   constructor(options: IVectorLayerOptions) {
     super(options);
   }

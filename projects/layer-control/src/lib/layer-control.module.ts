@@ -19,6 +19,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { HelpersModule } from '@ukis/helpers/src/public-api';
 import { VectorLegendComponent } from './vector-legend/vector-legend.component';
+import { CanvasComponent } from './vector-legend/canvas/canvas.component';
 
 
 
@@ -31,7 +32,8 @@ import { VectorLegendComponent } from './vector-legend/vector-legend.component';
     ReversePipe,
     reverseForOf,
     BaseLayerControlComponent,
-    VectorLegendComponent
+    VectorLegendComponent,
+    CanvasComponent
   ],
   imports: [
     CommonModule,

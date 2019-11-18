@@ -10,6 +10,8 @@ import { toDecimalPlaces, redGreenRange, linInterpolate, linInterpolateHue } fro
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { createOlFeature } from 'src/app/helpers/others';
+import { feature } from '@turf/helpers';
 
 
 export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsData {
@@ -218,7 +220,14 @@ export const selectedEqs: VectorLayerData & WpsData = {
                 }
                 text += '</tbody></table>';
                 return text;
-            }
+            },
+            legendEntries: [{
+                feature: createOlFeature(
+                    feature({type: 'Polygon', coordinates: []},
+                    {'magnitude.mag.value': 8.0, 'origin.depth.value': 40})
+                ),
+                text: 'earthquake'
+            }]
         }
     },
     value: null

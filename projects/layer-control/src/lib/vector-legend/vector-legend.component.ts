@@ -13,6 +13,11 @@ export interface LegendElement {
   text: string;
 }
 
+interface Entry {
+  canvas: HTMLElement;
+  text: string;
+}
+
 
 @Component({
   selector: 'ukis-vector-legend',
@@ -25,44 +30,32 @@ export class VectorLegendComponent implements OnInit {
   @Input() resolution: number;
   @Input() styleFunction: (feature: Feature, resolution: number) => Style;
   @Input() elementList: LegendElement[];
-  @ViewChild('canvasDiv', {static: true}) canvasDiv: ElementRef;
+  public entries: Entry[] = [];
 
   constructor() { }
 
   ngOnInit() {
 
-    const dummyStyleFunction = function (feature: any, resolution: number) {
-      const r = 130;
-      const g = 0;
-      const b = 130;
-      return new Style({
-          fill: new Fill({
-            color: [r, g, b, 0.3],
-          }),
-          stroke: new Stroke({
-            color: [r, g, b, 1],
-            witdh: 2
-          })
-        });
-  };
-
     const legend = new Legend({
       title: this.legendTitle,
-      style: (feature: Feature) => dummyStyleFunction(feature, this.resolution),
+      style: (feature: Feature) => this.styleFunction(feature, this.resolution),
       collapsible: false,
       margin: 0,
-      size: [80, 80],
+      size: [20, 20],
     });
 
-    const canvas = legend.getStyleImage({
-      properties: { pop: 2600000 },
-      typeGeom: 'Polygon'
-    }, null, null);
+    for (const element of this.elementList) {
+      const canvas = legend.getStyleImage({
+        properties: element.feature.getProperties(),
+        typeGeom: 'Polygon'
+      }, null, null);
 
-    const legendDiv = this.canvasDiv.nativeElement;
-    if (legendDiv) {
-      legendDiv.append(canvas);
+      this.entries.push({
+        canvas: canvas,
+        text: element.text
+      });
     }
+
   }
 
 }

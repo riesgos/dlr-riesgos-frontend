@@ -1,4 +1,7 @@
 import { ReturnStatement } from '@angular/compiler';
+import GeoJSON from 'ol/format/GeoJSON';
+import Feature from 'ol/Feature';
+
 
 export function deepValMap(obj: object, mapFn: (key: string, val: any) => any, callStacksize = 0): void {
     if (callStacksize > 10) {
@@ -94,4 +97,12 @@ export function download(data: any, fileName: string) {
 
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+}
+
+export function createOlFeature(geojson: object): Feature[] {
+    const geoJsonReader = new GeoJSON({
+        defaultDataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:4326'
+      });
+      return geoJsonReader.readFeature(geojson);
 }

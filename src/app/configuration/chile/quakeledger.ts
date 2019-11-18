@@ -222,11 +222,18 @@ export const selectedEqs: VectorLayerData & WpsData = {
                 return text;
             },
             legendEntries: [{
-                feature: createOlFeature(
-                    feature({type: 'Polygon', coordinates: []},
-                    {'magnitude.mag.value': 8.0, 'origin.depth.value': 40})
-                ),
-                text: 'earthquake'
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 8.0,
+                        'origin.depth.value': 40.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'earthquake<br/>size: magnitude<br/>color: depth'
             }]
         }
     },

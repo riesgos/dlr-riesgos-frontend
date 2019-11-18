@@ -152,7 +152,7 @@ export class LayerMarshaller  {
                 layer.productId = product.uid;
 
                 if (product.description.vectorLayerAttributes.legendEntries) {
-                    layer.lengendEntries = product.description.vectorLayerAttributes.legendEntries;
+                    layer.legendEntries = product.description.vectorLayerAttributes.legendEntries;
                 }
 
                 return layer;

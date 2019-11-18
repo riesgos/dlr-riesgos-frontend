@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import Legend from 'ol-ext/control/Legend';
-import Feature from 'ol/Feature';
+import olFeature from 'ol/Feature';
+import { Feature } from '@turf/helpers';
 import Style from 'ol/style/Style';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
@@ -38,7 +39,7 @@ export class VectorLegendComponent implements OnInit {
 
     const legend = new Legend({
       title: this.legendTitle,
-      style: (feature: Feature) => this.styleFunction(feature, this.resolution),
+      style: (feature: olFeature) => this.styleFunction(feature, this.resolution),
       collapsible: false,
       margin: 0,
       size: [20, 20],
@@ -46,8 +47,8 @@ export class VectorLegendComponent implements OnInit {
 
     for (const element of this.elementList) {
       const canvas = legend.getStyleImage({
-        properties: element.feature.getProperties(),
-        typeGeom: 'Polygon'
+        properties: element.feature.properties,
+        typeGeom: element.feature.geometry.type
       }, null, null);
 
       this.entries.push({

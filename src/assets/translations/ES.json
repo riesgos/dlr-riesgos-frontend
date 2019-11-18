@@ -104,10 +104,6 @@
     "lahar-transitions": "Transiciones de daño por lahar",
     "lahar-damage": "Perdida por lahar",
 
-    "arrivalTimes": "Tiempos de llegada",
-    "epiCenter": "Epicentro",
-    "mwh": "Altura máxima de ola en mar",
-    "mwhLand": "Altura máxima de ola en tierra",
     "primary tif": "Shakemap",
 
     "Simulates a tsunami based on the earlier selected earthquake-parameters.": "Simula un tsunami basado en los parámetros de terremoto seleccionados anteriormente.",
@@ -150,14 +146,20 @@
     "This is a demonstrator!": "Este es un prototipo. La información presentada en ningún caso es apto para la planificación u otras aplicaciones prácticas.",
 
     "The lahar service returns the area inundated by lahars of the Cotopaxi volcano, and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion, and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.": "El servicio lahar anticipa el área inundada por lahares del volcán Cotopaxi y se basa en resultados de simulación calculados previamente para la altura del flujo, la velocidad del flujo, la presión del flujo, la erosión y la deposición. El software de simulación utilizado para el modelado de lahar es el modelo numérico basado físicamente RAMMS :: DEBRIS FLOW.",
-    "mwhLand global": "Altura máxima de ola en tierra - valor global",
-    "mwhLand local": "Altura máxima de ola en tierra - valor local",
+    "epiCenter": "Epicentro",
+    "arrivalTimes": "Tiempos de llegada",
+    "mwhLand_global": "Altura máxima de ola en tierra - valor global",
+    "mwhLand_local": "Altura máxima de ola en tierra - valor local",
+    "mwh": "Altura máxima de ola en mar",
+    "mwhLand": "Altura máxima de ola en tierra",
 
     "You can also select a boundingbox by clicking and dragging on the map.": "También puede seleccionar un cuadro delimitador haciendo clic y arrastrando en el mapa.",
 
     "Transition": "Transición",
     "Quickstart": "Inicio rápido",
 
+    "Infrastructure layer": "Infraestructura electrica",
+    "Administrative layers": "Unidades administrativas",
 
     "instructions bbox": "Ahora puede arrastrar un cuadro en el mapa.",
     "instructions featureselection": "Ahora puede seleccionar un elemento en el mapa.",
@@ -174,7 +176,7 @@
     "eq-selection: boundingbox": "Cuadro delimitador",
     "selected earthquake": "Terremoto elegido",
     "available earthquakes": "Terremotos disponibles",
-    "ESRI Imagery": "imágenes ESRI",
+    "ESRI Imagery": "imágenes satelitales",
     "The Volcanic Explosivity Index (VEI) is a relative measure of the explosiveness of volcanic eruptions. Volume of products, eruption cloud height, and qualitative observations are used to determine the explosivity value.": "El índice de explosividad volcánica (VEI) es una medida relativa de la explosividad de las erupciones volcánicas. El volumen de productos, la altura de la nube de erupción y las observaciones cualitativas se utilizan para determinar el valor de la explosividad.",
 
     "Don't show this again": "No muestres esto otra vez"

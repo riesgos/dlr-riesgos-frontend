@@ -72,15 +72,22 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
                 const props = feature.getProperties();
 
                 const counts = Array(7).fill(0);
+                let total = 0;
                 const nrBuildings = props['transitions']['n_buildings'];
                 const states = props['transitions']['to_damage_state'];
                 for (let i = 0; i < states.length; i++) {
                     const nr = nrBuildings[i];
                     const state = states[i];
                     counts[state] += nr;
+                    total += nr;
                 }
 
-                const [r, g, b] = greenRedRange(0, 7, ninetyPercentLowerThan(Object.values(counts)));
+                let r; let g; let b;
+                if (total > 0) {
+                    [r, g, b] = greenRedRange(0, 7, ninetyPercentLowerThan(Object.values(counts)));
+                } else {
+                    r = g = b = 0;
+                }
 
                 return new olStyle({
                   fill: new olFill({
@@ -109,7 +116,7 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from/to</b>';
+                            labeledMatrix[r][c] = '<b>from\\to</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -140,13 +147,13 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from/to</b>';
+                            labeledMatrix[r][c] = '<b>from\\to</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 2);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 0);
                         }
                     }
                 }
@@ -231,7 +238,7 @@ export const tsUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 500, 500, 'estado de daño', '# edificios');
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '# edificios');
                 return `<h4>Exposición actualizada ${props['name']}</h4>${anchor.innerHTML}`;
             },
             summary: (value: [FeatureCollection]) => {
@@ -251,7 +258,7 @@ export const tsUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                         counts[damageClass] += nrBuildings;
                     }
                 }
-                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 2))]);
+                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'

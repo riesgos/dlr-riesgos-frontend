@@ -11,22 +11,45 @@ export class ReadMoreComponent implements OnInit {
   @Input() text: string;
   @Input() threshold: number;
   shortText: string;
+  fullText: string;
   isExpanded = false;
-  isExpandable = false;
+  exceedsThreshold = false;
 
-  constructor() { }
+  constructor(
+    private translator: TranslateService
+  ) { }
 
   ngOnInit() {
     if (!this.text) {
       this.text = '';
     }
-    const words = this.text.split(' ');
-    this.isExpandable = (words.length > this.threshold);
-    if (!this.isExpandable) {
+
+    this.setText(this.text);
+
+    this.translator.onLangChange.subscribe(() => {
+      this.setText(this.text);
+    });
+  }
+
+  private setText(text: string): void {
+    if (text) {
+      const translatedText = this.translator.instant(text);
+
+      this.fullText = translatedText;
+
+      const words = translatedText.split(' ');
+      this.exceedsThreshold = (words.length > this.threshold);
+      if (!this.exceedsThreshold) {
+        this.isExpanded = true;
+      }
+      const wordsShort = words.slice(0, Math.min(this.threshold, words.length));
+      this.shortText = wordsShort.join(' ');
+    } else {
+      this.fullText = '';
+      this.shortText = '';
+      this.exceedsThreshold = false;
       this.isExpanded = true;
     }
-    const wordsShort = words.slice(0, Math.min(this.threshold, words.length));
-    this.shortText = wordsShort.join(' ');
   }
 
 }

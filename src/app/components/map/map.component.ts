@@ -221,10 +221,17 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
         // listening for change in scenario - afterViewInit
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
-            this.mapSvc.setZoom(8);
             this.mapSvc.setProjection(getProjection(mapProjection));
             const center = this.getCenter(scenario);
+            this.mapSvc.setZoom(8);
             this.mapSvc.setCenter(center, true);
+            // this.mapStateSvc.setMapState({
+            //     center: {
+            //         lat: center[0],
+            //         lon: center[1]
+            //     },
+            //     zoom: 8
+            // });
         });
         this.subs.push(sub6);
     }
@@ -374,10 +381,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 tileSize: [tileWidth, tileHeight]
             });
 
-            const idepLayers = new LayerGroup({
+            const administrativeLayers = new LayerGroup({
                 filtertype: 'Layers',
-                id: 'idepLayers',
-                name: 'Infraestructura de datos geoespeciales fundamentales',
+                id: 'administrativeLayers',
+                name: 'Administrative layers',
                 layers: [
                     new CustomLayer({
                         custom_layer: new TileLayer({
@@ -404,7 +411,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new TileWMS({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: '0',
+                                    layers: '1',
                                     tiled: true
                                 },
                                 tileGrid: idepTileGrid,
@@ -424,7 +431,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new TileWMS({
                                 url: 'http://mapas.geoidep.gob.pe/geoidep/services/Demarcacion_Territorial/MapServer/WMSServer?',
                                 params: {
-                                    layers: '1',
+                                    layers: '0',
                                     tiled: true
                                 },
                                 tileGrid: idepTileGrid,
@@ -438,7 +445,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         opacity: 0.6,
                         attribution: '&copy, <a href="http://mapas.geoidep.gob.pe/">Instituto Geográfico Nacional</a>',
                         popup: true
-                    }),
+                    })
+                ]
+            });
+            layers.push(administrativeLayers);
+
+            const infrastructureLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'infrastructureLayers',
+                name: 'Infrastructure layer',
+                layers: [
                     new ProductRasterLayer({
                         id: 'distribPeru',
                         name: 'distribución',
@@ -489,7 +505,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     }),
                 ]
             });
-            layers.push(idepLayers);
+            layers.push(infrastructureLayers);
 
         }
 

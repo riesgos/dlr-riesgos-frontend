@@ -30,7 +30,7 @@ export class RegexTranslatePipe implements PipeTransform {
       return 'shakemap';
     }
   }, {
-    regex: /^[\d_]*_(arrivalTimes|epiCenter|mwh|mwhLand_gobal|mwhLand_local)/,
+    regex: /^[\d_]*_(arrivalTimes|epiCenter|mwhLand_global|mwhLand_local|mwh)$/,
     transform: (matches: RegExpMatchArray) => {
       return matches[1];
     }

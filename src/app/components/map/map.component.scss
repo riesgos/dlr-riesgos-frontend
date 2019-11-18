@@ -7,6 +7,11 @@
 
 .ol-popup {
     z-index: 1000 !important;
+    max-width: 30vw;
+}
+
+.ol-popup-content {
+    width: 100%;
 }
 
 .modal-content-wrapper {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getCurrentScenarioWpsState } from 'src/app/wps/wps.selectors';
@@ -18,7 +18,8 @@ const yellow = '"#ffffcc"';
 @Component({
   selector: 'app-showgraph',
   templateUrl: './showgraph.component.html',
-  styleUrls: ['./showgraph.component.scss']
+  styleUrls: ['./showgraph.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ShowgraphComponent implements OnInit {
 

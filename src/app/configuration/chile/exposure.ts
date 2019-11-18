@@ -10,7 +10,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { Bardata, createBarchart, createBigBarchart } from 'src/app/helpers/d3charts';
-import { damageRage, redGreenRange } from 'src/app/helpers/colorhelpers';
+import { weightedDamage, redGreenRange, greenRedRange } from 'src/app/helpers/colorhelpers';
 
 
 export const lonmin: Product & WpsData = {
@@ -128,7 +128,7 @@ export const initialExposure: VectorLayerData & WpsData & Product = {
             total += nrBuildings;
         }
 
-        const dr = damageRage(Object.values(counts));
+        const dr = weightedDamage(Object.values(counts));
 
         let r: number;
         let g: number;
@@ -136,7 +136,7 @@ export const initialExposure: VectorLayerData & WpsData & Product = {
         if (total === 0) {
             r = b = g = 0;
         } else {
-            [r, g, b] = redGreenRange(0, 1, dr);
+            [r, g, b] = greenRedRange(0, 1, dr);
         }
 
         return new olStyle({

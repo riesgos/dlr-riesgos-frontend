@@ -85,7 +85,7 @@ export const querymodeEcuador: Product & WpsData = {
 };
 
 
-export class LaharExposureModel extends WpsProcess implements WizardableProcess {
+export class ExposureModelEcuador extends WpsProcess implements WizardableProcess {
 
   wizardProperties: WizardProperties;
 

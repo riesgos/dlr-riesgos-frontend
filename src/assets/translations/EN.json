@@ -43,6 +43,8 @@
     "epiCenter": "Epicenter",
     "mwh": "Maximum wave-height",
     "mwhLand": "Maximum wave-height land",
+    "mwhLand_global": "Maximum wave-height land / global",
+    "mwhLand_local": "Maximum wave-height land / local",
     "primary tif": "Shakemap",
 
     "mhwLand global": "Maximum wave height on land / global",
@@ -77,6 +79,10 @@
     "lahar-exposure": "Exposure and damage / lahar",
     "lahar-transitions": "Damage transitions / lahar",
     "lahar-damage": "Loss / lahar",
+
+    "Infrastructure layer": "Electric infrastructure",
+    "Administrative layers": "Administrative units",
+    "ESRI Imagery": "Satellite images",
 
     "Unavailable": "Downstream",
     "Available": "Ready",

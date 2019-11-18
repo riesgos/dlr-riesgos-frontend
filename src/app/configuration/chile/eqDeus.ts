@@ -6,7 +6,7 @@ import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata, createConfusionMatrix } from 'src/app/helpers/d3charts';
-import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, damageRage, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
@@ -82,15 +82,22 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                 const props = feature.getProperties();
 
                 const counts = Array(5).fill(0);
+                let total = 0;
                 const nrBuildings = props['transitions']['n_buildings'];
                 const states = props['transitions']['to_damage_state'];
                 for (let i = 0; i < states.length; i++) {
                     const nr = nrBuildings[i];
                     const state = states[i];
                     counts[state] += nr;
+                    total += nr;
                 }
 
-                const [r, g, b] = greenRedRange(0, 5, ninetyPercentLowerThan(Object.values(counts)));
+                let r; let g; let b;
+                if (total > 0) {
+                    [r, g, b] = greenRedRange(0, 5, ninetyPercentLowerThan(Object.values(counts)));
+                } else {
+                    r = g = b = 0;
+                }
 
                 return new olStyle({
                   fill: new olFill({
@@ -119,7 +126,7 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from/to</b>';
+                            labeledMatrix[r][c] = '<b>from\\to</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -145,18 +152,18 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
                         matrix[r][c] += nr;
                     }
                 }
-                
+
                 const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from/to</b>';
+                            labeledMatrix[r][c] = '<b>from\\to</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 2);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 0);
                         }
                     }
                 }
@@ -198,7 +205,7 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
                     total += nrBuildings;
                 }
 
-                const dr = damageRage(Object.values(counts));
+                const dr = weightedDamage(Object.values(counts));
 
                 let r: number;
                 let g: number;
@@ -206,7 +213,7 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
                 if (total === 0) {
                     r = b = g = 0;
                 } else {
-                    [r, g, b] = redGreenRange(0, 1, dr);
+                    [r, g, b] = greenRedRange(0, 1, dr);
                 }
 
                 return new olStyle({
@@ -239,7 +246,7 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 500, 500, 'estado de daño', '# edificios');
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '# edificios');
                 return `<h4>Exposición actualizada ${props['name']}</h4>${anchor.innerHTML}`;
             },
             summary: (value: [FeatureCollection]) => {
@@ -257,7 +264,7 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
                         counts[damageClass] += nrBuildings;
                     }
                 }
-                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 2))]);
+                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'

@@ -96,6 +96,13 @@ export class MapOlService {
       layers: []
     });
 
+    // import { createXYZ } from 'ol/tilegrid'
+    // const projection = getProjection(this.EPSG);
+    // const tileGrid = createXYZ({
+    //     extent: projection.getExtent(),
+    //     tileSize: 512
+    // });
+
     const _view = new olView({
       center: transform([center.lon, center.lat], 'EPSG:4326', this.EPSG),
       zoom: zoom,

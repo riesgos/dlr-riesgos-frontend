@@ -93,12 +93,7 @@ export class LayerMarshaller  {
             filtertype: 'Overlays',
             data: featureCollection([bboxPolygon(bboxArray)]),
             options: { style: undefined },
-            popup: {
-                asyncPupup: (obj, callback) => {
-                    const html = JSON.stringify(bboxArray);
-                    callback(html);
-                }
-            },
+            popup: null,
             icon: product.description.icon,
             hasFocus: false
         });
@@ -348,8 +343,8 @@ export class LayerMarshaller  {
         const source = obj.source;
         const evt = obj.evt;
         const viewResolution = this.mapSvc.map.getView().getResolution() ||
-            // throws exception: mapSvc.map.getView().getResolutionForExtent(this.mapSvc.getCurrentExtent()) ||
-            this.mapSvc.map.getView().getResolutionForZoom(this.mapStateSvc.getMapState().value.zoom);
+            this.mapSvc.map.getView().getResolutionForZoom(this.mapStateSvc.getMapState().value.zoom + 1);
+        console.log(`zoom: ${this.mapStateSvc.getMapState().value.zoom} resolution: ${viewResolution}`)
         const properties: any = {};
         const url = source.getGetFeatureInfoUrl(
             evt.coordinate, viewResolution, this.mapSvc.EPSG,
@@ -371,7 +366,7 @@ export class LayerMarshaller  {
         let html = '';
 
         if(collection.id) html += `<h3>${collection.id}</h3>`;
-        
+
         if(collection['features'].length > 0) {
             html += '<table>';
             html += '<tr>';
@@ -387,7 +382,7 @@ export class LayerMarshaller  {
                 }
                 html += '</tr>';
             }
-            html += '</table>'
+            html += '</table>';
         }
 
         const otherKeys = Object.keys(collection).filter(key => !['type', 'totalFeatures', 'features', 'crs'].includes(key));

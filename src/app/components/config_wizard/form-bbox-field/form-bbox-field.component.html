@@ -16,14 +16,14 @@
 
   <ng-container *ngIf="(bboxSelectionOngoing$ | async) as ongoing; else activateButton">
     <div class="two">
-      <clr-icon shape="cursor-hand-grab" [title]="'select on map' | translate"
-        (click)="activateBboxselectInteraction(false)" [style.color]="'#004c8a'"></clr-icon>
+      <clr-icon [attr.shape]="'bbox-select'" [title]="'select on map' | translate"
+        (click)="activateBboxselectInteraction(false)" [style.color]="'#004c8a'"  size='30'></clr-icon>
     </div>
   </ng-container>
   <ng-template #activateButton>
     <div class="two">
-      <clr-icon shape="cursor-hand-grab" [title]="'select on map' | translate"
-        (click)="activateBboxselectInteraction(true)" [style.color]="'#575757'"></clr-icon>
+      <clr-icon [attr.shape]="'bbox-select'" [title]="'select on map' | translate"
+        (click)="activateBboxselectInteraction(true)" [style.color]="'#575757'" size='26'></clr-icon>
     </div>
   </ng-template>
 

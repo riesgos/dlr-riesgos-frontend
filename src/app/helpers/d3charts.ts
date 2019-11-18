@@ -28,8 +28,14 @@ export function createBarchart(
             },
             width: width,
             height: height,
+            margin: {
+                l: 50,
+                r: 30,
+                b: 50,
+                t: 15,
+                pad: 5
+            },
         };
-
 
         Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }
@@ -65,7 +71,6 @@ export function createBigBarchart(
                 pad: 5
             },
         };
-
 
         Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }

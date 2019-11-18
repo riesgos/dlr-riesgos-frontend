@@ -1,24 +1,24 @@
 import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
-import { Volcanus } from './volcanus';
-import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
-import { switchMap } from 'rxjs/operators';
-import { laharVelocityShakemapRef } from './laharWrapper';
 import { HttpClient } from '@angular/common/http';
-import { ashfallUpdatedExposureRef } from './ashfallDamage';
+import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
+import { Volcanus } from './volcanus';
+import { switchMap } from 'rxjs/operators';
+import { initialExposure } from '../chile/exposure';
+import { ashfall } from './ashfall';
+import { WpsData, WpsDataDescription } from '@ukis/services-wps/src/public-api';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { WpsData } from '@ukis/services-wps/src/public-api';
-import { FeatureCollection } from '@turf/helpers';
 import { schemaEcuador } from './exposure';
 import { fragilityRef } from '../chile/modelProp';
+import { FeatureCollection } from '@turf/helpers';
 
 
-export const laharDamage: WpsData & VectorLayerData = {
-    uid: 'laharDamage',
+export const ashfallDamage: WpsData & VectorLayerData = {
+    uid: 'ashfallDamage',
     description: {
         id: 'damage',
-        name: 'laharDamage',
+        name: 'ashfallDamage',
         format: 'application/json',
         reference: false,
         type: 'complex',
@@ -31,11 +31,11 @@ export const laharDamage: WpsData & VectorLayerData = {
     value: null
 };
 
-export const laharTransition: WpsData & VectorLayerData = {
-    uid: 'laharTransition',
+export const ashfallTransition: WpsData & VectorLayerData = {
+    uid: 'ashfallTransition',
     description: {
         id: 'transition',
-        name: 'laharTransition',
+        name: 'ashfallTransition',
         format: 'application/json',
         reference: false,
         type: 'complex',
@@ -48,11 +48,11 @@ export const laharTransition: WpsData & VectorLayerData = {
     value: null
 };
 
-export const laharUpdatedExposure: WpsData & VectorLayerData = {
-    uid: 'laharExposure',
+export const ashfallUpdatedExposure: WpsData & VectorLayerData = {
+    uid: 'ashfallExposure',
     description: {
         id: 'updated_exposure',
-        name: 'laharExposure',
+        name: 'ashfallExposure',
         format: 'application/json',
         reference: false,
         type: 'complex',
@@ -65,16 +65,29 @@ export const laharUpdatedExposure: WpsData & VectorLayerData = {
     value: null
 };
 
+export const ashfallUpdatedExposureRef: WpsData & Product = {
+    uid: 'ashfallExposureRef',
+    description: {
+        id: 'updated_exposure',
+        reference: true,
+        type: 'complex',
+        format: 'application/json'
+    },
+    value: null
+};
 
 
-export class DeusLahar implements ExecutableProcess, WizardableProcess {
 
-    readonly uid: string = 'DeusLahar';
-    readonly name: string = 'Lahar Damage';
+export class DeusAshfall implements ExecutableProcess, WizardableProcess {
+
+    readonly uid: string = 'DeusAshfall';
+    readonly name: string = 'Ashfall Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
-    readonly requiredProducts: string[] = [ashfallUpdatedExposureRef, laharVelocityShakemapRef].map(p => p.uid);
-    readonly providedProducts: string[] = [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid);
-    readonly description?: string = 'Deus Lahar description';
+    readonly requiredProducts: string[] =
+        [initialExposure, ashfall].map(p => p.uid);
+    readonly providedProducts: string[] =
+        [ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef].map(p => p.uid);
+    readonly description?: string = 'Deus Ashfall description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
         providerName: 'Helmholtz Centre Potsdam',
@@ -96,20 +109,20 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
 
         const vulnInputs = [{
             ... schemaEcuador,
-            value: 'Mavrouli_et_al_2014'
+            value: 'Torres_Corredor_et_al_2017'
         }, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador];
         const vulnOutputs = [fragilityRef];
 
         return this.vulnerability.execute(vulnInputs, vulnOutputs, doWhileExecuting).pipe(
             switchMap((results: Product[]) => {
                 const fragility = results.find(prd => prd.uid === fragilityRef.uid);
-                const shakemap = inputs.find(prd => prd.uid === laharVelocityShakemapRef.uid);
-                const exposure = inputs.find(prd => prd.uid === ashfallUpdatedExposureRef.uid);
+                const shakemap = inputs.find(prd => prd.uid === ashfall.uid);
+                const exposure = inputs.find(prd => prd.uid === initialExposure.uid);
 
                 const vulcInputs: Product[] = [{
                     ... shakemap,
                     description: {
-                        ... shakemap.description,
+                        ... shakemap.description as WpsDataDescription,
                         id: 'intensity'
                     }
                 }, {
@@ -119,7 +132,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
                         type: 'literal',
                         reference: false
                     },
-                    value: 'velocity'
+                    value: 'thickness'
                 }, {
                     ... exposure,
                     description: {
@@ -139,7 +152,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
                 }
                 ];
 
-                const vulcOutputs = [laharDamage, laharTransition, laharUpdatedExposure];
+                const vulcOutputs = [ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef];
 
                 return this.volcanus.execute(vulcInputs, vulcOutputs, doWhileExecuting);
             })

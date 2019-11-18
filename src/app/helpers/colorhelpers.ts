@@ -1,6 +1,6 @@
 
 
-export function damageRage(damageStates: number[]) {
+export function weightedDamage(damageStates: number[]) {
     const maxDamage = damageStates.length;
     const nrBuildingsTotal = damageStates.reduce((carry, current) => carry + current, 0);
     let weightedSum = 0;
@@ -11,7 +11,7 @@ export function damageRage(damageStates: number[]) {
 }
 
 
-export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
+export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
     const degree = (currentVal - startVal) / (endVal - startVal);
     const degreeTop = Math.max(Math.min(degree, 1), 0);
     const r = degreeTop * 255;
@@ -20,7 +20,7 @@ export function redGreenRange(startVal: number, endVal: number, currentVal: numb
     return [r, g, b];
 }
 
-export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
+export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
     const degree = (currentVal - startVal) / (endVal - startVal);
     const degreeTop = Math.max(Math.min(degree, 1), 0);
     const r = (1 - degreeTop) * 255;

@@ -25,16 +25,16 @@ import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExpos
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from '../configuration/chile/reliability';
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator,
     damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
-import { laharTransition, LaharDeus, laharDamage,
-    laharUpdatedExposure  } from '../configuration/ecuador/laharDamage';
+import { laharTransition, laharDamage,
+    laharUpdatedExposure, DeusLahar} from '../configuration/ecuador/laharDamage';
 import { getScenarioWpsState } from './wps.selectors';
 import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
 import { VeiProvider, selectableVei } from '../configuration/ecuador/vei';
 import { AshfallService, ashfall, probability } from '../configuration/ecuador/ashfall';
-import { LaharExposureModel, schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador,
+import { ExposureModelEcuador, schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador,
     latmaxEcuador, querymodeEcuador, assettypeEcuador } from '../configuration/ecuador/exposure';
-import { LaharVulnerabilityModel, assetcategoryEcuador, losscategoryEcuador,
+import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador,
     taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
 import { LaharReliability, hazardLahar, countryEcuador, damageConsumerAreasEcuador } from '../configuration/ecuador/reliability';
 import { lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru,
@@ -52,6 +52,9 @@ import { ErrorParserService } from '../error-parser.service';
 import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from '../configuration/chile/tsDeus';
 import { TsDeusPeru, tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru } from '../configuration/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from '../configuration/peru/reliability';
+import { DeusAshfall, ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef } from '../configuration/ecuador/ashfallDamage';
+import { NewProcessClicked } from '../focus/focus.actions';
+import { FakeEqReliabilityPeru } from '../configuration/peru/fakeReliability';
 
 
 
@@ -71,7 +74,10 @@ export class WpsEffects {
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
 
-            const actions: Action[] = [new WpsDataUpdate({processes, products, graph})];
+            const actions: Action[] = [
+                new WpsDataUpdate({processes, products, graph}),
+                new NewProcessClicked({processId: null})
+            ];
             return actions;
         })
     );
@@ -250,7 +256,7 @@ export class WpsEffects {
                     new EqDeusPeru(this.httpClient),
                     new TsServicePeru(this.httpClient),
                     new TsDeusPeru(this.httpClient),
-                    new EqReliabilityPeru(this.httpClient)
+                    new FakeEqReliabilityPeru(this.httpClient)
                 ];
                 products = [
                     lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
@@ -268,12 +274,12 @@ export class WpsEffects {
                 break;
             case 'e1':
                 processes = [
+                    new ExposureModelEcuador(this.httpClient),
                     VeiProvider,
-                    new LaharWrapper(this.httpClient),
                     new AshfallService(this.httpClient),
-                    new LaharVulnerabilityModel(this.httpClient),
-                    new LaharExposureModel(this.httpClient),
-                    new LaharDeus(this.httpClient),
+                    new DeusAshfall(this.httpClient),
+                    new LaharWrapper(this.httpClient),
+                    new DeusLahar(this.httpClient),
                     new LaharReliability(this.httpClient),
                     geomerFlood,
                     geomerFloodWcsProvider,
@@ -281,12 +287,12 @@ export class WpsEffects {
                     FlooddamageTranslator
                 ];
                 products = [
-                    selectableVei, vei, probability,
-                    ashfall,
-                    direction,
-                    laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
-                    laharPressureWms, laharErosionWms, laharDepositionWms,
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
+                    selectableVei, vei,
+                    probability, ashfall,
+                    ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef,
+                    direction, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
+                    laharPressureWms, laharErosionWms, laharDepositionWms,
                     assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
                     fragilityRef, initialExposure,
                     laharDamage, laharTransition, laharUpdatedExposure,

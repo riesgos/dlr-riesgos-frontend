@@ -225,7 +225,7 @@ export const selectedEqs: VectorLayerData & WpsData = {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 8.0,
+                        'magnitude.mag.value': 6.0,
                         'origin.depth.value': 40.0
                     },
                     "geometry": {

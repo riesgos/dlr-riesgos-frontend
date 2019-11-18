@@ -137,7 +137,7 @@ export const initialExposurePeru: VectorLayerData & WpsData & Product = {
 
         return new olStyle({
           fill: new olFill({
-            color: [r, g, b, 0.3],
+            color: [r, g, b, 0.5],
 
           }),
           stroke: new olStroke({

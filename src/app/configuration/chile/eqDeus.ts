@@ -40,10 +40,10 @@ export const eqDamage: VectorLayerData & WpsData & Product = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = redGreenRange(0, 1, props.loss_value);
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value);
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.3],
+                    color: [r, g, b, 0.5],
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
@@ -58,7 +58,7 @@ export const eqDamage: VectorLayerData & WpsData & Product = {
                 const features = value[0].features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
-                const totalDamageFormatted = toDecimalPlaces(totalDamage/1000000, 2) + ' MUSD';
+                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
                 return createKeyValueTableHtml('', {'daño total': totalDamageFormatted});
             }
         },
@@ -101,7 +101,7 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.3],
+                    color: [r, g, b, 0.5],
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
@@ -213,12 +213,12 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
                 if (total === 0) {
                     r = b = g = 0;
                 } else {
-                    [r, g, b] = greenRedRange(0, 1, dr);
+                    [r, g, b] = greenRedRange(0, 0.6, dr);
                 }
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.3],
+                    color: [r, g, b, 0.5],
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],

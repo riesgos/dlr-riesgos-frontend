@@ -200,6 +200,20 @@ export const selectedEqsPeru: VectorLayerData & WpsData = {
                     })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 6.0,
+                        'origin.depth.value': 40.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'earthquake<br/>size: magnitude<br/>color: depth'
+            }],
             text: (properties) => {
                 let text = `<h3>Terremotos disponibles</h3>`;
                 const selectedProperties = {

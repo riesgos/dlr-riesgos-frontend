@@ -1,7 +1,7 @@
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WpsData } from '@ukis/services-wps/src/public-api';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
-import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, greenRedRange, weightedDamage } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart, createConfusionMatrix } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqUpdatedExposureRefPeru } from './eqDeus';
@@ -31,10 +31,10 @@ export const tsDamagePeru: VectorLayerData & WpsData & Product = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = redGreenRange(0, 1, props.loss_value);
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value);
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.3],
+                    color: [r, g, b, 0.5],
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
@@ -91,7 +91,7 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.3],
+                    color: [r, g, b, 0.5],
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
@@ -197,18 +197,20 @@ export const tsUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                     total += nrBuildings;
                 }
 
+                const dr = weightedDamage(Object.values(counts));
+
                 let r: number;
                 let g: number;
                 let b: number;
                 if (total === 0) {
                     r = b = g = 0;
                 } else {
-                    [r, g, b] = redGreenRange(6, 0, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = greenRedRange(0, 0.6, dr);
                 }
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.3],
+                    color: [r, g, b, 0.5],
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],

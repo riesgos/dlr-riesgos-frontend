@@ -49,7 +49,7 @@ export function createKeyValueTableHtml(header: string, data: object): string {
 
     return `
         ${headerFormatted}
-        <table class="table">
+        <table class="table table-small">
             <tbody>${htmlRows.join(' ')}</tbody>
         </table>
     `;
@@ -62,7 +62,7 @@ export function createHeaderTableHtml(headerRow: string[], rows: string[][]): st
         return `<tr>${colsFormatted.join('')}</tr>`;
     });
     return `
-        <table class='table'>
+        <table class='table table-small'>
             <tr>${headersFormatted.join('')}</tr>
             ${rowsFormatted.join('')}
         </table>
@@ -75,7 +75,7 @@ export function createTableHtml(rows: string[][]): string {
         return `<tr>${colsFormatted.join('')}</tr>`;
     });
     return `
-        <table class='table'>
+        <table class='table table-small'>
             ${rowsFormatted.join('')}
         </table>
     `;

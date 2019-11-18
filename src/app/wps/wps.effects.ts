@@ -299,7 +299,8 @@ export class WpsEffects {
                     countryEcuador, hazardLahar,
                     hydrologicalSimulation,
                     damageConsumerAreasEcuador,
-                    durationTiff, velocityTiff, depthTiff, damageManzanas, damageBuildings,
+                    durationTiff, velocityTiff, depthTiff,
+                    damageManzanas, damageBuildings,
                     damageManzanasGeojson
                 ];
                 break;

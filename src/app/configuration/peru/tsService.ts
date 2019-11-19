@@ -159,7 +159,7 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
         const proc1$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);
         const proc2$ = this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting);
 
-        return concat(proc1$, proc2$);
+        return concat(proc2$, proc1$);
 
         // return forkJoin(proc1$, proc2$).pipe(
         //     map((results: Product[][]) => {

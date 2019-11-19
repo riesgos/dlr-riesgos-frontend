@@ -33,15 +33,15 @@
     "EQ Exposure Model": "Modelo de exposición",
     "EQ Vulnerability Model": "Modelo de vulnerabilidad",
     "Catalogue of historical earthquakes.": "Catálogo de terremotos históricos.",
-    "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Catálogo de terremotos. Ingrese aquí los parámetros que determinan qué terremotos serían apropiados para su simulación.",
+    "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Catálogo de terremotos. Ingrese aquí los parámetros que determinan qué terremotos serían apropiados para su simulación. También puede seleccionar un área con posibles epicentros de terremotos trazando un recuadro en el mapa.",
     "Groundmotion Simulation": "Simulación de movimiento de tierra",
     "Simulates the ground motion caused by the selected earthquake": "Simula el movimiento del suelo causado por un terremoto dado",
     "Vulnerability after EQ": "Vulnerabilidad post-terremoto",
     "Damage after EQ": "Daño post-terremoto",
-    "This service returns damage caused by the selected earthquake.": "Este servicio genera daños causados por un terremoto dado.",
+    "This service returns damage caused by the selected earthquake.": "Este servicio genera información sobre los daños causados por un terremoto determinado.",
     "Earthquake/tsunami interaction": "Interacción terremoto / tsunami",
     "Relates a tsunami to the selected earthquake": "Relaciona un tsunami con un terremoto dado",
-
+    "This service returns damage caused by the selected tsunami.": "Este servicio genera información sobre los daños causados por un tsunami consecutivo.",
     "System reliability after EQ": "Infraestructura – red eléctrica",
     "Process for evaluating the reliability of infrastructure networks": "Proceso para evaluar la confiabilidad de las redes de infraestructura.",
 
@@ -152,6 +152,8 @@
     "mwhLand_local": "Profundidad máxima de inundación - 10m",
     "mwh": "Amplitud máxima del tsunami",
     "mwhLand": "Profundidad máxima de inundación",
+
+    "Amount of goods that are exposed to a hazard.": "Exposición",
 
     "You can also select a boundingbox by clicking and dragging on the map.": "También puede seleccionar un cuadro delimitador haciendo clic y arrastrando en el mapa.",
 

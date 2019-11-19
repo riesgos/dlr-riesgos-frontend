@@ -64,7 +64,9 @@
 
     "Process for evaluating the reliability of infrastructure networks": "This is a process for evaluating the reliability of infrastructure networks.",
     "Process to compute the damage of a flood in ecuador.": "This is a process to compute the damage of a flood in Ecuador.",
-    "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Enter here the parameters to narrow down your selection of earthquakes from the catalogue.",
+    "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Enter here the parameters to narrow down your selection of earthquakes from the catalogue. You may also select an area with possible earthquake-epicenters by drawing a box on the map.",
+
+    "This service returns damage caused by the selected tsunami.": "This service generates informations about the damage caused by a given tsunami.",
 
     "Exposure": "Initial exposure",
     "eq-exposure": "Exposure and damage / EQ",
@@ -76,6 +78,7 @@
     "lahar-exposure": "Exposure and damage / lahar",
     "lahar-transitions": "Damage transitions / lahar",
     "lahar-damage": "Loss / lahar",
+    "Amount of goods that are exposed to a hazard.": "Exposure",
 
     "Infrastructure layer": "Electric infrastructure",
     "Administrative layers": "Administrative units",

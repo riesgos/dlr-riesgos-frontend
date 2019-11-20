@@ -109,6 +109,11 @@
     "Simulates a tsunami based on the earlier selected earthquake-parameters.": "Simula un tsunami basado en los parámetros de terremoto seleccionados anteriormente.",
 
 
+    "Concrete damage in USD.": "Daño en USD.",
+    "Change from previous state to current one": "Transición del estado anterior al actual",
+    "Amount of goods that are exposed to a hazard.": "Cantidad de bienes en estado de daño",
+
+
     "Ashfall Service": "Ceniza",
     "Lahar vulnerability model": "Vulnerabilidad de Lahar",
     "Lahar exposure model": "Exposición de Lahar",

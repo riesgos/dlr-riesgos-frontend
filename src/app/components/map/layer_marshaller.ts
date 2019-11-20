@@ -18,6 +18,7 @@ import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
 import { ClrShapeDownload } from '@clr/icons/shapes/essential-shapes';
 import { download } from 'src/app/helpers/others';
+import { TranslateService } from '@ngx-translate/core';
 
 
 interface WmsParameters {
@@ -41,7 +42,8 @@ export class LayerMarshaller  {
         private mapSvc: MapOlService,
         public mapStateSvc: MapStateService,
         private sldParser: SldParserService,
-        private store: Store<State>
+        private store: Store<State>,
+        private translator: TranslateService
         ) { }
 
 
@@ -110,7 +112,7 @@ export class LayerMarshaller  {
 
                 let description = '';
                 if (product.description.description) {
-                    description = product.description.description;
+                    description = this.translator.instant(product.description.description);
                 }
                 if (product.description.vectorLayerAttributes.summary) {
                     description += '<br/>' + product.description.vectorLayerAttributes.summary(product.value);

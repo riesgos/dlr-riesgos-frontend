@@ -274,12 +274,12 @@ export class WpsEffects {
                 break;
             case 'e1':
                 processes = [
-                    new ExposureModelEcuador(this.httpClient),
+                    // new ExposureModelEcuador(this.httpClient),
                     VeiProvider,
                     new AshfallService(this.httpClient),
-                    new DeusAshfall(this.httpClient),
+                    // new DeusAshfall(this.httpClient),
                     new LaharWrapper(this.httpClient),
-                    new DeusLahar(this.httpClient),
+                    // new DeusLahar(this.httpClient),
                     new LaharReliability(this.httpClient),
                     geomerFlood,
                     geomerFloodWcsProvider,

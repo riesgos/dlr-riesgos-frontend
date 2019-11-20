@@ -212,7 +212,7 @@ export const selectedEqsPeru: VectorLayerData & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'earthquake<br/>size: magnitude<br/>color: depth'
+                text: 'terremoto<br/>radius: magnitud<br/>color: profundidad'
             }],
             text: (properties) => {
                 let text = `<h3>Terremotos disponibles</h3>`;
@@ -225,7 +225,7 @@ export const selectedEqsPeru: VectorLayerData & WpsData = {
                 };
                 if (properties['origin.time.value'] && etypePeru.value === 'observed') {
                     const date = new Date(Date.parse(properties['origin.time.value']));
-                    selectedProperties['Fecha'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear}`;
+                    selectedProperties['Fecha'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
                 }
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {

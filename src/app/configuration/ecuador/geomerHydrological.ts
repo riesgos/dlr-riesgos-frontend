@@ -1,10 +1,14 @@
 import { ExecutableProcess, ProcessStateUnavailable, Product, AutorunningProcess, ProcessStateAvailable } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Observable, of } from 'rxjs';
 import { WpsData } from 'projects/services-wps/src/public-api';
-import { laharWms, direction, vei } from './lahar';
-
+import { laharWms, direction, vei, laharShakemap } from './lahar';
+import { laharHeightWms } from './laharWrapper';
+import { FeatureSelectUconfProduct, StringUconfProduct, StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Feature as olFeature } from 'ol/Feature';
 
 
 export const hydrologicalSimulation: WmsLayerData & WpsData = {
@@ -18,52 +22,6 @@ export const hydrologicalSimulation: WmsLayerData & WpsData = {
         type: 'complex',
     },
     value: null
-};
-
-
-export const geomerFlood: WizardableProcess & ExecutableProcess = {
-    uid: 'geomerHydrological',
-    name: 'Flood',
-    requiredProducts: [direction, vei].map(p => p.uid),
-    providedProducts: [hydrologicalSimulation.uid],
-    state: new ProcessStateUnavailable(),
-    wizardProperties: {
-        providerName: 'geomer',
-        providerUrl: 'https://www.geomer.de/en/index.html',
-        shape: 'tsunami'
-    },
-    execute: (inputs: Product[]): Observable<Product[]> => {
-        const directionProduct = inputs.find(prd => prd.uid === direction.uid);
-        const veiVal = inputs.find(prd => prd.uid === vei.uid).value.toLowerCase();
-        if (veiVal === 'vei1') {
-            return of([]);
-        }
-        if (directionProduct.value === 'North') {
-            return of([{
-                ...hydrologicalSimulation,
-                value: [
-                        `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_${veiVal}_north&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
-                        `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_atwdmax_${veiVal}_north&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
-                        `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_${veiVal}_north&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
-                        `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_${veiVal}_south&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
-                        `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_atwdmax_${veiVal}_south&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
-                        `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_${veiVal}_south&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:432`
-                ]
-            }]);
-        } else {
-            return of([{
-                ...hydrologicalSimulation,
-                value: [
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_at_wdmax_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_latacunga_north&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_latacunga_city&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_at_wdmax_latacunga_city&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326',
-                    'https://www.sd-kama.de/geoserver/rain_cotopaxi/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_latacunga_city&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326'
-                ]
-            }]);
-        }
-    }
 };
 
 
@@ -106,28 +64,104 @@ export const depthTiff: WpsData & Product = {
 };
 
 
-export const geomerFloodWcsProvider: AutorunningProcess = {
-    uid: 'geomerFloodWcsProvider',
-    name: 'geomerFloodWcsProvider',
-    requiredProducts: [direction, hydrologicalSimulation].map(pr => pr.uid),
-    providedProducts: [durationTiff, velocityTiff, depthTiff].map(pr => pr.uid),
-    state: new ProcessStateAvailable(),
+
+
+export const userinputSelectedOutburst: StringSelectUconfProduct & WpsData = {
+    uid: 'outburstSite',
+    description: {
+        id: 'outburstSite',
+        type: 'literal',
+        reference: false,
+        options: ['Amaguanga', 'Rio Pita'],
+        defaultValue: 'Amaguanga',
+        wizardProperties: {
+            fieldtype: 'stringselect',
+            name: 'outburstSite',
+            description: 'outburstSite',
+            signpost: 'You can choose here from two lake locations. The process will create the flood scenario for the selected lake.'
+        }
+    },
+    value: null
+};
+
+
+export const FloodMayRun: Product = {
+    uid: 'floodMayRun',
+    description: {},
+    value: null
+};
+
+export const FloodMayRunProcess: AutorunningProcess = {
+    name: 'floodMayRunChecker',
+    requiredProducts: [],
+    providedProducts: [FloodMayRun.uid],
+    state: new ProcessStateUnavailable(),
+    uid: 'floodMayRunProcess',
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        switch (newProduct.uid) {
-            case hydrologicalSimulation.uid:
-                const directionProduct = allProducts.find(prd => prd.uid === direction.uid);
+        if (newProduct.uid === direction.uid) {
+            if (newProduct.value === 'North') {
                 return [{
-                    ... durationTiff,
-                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=rain_cotopaxi:duration_latacunga_city&format=image/geotiff'
-                }, {
-                    ... velocityTiff,
-                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=rain_cotopaxi:v_at_wdmax_latacunga_city&format=image/geotiff'
-                }, {
-                    ... depthTiff,
-                    value: 'http://www.sd-kama.de/geoserver/rain_cotopaxi/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=rain_cotopaxi:wd_max_latacunga_city&format=image/geotiff'
+                    ... FloodMayRun,
+                    value: true
                 }];
-            default:
-                return [];
+            } else {
+                return [{
+                    ... FloodMayRun,
+                    value: null
+                }];
+            }
+        } else {
+            return [];
         }
     }
-}
+};
+
+
+export const geomerFlood: WizardableProcess & ExecutableProcess = {
+    uid: 'geomerFlood',
+    name: 'Flood',
+    requiredProducts: [vei, laharHeightWms, userinputSelectedOutburst, FloodMayRun].map(p => p.uid),
+    providedProducts: [hydrologicalSimulation, durationTiff, velocityTiff, depthTiff].map(pr => pr.uid),
+    state: new ProcessStateUnavailable(),
+    wizardProperties: {
+        providerName: 'geomer',
+        providerUrl: 'https://www.geomer.de/en/index.html',
+        shape: 'tsunami',
+    },
+    description: 'This service provides the option to simulate a break of a lake created by a lahar.',
+    execute: (inputs: Product[]): Observable<Product[]> => {
+        const veiVal = inputs.find(prd => prd.uid === vei.uid).value.toLowerCase();
+        const outburstVal = inputs.find(prd => prd.uid === userinputSelectedOutburst.uid);
+        const position = outburstVal.value === 'Amaguanga' ? 'north' : 'south';
+
+        if (veiVal === 'vei1') {
+            return of([]);
+        }
+
+        const hydSimVal = {
+            ...hydrologicalSimulation,
+            value: [
+                    `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
+                    `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_atwdmax_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
+                    `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
+            ]
+        };
+
+        const durationTiffVal = {
+            ... durationTiff,
+            value: `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`
+        };
+
+        const velocityTiffVal = {
+            ... velocityTiff,
+            value: `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_atwdmax_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
+        };
+
+        const depthTiffVal = {
+            ... depthTiff,
+            value: `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
+        };
+
+        return of([hydSimVal, durationTiffVal, velocityTiffVal, depthTiffVal]);
+    }
+};

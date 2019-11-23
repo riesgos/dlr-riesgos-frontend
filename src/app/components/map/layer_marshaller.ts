@@ -244,7 +244,23 @@ export class LayerMarshaller  {
                             }
                         },
                         icon: description.icon,
-                        hasFocus: false
+                        hasFocus: false,
+                        actions: [{
+                            icon: 'download',
+                            title: 'download',
+                            action: (theLayer: any) => {
+                                const url = theLayer.url;
+                                const layers = theLayer.params.LAYERS;
+                                const size = this.mapSvc.map.getSize();
+                                const bbox = this.mapSvc.map.getView().calculateExtent(size);
+                                const width = 256;
+                                const height = 256;
+                                const requestUrl = `${url}?service=wms&version=1.1.1&request=GetMap&format=image/tiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=EPSG:4326&STYLES=`;
+                                this.httpClient.get(requestUrl, { responseType: 'blob' }).subscribe((data) => {
+                                    download(data, `data_${theLayer.name}.tiff`);
+                                });
+                            }
+                        }]
                     });
                     layer.productId = uid;
 

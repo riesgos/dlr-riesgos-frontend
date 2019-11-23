@@ -1,3 +1,7 @@
+import * as d3base from 'd3';
+import * as d3c from 'd3-color';
+const d3 = Object.assign(d3base, {d3c});
+
 
 
 export function weightedDamage(damageStates: number[]) {
@@ -14,18 +18,22 @@ export function weightedDamage(damageStates: number[]) {
 export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
     const degree = (currentVal - startVal) / (endVal - startVal);
     const degreeTop = Math.max(Math.min(degree, 1), 0);
-    const r = degreeTop * 255;
-    const g = (1 - degreeTop) * 255;
-    const b = 125;
+    const hue = 110 * degreeTop;
+    const color = d3.rgb(d3.hsl(hue, 100, 50));
+    const r = color.r;
+    const g = color.g;
+    const b = color.b;
     return [r, g, b];
 }
 
 export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
     const degree = (currentVal - startVal) / (endVal - startVal);
     const degreeTop = Math.max(Math.min(degree, 1), 0);
-    const r = (1 - degreeTop) * 255;
-    const g = degreeTop * 255;
-    const b = 125;
+    const hue = 110 * (1 - degreeTop);
+    const color = d3.rgb(d3.hsl(hue, 100, 50));
+    const r = color.r;
+    const g = color.g;
+    const b = color.b;
     return [r, g, b];
 }
 

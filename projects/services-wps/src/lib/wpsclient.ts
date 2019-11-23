@@ -13,6 +13,7 @@ import * as OWS_2_0_Factory from 'ogc-schemas/lib/OWS_2_0'; const OWS_2_0 = OWS_
 import * as WPS_1_0_0_Factory from 'ogc-schemas/lib/WPS_1_0_0'; const WPS_1_0_0 = WPS_1_0_0_Factory.WPS_1_0_0;
 import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; import { pollEveryUntil, delayedRetry } from './utils/polling';
 import { Injectable, Inject } from '@angular/core';
+import { environment } from 'src/environments/environment';
 const WPS_2_0 = WPS_2_0_Factory.WPS_2_0; // const WPS_2_0 = require('ogc-schemas/lib/WPS_2_0').WPS_2_0;
 
 
@@ -133,6 +134,10 @@ export class WpsClient {
         const executeUrl = this.wpsmarshaller.executeUrl(url, processId);
         const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescriptions, async);
         const xmlExecbody = this.xmlmarshaller.marshalString(execbody);
+        
+        if (!environment.production) {
+            console.log('executing wps: ', executeUrl, xmlExecbody);
+        }
 
         const headers = new HttpHeaders({
             'Content-Type': 'text/xml',

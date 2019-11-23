@@ -99,6 +99,17 @@ export const querymode: Product & WpsData = {
 };
 
 
+export const initialExposureRef: WpsData & Product = {
+  uid: 'initial_Exposure_Ref',
+  description: {
+    id: 'selectedRowsGeoJson',
+    type: 'complex',
+    reference: true,
+    format: 'application/json'
+  },
+  value: null
+};
+
 export const initialExposure: VectorLayerData & WpsData & Product = {
   uid: 'initial_Exposure',
   description: {

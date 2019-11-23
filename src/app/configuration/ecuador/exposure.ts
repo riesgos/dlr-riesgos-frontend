@@ -1,7 +1,7 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WpsData } from '@ukis/services-wps/src/public-api';
-import { initialExposure } from '../chile/exposure';
+import { initialExposure, initialExposureRef } from '../chile/exposure';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -58,7 +58,7 @@ export const schemaEcuador: Product & WpsData = {
     reference: false,
     type: 'literal'
   },
-  value: 'Torres_Corredor_et_al_2017'
+  value: 'Mavrouli_et_al_2014', // <- weil als erstes lahar damage. 'Torres_Corredor_et_al_2017' <- wenn als erstes ashfall damage.
 };
 
 export const assettypeEcuador: Product & WpsData = {
@@ -94,7 +94,7 @@ export class ExposureModelEcuador extends WpsProcess implements WizardableProces
       'LaharExposure',
       'Lahar exposure model',
       [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
-      [initialExposure.uid],
+      [initialExposure.uid, initialExposureRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       '',
       'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

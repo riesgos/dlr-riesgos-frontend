@@ -3,7 +3,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
 import { WpsData } from '@ukis/services-wps/src/public-api';
-import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
@@ -45,6 +45,17 @@ export const laharDepositionWms: WmsLayerData & Product = {
 };
 
 
+export const laharContoursWms: WmsLayerData & Product = {
+    description: {
+        id: 'LaharContourLines',
+        icon: 'avalance',
+        name: 'Lahar contour lines',
+        format: 'application/WMS',
+        type: 'complex',
+    },
+    value: null,
+    uid: 'LaharContourLines'
+};
 
 export class LaharWrapper implements ExecutableProcess, WizardableProcess {
 
@@ -53,7 +64,7 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
     name = 'LaharService';
     requiredProducts = [direction, vei].map(prd => prd.uid);
     providedProducts = [laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
-        laharPressureWms, laharErosionWms, laharDepositionWms].map(prd => prd.uid);
+        laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms].map(prd => prd.uid);
     description?: string;
     private laharWps: LaharWps;
 
@@ -90,6 +101,20 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
                     for (const data of result) {
                         flattened.push(data);
                     }
+                }
+                if (veiV.value === 'VEI3') {
+                    const dirLetter = directionV.value === 'South' ? 'S' : 'N';
+                    const vals = [
+                        `http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s1200&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s7200&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                    ];
+                    if (directionV.value === 'South') {
+                        vals.push(`http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s18000&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+                    }
+                    flattened.push({
+                        ... laharContoursWms,
+                        value: vals
+                    })
                 }
                 return flattened;
             })

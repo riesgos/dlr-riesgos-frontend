@@ -43,7 +43,7 @@ export const damageBuildings: WpsData & Product = {
 
 
 export class FlooddamageProcess extends WpsProcess implements WizardableProcess {
-    
+
     readonly wizardProperties: WizardProperties;
 
     constructor(http: HttpClient) {
@@ -52,7 +52,7 @@ export class FlooddamageProcess extends WpsProcess implements WizardableProcess 
             'Flood damage',
             [durationTiff, velocityTiff, depthTiff].map(p => p.uid),
             // [damageManzanas, damageBuildings].map(p => p.uid), // <-- damageBuildings is way too big to fit in browser memory!
-            [damageManzanas].map(p => p.uid),
+            [damageManzanas, damageBuildings].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess',
             'Process to compute the damage of a flood in ecuador.',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
@@ -64,10 +64,10 @@ export class FlooddamageProcess extends WpsProcess implements WizardableProcess 
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle'
-        }
+        };
     }
 
-};
+}
 
 export const damageManzanasGeojson: VectorLayerData & WpsData & Product = {
     uid: 'damageManzanasGeojson',

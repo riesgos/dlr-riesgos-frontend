@@ -34,6 +34,16 @@ export class RegexTranslatePipe implements PipeTransform {
     transform: (matches: RegExpMatchArray) => {
       return matches[1];
     }
+  }, {
+    regex: /^(wd_max|v_atwdmax|duration)_vei\d/,
+    transform: (matches: RegExpMatchArray) => {
+      return matches[1];
+    }
+  }, {
+    regex: /^Lahar_[NS]_VEI\d\dmio_(maxheight|deposition|maxerosion|maxpressure|maxvelocity)/,
+    transform: (matches: RegExpMatchArray) => {
+      return 'Lahar_' + matches[1];
+    }
   }];
 
   transform(value: string, ...args: any[]): string {

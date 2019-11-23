@@ -1,12 +1,13 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
-import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData } from 'projects/services-wps/src/public-api';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+
 
 
 export const direction: StringSelectUconfProduct & WpsData = {
@@ -73,7 +74,7 @@ export const laharWms: WmsLayerData & WpsData = {
         format: 'application/WMS',
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)});
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)});
             } else {
                 return '';
             }

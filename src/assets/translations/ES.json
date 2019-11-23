@@ -186,5 +186,27 @@
     "ESRI Imagery": "imágenes satelitales",
     "The Volcanic Explosivity Index (VEI) is a relative measure of the explosiveness of volcanic eruptions. Volume of products, eruption cloud height, and qualitative observations are used to determine the explosivity value.": "El índice de explosividad volcánica (VEI) es una medida relativa de la explosividad de las erupciones volcánicas. El volumen de productos, la altura de la nube de erupción y las observaciones cualitativas se utilizan para determinar el valor de la explosividad.",
 
+
+    "wd_max": "profundidad de inundación",
+    "v_atwdmax": "velocidad en sitio de máxima profundidad",
+    "duration": "duración",
+    "Lahar_maxheight": "profundidad máxima de lahar",
+    "Lahar_deposition": "deposición",
+    "Lahar_maxerosion": "erosión máxima",
+    "Lahar_maxpressure": "presión máxima",
+    "Lahar_maxvelocity": "velocidad máxima",
+    "ashfall-depth": "profundidad de ceniza",
+    "Damage to consumer areas": "Daño a zonas de consumo",
+    "outburstSite": "sitio de arrebato",
+    "This service provides the option to simulate a break of a lake created by a lahar.": "Este servicio ofrece la opción de simular una ruptura de un lago creado por un lahar.",
+    "You can choose here from two lake locations. The process will create the flood scenario for the selected lake.": "Puede elegir aquí entre dos ubicaciones del lago. El proceso creará el escenario de inundación para el lago seleccionado.",
+    "LaharArrival_S_VEI3_wgs_s1200": "Alcance 2 min",
+    "LaharArrival_S_VEI3_wgs_s7200": "Alcance 120 min",
+    "LaharArrival_S_VEI3_wgs_s18000": "Alcance 300 min",
+    "LaharArrival_N_VEI3_wgs_s1200": "Alcance 2 min",
+    "LaharArrival_N_VEI3_wgs_s7200": "Alcance 120 min",
+    "LaharArrival_N_VEI3_wgs_s18000": "Alcance 300 min",
+
+
     "Don't show this again": "No volver a mostrar"
 }

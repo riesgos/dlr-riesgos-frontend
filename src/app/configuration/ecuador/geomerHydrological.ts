@@ -149,17 +149,17 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
 
         const durationTiffVal = {
             ... durationTiff,
-            value: `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`
+            value: `http://www.sd-kama.de/geoserver/flood_vei/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=flood_vei:duration_${veiVal}_${position}&format=image/geotiff`
         };
 
         const velocityTiffVal = {
             ... velocityTiff,
-            value: `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_atwdmax_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
+            value: `http://www.sd-kama.de/geoserver/flood_vei/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=flood_vei:v_atwdmax_${veiVal}_${position}&format=image/geotiff`
         };
 
         const depthTiffVal = {
             ... depthTiff,
-            value: `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
+            value: `http://www.sd-kama.de/geoserver/flood_vei/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=flood_vei:wd_max_${veiVal}_${position}&format=image/geotiff`,
         };
 
         return of([hydSimVal, durationTiffVal, velocityTiffVal, depthTiffVal]);

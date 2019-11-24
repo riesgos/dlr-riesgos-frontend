@@ -206,7 +206,9 @@
     "LaharArrival_N_VEI3_wgs_s1200": "Alcance 2 min",
     "LaharArrival_N_VEI3_wgs_s7200": "Alcance 120 min",
     "LaharArrival_N_VEI3_wgs_s18000": "Alcance 300 min",
-
+    "laharDamage": "Perdida por lhar",
+    "laharTransition": "Transiciones de daño por lahar",
+    "laharExposure": "Exposición y daño por lahar",
 
     "Don't show this again": "No volver a mostrar"
 }

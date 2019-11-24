@@ -9,9 +9,8 @@ import { HttpClient } from '@angular/common/http';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WpsData } from '@ukis/services-wps/src/public-api';
 import { FeatureCollection } from '@turf/helpers';
-import { schemaEcuador } from './exposure';
+import { schemaEcuador } from './ashfallExposure';
 import { fragilityRef } from '../chile/modelProp';
-import { initialExposure, initialExposureRef } from '../chile/exposure';
 import { Deus } from '../chile/deus';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -19,6 +18,7 @@ import { greenRedRange, toDecimalPlaces, ninetyPercentLowerThan, weightedDamage 
 import { createKeyValueTableHtml, createTableHtml, createHeaderTableHtml } from 'src/app/helpers/others';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { direction } from './lahar';
+import { ashfallUpdatedExposureRef } from './ashfallDamage';
 
 
 export const laharDamage: WpsData & VectorLayerData = {
@@ -297,7 +297,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
     readonly uid: string = 'DeusLahar';
     readonly name: string = 'Lahar Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
-    readonly requiredProducts: string[] = [DamageMayRun, initialExposureRef, laharVelocityShakemapRef].map(p => p.uid);
+    readonly requiredProducts: string[] = [DamageMayRun, ashfallUpdatedExposureRef, laharVelocityShakemapRef].map(p => p.uid);
     readonly providedProducts: string[] = [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid);
     readonly description?: string = 'Deus Lahar description';
     readonly wizardProperties: WizardProperties = {
@@ -329,7 +329,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
             switchMap((results: Product[]) => {
                 const fragility = results.find(prd => prd.uid === fragilityRef.uid);
                 const shakemap = inputs.find(prd => prd.uid === laharVelocityShakemapRef.uid);
-                const exposure = inputs.find(prd => prd.uid === initialExposureRef.uid);
+                const exposure = inputs.find(prd => prd.uid === ashfallUpdatedExposureRef.uid);
 
                 const deusInputs: Product[] = [{
                     ... shakemap,
@@ -339,15 +339,6 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
                         id: 'intensity'
                     }
                 },
-                // {
-                //     uid: 'intensitycolumn',
-                //     description: {
-                //         id: 'intensitycolumn',
-                //         type: 'literal',
-                //         reference: false
-                //     },
-                //     value: 'maxvelocity'
-                // },
                 {
                     ... exposure,
                     description: {
@@ -357,7 +348,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
                     value: exposure.value
                 }, {
                     ... schemaEcuador,
-                    value: 'Mavrouli_et_al_2014',
+                    value: 'Torres_Corredor_et_al_2017',
                 }, {
                     ... fragility,
                     description: {

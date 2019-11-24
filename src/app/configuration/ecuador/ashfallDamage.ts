@@ -5,13 +5,13 @@ import { HttpClient } from '@angular/common/http';
 import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
 import { Volcanus } from './volcanus';
 import { switchMap } from 'rxjs/operators';
-import { ashfall } from './ashfall';
+import { ashfallPoint } from './ashfallService';
 import { WpsData, WpsDataDescription } from '@ukis/services-wps/src/public-api';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { schemaEcuador } from './exposure';
+import { schemaEcuador } from './ashfallExposure';
 import { fragilityRef } from '../chile/modelProp';
 import { FeatureCollection } from '@turf/helpers';
-import { laharUpdatedExposure } from './laharDamage';
+import { initialExposure, initialExposureRef } from '../chile/exposure';
 
 
 export const ashfallDamage: WpsData & VectorLayerData = {
@@ -84,7 +84,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     readonly name: string = 'Ashfall Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] =
-        [laharUpdatedExposure, ashfall].map(p => p.uid);
+        [initialExposure, ashfallPoint].map(p => p.uid);
     readonly providedProducts: string[] =
         [ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef].map(p => p.uid);
     readonly description?: string = 'Deus Ashfall description';
@@ -116,8 +116,8 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
         return this.vulnerability.execute(vulnInputs, vulnOutputs, doWhileExecuting).pipe(
             switchMap((results: Product[]) => {
                 const fragility = results.find(prd => prd.uid === fragilityRef.uid);
-                const shakemap = inputs.find(prd => prd.uid === ashfall.uid);
-                const exposure = inputs.find(prd => prd.uid === laharUpdatedExposure.uid);
+                const shakemap = inputs.find(prd => prd.uid === ashfallPoint.uid);
+                const exposure = inputs.find(prd => prd.uid === initialExposure.uid);
 
                 const vulcInputs: Product[] = [{
                     ... shakemap,
@@ -132,7 +132,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
                         type: 'literal',
                         reference: false
                     },
-                    value: 'magnitude'
+                    value: 'pressure'
                 }, {
                     ... exposure,
                     description: {
@@ -142,7 +142,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
                     value: exposure.value[0]
                 }, {
                     ... schemaEcuador,
-                    value: 'Mavrouli_et_al_2014',
+                    value: 'Torres_Corredor_et_al_2017',
                 }, {
                     ... fragility,
                     description: {

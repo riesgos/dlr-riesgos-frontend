@@ -6,6 +6,7 @@ import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { isWizardableProcess } from '../components/config_wizard/wizardable_processes';
 import { ErrorParserService } from '../error-parser.service';
+import { toGraphvizFull } from '../helpers/graphviz';
 
 
 export class WorkflowControl {
@@ -29,6 +30,7 @@ export class WorkflowControl {
         }
 
         if (!alg.isAcyclic(this.graph)) {
+            console.log(toGraphvizFull(processes, products, this.graph));
             console.log('Graph: ', Graph.json.write(this.graph));
             throw new Error('Process graphs with cycles are not supported');
         }

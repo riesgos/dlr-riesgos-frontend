@@ -10,6 +10,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 
@@ -39,24 +40,24 @@ export const ashfall: WpsData & Product & VectorLayerData = {
                 // https://stackoverflow.com/questions/38391780/multiple-text-labels-along-a-linestring-feature
 
                 return new olStyle({
-                  fill: new olFill({
-                    color: colorString,
-                  }),
-                  stroke: new olStroke({
-                    color: [0, 0, 0, 1],
-                    witdh: 2
-                  }),
-                  text: new olText({
-                    font: 'bold 14px Calibri,sans-serif',
-                    text: toDecimalPlaces(thickness as number, 1) + ' mm',
-                    fill: new olFill({color: [0, 0, 0, 1]}),
-                    stroke: new olStroke({color: colorString, width: 1}),
-                    placement: 'line',
-                    textAlign: 'left'
-                    // maxAngle: maxAngle,
-                    // overflow: true,
-                  }),
-                  zIndex: thickness * 100
+                    fill: new olFill({
+                        color: colorString,
+                    }),
+                    stroke: new olStroke({
+                        color: [0, 0, 0, 1],
+                        witdh: 2
+                    }),
+                    text: new olText({
+                        font: 'bold 14px Calibri,sans-serif',
+                        text: toDecimalPlaces(thickness as number, 1) + ' mm',
+                        fill: new olFill({ color: [0, 0, 0, 1] }),
+                        stroke: new olStroke({ color: colorString, width: 1 }),
+                        placement: 'line',
+                        textAlign: 'left'
+                        // maxAngle: maxAngle,
+                        // overflow: true,
+                    }),
+                    zIndex: thickness * 100
                 });
             },
             text: (properties) => {
@@ -83,6 +84,29 @@ export const ashfall: WpsData & Product & VectorLayerData = {
     },
     value: null
 };
+
+export const ashfallPoint: WpsData & Product = {
+    uid: 'ashfallPoint',
+    description: {
+        id: 'intensity',
+        reference: false,
+        type: 'complex'
+    },
+    value: [{
+        "type": "FeatureCollection",
+        "features": [{
+            "type": "Feature",
+            "properties": {
+                'pressure': 6.0,
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-78.4386, -0.6830]
+              }
+        }]
+    }]
+};
+
 
 export const probability: StringSelectUconfProduct & WpsData = {
     uid: 'ashfall_range_prob',
@@ -111,7 +135,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             'ashfall-service',
             'Ashfall Service',
             [vei.uid, probability.uid],
-            [ashfall.uid],
+            [ashfall.uid, ashfallPoint.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
             '',
             'http://riesgos.dlr.de/wps/WebProcessingService?',
@@ -132,7 +156,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             switch (prod.uid) {
                 case vei.uid:
                     return {
-                        ... prod,
+                        ...prod,
                         description: {
                             ...prod.description,
                             id: 'vei'
@@ -144,6 +168,13 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             }
         });
 
-        return super.execute(newInputProducts, outputProducts, doWhileExecuting);
+        const newOutputProducts = outputProducts.find(p => p.uid === ashfall.uid);
+
+        return super.execute(newInputProducts, [newOutputProducts], doWhileExecuting).pipe(
+            map((results: Product[]) => {
+              results.push(ashfallPoint);
+              return results;
+            })
+        );
     }
 }

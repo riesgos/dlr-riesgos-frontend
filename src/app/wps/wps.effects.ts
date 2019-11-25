@@ -57,6 +57,7 @@ import { DeusAshfall, ashfallDamage, ashfallTransition,
     ashfallUpdatedExposure, ashfallUpdatedExposureRef } from '../configuration/ecuador/ashfallDamage';
 import { NewProcessClicked } from '../focus/focus.actions';
 import { FakeEqReliabilityPeru } from '../configuration/peru/fakeReliability';
+import { FakeAshfallDamage, fakeAshfallDamage } from '../configuration/ecuador/fakeAshfallDamage';
 
 
 
@@ -265,7 +266,7 @@ export class WpsEffects {
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
                     initialExposurePeru,
                     new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
-                    lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
+                    lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, 
                     selectedEqsPeru, userinputSelectedEqPeru,
                     selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
                     tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,
@@ -277,12 +278,13 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     VeiProvider,
-                    new ExposureModelEcuador(this.httpClient),
+                    new AshfallService(this.httpClient),
+                    new FakeAshfallDamage(),
                     new LaharWrapper(this.httpClient),
+                    new ExposureModelEcuador(this.httpClient),
                     FloodMayRunProcess, DamageMayRunProcess,
                     new DeusLahar(this.httpClient),
                     new LaharReliability(this.httpClient),
-                    new AshfallService(this.httpClient),
                     // new DeusAshfall(this.httpClient),
                     geomerFlood,
                     new FlooddamageProcess(this.httpClient),
@@ -291,7 +293,7 @@ export class WpsEffects {
                 products = [
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
                     selectableVei, vei, FloodMayRun, DamageMayRun,
-                    probability, ashfall,
+                    probability, ashfall, fakeAshfallDamage, 
                     ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef,
                     direction, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
                     laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms,

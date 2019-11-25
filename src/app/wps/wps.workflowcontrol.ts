@@ -59,25 +59,32 @@ export class WorkflowControl {
             doWhileRequesting(null, 0);
         }
 
-        return process.execute(inputs, outputs, doWhileRequesting).pipe(
+        try {
+            return process.execute(inputs, outputs, doWhileRequesting).pipe(
+    
+                tap((outputs: Product[]) => {
+                    for (const product of outputs) {
+                        this.provideProduct(product.uid, product.value);
+                    }
+                    this.setProcessState(process.uid, new ProcessStateCompleted());
+                }),
+    
+                map((outputs: Product[]) => {
+                    return true;
+                }),
+    
+                catchError((error) => {
+                    const parsedErrormessage = this.errorParser.parse(error);
+                    this.setProcessState(process.uid, new ProcessStateError(parsedErrormessage));
+                    return of(false);
+                })
+            );
 
-            tap((outputs: Product[]) => {
-                for (const product of outputs) {
-                    this.provideProduct(product.uid, product.value);
-                }
-                this.setProcessState(process.uid, new ProcessStateCompleted());
-            }),
-
-            map((outputs: Product[]) => {
-                return true;
-            }),
-
-            catchError((error) => {
-                const parsedErrormessage = this.errorParser.parse(error);
-                this.setProcessState(process.uid, new ProcessStateError(parsedErrormessage));
-                return of(false);
-            })
-        );
+        } catch (error) {
+            const parsedErrormessage = this.errorParser.parse(error);
+            this.setProcessState(process.uid, new ProcessStateError(parsedErrormessage));
+            return of(false);
+        }
 
     }
 

@@ -5,7 +5,7 @@
   </label>
 
   <select class="clr-col-md-9" [formControl]="control" clrSelect>
-      <option *ngFor="let str of options" [value]="str">{{str}}</option>
+      <option *ngFor="let str of options" [value]="str">{{str | translate}}</option>
   </select>
 
   <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>

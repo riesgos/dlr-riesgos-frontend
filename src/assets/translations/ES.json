@@ -114,9 +114,11 @@
     "Amount of goods that are exposed to a hazard.": "Cantidad de bienes en estado de daño",
 
 
-    "Ashfall Service": "Ceniza",
+    "Ashfall Service": "Caída de ceniza",
+    "LaharService": "Simulación de lahar",
+    "Lahar Damage": "Daños por lahar",
     "Lahar vulnerability model": "Vulnerabilidad de Lahar",
-    "Lahar exposure model": "Exposición de Lahar",
+    "Lahar exposure model": "Exposición de lahar",
     "Multihazard damage estimation / Lahar": "Daños por lahar",
     "This service returns damage caused by the selected lahar.": "Este servicio genera daños causados por un lahar dado.",
 
@@ -200,15 +202,24 @@
     "outburstSite": "sitio de arrebato",
     "This service provides the option to simulate a break of a lake created by a lahar.": "Este servicio ofrece la opción de simular una ruptura de un lago creado por un lahar.",
     "You can choose here from two lake locations. The process will create the flood scenario for the selected lake.": "Puede elegir aquí entre dos ubicaciones del lago. El proceso creará el escenario de inundación para el lago seleccionado.",
-    "LaharArrival_S_VEI3_wgs_s1200": "Alcance 2 min",
+    "LaharArrival_S_VEI3_wgs_s1200": "Alcance 20 min",
     "LaharArrival_S_VEI3_wgs_s7200": "Alcance 120 min",
     "LaharArrival_S_VEI3_wgs_s18000": "Alcance 300 min",
-    "LaharArrival_N_VEI3_wgs_s1200": "Alcance 2 min",
+    "LaharArrival_N_VEI3_wgs_s1200": "Alcance 20 min",
     "LaharArrival_N_VEI3_wgs_s7200": "Alcance 120 min",
     "LaharArrival_N_VEI3_wgs_s18000": "Alcance 300 min",
     "laharDamage": "Perdida por lhar",
     "laharTransition": "Transiciones de daño por lahar",
     "laharExposure": "Exposición y daño por lahar",
+    "Ashfall Damage": "Daño por ceniza",
+
+    "intensity": "intensidad",
+    "probability": "probabilidad",
+    "direction": "dirección",
+    "VEI1": "VEI 1 - 2",
+    "VEI2": "VEI 2 - 3",
+    "VEI3": "VEI 3 - 4",
+    "VEI4": "VEI > 4",
 
     "Don't show this again": "No volver a mostrar"
 }

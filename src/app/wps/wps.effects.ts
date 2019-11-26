@@ -57,6 +57,7 @@ import { DeusAshfall, ashfallDamage, ashfallTransition,
     ashfallUpdatedExposure, ashfallUpdatedExposureRef } from '../configuration/ecuador/ashfallDamage';
 import { NewProcessClicked } from '../focus/focus.actions';
 import { FakeEqReliabilityPeru } from '../configuration/peru/fakeReliability';
+import { FakeAshfallDamage, fakeAshfallDamage } from '../configuration/ecuador/fakeAshfallDamage';
 
 
 
@@ -265,7 +266,7 @@ export class WpsEffects {
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
                     initialExposurePeru,
                     new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
-                    lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
+                    lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, 
                     selectedEqsPeru, userinputSelectedEqPeru,
                     selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
                     tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,

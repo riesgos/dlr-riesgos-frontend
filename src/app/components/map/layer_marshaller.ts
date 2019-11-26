@@ -108,7 +108,12 @@ export class LayerMarshaller  {
             map(styleFunction => {
 
                 const data = product.value[0];
-                const bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
+                let bx = null;
+                try {
+                    bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
+                } catch (error) {
+                    console.log('could not do buffer with ', data);
+                }
 
                 let description = '';
                 if (product.description.description) {

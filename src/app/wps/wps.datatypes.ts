@@ -113,7 +113,7 @@ export class WpsProcess implements ExecutableProcess {
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
         ) {
-        const caching = environment.production ? false : true;
+        const caching = false; // environment.production ? false : true;
         this.wpsClient = new WpsClient(this.wpsVersion, httpClient, caching);
     }
 

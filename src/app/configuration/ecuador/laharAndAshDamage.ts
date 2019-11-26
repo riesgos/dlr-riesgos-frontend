@@ -113,7 +113,7 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
                 }
                 ];
 
-                const deusOutputs = [laharDamage, laharTransition, laharUpdatedExposure];
+                const deusOutputs = [laharAshfallDamage, laharAshfallTransition, laharAshfallUpdatedExposure];
 
                 return this.deus.execute(deusInputs, deusOutputs, doWhileExecuting);
             })

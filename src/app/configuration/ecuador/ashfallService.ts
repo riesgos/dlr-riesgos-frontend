@@ -92,24 +92,7 @@ export const ashfallPoint: WpsData & Product = {
         format: 'application/vnd.geo+json',
         type: 'complex'
     },
-    value: [{
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "properties": {
-              "load": 15
-            },
-            "geometry": {
-              "type": "Point",
-              "coordinates": [
-                -78.4372329711914,
-                -0.6835393883028347
-              ]
-            }
-          }
-        ]
-      }]
+    value: null
 };
 
 

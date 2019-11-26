@@ -26,15 +26,15 @@ import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExpos
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from '../configuration/chile/reliability';
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator,
     damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
-import { laharTransition, laharDamage,
-    laharUpdatedExposure, DeusLahar, DamageMayRunProcess, DamageMayRun } from '../configuration/ecuador/laharDamage';
+import { DeusLaharAndAshfall, laharAshfallDamage, laharAshfallTransition,
+    laharAshfallUpdatedExposure } from '../configuration/ecuador/laharAndAshDamage';
 import { getScenarioWpsState } from './wps.selectors';
 import { WpsScenarioState } from './wps.state';
 import { Observable } from 'rxjs';
 import { VeiProvider, selectableVei } from '../configuration/ecuador/vei';
 import { AshfallService, ashfall, probability, ashfallPoint } from '../configuration/ecuador/ashfallService';
 import { schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador,
-    latmaxEcuador, querymodeEcuador, assettypeEcuador, AshfallExposureModel } from '../configuration/ecuador/ashfallExposure';
+    latmaxEcuador, querymodeEcuador, assettypeEcuador, AshfallExposureModel, LaharExposureModel, initialExposureLahar, initialExposureLaharRef, initialExposureAshfall, initialExposureAshfallRef } from '../configuration/ecuador/exposure';
 import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador,
     taxonomiesEcuador } from '../configuration/ecuador/vulnerability';
 import { LaharReliability, hazardLahar, countryEcuador, damageConsumerAreasEcuador } from '../configuration/ecuador/reliability';
@@ -57,6 +57,7 @@ import { DeusAshfall, ashfallDamage, ashfallTransition,
     ashfallUpdatedExposure, ashfallUpdatedExposureRef } from '../configuration/ecuador/ashfallDamage';
 import { NewProcessClicked } from '../focus/focus.actions';
 import { FakeEqReliabilityPeru } from '../configuration/peru/fakeReliability';
+import { DeusLahar, DamageMayRunProcess, DamageMayRun, laharDamage, laharTransition, laharUpdatedExposure, laharUpdatedExposureRef } from '../configuration/ecuador/laharDamage';
 
 
 
@@ -277,27 +278,35 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     VeiProvider,
+
                     new AshfallService(this.httpClient),
                     new AshfallExposureModel(this.httpClient),
                     new DeusAshfall(this.httpClient),
+
+                    new LaharExposureModel(this.httpClient),
                     new LaharWrapper(this.httpClient),
                     new DeusLahar(this.httpClient),
-                    FloodMayRunProcess, DamageMayRunProcess,
+
+
+                    new DeusLaharAndAshfall(this.httpClient),
                     new LaharReliability(this.httpClient),
+
+                    FloodMayRunProcess,
                     geomerFlood,
                     new FlooddamageProcess(this.httpClient),
                     FlooddamageTranslator
                 ];
                 products = [
                     schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
-                    selectableVei, vei, FloodMayRun, DamageMayRun,
+                    fragilityRef, initialExposureAshfall, initialExposureAshfallRef, initialExposureLahar, initialExposureLaharRef,
+                    selectableVei, vei, FloodMayRun,
                     probability, ashfall, ashfallPoint,
                     ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef,
                     direction, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
                     laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms,
                     assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
-                    fragilityRef, initialExposure, initialExposureRef,
-                    laharDamage, laharTransition, laharUpdatedExposure,
+                    laharDamage, laharTransition, laharUpdatedExposure, laharUpdatedExposureRef,
+                    laharAshfallDamage, laharAshfallTransition, laharAshfallUpdatedExposure,
                     countryEcuador, hazardLahar,
                     damageConsumerAreasEcuador,
                     userinputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,

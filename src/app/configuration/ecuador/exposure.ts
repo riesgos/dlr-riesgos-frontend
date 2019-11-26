@@ -89,7 +89,7 @@ export const querymodeEcuador: Product & WpsData = {
 };
 
 
-export const initialExposureRef: WpsData & Product = {
+export const initialExposureAshfallRef: WpsData & Product = {
   uid: 'initial_Exposure_Ref',
   description: {
     id: 'selectedRowsGeoJson',
@@ -100,7 +100,7 @@ export const initialExposureRef: WpsData & Product = {
   value: null
 };
 
-export const initialExposure: VectorLayerData & WpsData & Product = {
+export const initialExposureAshfall: VectorLayerData & WpsData & Product = {
   uid: 'initial_Exposure',
   description: {
     id: 'selectedRowsGeoJson',
@@ -108,7 +108,7 @@ export const initialExposure: VectorLayerData & WpsData & Product = {
     reference: false,
     icon: 'building',
     format: 'application/json',
-    name: 'Exposure',
+    name: 'Exposure Ashfall',
     vectorLayerAttributes: {
       style: (feature: olFeature, resolution: number) => {
         const props = feature.getProperties();
@@ -174,44 +174,19 @@ export const initialExposure: VectorLayerData & WpsData & Product = {
 };
 
 
+export const initialExposureLahar = {
+  ... initialExposureAshfall,
+  uid: 'initial_Exposure_Lahar',
+  description: {
+    ... initialExposureAshfall.description,
+    name: 'Exposure Lahar'
+  }
+};
 
-// export class LaharExposureModel extends WpsProcess implements WizardableProcess {
-
-//   wizardProperties: WizardProperties;
-
-//   constructor(http: HttpClient) {
-//     super(
-//       'LaharExposure',
-//       'Lahar exposure model',
-//       [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
-//       [initialExposure.uid, initialExposureRef.uid],
-//       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-//       '',
-//       'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-//       '1.0.0',
-//       http,
-//       new ProcessStateUnavailable()
-//     );
-//     this.wizardProperties = {
-//         shape: 'building',
-//         providerName: 'Helmholtz Centre Potsdam',
-//         providerUrl: 'https://www.gfz-potsdam.de/en/'
-//     };
-//   }
-
-//   execute(inputs: Product[], outputs: Product[], doWhile): Observable<Product[]> {
-//     const newInputs = inputs.map(i => {
-//       if (i.uid === schemaEcuador.uid) {
-//         return {
-//           ... i,
-//           value: 'Mavrouli_et_al_2014', // <- weil als erstes lahar damage. 'Torres_Corredor_et_al_2017' 
-//         };
-//       }
-//     });
-//     return super.execute(newInputs, outputs, doWhile);
-//   }
-
-// }
+export const initialExposureLaharRef = {
+  ... initialExposureAshfallRef,
+  uid: 'inital_exposure_lahar_ref'
+};
 
 
 export class AshfallExposureModel extends WpsProcess implements WizardableProcess {
@@ -223,7 +198,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       'AshfallExposure',
       'Ashfall exposure model',
       [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
-      [initialExposure.uid, initialExposureRef.uid],
+      [initialExposureAshfall.uid, initialExposureAshfallRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       '',
       'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
@@ -244,6 +219,47 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
         return {
           ... i,
           value: 'Torres_Corredor_et_al_2017',
+        };
+      } else {
+        return i;
+      }
+    });
+    return super.execute(newInputs, outputs, doWhile);
+  }
+
+}
+
+
+export class LaharExposureModel  extends WpsProcess implements WizardableProcess {
+
+  wizardProperties: WizardProperties;
+
+  constructor(http: HttpClient) {
+    super(
+      'LaharExposure',
+      'Lahar exposure model',
+      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
+      [initialExposureLahar.uid, initialExposureLaharRef.uid],
+      'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
+      '',
+      'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+      '1.0.0',
+      http,
+      new ProcessStateUnavailable()
+    );
+    this.wizardProperties = {
+        shape: 'building',
+        providerName: 'Helmholtz Centre Potsdam',
+        providerUrl: 'https://www.gfz-potsdam.de/en/'
+    };
+  }
+
+  execute(inputs: Product[], outputs: Product[], doWhile): Observable<Product[]> {
+    const newInputs = inputs.map(i => {
+      if (i.uid === schemaEcuador.uid) {
+        return {
+          ... i,
+          value: 'Mavrouli_et_al_2014',
         };
       } else {
         return i;

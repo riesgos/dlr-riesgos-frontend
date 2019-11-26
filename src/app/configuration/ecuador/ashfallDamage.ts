@@ -8,7 +8,7 @@ import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './ashfallService';
 import { WpsData, WpsDataDescription } from '@ukis/services-wps/src/public-api';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { schemaEcuador, initialExposureRef } from './ashfallExposure';
+import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
@@ -276,7 +276,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     readonly name: string = 'Ashfall Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] =
-        [initialExposureRef, ashfallPoint].map(p => p.uid);
+        [initialExposureAshfallRef, ashfallPoint].map(p => p.uid);
     readonly providedProducts: string[] =
         [ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef].map(p => p.uid);
     readonly description?: string = 'Deus Ashfall description';
@@ -309,7 +309,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
             switchMap((results: Product[]) => {
                 const fragility = results.find(prd => prd.uid === fragilityRef.uid);
                 const shakemap = inputs.find(prd => prd.uid === ashfallPoint.uid);
-                const exposure = inputs.find(prd => prd.uid === initialExposureRef.uid);
+                const exposure = inputs.find(prd => prd.uid === initialExposureAshfallRef.uid);
 
                 const vulcInputs: Product[] = [{
                     ... shakemap,

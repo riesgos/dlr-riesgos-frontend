@@ -1,24 +1,24 @@
-import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable, AutorunningProcess } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { Observable } from 'rxjs';
-import { Volcanus } from './volcanus';
-import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
-import { switchMap } from 'rxjs/operators';
+import { ashfallUpdatedExposureRef } from './ashfallDamage';
 import { laharVelocityShakemapRef } from './laharWrapper';
-import { HttpClient } from '@angular/common/http';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { WpsData } from '@ukis/services-wps/src/public-api';
-import { FeatureCollection } from '@turf/helpers';
-import { schemaEcuador } from './ashfallExposure';
-import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
+import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
+import { Observable } from 'rxjs';
+import { schemaEcuador, initialExposureLaharRef } from './exposure';
+import { fragilityRef } from '../chile/modelProp';
+import { switchMap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { WpsData } from '@ukis/services-wps/src/public-api';
+import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { greenRedRange, toDecimalPlaces, ninetyPercentLowerThan, weightedDamage } from 'src/app/helpers/colorhelpers';
+import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml, createTableHtml, createHeaderTableHtml } from 'src/app/helpers/others';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { direction } from './lahar';
-import { ashfallUpdatedExposureRef } from './ashfallDamage';
+
 
 
 export const laharDamage: WpsData & VectorLayerData = {
@@ -262,6 +262,17 @@ export const laharUpdatedExposure: WpsData & VectorLayerData = {
 };
 
 
+export const laharUpdatedExposureRef: WpsData & Product = {
+    uid: 'laharUpdatedExposureRef',
+    description: {
+        id: 'updated_exposure',
+        format: 'application/json',
+        reference: true,
+        type: 'complex'
+    },
+    value: null
+}
+
 
 export const DamageMayRun: Product = {
     uid: 'damageMayRun',
@@ -300,8 +311,8 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
     readonly uid: string = 'DeusLahar';
     readonly name: string = 'Lahar Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
-    readonly requiredProducts: string[] = [DamageMayRun, ashfallUpdatedExposureRef, laharVelocityShakemapRef].map(p => p.uid);
-    readonly providedProducts: string[] = [laharDamage, laharTransition, laharUpdatedExposure].map(p => p.uid);
+    readonly requiredProducts: string[] = [initialExposureLaharRef, laharVelocityShakemapRef].map(p => p.uid);
+    readonly providedProducts: string[] = [laharDamage, laharTransition, laharUpdatedExposure, laharUpdatedExposureRef].map(p => p.uid);
     readonly description?: string = 'Deus Lahar description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
@@ -332,7 +343,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
             switchMap((results: Product[]) => {
                 const fragility = results.find(prd => prd.uid === fragilityRef.uid);
                 const shakemap = inputs.find(prd => prd.uid === laharVelocityShakemapRef.uid);
-                const exposure = inputs.find(prd => prd.uid === ashfallUpdatedExposureRef.uid);
+                const exposure = inputs.find(prd => prd.uid === initialExposureLaharRef.uid);
 
                 const deusInputs: Product[] = [{
                     ... shakemap,
@@ -351,7 +362,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
                     value: exposure.value
                 }, {
                     ... schemaEcuador,
-                    value: 'Torres_Corredor_et_al_2017',
+                    value: 'Mavrouli_et_al_2014',
                 }, {
                     ... fragility,
                     description: {

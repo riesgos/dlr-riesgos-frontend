@@ -9,10 +9,9 @@ import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userc
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-
-
+import { Observable, forkJoin } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { FeatureCollection } from '@turf/helpers';
 
 
 
@@ -90,21 +89,27 @@ export const ashfallPoint: WpsData & Product = {
     description: {
         id: 'intensity',
         reference: false,
+        format: 'application/vnd.geo+json',
         type: 'complex'
     },
     value: [{
         "type": "FeatureCollection",
-        "features": [{
+        "features": [
+          {
             "type": "Feature",
             "properties": {
-                'pressure': 6.0,
+              "load": 15
             },
             "geometry": {
-                "type": "Point",
-                "coordinates": [-78.4386, -0.6830]
-              }
-        }]
-    }]
+              "type": "Point",
+              "coordinates": [
+                -78.4372329711914,
+                -0.6835393883028347
+              ]
+            }
+          }
+        ]
+      }]
 };
 
 
@@ -130,7 +135,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
 
     wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient) {
+    constructor(private http: HttpClient) {
         super(
             'ashfall-service',
             'Ashfall Service',
@@ -168,13 +173,36 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             }
         });
 
+        const veiV = newInputProducts.find(p => p.uid === vei.uid);
+        const probV = newInputProducts.find(p => p.uid === probability.uid);
+
         const newOutputProducts = outputProducts.find(p => p.uid === ashfall.uid);
 
-        return super.execute(newInputProducts, [newOutputProducts], doWhileExecuting).pipe(
-            map((results: Product[]) => {
-              results.push(ashfallPoint);
-              return results;
+        const obs1$ = super.execute(newInputProducts, [newOutputProducts], doWhileExecuting);
+        const obs2$ = this.loadAshfallPointFromFile(ashfallPoint, veiV.value, probV.value);
+        return forkJoin(obs1$, obs2$).pipe(
+            map((results: Product[][]) => {
+                const flattened: Product[] = [];
+                for (const result of results) {
+                    for (const data of result) {
+                        flattened.push(data);
+                    }
+                }
+                return flattened;
             })
         );
+    }
+
+    private loadAshfallPointFromFile(ashfallPoint: Product, vei: string, prob: string): Observable<Product[]> {
+        if (parseInt(prob) === 1) {
+            prob = '01';
+        }
+        const url = `assets/data/geojson/VEI_${vei}_${prob}percent.geojson`;
+        return this.http.get(url).pipe(map((val) => {
+            return [{
+                ... ashfallPoint,
+                value: [val]
+            }];
+        }));
     }
 }

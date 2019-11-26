@@ -1,10 +1,13 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { WpsData } from '@ukis/services-wps/src/public-api';
-import { initialExposure, initialExposureRef } from '../chile/exposure';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-
+import { createBigBarchart, Bardata } from 'src/app/helpers/d3charts';
+import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Feature as olFeature } from 'ol/Feature';
 
 
 export const lonminEcuador: Product & WpsData = {
@@ -86,6 +89,92 @@ export const querymodeEcuador: Product & WpsData = {
 };
 
 
+export const initialExposureRef: WpsData & Product = {
+  uid: 'initial_Exposure_Ref',
+  description: {
+    id: 'selectedRowsGeoJson',
+    type: 'complex',
+    reference: true,
+    format: 'application/json'
+  },
+  value: null
+};
+
+export const initialExposure: VectorLayerData & WpsData & Product = {
+  uid: 'initial_Exposure',
+  description: {
+    id: 'selectedRowsGeoJson',
+    type: 'complex',
+    reference: false,
+    icon: 'building',
+    format: 'application/json',
+    name: 'Exposure',
+    vectorLayerAttributes: {
+      style: (feature: olFeature, resolution: number) => {
+        const props = feature.getProperties();
+
+        const expo = props.expo;
+        const counts = {
+            'D0': 0,
+            'D1': 0,
+            'D2': 0,
+            'D3': 0,
+            'D4': 0
+        };
+        let total = 0;
+        for (let i = 0; i < expo.Damage.length; i++) {
+            const damageClass = expo.Damage[i];
+            const nrBuildings = expo.Buildings[i];
+            counts[damageClass] += nrBuildings;
+            total += nrBuildings;
+        }
+
+        const dr = weightedDamage(Object.values(counts));
+
+        let r: number;
+        let g: number;
+        let b: number;
+        if (total === 0) {
+            r = b = g = 0;
+        } else {
+            [r, g, b] = greenRedRange(0, 1, dr);
+        }
+
+        return new olStyle({
+          fill: new olFill({
+            color: [r, g, b, 0.5],
+
+          }),
+          stroke: new olStroke({
+            color: [r, g, b, 1],
+            witdh: 2
+          })
+        });
+      },
+      text: (props: object) => {
+
+        const taxonomies = props['expo']['Taxonomy'];
+        const buildings = props['expo']['Buildings'];
+        const keys = Object.keys(taxonomies);
+        const barchartData: Bardata[] = [];
+        for (const key of keys) {
+          barchartData.push({
+            label: taxonomies[key],
+            value: buildings[key]
+          });
+        }
+
+        const anchor = document.createElement('div');
+        const anchorUpdated = createBigBarchart(anchor, barchartData, 400, 300, 'taxonomia', 'edificios');
+        return `<h4>Exposición ${props['name']}</h4>${anchor.innerHTML}`;
+      }
+    }
+  },
+  value: null
+};
+
+
+
 // export class LaharExposureModel extends WpsProcess implements WizardableProcess {
 
 //   wizardProperties: WizardProperties;
@@ -134,7 +223,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       'AshfallExposure',
       'Ashfall exposure model',
       [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
-      [initialExposure.uid], // [initialExposure.uid, initialExposureRef.uid],
+      [initialExposure.uid, initialExposureRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       '',
       'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
@@ -161,36 +250,6 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       }
     });
     return super.execute(newInputs, outputs, doWhile);
-    const newOutputs = outputs.map(prd => {
-      if (prd.uid === initialExposure.uid) {
-        return {
-          ...prd,
-          value: [{
-            "type": "FeatureCollection",
-            "features": [{
-                  "type": "Feature",
-                  "properties": {
-                    expo: {
-                      Damage: ['D0', 'D1', 'D2', 'D3', 'D4'],
-                      Buildings: [10, 20, 30, 40, 50]
-                    }
-                  },
-                  "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [ [
-                        [ -78.27918243408203, -0.63075942052164 ],
-                        [ -78.27875328063965, -0.58886259879264 ],
-                        [ -78.35471343994141, -0.5634523633128 ],
-                        [ -78.27918243408203, -0.63075942052164 ] ] ]
-                  }
-              }]
-          }]
-        };
-      } else {
-        return prd;
-      }
-    });
-    return of(newOutputs);
   }
 
 }

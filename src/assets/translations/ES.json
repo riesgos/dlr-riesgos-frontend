@@ -208,7 +208,7 @@
     "LaharArrival_N_VEI3_wgs_s1200": "Alcance 20 min",
     "LaharArrival_N_VEI3_wgs_s7200": "Alcance 120 min",
     "LaharArrival_N_VEI3_wgs_s18000": "Alcance 300 min",
-    "laharDamage": "Perdida por lhar",
+    "laharDamage": "Perdida por lahar",
     "laharTransition": "Transiciones de daño por lahar",
     "laharExposure": "Exposición y daño por lahar",
     "Ashfall Damage": "Daño por ceniza",

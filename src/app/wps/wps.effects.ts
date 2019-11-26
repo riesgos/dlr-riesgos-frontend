@@ -57,7 +57,6 @@ import { DeusAshfall, ashfallDamage, ashfallTransition,
     ashfallUpdatedExposure, ashfallUpdatedExposureRef } from '../configuration/ecuador/ashfallDamage';
 import { NewProcessClicked } from '../focus/focus.actions';
 import { FakeEqReliabilityPeru } from '../configuration/peru/fakeReliability';
-import { FakeAshfallDamage, fakeAshfallDamage } from '../configuration/ecuador/fakeAshfallDamage';
 
 
 
@@ -278,12 +277,12 @@ export class WpsEffects {
             case 'e1':
                 processes = [
                     VeiProvider,
-                    new AshfallExposureModel(this.httpClient),
                     new AshfallService(this.httpClient),
+                    new AshfallExposureModel(this.httpClient),
                     new DeusAshfall(this.httpClient),
                     new LaharWrapper(this.httpClient),
-                    FloodMayRunProcess, DamageMayRunProcess,
                     new DeusLahar(this.httpClient),
+                    FloodMayRunProcess, DamageMayRunProcess,
                     new LaharReliability(this.httpClient),
                     geomerFlood,
                     new FlooddamageProcess(this.httpClient),

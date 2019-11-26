@@ -29,6 +29,7 @@ export const laharDamage: WpsData & VectorLayerData = {
         format: 'application/json',
         reference: false,
         type: 'complex',
+        icon: 'avalance',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -66,6 +67,7 @@ export const laharTransition: WpsData & VectorLayerData = {
         format: 'application/json',
         reference: false,
         type: 'complex',
+        icon: 'avalance',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
@@ -172,6 +174,7 @@ export const laharUpdatedExposure: WpsData & VectorLayerData = {
         format: 'application/json',
         reference: false,
         type: 'complex',
+        icon: 'avalance',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();

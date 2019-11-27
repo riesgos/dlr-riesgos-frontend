@@ -275,7 +275,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     readonly requiredProducts: string[] =
         [initialExposureAshfallRef, ashfallPoint].map(p => p.uid);
     readonly providedProducts: string[] =
-        [ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef].map(p => p.uid);
+        [ashfallDamage, ashfallUpdatedExposure, ashfallUpdatedExposureRef].map(p => p.uid);
     readonly description?: string = 'Deus Ashfall description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
@@ -341,7 +341,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
                 }
                 ];
 
-                const vulcOutputs = [ashfallDamage, ashfallTransition, ashfallUpdatedExposure, ashfallUpdatedExposureRef];
+                const vulcOutputs = [ashfallDamage, ashfallUpdatedExposure, ashfallUpdatedExposureRef];
 
                 return this.volcanus.execute(vulcInputs, vulcOutputs, doWhileExecuting);
             })

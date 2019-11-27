@@ -13,9 +13,7 @@ import { MapStateService } from '@ukis/services-map-state';
   templateUrl: './route-map.component.html',
   styleUrls: ['./route-map.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  // providers: [
-  //     MapOlService, LayersService, MapStateService
-  // ]
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RouteMapComponent implements OnInit {
   @HostBinding('class') class = 'content-container';

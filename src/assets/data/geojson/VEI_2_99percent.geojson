@@ -1,7 +1,5 @@
 {
-"type": "FeatureCollection",
-"name": "VEI_2_99%",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"type": "FeatureCollection", 
 "features": [
 { "type": "Feature", "properties": { "OBJECTID": 1, "Join_Count": 9, "TARGET_FID": 1, "CID": 0, "id": "all.58", "vei": 2, "prob": 99, "thickness": 2.2, "load": 2.75 }, "geometry": { "type": "Point", "coordinates": [ -78.450101215784116, -0.672530376833038 ] } },
 { "type": "Feature", "properties": { "OBJECTID": 2, "Join_Count": 9, "TARGET_FID": 2, "CID": 0, "id": "all.58", "vei": 2, "prob": 99, "thickness": 2.2, "load": 2.75 }, "geometry": { "type": "Point", "coordinates": [ -78.450182686583275, -0.670357457463524 ] } },

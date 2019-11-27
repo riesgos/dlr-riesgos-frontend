@@ -118,8 +118,7 @@ export const initialExposureAshfall: VectorLayerData & WpsData & Product = {
             'D0': 0,
             'D1': 0,
             'D2': 0,
-            'D3': 0,
-            'D4': 0
+            'D3': 0
         };
         let total = 0;
         for (let i = 0; i < expo.Damage.length; i++) {

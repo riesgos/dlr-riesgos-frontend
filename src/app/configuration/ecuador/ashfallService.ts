@@ -71,9 +71,12 @@ export const ashfall: WpsData & Product & VectorLayerData = {
                         thicknessText = `> ${toDecimalPlaces(thickness as number, 1)} mm`;
                     }
 
+                    const load = thickness * (1250 / 1250);
+
                     const selectedProperties = {
                         Profundidad: thicknessText,
                         VEI: toDecimalPlaces(properties['vei'] as number, 1),
+                        'Carga esperada': `${load} kPa`,
                         Probabilidad: properties['prob'] + ' %'
                     };
                     return createKeyValueTableHtml('Ceniza', selectedProperties);

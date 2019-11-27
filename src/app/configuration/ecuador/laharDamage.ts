@@ -312,7 +312,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
     readonly name: string = 'Lahar Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] = [initialExposureLaharRef, laharVelocityShakemapRef].map(p => p.uid);
-    readonly providedProducts: string[] = [laharDamage, laharTransition, laharUpdatedExposure, laharUpdatedExposureRef].map(p => p.uid);
+    readonly providedProducts: string[] = [laharDamage, laharUpdatedExposure, laharUpdatedExposureRef].map(p => p.uid);
     readonly description?: string = 'Deus Lahar description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
@@ -372,7 +372,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
                 }
                 ];
 
-                const deusOutputs = [laharDamage, laharTransition, laharUpdatedExposure, laharUpdatedExposureRef];
+                const deusOutputs = [laharDamage, laharUpdatedExposure, laharUpdatedExposureRef];
 
                 return this.deus.execute(deusInputs, deusOutputs, doWhileExecuting);
             })

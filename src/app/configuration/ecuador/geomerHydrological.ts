@@ -72,8 +72,8 @@ export const userinputSelectedOutburst: StringSelectUconfProduct & WpsData = {
         id: 'outburstSite',
         type: 'literal',
         reference: false,
-        options: ['Amaguanga', 'Rio Pita'],
-        defaultValue: 'Amaguanga',
+        options: ['Rio San Pedro', 'Rio Pita'],
+        defaultValue: 'Rio San Pedro',
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'outburstSite',
@@ -121,7 +121,7 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
     uid: 'geomerFlood',
     name: 'Flood',
     requiredProducts: [vei, laharHeightWms, userinputSelectedOutburst, FloodMayRun].map(p => p.uid),
-    providedProducts: [hydrologicalSimulation, durationTiff, velocityTiff, depthTiff].map(pr => pr.uid),
+    providedProducts: [hydrologicalSimulation, depthTiff].map(pr => pr.uid),  // durationTiff, velocityTiff, 
     state: new ProcessStateUnavailable(),
     wizardProperties: {
         providerName: 'geomer',
@@ -132,7 +132,7 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
     execute: (inputs: Product[]): Observable<Product[]> => {
         const veiVal = inputs.find(prd => prd.uid === vei.uid).value.toLowerCase();
         const outburstVal = inputs.find(prd => prd.uid === userinputSelectedOutburst.uid);
-        const position = outburstVal.value === 'Amaguanga' ? 'north' : 'south';
+        const position = outburstVal.value === 'Rio San Pedro' ? 'north' : 'south';
 
         if (veiVal === 'vei1') {
             return of([]);
@@ -141,20 +141,8 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
         const hydSimVal = {
             ...hydrologicalSimulation,
             value: [
-                    `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=duration_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=-2.8125,-80.15625,-1.40625,-78.75&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
-                    `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=v_atwdmax_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-81.5625,1.40625,-80.15625&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
                     `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
             ]
-        };
-
-        const durationTiffVal = {
-            ... durationTiff,
-            value: `http://www.sd-kama.de/geoserver/flood_vei/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=flood_vei:duration_${veiVal}_${position}&format=image/geotiff`
-        };
-
-        const velocityTiffVal = {
-            ... velocityTiff,
-            value: `http://www.sd-kama.de/geoserver/flood_vei/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=flood_vei:v_atwdmax_${veiVal}_${position}&format=image/geotiff`
         };
 
         const depthTiffVal = {
@@ -162,6 +150,6 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
             value: `http://www.sd-kama.de/geoserver/flood_vei/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=flood_vei:wd_max_${veiVal}_${position}&format=image/geotiff`,
         };
 
-        return of([hydSimVal, durationTiffVal, velocityTiffVal, depthTiffVal]);
+        return of([hydSimVal, depthTiffVal]);
     }
 };

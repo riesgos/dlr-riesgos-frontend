@@ -68,7 +68,7 @@ export const ashfallTransition: WpsData & VectorLayerData = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = Array(5).fill(0);
+                const counts = Array(4).fill(0);
                 let total = 0;
                 const nrBuildings = props['transitions']['n_buildings'];
                 const states = props['transitions']['to_damage_state'];
@@ -81,7 +81,7 @@ export const ashfallTransition: WpsData & VectorLayerData = {
 
                 let r; let g; let b;
                 if (total > 0) {
-                    [r, g, b] = greenRedRange(0, 5, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = greenRedRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
                 } else {
                     r = g = b = 0;
                 }
@@ -98,7 +98,7 @@ export const ashfallTransition: WpsData & VectorLayerData = {
             },
             text: (props: object) => {
 
-                const matrix = Array.from(Array(5), _ => Array(5).fill(0));
+                const matrix = Array.from(Array(4), _ => Array(4).fill(0));
                 const fromDamageState = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
                 const toDamageState = props['transitions']['to_damage_state'];
@@ -127,7 +127,7 @@ export const ashfallTransition: WpsData & VectorLayerData = {
                 return `<h4>Transiciónes ${props['name']}</h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
-                const matrix = Array.from(Array(5), _ => Array(5).fill(0));
+                const matrix = Array.from(Array(4), _ => Array(4).fill(0));
                 for (const feature of value[0].features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
                     const nrBuildings = feature.properties['transitions']['n_buildings'];
@@ -180,8 +180,7 @@ export const ashfallUpdatedExposure: WpsData & VectorLayerData = {
                     'D0': 0,
                     'D1': 0,
                     'D2': 0,
-                    'D3': 0,
-                    'D4': 0
+                    'D3': 0
                 };
                 let total = 0;
                 for (let i = 0; i < expo.Damage.length; i++) {
@@ -220,8 +219,7 @@ export const ashfallUpdatedExposure: WpsData & VectorLayerData = {
                     'D0': 0,
                     'D1': 0,
                     'D2': 0,
-                    'D3': 0,
-                    'D4': 0
+                    'D3': 0
                 };
                 for (let i = 0; i < expo.Damage.length; i++) {
                     const damageClass = expo.Damage[i];
@@ -240,8 +238,7 @@ export const ashfallUpdatedExposure: WpsData & VectorLayerData = {
                     'D0': 0,
                     'D1': 0,
                     'D2': 0,
-                    'D3': 0,
-                    'D4': 0
+                    'D3': 0
                 };
                 for (const feature of value[0].features) {
                     for (let i = 0; i < feature.properties.expo.Damage.length; i++) {

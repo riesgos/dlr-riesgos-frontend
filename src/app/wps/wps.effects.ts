@@ -283,8 +283,8 @@ export class WpsEffects {
                     new AshfallExposureModel(this.httpClient),
                     new DeusAshfall(this.httpClient),
 
-                    new LaharExposureModel(this.httpClient),
                     new LaharWrapper(this.httpClient),
+                    new LaharExposureModel(this.httpClient),
                     new DeusLahar(this.httpClient),
 
 

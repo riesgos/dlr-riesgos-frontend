@@ -6,11 +6,24 @@ import { WpsData } from '@ukis/services-wps/src/public-api';
 import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { FeatureCollection } from '@turf/helpers';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
 export const laharHeightWms: WmsLayerData & Product = {
     ... laharWms,
+    description: {
+        ... laharWms.description,
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+            } else {
+                return '';
+            }
+        }
+    },
     uid: 'LaharHeightWms'
 };
 
@@ -21,6 +34,16 @@ export const laharHeightShakemapRef: WpsData & Product = {
 
 export const laharVelocityWms: WmsLayerData & Product = {
     ... laharWms,
+    description: {
+        ... laharWms.description,
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s'});
+            } else {
+                return '';
+            }
+        }
+    },
     uid: 'LaharVelocityWms'
 };
 
@@ -31,16 +54,46 @@ export const laharVelocityShakemapRef: WpsData & Product = {
 
 export const laharPressureWms: WmsLayerData & Product = {
     ... laharWms,
+    description: {
+        ... laharWms.description,
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' kPa'});
+            } else {
+                return '';
+            }
+        }
+    },
     uid: 'LaharPressureWms'
 };
 
 export const laharErosionWms: WmsLayerData & Product = {
     ... laharWms,
+    description: {
+        ... laharWms.description,
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+            } else {
+                return '';
+            }
+        }
+    },
     uid: 'LaharErosionWms'
 };
 
 export const laharDepositionWms: WmsLayerData & Product = {
     ... laharWms,
+    description: {
+        ... laharWms.description,
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+            } else {
+                return '';
+            }
+        }
+    },
     uid: 'LaharDepositionWms'
 };
 
@@ -106,6 +159,7 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
                     const dirLetter = directionV.value === 'South' ? 'S' : 'N';
                     const vals = [
                         `http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s1200&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s3600&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
                         `http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s7200&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
                     ];
                     if (directionV.value === 'South') {

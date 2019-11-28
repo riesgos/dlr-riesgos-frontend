@@ -49,7 +49,6 @@ import { TextModalComponent } from './components/text-modal/text-modal.component
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
 import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
-import { CesiummapComponent } from './components/cesiummap/cesiummap.component';
 import { HelpersModule } from '@ukis/helpers/src/public-api';
 
 @NgModule({
@@ -83,7 +82,6 @@ import { HelpersModule } from '@ukis/helpers/src/public-api';
     DisclaimerComponent,
     DisclaimerpopupComponent,
     InteractionstatemonitorComponent,
-    CesiummapComponent,
   ],
   imports: [
     BrowserModule,

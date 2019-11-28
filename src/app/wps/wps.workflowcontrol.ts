@@ -324,7 +324,7 @@ export class WorkflowControl {
         // is any internal input missing? -> unavailable
         for (const prodId of internalUpstreamProducts) {
             const product = this.getProduct(prodId);
-            if (!product.value) {
+            if (product.value === null) {
                 return new ProcessStateUnavailable();
             }
         }

@@ -1,6 +1,6 @@
 import { FeatureCollection } from '@turf/helpers';
 import { Product, ProductDescription } from 'src/app/wps/wps.datatypes';
-import { WpsBboxData, WpsBboxValue } from 'projects/services-wps/src/public-api';
+import { WpsBboxData, WpsBboxValue } from '@ukis/services-ogc';
 
 
 

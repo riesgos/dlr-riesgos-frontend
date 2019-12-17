@@ -2,7 +2,7 @@ import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.data
 import { StringSelectUconfProduct, BboxUconfProduct, BboxUconfPD, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { BboxLayerData, BboxLayerDescription, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps/src/public-api';
+import { WpsData, WpsDataDescription, WpsBboxValue } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { toDecimalPlaces, linInterpolateHue, redGreenRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';

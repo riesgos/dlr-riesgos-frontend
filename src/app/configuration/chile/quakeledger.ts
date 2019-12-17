@@ -5,7 +5,7 @@ import {
 } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData, BboxLayerData, BboxLayerDescription } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, WpsDataDescription, WpsBboxValue } from 'projects/services-wps/src/public-api';
+import { WpsData, WpsDataDescription, WpsBboxValue } from '@ukis/services-ogc';
 import { toDecimalPlaces, redGreenRange, linInterpolate, linInterpolateHue } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';

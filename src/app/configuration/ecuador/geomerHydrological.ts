@@ -2,7 +2,7 @@ import { ExecutableProcess, ProcessStateUnavailable, Product, AutorunningProcess
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Observable, of } from 'rxjs';
-import { WpsData } from 'projects/services-wps/src/public-api';
+import { WpsData } from '@ukis/services-ogc';
 import { laharWms, direction, vei, laharShakemap } from './lahar';
 import { laharHeightWms } from './laharWrapper';
 import { FeatureSelectUconfProduct, StringUconfProduct, StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';

@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, AutorunningProcess, Product, ExecutableProcess, ProcessState } from '../../wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from 'projects/services-wps/src/public-api';
+import { WpsData } from '@ukis/services-ogc';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';

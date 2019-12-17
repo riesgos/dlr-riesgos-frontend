@@ -6,7 +6,7 @@ import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, t
 import { Volcanus } from './volcanus';
 import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './ashfallService';
-import { WpsData, WpsDataDescription } from '@ukis/services-wps/src/public-api';
+import { WpsData, WpsDataDescription } from '@ukis/services-ogc';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';

@@ -2,7 +2,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WpsData } from 'projects/services-wps/src/public-api';
+import { WpsData } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';

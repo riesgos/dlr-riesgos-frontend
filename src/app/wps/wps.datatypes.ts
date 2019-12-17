@@ -1,4 +1,4 @@
-import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient } from 'projects/services-wps/src/public-api';
+import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient } from '@ukis/services-ogc';
 import { UserconfigurableProductDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';

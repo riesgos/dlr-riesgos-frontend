@@ -1,5 +1,5 @@
 import { ProductDescription, Product } from 'src/app/wps/wps.datatypes';
-import { WpsBboxData, WpsBboxValue } from 'projects/services-wps/src/public-api';
+import { WpsBboxData, WpsBboxValue } from '@ukis/services-ogc';
 import { shape } from '../config_wizard/wizardable_processes';
 import { FeatureCollection } from '@turf/helpers';
 import { LegendElement } from '@ukis/layer-control/src/lib/vector-legend/vector-legend.component';

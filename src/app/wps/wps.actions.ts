@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Product, ImmutableProcess, ProcessId } from './wps.datatypes';
-import { ProductId } from 'projects/services-wps/src/public-api';
+import { ProductId } from '@ukis/services-ogc';
 import { Scenario } from './wps.state';
 import { Graph } from 'graphlib';
 

@@ -82,6 +82,49 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
                   })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": {'Prob_Disruption': 0.05},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Probabilidád de disrupción: 0.05'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'Prob_Disruption': 0.4},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Probabilidád de disrupción: 0.4'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'Prob_Disruption': 0.7},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Probabilidád de disrupción: 0.7'
+            }],
             text: (props: object) => {
                 const selectedProps = {
                     'Nombre': props['Name'],

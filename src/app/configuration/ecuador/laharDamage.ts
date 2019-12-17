@@ -44,6 +44,21 @@ export const laharDamage: WpsData & VectorLayerData = {
                   })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": {'loss_value': 500000},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Pérdida 500000 USD'
+            }],
             text: (props: object) => {
                 return `<h4>Pérdida ${props['name']}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
@@ -100,6 +115,21 @@ export const laharTransition: WpsData & VectorLayerData = {
                   })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": {'transitions': {'n_buildings': 100, 'to_damage_state': [10, 80, 10]}},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Transiciónes'
+            }],
             text: (props: object) => {
 
                 const matrix = Array.from(Array(5), _ => Array(5).fill(0));
@@ -216,6 +246,21 @@ export const laharUpdatedExposure: WpsData & VectorLayerData = {
                   })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 80, 80, 10]}},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Estados de daño'
+            }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
 

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { WpsData } from '@ukis/services-wps/src/public-api';
+import { WpsData } from '@ukis/services-ogc';
 import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';

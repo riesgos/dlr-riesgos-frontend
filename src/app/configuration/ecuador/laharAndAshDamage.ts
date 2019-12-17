@@ -7,7 +7,7 @@ import { switchMap } from 'rxjs/operators';
 import { laharVelocityShakemapRef } from './laharWrapper';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
-import { WpsData } from '@ukis/services-wps/src/public-api';
+import { WpsData } from '@ukis/services-ogc';
 import { FeatureCollection } from '@turf/helpers';
 import { schemaEcuador } from './exposure';
 import { fragilityRef } from '../chile/modelProp';

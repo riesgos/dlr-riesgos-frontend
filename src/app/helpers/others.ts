@@ -81,9 +81,15 @@ export function createTableHtml(rows: string[][]): string {
     `;
 }
 
-export function download(data: any, fileName: string) {
+
+
+export function downloadJson(data: object, fileName: string) {
     const jsonData = JSON.stringify(data);
     const blob = new Blob([jsonData], { type: 'text/json;charset=utf-8;' });
+    return downloadBlob(blob, fileName);
+}
+
+export function downloadBlob(blob: Blob, fileName: string) {
 
     //window.open(url) doesn't work here. Instead, we create a temporary link item and simulate a click on it. 
     const url = window.URL.createObjectURL(blob);

@@ -2,7 +2,7 @@ import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } fro
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
-import { WpsData } from '@ukis/services-wps/src/public-api';
+import { WpsData } from '@ukis/services-ogc';
 import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';

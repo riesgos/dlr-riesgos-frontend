@@ -27,7 +27,7 @@ import { ProductLayer, ProductRasterLayer } from './map.types';
 import { mergeMap, map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
-import { WpsBboxValue } from 'projects/services-wps/src/lib/wps_datatypes';
+import { WpsBboxValue } from '@ukis/services-ogc';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { FeatureCollection, featureCollection } from '@turf/helpers';

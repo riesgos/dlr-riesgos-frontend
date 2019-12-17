@@ -1,7 +1,7 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
 import { vei } from './lahar';
-import { WpsData } from '@ukis/services-wps/src/public-api';
+import { WpsData } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { toDecimalPlaces, linInterpolateHue } from 'src/app/helpers/colorhelpers';

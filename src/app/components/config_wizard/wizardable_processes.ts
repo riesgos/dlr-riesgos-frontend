@@ -1,5 +1,5 @@
 import { Process, WpsProcess, ProcessState } from 'src/app/wps/wps.datatypes';
-import { WpsVerion } from '@ukis/services-wps/src/public-api';
+import { WpsVerion } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 
 

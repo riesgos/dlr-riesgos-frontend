@@ -1,9 +1,9 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
-import { WpsData } from '@ukis/services-wps/src/public-api';
+import { WpsData } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { createBigBarchart, Bardata } from 'src/app/helpers/d3charts';
+import { createBigBarchart, Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -164,7 +164,7 @@ export const initialExposureAshfall: VectorLayerData & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBigBarchart(anchor, barchartData, 300, 200, 'taxonomia', 'edificios');
+        const anchorUpdated = createBarchart(anchor, barchartData, 300, 200, 'taxonomia', 'edificios');
         return `<h4>Exposición ${props['name']}</h4>${anchor.innerHTML}`;
       }
     }

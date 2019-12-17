@@ -226,13 +226,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const center = this.getCenter(scenario);
             this.mapSvc.setZoom(8);
             this.mapSvc.setCenter(center, true);
-            // this.mapStateSvc.setMapState({
-            //     center: {
-            //         lat: center[0],
-            //         lon: center[1]
-            //     },
-            //     zoom: 8
-            // });
         });
         this.subs.push(sub6);
     }

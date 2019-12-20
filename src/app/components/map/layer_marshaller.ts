@@ -139,9 +139,9 @@ export class LayerMarshaller  {
                         style: styleFunction
                     },
                     popup: {
-                        asyncPupup: (obj, callback) => {
+                        pupupFunktion: (obj) => {
                             const html = product.description.vectorLayerAttributes.text(obj);
-                            callback(html);
+                            return html;
                         }
                     },
                     icon: product.description.icon,
@@ -259,8 +259,8 @@ export class LayerMarshaller  {
                                 const layers = theLayer.params.LAYERS;
                                 const size = this.mapSvc.map.getSize();
                                 const bbox = this.mapSvc.map.getView().calculateExtent(size);
-                                const width = 256;
-                                const height = 256;
+                                const width = size[0];
+                                const height = size[1];
                                 const requestUrl = `${url}service=wms&version=1.1.1&request=GetMap&format=image/tiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=EPSG:4326`;
                                 this.httpClient.get(requestUrl, { responseType: 'blob' }).subscribe((data) => {
                                     downloadBlob(data, `data_${theLayer.name}.tiff`);
@@ -372,7 +372,7 @@ export class LayerMarshaller  {
         const viewResolution = this.mapSvc.map.getView().getResolution();
         console.log(`resolution: ${viewResolution}`)
         const properties: any = {};
-        const url = source.getGetFeatureInfoUrl(
+        const url = source.getFeatureInfoUrl(
             evt.coordinate, viewResolution, this.mapSvc.EPSG,
             { INFO_FORMAT: 'application/json' }
         );

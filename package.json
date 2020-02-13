@@ -37,6 +37,7 @@
     "@ukis/base-layers-raster": "6.2.0",
     "@ukis/map-ol": "6.2.0",
     "@ukis/services-ogc": "6.2.0",
+    "@ukis/services-layers": "6.2.0",
     "@ukis/services-util-store": "6.2.0",
     "@webcomponents/custom-elements": "^1.2.2",
     "d3": "^5.12.0",

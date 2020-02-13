@@ -14,24 +14,20 @@ import { MapStateService } from '@ukis/services-map-state';
 import { osm, esri_world_imagery } from '@ukis/base-layers-raster';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getMapableProducts, getScenario, getGraph, getProducts } from 'src/app/wps/wps.selectors';
+import { getMapableProducts, getScenario, getGraph } from 'src/app/wps/wps.selectors';
 import { Product } from 'src/app/wps/wps.datatypes';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './layer_marshaller';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@ukis/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
 import { ProductLayer, ProductRasterLayer } from './map.types';
-import { mergeMap, map, withLatestFrom, switchMap } from 'rxjs/operators';
+import { map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from '@ukis/services-ogc';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
-import { FeatureCollection, featureCollection } from '@turf/helpers';
-import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 const mapProjection = 'EPSG:4326';

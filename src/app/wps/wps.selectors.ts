@@ -1,7 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { WpsState, WpsScenarioState } from './wps.state';
-import { ProductId, WpsData } from '@ukis/services-ogc';
 import { Product, Process, ProcessId, ImmutableProcess } from './wps.datatypes';
 import { ProductsProvided } from './wps.actions';
 import { isVectorLayerData, isBboxLayerData, isWmsData } from '../components/map/mappable_wpsdata';
@@ -95,7 +94,7 @@ export const getProcessById = (id: ProcessId, processes: ImmutableProcess[]): Im
     return process;
 };
 
-export const getProductById = (id: ProductId, products: Product[]): Product => {
+export const getProductById = (id: string, products: Product[]): Product => {
     const product = products.find(p => p.uid === id);
     if (product === undefined) {
         throw new Error(`Could not find product ${id}`);

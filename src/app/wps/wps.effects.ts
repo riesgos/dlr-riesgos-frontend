@@ -58,6 +58,7 @@ import { DeusAshfall, ashfallDamage, ashfallTransition,
 import { NewProcessClicked } from '../focus/focus.actions';
 import { FakeEqReliabilityPeru } from '../configuration/peru/fakeReliability';
 import { DeusLahar, DamageMayRunProcess, DamageMayRun, laharDamage, laharTransition, laharUpdatedExposure, laharUpdatedExposureRef } from '../configuration/ecuador/laharDamage';
+import { ExposureSelection, modelChoice } from '../configuration/chile/exposureSelection';
 
 
 
@@ -225,7 +226,7 @@ export class WpsEffects {
         switch (scenario) {
             case 'c1':
                 processes = [
-                    new ExposureModel(this.httpClient),
+                    new ExposureSelection(this.httpClient),
                     new QuakeLedger(this.httpClient),
                     EqSelection,
                     new Shakyground(this.httpClient),
@@ -236,6 +237,7 @@ export class WpsEffects {
                     // PhysicalImpactAssessment
                 ];
                 products = [
+                    modelChoice,
                     lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
                     assetcategory, losscategory, taxonomies,
                     initialExposure,

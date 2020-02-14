@@ -104,6 +104,8 @@
     "lahar-transitions": "Transiciones de daño por lahar",
     "lahar-damage": "Pérdida por lahar",
     "Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Catálogo de terremotos. Ingrese aquí los parámetros que determinan qué terremotos serían apropiados para su simulación.",
+    "exposure_description": "La situación de las personas, la infraestructura, la vivienda, la capacidad de producción y otros activos humanos tangibles ubicados en áreas propensas a los peligros.",
+    "Please note that the model GFZ 2020 may not yet be fully integrated.": "Tenga en cuenta que es posible que el modelo GFZ 2020 aún no esté completamente integrado.",
 
     "primary tif": "Shakemap",
 

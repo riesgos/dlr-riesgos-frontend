@@ -184,9 +184,7 @@ export const initialExposure: VectorLayerData & WpsData & Product = {
 };
 
 
-export class ExposureModel extends WpsProcess implements WizardableProcess {
-
-  readonly wizardProperties: WizardProperties;
+export class ExposureModel extends WpsProcess {
 
   constructor(httpClient: HttpClient) {
     super(
@@ -194,18 +192,13 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       'EQ Exposure Model',
       [lonmin, lonmax, latmin, latmax, querymode, schema, assettype].map(p => p.uid),
       [initialExposure.uid],
-      'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
+      'org.n52.gfz.riesgos.algorithm.impl.OldAssetmasterProcess',
       '',
       'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable(),
     );
-    this.wizardProperties = {
-      shape: 'building',
-      providerName: 'Helmholtz Centre Potsdam',
-      providerUrl: 'https://www.gfz-potsdam.de/en/'
-    };
   }
 }
 

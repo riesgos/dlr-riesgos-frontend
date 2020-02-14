@@ -79,6 +79,7 @@
     "lahar-transitions": "Damage transitions / lahar",
     "lahar-damage": "Loss / lahar",
     "Amount of goods that are exposed to a hazard.": "Exposure",
+    "exposure_description": "The situation of people, infrastructure, housing, production capacities and other tangible human assets located in hazard-prone areas.",
 
     "Infrastructure layer": "Electric infrastructure",
     "Administrative layers": "Administrative units",

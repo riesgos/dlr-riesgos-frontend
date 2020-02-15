@@ -3,7 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { StringUconfProduct } from '../userconfigurable_wpsdata';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ProductsProvided } from 'src/app/wps/wps.actions';
+import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 
 @Component({
   selector: 'ukis-form-string-field',

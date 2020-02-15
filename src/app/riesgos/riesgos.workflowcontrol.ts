@@ -1,6 +1,6 @@
 import { Process, Product, ProcessId, ProcessState, isAutorunningProcess,
     ProcessStateRunning, ProcessStateCompleted, ProcessStateError, ProcessStateTypes,
-    ProcessStateUnavailable, ProcessStateAvailable, isExecutableProcess, ExecutableProcess, ImmutableProcess } from './wps.datatypes';
+    ProcessStateUnavailable, ProcessStateAvailable, isExecutableProcess, ExecutableProcess, ImmutableProcess } from './riesgos.datatypes';
 import { Graph, alg } from 'graphlib';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';

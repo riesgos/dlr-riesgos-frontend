@@ -1,24 +1,25 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Product, ProductDescription } from 'src/app/wps/wps.datatypes';
-import { isWmsData, isVectorLayerData, isBboxLayerData, BboxLayerData, VectorLayerData, WmsLayerData, WmsLayerDescription } from './mappable_wpsdata';
+import { Product } from 'src/app/riesgos/riesgos.datatypes';
+import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduct,
+    VectorLayerProduct, WmsLayerProduct, WmsLayerDescription, isMultiVectorLayerProduct,
+    MultiVectorLayerProduct } from '../../riesgos/riesgos.datatypes.mappable';
 import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@ukis/map-ol';
 import { WMSCapabilities } from 'ol/format';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { Layer, VectorLayer, RasterLayer } from '@ukis/services-layers';
 import { MapStateService } from '@ukis/services-map-state';
 import { SldParserService } from 'projects/sld-parser/src/public-api';
-import { ProductVectorLayer, ProductRasterLayer, ProductLayer } from './map.types';
-import tBbox from '@turf/bbox';
-import tBuffer from '@turf/buffer';
-import { ClrShapeDownload } from '@clr/icons/shapes/essential-shapes';
+import { ProductVectorLayer, ProductRasterLayer, ProductLayer, ProductCustomLayer } from './map.types';
 import { downloadBlob, downloadJson } from 'src/app/helpers/others';
 import { TranslateService } from '@ngx-translate/core';
+import { Vector as olVectorLayer } from 'ol/layer';
+import { Vector as olVectorSource } from 'ol/source';
+import { GeoJSON } from 'ol/format';
 
 
 interface WmsParameters {
@@ -71,18 +72,20 @@ export class LayerMarshaller  {
 
 
     toLayers(product: Product): Observable<ProductLayer[]> {
-        if (isWmsData(product)) {
+        if (isWmsProduct(product)) {
             return this.makeWmsLayers(product);
-        } else if (isVectorLayerData(product)) {
+        } else if (isMultiVectorLayerProduct(product)) {
+            return this.makeGeojsonLayers(product);
+        } else if (isVectorLayerProduct(product)) {
             return this.makeGeojsonLayer(product).pipe(map(layer => [layer]));
-        } else if (isBboxLayerData(product)) {
+        } else if (isBboxLayerProduct(product)) {
             return this.makeBboxLayer(product).pipe(map(layer => [layer]));
         } else {
             throw new Error(`this product cannot be converted into a layer: ${product}`);
         }
     }
 
-    makeBboxLayer(product: BboxLayerData): Observable<ProductVectorLayer> {
+    makeBboxLayer(product: BboxLayerProduct): Observable<ProductVectorLayer> {
         const bboxArray: [number, number, number, number] =
         [product.value.lllon, product.value.lllat, product.value.urlon, product.value.urlat];
         const layer: ProductVectorLayer = new ProductVectorLayer({
@@ -103,7 +106,69 @@ export class LayerMarshaller  {
         return of(layer);
     }
 
-    makeGeojsonLayer(product: VectorLayerData): Observable<ProductVectorLayer> {
+    /**
+     * Reuses one vectorsource over multiple vectorlayers.
+     * Note that this requires us to make these layers UKIS-'CustomLayers',
+     * because UKIS-VectorLayers assume to have their own source of data.
+     */
+    makeGeojsonLayers(product: MultiVectorLayerProduct): Observable<ProductCustomLayer[]> {
+
+        const source = new olVectorSource({
+            features: (new GeoJSON()).readFeatures(product.value[0])
+        });
+
+        const layers = [];
+        for (const vectorLayerProps of product.description.vectorLayers) {
+
+            const layer: olVectorLayer = new olVectorLayer({
+                source: source,
+                style: vectorLayerProps.vectorLayerAttributes.style
+            });
+
+            const productLayer: ProductCustomLayer = new ProductCustomLayer({
+                custom_layer: layer,
+                id: product.uid + '_' + vectorLayerProps.name,
+                name: vectorLayerProps.name,
+                opacity: 0.6,
+                visible: true,
+                attribution: '',
+                type: 'custom',
+                removable: false,
+                continuousWorld: true,
+                time: null,
+                filtertype: 'Overlays',
+                popup: {
+                    pupupFunktion: (obj) => {
+                        const html = vectorLayerProps.vectorLayerAttributes.text(obj);
+                        return html;
+                    }
+                },
+                icon: vectorLayerProps.icon,
+                hasFocus: false,
+                actions: [{
+                    icon: 'download',
+                    title: 'download',
+                    action: (theLayer: any) => {
+                        const data = theLayer.data;
+                        if (data) {
+                            downloadJson(data, `data_${theLayer.name}.json`);
+                        }
+                    }
+                }]
+            });
+            layer.productId = product.uid;
+
+            if (vectorLayerProps.vectorLayerAttributes.legendEntries) {
+                layer.legendEntries = vectorLayerProps.vectorLayerAttributes.legendEntries;
+            }
+
+            layers.push(productLayer);
+        }
+
+        return of(layers);
+    }
+
+    makeGeojsonLayer(product: VectorLayerProduct): Observable<ProductVectorLayer> {
         return this.getStyle(product).pipe(
             map(styleFunction => {
 
@@ -168,7 +233,7 @@ export class LayerMarshaller  {
         );
     }
 
-    private getStyle(product: VectorLayerData): Observable<CallableFunction | null> {
+    private getStyle(product: VectorLayerProduct): Observable<CallableFunction | null> {
         if (product.description.vectorLayerAttributes.style) {
             return of(product.description.vectorLayerAttributes.style);
         } else if (product.description.vectorLayerAttributes.sldFile) {
@@ -178,7 +243,7 @@ export class LayerMarshaller  {
         }
     }
 
-    makeWmsLayers(product: WmsLayerData): Observable<ProductRasterLayer[]> {
+    makeWmsLayers(product: WmsLayerProduct): Observable<ProductRasterLayer[]> {
         if (product.description.type === 'complex') {
             const parseProcesses$: Observable<ProductRasterLayer[]>[] = [];
             for (const val of product.value) {

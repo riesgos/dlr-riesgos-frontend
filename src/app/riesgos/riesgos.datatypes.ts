@@ -1,9 +1,7 @@
 import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient } from '@ukis/services-ogc';
-import { UserconfigurableProductDescription } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { map, tap, catchError } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { map, catchError } from 'rxjs/operators';
 
 
 export type ProductDescription = object;

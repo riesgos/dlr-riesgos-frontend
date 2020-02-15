@@ -1,6 +1,6 @@
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WpsData } from '@ukis/services-ogc';
-import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
+import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, greenRedRange, weightedDamage } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart, createConfusionMatrix } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
@@ -19,7 +19,7 @@ import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml } from 
 
 
 
-export const tsDamage: VectorLayerData & WpsData & Product = {
+export const tsDamage: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_damage',
     description: {
         id: 'damage',
@@ -58,7 +58,7 @@ export const tsDamage: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const tsTransition: VectorLayerData & WpsData & Product = {
+export const tsTransition: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_transition',
     description: {
         id: 'transition',
@@ -166,7 +166,7 @@ export const tsTransition: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const tsUpdatedExposure: VectorLayerData & WpsData & Product = {
+export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_updated_exposure',
     description: {
         id: 'updated_exposure',

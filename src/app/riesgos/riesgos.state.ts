@@ -1,25 +1,25 @@
-import { Product, ImmutableProcess } from './wps.datatypes';
+import { Product, ImmutableProcess } from './riesgos.datatypes';
 import { Graph } from 'graphlib';
 
 
 export type Scenario = string;
 
-export interface WpsScenarioState {
+export interface RiesgosScenarioState {
     scenario: Scenario;
     processStates: ImmutableProcess[];
     productValues: Product[];
     graph: Graph;
 }
 
-export interface WpsState {
+export interface RiesgosState {
     currentScenario: Scenario;
     scenarioData: {
-        [key in Scenario]: WpsScenarioState
+        [key in Scenario]: RiesgosScenarioState
     };
 }
 
 
-export const initialWpsState: WpsState = {
+export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {
         'none': {

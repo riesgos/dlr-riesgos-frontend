@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect } from '@ngrx/effects';
-import { WpsActions, EWpsActionTypes, ProductsProvided, ScenarioChosen,
-        ClickRunProcess, WpsDataUpdate, RestartingFromProcess, RestaringScenario } from './wps.actions';
+import { RiesgosActions, ERiesgosActionTypes, ProductsProvided, ScenarioChosen,
+        ClickRunProcess, RiesgosDataUpdate, RestartingFromProcess, RestaringScenario } from './riesgos.actions';
 import { map, switchMap, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Store, Action } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { WorkflowControl } from './wps.workflowcontrol';
+import { WorkflowControl } from './riesgos.workflowcontrol';
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin,
         zmax, p, etype, tlon, tlat, selectedEqs } from '../configuration/chile/quakeledger';
 import { InputBoundingboxPeru, QuakeLedgerPeru, etypePeru, tlonPeru, tlatPeru, mminPeru, mmaxPeru,
     zminPeru, zmaxPeru, pPeru, selectedEqsPeru } from '../configuration/peru/quakeledger';
 import { Shakyground, shakemapWmsOutput, eqShakemapRef } from '../configuration/chile/shakyground';
 import { TsService, tsWms, tsShakemap } from '../configuration/chile/tsService';
-import { Process, Product } from './wps.datatypes';
+import { Process, Product } from './riesgos.datatypes';
 import { direction, vei } from '../configuration/ecuador/lahar';
 import { ExposureModel, lonmin, lonmax, latmin, latmax, initialExposure,
         assettype, schema, querymode, initialExposureRef } from '../configuration/chile/exposure';
@@ -22,14 +22,14 @@ import { selectedEq, EqSelection, userinputSelectedEq } from '../configuration/c
 import { hydrologicalSimulation, geomerFlood, durationTiff,
     velocityTiff, depthTiff, userinputSelectedOutburst,
     FloodMayRunProcess, FloodMayRun } from '../configuration/ecuador/geomerHydrological';
-import { EqDeus, loss, eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExposureRef } from '../configuration/chile/eqDeus';
+import { EqDeus, loss, eqDamageM, eqUpdatedExposureRef } from '../configuration/chile/eqDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from '../configuration/chile/reliability';
 import { FlooddamageProcess, damageManzanas, damageBuildings, FlooddamageTranslator,
     damageManzanasGeojson } from '../configuration/ecuador/floodDamage';
 import { DeusLaharAndAshfall, laharAshfallDamage, laharAshfallTransition,
     laharAshfallUpdatedExposure } from '../configuration/ecuador/laharAndAshDamage';
-import { getScenarioWpsState } from './wps.selectors';
-import { WpsScenarioState } from './wps.state';
+import { getScenarioRiesgosState } from './riesgos.selectors';
+import { RiesgosScenarioState } from './riesgos.state';
 import { Observable } from 'rxjs';
 import { VeiProvider, selectableVei } from '../configuration/ecuador/vei';
 import { AshfallService, ashfall, probability, ashfallPoint } from '../configuration/ecuador/ashfallService';
@@ -64,11 +64,11 @@ import { ExposureSelection, modelChoice } from '../configuration/chile/exposureS
 
 
 @Injectable()
-export class WpsEffects {
+export class RiesgosEffects {
 
     @Effect()
     RestaringScenario$ = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.restartingScenario),
+        ofType<RiesgosActions>(ERiesgosActionTypes.restartingScenario),
         switchMap((action: RestaringScenario) => {
 
             const [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
@@ -79,7 +79,7 @@ export class WpsEffects {
             const graph = this.wfc.getGraph();
 
             const actions: Action[] = [
-                new WpsDataUpdate({processes, products, graph}),
+                new RiesgosDataUpdate({processes, products, graph}),
                 new NewProcessClicked({processId: null})
             ];
             return actions;
@@ -88,7 +88,7 @@ export class WpsEffects {
 
     @Effect()
     scenarioChosen$ = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.scenarioChosen),
+        ofType<RiesgosActions>(ERiesgosActionTypes.scenarioChosen),
         withLatestFrom(this.store$),
         switchMap(([action, state]: [ScenarioChosen, State]) => {
 
@@ -96,9 +96,9 @@ export class WpsEffects {
 
             let procs: Process[];
             let prods: Product[];
-            if (state.wpsState.scenarioData[newScenario]) {
+            if (state.riesgosState.scenarioData[newScenario]) {
                 let _;
-                const scenarioData = state.wpsState.scenarioData[newScenario];
+                const scenarioData = state.riesgosState.scenarioData[newScenario];
                 // because processes are more than the ImmutableProcesses stored in the state-store:
                 prods = scenarioData.productValues; // getting products from state-store ...
                 [procs, _] = this.loadScenarioDataFresh(action.payload.scenario); // ... but processes from registry.
@@ -111,14 +111,14 @@ export class WpsEffects {
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
 
-            const actions: Action[] = [new WpsDataUpdate({processes, products, graph})];
+            const actions: Action[] = [new RiesgosDataUpdate({processes, products, graph})];
             return actions;
         })
     );
 
     @Effect()
     ProductsProvided = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.productsProvided),
+        ofType<RiesgosActions>(ERiesgosActionTypes.productsProvided),
         map((action: ProductsProvided) => {
 
             for (const product of action.payload.products) {
@@ -127,7 +127,7 @@ export class WpsEffects {
             const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
-            return new WpsDataUpdate({processes, products, graph});
+            return new RiesgosDataUpdate({processes, products, graph});
 
         })
     );
@@ -135,7 +135,7 @@ export class WpsEffects {
 
     @Effect()
     runProcessClicked$ = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.clickRunProduct),
+        ofType<RiesgosActions>(ERiesgosActionTypes.clickRunProduct),
         mergeMap((action: ClickRunProcess) =>  {
 
             const newProducts = action.payload.productsProvided;
@@ -146,7 +146,7 @@ export class WpsEffects {
             return this.wfc.execute(process.uid,
                 (response, counter) => {
                     if (counter < 1) {
-                        this.store$.dispatch(new WpsDataUpdate({
+                        this.store$.dispatch(new RiesgosDataUpdate({
                             processes: this.wfc.getImmutableProcesses(),
                             products: this.wfc.getProducts(),
                             graph: this.wfc.getGraph()
@@ -162,7 +162,7 @@ export class WpsEffects {
             const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
-            const wpsUpdate = new WpsDataUpdate({processes, products, graph});
+            const wpsUpdate = new RiesgosDataUpdate({processes, products, graph});
             actions.push(wpsUpdate);
 
             // We abstain from moving on to the next process for now, until we have a nice way of finding the next one in line.
@@ -183,14 +183,14 @@ export class WpsEffects {
 
     @Effect()
     restartingFromProcess$ = this.actions$.pipe(
-        ofType<WpsActions>(EWpsActionTypes.restartingFromProcess),
+        ofType<RiesgosActions>(ERiesgosActionTypes.restartingFromProcess),
         map((action: RestartingFromProcess) => {
 
             this.wfc.invalidateProcess(action.payload.process.uid);
             const processes = this.wfc.getImmutableProcesses();
             const products = this.wfc.getProducts();
             const graph = this.wfc.getGraph();
-            return new WpsDataUpdate({processes, products, graph});
+            return new RiesgosDataUpdate({processes, products, graph});
 
         })
     );
@@ -210,7 +210,7 @@ export class WpsEffects {
 
     private loadScenarioData(scenario: string): Observable<[Process[], Product[]]> {
         // @TODO: per default, load data from store.
-        return this.store$.select(getScenarioWpsState, {scenario}).pipe(map((scenarioState: WpsScenarioState) => {
+        return this.store$.select(getScenarioRiesgosState, {scenario}).pipe(map((scenarioState: RiesgosScenarioState) => {
             if (scenarioState) {
                 return [scenarioState.processStates, scenarioState.productValues];
             } else {
@@ -244,7 +244,7 @@ export class WpsEffects {
                     new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
                     selectedEqs, userinputSelectedEq,
                     selectedEq, shakemapWmsOutput, eqShakemapRef,
-                    loss, eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExposureRef,
+                    loss, eqDamageM, eqUpdatedExposureRef,
                     tsWms, tsShakemap,
                     countryChile, hazardEq,
                     damageConsumerAreas,
@@ -268,7 +268,7 @@ export class WpsEffects {
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
                     initialExposurePeru,
                     new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
-                    lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, 
+                    lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
                     selectedEqsPeru, userinputSelectedEqPeru,
                     selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
                     tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,

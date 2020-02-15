@@ -1,6 +1,6 @@
-import { ProductDescription, Product } from 'src/app/wps/wps.datatypes';
-import { WpsBboxData, WpsBboxValue } from '@ukis/services-ogc';
-import { shape } from '../config_wizard/wizardable_processes';
+import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
+import { WpsBboxValue } from '@ukis/services-ogc';
+import { shape } from '../components/config_wizard/wizardable_processes';
 import { FeatureCollection } from '@turf/helpers';
 import { LegendElement } from '@ukis/layer-control/src/lib/vector-legend/vector-legend.component';
 
@@ -14,7 +14,7 @@ export interface BboxLayerDescription extends ProductDescription {
 }
 
 
-export interface BboxLayerData extends Product {
+export interface BboxLayerProduct extends Product {
     description: BboxLayerDescription;
     value: WpsBboxValue | null;
 }
@@ -24,16 +24,12 @@ export const isBboxLayerDescription = (descr: ProductDescription): descr is Bbox
     return descr.hasOwnProperty('type') && descr['type'] === 'bbox';
 };
 
-export const isBboxLayerData = (data: Product): data is BboxLayerData => {
+export const isBboxLayerProduct = (data: Product): data is BboxLayerProduct => {
     return isBboxLayerDescription(data.description);
 };
 
 
-export interface VectorLayerDescription extends ProductDescription {
-    format: 'application/vnd.geo+json' | 'application/json';
-    type: 'complex';
-    name: string;
-    id: string;
+export interface VectorLayerProperties {
     vectorLayerAttributes: {
         style?: any;
         text?: any;
@@ -43,9 +39,17 @@ export interface VectorLayerDescription extends ProductDescription {
     };
     description?: string;
     icon?: shape;
+    name?: string;
 }
 
-export interface VectorLayerData extends Product {
+
+export interface VectorLayerDescription extends ProductDescription, VectorLayerProperties {
+    format: 'application/vnd.geo+json' | 'application/json';
+    type: 'complex';
+    id: string;
+}
+
+export interface VectorLayerProduct extends Product {
     description: VectorLayerDescription;
 }
 
@@ -54,8 +58,30 @@ export const isVectorLayerDescription = (description: ProductDescription): descr
 };
 
 
-export const isVectorLayerData = (data: Product): data is VectorLayerData => {
+export const isVectorLayerProduct = (data: Product): data is VectorLayerProduct => {
     return isVectorLayerDescription(data.description);
+};
+
+export interface MulitVectorLayerDescription extends ProductDescription {
+    format: 'application/vnd.geo+json' | 'application/json';
+    type: 'complex';
+    vectorLayers: VectorLayerProperties[];
+}
+
+/**
+ * Sometimes we want to display on vector-dataset in more than one way.
+ * A *MultiVectorLayerProduct* uses one VectorSource with multiple layers.
+ */
+export interface MultiVectorLayerProduct extends Product {
+    description: MulitVectorLayerDescription;
+}
+
+export const isMultiVectorLayerDescription = (description: ProductDescription): description is MulitVectorLayerDescription => {
+    return description.hasOwnProperty('vectorLayers');
+};
+
+export const isMultiVectorLayerProduct = (product: Product): product is MultiVectorLayerProduct => {
+    return isMultiVectorLayerDescription(product.description);
 };
 
 
@@ -71,7 +97,7 @@ export interface WmsLayerDescription extends ProductDescription {
     featureInfoRenderer?: (featureInfo: FeatureCollection) => string;
 }
 
-export interface WmsLayerData extends Product {
+export interface WmsLayerProduct extends Product {
     description: WmsLayerDescription;
 }
 
@@ -81,7 +107,7 @@ export const isWmsLayerDescription = (description: ProductDescription): descript
             && (description['type'] === 'complex' || description['type'] === 'literal');
 };
 
-export const isWmsData = (data: Product): data is WmsLayerData => {
+export const isWmsProduct = (data: Product): data is WmsLayerProduct => {
     return isWmsLayerDescription(data.description)
         || ((data.description['format'] === 'string' || data.description['format'] === 'application/WMS') && (data.value as string).includes('wms'));
 };

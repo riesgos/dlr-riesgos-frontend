@@ -1,4 +1,4 @@
-import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable, AutorunningProcess } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable, AutorunningProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import { Volcanus } from './volcanus';
@@ -6,7 +6,7 @@ import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, t
 import { switchMap } from 'rxjs/operators';
 import { laharVelocityShakemapRef } from './laharWrapper';
 import { HttpClient } from '@angular/common/http';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WpsData } from '@ukis/services-ogc';
 import { FeatureCollection } from '@turf/helpers';
 import { schemaEcuador } from './exposure';

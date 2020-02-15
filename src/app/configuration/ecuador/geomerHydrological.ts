@@ -1,6 +1,6 @@
-import { ExecutableProcess, ProcessStateUnavailable, Product, AutorunningProcess, ProcessStateAvailable } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, ProcessStateUnavailable, Product, AutorunningProcess, ProcessStateAvailable } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Observable, of } from 'rxjs';
 import { WpsData } from '@ukis/services-ogc';
 import { laharWms, direction, vei, laharShakemap } from './lahar';
@@ -11,7 +11,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol/Feature';
 
 
-export const hydrologicalSimulation: WmsLayerData & WpsData = {
+export const hydrologicalSimulation: WmsLayerProduct & WpsData = {
     uid: 'geomerHydrological_hydrologicalSimulation',
     description: {
         id: 'hydrologicalSimulation',

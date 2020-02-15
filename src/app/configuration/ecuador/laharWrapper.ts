@@ -1,9 +1,9 @@
-import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
 import { WpsData } from '@ukis/services-ogc';
-import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
@@ -12,7 +12,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
-export const laharHeightWms: WmsLayerData & Product = {
+export const laharHeightWms: WmsLayerProduct & Product = {
     ... laharWms,
     description: {
         ... laharWms.description,
@@ -32,7 +32,7 @@ export const laharHeightShakemapRef: WpsData & Product = {
     uid: 'LaharHeightShakemap'
 };
 
-export const laharVelocityWms: WmsLayerData & Product = {
+export const laharVelocityWms: WmsLayerProduct & Product = {
     ... laharWms,
     description: {
         ... laharWms.description,
@@ -52,7 +52,7 @@ export const laharVelocityShakemapRef: WpsData & Product = {
     uid: 'LaharVelocityShakemap'
 };
 
-export const laharPressureWms: WmsLayerData & Product = {
+export const laharPressureWms: WmsLayerProduct & Product = {
     ... laharWms,
     description: {
         ... laharWms.description,
@@ -67,7 +67,7 @@ export const laharPressureWms: WmsLayerData & Product = {
     uid: 'LaharPressureWms'
 };
 
-export const laharErosionWms: WmsLayerData & Product = {
+export const laharErosionWms: WmsLayerProduct & Product = {
     ... laharWms,
     description: {
         ... laharWms.description,
@@ -82,7 +82,7 @@ export const laharErosionWms: WmsLayerData & Product = {
     uid: 'LaharErosionWms'
 };
 
-export const laharDepositionWms: WmsLayerData & Product = {
+export const laharDepositionWms: WmsLayerProduct & Product = {
     ... laharWms,
     description: {
         ... laharWms.description,
@@ -98,7 +98,7 @@ export const laharDepositionWms: WmsLayerData & Product = {
 };
 
 
-export const laharContoursWms: WmsLayerData & Product = {
+export const laharContoursWms: WmsLayerProduct & Product = {
     description: {
         id: 'LaharContourLines',
         icon: 'avalance',

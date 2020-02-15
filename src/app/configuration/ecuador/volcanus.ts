@@ -1,4 +1,4 @@
-import { WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { HttpClient } from '@angular/common/http';
 
 

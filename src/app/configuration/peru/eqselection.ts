@@ -1,9 +1,9 @@
 import { FeatureSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { AutorunningProcess, ProcessStateTypes, Product, ExecutableProcess } from 'src/app/wps/wps.datatypes';
+import { AutorunningProcess, ProcessStateTypes, Product, ExecutableProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '@ukis/services-ogc';
 import { Observable, of } from 'rxjs';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { selectedEqsPeru } from './quakeledger';
@@ -12,7 +12,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
-export const userinputSelectedEqPeru: FeatureSelectUconfProduct & VectorLayerData & WpsData = {
+export const userinputSelectedEqPeru: FeatureSelectUconfProduct & VectorLayerProduct & WpsData = {
     uid: 'selectedRowPeru',
     description: {
         id: 'selectedRow',

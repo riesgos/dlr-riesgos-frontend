@@ -1,8 +1,8 @@
-import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { schema, initialExposure} from './exposure';
 import { WpsData } from '@ukis/services-ogc';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata, createConfusionMatrix } from 'src/app/helpers/d3charts';
@@ -15,6 +15,7 @@ import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection, Feature } from '@turf/helpers';
 import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
+import { transition } from '@angular/animations';
 
 
 
@@ -29,13 +30,7 @@ export const loss: WpsData & Product = {
     value: 'testinputs/loss_sara.json'
 };
 
-export const eqDamage: VectorLayerData & WpsData & Product = {
-    uid: 'eq_damage',
-    description: {
-        id: 'damage',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
+export const damageProps: VectorLayerProperties = {
         name: 'eq-damage',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -79,18 +74,10 @@ export const eqDamage: VectorLayerData & WpsData & Product = {
         },
         description: 'Concrete damage in USD.',
         icon: 'dot-circle'
-    },
-    value: null
+
 };
 
-export const eqTransition: VectorLayerData & WpsData & Product = {
-    uid: 'eq_transition',
-    description: {
-        id: 'transition',
-        icon: 'dot-circle',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
+export const transitionProps: VectorLayerProperties = {
         name: 'eq-transition',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -202,18 +189,11 @@ export const eqTransition: VectorLayerData & WpsData & Product = {
             }
         },
         description: 'Change from previous state to current one'
-    },
-    value: null
+
 };
 
-export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
-    uid: 'eq_updated_exposure',
-    description: {
-        id: 'updated_exposure',
-        reference: false,
-        type: 'complex',
+const updatedExposureProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        format: 'application/json',
         name: 'eq-exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -313,6 +293,19 @@ export const eqUpdatedExposure: VectorLayerData & WpsData & Product = {
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'
+    
+};
+
+export const eqDamageM: WpsData & MultiVectorLayerProduct = {
+    uid: 'eq_deus_output_values',
+    description: {
+        id: 'merged_output',
+        reference: false,
+        defaultValue: null,
+        format: 'application/json',
+        type: 'complex',
+        description: '',
+        vectorLayers: [updatedExposureProps, transitionProps, damageProps]
     },
     value: null
 };
@@ -333,29 +326,22 @@ export const eqUpdatedExposureRef: WpsData & Product = {
 export class EqDeus implements ExecutableProcess, WizardableProcess {
 
     readonly state: ProcessState;
-    readonly uid: string;
-    readonly name: string;
-    readonly requiredProducts: string[];
-    readonly providedProducts: string[];
-    readonly description?: string;
-    readonly wizardProperties: WizardProperties;
+    readonly uid = 'EQ-Deus';
+    readonly name = 'Multihazard damage estimation / EQ';
+    readonly requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
+    readonly providedProducts = [eqDamageM, eqUpdatedExposureRef].map(p => p.uid);
+    readonly description = 'This service returns damage caused by the selected earthquake.';
+    readonly wizardProperties: WizardProperties = {
+        providerName: 'Helmholtz Centre Potsdam',
+        providerUrl: 'https://www.gfz-potsdam.de/en/',
+        shape: 'dot-circle'
+    };
 
     private vulnerabilityProcess: VulnerabilityModel;
     private deusProcess: Deus;
 
     constructor(http: HttpClient) {
         this.state = new ProcessStateUnavailable();
-        this.uid = 'EQ-Deus';
-        this.name = 'Multihazard damage estimation / EQ';
-        this.requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
-        this.providedProducts = [eqDamage, eqTransition, eqUpdatedExposure, eqUpdatedExposureRef].map(p => p.uid);
-        this.description = 'This service returns damage caused by the selected earthquake.';
-        this.wizardProperties = {
-            providerName: 'Helmholtz Centre Potsdam',
-            providerUrl: 'https://www.gfz-potsdam.de/en/',
-            shape: 'dot-circle'
-        };
-
         this.vulnerabilityProcess = new VulnerabilityModel(http);
         this.deusProcess = new Deus(http);
     }

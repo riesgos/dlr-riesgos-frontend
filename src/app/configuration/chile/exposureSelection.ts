@@ -1,4 +1,4 @@
-import { WpsProcess, ProcessStateUnavailable, Process, ExecutableProcess, Product, ProcessState } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Process, ExecutableProcess, Product, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { latmax, initialExposure, lonmin, lonmax, latmin, querymode, schema, assettype, ExposureModel } from './exposure';
 import { HttpClient } from '@angular/common/http';

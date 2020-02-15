@@ -1,4 +1,4 @@
-import { ProcessId } from '../wps/wps.datatypes';
+import { ProcessId } from '../riesgos/riesgos.datatypes';
 
 
 

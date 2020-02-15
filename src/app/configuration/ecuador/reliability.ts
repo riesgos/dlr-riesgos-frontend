@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { WpsData } from '@ukis/services-ogc';
-import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -39,7 +39,7 @@ export const hazardLahar: WpsData & Product = {
     value: 'lahar'
 };
 
-export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
+export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct = {
     uid: 'systemreliability_damage_consumerareas',
     description: {
         id: 'damage_consumer_areas',

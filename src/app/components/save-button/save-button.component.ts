@@ -3,9 +3,9 @@ import { UtilStoreService } from '@ukis/services-util-store';
 import { Form, FormControl, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getCurrentScenarioWpsState } from 'src/app/wps/wps.selectors';
-import { WpsScenarioState } from 'src/app/wps/wps.state';
-import { WpsDataUpdate, RestaringScenario } from 'src/app/wps/wps.actions';
+import { getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
+import { RiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
+import { RiesgosDataUpdate, RestaringScenario } from 'src/app/riesgos/riesgos.actions';
 import { meta } from '@turf/turf';
 
 
@@ -25,7 +25,7 @@ export class SaveButtonComponent implements OnInit {
     showRestoreModal = false;
     showStoreModal = false;
     nameControl: FormControl;
-    private currentState: WpsScenarioState;
+    private currentState: RiesgosScenarioState;
     public storageMetadata: StorageMetadata[] = [];
     public selectedStorageMetadata: StorageMetadata;
     private storageMetadataKey = 'RIESGOS_STORAGE_METADATA';
@@ -38,7 +38,7 @@ export class SaveButtonComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.store.pipe(select(getCurrentScenarioWpsState)).subscribe((state: WpsScenarioState) => {
+        this.store.pipe(select(getCurrentScenarioRiesgosState)).subscribe((state: RiesgosScenarioState) => {
             this.currentState = state;
         });
         this.storageMetadata = this.getStorageMetadata();
@@ -57,7 +57,7 @@ export class SaveButtonComponent implements OnInit {
             const processes = stateToRestore.processStates;
             const products = stateToRestore.productValues;
             const graph = stateToRestore.graph;
-            this.store.dispatch(new WpsDataUpdate({processes, products, graph}));
+            this.store.dispatch(new RiesgosDataUpdate({processes, products, graph}));
         }
         this.showRestoreModal = false;
     }
@@ -68,14 +68,14 @@ export class SaveButtonComponent implements OnInit {
         this.showResetModal = false;
     }
 
-    private storeData(name: string, data: WpsScenarioState): void {
+    private storeData(name: string, data: RiesgosScenarioState): void {
         const metadata: StorageMetadata = { name: name, date: new Date() };
         this.storageMetadata.push(metadata);
         this.storeStorageMetadata(this.storageMetadata);
         this.storageService.local(name, data);
     }
 
-    private restoreData(storageMetadata: StorageMetadata): WpsScenarioState {
+    private restoreData(storageMetadata: StorageMetadata): RiesgosScenarioState {
         return this.storageService.local(storageMetadata.name);
     }
 

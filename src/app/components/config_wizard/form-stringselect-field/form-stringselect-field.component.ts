@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import {  StringSelectUconfProduct } from '../userconfigurable_wpsdata';
-import { ProductsProvided } from 'src/app/wps/wps.actions';
+import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 import { FormControl } from '@angular/forms';
 
 @Component({

@@ -1,9 +1,9 @@
 import { WizardPageComponent } from 'src/app/components/config_wizard/wizard-page/wizard-page.component';
-import { WpsProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '@ukis/services-ogc';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { FeatureCollection, feature, MultiPolygon, Polygon } from '@turf/helpers';
@@ -69,7 +69,7 @@ export class FlooddamageProcess extends WpsProcess implements WizardableProcess 
 
 }
 
-export const damageManzanasGeojson: VectorLayerData & WpsData & Product = {
+export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
     uid: 'damageManzanasGeojson',
     description: {
         id: 'damage_manzanas',

@@ -1,4 +1,4 @@
-import { Process, WpsProcess, ProcessState } from 'src/app/wps/wps.datatypes';
+import { Process, WpsProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsVerion } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 

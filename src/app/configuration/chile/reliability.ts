@@ -1,9 +1,9 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { vei } from '../ecuador/lahar';
 import { WpsData } from '@ukis/services-ogc';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
@@ -40,7 +40,7 @@ export const hazardEq: WpsData & Product = {
     value: 'earthquake'
 };
 
-export const damageConsumerAreas: WpsData & Product & VectorLayerData = {
+export const damageConsumerAreas: WpsData & Product & VectorLayerProduct = {
     uid: 'systemreliability_damage_consumerareas',
     description: {
         id: 'damage_consumer_areas',

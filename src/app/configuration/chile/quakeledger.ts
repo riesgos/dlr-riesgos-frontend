@@ -1,9 +1,9 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos/riesgos.datatypes';
 import {
     StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct,
     BboxUconfPD
 } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { VectorLayerData, BboxLayerData, BboxLayerDescription } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct, BboxLayerProduct, BboxLayerDescription } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue } from '@ukis/services-ogc';
 import { toDecimalPlaces, redGreenRange, linInterpolate, linInterpolateHue } from 'src/app/helpers/colorhelpers';
@@ -14,7 +14,7 @@ import { createOlFeature } from 'src/app/helpers/others';
 import { feature } from '@turf/helpers';
 
 
-export class InputBoundingbox implements BboxUconfProduct, BboxLayerData, WpsData {
+export class InputBoundingbox implements BboxUconfProduct, BboxLayerProduct, WpsData {
     description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
     value: WpsBboxValue;
     uid = 'input-boundingbox';
@@ -167,7 +167,7 @@ export const tlat: Product & WpsData = {
 
 
 
-export const selectedEqs: VectorLayerData & WpsData = {
+export const selectedEqs: VectorLayerProduct & WpsData = {
     uid: 'QuakeledgerProcess_selectedRows',
     description: {
         id: 'selectedRows',

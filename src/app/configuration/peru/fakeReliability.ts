@@ -1,5 +1,5 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { ExecutableProcess, ProcessState, Product, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, ProcessState, Product, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { eqShakemapRefPeru } from './shakyground';
 import { countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './reliability';
 import { Observable, of } from 'rxjs';

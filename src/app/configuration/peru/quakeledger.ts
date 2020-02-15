@@ -1,6 +1,6 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos/riesgos.datatypes';
 import { StringSelectUconfProduct, BboxUconfProduct, BboxUconfPD, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { BboxLayerData, BboxLayerDescription, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { BboxLayerProduct, BboxLayerDescription, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { Feature as olFeature } from 'ol/Feature';
 
 
 
-export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerData, WpsData {
+export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerProduct, WpsData {
     description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
     value: WpsBboxValue;
     uid = 'input-boundingbox_peru';
@@ -165,7 +165,7 @@ export const pPeru: Product & WpsData = {
 
 
 
-export const selectedEqsPeru: VectorLayerData & WpsData = {
+export const selectedEqsPeru: VectorLayerProduct & WpsData = {
     uid: 'QuakeledgerProcess_selectedRowsPeru',
     description: {
         id: 'selectedRows',

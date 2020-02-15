@@ -1,5 +1,5 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsData } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { schema } from './exposure';

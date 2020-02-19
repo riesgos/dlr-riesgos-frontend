@@ -1,4 +1,4 @@
-import { Process, Product, ProcessId, ProcessState, isAutorunningProcess,
+import { Process, Product, ProcessId, ProcessState, isProductTransformingProcess,
     ProcessStateRunning, ProcessStateCompleted, ProcessStateError, ProcessStateTypes,
     ProcessStateUnavailable, ProcessStateAvailable, isExecutableProcess, ExecutableProcess, ImmutableProcess } from './riesgos.datatypes';
 import { Graph, alg } from 'graphlib';
@@ -63,18 +63,18 @@ export class WorkflowControl {
 
         try {
             return process.execute(inputs, outputs, doWhileRequesting).pipe(
-    
+
                 tap((outputs: Product[]) => {
                     for (const product of outputs) {
                         this.provideProduct(product.uid, product.value);
                     }
                     this.setProcessState(process.uid, new ProcessStateCompleted());
                 }),
-    
+
                 map((outputs: Product[]) => {
                     return true;
                 }),
-    
+
                 catchError((error) => {
                     const parsedErrormessage = this.errorParser.parse(error);
                     this.setProcessState(process.uid, new ProcessStateError(parsedErrormessage));
@@ -124,7 +124,7 @@ export class WorkflowControl {
 
         // allow watching processes to add or change further products
         for (const process of this.processes) {
-            if (isAutorunningProcess(process)) {
+            if (isProductTransformingProcess(process)) {
                 const additionalProducts = process.onProductAdded(newProduct, this.products);
                 for (const additionalProduct of additionalProducts) {
                     this.updateProduct(additionalProduct); // @TODO: maybe even call provideProduct recursively here?
@@ -345,7 +345,7 @@ export class WorkflowControl {
     private checkDataIntegrity(processes: Process[], products: Product[]): void {
 
         for (const process of processes) {
-            if (! isExecutableProcess(process) && ! isAutorunningProcess(process)) {
+            if (! isExecutableProcess(process) && ! isProductTransformingProcess(process)) {
                 throw new Error(`process ${process.uid} is neither executable nor autorunning. `);
             }
         }

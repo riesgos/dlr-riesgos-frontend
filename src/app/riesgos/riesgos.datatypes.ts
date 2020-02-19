@@ -2,6 +2,8 @@ import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient } from '@u
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
+import { RemoteCache } from '../cache/remoteCache';
+import { IndexDbCache } from '../cache/indexDbCache';
 
 
 export type ProductDescription = object;
@@ -85,12 +87,12 @@ export const isExecutableProcess = (p: Process): p is ExecutableProcess => {
 };
 
 
-export interface AutorunningProcess extends Process {
+export interface ProductTransformingProcess extends Process {
     onProductAdded(newProduct: Product, allProducts: Product[]): Product[];
 }
 
 
-export const isAutorunningProcess = (process: Process): process is AutorunningProcess => {
+export const isProductTransformingProcess = (process: Process): process is ProductTransformingProcess => {
     return process.hasOwnProperty('onProductAdded');
 };
 
@@ -111,8 +113,8 @@ export class WpsProcess implements ExecutableProcess {
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
         ) {
-        const caching = false; // environment.production ? false : true;
-        this.wpsClient = new WpsClient(this.wpsVersion, httpClient);
+        const cache = new IndexDbCache();
+        this.wpsClient = new WpsClient(this.wpsVersion, httpClient, cache);
     }
 
     public execute(

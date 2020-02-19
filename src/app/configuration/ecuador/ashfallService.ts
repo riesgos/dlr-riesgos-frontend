@@ -1,5 +1,5 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/riesgos/riesgos.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { vei } from './lahar';
 import { WpsData } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';

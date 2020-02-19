@@ -1,4 +1,4 @@
-import { ExecutableProcess, ProcessStateUnavailable, Product, AutorunningProcess, ProcessStateAvailable } from 'src/app/riesgos/riesgos.datatypes';
+import { ExecutableProcess, ProcessStateUnavailable, Product, ProductTransformingProcess, ProcessStateAvailable } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Observable, of } from 'rxjs';
@@ -91,7 +91,7 @@ export const FloodMayRun: Product = {
     value: null
 };
 
-export const FloodMayRunProcess: AutorunningProcess = {
+export const FloodMayRunProcess: ProductTransformingProcess = {
     name: 'floodMayRunChecker',
     requiredProducts: [],
     providedProducts: [FloodMayRun.uid],
@@ -144,7 +144,7 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
                     `https://www.sd-kama.de/geoserver/flood_vei/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=wd_max_${veiVal}_${position}&WIDTH=256&HEIGHT=256&BBOX=0,-77.34375,1.40625,-75.9375&SRS=AUTO:42001&STYLES=&CRS=EPSG:4326`,
             ]
         };
-        
+
         const durationTiffVal = {
             ... durationTiff,
             value: `http://www.sd-kama.de/geoserver/flood_vei/wcs?SERVICE=WCS&REQUEST=GetCoverage&VERSION=2.0.1&CoverageId=flood_vei:duration_${veiVal}_${position}&format=image/geotiff`

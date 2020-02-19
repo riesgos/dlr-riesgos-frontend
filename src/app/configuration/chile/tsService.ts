@@ -1,4 +1,4 @@
-import { WpsProcess, ProcessStateUnavailable, AutorunningProcess, Product, ExecutableProcess, ProcessState } from '../../riesgos/riesgos.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsClient } from '@ukis/services-ogc';
 import { selectedEq } from './eqselection';

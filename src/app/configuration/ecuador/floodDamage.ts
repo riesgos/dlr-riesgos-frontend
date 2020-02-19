@@ -1,5 +1,5 @@
 import { WizardPageComponent } from 'src/app/components/config_wizard/wizard-page/wizard-page.component';
-import { WpsProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/riesgos/riesgos.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '@ukis/services-ogc';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
@@ -134,7 +134,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
 /**
  * translates Flooddamage's output: needs to be converted to proper coodinate system to be actual geojson.
  */
-export const FlooddamageTranslator: AutorunningProcess = {
+export const FlooddamageTranslator: ProductTransformingProcess = {
     uid: 'ecuadorFlooddamageTranslator',
     name: 'ecuadorFlooddamageTranslator',
     requiredProducts: [damageManzanas].map(p => p.uid),

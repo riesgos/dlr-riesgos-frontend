@@ -1,4 +1,4 @@
-import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable, AutorunningProcess } from 'src/app/riesgos/riesgos.datatypes';
+import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import { Volcanus } from './volcanus';

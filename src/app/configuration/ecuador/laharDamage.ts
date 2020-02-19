@@ -1,4 +1,4 @@
-import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/riesgos/riesgos.datatypes';
+import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { ashfallUpdatedExposureRef } from './ashfallDamage';
 import { laharVelocityShakemapRef } from './laharWrapper';
@@ -325,7 +325,7 @@ export const DamageMayRun: Product = {
     value: null
 };
 
-export const DamageMayRunProcess: AutorunningProcess = {
+export const DamageMayRunProcess: ProductTransformingProcess = {
     uid: 'damageMayRunProcess',
     name: 'damageMayRunChecker',
     requiredProducts: [],

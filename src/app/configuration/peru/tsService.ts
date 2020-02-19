@@ -1,11 +1,10 @@
-import { WpsProcess, ProcessStateUnavailable, AutorunningProcess, Product, ExecutableProcess, ProcessState } from '../../riesgos/riesgos.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '@ukis/services-ogc';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';
 import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { map, delay, switchMap } from 'rxjs/operators';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';

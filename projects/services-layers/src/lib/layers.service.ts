@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Layer, RasterLayer } from './types/Layers';
+import { Layer, RasterLayer, TFiltertypes } from './types/Layers';
 import { LayerGroup } from './types/LayerGroup';
 
 @Injectable({
@@ -23,12 +23,12 @@ export class LayersService {
   // ----------------------------------------------------------------------------------------------------------------
   /**
    * Adds a ukis Layer to the Layerservice Store
-   * filtertype: 'Baselayers' | 'Overlays' | 'Layers'
+   * filtertype: TFiltertypes
    * if filtertype is not provided the filtertype of the Layer is used!
    *
    * if toGroup is true the layer is not added to the list of Layers and storeItems only used  internal
    */
-  public addLayer(layer: Layer, filtertype?: 'Baselayers' | 'Overlays' | 'Layers', toGroup?: boolean) {
+  public addLayer(layer: Layer, filtertype?: TFiltertypes, toGroup?: boolean) {
     if (!this.isInLayergroups(layer)) {
 
       if (!filtertype) {
@@ -55,42 +55,55 @@ export class LayersService {
 
   /**
   * Removes a ukis Layer from the Layerservice Store
-  * filtertype: 'Baselayers' | 'Overlays' | 'Layers'
+  * filtertype: TFiltertypes
   * if filtertype is not provided the filtertype of the Layer is used!
+  *
+  * force = true - removes a LayerGroup even it is not removable
   */
-  public removeLayer(layer: Layer, filtertype?: 'Baselayers' | 'Overlays' | 'Layers') {
+  public removeLayer(layer: Layer, filtertype?: TFiltertypes, force?: boolean) {
     if (this.isInLayergroups(layer)) {
-
-      if (!filtertype) {
-        filtertype = layer.filtertype;
+      if (force) {
+        console.log(`layer: ${layer.id} is removed with force!`);
+        this._removeLayer(layer, filtertype);
       } else {
-        if (filtertype !== layer.filtertype) {
-          console.error(`the layer with id: ${layer.id} you want to remove from ${filtertype} is from filtertype: ${layer.filtertype}`);
+        if (layer.removable) {
+          this._removeLayer(layer, filtertype);
+        } else if (!layer.removable) {
+          console.log(`layer: ${layer.id} is not removable!`);
         }
       }
-
-      // console.log('remove single layer from storeItems!!!!!');
-      const storeItems = this.store.getValue().filter((lg) => {
-        if (lg instanceof Layer) {
-          return lg.id !== layer.id;
-        } else {
-          return lg;
-        }
-      });
-      this.store.next(storeItems);
-      this.filterFiltertype(filtertype);
     } else {
-      console.error(`layer or Group with id: ${layer.id} not in storeItems!`);
+      console.error(`layer with id: ${layer.id} not in storeItems!`);
     }
+  }
+
+  private _removeLayer(layer: Layer, filtertype?: TFiltertypes) {
+    if (!filtertype) {
+      filtertype = layer.filtertype;
+    } else {
+      if (filtertype !== layer.filtertype) {
+        console.error(`the layer with id: ${layer.id} you want to remove from ${filtertype} is from filtertype: ${layer.filtertype}`);
+      }
+    }
+
+    // console.log('remove single layer from storeItems!!!!!');
+    const storeItems = this.store.getValue().filter((lg) => {
+      if (lg instanceof Layer) {
+        return lg.id !== layer.id;
+      } else {
+        return lg;
+      }
+    });
+    this.store.next(storeItems);
+    this.filterFiltertype(filtertype);
   }
 
   /**
   * Updates a ukis Layer in the Layerservice Store
-  * filtertype: 'Baselayers' | 'Overlays' | 'Layers'
+  * filtertype: TFiltertypes
   * if filtertype is not provided the filtertype of the Layer is used!
   */
-  public updateLayer(layer: Layer, filtertype?: 'Baselayers' | 'Overlays' | 'Layers') {
-
+  public updateLayer(layer: Layer, filtertype?: TFiltertypes) {
     if (this.isInLayergroups(layer)) {
 
       if (!filtertype) {

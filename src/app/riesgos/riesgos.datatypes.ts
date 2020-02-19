@@ -113,8 +113,8 @@ export class WpsProcess implements ExecutableProcess {
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
         ) {
-        const cache = new IndexDbCache();
-        this.wpsClient = new WpsClient(this.wpsVersion, httpClient, cache);
+        // const cache = new IndexDbCache();
+        this.wpsClient = new WpsClient(this.wpsVersion, httpClient);
     }
 
     public execute(

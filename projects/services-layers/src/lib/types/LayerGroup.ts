@@ -1,4 +1,4 @@
-import { Layer, TGeoExtent } from './Layers';
+import { Layer, TGeoExtent, TFiltertypes } from './Layers';
 
 /**
  *  LayerGroups
@@ -10,7 +10,7 @@ export interface ILayerGroupOptions {
 
     visible?: boolean;
     displayName?: string;
-    filtertype?: 'Baselayers' | 'Overlays' | 'Layers';
+    filtertype?: TFiltertypes;
     removable?: boolean;
     layerRemovable?: boolean;
     bbox?: TGeoExtent;
@@ -26,15 +26,16 @@ export class LayerGroup {
     name: string;
     layers: Layer[];
 
+    protected _visible?: boolean;
     displayName?: string;
-    filtertype?: 'Baselayers' | 'Overlays' | 'Layers' = 'Layers';
+    filtertype?: TFiltertypes = 'Layers';
     removable = true;
     layerRemovable = true;
     bbox?: [number, number, number, number];
     description?: string;
     actions?: [{ title: string, icon: string, action: (LayerGroup) => void }];
     constructor(options: ILayerGroupOptions) {
-        if (options.visible && options.layers) {
+        if (options && options.visible !== undefined && options.layers && options.layers.length) {
             options.layers = options.layers.map(l => {
                 l.visible = options.visible;
                 return l;
@@ -44,10 +45,14 @@ export class LayerGroup {
     }
 
     get visible() {
-        return this.layers.filter(l => l.visible).length > 0;
+        if (this.layers && this.layers.length) {
+            this._visible = this.layers.filter(l => l.visible).length > 0;
+        }
+        return this._visible;
     }
     set visible(value: boolean) {
-        if (this.layers) {
+        this._visible = value;
+        if (this.layers && this.layers.length) {
             this.layers = this.layers.map(l => {
                 l.visible = value;
                 return l;

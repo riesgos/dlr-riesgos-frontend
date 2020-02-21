@@ -50,6 +50,7 @@ import { DisclaimerComponent } from './components/disclaimer/disclaimer.componen
 import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
 import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
 import { HelpersModule } from '@ukis/helpers/src/public-api';
+import { LicensesComponent } from './route-components/licenses/licenses.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { HelpersModule } from '@ukis/helpers/src/public-api';
     DisclaimerComponent,
     DisclaimerpopupComponent,
     InteractionstatemonitorComponent,
+    LicensesComponent,
   ],
   imports: [
     BrowserModule,

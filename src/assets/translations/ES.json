@@ -15,6 +15,14 @@
     "Showcase Ecuador": "Quito / Región Cotopaxi",
     "Showcase Peru": "Lima Metropolitana y Callao",
 
+    
+    "Licenses": "Licencias",
+    "Licenses disclaimer": "Se usaron muchas bibliotecas de terceros para crear este proyecto. Sus licencias se enumeran aquí.",
+    "Library name": "Nombre de biblioteca",
+    "License": "Licencia",
+    "Repository": "Repositorio",
+    "Publisher": "Editor",
+
     "Unavailable": "Downstream",
     "Available": "Preparado",
     "Running": "Ejecutando",

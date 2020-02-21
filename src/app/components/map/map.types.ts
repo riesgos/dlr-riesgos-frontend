@@ -1,4 +1,4 @@
-import { VectorLayer, RasterLayer, Layer } from '@ukis/services-layers';
+import { VectorLayer, RasterLayer, Layer, CustomLayer } from '@ukis/services-layers';
 
 
 export class ProductVectorLayer extends VectorLayer {
@@ -11,9 +11,12 @@ export class ProductRasterLayer extends RasterLayer {
     attribution = '';
 }
 
+export class ProductCustomLayer extends CustomLayer {
+    productId: string;
+    attribution = '';
+}
 
-export type ProductLayer = ProductRasterLayer | ProductVectorLayer;
-
+export type ProductLayer = ProductRasterLayer | ProductVectorLayer | ProductCustomLayer;
 
 export const isProductLayer = (layer: Layer): layer is ProductLayer => {
     return layer.hasOwnProperty('productId');

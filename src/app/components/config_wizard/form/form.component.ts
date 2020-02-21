@@ -4,8 +4,8 @@ import { UserconfigurableProductDescription, UserconfigurableProduct, isBboxUcon
 import { WizardableProcess } from '../wizardable_processes';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ClickRunProcess, ProductsProvided } from 'src/app/wps/wps.actions';
-import { Product } from 'src/app/wps/wps.datatypes';
+import { ClickRunProcess, ProductsProvided } from 'src/app/riesgos/riesgos.actions';
+import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { isBbox } from '@ukis/services-ogc';
 import { debounceTime } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';

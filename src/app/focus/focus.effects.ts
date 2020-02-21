@@ -4,7 +4,7 @@ import { FocusAction, EFocusActionTypes, GoToNextProcess, NewProcessClicked } fr
 import { map, withLatestFrom } from 'rxjs/operators';
 import { State } from '../ngrx_register';
 import { Store } from '@ngrx/store';
-import { ProcessStateTypes } from '../wps/wps.datatypes';
+import { ProcessStateTypes } from '../riesgos/riesgos.datatypes';
 
 
 
@@ -19,8 +19,8 @@ export class FocusEffects {
         ofType<FocusAction>(EFocusActionTypes.goToNextProcess),
         withLatestFrom(this.store$),
         map(([action, state]) => {
-            const currentScenario = state.wpsState.currentScenario;
-            const activeProcess = state.wpsState.scenarioData[currentScenario].processStates.find((p) => {
+            const currentScenario = state.riesgosState.currentScenario;
+            const activeProcess = state.riesgosState.scenarioData[currentScenario].processStates.find((p) => {
                 return p.state.type === ProcessStateTypes.available;
             });
             if (activeProcess) {

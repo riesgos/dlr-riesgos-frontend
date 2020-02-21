@@ -1,0 +1,36 @@
+{
+  "name": "@ukis/services-ogc",
+  "main": "bundles/ukis-services-ogc.umd.js",
+  "version": "0.0.0-PLACEHOLDER",
+  "peerDependencies": {
+    "@angular/common": "0.0.0-NG-PLACEHOLDER",
+    "@angular/core": "0.0.0-NG-PLACEHOLDER",
+    "rxjs": "0.0.0-rxjs-PLACEHOLDER"
+  },
+  "dependencies": {
+    "@ukis/services-layers": "0.0.0-PLACEHOLDER",
+    "@ukis/services-util-store": "0.0.0-PLACEHOLDER",
+    "@ukis/base-layers-raster": "0.0.0-PLACEHOLDER",
+    "@ukis/services-map-state": "0.0.0-PLACEHOLDER",
+    "md5": "0.0.0-md5-PLACEHOLDER",
+    "w3c-schemas": "^1.4.0",
+    "ogc-schemas": "^2.6.1",
+    "ol": "^6.1.1",
+    "@boundlessgeo/jsonix": "^2.4.3",
+    "tslib": "^1.9.0"
+  },
+  "devDependencies": {
+    "core-js": "0.0.0-corejs-PLACEHOLDER",
+    "zone.js": "0.0.0-zonejs-PLACEHOLDER",
+    "@angular/platform-browser-dynamic": "0.0.0-NG-PLACEHOLDER"
+  },
+  "module": "fesm5/ukis-services-ogc.js",
+  "es2015": "fesm2015/ukis-services-ogc.js",
+  "esm5": "esm5/ukis-services-ogc.js",
+  "esm2015": "esm2015/ukis-services-ogc.js",
+  "fesm5": "fesm5/ukis-services-ogc.js",
+  "fesm2015": "fesm2015/ukis-services-ogc.js",
+  "typings": "ukis-services-ogc.d.ts",
+  "metadata": "ukis-services-ogc.metadata.json",
+  "sideEffects": false
+}

@@ -1,4 +1,4 @@
-import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -7,7 +7,7 @@ import { Volcanus } from './volcanus';
 import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './ashfallService';
 import { WpsData, WpsDataDescription } from '@ukis/services-ogc';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
@@ -17,7 +17,7 @@ import { createHeaderTableHtml, createTableHtml, createKeyValueTableHtml } from 
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 
-export const ashfallDamage: WpsData & VectorLayerData = {
+export const ashfallDamage: WpsData & VectorLayerProduct = {
     uid: 'ashfallDamage',
     description: {
         id: 'damage',
@@ -70,7 +70,7 @@ export const ashfallDamage: WpsData & VectorLayerData = {
     value: null
 };
 
-export const ashfallTransition: WpsData & VectorLayerData = {
+export const ashfallTransition: WpsData & VectorLayerProduct = {
     uid: 'ashfallTransition',
     description: {
         id: 'transition',
@@ -192,7 +192,7 @@ export const ashfallTransition: WpsData & VectorLayerData = {
     value: null
 };
 
-export const ashfallUpdatedExposure: WpsData & VectorLayerData = {
+export const ashfallUpdatedExposure: WpsData & VectorLayerProduct = {
     uid: 'ashfallExposure',
     description: {
         id: 'updated_exposure',

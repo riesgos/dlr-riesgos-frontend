@@ -1,10 +1,10 @@
-import { WpsProcess, ProcessStateUnavailable, AutorunningProcess, Product, ExecutableProcess, ProcessState } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsClient } from '@ukis/services-ogc';
 import { selectedEq } from './eqselection';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { map } from 'rxjs/operators';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { FeatureCollection } from '@turf/helpers';
@@ -43,7 +43,7 @@ const mag: WpsData & Product = {
 };
 
 
-export const tsWms: WpsData & WmsLayerData = {
+export const tsWms: WpsData & WmsLayerProduct = {
     uid: 'get_scenario_epiCenter',
     description: {
         id: 'epiCenter',

@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { getCurrentScenarioWpsState } from 'src/app/wps/wps.selectors';
-import { WpsScenarioState } from 'src/app/wps/wps.state';
+import { getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
+import { RiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
 import { BehaviorSubject } from 'rxjs';
-import { Process, Product, ProcessStateTypes } from 'src/app/wps/wps.datatypes';
+import { Process, Product, ProcessStateTypes } from 'src/app/riesgos/riesgos.datatypes';
 import { Graph } from 'graphlib';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -26,7 +26,7 @@ export class ShowgraphComponent implements OnInit {
   public dotStringPO$: BehaviorSubject<string>;
   public dotStringFull$: BehaviorSubject<string>;
   public showModal = false;
-  private currentState: WpsScenarioState;
+  private currentState: RiesgosScenarioState;
 
   constructor(
     private store: Store<State>,
@@ -37,7 +37,7 @@ export class ShowgraphComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.select(getCurrentScenarioWpsState).subscribe((currentState: WpsScenarioState) => {
+    this.store.select(getCurrentScenarioRiesgosState).subscribe((currentState: RiesgosScenarioState) => {
       if (currentState) {
         this.currentState = currentState;
         const processes = currentState.processStates;

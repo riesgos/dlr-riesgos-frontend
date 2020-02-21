@@ -1,4 +1,4 @@
-import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
+import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { ashfallUpdatedExposureRef } from './ashfallDamage';
 import { laharVelocityShakemapRef } from './laharWrapper';
@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { WpsData } from '@ukis/services-ogc';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { greenRedRange, toDecimalPlaces, ninetyPercentLowerThan, weightedDamage } from 'src/app/helpers/colorhelpers';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml, createTableHtml, createHeaderTableHtml } from 'src/app/helpers/others';
@@ -21,7 +21,7 @@ import { direction } from './lahar';
 
 
 
-export const laharDamage: WpsData & VectorLayerData = {
+export const laharDamage: WpsData & VectorLayerProduct = {
     uid: 'laharDamage',
     description: {
         id: 'damage',
@@ -74,7 +74,7 @@ export const laharDamage: WpsData & VectorLayerData = {
     value: null
 };
 
-export const laharTransition: WpsData & VectorLayerData = {
+export const laharTransition: WpsData & VectorLayerProduct = {
     uid: 'laharTransition',
     description: {
         id: 'transition',
@@ -196,7 +196,7 @@ export const laharTransition: WpsData & VectorLayerData = {
     value: null
 };
 
-export const laharUpdatedExposure: WpsData & VectorLayerData = {
+export const laharUpdatedExposure: WpsData & VectorLayerProduct = {
     uid: 'laharExposure',
     description: {
         id: 'updated_exposure',
@@ -325,7 +325,7 @@ export const DamageMayRun: Product = {
     value: null
 };
 
-export const DamageMayRunProcess: AutorunningProcess = {
+export const DamageMayRunProcess: ProductTransformingProcess = {
     uid: 'damageMayRunProcess',
     name: 'damageMayRunChecker',
     requiredProducts: [],

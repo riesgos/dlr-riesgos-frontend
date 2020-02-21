@@ -1,11 +1,11 @@
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { ProcessStateAvailable, WpsProcess } from 'src/app/wps/wps.datatypes';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { ProcessStateAvailable, WpsProcess } from 'src/app/riesgos/riesgos.datatypes';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { eqShakemapRef } from './shakyground';
 import { HttpClient } from '@angular/common/http';
 
 
-export const physicalImpact: VectorLayerData = {
+export const physicalImpact: VectorLayerProduct = {
     uid: 'pia_physicalImpact',
     description: {
         id: 'physicalImpact',

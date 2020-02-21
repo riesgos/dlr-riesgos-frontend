@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { InteractionMode } from './interactions.state';
-import { Product } from '../wps/wps.datatypes';
+import { Product } from '../riesgos/riesgos.datatypes';
 
 
 export enum InteractionActionTypes {

@@ -1,5 +1,5 @@
 import { FeatureCollection } from '@turf/helpers';
-import { Product, ProductDescription } from 'src/app/wps/wps.datatypes';
+import { Product, ProductDescription } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsBboxData, WpsBboxValue } from '@ukis/services-ogc';
 
 

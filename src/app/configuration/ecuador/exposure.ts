@@ -1,10 +1,10 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsData } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { createBigBarchart, Bardata, createBarchart } from 'src/app/helpers/d3charts';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -100,7 +100,7 @@ export const initialExposureAshfallRef: WpsData & Product = {
   value: null
 };
 
-export const initialExposureAshfall: VectorLayerData & WpsData & Product = {
+export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
   uid: 'initial_Exposure',
   description: {
     id: 'selectedRowsGeoJson',

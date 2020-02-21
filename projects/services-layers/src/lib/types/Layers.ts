@@ -37,6 +37,7 @@ export const CustomLayertype = 'custom';
 export type TVectorLayertype = 'geojson' | 'wfs' | 'custom';
 export type TRasterLayertype = 'wms' | 'wmts' | 'xyz' | 'custom';
 export type TLayertype = TRasterLayertype | TVectorLayertype | string;
+export type TFiltertypes = 'Baselayers' | 'Overlays' | 'Layers';
 
 
 
@@ -62,7 +63,7 @@ export interface ILayerOptions {
   // id: string
   type: TLayertype;
 
-  filtertype?: 'Baselayers' | 'Overlays' | 'Layers';
+  filtertype?: TFiltertypes;
   opacity?: number;
   visible?: boolean;
   hasFocus?: boolean;
@@ -73,7 +74,7 @@ export interface ILayerOptions {
   displayName?: string;
   description?: string;
   time?: string;
-  /** zIndex: DEPRECATED handeld internally by the layer service */
+  /** zIndex: DEPRECIATED handeld internal by the layer service */
   zIndex?: number;
   minResolution?: number;
   maxResolution?: number;
@@ -126,6 +127,7 @@ export interface IRasterLayerOptions extends ILayerOptions {
 }
 
 export interface IVectorLayerOptions extends ILayerOptions {
+  /** data: geojson data */
   data?: any;
   url?: string;
   subdomains?: Array<string>;
@@ -158,8 +160,8 @@ export class Layer implements ILayerOptions {
   hasFocus?: boolean;
   icon?: string;
 
-  filtertype?: 'Baselayers' | 'Overlays' | 'Layers' = 'Layers';
-  continuousWorld = false;
+  filtertype?: TFiltertypes = 'Layers';
+  continuousWorld?: boolean = false;
   attribution?: string;
   displayName?: string;
   description?: string;
@@ -257,6 +259,7 @@ export const isRasterLayer = (layer: Layer): layer is RasterLayer => {
 
 export class VectorLayer extends Layer implements IVectorLayerOptions {
   type: TVectorLayertype;
+  /** data: geojson data */
   data?: any;
   url?: string;
   subdomains?: Array<string>;

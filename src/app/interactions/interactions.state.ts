@@ -1,5 +1,5 @@
 import { ProductId } from '@ukis/services-ogc';
-import { Product } from '../wps/wps.datatypes';
+import { Product } from '../riesgos/riesgos.datatypes';
 
 export type InteractionMode = 'normal' | 'featureselection' | 'bbox';
 

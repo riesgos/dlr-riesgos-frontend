@@ -1,7 +1,7 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from '../../wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '@ukis/services-ogc';
-import { WmsLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { selectedEq } from './eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
@@ -9,7 +9,7 @@ import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
-export const shakemapWmsOutput: WpsData & WmsLayerData = {
+export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
     uid: 'Shakyground_wms',
     description: {
         id: 'shakeMapFile',

@@ -1,7 +1,7 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsData } from '@ukis/services-ogc';
-import { WmsLayerData, VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import {
   UserconfigurableProduct, StringUconfProduct,
   StringSelectUconfProduct
@@ -110,7 +110,7 @@ export const initialExposureRef: WpsData & Product = {
   value: null
 };
 
-export const initialExposure: VectorLayerData & WpsData & Product = {
+export const initialExposure: VectorLayerProduct & WpsData & Product = {
   uid: 'initial_Exposure',
   description: {
     id: 'selectedRowsGeoJson',

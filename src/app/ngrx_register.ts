@@ -1,7 +1,7 @@
 import { ActionReducerMap } from '@ngrx/store';
-import { WpsState } from './wps/wps.state';
-import { wpsReducer } from './wps/wps.reducers';
-import { WpsEffects } from './wps/wps.effects';
+import { RiesgosState } from './riesgos/riesgos.state';
+import { riesgosReducer } from './riesgos/riesgos.reducers';
+import { RiesgosEffects } from './riesgos/riesgos.effects';
 import { FocusState } from './focus/focus.state';
 import { focusReducer } from './focus/focus.reducers';
 import { InteractionState } from './interactions/interactions.state';
@@ -9,18 +9,18 @@ import { interactionReducer } from './interactions/interactions.reducer';
 import { InteractionEffects } from './interactions/interactions.effects';
 
 export interface State {
-    wpsState: WpsState;
+    riesgosState: RiesgosState;
     focusState: FocusState;
     interactionState: InteractionState;
 }
 
 export const reducers: ActionReducerMap<State> = {
-    wpsState: wpsReducer,
+    riesgosState: riesgosReducer,
     focusState: focusReducer,
     interactionState: interactionReducer
 };
 
 export const effects = [
-    WpsEffects, InteractionEffects
+    RiesgosEffects, InteractionEffects
 ];
 

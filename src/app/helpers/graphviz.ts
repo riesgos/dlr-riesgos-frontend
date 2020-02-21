@@ -1,4 +1,4 @@
-import { Process, Product, ProcessStateTypes } from '../wps/wps.datatypes';
+import { Process, Product, ProcessStateTypes } from '../riesgos/riesgos.datatypes';
 import { Graph } from 'graphlib';
 
 

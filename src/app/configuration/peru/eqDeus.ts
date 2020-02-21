@@ -1,8 +1,8 @@
-import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { schemaPeru, initialExposurePeru } from './exposure';
 import { WpsData } from '@ukis/services-ogc';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata, createConfusionMatrix } from 'src/app/helpers/d3charts';
@@ -29,7 +29,7 @@ export const lossPeru: WpsData & Product = {
     value: 'testinputs/loss_sara.json'
 };
 
-export const eqDamagePeru: VectorLayerData & WpsData & Product = {
+export const eqDamagePeru: VectorLayerProduct & WpsData & Product = {
     uid: 'damagePeru',
     description: {
         id: 'damage',
@@ -111,7 +111,7 @@ export const eqDamagePeru: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const eqTransitionPeru: VectorLayerData & WpsData & Product = {
+export const eqTransitionPeru: VectorLayerProduct & WpsData & Product = {
     uid: 'transitionPeru',
     description: {
         id: 'transition',
@@ -234,7 +234,7 @@ export const eqTransitionPeru: VectorLayerData & WpsData & Product = {
     value: null
 };
 
-export const eqUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
+export const eqUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
     uid: 'updated_exposurePeru',
     description: {
         id: 'updated_exposure',

@@ -1,9 +1,9 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsProcess, ProcessStateUnavailable, Product, AutorunningProcess } from 'src/app/wps/wps.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { vei } from './lahar';
 import { WpsData } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
-import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateHue } from 'src/app/helpers/colorhelpers';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -17,7 +17,7 @@ import { FeatureCollection } from '@turf/helpers';
 
 const allDepths = [];
 
-export const ashfall: WpsData & Product & VectorLayerData = {
+export const ashfall: WpsData & Product & VectorLayerProduct = {
     uid: 'ashfall',
     description: {
         id: 'ashfall',

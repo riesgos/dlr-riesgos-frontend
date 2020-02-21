@@ -203,17 +203,17 @@ export const selectedEqs: VectorLayerData & WpsData = {
                 });
             },
             text: (properties) => {
-                let text = `<h3>Terremotos disponibles</h3>`;
+                let text = `<h3>Available earthquakes</h3>`;
                 const selectedProperties = {
-                    Magnitud: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
-                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
+                    Magnitude: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    Depth: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                     // Latitude: toDecimalPlaces(1, 1),
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],
                 };
                 if (properties['origin.time.value'] && etype.value === 'observed') {
                     const date = new Date(Date.parse(properties['origin.time.value']));
-                    selectedProperties['Fecha'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                    selectedProperties['Date'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
                 }
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {
@@ -237,7 +237,7 @@ export const selectedEqs: VectorLayerData & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'terremoto<br/>radius: magnitud<br/>color: profundidad'
+                text: 'EQ<br/>radius: magnitude<br/>color: depth'
             }]
         }
     },

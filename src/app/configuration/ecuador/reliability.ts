@@ -95,7 +95,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Probabilidád de disrupción: 0.05'
+                text: 'Probability of disruption: 0.05'
             }, {
                 feature: {
                     "type": "Feature",
@@ -109,7 +109,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Probabilidád de disrupción: 0.4'
+                text: 'Probability of disruption: 0.4'
             }, {
                 feature: {
                     "type": "Feature",
@@ -123,16 +123,16 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerData = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Probabilidád de disrupción: 0.7'
+                text: 'Probability of disruption: 0.7'
             }],
             text: (props: object) => {
                 const selectedProps = {
-                    'Nombre': props['Name'],
-                    'Superficie': props['Area'],
-                    'Población': props['population'],
-                    'Prob. de interrupción': props['Prob_Disruption'],
+                    'Name': props['Name'],
+                    'Area': props['Area'],
+                    'Population': props['population'],
+                    'Prob. of interuption': props['Prob_Disruption'],
                 };
-                return createKeyValueTableHtml('Suministro eléctrico', selectedProps);
+                return createKeyValueTableHtml('Power supply', selectedProps);
             }
         }
     },

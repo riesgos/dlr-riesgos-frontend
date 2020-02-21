@@ -1,8 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/wps/wps.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { vei } from '../ecuador/lahar';
 import { WpsData } from '@ukis/services-ogc';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerData } from 'src/app/components/map/mappable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -85,12 +83,11 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerData = {
             },
             text: (props: object) => {
                 const selectedProps = {
-                    'Nombre': props['Name'],
-                    'Superficie': props['Area'],
-                    'Población': props['population'],
-                    'Prob. de interrupción': props['Prob_Disruption'],
+                    'Name': props['Name'],
+                    'Population': props['population'],
+                    'Prob. of interuption': props['Prob_Disruption'],
                 };
-                return createKeyValueTableHtml('Suministro eléctrico', selectedProps);
+                return createKeyValueTableHtml('Power supply', selectedProps);
             }
         }
     },

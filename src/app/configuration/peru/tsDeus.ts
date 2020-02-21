@@ -42,15 +42,58 @@ export const tsDamagePeru: VectorLayerData & WpsData & Product = {
                   })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": {'loss_value': 100000},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Loss 100.000 USD'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'loss_value': 500000},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Loss 500.000 USD'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'loss_value': 1000000},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Loss 1000.000 USD'
+            }],
             text: (props: object) => {
-                return `<h4>Pérdida ${props['name']}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4>Loss </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
             summary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
-                return createKeyValueTableHtml('', {'daño total': totalDamageFormatted});
+                return createKeyValueTableHtml('', {'total damage': totalDamageFormatted});
             }
         },
         description: 'Concrete damage in USD.'
@@ -116,7 +159,7 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>de\\a</b>';
+                            labeledMatrix[r][c] = '<b>from\\to</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -127,7 +170,7 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
                     }
                 }
 
-                return `<h4>Transiciónes ${props['name']}</h4>${createTableHtml(labeledMatrix)}`;
+                return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const matrix = Array.from(Array(7), _ => Array(7).fill(0));
@@ -147,7 +190,7 @@ export const tsTransitionPeru: VectorLayerData & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>de\\a</b>';
+                            labeledMatrix[r][c] = '<b>from\\to</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -218,6 +261,49 @@ export const tsUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                   })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [90, 10, 0, 0, 0, 0]}},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Damage states: 90/10/0/0/0/0'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [0, 10, 40, 40, 10, 0]}},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Damage states: 0/10/40/40/10/0'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [0, 0, 0, 0, 20, 80]}},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Damage states: 0/0/0/0/20/80'
+            }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
 
@@ -240,8 +326,8 @@ export const tsUpdatedExposurePeru: VectorLayerData & WpsData & Product = {
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '# edificios');
-                return `<h4>Exposición actualizada ${props['name']}</h4>${anchor.innerHTML}`;
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
+                return `<h4>Updated exposure </h4>${anchor.innerHTML}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

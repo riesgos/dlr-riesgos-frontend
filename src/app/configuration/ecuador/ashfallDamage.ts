@@ -53,17 +53,17 @@ export const ashfallDamage: WpsData & VectorLayerData = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Pérdida 500.000 USD'
+                text: 'Loss 500.000 USD'
             }],
             text: (props: object) => {
-                return `<h4>Pérdida ${props['name']}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4>Loss </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
             summary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
-                return createKeyValueTableHtml('', {'daño total': totalDamageFormatted});
+                return createKeyValueTableHtml('', {'total damage': totalDamageFormatted});
             }
         }
     },
@@ -143,7 +143,7 @@ export const ashfallTransition: WpsData & VectorLayerData = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>de\\a</b>';
+                            labeledMatrix[r][c] = '<b>from\\to</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -154,7 +154,7 @@ export const ashfallTransition: WpsData & VectorLayerData = {
                     }
                 }
 
-                return `<h4>Transiciónes ${props['name']}</h4>${createTableHtml(labeledMatrix)}`;
+                return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const matrix = Array.from(Array(4), _ => Array(4).fill(0));
@@ -174,7 +174,7 @@ export const ashfallTransition: WpsData & VectorLayerData = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>de\\a</b>';
+                            labeledMatrix[r][c] = '<b>from\\to</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -254,7 +254,7 @@ export const ashfallUpdatedExposure: WpsData & VectorLayerData = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Estados de daño'
+                text: 'Damage states'
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -275,8 +275,8 @@ export const ashfallUpdatedExposure: WpsData & VectorLayerData = {
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'estado de daño', '# edificios');
-                return `<h4>Exposición actualizada ${props['name']}</h4>${anchor.innerHTML}`;
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
+                return `<h4>Updated exposure </h4>${anchor.innerHTML}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

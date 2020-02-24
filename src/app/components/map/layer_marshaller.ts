@@ -109,7 +109,7 @@ export class LayerMarshaller  {
     /**
      * Reuses one vectorsource over multiple vectorlayers.
      * Note that this requires us to make these layers UKIS-'CustomLayers',
-     * because UKIS-VectorLayers assume to have their own source of data.
+     * because UKIS-VectorLayers are assumed to have their own source of data.
      */
     makeGeojsonLayers(product: MultiVectorLayerProduct): Observable<ProductCustomLayer[]> {
 
@@ -125,6 +125,14 @@ export class LayerMarshaller  {
                 style: vectorLayerProps.vectorLayerAttributes.style
             });
 
+            let description = '';
+            if (vectorLayerProps.description) {
+                description = this.translator.instant(vectorLayerProps.description);
+            }
+            if (vectorLayerProps.vectorLayerAttributes.summary) {
+                description += '<br/>' + vectorLayerProps.vectorLayerAttributes.summary(product.value);
+            }
+
             const productLayer: ProductCustomLayer = new ProductCustomLayer({
                 custom_layer: layer,
                 id: product.uid + '_' + vectorLayerProps.name,
@@ -133,6 +141,7 @@ export class LayerMarshaller  {
                 visible: true,
                 attribution: '',
                 type: 'custom',
+                description: description,
                 removable: false,
                 continuousWorld: true,
                 time: null,
@@ -156,10 +165,15 @@ export class LayerMarshaller  {
                     }
                 }]
             });
-            layer.productId = product.uid;
+            productLayer.productId = product.uid;
 
+            // Ugly hack: a custom layer is not supposed to have an 'options' property.
+            // We set it here anyway, because we need options.style to be able to create a custom legend.
+            productLayer['options'] = {
+                style: vectorLayerProps.vectorLayerAttributes.style
+            };
             if (vectorLayerProps.vectorLayerAttributes.legendEntries) {
-                layer.legendEntries = vectorLayerProps.vectorLayerAttributes.legendEntries;
+                productLayer['legendEntries'] = vectorLayerProps.vectorLayerAttributes.legendEntries;
             }
 
             layers.push(productLayer);

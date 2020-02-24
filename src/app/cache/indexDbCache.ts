@@ -19,6 +19,7 @@ export class IndexDbCache implements Cache {
         };
         const request$ = set(key, entry).then(() => {
             console.log('Stored data in cache for key', key);
+            return true;
         });
         return from(request$);
     }

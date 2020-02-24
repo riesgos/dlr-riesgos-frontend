@@ -1,3 +1,5 @@
+![RIESGOS Logo](src/assets/logos/riesgos_base_small_en.svg "RIESGOS Logo")
+
 # Contributor Code of Conduct
 ## Version 0.1-RIESGOS
 

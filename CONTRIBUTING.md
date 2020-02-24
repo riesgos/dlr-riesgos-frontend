@@ -1,3 +1,5 @@
+![RIESGOS Logo](src/assets/logos/riesgos_base_small_en.svg "RIESGOS Logo")
+
 # Contributing to RIESGOS
 
 We would love for you to contribute to RIESGOS and help make it even better than it is
@@ -163,4 +165,3 @@ changes to be accepted, the CLA must be signed. It's a quick process, we promise
 [github]: https://github.com/riesgos/
 [cla]: https://github.com/riesgos/project-riesgos/DLR_Individual_Contributor_License_Agreement_RIESGOS.pdf
 [coc]: https://github.com/riesgos/project-riesgos/CODE_OF_CONDUCT.md
-[development]: https://github.com/riesgos/project-riesgos/DEVELOPMENT.md

@@ -92,7 +92,7 @@ export class LayerMarshaller  {
             id: `${product.uid}_${product.description.id}_result_layer`,
             name: `${product.description.name}`,
             attribution: '',
-            removable: false,
+            removable: true,
             opacity: 0.6,
             type: 'geojson',
             filtertype: 'Overlays',
@@ -142,7 +142,7 @@ export class LayerMarshaller  {
                 attribution: '',
                 type: 'custom',
                 description: description,
-                removable: false,
+                removable: true,
                 continuousWorld: true,
                 time: null,
                 filtertype: 'Overlays',
@@ -158,7 +158,9 @@ export class LayerMarshaller  {
                     icon: 'download',
                     title: 'download',
                     action: (theLayer: any) => {
-                        const data = theLayer.data;
+                        const geojsonParser = new GeoJSON();
+                        const olFeatures = theLayer.custom_layer.getSource().getFeatures();
+                        const data = geojsonParser.writeFeatures(olFeatures);
                         if (data) {
                             downloadJson(data, `data_${theLayer.name}.json`);
                         }
@@ -209,7 +211,7 @@ export class LayerMarshaller  {
                     attribution: '',
                     description: description,
                     opacity: 0.6,
-                    removable: false,
+                    removable: true,
                     type: 'geojson',
                     filtertype: 'Overlays',
                     data: data,
@@ -304,7 +306,7 @@ export class LayerMarshaller  {
                         name: `${layername}`,
                         attribution: '',
                         opacity: 0.6,
-                        removable: false,
+                        removable: true,
                         type: 'wms',
                         filtertype: 'Overlays',
                         visible: true,

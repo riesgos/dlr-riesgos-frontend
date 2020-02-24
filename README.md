@@ -1,7 +1,7 @@
 ![RIESGOS Logo](src/assets/logos/riesgos_base_small_en.svg "RIESGOS Logo")
 
 ## Getting started
-This project depends on the 'UKIS frontend libraries', which are distributed as packages on github. To use these packages, please follow the instructions on (the UKIS frontend libraries github page)[https://github.com/dlr-eoc/ukis-frontend-libraries].
+This project depends on the 'UKIS frontend libraries', which are distributed as packages on github. To use these packages, please follow the instructions on [the UKIS frontend libraries github page](https://github.com/dlr-eoc/ukis-frontend-libraries).
 
 ## Licenses
 3rd party licenses are displayed with the component 'licenses.component'. This component requires there to be a file named 'licenses.json' in the assets directory. 

@@ -14,5 +14,5 @@
         <clr-dg-cell><a href="{{l.repository}}">{{l.repository}}</a></clr-dg-cell>
     </clr-dg-row>
 
-    <clr-dg-footer>{{(licenses | async).length}} third party dependencies</clr-dg-footer>
+    <clr-dg-footer>{{(licenses | async).length}} {{ 'third party dependencies' | translate }}</clr-dg-footer>
 </clr-datagrid>

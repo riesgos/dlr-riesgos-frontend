@@ -1,35 +1,38 @@
 import { Cache, } from '@ukis/services-ogc';
-import { openDB } from 'idb';
+import { set, get } from 'idb-keyval';
 import { Observable, from } from 'rxjs';
 import md5 from 'md5';
 
 
+interface Entry {
+    data: string;
+    created: Date;
+}
+
 export class IndexDbCache implements Cache {
 
-    private version = 1;
-    private dbName = 'riesgos';
-    private storeName = 'cache';
-
     set(input: any, output: any): Observable<any> {
-        const data = {
-            key: md5(input),
-            data: output,
+        const key = md5(JSON.stringify(input));
+        const entry: Entry = {
+            data: JSON.stringify(output),
             created: new Date()
         };
-
-        const request$ = openDB(this.dbName, this.version).then(db => {
-            const store = db.transaction(this.storeName).objectStore(this.storeName);
-            return store.add(data);
+        const request$ = set(key, entry).then(() => {
+            console.log('Stored data in cache for key', key);
         });
-
         return from(request$);
     }
 
     get(input: any): Observable<any> {
-        const key = md5(input);
-        const request$ = openDB(this.dbName, this.version).then(db => {
-            const store = db.transaction(this.storeName).objectStore(this.storeName);
-            return store.get(key);
+        const key = md5(JSON.stringify(input));
+        const request$ = get(key).then((entry: Entry | undefined) => {
+            if (entry) {
+                console.log('found entry in cache for key', key);
+                return JSON.parse(entry.data);
+            } else {
+                console.log('no entry in cache for key', key);
+                return null;
+            }
         });
         return from(request$);
     }

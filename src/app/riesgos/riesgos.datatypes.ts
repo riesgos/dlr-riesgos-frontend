@@ -2,8 +2,8 @@ import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient } from '@u
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
-import { RemoteCache } from '../cache/remoteCache';
-import { IndexDbCache } from '../cache/indexDbCache';
+import { RemoteCache } from '../services/remoteCache';
+import { IndexDbCache } from '../services/indexDbCache';
 
 
 export type ProductDescription = object;

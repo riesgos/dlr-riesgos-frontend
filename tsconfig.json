@@ -27,6 +27,11 @@
         "projects/*",
         "node_modules/@ukis/*"
       ],
+      "@dlr-eoc/*": [
+        "dist/*",
+        "projects/*",
+        "node_modules/@dlr-eoc/*"
+      ],
       "helpers": [
         "dist/helpers"
       ],

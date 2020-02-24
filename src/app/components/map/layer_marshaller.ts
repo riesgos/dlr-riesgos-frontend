@@ -13,13 +13,13 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { MapStateService } from '@ukis/services-map-state';
-import { SldParserService } from 'projects/sld-parser/src/public-api';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer, ProductCustomLayer } from './map.types';
 import { downloadBlob, downloadJson } from 'src/app/helpers/others';
 import { TranslateService } from '@ngx-translate/core';
 import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON } from 'ol/format';
+import { SldParserService } from 'src/app/services/sld-parser.service';
 
 
 interface WmsParameters {

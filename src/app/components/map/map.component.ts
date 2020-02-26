@@ -3,12 +3,13 @@ import { DragBox } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
 import { Vector as olVectorLayer } from 'ol/layer';
 import TileLayer from 'ol/layer/Tile';
-import { Vector as olVectorSource } from 'ol/source';
+import { Vector as olVectorSource, TileArcGISRest } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import {getWidth} from 'ol/extent';
 import { MapOlService } from '@ukis/map-ol';
 import TileWMS from 'ol/source/TileWMS';
+import XYZ from 'ol/source/XYZ'
 import TileGrid from 'ol/tilegrid/TileGrid';
 import { MapStateService } from '@ukis/services-map-state';
 import { osm, esri_world_imagery } from '@ukis/base-layers-raster';
@@ -260,24 +261,41 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         layers.push(esri_imagery);
 
-        const relief = new RasterLayer({
-            id: 'shade',
+        // const relief = new RasterLayer({
+        //     id: 'shade',
+        //     name: 'Hillshade',
+        //     type: 'wms',
+        //     url: 'https://ows.terrestris.de/osm/service?',
+        //     params: {
+        //         LAYERS: 'SRTM30-Hillshade',
+        //         TRANSPARENT: true,
+        //         FORMAT: 'image/png'
+        //     },
+        //     bbox: [-180, -56, 180, 60],
+        //     description: 'SRTM30 Hillshade - by terrestris',
+        //     attribution: '&copy, <a href="http://www.terrestris.de">terrestris</a>',
+        //     legendImg: 'assets/layer-preview/hillshade-96px.jpg',
+        //     opacity: 0.3,
+        //     visible: false
+        // });
+        // layers.push(relief);
+        const relief2 = new CustomLayer({
             name: 'Hillshade',
-            type: 'wms',
-            url: 'https://ows.terrestris.de/osm/service?',
-            params: {
-                LAYERS: 'SRTM30-Hillshade',
-                TRANSPARENT: true,
-                FORMAT: 'image/png'
-            },
+            id: 'shade',
+            type: 'custom',
+            custom_layer: new TileLayer({
+                source: new XYZ({
+                    url: 'https://maps.heigit.org/openmapsurfer/tiles/asterh/webmercator/{z}/{x}/{y}.png'
+                })
+            }),
             bbox: [-180, -56, 180, 60],
-            description: 'SRTM30 Hillshade - by terrestris',
-            attribution: '&copy, <a href="http://www.terrestris.de">terrestris</a>',
+            description: 'OpenMapSurfer, <a href="https://heigit.org/>Heidelberg institute for geoinformation technology</a>',
+            attribution: '&copy, <a href="https://maps.openrouteservice.org">OpenMapSurfer</a>',
             legendImg: 'assets/layer-preview/hillshade-96px.jpg',
             opacity: 0.3,
             visible: false
         });
-        layers.push(relief);
+        layers.push(relief2);
 
 
         if (scenario === 'c1') {

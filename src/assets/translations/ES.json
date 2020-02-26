@@ -246,6 +246,11 @@
     "ashfallExposure": "Exposición por ceniza",
     "ashfallDamage": "Pérdida por ceniza",
     
+    "Civil Service": "Servicio Civil",
+    "Firefighters": "Bomberos",
+    "Police": "Carabineros",
+    "Airports": "Aeropuertos",
+
 
     "Don't show this again": "No volver a mostrar"
 }

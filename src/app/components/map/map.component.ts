@@ -261,24 +261,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         layers.push(esri_imagery);
 
-        // const relief = new RasterLayer({
-        //     id: 'shade',
-        //     name: 'Hillshade',
-        //     type: 'wms',
-        //     url: 'https://ows.terrestris.de/osm/service?',
-        //     params: {
-        //         LAYERS: 'SRTM30-Hillshade',
-        //         TRANSPARENT: true,
-        //         FORMAT: 'image/png'
-        //     },
-        //     bbox: [-180, -56, 180, 60],
-        //     description: 'SRTM30 Hillshade - by terrestris',
-        //     attribution: '&copy, <a href="http://www.terrestris.de">terrestris</a>',
-        //     legendImg: 'assets/layer-preview/hillshade-96px.jpg',
-        //     opacity: 0.3,
-        //     visible: false
-        // });
-        // layers.push(relief);
         const relief2 = new CustomLayer({
             name: 'Hillshade',
             id: 'shade',
@@ -318,6 +300,52 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 crossOrigin: 'anonymous'
             });
             layers.push(powerlineLayer);
+
+            const civilServiceLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'CivilServiceLayers',
+                name: 'Civil Service',
+                layers: [
+                    new RasterLayer({
+                        id: 'police',
+                        name: 'Police',
+                        type: 'wms',
+                        url: 'http://www.geoportal.cl/arcgis/services/MinisteriodeInterior/chile_minterior_carabineros_cuarteles/MapServer/WMSServer?',
+                        visible: false,
+                        attribution: '&copy, <a href="http://www.geoportal.cl">Ministerio del Interior</a>',
+                        legendImg: 'http://www.geoportal.cl/arcgis/services/MinisteriodeInterior/chile_minterior_carabineros_cuarteles/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0',
+                        params: {
+                            LAYERS: '0'
+                        }
+                    }),
+                    new RasterLayer({
+                        id: 'firefighters',
+                        name: 'Firefighters',
+                        type: 'wms',
+                        url: 'http://www.geoportal.cl/arcgis/services/Otros/chile_bomberos_cuerpos/MapServer/WMSServer?',
+                        visible: false,
+                        attribution: '&copy, <a href="http://www.geoportal.cl">Ministerio del Interior</a>',
+                        legendImg: 'http://www.geoportal.cl/arcgis/services/Otros/chile_bomberos_cuerpos/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0',
+                        params: {
+                            LAYERS: '0'
+                        }
+                    }),
+                    new RasterLayer({
+                        id: 'airports',
+                        name: 'Airports',
+                        type: 'wms',
+                        url: 'http://www.geoportal.cl/arcgis/services/MinisteriodeObrasPublicas/chile_mop_infraestructura_aerea/MapServer/WMSServer?',
+                        visible: false,
+                        attribution: '&copy, <a href="http://www.geoportal.cl">Ministerio del Interior</a>',
+                        legendImg: 'http://www.geoportal.cl/arcgis/services/MinisteriodeObrasPublicas/chile_mop_infraestructura_aerea/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0',
+                        params: {
+                            LAYERS: '0'
+                        }
+                    })
+                ],
+                bbox: [-76.202, -33.397, -67.490, -24.899]
+            });
+            layers.push(civilServiceLayers);
 
 
             const shoaLayers = new LayerGroup({

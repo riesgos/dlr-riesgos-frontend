@@ -1,4 +1,5 @@
 <app-read-more [text]="process.description" [threshold]="10"></app-read-more>
+<a *ngIf="process.wizardProperties.wikiLink" routerLink="/documentation" fragment="{{process.wizardProperties.wikiLink}}">Wiki</a>
 
 <ng-container *ngIf="process.wizardProperties.providerUrl">
     <p class="p3" style="white-space: no-wrap;">

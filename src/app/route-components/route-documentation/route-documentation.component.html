@@ -1,3 +1,4 @@
-<ng-container *ngFor="let entry of entries$ | async">
+<div class="clr-row" *ngFor="let entry of entries$ | async" [routerLink]="documentation" fragment="entry.anchor">
     <ukis-blogentry [title]="entry.title" [body]="entry.body"></ukis-blogentry>
-</ng-container>
+</div>
+

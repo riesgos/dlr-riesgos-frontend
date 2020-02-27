@@ -115,7 +115,8 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
         this.wizardProperties = {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
-            shape: 'router'
+            shape: 'router',
+            wikiLink: 'SystemReliability'
         };
     }
 

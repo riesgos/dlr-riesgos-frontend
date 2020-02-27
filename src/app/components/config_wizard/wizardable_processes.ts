@@ -10,6 +10,7 @@ export interface WizardProperties {
     shape: shape;
     providerName: string;
     providerUrl: string;
+    wikiLink?: string;
 }
 
 

@@ -1,1 +1,3 @@
-<p>route-documentation works!</p>
+<ng-container *ngFor="let entry of entries$ | async">
+    <ukis-blogentry [title]="entry.title" [body]="entry.body"></ukis-blogentry>
+</ng-container>

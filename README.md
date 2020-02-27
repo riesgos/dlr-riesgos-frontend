@@ -23,6 +23,7 @@ This website is the frontend for a cloud of webservices. During the RIESGOS-proj
 | RiesgosFloodDamage | GFZ      |                                                                                | https://github.com/gfzriesgos/RiesgosFloodDamage            |
 | System_Reliability | TUM      | reliability of infrastructure networks                                         | https://github.com/HugoRosero/System_Reliability            |
 | Lahar Simulation   | TUM      |                                                                                |                                                             |
+| Tsunami Simulation | AWI      |                                                                                |                                                             |
 | Ashfall Simulation | IG-EPN   |                                                                                |                                                             |
 | Flood Simulation   | geomer   |                                                                                |                                                             |
 

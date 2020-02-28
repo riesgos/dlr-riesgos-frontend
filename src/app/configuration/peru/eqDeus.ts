@@ -2,7 +2,7 @@ import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, Proces
 import { schemaPeru, initialExposurePeru } from './exposure';
 import { WpsData } from '@ukis/services-ogc';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { VectorLayerProduct, VectorLayerProperties, MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, Bardata, createConfusionMatrix } from 'src/app/helpers/d3charts';
@@ -29,14 +29,8 @@ export const lossPeru: WpsData & Product = {
     value: 'testinputs/loss_sara.json'
 };
 
-export const eqDamagePeru: VectorLayerProduct & WpsData & Product = {
-    uid: 'damagePeru',
-    description: {
-        id: 'damage',
+const eqDamagePeruProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
         name: 'eq-damage',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -107,18 +101,10 @@ export const eqDamagePeru: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Concrete damage in USD.'
-    },
-    value: null
 };
 
-export const eqTransitionPeru: VectorLayerProduct & WpsData & Product = {
-    uid: 'transitionPeru',
-    description: {
-        id: 'transition',
-        reference: false,
+const eqTransitionPeruProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        type: 'complex',
-        format: 'application/json',
         name: 'eq-transition',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -230,18 +216,10 @@ export const eqTransitionPeru: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Change from previous state to current one'
-    },
-    value: null
 };
 
-export const eqUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
-    uid: 'updated_exposurePeru',
-    description: {
-        id: 'updated_exposure',
-        reference: false,
+const eqUpdatedExposurePeruProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        type: 'complex',
-        format: 'application/json',
         name: 'eq-exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -369,9 +347,21 @@ export const eqUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'
+};
+
+export const eqDamagePeruM: WpsData & MultiVectorLayerProduct = {
+    uid: 'eq_deus_peru_output_values',
+    description: {
+        id: 'merged_output',
+        reference: false,
+        defaultValue: null,
+        format: 'application/json',
+        type: 'complex',
+        description: '',
+        vectorLayers: [eqUpdatedExposurePeruProps, eqTransitionPeruProps, eqDamagePeruProps]
     },
     value: null
-};
+}
 
 export const eqUpdatedExposureRefPeru: WpsData & Product = {
     uid: 'updated_exposure_ref_peru',
@@ -384,7 +374,6 @@ export const eqUpdatedExposureRefPeru: WpsData & Product = {
     },
     value: null
 };
-
 
 
 export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
@@ -405,7 +394,7 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
         this.uid = 'EQ-Deus';
         this.name = 'Multihazard damage estimation / EQ';
         this.requiredProducts = [eqShakemapRefPeru, initialExposurePeru].map(p => p.uid);
-        this.providedProducts = [eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru, eqUpdatedExposureRefPeru].map(p => p.uid);
+        this.providedProducts = [eqDamagePeruM, eqUpdatedExposureRefPeru].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected earthquake.';
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',
@@ -462,8 +451,7 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
                                 id: 'exposure'
                             },
                             value: exposure.value[0]
-                        }
-                    ];
+                        }];
                     const deusOutputs = outputProducts;
                     return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
                 })

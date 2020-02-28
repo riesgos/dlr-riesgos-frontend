@@ -44,7 +44,7 @@ import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from '../configur
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from '../configuration/peru/tsService';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from '../configuration/peru/eqselection';
 import { shakemapWmsOutputPeru, eqShakemapRefPeru, ShakygroundPeru } from '../configuration/peru/shakyground';
-import { lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
+import { lossPeru, eqDamagePeruM,
     EqDeusPeru, eqUpdatedExposureRefPeru } from '../configuration/peru/eqDeus';
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
     laharVelocityWms, laharVelocityShakemapRef, laharPressureWms,
@@ -266,7 +266,7 @@ export class RiesgosEffects {
                     assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
                     initialExposurePeru,
                     new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
-                    lossPeru, eqDamagePeru, eqTransitionPeru, eqUpdatedExposurePeru,
+                    lossPeru, eqDamagePeruM,
                     selectedEqsPeru, userinputSelectedEqPeru,
                     selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
                     tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,

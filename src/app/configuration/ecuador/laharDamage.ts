@@ -311,37 +311,6 @@ export const laharUpdatedExposureRef: WpsData & Product = {
 };
 
 
-export const DamageMayRun: Product = {
-    uid: 'damageMayRun',
-    description: {},
-    value: null
-};
-
-export const DamageMayRunProcess: ProductTransformingProcess = {
-    uid: 'damageMayRunProcess',
-    name: 'damageMayRunChecker',
-    requiredProducts: [],
-    providedProducts: [DamageMayRun.uid],
-    state: new ProcessStateUnavailable(),
-    onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
-        if (newProduct.uid === direction.uid) {
-            if (newProduct.value === 'South') {
-                return [{
-                    ... DamageMayRun,
-                    value: true
-                }];
-            } else {
-                return [{
-                    ... DamageMayRun,
-                    value: null
-                }];
-            }
-        } else {
-            return [];
-        }
-    }
-};
-
 
 export class DeusLahar implements ExecutableProcess, WizardableProcess {
 

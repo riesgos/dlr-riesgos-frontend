@@ -55,7 +55,7 @@ import { TsDeusPeru, tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru } fro
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from '../configuration/peru/reliability';
 import { DeusAshfall, ashfallDamageM, ashfallUpdatedExposureRef } from '../configuration/ecuador/ashfallDamage';
 import { NewProcessClicked } from '../focus/focus.actions';
-import { DeusLahar, DamageMayRunProcess, DamageMayRun, laharDamageM, laharUpdatedExposureRef } from '../configuration/ecuador/laharDamage';
+import { DeusLahar, laharDamageM, laharUpdatedExposureRef } from '../configuration/ecuador/laharDamage';
 import { ExposureSelection, modelChoice } from '../configuration/chile/exposureSelection';
 
 

@@ -116,7 +116,8 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
         this.wizardProperties = {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
-            shape: 'avalance'
+            shape: 'avalance',
+            wikiLink: 'LaharSimulation'
         };
     }
 }

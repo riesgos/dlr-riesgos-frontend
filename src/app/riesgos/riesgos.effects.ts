@@ -261,7 +261,7 @@ export class RiesgosEffects {
                     new EqDeusPeru(this.httpClient),
                     new TsServicePeru(this.httpClient),
                     new TsDeusPeru(this.httpClient),
-                    new FakeEqReliabilityPeru(this.httpClient)
+                    new EqReliabilityPeru(this.httpClient)
                 ];
                 products = [
                     lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,

@@ -63,7 +63,8 @@ export class FlooddamageProcess extends WpsProcess implements WizardableProcess 
         this.wizardProperties = {
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            shape: 'dot-circle'
+            shape: 'dot-circle',
+            wikiLink: 'FloodDamage'
         };
     }
 

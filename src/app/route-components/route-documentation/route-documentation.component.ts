@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { withLatestFrom, map } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -34,6 +35,7 @@ export class RouteDocumentationComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
+    private route: ActivatedRoute,
     private translator: TranslateService
   ) { }
 
@@ -58,7 +60,12 @@ export class RouteDocumentationComponent implements OnInit {
       return newEntries;
     }));
 
-
+    this.route.fragment.subscribe(f => {
+      const element = document.querySelector('#' + f);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    })
   }
 
 }

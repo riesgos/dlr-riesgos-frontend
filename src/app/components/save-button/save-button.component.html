@@ -3,7 +3,7 @@
     <span style="padding-left: 7px;">{{'Reset' | translate}}</span>
 </button>
 
-<!-- <button class="btn btn-primary" (click)="showStoreModal = true">
+<button class="btn btn-primary" (click)="showStoreModal = true">
     <clr-icon shape="download"></clr-icon>
     <span style="padding-left: 7px;">{{'Save' | translate}}</span>
 </button>
@@ -11,7 +11,7 @@
 <button class="btn btn-primary" (click)="showRestoreModal = true">
     <clr-icon shape="upload"></clr-icon>
     <span style="padding-left: 7px;">{{'Restore' | translate}}</span>
-</button> -->
+</button>
 
 
 <clr-modal [(clrModalOpen)]="showResetModal" [clrModalStaticBackdrop]="false">
@@ -43,7 +43,7 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline" (click)="showStoreModal = false">{{'Cancel' | translate}}</button>
-        <button type="button" class="btn btn-primary" (click)="storeRow()">{{'Store' | translate}}</button>
+        <button type="button" class="btn btn-primary" (click)="saveState()">{{'Store' | translate}}</button>
     </div>
 </clr-modal>
 
@@ -52,25 +52,17 @@
     <h3 class="modal-title">{{'Restore data' | translate }}</h3>
     <div class="modal-body">
 
-        <p>{{'Please select a state that you want to restore.' | translate}}</p>
-
-        <clr-datagrid [(clrDgSingleSelected)]="selectedStorageMetadata">
-            <clr-dg-column>{{'Name' | translate}}</clr-dg-column>
-            <clr-dg-column>{{'Creation date' | translate}}</clr-dg-column>
-            <clr-dg-column>{{'Data' | translate}}</clr-dg-column>
-
-            <clr-dg-row *clrDgItems="let row of storageMetadata" [clrDgItem]="row">
-                <clr-dg-cell>{{ row.name }}</clr-dg-cell>
-                <clr-dg-cell>{{ row.date | date }}</clr-dg-cell>
-            </clr-dg-row>
-
-            <clr-dg-footer>{{storageMetadata.length}} <span>{{'entries' | translate}}</span></clr-dg-footer>
-        </clr-datagrid>
-        <span>{{'Selected row:' | translate}}</span> <span *ngIf="selectedStorageMetadata">{{selectedStorageMetadata.name}}</span>
+        <p>{{'Please upload a state that you want to restore.' | translate}}</p>
+        <div class="dropzone" ukisDnd (fileDropped)="fileDropped($event)">
+            <div class="text-wrapper">
+                <div class="centered">{{dropFieldText$ | async | translate}}</div>
+            </div>
+        </div>
+        
 
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline" (click)="showRestoreModal = false">{{'Cancel' | translate}}</button>
-        <button type="button" class="btn btn-primary" (click)="restoreSelectedRow()">{{'Restore' | translate}}</button>
+        <button type="button" class="btn btn-primary" (click)="restoreState()">{{'Restore' | translate}}</button>
     </div>
 </clr-modal>

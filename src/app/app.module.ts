@@ -52,6 +52,7 @@ import { InteractionstatemonitorComponent } from './components/interactionstatem
 import { HelpersModule } from '@ukis/helpers/src/public-api';
 import { LicensesComponent } from './route-components/licenses/licenses.component';
 import { BlogentryComponent } from './components/blogentry/blogentry.component';
+import { DndDirective } from './components/save-button/dnd/dnd.directive';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { BlogentryComponent } from './components/blogentry/blogentry.component';
     InteractionstatemonitorComponent,
     LicensesComponent,
     BlogentryComponent,
+    DndDirective,
   ],
   imports: [
     BrowserModule,

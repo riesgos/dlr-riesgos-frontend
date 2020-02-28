@@ -288,7 +288,7 @@ export const ashfallDamageM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [ashfallUpdatedExposureProps, ashfallTransitionProps, ashfallDamageProps]
+        vectorLayers: [ashfallUpdatedExposureProps, ashfallDamageProps]
     },
     value: null
 };

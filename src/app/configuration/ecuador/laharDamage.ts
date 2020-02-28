@@ -293,7 +293,7 @@ export const laharDamageM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [laharDamageProps, laharTransitionProps, laharUpdatedExposureProps]
+        vectorLayers: [laharDamageProps, laharUpdatedExposureProps]
     },
     value: null
 }

@@ -1,50 +1,48 @@
 import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
-import { Volcanus } from './volcanus';
 import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
 import { switchMap } from 'rxjs/operators';
 import { laharVelocityShakemapRef } from './laharWrapper';
 import { HttpClient } from '@angular/common/http';
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WpsData } from '@ukis/services-ogc';
-import { FeatureCollection } from '@turf/helpers';
 import { schemaEcuador } from './exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
 import { ashfallUpdatedExposureRef } from './ashfallDamage';
-import { laharDamage, laharTransition, laharUpdatedExposure, laharUpdatedExposureRef } from './laharDamage';
+import { laharDamageProps, laharTransitionProps, laharUpdatedExposureProps, laharUpdatedExposureRef } from './laharDamage';
 
 
 
-export const laharAshfallDamage = {
-    ... laharDamage,
-    description: {
-        ... laharDamage.description,
-        name: 'Lahar and Ashfall Damage',
-    },
-    uid: 'laharAshfallDamage'
+const laharAshfallDamageProps = {
+    ... laharDamageProps,
+    name: 'Lahar and Ashfall Damage',
 };
 
-export const laharAshfallTransition = {
-    ... laharTransition,
-    description: {
-        ... laharTransition.description,
-        name: 'Lahar and Ashfall Transition',
-    },
-    uid: 'laharAshfallTransition'
+const laharAshfallTransitionProps = {
+    ... laharTransitionProps,
+    name: 'Lahar and Ashfall Transition',
 };
 
-export const laharAshfallUpdatedExposure = {
-    ... laharUpdatedExposure,
-    description: {
-        ... laharUpdatedExposure.description,
-        name: 'Lahar and Ashfall Exposure',
-    },
-    uid: 'laharAshfallExposure'
+const laharAshfallUpdatedExposureProps = {
+    ... laharUpdatedExposureProps,
+    name: 'Lahar and Ashfall Exposure',
 };
 
-
+export const laharAshfallDamageM: WpsData & MultiVectorLayerProduct = {
+    uid: 'lahar_ashfall_damage_output_values',
+    description: {
+        id: 'merged_output',
+        reference: false,
+        defaultValue: null,
+        format: 'application/json',
+        type: 'complex',
+        description: '',
+        vectorLayers: [laharAshfallDamageProps, laharAshfallTransitionProps, laharAshfallUpdatedExposureProps]
+    },
+    value: null
+};
 
 
 export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess {
@@ -53,7 +51,7 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
     readonly name: string = 'Lahar and Ashfall Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] = [ashfallUpdatedExposureRef, laharUpdatedExposureRef, laharVelocityShakemapRef].map(p => p.uid);
-    readonly providedProducts: string[] = [laharAshfallDamage, laharAshfallTransition, laharAshfallUpdatedExposure].map(p => p.uid);
+    readonly providedProducts: string[] = [laharAshfallDamageM].map(p => p.uid);
     readonly description?: string = 'Deus Lahar + Ashfall description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
@@ -113,7 +111,7 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
                 }
                 ];
 
-                const deusOutputs = [laharAshfallDamage, laharAshfallTransition, laharAshfallUpdatedExposure];
+                const deusOutputs: Product[] = [laharAshfallDamageM];
 
                 return this.deus.execute(deusInputs, deusOutputs, doWhileExecuting);
             })

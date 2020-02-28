@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { WpsData } from '@ukis/services-ogc';
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { greenRedRange, toDecimalPlaces, ninetyPercentLowerThan, weightedDamage } from 'src/app/helpers/colorhelpers';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml, createTableHtml, createHeaderTableHtml } from 'src/app/helpers/others';
@@ -21,14 +21,8 @@ import { direction } from './lahar';
 
 
 
-export const laharDamage: WpsData & VectorLayerProduct = {
-    uid: 'laharDamage',
-    description: {
-        id: 'damage',
+export const laharDamageProps: VectorLayerProperties = {
         name: 'laharDamage',
-        format: 'application/json',
-        reference: false,
-        type: 'complex',
         icon: 'avalance',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -70,18 +64,11 @@ export const laharDamage: WpsData & VectorLayerProduct = {
                 return createKeyValueTableHtml('', {'total damage': totalDamageFormatted});
             }
         }
-    },
-    value: null
+
 };
 
-export const laharTransition: WpsData & VectorLayerProduct = {
-    uid: 'laharTransition',
-    description: {
-        id: 'transition',
+export const laharTransitionProps: VectorLayerProperties = {
         name: 'laharTransition',
-        format: 'application/json',
-        reference: false,
-        type: 'complex',
         icon: 'avalance',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -192,18 +179,10 @@ export const laharTransition: WpsData & VectorLayerProduct = {
                 return createTableHtml(labeledMatrix);
             }
         }
-    },
-    value: null
 };
 
-export const laharUpdatedExposure: WpsData & VectorLayerProduct = {
-    uid: 'laharExposure',
-    description: {
-        id: 'updated_exposure',
+export const laharUpdatedExposureProps: VectorLayerProperties = {
         name: 'laharExposure',
-        format: 'application/json',
-        reference: false,
-        type: 'complex',
         icon: 'avalance',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -302,9 +281,22 @@ export const laharUpdatedExposure: WpsData & VectorLayerProduct = {
                 return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
             }
         }
+
+};
+
+export const laharDamageM: WpsData & MultiVectorLayerProduct = {
+    uid: 'lahar_damage_output_values',
+    description: {
+        id: 'merged_output',
+        reference: false,
+        defaultValue: null,
+        format: 'application/json',
+        type: 'complex',
+        description: '',
+        vectorLayers: [laharDamageProps, laharTransitionProps, laharUpdatedExposureProps]
     },
     value: null
-};
+}
 
 
 export const laharUpdatedExposureRef: WpsData & Product = {
@@ -316,7 +308,7 @@ export const laharUpdatedExposureRef: WpsData & Product = {
         type: 'complex'
     },
     value: null
-}
+};
 
 
 export const DamageMayRun: Product = {
@@ -357,7 +349,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
     readonly name: string = 'Lahar Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] = [initialExposureLaharRef, laharVelocityShakemapRef].map(p => p.uid);
-    readonly providedProducts: string[] = [laharDamage, laharUpdatedExposure, laharUpdatedExposureRef].map(p => p.uid);
+    readonly providedProducts: string[] = [laharDamageM, laharUpdatedExposureRef].map(p => p.uid);
     readonly description?: string = 'Deus Lahar description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
@@ -417,7 +409,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
                 }
                 ];
 
-                const deusOutputs = [laharDamage, laharUpdatedExposure, laharUpdatedExposureRef];
+                const deusOutputs: Product[] = [laharDamageM, laharUpdatedExposureRef];
 
                 return this.deus.execute(deusInputs, deusOutputs, doWhileExecuting);
             })

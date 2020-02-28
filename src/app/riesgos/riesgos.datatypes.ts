@@ -1,9 +1,10 @@
-import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient } from '@ukis/services-ogc';
+import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient, FakeCache, Cache } from '@ukis/services-ogc';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { RemoteCache } from '../services/remoteCache';
 import { IndexDbCache } from '../services/indexDbCache';
+import { environment } from 'src/environments/environment';
 
 
 export type ProductDescription = object;
@@ -113,7 +114,12 @@ export class WpsProcess implements ExecutableProcess {
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
         ) {
-        const cache = new IndexDbCache();
+        let cache: Cache;
+        if (environment.production) {
+            cache = new FakeCache();
+        } else {
+            cache = new IndexDbCache();
+        }
         this.wpsClient = new WpsClient(this.wpsVersion, httpClient, cache);
     }
 

@@ -7,7 +7,7 @@ import { Volcanus } from './volcanus';
 import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './ashfallService';
 import { WpsData, WpsDataDescription } from '@ukis/services-ogc';
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
@@ -17,14 +17,11 @@ import { createHeaderTableHtml, createTableHtml, createKeyValueTableHtml } from 
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 
-export const ashfallDamage: WpsData & VectorLayerProduct = {
-    uid: 'ashfallDamage',
-    description: {
-        id: 'damage',
+
+
+
+const ashfallDamageProps: VectorLayerProperties = {
         name: 'ashfallDamage',
-        format: 'application/json',
-        reference: false,
-        type: 'complex',
         icon: 'volcanoe',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -42,11 +39,11 @@ export const ashfallDamage: WpsData & VectorLayerProduct = {
             },
             legendEntries: [{
                 feature: {
-                    "type": "Feature",
-                    "properties": {'loss_value': 500000},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'loss_value': 500000},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -66,18 +63,10 @@ export const ashfallDamage: WpsData & VectorLayerProduct = {
                 return createKeyValueTableHtml('', {'total damage': totalDamageFormatted});
             }
         }
-    },
-    value: null
 };
 
-export const ashfallTransition: WpsData & VectorLayerProduct = {
-    uid: 'ashfallTransition',
-    description: {
-        id: 'transition',
+const ashfallTransitionProps: VectorLayerProperties = {
         name: 'ashfallTransition',
-        format: 'application/json',
-        reference: false,
-        type: 'complex',
         icon: 'volcanoe',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -113,11 +102,11 @@ export const ashfallTransition: WpsData & VectorLayerProduct = {
             },
             legendEntries: [{
                 feature: {
-                    "type": "Feature",
-                    "properties": {'transitions': {'n_buildings': 100, 'to_damage_state': [10, 80, 10]}},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'transitions': {'n_buildings': 100, 'to_damage_state': [10, 80, 10]}},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -188,18 +177,11 @@ export const ashfallTransition: WpsData & VectorLayerProduct = {
                 return createTableHtml(labeledMatrix);
             }
         }
-    },
-    value: null
+
 };
 
-export const ashfallUpdatedExposure: WpsData & VectorLayerProduct = {
-    uid: 'ashfallExposure',
-    description: {
-        id: 'updated_exposure',
+const ashfallUpdatedExposureProps: VectorLayerProperties = {
         name: 'ashfallExposure',
-        format: 'application/json',
-        reference: false,
-        type: 'complex',
         icon: 'volcanoe',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
@@ -243,11 +225,11 @@ export const ashfallUpdatedExposure: WpsData & VectorLayerProduct = {
             },
             legendEntries: [{
                 feature: {
-                    "type": "Feature",
-                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 80, 80, 10]}},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 80, 80, 10]}},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -295,6 +277,18 @@ export const ashfallUpdatedExposure: WpsData & VectorLayerProduct = {
                 return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
             }
         }
+};
+
+export const ashfallDamageM: WpsData & MultiVectorLayerProduct = {
+    uid: 'ashfall_damage_output_values',
+    description: {
+        id: 'merged_output',
+        reference: false,
+        defaultValue: null,
+        format: 'application/json',
+        type: 'complex',
+        description: '',
+        vectorLayers: [ashfallUpdatedExposureProps, ashfallTransitionProps, ashfallDamageProps]
     },
     value: null
 };
@@ -311,7 +305,6 @@ export const ashfallUpdatedExposureRef: WpsData & Product = {
 };
 
 
-
 export class DeusAshfall implements ExecutableProcess, WizardableProcess {
 
     readonly uid: string = 'DeusAshfall';
@@ -320,7 +313,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     readonly requiredProducts: string[] =
         [initialExposureAshfallRef, ashfallPoint].map(p => p.uid);
     readonly providedProducts: string[] =
-        [ashfallDamage, ashfallUpdatedExposure, ashfallUpdatedExposureRef].map(p => p.uid);
+        [ashfallDamageM, ashfallUpdatedExposureRef].map(p => p.uid);
     readonly description?: string = 'Deus Ashfall description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
@@ -383,10 +376,9 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
                         ... fragility.description,
                         id: 'fragility'
                     }
-                }
-                ];
+                }];
 
-                const vulcOutputs = [ashfallDamage, ashfallUpdatedExposure, ashfallUpdatedExposureRef];
+                const vulcOutputs: Product[] = [ashfallDamageM, ashfallUpdatedExposureRef];
 
                 return this.volcanus.execute(vulcInputs, vulcOutputs, doWhileExecuting);
             })

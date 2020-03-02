@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentChecked } from '@angular/core';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
@@ -29,7 +29,7 @@ interface BlogEntry extends Entry {
   templateUrl: './route-documentation.component.html',
   styleUrls: ['./route-documentation.component.scss']
 })
-export class RouteDocumentationComponent implements OnInit {
+export class RouteDocumentationComponent implements OnInit, AfterContentChecked {
 
   public entries$: Observable<BlogEntry[]>;
 
@@ -59,13 +59,20 @@ export class RouteDocumentationComponent implements OnInit {
 
       return newEntries;
     }));
+  }
 
-    this.route.fragment.subscribe(f => {
-      const element = document.querySelector('#' + f);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+  ngAfterContentChecked(): void {
+    this.route.fragment.subscribe(fragmentName => this.scrollTo(fragmentName));
+    if (this.route.snapshot.fragment) {
+      this.scrollTo(this.route.snapshot.fragment);
+    }
+  }
+
+  private scrollTo(fragmentId: string): void {
+    const element = document.querySelector('#' + fragmentId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
 }

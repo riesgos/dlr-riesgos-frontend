@@ -12,6 +12,7 @@ This website is the frontend for a cloud of webservices. During the RIESGOS-proj
  - make it easy for the user to explore the range of effects a natural hazard can have
 
 ## Currently available services
+
 | Name               | Provider | Description                                                                    | Github                                                      |
 |--------------------|----------|--------------------------------------------------------------------------------|-------------------------------------------------------------|
 | assetmaster        | GFZ      | provides exposure models upon geographical query                               | https://github.com/GFZ-Centre-for-Early-Warning/assetmaster |

@@ -390,7 +390,8 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
     readonly wizardProperties: WizardProperties = {
         providerName: 'Helmholtz Centre Potsdam',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
-        shape: 'dot-circle'
+        shape: 'dot-circle',
+        wikiLink: 'VulnerabilityExposure'
     };
 
     private vulnerabilityProcess: VulnerabilityModel;

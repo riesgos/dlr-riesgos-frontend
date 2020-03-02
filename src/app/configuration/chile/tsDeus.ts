@@ -327,7 +327,20 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
-                return `<h4>Updated exposure </h4>${anchor.innerHTML}`;
+                
+                const legend = `
+                    <ul>
+                        <li><b>D0:</b> no damage</li>
+                        <li><b>D1:</b> minor damage</li>
+                        <li><b>D2:</b> moderate damage</li>
+                        <li><b>D3:</b> major damage</li>
+                        <li><b>D4:</b> complete damage</li>
+                        <li><b>D5:</b> collapsed</li>
+                        <li><b>D6:</b> washed away</li>
+                    </ul>
+                `;
+
+                return `<h4>Updated exposure</h4>${anchor.innerHTML}<br/>${legend}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

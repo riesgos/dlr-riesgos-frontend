@@ -326,7 +326,18 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
-                return `<h4>Updated exposure </h4>${anchor.innerHTML}`;
+                
+                const legend = `
+                    <ul>
+                        <li><b>D0:</b> no damage</li>
+                        <li><b>D1:</b> slight damage</li>
+                        <li><b>D2:</b> moderate damage</li>
+                        <li><b>D3:</b> extensive damage</li>
+                        <li><b>D4:</b> collapse</li>
+                    </ul>
+                `;
+
+                return `<h4>Updated exposure</h4>${anchor.innerHTML}<br/>${legend}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {
@@ -361,7 +372,7 @@ export const eqDamagePeruM: WpsData & MultiVectorLayerProduct = {
         vectorLayers: [eqUpdatedExposurePeruProps, eqTransitionPeruProps, eqDamagePeruProps]
     },
     value: null
-}
+};
 
 export const eqUpdatedExposureRefPeru: WpsData & Product = {
     uid: 'updated_exposure_ref_peru',

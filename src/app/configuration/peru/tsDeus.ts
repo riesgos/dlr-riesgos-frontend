@@ -44,11 +44,11 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
             },
             legendEntries: [{
                 feature: {
-                    "type": "Feature",
-                    "properties": {'loss_value': 100000},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'loss_value': 100000},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -58,11 +58,11 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
                 text: 'Loss 100.000 USD'
             }, {
                 feature: {
-                    "type": "Feature",
-                    "properties": {'loss_value': 500000},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'loss_value': 500000},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -72,11 +72,11 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
                 text: 'Loss 500.000 USD'
             }, {
                 feature: {
-                    "type": "Feature",
-                    "properties": {'loss_value': 1000000},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'loss_value': 1000000},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -263,11 +263,11 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
             },
             legendEntries: [{
                 feature: {
-                    "type": "Feature",
-                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [90, 10, 0, 0, 0, 0]}},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [90, 10, 0, 0, 0, 0]}},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -277,11 +277,11 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                 text: 'Damage states: 90/10/0/0/0/0'
             }, {
                 feature: {
-                    "type": "Feature",
-                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [0, 10, 40, 40, 10, 0]}},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [0, 10, 40, 40, 10, 0]}},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -291,11 +291,11 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                 text: 'Damage states: 0/10/40/40/10/0'
             }, {
                 feature: {
-                    "type": "Feature",
-                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [0, 0, 0, 0, 20, 80]}},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
+                    'type': 'Feature',
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4', 'D5'], 'Buildings': [0, 0, 0, 0, 20, 80]}},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
                           [ 5.627918243408203, 50.963075942052164 ],
                           [ 5.627875328063965, 50.958886259879264 ],
                           [ 5.635471343994141, 50.95634523633128 ],
@@ -327,7 +327,20 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
-                return `<h4>Updated exposure </h4>${anchor.innerHTML}`;
+
+                const legend = `
+                    <ul>
+                        <li><b>D0:</b> no damage</li>
+                        <li><b>D1:</b> minor damage</li>
+                        <li><b>D2:</b> moderate damage</li>
+                        <li><b>D3:</b> major damage</li>
+                        <li><b>D4:</b> complete damage</li>
+                        <li><b>D5:</b> collapsed</li>
+                        <li><b>D6:</b> washed away</li>
+                    </ul>
+                `;
+
+                return `<h4>Updated exposure</h4>${anchor.innerHTML}<br/>${legend}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

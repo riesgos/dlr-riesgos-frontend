@@ -116,7 +116,7 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
             shape: 'router',
-            wikiLink: 'SystemReliability'
+            wikiLink: 'Reliability'
         };
     }
 

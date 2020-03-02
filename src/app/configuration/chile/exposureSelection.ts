@@ -42,7 +42,7 @@ export class ExposureSelection implements ExecutableProcess, WizardableProcess {
             shape: 'building',
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'VulnerabilityExposure'
+            wikiLink: 'Vulnerability'
         };
         this.standardModel = new ExposureModel(httpClient);
         this.raqelsModel = new RaquelsExposureModel(httpClient);

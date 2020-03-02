@@ -395,7 +395,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle',
-            wikiLink: 'VulnerabilityExposure'
+            wikiLink: 'Vulnerability'
         };
 
         this.vulnerabilityProcess = new VulnerabilityModelPeru(http);

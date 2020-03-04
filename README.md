@@ -6,9 +6,9 @@ We exposed several scientific models as WPS and combined them in a simple web-fr
 
 
 ## Background
-This website is the frontend for a cloud of webservices. During the RIESGOS-project, a number of scientific models have been exposed by the project-partners using the WPS ([web processing service](https://www.ogc.org/standards/wps)) protocol. This SOAP-protocol describes the in- and outputs to a model. This website serves as a frontend to those models - it aims to:
+This web application is the frontend for the orchestration of webservices. During the RIESGOS-project, a number of scientific models (resp. their results) have been exposed by the project-partners using the WPS ([web processing service](https://www.ogc.org/standards/wps)) protocol. This SOAP-protocol describes the in- and outputs to the model used. This website serves as a frontend to those models, aiming to:
  - allow the user to set the inputs to a model, trigger its execution and display the models results
- - chain a series of models together to form a scenario that can depict the mulititude of processes that consitute a natural hazard (earthquake + tsunami + infrastructure, volcanic eruption + ashfall + lahar, ...)
+ - chain a series of models together to form a scenario that depicts the mulititude of processes that describes a natural hazard (e.g. earthquake + tsunami + infrastructure, volcanic eruption + ashfall + lahar, ...)
  - make it easy for the user to explore the range of effects a natural hazard can have
 
 ## Currently available services
@@ -30,7 +30,7 @@ This website is the frontend for a cloud of webservices. During the RIESGOS-proj
 
 
 ## Business logic
-Our model consists of `processes` and `products`. They form a directed, bipartite graph: each process provides one or more products, which may or may not be the input to another process. We arrange that graph in a linear sequence by running a `toposort` on it. This linear seqence is then displayed in the UI: by arranging the processes in a sequence, we make it easier to guide the user through the chain of steps necessary to simulate a full scenario. 
+Our RIESGOS business model consists of `processes` and `products`. They form a directed, bipartite graph: each process provides one or more products, which may or may not be the input to another process. We arrange that graph in a linear sequence by running a `toposort` on it. This linear sequence is then displayed in the UI: by arranging the processes in a sequence, we make it easier to guide the user through the chain of steps necessary to simulate a full scenario. 
 
 
 ## Getting started

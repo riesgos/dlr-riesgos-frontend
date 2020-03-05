@@ -6,13 +6,13 @@ We exposed several scientific models as WPS and combined them in a simple web-fr
 
 
 ## Background
-This website is the frontend for a cloud of webservices. During the RIESGOS-project, a number of scientific models have been exposed by the project-partners using the WPS ([web processing service](https://www.ogc.org/standards/wps)) protocol. This SOAP-protocol describes the in- and outputs to a model. This website serves as a frontend to those models - it aims to:
+This web application is the frontend for the orchestration of webservices. During the RIESGOS-project, a number of scientific models (resp. their results) have been exposed by the project-partners using the WPS ([web processing service](https://www.ogc.org/standards/wps)) protocol. This SOAP-protocol describes the in- and outputs to the model used. This website serves as a frontend to those models, aiming to:
  - allow the user to set the inputs to a model, trigger its execution and display the models results
- - chain a series of models together to form a scenario that can depict the mulititude of processes that consitute a natural hazard (earthquake + tsunami + infrastructure, volcanic eruption + ashfall + lahar, ...)
+ - chain a series of models together to form a scenario that depicts the mulititude of processes that describes a natural hazard (e.g. earthquake + tsunami + infrastructure, volcanic eruption + ashfall + lahar, ...)
  - make it easy for the user to explore the range of effects a natural hazard can have
 
 ## Team
-Our team consists of 
+Our team includes (in alphabetical order)
  - Mathias Böck
  - Michael Langbein
  - Nico Mandery
@@ -21,69 +21,10 @@ Our team consists of
  - Elisabeth Schöpfer
 
 
-## Development
+## Business logic
+Our RIESGOS business model consists of `processes` and `products`. They form a directed, bipartite graph: each process provides one or more products, which may or may not be the input to another process. We arrange that graph in a linear sequence by running a `toposort` on it. This linear sequence is then displayed in the UI: by arranging the processes in a sequence, we make it easier to guide the user through the chain of steps necessary to simulate a full scenario. 
+For more instructions, consult [the development guide](DEVELOPMENT.md).
 
-### Business logic
-Our model consists of `processes` and `products`. They form a directed, bipartite graph: each process provides one or more products, which may or may not be the input to another process. We arrange that graph in a linear sequence by running a `toposort` on it. This linear seqence is then displayed in the UI: by arranging the processes in a sequence, we make it easier to guide the user through the chain of steps necessary to simulate a full scenario. 
-
-
-### Getting started
-This project depends on the 'UKIS frontend libraries', which are distributed as packages on github. To use these packages, please follow the instructions on [the UKIS frontend libraries github page](https://github.com/dlr-eoc/ukis-frontend-libraries).
-
-
-#### Integrating a WPS into a scenario
-Adding a WPS into an existing scenario is a three step process. 
-
-##### Creating the service: Implementing the Process-Interface
-Any WPS must be represented by a class implementing the `Process` interface. 
-Very often, you will want to extend the `WpsProcess` class: this is a class implementing the `Process` interface that already has the method `execute` implemented for you. Additionally, if you want the service to be visible in the UI, implement the interface `WizardableProcess`.
-```
-export class VulnerabilityModel extends WpsProcess implements WizardableProcess {
-```
-If your process'es `execute` method needs to do more than just send an execute-request to a WPS, implement the interface `ExecutableProcess`. Doing this makes sense for example when you need to change your input-parameters names or values before sending them off to the WPS.
-```
-export class EqDeus implements ExecutableProcess, WizardableProcess {
-```
-
-##### Creating the products: Implementing the Product-Interface
-A `product` is an object implementing the `Product` interface. Usually your products will come from and be sent to a WPS: in this case, they are `WpsData`.
-If you do not want the WPS to return to you the actual data but merely a link to the data's location on the server, set `reference: true`.
-```
-export const eqUpdatedExposureRef: WpsData & Product = {
-    uid: 'updated_exposure_ref',
-    description: {
-        id: 'updated_exposure',
-        reference: true,
-        ...
-    },
-    value: null
-};
-```
-
-##### Registering service and products in the scenario
-Finally, for your service to be integrated into a scenario, it must be listed in the scenario's list of processes (and products).
-```
-        switch (scenario) {
-            case 'c1':
-                processes = [
-                    new ExposureSelection(this.httpClient),
-                    new QuakeLedger(this.httpClient),
-                    ...
-                ];
-                products = [
-                    modelChoice,
-                    lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
-                    assetcategory, losscategory, taxonomies,
-                    ...
-                ];
-                break;
-```
-
-#### Licenses
-3rd party licenses are displayed with the component 'licenses.component'. This component requires there to be a file named 'licenses.json' in the assets directory. 
-This file has been autogenerated with the 'license-checker' npm-module. When new dependencies are added, the file needs to be regenerated manually.
-
-#### 
 
 ## Licenses
 
@@ -92,4 +33,4 @@ This software is licensed under the [Apache 2.0 License](LICENSE).
 Copyright (c) 2020 German Aerospace Center (DLR) * German Remote Sensing Data Center * Department: Geo-Risks and Civil Security
 
 
-![BMBF Logo](src/assets/logos/BMBF_en.svg "BMBF Logo")
+![BMBF Logo](src/assets/logos/BMBF_en.png "BMBF Logo")

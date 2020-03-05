@@ -361,7 +361,7 @@ const updatedExposureProps: VectorLayerProperties = {
             }
         },
         description: 'Amount of goods that are exposed to a hazard.'
-    
+
 };
 
 export const eqDamageM: WpsData & MultiVectorLayerProduct = {

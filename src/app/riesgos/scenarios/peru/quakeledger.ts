@@ -1,4 +1,4 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos/riesgos.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import { StringSelectUconfProduct, BboxUconfProduct, BboxUconfPD, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { BboxLayerProduct, BboxLayerDescription, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';

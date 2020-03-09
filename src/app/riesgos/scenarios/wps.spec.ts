@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, select } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { reducers, effects, State } from '../ngrx_register';
+import { reducers, effects, State } from '../../ngrx_register';
 import { HttpClient, HttpXhrBackend, HttpHandler, XhrFactory } from '@angular/common/http';
-import { ProductsProvided, ScenarioChosen, ClickRunProcess } from '../riesgos/riesgos.actions';
-import { getProcessStates, getProducts, getProduct, getCurrentScenarioRiesgosState } from '../riesgos/riesgos.selectors';
+import { ProductsProvided, ScenarioChosen, ClickRunProcess } from '../riesgos.actions';
+import { getProcessStates, getProducts, getProduct, getCurrentScenarioRiesgosState } from '../riesgos.selectors';
 import {
   QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p,
   etype, tlon, tlat, selectedEqs
 } from './chile/quakeledger';
 import { debounceTime, map, filter, switchMap } from 'rxjs/operators';
-import { Product, Process } from '../riesgos/riesgos.datatypes';
+import { Product, Process } from '../riesgos.datatypes';
 import { schema, ExposureModel, lonmin, lonmax, latmin, latmax, querymode, assettype, initialExposure } from './chile/exposure';
 import { assetcategory, losscategory, taxonomies, VulnerabilityModel, fragilityRef } from './chile/modelProp';
 import { Observable } from 'rxjs';

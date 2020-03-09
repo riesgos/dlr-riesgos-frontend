@@ -1,4 +1,4 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos/riesgos.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import {
     StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct,
     BboxUconfPD

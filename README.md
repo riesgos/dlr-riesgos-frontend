@@ -6,7 +6,7 @@ We exposed several scientific models as WPS and combined them in a simple web-fr
 
 
 ## Background
-This web application is the frontend for the orchestration of webservices. During the RIESGOS-project, a number of scientific models (resp. their results) have been exposed by the project-partners using the WPS ([web processing service](https://www.ogc.org/standards/wps)) protocol. This SOAP-protocol describes the in- and outputs to the model used. This website serves as a frontend to those models, aiming to:
+This web application is a frontend for the orchestration of webservices. During the RIESGOS-project, a number of scientific models (resp. their results) have been exposed by the project-partners using the WPS ([web processing service](https://www.ogc.org/standards/wps)) protocol. This SOAP-protocol describes the in- and outputs to the model used. This website serves as a frontend to those models, aiming to:
  - allow the user to set the inputs to a model, trigger its execution and display the models results
  - chain a series of models together to form a scenario that depicts the mulititude of processes that describes a natural hazard (e.g. earthquake + tsunami + infrastructure, volcanic eruption + ashfall + lahar, ...)
  - make it easy for the user to explore the range of effects a natural hazard can have

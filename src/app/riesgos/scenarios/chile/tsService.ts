@@ -1,18 +1,19 @@
-import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos/riesgos.datatypes';
+import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from '@ukis/services-ogc';
+import { WpsData, WpsClient } from '@ukis/services-ogc';
+import { selectedEq } from './eqselection';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { selectedEqPeru } from './eqselection';
 import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { map } from 'rxjs/operators';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
-const latPeru: WpsData & Product = {
-    uid: 'auto_lat_peru',
+const lat: WpsData & Product = {
+    uid: 'auto_lat',
     description: {
         id: 'lat',
         reference: false,
@@ -21,8 +22,8 @@ const latPeru: WpsData & Product = {
     value: null
 };
 
-const lonPeru: WpsData & Product = {
-    uid: 'auto_lon_peru',
+const lon: WpsData & Product = {
+    uid: 'auto_lon',
     description: {
         id: 'lon',
         reference: false,
@@ -31,8 +32,8 @@ const lonPeru: WpsData & Product = {
     value: null
 };
 
-const magPeru: WpsData & Product = {
-    uid: 'auto_mag_peru',
+const mag: WpsData & Product = {
+    uid: 'auto_mag',
     description: {
         id: 'mag',
         reference: false,
@@ -42,8 +43,8 @@ const magPeru: WpsData & Product = {
 };
 
 
-export const tsWmsPeru: WpsData & WmsLayerProduct = {
-    uid: 'get_scenario_epiCenter_peru',
+export const tsWms: WpsData & WmsLayerProduct = {
+    uid: 'get_scenario_epiCenter',
     description: {
         id: 'epiCenter',
         name: 'ts-wms',
@@ -61,14 +62,14 @@ export const tsWmsPeru: WpsData & WmsLayerProduct = {
 };
 
 
-export class TsWmsServicePeru extends WpsProcess {
+export class TsWmsService extends WpsProcess {
 
     constructor(http: HttpClient) {
         super(
-            'get_scenario_peru',
+            'get_scenario',
             'Earthquake/tsunami interaction',
-            [latPeru, lonPeru, magPeru].map(p => p.uid),
-            [tsWmsPeru.uid],
+            [lat, lon, mag].map(p => p.uid),
+            [tsWms.uid],
             'get_scenario',
             'Relates a tsunami to the selected earthquake',
             'http://tsunami-wps.awi.de/wps',
@@ -81,8 +82,8 @@ export class TsWmsServicePeru extends WpsProcess {
 }
 
 
-export const tsShakemapPeru: WpsData & Product = {
-    uid: 'ts_shakemap_peru',
+export const tsShakemap: WpsData & Product = {
+    uid: 'ts_shakemap',
     description: {
         id: 'tsunamap',
         reference: true,
@@ -93,13 +94,13 @@ export const tsShakemapPeru: WpsData & Product = {
 };
 
 
-export class TsShakemapServicePeru extends WpsProcess {
+export class TsShakemapService extends WpsProcess {
     constructor(http: HttpClient) {
         super(
-            'get_tsunamap_peru',
             'get_tsunamap',
-            [latPeru, lonPeru, magPeru].map(p => p.uid),
-            [tsShakemapPeru.uid],
+            'get_tsunamap',
+            [lat, lon, mag].map(p => p.uid),
+            [tsShakemap.uid],
             'get_tsunamap',
             'Input is earthquake epicenter (lon,lat) with magnitude, output is the nearest Tsunami epicenter and Inundation in shakemap format',
             'http://tsunami-wps.awi.de/wps',
@@ -110,9 +111,9 @@ export class TsShakemapServicePeru extends WpsProcess {
     }
 }
 
-export class TsServicePeru implements WizardableProcess, ExecutableProcess {
+export class TsService implements WizardableProcess, ExecutableProcess {
 
-    uid = 'ts-service_peru';
+    uid = 'ts-service';
     name = 'TS-Service';
     state: ProcessState;
     description = 'Simulates a tsunami based on the earlier selected earthquake-parameters.';
@@ -123,32 +124,33 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
         shape: 'tsunami' as 'tsunami'
     };
 
-    private tsShakemapService: TsShakemapServicePeru;
-    private tsWmsService: TsWmsServicePeru;
+    private tsShakemapService: TsShakemapService;
+    private tsWmsService: TsWmsService;
     readonly requiredProducts: string[];
     readonly providedProducts: string[];
 
     constructor(private httpClient: HttpClient) {
         this.state = new ProcessStateUnavailable();
-        this.tsWmsService = new TsWmsServicePeru(httpClient);
-        this.tsShakemapService = new TsShakemapServicePeru(httpClient);
-        this.requiredProducts = [selectedEqPeru.uid],
+        this.tsWmsService = new TsWmsService(httpClient);
+        this.tsShakemapService = new TsShakemapService(httpClient);
+        this.requiredProducts = [selectedEq.uid],
         this.providedProducts = this.tsWmsService.providedProducts.concat(this.tsShakemapService.providedProducts);
     }
 
     execute = (inputs: Product[], outputs: Product[], doWhileExecuting): Observable<Product[]> => {
 
-        const theSelectedEq = inputs.find(p => p.uid === selectedEqPeru.uid);
+        const theSelectedEq = inputs.find(p => p.uid === selectedEq.uid);
         const newInputs = [{
-            ... lonPeru,
+            ... lon,
             value: theSelectedEq.value[0].features[0].geometry.coordinates[0]
         }, {
-            ...latPeru,
+            ...lat,
             value: theSelectedEq.value[0].features[0].geometry.coordinates[1]
         }, {
-            ...magPeru,
+            ...mag,
             value: theSelectedEq.value[0].features[0].properties['magnitude.mag.value']
         }];
+
 
         const inputsWms = newInputs;
         const outputsWms = outputs.filter(i => this.tsWmsService.providedProducts.includes(i.uid));

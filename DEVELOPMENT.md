@@ -17,7 +17,7 @@ Very often, you will want to extend the `WpsProcess` class: this is a class impl
 ```
 export class VulnerabilityModel extends WpsProcess implements WizardableProcess {
 ```
-If your process'es `execute` method needs to do more than just send an execute-request to a WPS, implement the interface `ExecutableProcess`. Doing this makes sense for example when you need to change your input-parameters names or values before sending them off to the WPS.
+If your `execute` method needs to do more than just send an execute-request to a WPS, implement the interface `ExecutableProcess`. Doing this makes sense for example when you need to change your input-parameters' names or values before sending them off to the WPS.
 ```
 export class EqDeus implements ExecutableProcess, WizardableProcess {
 ```

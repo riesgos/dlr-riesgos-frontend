@@ -11,6 +11,9 @@
     "p1": "Peru", 
     "e1": "Ecuador",
 
+    "assets/images/lahar_en.jpg": "assets/images/lahar_es.jpg",
+    "assets/images/tsunami_en.jpg": "assets/images/tsunami_es.jpg",
+
     "Showcase Chile": "Región de Valparaíso",
     "Showcase Ecuador": "Quito / Región Cotopaxi",
     "Showcase Peru": "Lima Metropolitana y Callao",

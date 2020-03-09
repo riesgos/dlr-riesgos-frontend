@@ -1,10 +1,17 @@
-import { RiesgosActions, ERiesgosActionTypes, ProductsProvided, ScenarioChosen, RestartingFromProcess, RiesgosDataUpdate } from './riesgos.actions';
+import { RiesgosActions, ERiesgosActionTypes, ProductsProvided, ScenarioChosen, RestartingFromProcess, RiesgosDataUpdate, MetadataProvided } from './riesgos.actions';
 import { RiesgosState, initialRiesgosState } from './riesgos.state';
 
 
 
 export function riesgosReducer(state: RiesgosState = initialRiesgosState, action: RiesgosActions): RiesgosState  {
     switch (action.type) {
+
+        case ERiesgosActionTypes.metadataProvided:
+            const newMetadata = (action as MetadataProvided).payload.metadata;
+            return {
+                ... state,
+                metaData: newMetadata
+            };
 
         case ERiesgosActionTypes.wpsDataUpdate:
             const newScenario = state.currentScenario;

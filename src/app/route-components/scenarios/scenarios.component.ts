@@ -1,7 +1,11 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
+import { getScenarioMetadata } from 'src/app/riesgos/riesgos.selectors';
+import { RiesgosScenarioMetadata } from 'src/app/riesgos/riesgos.state';
+import { Observable } from 'rxjs';
 
-type previewmap = { id: string | number, index: number, title: string, preview: string, content?: any, disabled?: boolean };
 
 @Component({
   selector: 'ukis-scenarios',
@@ -11,10 +15,10 @@ type previewmap = { id: string | number, index: number, title: string, preview: 
 export class ScenariosComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
-  scenarios: previewmap[] = [];
+  scenarios$: Observable<RiesgosScenarioMetadata[]>;
   showInfo = false;
   modalOpen = false;
-  selectedScenario: previewmap;
+  selectedScenario: RiesgosScenarioMetadata;
 
   hazardTypes = [{
     abbreviation: 'e',
@@ -63,20 +67,18 @@ export class ScenariosComponent implements OnInit {
 
 
   constructor(
-    public translator: TranslateService
+    public translator: TranslateService,
+    public store: Store<State>
   ) {
-    this.scenarios = [
-      { id: 'c1', title: 'Showcase Chile', preview: `assets/images/tsunami`, content: '', index: 1 },
-      { id: 'e1', title: 'Showcase Ecuador', preview: `assets/images/lahar`, content: '', index: 2 },
-      { id: 'p1', title: 'Showcase Peru',  preview: `assets/images/tsunami`, content: '', index: 3 }];
+    this.scenarios$ = this.store.select(getScenarioMetadata);
   }
 
   ngOnInit() {
 
   }
 
-  showModal(map: previewmap) {
-    this.selectedScenario = map;
+  showModal(s: RiesgosScenarioMetadata) {
+    this.selectedScenario = s;
     this.showInfo = true;
     this.modalOpen = true;
   }

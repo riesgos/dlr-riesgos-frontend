@@ -11,11 +11,21 @@ export interface RiesgosScenarioState {
     graph: Graph;
 }
 
+
+export interface RiesgosScenarioMetadata {
+    id: string;
+    title: string;
+    description: string;
+    preview: string;
+}
+
+
 export interface RiesgosState {
     currentScenario: Scenario;
     scenarioData: {
         [key in Scenario]: RiesgosScenarioState
     };
+    metaData: RiesgosScenarioMetadata[];
 }
 
 
@@ -28,5 +38,6 @@ export const initialRiesgosState: RiesgosState = {
             processStates: [],
             productValues: []
         }
-    }
+    },
+    metaData: []
 };

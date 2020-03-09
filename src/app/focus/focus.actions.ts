@@ -4,8 +4,14 @@ import { ProcessId } from '../riesgos/riesgos.datatypes';
 
 
 export enum EFocusActionTypes {
+    appInit = "[Focus] app initialized",
     newProcessClicked = "[Focus] new process clicked",
     goToNextProcess = "[Focus] going to next process"
+}
+
+
+export class AppInit implements Action {
+    type: string = EFocusActionTypes.appInit;
 }
 
 
@@ -16,8 +22,8 @@ export class NewProcessClicked implements Action {
 
 
 export class GoToNextProcess implements Action {
-    type: string = EFocusActionTypes.goToNextProcess
+    type: string = EFocusActionTypes.goToNextProcess;
 }
 
 
-export type FocusAction = NewProcessClicked | GoToNextProcess;
+export type FocusAction = AppInit | NewProcessClicked | GoToNextProcess;

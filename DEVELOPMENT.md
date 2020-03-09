@@ -39,6 +39,7 @@ export const eqUpdatedExposureRef: WpsData & Product = {
 
 #### Registering service and products in the scenario
 Finally, for your service to be integrated into a scenario, it must be listed in the scenario's list of processes (and products).
+You can register both scenarios and their component processes and products in the `RiesgosService`.
 ```
         switch (scenario) {
             case 'c1':

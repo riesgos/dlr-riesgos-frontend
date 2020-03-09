@@ -20,6 +20,11 @@ const getCurrentScenarioState = (riesgosState: RiesgosState): RiesgosScenarioSta
     return getScenarioState(riesgosState, currentScenario);
 };
 
+export const getScenarioMetadata = createSelector(
+    getRiesgosState,
+    (s: RiesgosState) => s.metaData
+);
+
 export const getScenarioRiesgosState = createSelector(
     getRiesgosState,
     (s: RiesgosState, args: {scenario: string}) => getScenarioState(s, args.scenario)

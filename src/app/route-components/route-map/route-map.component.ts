@@ -30,7 +30,6 @@ export class RouteMapComponent implements OnInit {
     return this._collapsedLayerControl;
   }
   set collapsedLayerControl(value: boolean) {
-    console.log('set expandedLayerContro',value)
     this._collapsedLayerControl = value;
   }
 
@@ -38,7 +37,6 @@ export class RouteMapComponent implements OnInit {
     return this._collapsedConfigurationWizard;
   }
   set collapsedConfigurationWizard(value: boolean) {
-    console.log('set collapsedConfigurationWizard',value)
     this._collapsedConfigurationWizard = value;
   }
 

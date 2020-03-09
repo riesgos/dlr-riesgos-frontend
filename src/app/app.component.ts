@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 
 
 import '@webcomponents/custom-elements';
@@ -18,6 +18,9 @@ import { ProgressService, IProgress } from './components/global-progress/progres
 import {ActivatedRoute} from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { State } from './ngrx_register';
+import { AppInit } from './focus/focus.actions';
 
 @Component({
   selector: 'ukis-root',
@@ -25,7 +28,8 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class UkisComponent {
+export class UkisComponent implements OnInit {
+  
   title = 'RIESGOS Demonstrator';
 
   ui = {
@@ -42,6 +46,7 @@ export class UkisComponent {
     private alertService: AlertService,
     private progressService: ProgressService,
     private route: ActivatedRoute,
+    private store: Store<State>
   ) {
     this.getHtmlMeta(['title', 'version', 'description']);
 
@@ -77,6 +82,10 @@ export class UkisComponent {
       })
     );
 
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(new AppInit());
   }
 
   showProgress = (progress: IProgress) => {

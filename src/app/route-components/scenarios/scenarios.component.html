@@ -1,44 +1,40 @@
 <div>
 
   <div class="content-area">
+
     <div class="clr-row scenarios-view">
       <div class="clr-col-12 clr-col-sm-12 clr-col-md-12 clr-col-lg-12 center">
-        <h3>{{'Pilot regions' | translate}}</h3>
+        <h3>{{ 'Pilot regions' | translate }}</h3>
         <p>
-          <!-- <b>Based on decentralized web-services to access Data and trigger computation for different disciplines, such as
-            geophysics, hydrology, geology, geography, geo-statistics, and remote sensing.</b> -->
           {{ 'Pilot region description' | translate }}
         </p>
       </div>
     </div>
+
     <div class="clr-row scenarios-view">
-      <div class="clr-col-12 clr-col-sm-12 clr-col-md-4 clr-col-lg-4" *ngFor="let scenario of scenarios">
-        <div class="card  clickable" [ngClass]="{'disabled': scenario.disabled}" [tabindex]="scenario.disabled? '-1': null"
-          [title]="scenario.disabled? 'Showcase not Implemented!': ( scenario.title | translate )">
-          <a [routerLink]="['/map']" [queryParams]="{id: scenario.id}" title="{{ scenario.id | translate }}"
-            [ngClass]="{'disabled': scenario.disabled}" [tabindex]="scenario.disabled? '-1': null">
-            <div class="card-img">
-              <img [src]="scenario.preview + '_' + (translator.currentLang | lowercase) + '.jpg'" alt="ukis logo white">
+      <div *ngFor='let scenario of scenarios$ | async' class="clr-col-4">
+
+          <div class="card  clickable" [title]="( scenario.title | translate )">
+
+            <a [routerLink]="['/map']" [queryParams]="{id: scenario.id}" title="{{ scenario.id | translate }}">
+              <div class="card-img">
+                <img [src]="scenario.preview | translate" alt="ukis logo white">
+              </div>
+            </a>
+  
+            <div class="card-footer">
+              <span class="card-text">
+                <a [routerLink]="['/map']" [queryParams]="{id: scenario.id}" title="{{ scenario.id | translate }}">
+                  {{scenario.title | translate}}
+                </a>
+              </span>
             </div>
-          </a>
 
-          <div class="card-footer">
-            <span class="card-text">
-              <a [routerLink]="['/map']" [queryParams]="{id: scenario.id}" title="{{ scenario.id | translate }}"
-                [ngClass]="{'disabled': scenario.disabled}" [tabindex]="scenario.disabled? '-1': null">
-                {{scenario.title | translate}}
-              </a>
-            </span>
-
-
-            <!-- <a role="button" class="info-icon" (click)="showModal(scenario)" [ngClass]="{'disabled': scenario.disabled}"
-              [tabindex]="scenario.disabled? '-1': null">
-              <clr-icon shape="info-standard"></clr-icon>
-            </a> -->
           </div>
+
         </div>
-      </div>
     </div>
+
     <div class="clr-row scenarios-view">
       <div class="clr-col-12 clr-col-sm-12 clr-col-md-12 clr-col-lg-12 center">
         <p>
@@ -46,6 +42,7 @@
         </p>
       </div>
     </div>
+
     <div class="clr-row scenarios-view">
       <div class="center">
         <span>
@@ -56,25 +53,6 @@
       </div>
     </div>
 
-
-    <!-- <div class="clr-row scenarios-view">
-      <div class="center">
-        <h3 >{{'The stories are developed for the following hazards and their interactions, ' | translate}}</h3>
-        <span>
-          <figure class="logo" *ngFor="let item of hazardTypes">
-            <img [src]="'/assets/logos/riesgos_'+item.abbreviation+'_.png'" [alt]="item.title">
-            <figcaption>{{item.title}}</figcaption>
-          </figure>
-        </span>
-        <h3 >{{'considering the following \"elements at risk\".' | translate}}</h3>
-        <span>
-          <figure class="logo" *ngFor="let item of elementsAtRisk">
-            <img [src]="'/assets/logos/riesgos_'+item.abbreviation+'_.png'" [alt]="item.title">
-            <figcaption>{{item.title | translate}}</figcaption>
-          </figure>
-        </span>
-      </div>
-    </div> -->
   </div>
 
   <clr-modal *ngIf="showInfo" [(clrModalOpen)]="modalOpen" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="false">

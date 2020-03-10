@@ -68,6 +68,8 @@
     "Process to compute the damage of a flood in ecuador.": "This is a process to compute the damage of a flood in Ecuador.",
     "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Enter here the parameters to narrow down your selection of earthquakes from the catalogue. You may also select an area with possible earthquake-epicenters by drawing a box on the map.",
 
+    "AvailableEarthquakes": "Available earthquakes",
+
     "This service returns damage caused by the selected tsunami.": "This service generates informations about the damage caused by a given tsunami.",
 
     "Exposure": "Initial exposure",

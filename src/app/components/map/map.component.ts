@@ -252,14 +252,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const layers: Array<Layer | LayerGroup> = [];
 
         const osmLayer = new osm();
-        osmLayer.visible = true;
+        osmLayer.visible = false;
         osmLayer.legendImg = 'assets/layer-preview/osm-96px.jpg';
         layers.push(osmLayer);
-
-        const esri_imagery = new esri_world_imagery(<any>{
-            legendImg: 'assets/layer-preview/esri-imagery-96px.jpg'
-        });
-        layers.push(esri_imagery);
 
         const relief2 = new CustomLayer({
             name: 'Hillshade',

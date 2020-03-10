@@ -39,7 +39,7 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct
                 });
             },
             text: (properties: object) => {
-                let text = `<h3>Selected earthquake</h3>`;
+                let text = `<h3>{{Selected earthquake}}</h3>`;
                 const selectedProperties = {
                     Magnitude: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
                     Depth: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',

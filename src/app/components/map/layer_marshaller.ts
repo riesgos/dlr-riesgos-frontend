@@ -15,7 +15,7 @@ import { State } from 'src/app/ngrx_register';
 import { MapStateService } from '@ukis/services-map-state';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer, ProductCustomLayer } from './map.types';
 import { downloadBlob, downloadJson } from 'src/app/helpers/others';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateParser } from '@ngx-translate/core';
 import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON } from 'ol/format';
@@ -37,6 +37,9 @@ interface WmsParameters {
 
 @Injectable()
 export class LayerMarshaller  {
+    
+    private dictEn: Object;
+    private dictEs: Object;
 
     constructor(
         private httpClient: HttpClient,
@@ -44,8 +47,12 @@ export class LayerMarshaller  {
         public mapStateSvc: MapStateService,
         private sldParser: SldParserService,
         private store: Store<State>,
-        private translator: TranslateService
-        ) { }
+        private translator: TranslateService,
+        private translateParser: TranslateParser
+        ) {
+            this.translator.getTranslation('EN').subscribe(d => this.dictEn = d);
+            this.translator.getTranslation('ES').subscribe(d => this.dictEn = d);
+        }
 
 
     productsToLayers(products: Product[]): Observable<ProductLayer[]> {
@@ -148,7 +155,9 @@ export class LayerMarshaller  {
                 filtertype: 'Overlays',
                 popup: {
                     pupupFunktion: (obj) => {
-                        const html = vectorLayerProps.vectorLayerAttributes.text(obj);
+                        let html = vectorLayerProps.vectorLayerAttributes.text(obj);
+                        const dict = this.getDict();
+                        html = this.translateParser.interpolate(html, dict);
                         return html;
                     }
                 },
@@ -221,7 +230,9 @@ export class LayerMarshaller  {
                     },
                     popup: {
                         pupupFunktion: (obj) => {
-                            const html = product.description.vectorLayerAttributes.text(obj);
+                            let html = product.description.vectorLayerAttributes.text(obj);
+                            const dict = this.getDict();
+                            html = this.translateParser.interpolate(html, dict);
                             return html;
                         }
                     },
@@ -505,4 +516,15 @@ export class LayerMarshaller  {
         return html;
     }
 
+
+    private getDict(): Object {
+        const currentLang = this.translator.currentLang;
+        switch (currentLang) {
+            case 'es':
+                return this.dictEs;
+            case 'en':
+            default:
+                return this.dictEn;
+        }
+    }
 }

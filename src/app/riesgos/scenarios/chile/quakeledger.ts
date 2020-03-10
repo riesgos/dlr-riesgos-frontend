@@ -203,7 +203,7 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                 });
             },
             text: (properties) => {
-                let text = `<h3>Available earthquakes</h3>`;
+                let text = `<h3>{{AvailableEarthquakes}}</h3>`;
                 const selectedProperties = {
                     Magnitude: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
                     Depth: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',

@@ -40,6 +40,7 @@
     "Retry": "De nuevo",
     "Earthquake Catalogue": "Catálogo de terremotos",
     "Select earthquake": "Elija un terremoto",
+    "Selected earthquake": "Terremoto elegido",
     
     "EQ Exposure Model": "Modelo de exposición",
     "EQ Vulnerability Model": "Modelo de vulnerabilidad",
@@ -198,7 +199,10 @@
     "Tsunami Flood Layers (CITSU)": "Carta de inundación por tsunami",
     "eq-selection: boundingbox": "Cuadro delimitador",
     "selected earthquake": "Terremoto elegido",
+    "Selected earthquake": "Terremoto elegido",
     "available earthquakes": "Terremotos disponibles",
+    "Available earthquakes": "Terremotos disponibles",
+    "AvailableEarthquakes": "Terremotos disponibles",
     "ESRI Imagery": "imágenes satelitales",
     "The Volcanic Explosivity Index (VEI) is a relative measure of the explosiveness of volcanic eruptions. Volume of products, eruption cloud height, and qualitative observations are used to determine the explosivity value.": "El índice de explosividad volcánica (VEI) es una medida relativa de la explosividad de las erupciones volcánicas. El volumen de productos, la altura de la nube de erupción y las observaciones cualitativas se utilizan para determinar el valor de la explosividad.",
 

@@ -1,6 +1,7 @@
 import { ReturnStatement } from '@angular/compiler';
 import GeoJSON from 'ol/format/GeoJSON';
 import Feature from 'ol/Feature';
+import { Observable } from 'rxjs';
 
 
 export function deepValMap(obj: object, mapFn: (key: string, val: any) => any, callStacksize = 0): void {
@@ -112,3 +113,25 @@ export function createOlFeature(geojson: object): Feature[] {
       });
       return geoJsonReader.readFeature(geojson);
 }
+
+
+export function parseFile(file: File): Observable<string> {
+
+    return new Observable((subscriber) => {
+
+        if (!(file instanceof Blob)) {
+            subscriber.error(new Error('`blob` must be an instance of File or Blob.'));
+            return;
+        }
+
+        const reader: FileReader = new FileReader();
+
+        reader.onerror = err => subscriber.error(err);
+        reader.onabort = err => subscriber.error(err);
+        reader.onload = () => subscriber.next(reader.result as string);
+        reader.onloadend = () => subscriber.complete();
+
+        return reader.readAsText(file);
+    });
+}
+

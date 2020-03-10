@@ -12,6 +12,14 @@ export interface RiesgosScenarioState {
 }
 
 
+export function isRiesgosScenarioState(obj: object): obj is RiesgosScenarioState {
+    return  obj.hasOwnProperty('scenario') &&
+            obj.hasOwnProperty('processStates') &&
+            obj.hasOwnProperty('productValues') &&
+            obj.hasOwnProperty('graph');
+}
+
+
 export interface RiesgosScenarioMetadata {
     id: string;
     title: string;

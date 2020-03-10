@@ -62,7 +62,7 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="showRestoreModal = false">{{'Cancel' | translate}}</button>
-        <button type="button" class="btn btn-primary" (click)="restoreState()">{{'Restore' | translate}}</button>
+        <button type="button" class="btn btn-outline" (click)="cancelRestoreState()">{{'Cancel' | translate}}</button>
+        <button type="button" class="btn btn-primary" (click)="restoreState()" [disabled] = "!(stateToBeRestored$ | async)" >{{'Restore' | translate}}</button>
     </div>
 </clr-modal>

@@ -39,6 +39,7 @@ const mapProjection = 'EPSG:4326';
     styleUrls: ['./map.component.scss'],
     encapsulation: ViewEncapsulation.None,
     // changeDetection: ChangeDetectionStrategy.OnPush
+    providers: [LayersService, MapStateService, MapOlService]
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -294,6 +295,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 opacity: 0.3,
                 // bbox: [-92.270, -44.104, -48.017, -24.388],
                 visible: false,
+                removable: true,
                 // @ts-ignore
                 crossOrigin: 'anonymous'
             });

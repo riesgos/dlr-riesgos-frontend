@@ -26,8 +26,8 @@ import { FormStringFieldComponent } from './components/config_wizard/form-string
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
-import { MapOlModule } from '@ukis/map-ol';
-import { LayersModule } from '@ukis/services-layers';
+import { MapOlModule, MapOlService } from '@ukis/map-ol';
+import { LayersModule, LayersService } from '@ukis/services-layers';
 import { LayerControlModule } from '@ukis/layer-control';
 import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
@@ -97,7 +97,14 @@ import { DndDirective } from './components/save-button/dnd/dnd.directive';
     LayerControlModule,
     ClarityModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot(reducers),
+    StoreModule.forRoot(reducers, {
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+        strictStateSerializability: false,
+        strictActionSerializability: false,
+      },
+    }),
     EffectsModule.forRoot(effects),
     FormsModule,
     ReactiveFormsModule,
@@ -113,7 +120,7 @@ import { DndDirective } from './components/save-button/dnd/dnd.directive';
     HelpersModule
   ],
   providers: [
-    AlertService, FooterService, ProgressService, LayerMarshaller,
+    AlertService, FooterService, ProgressService, LayerMarshaller
   ],
   bootstrap: [UkisComponent]
 })

@@ -3,7 +3,7 @@ import { DragBox } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
 import { Vector as olVectorLayer } from 'ol/layer';
 import TileLayer from 'ol/layer/Tile';
-import { Vector as olVectorSource, TileArcGISRest } from 'ol/source';
+import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import {getWidth} from 'ol/extent';
@@ -12,7 +12,7 @@ import TileWMS from 'ol/source/TileWMS';
 import XYZ from 'ol/source/XYZ'
 import TileGrid from 'ol/tilegrid/TileGrid';
 import { MapStateService } from '@ukis/services-map-state';
-import { osm, esri_world_imagery } from '@ukis/base-layers-raster';
+import { osm } from '@ukis/base-layers-raster';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getMapableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
@@ -193,6 +193,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // listening for change in scenario - onInit
         const sub5 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
+            this.layersSvc.removeLayers();
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
                 if (layer instanceof LayerGroup) {
@@ -253,6 +254,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const osmLayer = new osm();
         osmLayer.visible = false;
+        osmLayer.removable = true;
         osmLayer.legendImg = 'assets/layer-preview/osm-96px.jpg';
         layers.push(osmLayer);
 
@@ -270,7 +272,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             attribution: '&copy, <a href="https://maps.openrouteservice.org">OpenMapSurfer</a>',
             legendImg: 'assets/layer-preview/hillshade-96px.jpg',
             opacity: 0.3,
-            visible: false
+            visible: false,
+            removable: true
         });
         layers.push(relief2);
 

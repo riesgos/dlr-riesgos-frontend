@@ -25,7 +25,7 @@ export class GraphvizcompComponent implements OnChanges {
   private createGraph(): void {
     const element = this.container.nativeElement;
     const dotString = this.dotString;
-    const svg = d3g.graphviz(element)
+    const svg = d3g.graphviz(element, {useWorker: false})
       .width(800)
       .height(600)
       .fit(true)

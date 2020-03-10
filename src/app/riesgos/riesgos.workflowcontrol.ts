@@ -194,14 +194,14 @@ export class WorkflowControl {
     }
 
 
-    private getProcessInputs(id: ProcessId): Product[] {
+    public getProcessInputs(id: ProcessId): Product[] {
         const process = this.getProcess(id);
         const productIds = process.requiredProducts;
         const products = productIds.map(prodId => this.getProduct(prodId));
         return products;
     }
 
-    private getProcessOutpus(id: ProcessId): Product[] {
+    public getProcessOutpus(id: ProcessId): Product[] {
         const process = this.getProcess(id);
         const productIds = process.providedProducts;
         const products = productIds.map(prodId => this.getProduct(prodId));

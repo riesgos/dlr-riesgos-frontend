@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GlobalAlertComponent } from './global-alert.component';
+import { ClarityModule } from '@clr/angular';
 
 describe('GlobalAlertComponent', () => {
   let component: GlobalAlertComponent;
@@ -8,7 +9,8 @@ describe('GlobalAlertComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GlobalAlertComponent ]
+      declarations: [ GlobalAlertComponent ],
+      imports: [ClarityModule]
     })
     .compileComponents();
   }));

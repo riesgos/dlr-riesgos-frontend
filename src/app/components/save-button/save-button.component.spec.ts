@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SaveButtonComponent } from './save-button.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ClarityModule } from '@clr/angular';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from 'src/app/ngrx_register';
 
 describe('SaveButtonComponent', () => {
   let component: SaveButtonComponent;
@@ -8,7 +13,8 @@ describe('SaveButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SaveButtonComponent ]
+      declarations: [ SaveButtonComponent ],
+      imports: [TranslateModule.forRoot(), FormsModule, ReactiveFormsModule, ClarityModule, StoreModule.forRoot(reducers)]
     })
     .compileComponents();
   }));

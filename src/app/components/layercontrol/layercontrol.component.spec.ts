@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LayercontrolComponent } from './layercontrol.component';
+import { ClarityModule } from '@clr/angular';
 
 describe('LayercontrolComponent', () => {
   let component: LayercontrolComponent;
@@ -8,7 +9,8 @@ describe('LayercontrolComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LayercontrolComponent ]
+      declarations: [ LayercontrolComponent ],
+      imports: [ClarityModule]
     })
     .compileComponents();
   }));

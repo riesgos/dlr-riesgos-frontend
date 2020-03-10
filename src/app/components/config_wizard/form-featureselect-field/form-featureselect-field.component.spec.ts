@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormFeatureSelectFieldComponent } from './form-featureselect-field.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ClarityModule } from '@clr/angular';
 
 describe('FormSelectFieldComponent', () => {
   let component: FormFeatureSelectFieldComponent;
@@ -8,7 +11,8 @@ describe('FormSelectFieldComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormFeatureSelectFieldComponent ]
+      declarations: [ FormFeatureSelectFieldComponent ],
+      imports: [TranslateModule.forRoot(), FormsModule, ReactiveFormsModule, ClarityModule]
     })
     .compileComponents();
   }));

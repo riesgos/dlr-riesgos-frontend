@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ScreenshotComponent } from './screenshot.component';
+import { ClarityModule } from '@clr/angular';
 
 describe('ScreenshotComponent', () => {
   let component: ScreenshotComponent;
@@ -8,7 +9,8 @@ describe('ScreenshotComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ScreenshotComponent ]
+      declarations: [ ScreenshotComponent ],
+      imports: [ClarityModule]
     })
     .compileComponents();
   }));

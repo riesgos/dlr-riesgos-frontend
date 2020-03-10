@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReadMoreComponent } from './read-more.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { ClarityModule } from '@clr/angular';
 
 describe('ReadMoreComponent', () => {
   let component: ReadMoreComponent;
@@ -8,7 +10,8 @@ describe('ReadMoreComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReadMoreComponent ]
+      declarations: [ ReadMoreComponent ],
+      imports: [TranslateModule.forRoot(), ClarityModule]
     })
     .compileComponents();
   }));

@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ScenariosComponent } from './scenarios.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { UkisRoutingModule } from 'src/app/app-routing.module';
 
 describe('ScenariosComponent', () => {
   let component: ScenariosComponent;
@@ -8,7 +10,8 @@ describe('ScenariosComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ScenariosComponent ]
+      declarations: [ ScenariosComponent ],
+      imports: [TranslateModule.forRoot(), UkisRoutingModule]
     })
     .compileComponents();
   }));

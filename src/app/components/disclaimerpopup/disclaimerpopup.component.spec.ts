@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DisclaimerpopupComponent } from './disclaimerpopup.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { ClarityModule } from '@clr/angular';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('DisclaimerpopupComponent', () => {
   let component: DisclaimerpopupComponent;
@@ -8,7 +11,8 @@ describe('DisclaimerpopupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DisclaimerpopupComponent ]
+      declarations: [ DisclaimerpopupComponent ],
+      imports: [TranslateModule.forRoot(), ClarityModule, BrowserAnimationsModule]
     })
     .compileComponents();
   }));

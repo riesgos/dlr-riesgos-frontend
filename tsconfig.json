@@ -25,12 +25,14 @@
       "@ukis/*": [
         "dist/*",
         "projects/*",
-        "node_modules/@ukis/*"
+        "node_modules/@dlr-eoc/*",
+        "frontend-libraries/projects/*"
       ],
       "@dlr-eoc/*": [
         "dist/*",
         "projects/*",
-        "node_modules/@dlr-eoc/*"
+        "node_modules/@dlr-eoc/*",
+        "frontend-libraries/projects/*"
       ],
       "helpers": [
         "dist/helpers"

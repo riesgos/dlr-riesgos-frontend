@@ -37,7 +37,7 @@ interface WmsParameters {
 
 @Injectable()
 export class LayerMarshaller  {
-    
+
     private dictEn: Object;
     private dictEs: Object;
 

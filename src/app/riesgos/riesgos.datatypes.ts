@@ -113,13 +113,8 @@ export class WpsProcess implements ExecutableProcess {
         readonly wpsVersion: WpsVerion,
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
+        cache: Cache = environment.production ? new FakeCache() : new IndexDbCache()
         ) {
-        let cache: Cache;
-        if (environment.production) {
-            cache = new FakeCache();
-        } else {
-            cache = new IndexDbCache();
-        }
         this.wpsClient = new WpsClient(this.wpsVersion, httpClient, cache);
     }
 
@@ -164,6 +159,10 @@ export class WpsProcess implements ExecutableProcess {
                 })
             );
 
+    }
+
+    public setCache(cache: Cache) {
+        this.wpsClient.setCache(cache);
     }
 
     private assignWpsDataToProducts(wpsData: WpsData[], initialProds: (Product & WpsData)[]): Product[] {

@@ -1,4 +1,4 @@
-import { Cache, } from '@ukis/services-ogc';
+import { Cache } from '@ukis/services-ogc';
 import { set, get } from 'idb-keyval';
 import { Observable, from } from 'rxjs';
 import md5 from 'md5';

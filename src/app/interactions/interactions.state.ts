@@ -5,8 +5,8 @@ export type InteractionMode = 'normal' | 'featureselection' | 'bbox';
 
 
 export interface InteractionState {
-    mode: InteractionMode,
-    product: Product
+    mode: InteractionMode;
+    product: Product;
 }
 
 

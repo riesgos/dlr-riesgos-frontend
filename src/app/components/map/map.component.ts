@@ -100,7 +100,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         this.subs.push(sub2);
 
-        // listening for products that can be displayed in the map
+        // listening for products that can be displayed on the map
         const sub3 = this.store.pipe(
             select(getMapableProducts),
 

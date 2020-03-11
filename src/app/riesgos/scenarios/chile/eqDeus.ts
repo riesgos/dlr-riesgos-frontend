@@ -5,7 +5,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { createBarchart, Bardata, createConfusionMatrix } from 'src/app/helpers/d3charts';
+import { createBarchart, Bardata } from 'src/app/helpers/d3charts';
 import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';

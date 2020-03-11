@@ -45,7 +45,8 @@
               ]
             },
             "scripts": [
-              "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
+              "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
+              "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js",
               "node_modules/@clr/icons/clr-icons.min.js",
               "node_modules/d3/dist/d3.js"
             ]
@@ -173,13 +174,13 @@
           "options": {
             "tsConfig": "projects/feature-table/tsconfig.lib.json",
             "project": "projects/feature-table/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/feature-table/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -213,13 +214,13 @@
           "options": {
             "tsConfig": "projects/services-layers/tsconfig.lib.json",
             "project": "projects/services-layers/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/services-layers/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -253,13 +254,13 @@
           "options": {
             "tsConfig": "projects/layer-control/tsconfig.lib.json",
             "project": "projects/layer-control/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/layer-control/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -293,13 +294,13 @@
           "options": {
             "tsConfig": "projects/base-layers-raster/tsconfig.lib.json",
             "project": "projects/base-layers-raster/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/base-layers-raster/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -333,13 +334,13 @@
           "options": {
             "tsConfig": "projects/screenshot/tsconfig.lib.json",
             "project": "projects/screenshot/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/screenshot/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -373,13 +374,13 @@
           "options": {
             "tsConfig": "projects/services-wps/tsconfig.lib.json",
             "project": "projects/services-wps/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/services-wps/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -413,13 +414,13 @@
           "options": {
             "tsConfig": "projects/sld-parser/tsconfig.lib.json",
             "project": "projects/sld-parser/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/sld-parser/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -453,13 +454,13 @@
           "options": {
             "tsConfig": "projects/helpers/tsconfig.lib.json",
             "project": "projects/helpers/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/helpers/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {

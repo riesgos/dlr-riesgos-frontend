@@ -2,7 +2,7 @@ import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WpsData } from '@ukis/services-ogc';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, greenRedRange, weightedDamage } from 'src/app/helpers/colorhelpers';
-import { Bardata, createBarchart, createConfusionMatrix } from 'src/app/helpers/d3charts';
+import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqUpdatedExposureRefPeru } from './eqDeus';
 import { schemaPeru } from './exposure';

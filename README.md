@@ -12,13 +12,13 @@ This web application is a frontend for the orchestration of webservices. During 
  - make it easy for the user to explore the range of effects a natural hazard can have
 
 ## Team
-Our team includes (in alphabetical order)
- - Mathias Böck
- - Michael Langbein
- - Nico Mandery
- - Martin Mühlbauer
- - Torsten Riedlinger
- - Elisabeth Schöpfer
+Our team includes (in alphabetical order):
+ - Böck, Mathias 
+ - Langbein, Michael 
+ - Mandery, Nico 
+ - Mühlbauer, Martin 
+ - Riedlinger, Torsten 
+ - Schöpfer, Elisabeth 
 
 
 ## Business logic

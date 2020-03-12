@@ -33,4 +33,6 @@ This software is licensed under the [Apache 2.0 License](LICENSE).
 Copyright (c) 2020 German Aerospace Center (DLR) * German Remote Sensing Data Center * Department: Geo-Risks and Civil Security
 
 
-![BMBF Logo](src/assets/logos/BMBF_en.png "BMBF Logo")
+## Funding
+
+The  research  and  development  project  RIESGOS  (Grant  No.  03G0876)  is  funded  by  the  German  Federal Ministry of Education and Research (BMBF) as part of the funding programme ‘Client II - International Partnerships for Sustainable Innovation’.

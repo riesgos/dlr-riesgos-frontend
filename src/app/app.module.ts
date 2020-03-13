@@ -26,9 +26,9 @@ import { FormStringFieldComponent } from './components/config_wizard/form-string
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 import { ScenariosComponent } from './route-components/scenarios/scenarios.component';
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
-import { MapOlModule, MapOlService } from '@ukis/map-ol';
-import { LayersModule, LayersService } from '@ukis/services-layers';
-import { LayerControlModule } from '@ukis/layer-control';
+import { MapOlModule, MapOlService } from '@dlr-eoc/map-ol';
+import { LayersModule, LayersService } from '@dlr-eoc/services-layers';
+import { LayerControlModule } from '@dlr-eoc/layer-control';
 import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
 import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
@@ -49,7 +49,7 @@ import { TextModalComponent } from './components/text-modal/text-modal.component
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
 import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
-import { HelpersModule } from '@ukis/helpers/src/public-api';
+import { HelpersModule } from '@dlr-eoc/helpers/src/public-api';
 import { LicensesComponent } from './route-components/licenses/licenses.component';
 import { BlogentryComponent } from './components/blogentry/blogentry.component';
 import { DndDirective } from './components/save-button/dnd/dnd.directive';

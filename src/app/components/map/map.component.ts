@@ -9,14 +9,14 @@ import { get as getProjection } from 'ol/proj';
 import Feature from 'ol/Feature';
 import {getWidth} from 'ol/extent';
 import * as olEvents from 'ol/events';
-import { MapOlService } from '@ukis/map-ol';
+import { MapOlService } from '@dlr-eoc/map-ol';
 import TileWMS from 'ol/source/TileWMS';
 import XYZ from 'ol/source/XYZ'
 import TileGrid from 'ol/tilegrid/TileGrid';
 import {click, noModifierKeys, altKeyOnly} from 'ol/events/condition';
 import Select from 'ol/interaction/Select';
-import { MapStateService } from '@ukis/services-map-state';
-import { osm } from '@ukis/base-layers-raster';
+import { MapStateService } from '@dlr-eoc/services-map-state';
+import { osm } from '@dlr-eoc/base-layers-raster';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getMapableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
@@ -25,14 +25,14 @@ import { InteractionCompleted } from 'src/app/interactions/interactions.actions'
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './layer_marshaller';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@ukis/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { Graph } from 'graphlib';
 import { ProductLayer, ProductRasterLayer } from './map.types';
 import { map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
-import { WpsBboxValue } from '@ukis/services-ogc';
+import { WpsBboxValue } from '@dlr-eoc/services-ogc';
 import { featureReduce } from '@turf/turf';
 
 

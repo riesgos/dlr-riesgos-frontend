@@ -1,7 +1,7 @@
 import { WizardPageComponent } from 'src/app/components/config_wizard/wizard-page/wizard-page.component';
 import { WpsProcess, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from '@ukis/services-ogc';
+import { WpsData } from '@dlr-eoc/services-ogc';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';

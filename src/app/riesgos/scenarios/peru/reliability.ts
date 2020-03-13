@@ -1,7 +1,7 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { vei } from '../ecuador/lahar';
-import { WpsData } from '@ukis/services-ogc';
+import { WpsData } from '@dlr-eoc/services-ogc';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';

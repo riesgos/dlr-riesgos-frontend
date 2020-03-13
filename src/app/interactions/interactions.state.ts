@@ -1,4 +1,4 @@
-import { ProductId } from '@ukis/services-ogc';
+import { ProductId } from '@dlr-eoc/services-ogc';
 import { Product } from '../riesgos/riesgos.datatypes';
 
 export type InteractionMode = 'normal' | 'featureselection' | 'bbox';

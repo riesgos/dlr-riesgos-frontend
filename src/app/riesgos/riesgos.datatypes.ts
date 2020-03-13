@@ -1,4 +1,4 @@
-import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient, FakeCache, Cache } from '@ukis/services-ogc';
+import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient, FakeCache, Cache } from '@dlr-eoc/services-ogc';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';

@@ -5,7 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { debounceTime, map } from 'rxjs/operators';
-import { WpsBboxValue } from '@ukis/services-ogc';
+import { WpsBboxValue } from '@dlr-eoc/services-ogc';
 import { Observable } from 'rxjs';
 import { InteractionState } from 'src/app/interactions/interactions.state';
 

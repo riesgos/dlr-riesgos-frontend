@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from '@ukis/services-ogc';
+import { WpsData } from '@dlr-eoc/services-ogc';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';

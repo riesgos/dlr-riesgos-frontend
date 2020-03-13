@@ -1,4 +1,4 @@
-import { Cache, WpsData } from '@ukis/services-ogc';
+import { Cache, WpsData } from '@dlr-eoc/services-ogc';
 import { Observable, of } from 'rxjs';
 
 

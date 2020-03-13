@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import { laharVelocityShakemapRef } from './laharWrapper';
 import { HttpClient } from '@angular/common/http';
 import { MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData } from '@ukis/services-ogc';
+import { WpsData } from '@dlr-eoc/services-ogc';
 import { schemaEcuador } from './exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';

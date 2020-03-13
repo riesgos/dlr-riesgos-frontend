@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
-import { LayersService } from '@ukis/services-layers';
-import { MapStateService } from '@ukis/services-map-state';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { MapStateService } from '@dlr-eoc/services-map-state';
 
 @Component({
   selector: 'ukis-layercontrol',

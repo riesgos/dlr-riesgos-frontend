@@ -22,17 +22,11 @@
       "dom"
     ],
     "paths": {
-      "@ukis/*": [
-        "dist/*",
-        "projects/*",
-        "node_modules/@dlr-eoc/*",
-        "frontend-libraries/projects/*"
-      ],
       "@dlr-eoc/*": [
         "dist/*",
         "projects/*",
-        "node_modules/@dlr-eoc/*",
-        "frontend-libraries/projects/*"
+        "frontend-libraries/projects/*",
+        "node_modules/@dlr-eoc/*"
       ],
       "helpers": [
         "dist/helpers"

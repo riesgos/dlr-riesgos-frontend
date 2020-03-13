@@ -1,6 +1,6 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsData } from '@ukis/services-ogc';
+import { WpsData } from '@dlr-eoc/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { createBigBarchart, Bardata, createBarchart } from 'src/app/helpers/d3charts';

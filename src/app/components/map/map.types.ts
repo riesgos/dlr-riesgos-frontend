@@ -1,4 +1,4 @@
-import { VectorLayer, RasterLayer, Layer, CustomLayer } from '@ukis/services-layers';
+import { VectorLayer, RasterLayer, Layer, CustomLayer } from '@dlr-eoc/services-layers';
 
 
 export class ProductVectorLayer extends VectorLayer {

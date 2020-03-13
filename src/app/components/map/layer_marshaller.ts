@@ -6,14 +6,14 @@ import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduc
     MultiVectorLayerProduct } from '../../riesgos/riesgos.datatypes.mappable';
 import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { bboxPolygon } from '@turf/turf';
-import { MapOlService } from '@ukis/map-ol';
+import { MapOlService } from '@dlr-eoc/map-ol';
 import { WMSCapabilities } from 'ol/format';
 import Feature from 'ol/Feature';
 import { map } from 'rxjs/operators';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { MapStateService } from '@ukis/services-map-state';
+import { MapStateService } from '@dlr-eoc/services-map-state';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer, ProductCustomLayer } from './map.types';
 import { downloadBlob, downloadJson } from 'src/app/helpers/others';
 import { TranslateService, TranslateParser } from '@ngx-translate/core';

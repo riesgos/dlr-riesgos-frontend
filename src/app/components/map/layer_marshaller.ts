@@ -8,6 +8,7 @@ import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@ukis/map-ol';
 import { WMSCapabilities } from 'ol/format';
+import Feature from 'ol/Feature';
 import { map } from 'rxjs/operators';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -129,7 +130,10 @@ export class LayerMarshaller  {
 
             const layer: olVectorLayer = new olVectorLayer({
                 source: source,
-                style: vectorLayerProps.vectorLayerAttributes.style
+                style: (feature: Feature, resolution: number) => {
+                    const props = feature.getProperties();
+                    return vectorLayerProps.vectorLayerAttributes.style(feature, resolution, props.selected);
+                }
             });
 
             let description = '';
@@ -181,7 +185,10 @@ export class LayerMarshaller  {
             // Ugly hack: a custom layer is not supposed to have an 'options' property.
             // We set it here anyway, because we need options.style to be able to create a custom legend.
             productLayer['options'] = {
-                style: vectorLayerProps.vectorLayerAttributes.style
+                style: (feature: Feature, resolution: number) => {
+                    const props = feature.getProperties();
+                    return vectorLayerProps.vectorLayerAttributes.style(feature, resolution, props.selected);
+                }
             };
             if (vectorLayerProps.vectorLayerAttributes.legendEntries) {
                 productLayer['legendEntries'] = vectorLayerProps.vectorLayerAttributes.legendEntries;
@@ -194,7 +201,7 @@ export class LayerMarshaller  {
     }
 
     makeGeojsonLayer(product: VectorLayerProduct): Observable<ProductVectorLayer> {
-        return this.getStyle(product).pipe(
+        return this.getSelectionAwareStyle(product).pipe(
             map(styleFunction => {
 
                 const data = product.value[0];
@@ -258,6 +265,19 @@ export class LayerMarshaller  {
                 return layer;
             })
         );
+    }
+
+    private getSelectionAwareStyle(product: VectorLayerProduct): Observable<CallableFunction | null> {
+        return this.getStyle(product).pipe(map(style => {
+            if (style) {
+                return (feature: Feature, resolution: number) => {
+                    const props = feature.getProperties();
+                    return style(feature, resolution, props.selected);
+                }
+            } else {
+                return style;
+            }
+        }));
     }
 
     private getStyle(product: VectorLayerProduct): Observable<CallableFunction | null> {

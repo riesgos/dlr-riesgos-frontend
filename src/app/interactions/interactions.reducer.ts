@@ -7,19 +7,19 @@ import { initialInteractionState, InteractionState } from './interactions.state'
 export function interactionReducer(state: InteractionState = initialInteractionState, action: InteractionAction): InteractionState {
     switch(action.type) {
 
-        case InteractionActionTypes.started: 
+        case InteractionActionTypes.started:
             return {
-                mode: (action as InteractionStarted).payload.mode, 
+                mode: (action as InteractionStarted).payload.mode,
                 product: (action as InteractionStarted).payload.product
             };
 
-        case InteractionActionTypes.completed: 
+        case InteractionActionTypes.completed:
             return {
-                mode: "normal", 
+                mode: 'normal',
                 product: (action as InteractionCompleted).payload.product
             };
 
-        default: 
+        default:
             return state;
 
     }

@@ -6,11 +6,15 @@ import TileLayer from 'ol/layer/Tile';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
+import Feature from 'ol/Feature';
 import {getWidth} from 'ol/extent';
+import * as olEvents from 'ol/events';
 import { MapOlService } from '@ukis/map-ol';
 import TileWMS from 'ol/source/TileWMS';
 import XYZ from 'ol/source/XYZ'
 import TileGrid from 'ol/tilegrid/TileGrid';
+import {click, noModifierKeys, altKeyOnly} from 'ol/events/condition';
+import Select from 'ol/interaction/Select';
 import { MapStateService } from '@ukis/services-map-state';
 import { osm } from '@ukis/base-layers-raster';
 import { Store, select } from '@ngrx/store';
@@ -29,6 +33,7 @@ import { map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from '@ukis/services-ogc';
+import { featureReduce } from '@turf/turf';
 
 
 const mapProjection = 'EPSG:4326';
@@ -46,7 +51,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
     private geoJson = new GeoJSON();
-    private interactionState: BehaviorSubject<InteractionState>;
+    private highlightedFeatures$ = new BehaviorSubject<Feature[]>([]);
+    private highlightedFeatures: Feature[] = [];
+    private interactionState$ = new BehaviorSubject<InteractionState>(initialInteractionState);
     private subs: Subscription[] = [];
 
     constructor(
@@ -65,9 +72,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subscribeToMapState();
 
         // listening for interaction modes
-        this.interactionState = new BehaviorSubject<InteractionState>(initialInteractionState);
         const sub1 = this.store.pipe(select('interactionState')).subscribe(currentInteractionState => {
-            this.interactionState.next(currentInteractionState);
+            this.interactionState$.next(currentInteractionState);
         });
         this.subs.push(sub1);
 
@@ -144,7 +150,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         // adding dragbox interaction and hooking it into the store
         const dragBox = new DragBox({
             condition: (event) => {
-                return this.interactionState.getValue().mode === 'bbox';
+                return this.interactionState$.getValue().mode === 'bbox';
             },
             onBoxEnd: () => {
                 const lons = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[0]);
@@ -161,7 +167,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     urlon: maxLon.toFixed(1) as unknown as number
                 };
                 const product: Product = {
-                    ...this.interactionState.getValue().product,
+                    ...this.interactionState$.getValue().product,
                     value: box
                 };
                 this.store.dispatch(new InteractionCompleted({ product }));
@@ -176,21 +182,66 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
         // adding featureselect interaction and hooking it into the store
-        this.mapSvc.map.on('click', (event) => {
-            this.mapSvc.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
-                if (this.interactionState.getValue().mode === 'featureselection') {
-                    const product = {
-                        ...this.interactionState.getValue().product,
-                        value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
-                    };
-                    this.store.dispatch(new InteractionCompleted({ product }));
+        const clickInteraction = new Select({
+            condition: (mapBrowserEvent) => {
+                return click(mapBrowserEvent) && noModifierKeys(mapBrowserEvent);
+            },
+            style: false
+        });
+        clickInteraction.on('click', (e) => {
+                const features = e.target.getFeatures().getArray();
+                if (features.length) {
+                    if (this.interactionState$.getValue().mode === 'featureselection') {
+                        const feature = features[0];
+                        const product = {
+                            ...this.interactionState$.getValue().product,
+                            value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
+                        };
+                        this.store.dispatch(new InteractionCompleted({ product }));
+                    } else {
+                        this.highlightedFeatures$.next(features);
+                        console.log("reacted to click on single feature: changed highlighted")
+                    }
+                } else {
+                    this.mapSvc.removeAllPopups();
+                    this.highlightedFeatures$.next([]);
+                    console.log("reacted on click into nothing - removed poups and highlighted")
                 }
-            });
+        });
+        this.mapSvc.map.addInteraction(clickInteraction);
+
+
+        // adding multi-featureselect interaction
+        const altClickInteraction = new Select({
+            condition: (mapBrowserEvent) => {
+                return click(mapBrowserEvent) && altKeyOnly(mapBrowserEvent);
+            },
+            style: false
+        });
+        altClickInteraction.on('select', (e) => {
+            const features = e.target.getFeatures().getArray();
+            const highlighted = this.highlightedFeatures;
+            const allFeatures = Array.prototype.concat(features, highlighted);
+            this.highlightedFeatures$.next(allFeatures);
+            console.log("reacted on alt-selection: appended to highlighted")
+        });
+        this.mapSvc.map.addInteraction(altClickInteraction);
+
+
+        // remove popups when no feature has been clicked
+        // this.mapSvc.map.on('click', () => {
+            
+        // });
+
+
+        // listening for changes in highlighted features
+        this.highlightedFeatures$.subscribe((features: Feature[]) => {
+            this.highlightedFeatures.map(f => f.set('selected', false));
+            features.map(f => f.set('selected', true));
+            this.highlightedFeatures = features;
+            console.log('new features selected: ', features.length, features);
         });
 
-        this.mapSvc.map.on('click', () => {
-            this.mapSvc.removeAllPopups();
-        });
 
         // listening for change in scenario - onInit
         const sub5 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {

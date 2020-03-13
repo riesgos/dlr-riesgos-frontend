@@ -4,7 +4,7 @@ import { BboxLayerProduct, BboxLayerDescription, VectorLayerProduct } from 'src/
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
-import { toDecimalPlaces, linInterpolateHue, redGreenRange } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, linInterpolateXY, redGreenRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 
@@ -182,7 +182,7 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                 const depth = props['origin.depth.value'];
 
                 const text = depth + ' km';
-                const radius = linInterpolateHue(7, 5, 9, 20, magnitude);
+                const radius = linInterpolateXY(7, 5, 9, 20, magnitude);
                 const [r, g, b] = redGreenRange(5, 60, depth);
 
                 return new olStyle({

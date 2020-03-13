@@ -50,11 +50,11 @@ export function toDecimalPlaces(value: number, decimalPlaces: number): string {
     }
 }
 
-export function linInterpolateHue(startVal: number, startHue: number, endVal: number, endHue: number, currentVal: number): number {
-    const degree = (currentVal - startVal) / (endVal - startVal);
+export function linInterpolateXY(startX: number, startY: number, endX: number, endY: number, currentX: number): number {
+    const degree = (currentX - startX) / (endX - startX);
     const degreeTop = Math.max(Math.min(degree, 1), 0);
-    const hue = degreeTop * (endHue - startHue) + startHue;
-    return hue;
+    const y = degreeTop * (endY - startY) + startY;
+    return y;
 }
 
 export function linInterpolate(startVal: number, endVal: number, currentVal: number): number {

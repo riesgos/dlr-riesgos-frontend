@@ -1,7 +1,7 @@
 import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsBboxValue } from '@ukis/services-ogc';
 import { shape } from '../components/config_wizard/wizardable_processes';
-import { FeatureCollection } from '@turf/helpers';
+import { FeatureCollection, Feature } from '@turf/helpers';
 import { LegendElement } from '@ukis/layer-control/src/lib/vector-legend/vector-legend.component';
 
 
@@ -31,7 +31,7 @@ export const isBboxLayerProduct = (data: Product): data is BboxLayerProduct => {
 
 export interface VectorLayerProperties {
     vectorLayerAttributes: {
-        style?: any;
+        style?: (feature: Feature, resolution: number, selected: boolean) => any;
         text?: any;
         summary?: (value: any) => string,
         sldFile?: string,

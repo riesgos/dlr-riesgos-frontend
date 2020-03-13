@@ -4,7 +4,7 @@ import { vei } from './lahar';
 import { WpsData } from '@ukis/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { toDecimalPlaces, linInterpolateHue } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -32,7 +32,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                 const thickness = props.thickness;
                 allDepths.push(thickness);
 
-                const hue = linInterpolateHue(0, 170, 100, 280, thickness);
+                const hue = linInterpolateXY(0, 170, 100, 280, thickness);
                 const colorString = `hsl(${hue}, 50%, 50%)`;
 
                 // we can also repeat labels along each polygon-segment, roughly like this:

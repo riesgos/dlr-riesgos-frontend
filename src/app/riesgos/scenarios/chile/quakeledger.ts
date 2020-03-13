@@ -6,7 +6,7 @@ import {
 import { VectorLayerProduct, BboxLayerProduct, BboxLayerDescription } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue } from '@ukis/services-ogc';
-import { toDecimalPlaces, redGreenRange, linInterpolate, linInterpolateHue } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, redGreenRange, linInterpolate, linInterpolateXY } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -177,15 +177,19 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature, resolution: number, selected: boolean) => {
 
                 const props = feature.getProperties();
                 const magnitude = props['magnitude.mag.value'];
                 const depth = props['origin.depth.value'];
 
                 const text = depth + ' km';
-                const radius = linInterpolateHue(7, 5, 9, 20, magnitude);
+                let radius = linInterpolateXY(7, 5, 9, 20, magnitude);
                 const [r, g, b] = redGreenRange(5, 60, depth);
+
+                if (selected) {
+                    radius += 4;
+                }
 
                 return new olStyle({
                     image: new olCircle({

@@ -28,6 +28,7 @@
     "@clr/core": "^3.0.0",
     "@clr/icons": "^3.0.0",
     "@clr/ui": "^3.0.0",
+    "@dlr-eoc/map-ol": "^7.0.0",
     "@dlr-eoc/services-map-state": "^7.0.0",
     "@dlr-eoc/services-ogc": "^7.0.0",
     "@dlr-eoc/services-util-store": "^7.0.0",

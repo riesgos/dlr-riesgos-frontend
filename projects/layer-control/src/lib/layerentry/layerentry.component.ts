@@ -2,9 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 
 // imports only for typings...
 import { LayerGroup, Layer, RasterLayer, isRasterLayertype, WmsLayertype, WmtsLayertype, isRasterLayer,
-  isVectorLayer, LayersService, VectorLayer} from '@ukis/services-layers';
-import { MapStateService } from '@ukis/services-map-state';
-import {  } from '@ukis/services-layers';
+  isVectorLayer, LayersService, VectorLayer} from '@dlr-eoc/services-layers';
+import { MapStateService } from '@dlr-eoc/services-map-state';
+import {  } from '@dlr-eoc/services-layers';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({

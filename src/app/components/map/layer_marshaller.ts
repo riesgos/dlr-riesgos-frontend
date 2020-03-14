@@ -97,6 +97,7 @@ export class LayerMarshaller  {
         const bboxArray: [number, number, number, number] =
         [product.value.lllon, product.value.lllat, product.value.urlon, product.value.urlat];
         const layer: ProductVectorLayer = new ProductVectorLayer({
+            productId: product.uid,
             id: `${product.uid}_${product.description.id}_result_layer`,
             name: `${product.description.name}`,
             attribution: '',
@@ -146,6 +147,7 @@ export class LayerMarshaller  {
 
             const productLayer: ProductCustomLayer = new ProductCustomLayer({
                 custom_layer: layer,
+                productId: product.uid,
                 id: product.uid + '_' + vectorLayerProps.name,
                 name: vectorLayerProps.name,
                 opacity: 0.6,
@@ -222,6 +224,7 @@ export class LayerMarshaller  {
                 }
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({
+                    productId: product.uid,
                     id: `${product.uid}_${product.description.id}_result_layer`,
                     name: `${product.description.name}`,
                     attribution: '',
@@ -333,6 +336,7 @@ export class LayerMarshaller  {
                 for (const layername of paras.layers) {
                     // @TODO: convert all searchparameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
+                        productId: uid,
                         id: `${uid}_${layername}_result_layer`,
                         name: `${layername}`,
                         attribution: '',

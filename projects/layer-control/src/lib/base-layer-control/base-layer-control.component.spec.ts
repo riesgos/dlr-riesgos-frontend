@@ -2,15 +2,15 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BaseLayerControlComponent } from './base-layer-control.component';
 import { ReversePipe } from '../array-reverse.pipe';
-import { LayersService } from '@ukis/services-layers';
+import { LayersService } from '@dlr-eoc/services-layers';
 
 
-import { MapStateService } from '@ukis/services-map-state';
+import { MapStateService } from '@dlr-eoc/services-map-state';
 import { Component, Input } from '@angular/core';
 import { of } from 'rxjs';
-import { RasterLayer } from '@ukis/services-layers';
+import { RasterLayer } from '@dlr-eoc/services-layers';
 import { LayerentryGroupComponent } from '@ukis/layer-control/src/lib/layerentry-group/layerentry-group.component';
-import { LayerGroup } from '@ukis/services-layers';
+import { LayerGroup } from '@dlr-eoc/services-layers';
 
 /**
  * this service extends the LayersService to mimik its behaviour. The getLayerGroups function is overwritten to 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
 import { DragBox } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
 import { Vector as olVectorLayer } from 'ol/layer';
@@ -8,7 +8,6 @@ import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import Feature from 'ol/Feature';
 import {getWidth} from 'ol/extent';
-import * as olEvents from 'ol/events';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import TileWMS from 'ol/source/TileWMS';
 import XYZ from 'ol/source/XYZ'
@@ -16,7 +15,7 @@ import TileGrid from 'ol/tilegrid/TileGrid';
 import {click, noModifierKeys, altKeyOnly} from 'ol/events/condition';
 import Select from 'ol/interaction/Select';
 import { MapStateService } from '@dlr-eoc/services-map-state';
-import { osm } from '@dlr-eoc/base-layers-raster';
+import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getMapableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
@@ -84,7 +83,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.store.pipe(select(getGraph)),
                 this.layersSvc.getOverlays()
             ),
-        ).subscribe(([focussedProcessId, graph, currentOverlays]: [string, Graph, Layer[]]) => {
+        ).subscribe(([focussedProcessId, graph, currentOverlays]: [string, Graph, ProductLayer[]]) => {
             if (graph && focussedProcessId !== 'some initial focus') {
                 const inEdges = graph.inEdges(focussedProcessId);
                 const outEdges = graph.outEdges(focussedProcessId);
@@ -304,10 +303,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getInfoLayers(scenario: string) {
         const layers: Array<Layer | LayerGroup> = [];
 
-        const osmLayer = new osm();
-        osmLayer.visible = false;
-        osmLayer.removable = true;
-        osmLayer.legendImg = 'assets/layer-preview/osm-96px.jpg';
+        const osmLayer = new OsmTileLayer({
+            visible: false,
+            removable: true,
+            legendImg: 'assets/layer-preview/osm-96px.jpg'
+        });
         layers.push(osmLayer);
 
         const relief2 = new CustomLayer({

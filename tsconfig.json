@@ -27,12 +27,6 @@
         "projects/*",
         "frontend-libraries/projects/*",
         "node_modules/@dlr-eoc/*"
-      ],
-      "helpers": [
-        "dist/helpers"
-      ],
-      "helpers/*": [
-        "dist/helpers/*"
       ]
     }
   }

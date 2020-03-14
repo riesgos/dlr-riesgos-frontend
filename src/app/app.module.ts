@@ -28,7 +28,6 @@ import { ScenariosComponent } from './route-components/scenarios/scenarios.compo
 import { RouteMapComponent } from './route-components/route-map/route-map.component';
 import { MapOlModule, MapOlService } from '@dlr-eoc/map-ol';
 import { LayersModule, LayersService } from '@dlr-eoc/services-layers';
-import { LayerControlModule } from '@dlr-eoc/layer-control';
 import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
 import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
@@ -49,10 +48,16 @@ import { TextModalComponent } from './components/text-modal/text-modal.component
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
 import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
-import { HelpersModule } from '@dlr-eoc/helpers/src/public-api';
 import { LicensesComponent } from './route-components/licenses/licenses.component';
 import { BlogentryComponent } from './components/blogentry/blogentry.component';
 import { DndDirective } from './components/save-button/dnd/dnd.directive';
+import { LayerControlComponent } from './components/layer_control/layer-control/layer-control.component';
+import { ReversePipe } from './components/layer_control/array-reverse.pipe';
+import { BaseLayerControlComponent } from './components/layer_control/base-layer-control/base-layer-control.component';
+import { LayerentryComponent } from './components/layer_control/layerentry/layerentry.component';
+import { LayerentryGroupComponent } from './components/layer_control/layerentry-group/layerentry-group.component';
+import { VectorLegendComponent } from './components/layer_control/vector-legend/vector-legend.component';
+import { ObjTypePipe } from './components/layer_control/obj-type.pipe';
 
 @NgModule({
   declarations: [
@@ -88,13 +93,13 @@ import { DndDirective } from './components/save-button/dnd/dnd.directive';
     LicensesComponent,
     BlogentryComponent,
     DndDirective,
+    LayerControlComponent, BaseLayerControlComponent, LayerentryComponent, LayerentryGroupComponent, VectorLegendComponent, ReversePipe, ObjTypePipe
   ],
   imports: [
     BrowserModule,
     UkisRoutingModule,
     MapOlModule,
     LayersModule,
-    LayerControlModule,
     ClarityModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(reducers, {
@@ -116,8 +121,7 @@ import { DndDirective } from './components/save-button/dnd/dnd.directive';
         deps: [HttpClient]
       }
     }),
-    !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 10 }) : [],
-    HelpersModule
+    !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 10 }) : []
   ],
   providers: [
     AlertService, FooterService, ProgressService, LayerMarshaller

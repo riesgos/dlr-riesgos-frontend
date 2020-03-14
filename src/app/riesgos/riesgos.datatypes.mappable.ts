@@ -2,7 +2,7 @@ import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsBboxValue } from '@dlr-eoc/services-ogc';
 import { shape } from '../components/config_wizard/wizardable_processes';
 import { FeatureCollection, Feature } from '@turf/helpers';
-import { LegendElement } from '@dlr-eoc/layer-control/src/lib/vector-legend/vector-legend.component';
+import { LegendElement } from '../components/layer_control/vector-legend/vector-legend.component';
 
 
 

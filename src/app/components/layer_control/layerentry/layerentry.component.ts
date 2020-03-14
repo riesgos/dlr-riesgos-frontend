@@ -6,6 +6,7 @@ import { LayerGroup, Layer, RasterLayer, isRasterLayertype, WmsLayertype, WmtsLa
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import {  } from '@dlr-eoc/services-layers';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { ProductLayer } from '../../map/map.types';
 
 @Component({
   selector: 'ukis-layerentry',
@@ -15,7 +16,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 export class LayerentryComponent implements OnInit {
   @Input('layersSvc') layersSvc: LayersService;
   @Input('mapState') mapState?: MapStateService;
-  @Input('layer') layer: Layer;
+  @Input('layer') layer: ProductLayer;
 
   @Input('group') group?: LayerGroup;
   @Input('layerGroups') layerGroups?: LayerGroup[];

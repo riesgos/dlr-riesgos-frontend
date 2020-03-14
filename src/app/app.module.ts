@@ -52,12 +52,11 @@ import { LicensesComponent } from './route-components/licenses/licenses.componen
 import { BlogentryComponent } from './components/blogentry/blogentry.component';
 import { DndDirective } from './components/save-button/dnd/dnd.directive';
 import { LayerControlComponent } from './components/layer_control/layer-control/layer-control.component';
-import { ReversePipe } from './components/layer_control/array-reverse.pipe';
 import { BaseLayerControlComponent } from './components/layer_control/base-layer-control/base-layer-control.component';
 import { LayerentryComponent } from './components/layer_control/layerentry/layerentry.component';
 import { LayerentryGroupComponent } from './components/layer_control/layerentry-group/layerentry-group.component';
 import { VectorLegendComponent } from './components/layer_control/vector-legend/vector-legend.component';
-import { ObjTypePipe } from './components/layer_control/obj-type.pipe';
+import { ReversePipe } from './components/layer_control/utils/array-reverse.pipe';
 
 @NgModule({
   declarations: [
@@ -93,7 +92,8 @@ import { ObjTypePipe } from './components/layer_control/obj-type.pipe';
     LicensesComponent,
     BlogentryComponent,
     DndDirective,
-    LayerControlComponent, BaseLayerControlComponent, LayerentryComponent, LayerentryGroupComponent, VectorLegendComponent, ReversePipe, ObjTypePipe
+    LayerControlComponent, BaseLayerControlComponent, LayerentryComponent,
+    LayerentryGroupComponent, VectorLegendComponent, ReversePipe
   ],
   imports: [
     BrowserModule,

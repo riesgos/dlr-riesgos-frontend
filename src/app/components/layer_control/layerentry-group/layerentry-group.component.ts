@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostBinding } from '@angular/core';
 
 
 // imports only for typings...
-import { LayerGroup, Layer } from '@dlr-eoc/services-layers';
+import { LayerGroup } from '@dlr-eoc/services-layers';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -13,6 +13,8 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   styleUrls: ['./layerentry-group.component.scss']
 })
 export class LayerentryGroupComponent implements OnInit {
+  @HostBinding('class.group-visible') get visible() { return this.group.visible; }
+
   @Input('layersSvc') layersSvc: LayersService;
   @Input('mapState') mapState?: MapStateService;
   @Input('group') group: LayerGroup;
@@ -65,7 +67,7 @@ export class LayerentryGroupComponent implements OnInit {
 
   zoomTo(group: LayerGroup) {
     if (this.mapState && group.bbox && group.bbox.length >= 4) {
-      this.mapState.setExtent(<[number, number, number, number]>group.bbox);
+      this.mapState.setExtent(group.bbox);
     }
   }
 
@@ -96,8 +98,8 @@ export class LayerentryGroupComponent implements OnInit {
   // CDKDRagAndDrop -------------------------------------------------------------
   // https://material.angular.io/cdk/drag-drop/api
   drop(event: CdkDragDrop<string[]>) {
-    const previousI = this.group.layers.length - event.previousIndex - 1,
-      currentI = this.group.layers.length - event.currentIndex - 1;
+    const previousI = this.group.layers.length - event.previousIndex - 1;
+    const currentI = this.group.layers.length - event.currentIndex - 1;
     moveItemInArray(this.group.layers, previousI, currentI);
     this.layersSvc.updateLayerGroup(this.group);
   }

@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostBinding } from '@angular/core';
 
 // imports only for typings...
-import { LayerGroup, Layer, RasterLayer, isRasterLayertype, WmsLayertype, WmtsLayertype, isRasterLayer,
-  isVectorLayer, LayersService, VectorLayer} from '@dlr-eoc/services-layers';
+import {
+  LayerGroup, Layer, RasterLayer, isRasterLayertype, WmsLayertype, WmtsLayertype, isRasterLayer,
+  isVectorLayer, LayersService
+} from '@dlr-eoc/services-layers';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import {  } from '@dlr-eoc/services-layers';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -11,9 +13,11 @@ import { ProductLayer } from '../../map/map.types';
 @Component({
   selector: 'ukis-layerentry',
   templateUrl: './layerentry.component.html',
-  styleUrls: ['./layerentry.component.scss'],
+  styleUrls: ['./layerentry.component.scss']
 })
 export class LayerentryComponent implements OnInit {
+  @HostBinding('class.layer-visible') get visible() { return this.layer.visible; }
+
   @Input('layersSvc') layersSvc: LayersService;
   @Input('mapState') mapState?: MapStateService;
   @Input('layer') layer: ProductLayer;
@@ -29,11 +33,10 @@ export class LayerentryComponent implements OnInit {
   public canZoomToLayer = false;
 
   public activeTabs = {
-    'settings': false,
-    'legend': true,
-    'styleLegend': false,
-    'description': false,
-    'changeStyle': false
+    settings: false,
+    legend: true,
+    description: false,
+    changeStyle: false
   };
 
   constructor() {
@@ -78,9 +81,9 @@ export class LayerentryComponent implements OnInit {
     if (!group) {
       if (selectedLayer.filtertype === 'Baselayers') {
         selectedLayer.visible = !selectedLayer.visible;
-        const _layers = this.layerGroups.filter((l) => l.filtertype === 'Baselayers');
-        console.log(_layers);
-        for (const layer of _layers) {
+        const filterdlayers = this.layerGroups.filter((l) => l.filtertype === 'Baselayers');
+        // console.log(filterdlayers);
+        for (const layer of filterdlayers) {
           if (layer instanceof Layer && layer.id !== selectedLayer.id) {
             layer.visible = !selectedLayer.visible;
             this.layersSvc.updateLayer(layer, layer.filtertype || 'Baselayers');
@@ -135,7 +138,7 @@ export class LayerentryComponent implements OnInit {
 
   zoomTo(layer: Layer) {
     if (this.mapState && layer.bbox && layer.bbox.length >= 4) {
-      this.mapState.setExtent(<[number, number, number, number]>layer.bbox);
+      this.mapState.setExtent( layer.bbox as [number, number, number, number]);
     }
   }
 
@@ -144,7 +147,7 @@ export class LayerentryComponent implements OnInit {
       this.layersSvc.updateLayer(layer, layer.filtertype || 'Layers'); // TODO check for baselayers!!!!!!
     } else {
       this.update.emit({
-        layer: layer
+        layer
       });
     }
   }
@@ -212,20 +215,20 @@ export class LayerentryComponent implements OnInit {
     }
   }
 
-isFirst(layer) {
-  if (this.group) {
-    return this.layersSvc.isGroupFirst(layer, this.group.layers);
-  } else {
-    return this.layersSvc.isGroupFirst(layer, null, layer.filtertype);
+  isFirst(layer) {
+    if (this.group) {
+      return this.layersSvc.isGroupFirst(layer, this.group.layers);
+    } else {
+      return this.layersSvc.isGroupFirst(layer, null, layer.filtertype);
+    }
+  }
+
+  isLast(layer) {
+    if (this.group) {
+      return this.layersSvc.isGroupLast(layer, this.group.layers);
+    } else {
+      return this.layersSvc.isGroupLast(layer, null, layer.filtertype);
+    }
   }
 }
 
-isLast(layer) {
-  if (this.group) {
-    return this.layersSvc.isGroupLast(layer, this.group.layers);
-  } else {
-    return this.layersSvc.isGroupLast(layer, null, layer.filtertype);
-  }
-}
-
-}

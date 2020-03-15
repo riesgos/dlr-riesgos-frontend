@@ -43,7 +43,6 @@ const mapProjection = 'EPSG:4326';
     styleUrls: ['./map.component.scss'],
     encapsulation: ViewEncapsulation.None,
     // changeDetection: ChangeDetectionStrategy.OnPush
-    providers: [LayersService, MapStateService, MapOlService]
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -248,7 +247,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const infolayers = this.getInfoLayers(scenario);
             for (const layer of infolayers) {
                 if (layer instanceof LayerGroup) {
-                    this.layersSvc.addLayerGroup(layer);
+                    this.layersSvc.addLayerGroup(layer, 'Layers');
                 } else {
                     this.layersSvc.addLayer(layer, 'Layers', false);
                 }
@@ -648,12 +647,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub7 = this.mapStateSvc.getMapState().subscribe((state) => {
             if (history.pushState) {
                 const url = parse(window.location.href.replace('#/', ''));
-                // console.log(url)
                 const query = new URLSearchParams(url.query);
                 const extent = state.extent.map(item => item.toFixed(3));
                 query.set('bbox', extent.join(','))
                 const newurl = `${url.protocol}//${url.host}/#${url.pathname}?${query.toString()}`; // bbox=${extent.join(',') &time=${state.time}
-                // console.log(newurl)
                 window.history.pushState({ path: newurl }, '', newurl);
             }
         });

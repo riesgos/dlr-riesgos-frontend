@@ -57,6 +57,7 @@ import { LayerentryComponent } from './components/layer_control/layerentry/layer
 import { LayerentryGroupComponent } from './components/layer_control/layerentry-group/layerentry-group.component';
 import { VectorLegendComponent } from './components/layer_control/vector-legend/vector-legend.component';
 import { ReversePipe } from './components/layer_control/utils/array-reverse.pipe';
+import { RegexTranslatePipe } from './helpers/regex-translate.pipe';
 
 @NgModule({
   declarations: [
@@ -93,7 +94,7 @@ import { ReversePipe } from './components/layer_control/utils/array-reverse.pipe
     BlogentryComponent,
     DndDirective,
     LayerControlComponent, BaseLayerControlComponent, LayerentryComponent,
-    LayerentryGroupComponent, VectorLegendComponent, ReversePipe
+    LayerentryGroupComponent, VectorLegendComponent, ReversePipe, RegexTranslatePipe
   ],
   imports: [
     BrowserModule,

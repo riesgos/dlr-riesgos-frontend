@@ -13,7 +13,13 @@ import { MapStateService } from '@dlr-eoc/services-map-state';
   templateUrl: './route-map.component.html',
   styleUrls: ['./route-map.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  /**
+   * Note that the services LayersService, MapStateService and MapOlService
+   * must be provided here, in the route-map component, not the map component.
+   * Otherwise, the map and the layercontrol each get a *different* instance of these services,
+   * which causes different layers to be displayed in these two different subcomponents of the route-map.
+   */
+  providers: [LayersService, MapStateService, MapOlService]
 })
 export class RouteMapComponent implements OnInit {
   @HostBinding('class') class = 'content-container';

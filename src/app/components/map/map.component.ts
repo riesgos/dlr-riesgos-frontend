@@ -10,7 +10,8 @@ import Feature from 'ol/Feature';
 import {getWidth} from 'ol/extent';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import TileWMS from 'ol/source/TileWMS';
-import XYZ from 'ol/source/XYZ'
+import * as olEvents from 'ol/events';
+import XYZ from 'ol/source/XYZ';
 import TileGrid from 'ol/tilegrid/TileGrid';
 import {click, noModifierKeys, altKeyOnly} from 'ol/events/condition';
 import Select from 'ol/interaction/Select';
@@ -186,7 +187,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             },
             style: false
         });
-        clickInteraction.on('click', (e) => {
+        clickInteraction.on('select', (e) => {
                 const features = e.target.getFeatures().getArray();
                 if (features.length) {
                     if (this.interactionState$.getValue().mode === 'featureselection') {
@@ -200,36 +201,34 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.highlightedFeatures$.next(features);
                         console.log("reacted to click on single feature: changed highlighted")
                     }
-                } else {
-                    this.mapSvc.removeAllPopups();
-                    this.highlightedFeatures$.next([]);
-                    console.log("reacted on click into nothing - removed poups and highlighted")
                 }
         });
         this.mapSvc.map.addInteraction(clickInteraction);
 
 
-        // adding multi-featureselect interaction
-        const altClickInteraction = new Select({
-            condition: (mapBrowserEvent) => {
-                return click(mapBrowserEvent) && altKeyOnly(mapBrowserEvent);
-            },
-            style: false
-        });
-        altClickInteraction.on('select', (e) => {
-            const features = e.target.getFeatures().getArray();
-            const highlighted = this.highlightedFeatures;
-            const allFeatures = Array.prototype.concat(features, highlighted);
-            this.highlightedFeatures$.next(allFeatures);
-            console.log("reacted on alt-selection: appended to highlighted")
-        });
-        this.mapSvc.map.addInteraction(altClickInteraction);
+        // // adding multi-featureselect interaction
+        // const altClickInteraction = new Select({
+        //     condition: (mapBrowserEvent) => {
+        //         return click(mapBrowserEvent) && altKeyOnly(mapBrowserEvent);
+        //     },
+        //     style: false
+        // });
+        // altClickInteraction.on('select', (e) => {
+        //     const features = e.target.getFeatures().getArray();
+        //     const highlighted = this.highlightedFeatures;
+        //     const allFeatures = Array.prototype.concat(features, highlighted);
+        //     this.highlightedFeatures$.next(allFeatures);
+        //     console.log("reacted on alt-selection: appended to highlighted")
+        // });
+        // this.mapSvc.map.addInteraction(altClickInteraction);
 
 
         // remove popups when no feature has been clicked
-        // this.mapSvc.map.on('click', () => {
-            
-        // });
+        this.mapSvc.map.on('click', () => {
+            this.mapSvc.removeAllPopups();
+            this.highlightedFeatures$.next([]);
+            console.log("reacted on click into nothing - removed poups and highlighted")
+        });
 
 
         // listening for changes in highlighted features
@@ -303,7 +302,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const layers: Array<Layer | LayerGroup> = [];
 
         const osmLayer = new OsmTileLayer({
-            visible: false,
+            visible: true,
             removable: true,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });

@@ -34,6 +34,7 @@ import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from '@dlr-eoc/services-ogc';
 import { featureReduce } from '@turf/turf';
+import { environment } from 'src/environments/environment';
 
 
 const mapProjection = 'EPSG:4326';
@@ -302,7 +303,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const layers: Array<Layer | LayerGroup> = [];
 
         const osmLayer = new OsmTileLayer({
-            visible: true,
+            visible: environment.production ? true : false,
             removable: true,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });

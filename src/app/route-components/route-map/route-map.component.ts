@@ -26,7 +26,8 @@ export class RouteMapComponent implements OnInit {
 
   constructor(
     private activeRoute: ActivatedRoute,
-    private store: Store<State>
+    private store: Store<State>,
+    private olSvc: MapOlService
   ) { }
 
   private _collapsedLayerControl = false;
@@ -49,6 +50,7 @@ export class RouteMapComponent implements OnInit {
 
   ngOnInit() {
     const scenario = this.activeRoute.snapshot.queryParams['id'] || 'c1';
+    this.olSvc.setProjection('EPSG:4326');
     this.store.dispatch(new ScenarioChosen({ scenario }));
   }
 

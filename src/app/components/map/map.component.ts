@@ -303,7 +303,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const layers: Array<Layer | LayerGroup> = [];
 
         const osmLayer = new OsmTileLayer({
-            visible: environment.production ? true : false,
+            visible: true,
             removable: true,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });

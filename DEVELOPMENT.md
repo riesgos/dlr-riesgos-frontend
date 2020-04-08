@@ -7,7 +7,6 @@ Our RIESGOS business model consists of `processes` and `products`. They form a d
 ## Getting started
 This project depends on the 'UKIS frontend libraries', which are distributed as packages on github. To use these packages, please follow the instructions on [the UKIS frontend libraries github page](https://github.com/dlr-eoc/ukis-frontend-libraries).
 
-
 ### Integrating a WPS into a scenario
 Adding a WPS into an existing scenario is a three step process. 
 

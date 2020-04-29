@@ -1,5 +1,6 @@
 declare const Plotly: any;
-
+// expects plotly to have been loaded per CDN
+// (required because currently plotly cannot be compiled to es2015)
 
 export interface Bardata {
     label: string;

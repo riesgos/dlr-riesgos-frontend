@@ -1,4 +1,4 @@
 {
-    "wpsCache": "remote",
+    "wpsCache": "local",
     "wpsCacheUrl": "http://localhost:1235"
 }

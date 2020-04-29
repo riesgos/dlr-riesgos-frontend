@@ -1,7 +1,7 @@
 import { Cache, WpsData } from '@dlr-eoc/services-ogc';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 
 export class RemoteCache implements Cache {
@@ -19,6 +19,8 @@ export class RemoteCache implements Cache {
                 return true;
             }
             return false;
+        }), catchError((err) => {
+            return of(false);
         }));
     }
 
@@ -31,6 +33,8 @@ export class RemoteCache implements Cache {
                     return null;
                 }
             }
-        ));
+        ), catchError((err) => {
+            return of(null);
+        }));
     }
 }

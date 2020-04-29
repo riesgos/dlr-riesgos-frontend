@@ -1,6 +1,6 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsData } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { schemaPeru } from './exposure';
 
@@ -56,7 +56,7 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, cache: Cache) {
         super(
             'Vulnerability',
             'EQ Vulnerability Model',
@@ -68,6 +68,7 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
+            cache
         );
 
         this.wizardProperties = {

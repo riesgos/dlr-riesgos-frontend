@@ -16,7 +16,7 @@ import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
-
+import { Cache } from '@dlr-eoc/services-ogc';
 
 
 export const tsDamage: VectorLayerProduct & WpsData & Product = {
@@ -384,7 +384,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
     private vulnerabilityProcess: VulnerabilityModel;
     private deusProcess: Deus;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, cache: Cache) {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard damage estimation / TS';
@@ -398,8 +398,8 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
             wikiLink: 'Vulnerability'
         };
 
-        this.vulnerabilityProcess = new VulnerabilityModel(http);
-        this.deusProcess = new Deus(http);
+        this.vulnerabilityProcess = new VulnerabilityModel(http, cache);
+        this.deusProcess = new Deus(http, cache);
     }
 
     execute(

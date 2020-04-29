@@ -1,17 +1,12 @@
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsData } from '@dlr-eoc/services-ogc';
-import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import {
-  UserconfigurableProduct, StringUconfProduct,
-  StringSelectUconfProduct
-} from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { Bardata, createBarchart, createBigBarchart } from 'src/app/helpers/d3charts';
-import { weightedDamage, redGreenRange, greenRedRange } from 'src/app/helpers/colorhelpers';
-
+import { Bardata, createBigBarchart } from 'src/app/helpers/d3charts';
+import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { Cache } from '@dlr-eoc/services-ogc';
 
 export const lonmin: Product & WpsData = {
   uid: 'lonmin',
@@ -186,7 +181,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
 
 export class ExposureModel extends WpsProcess {
 
-  constructor(httpClient: HttpClient) {
+  constructor(httpClient: HttpClient, cache: Cache) {
     super(
       'Exposure',
       'EQ Exposure Model',
@@ -198,6 +193,7 @@ export class ExposureModel extends WpsProcess {
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable(),
+      cache
     );
   }
 }

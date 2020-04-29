@@ -54,7 +54,6 @@ export class RiesgosEffects {
         ofType<RiesgosActions>(ERiesgosActionTypes.scenarioChosen),
         withLatestFrom(this.store$),
         switchMap(([action, state]: [ScenarioChosen, State]) => {
-
             const newScenario = action.payload.scenario;
 
             let procs: Process[];
@@ -167,8 +166,7 @@ export class RiesgosEffects {
         private store$: Store<State>,
         private scenarioService: RiesgosService,
         private errorParser: ErrorParserService
-        ) {
-    }
+        ) {}
 
 
     private loadScenarioData(scenario: string): Observable<[Process[], Product[]]> {

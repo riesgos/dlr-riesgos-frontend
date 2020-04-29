@@ -113,9 +113,9 @@ export class WpsProcess implements ExecutableProcess {
         readonly wpsVersion: WpsVerion,
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
-        cache: Cache = environment.production ? new FakeCache() : new RemoteCache()
+        cache: Cache = new FakeCache()
         ) {
-        this.wpsClient = new WpsClient(this.wpsVersion, httpClient, cache);
+            this.wpsClient = new WpsClient(this.wpsVersion, httpClient, cache);
     }
 
     public execute(

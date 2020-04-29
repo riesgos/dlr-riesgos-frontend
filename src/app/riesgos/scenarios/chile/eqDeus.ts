@@ -15,7 +15,7 @@ import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection, Feature } from '@turf/helpers';
 import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
-import { transition } from '@angular/animations';
+import { Cache } from '@dlr-eoc/services-ogc';
 
 
 
@@ -409,10 +409,10 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
     private vulnerabilityProcess: VulnerabilityModel;
     private deusProcess: Deus;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, cache: Cache) {
         this.state = new ProcessStateUnavailable();
-        this.vulnerabilityProcess = new VulnerabilityModel(http);
-        this.deusProcess = new Deus(http);
+        this.vulnerabilityProcess = new VulnerabilityModel(http, cache);
+        this.deusProcess = new Deus(http, cache);
     }
 
     execute(

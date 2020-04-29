@@ -55,7 +55,6 @@ export class LayerentryComponent implements OnInit {
     if (!this.layersSvc) {
       console.error('you need to provide a layersService!');
     }
-    // console.log(this.layer)
     if (!this.layer.legendImg) {
       this.activeTabs.description = true;
       this.activeTabs.legend = false;
@@ -82,7 +81,6 @@ export class LayerentryComponent implements OnInit {
       if (selectedLayer.filtertype === 'Baselayers') {
         selectedLayer.visible = !selectedLayer.visible;
         const filterdlayers = this.layerGroups.filter((l) => l.filtertype === 'Baselayers');
-        // console.log(filterdlayers);
         for (const layer of filterdlayers) {
           if (layer instanceof Layer && layer.id !== selectedLayer.id) {
             layer.visible = !selectedLayer.visible;
@@ -114,7 +112,6 @@ export class LayerentryComponent implements OnInit {
   setLayerIndex(layer: Layer, dir, group?: LayerGroup) {
     console.log('is First', this.isFirst(layer));
     console.log('is Last', this.isLast(layer));
-    // console.log(layer, group);
     if (group) {
       this.layersSvc.setLayerIndexInGroup(layer, dir, group);
     } else {
@@ -126,9 +123,7 @@ export class LayerentryComponent implements OnInit {
    * remove the Layer if possible
    */
   removeLayer(group: LayerGroup, selectedLayer: Layer) {
-    // console.log("delete ", group, selectedLayer)
     if (group) {
-      // console.log("delete layer from group")
       this.layersSvc.removeLayerFromGroup(selectedLayer, group);
     } else {
       console.log('delete single layer');

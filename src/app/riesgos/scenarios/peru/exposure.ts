@@ -1,6 +1,6 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsData } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/services-ogc';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -173,7 +173,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
 
   readonly wizardProperties: WizardProperties;
 
-  constructor(httpClient: HttpClient) {
+  constructor(httpClient: HttpClient, cache: Cache) {
     super(
       'ExposurePeru',
       'EQ Exposure Model',
@@ -185,6 +185,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable(),
+      cache
     );
     this.wizardProperties =  {
       shape: 'building',

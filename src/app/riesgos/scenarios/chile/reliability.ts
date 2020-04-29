@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/services-ogc';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -99,7 +99,7 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, cache: Cache) {
         super(
             'Reliability',
             'System reliability after EQ',
@@ -111,6 +111,7 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
+            cache
         );
         this.wizardProperties = {
             providerName: 'TUM',

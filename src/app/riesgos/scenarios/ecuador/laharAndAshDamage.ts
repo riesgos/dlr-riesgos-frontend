@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import { laharVelocityShakemapRef } from './laharWrapper';
 import { HttpClient } from '@angular/common/http';
 import { MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/services-ogc';
 import { schemaEcuador } from './exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
@@ -62,9 +62,9 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
     private deus: Deus;
     private vulnerability: VulnerabilityModelEcuador;
 
-    constructor(http: HttpClient) {
-        this.deus = new Deus(http);
-        this.vulnerability = new VulnerabilityModelEcuador(http);
+    constructor(http: HttpClient, cache: Cache) {
+        this.deus = new Deus(http, cache);
+        this.vulnerability = new VulnerabilityModelEcuador(http, cache);
     }
 
     execute(

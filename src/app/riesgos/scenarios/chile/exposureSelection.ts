@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { RaquelsExposureModel } from './raquelsExposure';
+import { Cache } from '@dlr-eoc/services-ogc';
 
 
 
@@ -37,15 +38,15 @@ export class ExposureSelection implements ExecutableProcess, WizardableProcess {
     private standardModel: ExposureModel;
     private raqelsModel: RaquelsExposureModel;
 
-    constructor(httpClient: HttpClient) {
+    constructor(httpClient: HttpClient, cache: Cache) {
         this.wizardProperties = {
             shape: 'building',
             providerName: 'Helmholtz Centre Potsdam',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             wikiLink: 'Vulnerability'
         };
-        this.standardModel = new ExposureModel(httpClient);
-        this.raqelsModel = new RaquelsExposureModel(httpClient);
+        this.standardModel = new ExposureModel(httpClient, cache);
+        this.raqelsModel = new RaquelsExposureModel(httpClient, cache);
     }
 
     execute(inputs: Product[], outputs?: Product[],

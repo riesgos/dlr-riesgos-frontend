@@ -1,5 +1,5 @@
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/services-ogc';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, greenRedRange, weightedDamage } from 'src/app/helpers/colorhelpers';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
@@ -384,7 +384,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
     private vulnerabilityProcess: VulnerabilityModelPeru;
     private deusProcess: Deus;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, cache: Cache) {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard damage estimation / TS';
@@ -398,8 +398,8 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
             wikiLink: 'Vulnerability'
         };
 
-        this.vulnerabilityProcess = new VulnerabilityModelPeru(http);
-        this.deusProcess = new Deus(http);
+        this.vulnerabilityProcess = new VulnerabilityModelPeru(http, cache);
+        this.deusProcess = new Deus(http, cache);
     }
 
     execute(

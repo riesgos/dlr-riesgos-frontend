@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { UkisRoutingModule } from './app-routing.module';
@@ -58,6 +58,8 @@ import { LayerentryGroupComponent } from './components/layer_control/layerentry-
 import { VectorLegendComponent } from './components/layer_control/vector-legend/vector-legend.component';
 import { ReversePipe } from './components/layer_control/utils/array-reverse.pipe';
 import { RegexTranslatePipe } from './helpers/regex-translate.pipe';
+import { ConfigService, Config } from './services/config.service';
+import { RiesgosService } from './riesgos/riesgos.service';
 
 @NgModule({
   declarations: [
@@ -125,7 +127,20 @@ import { RegexTranslatePipe } from './helpers/regex-translate.pipe';
     !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 10 }) : []
   ],
   providers: [
-    AlertService, FooterService, ProgressService, LayerMarshaller
+    AlertService,
+    FooterService,
+    ProgressService,
+    LayerMarshaller,
+    RiesgosService,
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (cs: ConfigService) => {
+        return () => cs.loadConfig();
+      },
+      multi: true,
+      deps: [ConfigService]
+    },
   ],
   bootstrap: [UkisComponent]
 })

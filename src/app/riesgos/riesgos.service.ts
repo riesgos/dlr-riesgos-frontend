@@ -40,49 +40,88 @@ import { vei, direction } from './scenarios/ecuador/lahar';
 import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './scenarios/ecuador/vulnerability';
 import { HttpClient } from '@angular/common/http';
 import { RiesgosScenarioMetadata } from './riesgos.state';
+import { ConfigService, Config } from '../services/config.service';
+import { Cache } from '@dlr-eoc/services-ogc';
+import { FakeCache } from '@dlr-eoc/services-ogc';
+import { IndexDbCache } from '../services/indexDbCache';
+import { RemoteCache } from '../services/remoteCache';
 
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RiesgosService {
 
-  constructor(private httpClient: HttpClient) { }
+  private cache: Cache;
 
-  public loadScenarioMetadata(): RiesgosScenarioMetadata[] {
-    return [{
-      id: 'c1',
-      title: 'Showcase Chile',
-      preview: `assets/images/tsunami_en.jpg`,
-      description: '',
-    }, {
-      id: 'e1',
-      title: 'Showcase Ecuador',
-      preview: `assets/images/lahar_en.jpg`,
-      description: '',
-    }, {
-      id: 'p1',
-      title: 'Showcase Peru',
-      preview: `assets/images/tsunami_en.jpg`,
-      description: '',
-    }];
+  constructor(
+      private httpClient: HttpClient,
+      private configSvc: ConfigService
+    ) {
+      console.log('constructed riesgos.service');
+    }
+
+    /**
+     * NOTE:
+     * the type of cache to use is loaded from config-file via `this.configSvc.getConfig()`.
+     * That call to `getConfig` must not be made in the RiesgosService.constructor.
+     * This is because the services provided in the app-module are initialized before APP_INITIALIZER is done.
+     * If `getConfig` gets called before APP_INITIALIZER has returned the actual configuration, we get an error.
+     */
+    private getCache(): Cache {
+      if (this.cache) {
+        return this.cache;
+      } else {
+        const c: Config = this.configSvc.getConfig();
+        switch (c.wpsCache) {
+          case 'local':
+            this.cache = new IndexDbCache();
+            break;
+          case 'remote':
+            this.cache = new RemoteCache(this.httpClient, c.wpsCacheUrl);
+            break;
+          case 'none':
+          default:
+            this.cache = new FakeCache();
+        }
+      }
+      return this.cache;
+    }
+
+    public loadScenarioMetadata(): RiesgosScenarioMetadata[] {
+      return [{
+        id: 'c1',
+        title: 'Showcase Chile',
+        preview: `assets/images/tsunami_en.jpg`,
+        description: '',
+      }, {
+        id: 'e1',
+        title: 'Showcase Ecuador',
+        preview: `assets/images/lahar_en.jpg`,
+        description: '',
+      }, {
+        id: 'p1',
+        title: 'Showcase Peru',
+        preview: `assets/images/tsunami_en.jpg`,
+        description: '',
+      }];
   }
 
   public loadScenarioData(scenario: string): [Process[], Product[]] {
+    const cache = this.getCache();
+
     let processes: Process[] = [];
     let products: Product[] = [];
     switch (scenario) {
       case 'c1':
         processes = [
-          new ExposureSelection(this.httpClient),
-          new QuakeLedger(this.httpClient),
+          new ExposureSelection(this.httpClient, cache),
+          new QuakeLedger(this.httpClient, cache),
           EqSelection,
-          new Shakyground(this.httpClient),
-          new EqDeus(this.httpClient),
-          new TsService(this.httpClient),
-          new TsDeus(this.httpClient),
-          new EqReliability(this.httpClient),
+          new Shakyground(this.httpClient, cache),
+          new EqDeus(this.httpClient, cache),
+          new TsService(this.httpClient, cache),
+          new TsDeus(this.httpClient, cache),
+          new EqReliability(this.httpClient, cache),
           // PhysicalImpactAssessment
         ];
         products = [
@@ -103,14 +142,14 @@ export class RiesgosService {
         break;
       case 'p1':
         processes = [
-          new ExposureModelPeru(this.httpClient),
-          new QuakeLedgerPeru(this.httpClient),
+          new ExposureModelPeru(this.httpClient, cache),
+          new QuakeLedgerPeru(this.httpClient, cache),
           EqSelectionPeru,
-          new ShakygroundPeru(this.httpClient),
-          new EqDeusPeru(this.httpClient),
-          new TsServicePeru(this.httpClient),
-          new TsDeusPeru(this.httpClient),
-          new EqReliabilityPeru(this.httpClient)
+          new ShakygroundPeru(this.httpClient, cache),
+          new EqDeusPeru(this.httpClient, cache),
+          new TsServicePeru(this.httpClient, cache),
+          new TsDeusPeru(this.httpClient, cache),
+          new EqReliabilityPeru(this.httpClient, cache)
         ];
         products = [
           lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
@@ -130,21 +169,20 @@ export class RiesgosService {
         processes = [
           VeiProvider,
 
-          new AshfallService(this.httpClient),
-          new AshfallExposureModel(this.httpClient),
-          new DeusAshfall(this.httpClient),
+          new AshfallService(this.httpClient, cache),
+          new AshfallExposureModel(this.httpClient, cache),
+          new DeusAshfall(this.httpClient, cache),
 
-          new LaharWrapper(this.httpClient),
-          new LaharExposureModel(this.httpClient),
-          new DeusLahar(this.httpClient),
+          new LaharWrapper(this.httpClient, cache),
+          new LaharExposureModel(this.httpClient, cache),
+          new DeusLahar(this.httpClient, cache),
 
-
-          new DeusLaharAndAshfall(this.httpClient),
-          new LaharReliability(this.httpClient),
+          new DeusLaharAndAshfall(this.httpClient, cache),
+          new LaharReliability(this.httpClient, cache),
 
           FloodMayRunProcess,
           geomerFlood,
-          new FlooddamageProcess(this.httpClient),
+          new FlooddamageProcess(this.httpClient, cache),
           FlooddamageTranslator
         ];
         products = [

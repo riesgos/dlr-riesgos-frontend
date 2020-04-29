@@ -1,7 +1,7 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { vei } from './lahar';
-import { WpsData } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/services-ogc';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
@@ -121,7 +121,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
 
     wizardProperties: WizardProperties;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, cache: Cache) {
         super(
             'ashfall-service',
             'Ashfall Service',
@@ -133,6 +133,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
+            cache
         );
         this.wizardProperties = {
             providerName: 'Instituto Geofísico EPN',

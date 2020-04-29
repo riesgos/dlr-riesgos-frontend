@@ -2,12 +2,12 @@ import { WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.dat
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { latmax, initialExposure, lonmin, lonmax, latmin, querymode, schema, assettype } from './exposure';
 import { HttpClient } from '@angular/common/http';
-
+import { Cache } from '@dlr-eoc/services-ogc';
 
 
 export class RaquelsExposureModel extends WpsProcess {
 
-    constructor(httpClient: HttpClient) {
+    constructor(httpClient: HttpClient, cache: Cache) {
       super(
         'Exposure',
         'EQ Exposure Model',
@@ -19,6 +19,7 @@ export class RaquelsExposureModel extends WpsProcess {
         '1.0.0',
         httpClient,
         new ProcessStateUnavailable(),
+        cache
       );
     }
   }

@@ -6,6 +6,7 @@ import { ScenarioChosen } from 'src/app/riesgos/riesgos.actions';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
+import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
 
 
 @Component({
@@ -19,7 +20,7 @@ import { MapStateService } from '@dlr-eoc/services-map-state';
    * Otherwise, the map and the layercontrol each get a *different* instance of these services,
    * which causes different layers to be displayed in these two different subcomponents of the route-map.
    */
-  providers: [LayersService, MapStateService, MapOlService]
+  providers: [LayersService, MapStateService, MapOlService, LayerMarshaller]
 })
 export class RouteMapComponent implements OnInit {
   @HostBinding('class') class = 'content-container';

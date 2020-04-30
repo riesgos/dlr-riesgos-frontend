@@ -56,9 +56,7 @@ export class RiesgosService {
   constructor(
       private httpClient: HttpClient,
       private configSvc: ConfigService
-    ) {
-      console.log('constructed riesgos.service');
-    }
+    ) {}
 
     /**
      * NOTE:

@@ -130,7 +130,6 @@ import { RiesgosService } from './riesgos/riesgos.service';
     AlertService,
     FooterService,
     ProgressService,
-    LayerMarshaller,
     RiesgosService,
     ConfigService,
     {

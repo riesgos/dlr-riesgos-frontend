@@ -25,7 +25,7 @@
       "@dlr-eoc/*": [
         "dist/*",
         "projects/*",
-        "frontend-libraries/projects/*",
+        "ukis-frontend-libraries/projects/*",
         "node_modules/@dlr-eoc/*"
       ]
     }

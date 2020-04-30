@@ -9,7 +9,6 @@ import { TranslateService } from '@ngx-translate/core';
 export class HeaderComponent implements OnInit {
 
   @Input('ukis-title') title: string;
-  // public color = 'white';
 
   constructor(
     public translator: TranslateService
@@ -18,16 +17,4 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
   }
 
-  // ngAfterContentChecked(): void {
-  //   this.color = this.getRandomColor();
-  // }
-
-  private getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
 }

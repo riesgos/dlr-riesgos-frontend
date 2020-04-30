@@ -60,6 +60,9 @@ import { ReversePipe } from './components/layer_control/utils/array-reverse.pipe
 import { RegexTranslatePipe } from './helpers/regex-translate.pipe';
 import { ConfigService, Config } from './services/config.service';
 import { RiesgosService } from './riesgos/riesgos.service';
+import { ChangedetectorComponent } from './components/changedetector/changedetector.component';
+import { BlinkerComponent } from './components/changedetector/blinker/blinker.component';
+import { FpserComponent } from './components/changedetector/fpser/fpser.component';
 
 @NgModule({
   declarations: [
@@ -96,7 +99,7 @@ import { RiesgosService } from './riesgos/riesgos.service';
     BlogentryComponent,
     DndDirective,
     LayerControlComponent, BaseLayerControlComponent, LayerentryComponent,
-    LayerentryGroupComponent, VectorLegendComponent, ReversePipe, RegexTranslatePipe
+    LayerentryGroupComponent, VectorLegendComponent, ReversePipe, RegexTranslatePipe, ChangedetectorComponent, BlinkerComponent, FpserComponent
   ],
   imports: [
     BrowserModule,

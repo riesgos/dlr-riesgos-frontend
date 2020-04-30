@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'ukis-disclaimer',
@@ -9,9 +10,11 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 export class DisclaimerComponent implements OnInit {
 
 
-  isExpanded = true;
+  public isExpanded: boolean;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute) {
+    this.isExpanded = environment.production ? true : false;
+  }
 
   ngOnInit() {
     // this.route.queryParams.subscribe((data) => {

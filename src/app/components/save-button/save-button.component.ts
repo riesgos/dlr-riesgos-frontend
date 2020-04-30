@@ -4,10 +4,11 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
 import { RiesgosScenarioState, isRiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
-import { RiesgosDataUpdate, RestaringScenario } from 'src/app/riesgos/riesgos.actions';
+import { RestaringScenario, ProductsProvided, RiesgosDataUpdate } from 'src/app/riesgos/riesgos.actions';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { downloadJson, parseFile } from 'src/app/helpers/others';
 import { map, tap } from 'rxjs/operators';
+import { createGraph } from 'src/app/riesgos/riesgos.workflowcontrol';
 
 
 
@@ -55,12 +56,21 @@ export class SaveButtonComponent implements OnInit {
 
     restoreState(): void {
         const stateToRestore: RiesgosScenarioState = this.stateToBeRestored$.value;
-        // @TODO: instead of just a data update, create a new action, that validates that all data is still there on the remote servers. 
-        this.store.dispatch(new RiesgosDataUpdate({
-            processes: stateToRestore.processStates,
-            products: stateToRestore.productValues,
-            graph: stateToRestore.graph
+        // @TODO: instead of just a ProductsProvided action,
+        // create a new action that validates that all data is still there on the remote servers.
+        this.store.dispatch(new ProductsProvided({
+            products: stateToRestore.productValues.filter(pv => pv.value !== null)
         }));
+
+        // Don't do a RiesgosDataUpdate here!
+        // RiesgosDataUpdate is intended to be used only from riesgos.effects.ts
+        // If you call RiesgosDataUpdate directly, WFC will not be updated.
+        // Also, the map will not display your loaded products.
+        // this.store.dispatch(new RiesgosDataUpdate({
+        //     processes: stateToRestore.processStates,
+        //     products: stateToRestore.productValues,
+        //     graph: stateToRestore.graph
+        // }))
         this.showRestoreModal = false;
     }
 
@@ -81,6 +91,14 @@ export class SaveButtonComponent implements OnInit {
     private extractSaveState(file: File): Observable<RiesgosScenarioState> {
         const state$ = parseFile(file).pipe(
             map((content: string) => JSON.parse(content)),
+            map((state: RiesgosScenarioState) => {
+                return {
+                    ... state,
+                    // the graph can only be saved as a flat structure without functions
+                    // this is to restore its full capabilities
+                    graph: createGraph(state.processStates)
+                };
+            }),
             tap((result: RiesgosScenarioState) => {
                 if (!isRiesgosScenarioState(result)) {
                     throw Error(`The file ${file.name} did not contain a valid RiesgosScenarioState`);

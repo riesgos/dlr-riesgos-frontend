@@ -9,6 +9,20 @@ import { ErrorParserService } from '../error-parser.service';
 import { toGraphvizFull } from '../helpers/graphviz';
 
 
+export function createGraph(processes: Process[]): Graph {
+    const graph = new Graph({ directed: true });
+    for (const process of processes) {
+        for (const inProdId of process.requiredProducts) {
+            graph.setEdge(inProdId, process.uid);
+        }
+        for (const outProdId of process.providedProducts) {
+            graph.setEdge(process.uid, outProdId);
+        }
+    }
+    return graph;
+}
+
+
 export class WorkflowControl {
 
     private processes: Process[];
@@ -19,15 +33,7 @@ export class WorkflowControl {
 
         this.checkDataIntegrity(processes, products);
 
-        this.graph = new Graph({ directed: true });
-        for (const process of processes) {
-            for (const inProdId of process.requiredProducts) {
-                this.graph.setEdge(inProdId, process.uid);
-            }
-            for (const outProdId of process.providedProducts) {
-                this.graph.setEdge(process.uid, outProdId);
-            }
-        }
+        this.graph = createGraph(processes);
 
         if (!alg.isAcyclic(this.graph)) {
             console.log(toGraphvizFull(processes, products, this.graph));
@@ -133,6 +139,13 @@ export class WorkflowControl {
         }
 
         // update state of all downstream processes
+        // if the process has a parent, also update the parent's state
+        // we need to calculate the parent-state as well, because a product might not only be provided by wps.execute.
+        // it could also be provided by loading a save-state.
+        const parentId = this.getProductProvider(id);
+        if (parentId) {
+            this.setProcessState(parentId, this.calculateState(parentId));
+        }
         this.updateProcessStatesDownstream(id);
     }
 
@@ -339,6 +352,14 @@ export class WorkflowControl {
             return false;
         }
         return true;
+    }
+
+    private getProductProvider(productId: string): string | undefined {
+        for (const process of this.processes) {
+            if (process.providedProducts.includes(productId)) {
+                return process.uid;
+            }
+        }
     }
 
 

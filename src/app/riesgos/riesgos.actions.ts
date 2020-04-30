@@ -52,6 +52,12 @@ export class RestaringScenario implements Action {
 }
 
 
+/**
+ * A RiesgosDataUpdate triggers the riesgos-reducer without first passing through effects.
+ * This action is intended to be only called from riesgos.effects.ts!
+ * Bypassing riesgos-effects will mean that WFC does not get updated.
+ * If you want to add new data from a component, use ProductsProvided instead.
+ */
 export class RiesgosDataUpdate implements Action {
     type: string = ERiesgosActionTypes.wpsDataUpdate;
     constructor(public payload: {processes: ImmutableProcess[], products: Product[], graph: Graph}) {}

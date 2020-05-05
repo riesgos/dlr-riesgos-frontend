@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentChecked, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
 @Component({

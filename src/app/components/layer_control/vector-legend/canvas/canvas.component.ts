@@ -1,9 +1,4 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import Legend from 'ol-ext/control/Legend';
-import Feature from 'ol/Feature';
-import Style from 'ol/style/Style';
-import Fill from 'ol/style/Fill';
-import Stroke from 'ol/style/Stroke';
 import 'ol/ol.css';
 import 'ol-ext/control/Legend.css';
 

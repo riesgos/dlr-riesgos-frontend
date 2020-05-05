@@ -165,7 +165,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
 
         const anchor = document.createElement('div');
         const anchorUpdated = createBarchart(anchor, barchartData, 300, 200, 'taxonomy', 'buildings');
-        return `<h4>Exposición </h4>${anchor.innerHTML}`;
+        return `<h4>Exposition </h4>${anchor.innerHTML}`;
       }
     }
   },

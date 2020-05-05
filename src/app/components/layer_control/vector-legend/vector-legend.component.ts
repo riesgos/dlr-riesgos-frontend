@@ -1,10 +1,8 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import Legend from 'ol-ext/control/Legend';
 import olFeature from 'ol/Feature';
 import { Feature } from '@turf/helpers';
 import Style from 'ol/style/Style';
-import Fill from 'ol/style/Fill';
-import Stroke from 'ol/style/Stroke';
 import 'ol/ol.css';
 import 'ol-ext/control/Legend.css';
 
@@ -36,6 +34,7 @@ export class VectorLegendComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log("legend component init'ed...")
 
     const legend = new Legend({
       title: this.legendTitle,

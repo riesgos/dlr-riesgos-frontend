@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, HostBinding, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, HostBinding, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ActivatedRoute } from '@angular/router';

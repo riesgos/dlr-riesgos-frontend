@@ -113,7 +113,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Transiciónes'
+                text: 'Transitions'
             }],
             text: (props: object) => {
 

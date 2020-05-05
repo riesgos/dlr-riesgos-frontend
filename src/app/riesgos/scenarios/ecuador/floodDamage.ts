@@ -111,7 +111,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', 'probabilidad');
-                return `<h4>Exposición actualizada</h4>${anchor.innerHTML}`;
+                return `<h4>Updated exposition</h4>${anchor.innerHTML}`;
               },
               legendEntries: [{
                   feature: {
@@ -126,7 +126,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                             [ 5.627918243408203, 50.963075942052164 ] ] ]
                       }
                   },
-                  text: 'color: profundidad de inundación'
+                  text: 'color: depth of inundation'
               }]
         }
     },

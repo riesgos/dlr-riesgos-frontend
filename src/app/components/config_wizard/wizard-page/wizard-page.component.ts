@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ClickRunProcess, RestartingFromProcess } from 'src/app/riesgos/riesgos.actions';
+import { RestartingFromProcess } from 'src/app/riesgos/riesgos.actions';
 import { UserconfigurableProduct, isUserconfigurableProduct, isStringSelectableProduct } from '../userconfigurable_wpsdata';
 import { Product, WpsProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { getInputsForProcess } from 'src/app/riesgos/riesgos.selectors';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { WizardableProcess } from '../wizardable_processes';
 

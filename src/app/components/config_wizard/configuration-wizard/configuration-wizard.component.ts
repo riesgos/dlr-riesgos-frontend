@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { map, distinctUntilChanged } from 'rxjs/operators';
 import { getProcessStates } from 'src/app/riesgos/riesgos.selectors';
 import { Process } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, isWizardableProcess } from '../wizardable_processes';

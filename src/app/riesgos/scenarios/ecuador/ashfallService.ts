@@ -59,6 +59,49 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                     zIndex: thickness * 100
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": {'thickness': 0.05},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'thickness: 5 mm'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'thickness': 50},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'thickness: 50 mm'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'thickness': 90},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'thickness: 90 mm'
+            }],
             text: (properties) => {
                 const thickness = properties['thickness'];
                 if (thickness) {
@@ -76,10 +119,10 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                     const selectedProperties = {
                         Profundidad: thicknessText,
                         VEI: toDecimalPlaces(properties['vei'] as number, 1),
-                        'Carga esperada': `${load} kPa`,
+                        'Expected load ': `${load} kPa`,
                         Probabilidad: properties['prob'] + ' %'
                     };
-                    return createKeyValueTableHtml('Ceniza', selectedProperties);
+                    return createKeyValueTableHtml('Ashfall', selectedProperties);
                 }
             }
         }

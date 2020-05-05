@@ -63,6 +63,7 @@ import { RiesgosService } from './riesgos/riesgos.service';
 import { ChangedetectorComponent } from './components/changedetector/changedetector.component';
 import { BlinkerComponent } from './components/changedetector/blinker/blinker.component';
 import { FpserComponent } from './components/changedetector/fpser/fpser.component';
+import { CanvasComponent } from './components/layer_control/vector-legend/canvas/canvas.component';
 
 @NgModule({
   declarations: [
@@ -98,8 +99,17 @@ import { FpserComponent } from './components/changedetector/fpser/fpser.componen
     LicensesComponent,
     BlogentryComponent,
     DndDirective,
-    LayerControlComponent, BaseLayerControlComponent, LayerentryComponent,
-    LayerentryGroupComponent, VectorLegendComponent, ReversePipe, RegexTranslatePipe, ChangedetectorComponent, BlinkerComponent, FpserComponent
+    LayerControlComponent,
+    BaseLayerControlComponent,
+    LayerentryComponent,
+    LayerentryGroupComponent,
+    VectorLegendComponent,
+    CanvasComponent,
+    ReversePipe,
+    RegexTranslatePipe,
+    ChangedetectorComponent,
+    BlinkerComponent,
+    FpserComponent
   ],
   imports: [
     BrowserModule,

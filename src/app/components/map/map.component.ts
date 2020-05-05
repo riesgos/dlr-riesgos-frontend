@@ -33,8 +33,7 @@ import { map, withLatestFrom, switchMap, tap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from '@dlr-eoc/services-ogc';
-import { featureReduce } from '@turf/turf';
-import { environment } from 'src/environments/environment';
+import { BlueMarbleTile } from '@dlr-eoc/base-layers-raster';
 
 
 const mapProjection = 'EPSG:4326';
@@ -308,6 +307,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });
         layers.push(osmLayer);
+
+        // const bm = new BlueMarbleTile({
+        //     visible: false,
+        //     removable: true
+        // });
+        // layers.push(bm);
 
         const relief2 = new CustomLayer({
             name: 'Hillshade',

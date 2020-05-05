@@ -70,6 +70,30 @@ export function createHeaderTableHtml(headerRow: string[], rows: string[][]): st
     `;
 }
 
+
+export function filledMatrix(nrRows: number, nrCols: number, filler: any): any[][] {
+    return Array.from(Array(nrRows), _ => Array(nrCols).fill(filler));
+}
+
+export function zeros(nrRows: number, nrCols: number): number[][] {
+    return Array.from(Array(nrRows), _ => Array(nrCols).fill(0));
+}
+
+export function getMax(arr) {
+    let mx = arr[0];
+    for (const x in arr) {
+        if (x > mx) {
+            mx = x;
+        }
+    }
+    return mx;
+}
+
+export function sum(arr: number[]): number {
+    return arr.reduce((a, b) => a + b, 0);
+}
+
+
 export function createTableHtml(rows: string[][]): string {
     const rowsFormatted = rows.map(row => {
         const colsFormatted = row.map(re => `<td>${re}</td>`);

@@ -15,9 +15,8 @@ import { WpsData, Cache } from '@dlr-eoc/services-ogc';
 import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { greenRedRange, toDecimalPlaces, ninetyPercentLowerThan, weightedDamage } from 'src/app/helpers/colorhelpers';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml, createTableHtml, createHeaderTableHtml } from 'src/app/helpers/others';
+import { createKeyValueTableHtml, createTableHtml, createHeaderTableHtml, zeros, filledMatrix, sum } from 'src/app/helpers/others';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
-import { direction } from './lahar';
 
 
 
@@ -115,11 +114,11 @@ export const laharTransitionProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Transiciónes'
+                text: 'Transitions'
             }],
             text: (props: object) => {
 
-                const matrix = Array.from(Array(5), _ => Array(5).fill(0));
+                const matrix = zeros(5, 5);
                 const fromDamageState = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
                 const toDamageState = props['transitions']['to_damage_state'];
@@ -130,7 +129,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                     matrix[r][c] += nr;
                 }
 
-                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
@@ -148,7 +147,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                 return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
-                const matrix = Array.from(Array(5), _ => Array(5).fill(0));
+                const matrix = zeros(5, 5);
                 for (const feature of value[0].features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
                     const nrBuildings = feature.properties['transitions']['n_buildings'];
@@ -161,7 +160,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                     }
                 }
 
-                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {

@@ -13,7 +13,7 @@ import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
 import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange, toDecimalPlaces, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
-import { createHeaderTableHtml, createTableHtml, createKeyValueTableHtml } from 'src/app/helpers/others';
+import { createHeaderTableHtml, createTableHtml, createKeyValueTableHtml, zeros, filledMatrix, sum } from 'src/app/helpers/others';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 
@@ -117,7 +117,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
             }],
             text: (props: object) => {
 
-                const matrix = Array.from(Array(4), _ => Array(4).fill(0));
+                const matrix = zeros(4, 4);
                 const fromDamageState = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
                 const toDamageState = props['transitions']['to_damage_state'];
@@ -128,7 +128,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                     matrix[r][c] += nr;
                 }
 
-                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
@@ -146,7 +146,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                 return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
-                const matrix = Array.from(Array(4), _ => Array(4).fill(0));
+                const matrix = zeros(4, 4);
                 for (const feature of value[0].features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
                     const nrBuildings = feature.properties['transitions']['n_buildings'];
@@ -159,7 +159,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                     }
                 }
 
-                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {

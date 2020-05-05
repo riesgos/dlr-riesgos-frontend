@@ -14,7 +14,7 @@ import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection, Feature } from '@turf/helpers';
-import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
+import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { Cache } from '@dlr-eoc/services-ogc';
 
 
@@ -153,11 +153,11 @@ export const transitionProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Transiciónes'
+                text: 'Transitions'
             }],
             text: (props: object) => {
 
-                const matrix = Array.from(Array(5), _ => Array(5).fill(0));
+                const matrix = zeros(1, 5);
                 const fromDamageState = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
                 const toDamageState = props['transitions']['to_damage_state'];
@@ -168,7 +168,7 @@ export const transitionProps: VectorLayerProperties = {
                     matrix[r][c] += nr;
                 }
 
-                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
@@ -186,7 +186,7 @@ export const transitionProps: VectorLayerProperties = {
                 return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
-                const matrix = Array.from(Array(5), _ => Array(5).fill(0));
+                const matrix = zeros(1, 5);
                 for (const feature of value[0].features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
                     const nrBuildings = feature.properties['transitions']['n_buildings'];
@@ -199,7 +199,7 @@ export const transitionProps: VectorLayerProperties = {
                     }
                 }
 
-                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {

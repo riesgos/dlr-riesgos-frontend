@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
+import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { Cache } from '@dlr-eoc/services-ogc';
 
 
@@ -144,7 +144,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
             },
             text: (props: object) => {
 
-                const matrix = Array.from(Array(7), _ => Array(7).fill(0));
+                const matrix = zeros(5, 7);
                 const fromDamageState = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
                 const toDamageState = props['transitions']['to_damage_state'];
@@ -155,7 +155,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                     matrix[r][c] += nr;
                 }
 
-                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
@@ -173,7 +173,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                 return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
-                const matrix = Array.from(Array(7), _ => Array(7).fill(0));
+                const matrix = zeros(5, 7);
                 for (const feature of value[0].features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
                     const nrBuildings = feature.properties['transitions']['n_buildings'];
@@ -185,8 +185,8 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                         matrix[r][c] += nr;
                     }
                 }
-                
-                const labeledMatrix = Array.from(Array(matrix.length + 1), _ => Array(matrix.length + 1).fill(''));
+
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {

@@ -1,5 +1,5 @@
 import { Cache } from '@dlr-eoc/services-ogc';
-import { set, get } from 'idb-keyval';
+import { set, get, del } from 'idb-keyval';
 import { Observable, from } from 'rxjs';
 import md5 from 'md5';
 
@@ -11,6 +11,8 @@ interface Entry {
 
 export class IndexDbCache implements Cache {
 
+    private maxCacheAge = 24 * 60 * 60 * 1000;
+
     set(input: any, output: any): Observable<any> {
         const key = md5(JSON.stringify(input));
         const entry: Entry = {
@@ -18,7 +20,6 @@ export class IndexDbCache implements Cache {
             created: new Date()
         };
         const request$ = set(key, entry).then(() => {
-            console.log('Stored data in cache for key', key);
             return true;
         });
         return from(request$);
@@ -28,10 +29,14 @@ export class IndexDbCache implements Cache {
         const key = md5(JSON.stringify(input));
         const request$ = get(key).then((entry: Entry | undefined) => {
             if (entry) {
-                console.log('found entry in cache for key', key);
-                return JSON.parse(entry.data);
+                const delta = new Date().getTime() - entry.created.getTime();
+                if (delta > this.maxCacheAge) {
+                    return JSON.parse(entry.data);
+                } else {
+                    del(key);
+                    return null;
+                }
             } else {
-                console.log('no entry in cache for key', key);
                 return null;
             }
         });

@@ -144,7 +144,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
             },
             text: (props: object) => {
 
-                const matrix = zeros(5, 7);
+                const matrix = zeros(6, 7);
                 const fromDamageState = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
                 const toDamageState = props['transitions']['to_damage_state'];
@@ -173,7 +173,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                 return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
-                const matrix = zeros(5, 7);
+                const matrix = zeros(6, 7);
                 for (const feature of value[0].features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
                     const nrBuildings = feature.properties['transitions']['n_buildings'];

@@ -274,7 +274,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                         counts[damageClass] += nrBuildings;
                     }
                 }
-                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))], 'small');
             }
         }
 };

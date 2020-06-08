@@ -117,13 +117,14 @@ export class TsService implements WizardableProcess, ExecutableProcess {
 
     uid = 'ts-service';
     name = 'TS-Service';
-    state: ProcessState;
     description = 'Simulates a tsunami based on the earlier selected earthquake-parameters.';
+    state: ProcessState;
 
     wizardProperties = {
         providerName: 'Alfred Wegener Institute',
         providerUrl: 'https://www.awi.de/en/',
-        shape: 'tsunami' as 'tsunami'
+        shape: 'tsunami' as 'tsunami',
+        wikiLink: 'Tsunami'
     };
 
     private tsShakemapService: TsShakemapService;

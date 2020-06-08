@@ -55,7 +55,7 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 100.000 USD'
+                text: 'Perdida 100.000 USD'
             }, {
                 feature: {
                     "type": "Feature",
@@ -69,7 +69,7 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 500.000 USD'
+                text: 'Perdida 500.000 USD'
             }, {
                 feature: {
                     "type": "Feature",
@@ -83,10 +83,10 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 1000.000 USD'
+                text: 'Perdida 1000.000 USD'
             }],
             text: (props: object) => {
-                return `<h4>Loss </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4>Perdida </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
             summary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
@@ -96,7 +96,7 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
                 return createKeyValueTableHtml('', {'total damage': totalDamageFormatted});
             }
         },
-        description: 'Concrete damage in USD.'
+        description: 'Daño en USD.'
     },
     value: null
 };
@@ -159,7 +159,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>desde\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -170,7 +170,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                     }
                 }
 
-                return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
+                return `<h4>Transiciones </h4>${createTableHtml(labeledMatrix, 'medium')}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const matrix = zeros(6, 7);
@@ -204,7 +204,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                 return createTableHtml(labeledMatrix);
             }
         },
-        description: 'Change from previous state to current one'
+        description: 'Cambio desde el estado anterior'
     },
     value: null
 };
@@ -274,7 +274,7 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 90/10/0/0/0/0'
+                text: 'Estados de daño: 90/10/0/0/0/0'
             }, {
                 feature: {
                     "type": "Feature",
@@ -288,7 +288,7 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 0/10/40/40/10/0'
+                text: 'Estados de daño: 0/10/40/40/10/0'
             }, {
                 feature: {
                     "type": "Feature",
@@ -302,7 +302,7 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 0/0/0/0/20/80'
+                text: 'Estados de daño: 0/0/0/0/20/80'
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -326,21 +326,21 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
+                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Estado de daño', '# edeficios');
                 
                 const legend = `
                     <ul>
-                        <li><b>D0:</b> no damage</li>
-                        <li><b>D1:</b> minor damage</li>
-                        <li><b>D2:</b> moderate damage</li>
-                        <li><b>D3:</b> major damage</li>
-                        <li><b>D4:</b> complete damage</li>
-                        <li><b>D5:</b> collapsed</li>
-                        <li><b>D6:</b> washed away</li>
+                        <li> <b> D0: </b> sin daños </li>
+                         <li> <b> D1: </b> daños menores </li>
+                         <li> <b> D2: </b> daño moderado </li>
+                         <li> <b> D3: </b> daños mayores </li>
+                         <li> <b> D4: </b> daño completo </li>
+                         <li> <b> D5: </b> colapsado </li>
+                         <li> <b> D6: </b> lavado </li>
                     </ul>
                 `;
 
-                return `<h4>Updated exposure</h4>${anchor.innerHTML}<br/>${legend}`;
+                return `<h4>Exposición actualizada</h4>${anchor.innerHTML}<br/>${legend}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {
@@ -362,7 +362,7 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                 return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
             }
         },
-        description: 'Amount of goods that are exposed to a hazard.'
+        description: 'Cantidad de bienes que están expuestos a un peligro.'
     },
     value: null
 };

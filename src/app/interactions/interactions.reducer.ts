@@ -5,7 +5,7 @@ import { initialInteractionState, InteractionState } from './interactions.state'
 
 
 export function interactionReducer(state: InteractionState = initialInteractionState, action: InteractionAction): InteractionState {
-    switch(action.type) {
+    switch (action.type) {
 
         case InteractionActionTypes.started:
             return {

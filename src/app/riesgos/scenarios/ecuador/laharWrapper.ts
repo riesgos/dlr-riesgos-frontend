@@ -18,7 +18,7 @@ export const laharHeightWms: WmsLayerProduct & Product = {
         ... laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'local value': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'}, 'small');
             } else {
                 return '';
             }
@@ -38,7 +38,7 @@ export const laharVelocityWms: WmsLayerProduct & Product = {
         ... laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s'});
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s'}, 'small');
             } else {
                 return '';
             }
@@ -58,7 +58,7 @@ export const laharPressureWms: WmsLayerProduct & Product = {
         ... laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'local value': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' kPa'});
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' kPa'}, 'small');
             } else {
                 return '';
             }
@@ -73,7 +73,7 @@ export const laharErosionWms: WmsLayerProduct & Product = {
         ... laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'local value': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'}, 'small');
             } else {
                 return '';
             }
@@ -88,7 +88,7 @@ export const laharDepositionWms: WmsLayerProduct & Product = {
         ... laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'local value': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'}, 'small');
             } else {
                 return '';
             }

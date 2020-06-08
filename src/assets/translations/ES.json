@@ -33,7 +33,7 @@
     "Configuration Wizard": "Asistente de Configuración",
     "Configuration": "Configuración",
     "Provider": "Proveedor",
-    "This process can not be configured yet.": "Este proceso todavía requiere entradas de la parte superior.",
+    "This process can not be configured yet.": "Todavía requiere entradas de la parte superior.",
     "Submit": "Enviar",
     "Loading...": "Descargando ...",
     "Reconfigure": "Reconfigurar",
@@ -43,10 +43,11 @@
     "Selected earthquake": "Terremoto elegido",
     
     "EQ Exposure Model": "Modelo de exposición",
+    "EQ Exposure Model Selection": "Modelo de exposición",
     "EQ Vulnerability Model": "Modelo de vulnerabilidad",
     "Catalogue of historical earthquakes.": "Catálogo de terremotos históricos.",
     "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Catálogo de terremotos. Ingrese aquí los parámetros que determinan qué terremotos serían apropiados para su simulación. También puede seleccionar un área con posibles epicentros de terremotos trazando un recuadro en el mapa.",
-    "Groundmotion Simulation": "Simulación de movimiento de tierra",
+    "Groundmotion Simulation": "Movimiento de tierra",
     "Simulates the ground motion caused by the selected earthquake": "Simula el movimiento del suelo causado por un terremoto dado",
     "Vulnerability after EQ": "Vulnerabilidad post-terremoto",
     "Damage after EQ": "Daño post-terremoto",
@@ -259,6 +260,12 @@
     "Police": "Carabineros",
     "Airports": "Aeropuertos",
 
+    "model": "modelo",
+    "exposure model": "modelo de exposición",
+    "Vulnerability": "Vulnerabilidad",
+    "Reliability": "Fiabilidad",
+
+    "shakemap": "Movimiento de tierra",
 
     "Don't show this again": "No volver a mostrar"
 }

@@ -122,7 +122,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                         'Expected load ': `${load} kPa`,
                         Probabilidad: properties['prob'] + ' %'
                     };
-                    return createKeyValueTableHtml('Ashfall', selectedProperties);
+                    return createKeyValueTableHtml('Ceniza', selectedProperties, 'medium');
                 }
             }
         }

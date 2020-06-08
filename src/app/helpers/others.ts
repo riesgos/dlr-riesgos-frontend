@@ -33,7 +33,9 @@ export function deepCopy<T>(obj: T, callStacksize = 0): T {
     return newObj;
 }
 
-export function createKeyValueTableHtml(header: string, data: object): string {
+export type TableType = 'small' | 'medium';
+
+export function createKeyValueTableHtml(header: string, data: object, type: TableType = 'small'): string {
     const rows: {key: string, val: string}[] = [];
     for (const key in data) {
         rows.push({key: key, val: data[key]});
@@ -50,20 +52,20 @@ export function createKeyValueTableHtml(header: string, data: object): string {
 
     return `
         ${headerFormatted}
-        <table class="table table-small">
+        <table class="table table-${type}">
             <tbody>${htmlRows.join(' ')}</tbody>
         </table>
     `;
 }
 
-export function createHeaderTableHtml(headerRow: string[], rows: string[][]): string {
+export function createHeaderTableHtml(headerRow: string[], rows: string[][], type: TableType = 'small'): string {
     const headersFormatted = headerRow.map(he => `<th>${he}</th>`);
     const rowsFormatted = rows.map(row => {
         const colsFormatted = row.map(re => `<td>${re}</td>`);
         return `<tr>${colsFormatted.join('')}</tr>`;
     });
     return `
-        <table class='table table-small'>
+        <table class='table table-${type}'>
             <tr>${headersFormatted.join('')}</tr>
             ${rowsFormatted.join('')}
         </table>
@@ -94,13 +96,13 @@ export function sum(arr: number[]): number {
 }
 
 
-export function createTableHtml(rows: string[][]): string {
+export function createTableHtml(rows: string[][], type: TableType = 'small'): string {
     const rowsFormatted = rows.map(row => {
         const colsFormatted = row.map(re => `<td>${re}</td>`);
         return `<tr>${colsFormatted.join('')}</tr>`;
     });
     return `
-        <table class='table table-small'>
+        <table class='table table-${type}'>
             ${rowsFormatted.join('')}
         </table>
     `;

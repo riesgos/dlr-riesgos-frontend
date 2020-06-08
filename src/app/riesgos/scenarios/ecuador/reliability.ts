@@ -132,7 +132,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
                     'Population': props['population'],
                     'Prob. of interuption': props['Prob_Disruption'],
                 };
-                return createKeyValueTableHtml('Power supply', selectedProps);
+                return createKeyValueTableHtml('Power supply', selectedProps, 'medium');
             }
         }
     },

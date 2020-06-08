@@ -377,7 +377,10 @@ export class LayerMarshaller  {
                                 const bbox = this.mapSvc.map.getView().calculateExtent(size);
                                 const width = size[0];
                                 const height = size[1];
-                                const requestUrl = `${url}service=wms&version=1.1.1&request=GetMap&format=image/tiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=EPSG:4326`;
+                                let requestUrl = `${url}service=wms&version=1.1.1&request=GetMap&format=image/tiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=EPSG:4326`;
+                                if (theLayer.params.STYLES) {
+                                    requestUrl += `&STYLES=${theLayer.params.STYLES}`;
+                                }
                                 this.httpClient.get(requestUrl, { responseType: 'blob' }).subscribe((data) => {
                                     downloadBlob(data, `data_${theLayer.name}.tiff`);
                                 });

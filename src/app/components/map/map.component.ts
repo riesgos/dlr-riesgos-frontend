@@ -225,9 +225,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // remove popups when no feature has been clicked
         this.mapSvc.map.on('click', () => {
-            this.mapSvc.removeAllPopups();
-            this.highlightedFeatures$.next([]);
-            console.log("reacted on click into nothing - removed poups and highlighted")
+            if (this.interactionState$.getValue().mode !== 'featureselection') {
+                this.mapSvc.removeAllPopups();
+                this.highlightedFeatures$.next([]);
+                console.log("reacted on click into nothing - removed poups and highlighted")
+            }
         });
 
 
@@ -308,9 +310,19 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         layers.push(osmLayer);
 
+
         // const bm = new BlueMarbleTile({
         //     visible: false,
-        //     removable: true
+        //     removable: true,
+        //     params: {
+        //         layer: 'bmng_topo_bathy',
+        //         format: 'image/png',
+        //         style: '_empty',
+        //         matrixSetOptions: {
+        //             matrixSet: mapProjection,
+        //             tileMatrixPrefix: mapProjection
+        //         }
+        //     }
         // });
         // layers.push(bm);
 

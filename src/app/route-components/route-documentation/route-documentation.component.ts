@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentChecked
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
-import { withLatestFrom, map } from 'rxjs/operators';
+import { withLatestFrom, map, delay } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 
 
@@ -62,7 +62,9 @@ export class RouteDocumentationComponent implements OnInit, AfterContentChecked 
   }
 
   ngAfterContentChecked(): void {
-    this.route.fragment.subscribe(fragmentName => this.scrollTo(fragmentName));
+    this.route.fragment.pipe(
+      (delay(500))
+    ).subscribe(fragmentName => this.scrollTo(fragmentName));
     if (this.route.snapshot.fragment) {
       this.scrollTo(this.route.snapshot.fragment);
     }

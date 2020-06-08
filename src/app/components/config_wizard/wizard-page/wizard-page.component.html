@@ -1,13 +1,13 @@
 <app-read-more [text]="process.description" [threshold]="10"></app-read-more>
 
 <ng-container *ngIf="process.wizardProperties.wikiLink">
-    <p class="p3" style="white-space: no-wrap;">
+    <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
         Wiki: <a routerLink="/documentation" fragment="{{process.wizardProperties.wikiLink}}" target="_blank" class="label label-blue clickable" style="white-space: pre-line;">{{process.wizardProperties.wikiLink | translate}}</a>
     </p>
 </ng-container>
 
 <ng-container *ngIf="process.wizardProperties.providerUrl">
-    <p class="p3" style="white-space: no-wrap;">
+    <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
         {{'Provider' | translate}}: <a href="{{process.wizardProperties.providerUrl}}" target="_blank" class="label label-blue clickable" style="white-space: pre-line;">{{process.wizardProperties.providerName}}</a>
     </p>
 </ng-container>

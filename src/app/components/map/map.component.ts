@@ -67,7 +67,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     ngOnInit() {
-
         this.subscribeToMapState();
 
         // listening for interaction modes
@@ -269,6 +268,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
+        this.mapSvc.setProjection(getProjection(mapProjection));
         // listening for change in scenario - afterViewInit
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             this.mapSvc.setProjection(getProjection(mapProjection));
@@ -311,39 +311,44 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         layers.push(osmLayer);
 
 
-        // const bm = new BlueMarbleTile({
-        //     visible: false,
-        //     removable: true,
-        //     params: {
-        //         layer: 'bmng_topo_bathy',
-        //         format: 'image/png',
-        //         style: '_empty',
-        //         matrixSetOptions: {
-        //             matrixSet: mapProjection,
-        //             tileMatrixPrefix: mapProjection
-        //         }
-        //     }
-        // });
-        // layers.push(bm);
-
-        const relief2 = new CustomLayer({
-            name: 'Hillshade',
-            id: 'shade',
-            type: 'custom',
-            custom_layer: new TileLayer({
-                source: new XYZ({
-                    url: 'https://maps.heigit.org/openmapsurfer/tiles/asterh/webmercator/{z}/{x}/{y}.png'
-                })
-            }),
-            bbox: [-180, -56, 180, 60],
-            description: 'OpenMapSurfer, <a href="https://heigit.org/>Heidelberg institute for geoinformation technology</a>',
-            attribution: '&copy, <a href="https://maps.openrouteservice.org">OpenMapSurfer</a>',
-            legendImg: 'assets/layer-preview/hillshade-96px.jpg',
-            opacity: 0.3,
+        // Works fine in q-gis:
+        // curl 'https://tiles.geoservice.dlr.de/service/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=bmng_topo_bathy&STYLE=_empty
+        // &FORMAT=image/png&TILEMATRIXSET=EPSG:4326&TILEMATRIX=EPSG:4326:1&TILEROW=0&TILECOL=1' -H 'Accept: */*' -H 'User-Agent: Mozilla/5.0 QGIS/31201'  --compressed
+        const bm = new BlueMarbleTile({
             visible: false,
-            removable: true
+            removable: true,
+            params: {
+                layer: 'bmng_topo_bathy',
+                format: 'image/png',
+                style: '_empty',
+                matrixSetOptions: {
+                    matrixSet: mapProjection,
+                    tileMatrixPrefix: mapProjection,
+                },
+                projection: mapProjection
+            }
         });
-        layers.push(relief2);
+        layers.push(bm);
+
+
+        // const relief2 = new CustomLayer({
+        //     name: 'Hillshade',
+        //     id: 'shade',
+        //     type: 'custom',
+        //     custom_layer: new TileLayer({
+        //         source: new XYZ({
+        //             url: 'https://maps.heigit.org/openmapsurfer/tiles/asterh/webmercator/{z}/{x}/{y}.png'
+        //         })
+        //     }),
+        //     bbox: [-180, -56, 180, 60],
+        //     description: 'OpenMapSurfer, <a href="https://heigit.org/>Heidelberg institute for geoinformation technology</a>',
+        //     attribution: '&copy, <a href="https://maps.openrouteservice.org">OpenMapSurfer</a>',
+        //     legendImg: 'assets/layer-preview/hillshade-96px.jpg',
+        //     opacity: 0.3,
+        //     visible: false,
+        //     removable: true
+        // });
+        // layers.push(relief2);
 
 
         if (scenario === 'c1') {
@@ -420,23 +425,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: 'shoaLayers',
                 name: 'Tsunami Flood Layers (CITSU)',
                 layers: [
-                    new CustomLayer({
-                        custom_layer: new olVectorLayer({
-                            source: new olVectorSource({
-                                url: 'assets/data/kml/citsu_taltal_2da_Ed_2012.kml',
-                                format: new KML(),
-                                crossOrigin: 'anonymous'
-                            })
-                        }),
-                        name: 'Taltal (SHOA)',
-                        id: 'Taltal_SHOA',
-                        type: 'custom',
-                        // bbox: [-70.553, -25.472, -70.417, -25.334],
-                        visible: false,
-                        attribution: '&copy, <a href="http://www.shoa.cl/php/citsu.php">shoa.cl</a>',
-                        legendImg: 'assets/layer-preview/citsu-96px.jpg',
-                        popup: true
-                    }),
                     new CustomLayer({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
@@ -660,7 +648,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
 
-    subscribeToMapState() {
+        subscribeToMapState() {
         const sub7 = this.mapStateSvc.getMapState().subscribe((state) => {
             if (history.pushState) {
                 const url = parse(window.location.href.replace('#/', ''));

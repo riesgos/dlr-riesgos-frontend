@@ -207,10 +207,10 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                 });
             },
             text: (properties) => {
-                let text = `<h3>{{AvailableEarthquakes}}</h3>`;
+                let text = `<h3>Terremotos disponibles</h3>`;
                 const selectedProperties = {
-                    Magnitude: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
-                    Depth: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
+                    Magnitud: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                     // Latitude: toDecimalPlaces(1, 1),
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],
@@ -241,7 +241,7 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'EQ<br/>radius: magnitude<br/>color: depth'
+                text: 'Terremoto<br/>Radius: magnitud<br/>color: profundidad'
             }]
         }
     },

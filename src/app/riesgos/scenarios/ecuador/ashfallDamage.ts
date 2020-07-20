@@ -60,7 +60,7 @@ const ashfallDamageProps: VectorLayerProperties = {
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
-                return createKeyValueTableHtml('', {'total damage': totalDamageFormatted});
+                return createKeyValueTableHtml('', {'Daño total': totalDamageFormatted}, 'medium');
             }
         }
 };

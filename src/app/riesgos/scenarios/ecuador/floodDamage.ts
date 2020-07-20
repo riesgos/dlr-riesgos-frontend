@@ -134,7 +134,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
 };
 
 /**
- * translates Flooddamage's output: needs to be converted to proper coodinate system to be actual geojson.
+ * translates Flooddamage's output: needs to be converted to proper coordinate system to be actual geojson.
  */
 export const FlooddamageTranslator: ProductTransformingProcess = {
     uid: 'ecuadorFlooddamageTranslator',

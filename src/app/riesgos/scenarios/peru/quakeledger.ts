@@ -212,7 +212,7 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'EQ<br/>radius: magnitude<br/>color: depth'
+                text: 'Terremoto<br/>Radius: magnitud<br/>color: profundidad'
             }],
             text: (properties) => {
                 let text = `<h3>Available earthquakes</h3>`;

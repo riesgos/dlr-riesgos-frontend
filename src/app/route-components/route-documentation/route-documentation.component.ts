@@ -62,9 +62,6 @@ export class RouteDocumentationComponent implements OnInit, AfterContentChecked 
   }
 
   ngAfterContentChecked(): void {
-    this.route.fragment.pipe(
-      (delay(500))
-    ).subscribe(fragmentName => this.scrollTo(fragmentName));
     if (this.route.snapshot.fragment) {
       this.scrollTo(this.route.snapshot.fragment);
     }

@@ -97,7 +97,7 @@ export const damageProps: VectorLayerProperties = {
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
-                return createKeyValueTableHtml('', {'daño total': totalDamageFormatted});
+                return createKeyValueTableHtml('', {'daño total': totalDamageFormatted}, 'medium');
             }
         },
         description: 'Daño en USD.',
@@ -214,7 +214,7 @@ export const transitionProps: VectorLayerProperties = {
                     }
                 }
 
-                return createTableHtml(labeledMatrix);
+                return createTableHtml(labeledMatrix, 'medium');
             }
         },
         description: 'Cambio desde el estado anterior'

@@ -20,8 +20,12 @@ export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
         format: 'application/WMS',
         styles: ['shakemap-pga', 'another style'],
         featureInfoRenderer: (fi: FeatureCollection) => {
-            return createKeyValueTableHtml('EQ', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s²'});
-        }
+            const html = `
+            <p>Aceleración del suelo:<p>
+            ${createKeyValueTableHtml('EQ', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s²'}, 'medium')}
+            `;
+            return html;
+        },
     },
     value: null
 };

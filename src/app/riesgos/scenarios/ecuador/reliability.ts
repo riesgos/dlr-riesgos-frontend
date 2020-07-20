@@ -127,12 +127,11 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
             }],
             text: (props: object) => {
                 const selectedProps = {
-                    'Name': props['Name'],
-                    'Area': props['Area'],
-                    'Population': props['population'],
-                    'Prob. of interuption': props['Prob_Disruption'],
+                    'Nombre': props['Name'],
+                    'Población': props['population'],
+                    'Prob. de interrupción': props['Prob_Disruption'],
                 };
-                return createKeyValueTableHtml('Power supply', selectedProps, 'medium');
+                return createKeyValueTableHtml('Red eléctrica', selectedProps, 'medium');
             }
         }
     },

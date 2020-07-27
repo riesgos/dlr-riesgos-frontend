@@ -1,15 +1,13 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
 import { DragBox } from 'ol/interaction';
 import { Style, Stroke } from 'ol/style';
-import { Vector as olVectorLayer } from 'ol/layer';
-import TileLayer from 'ol/layer/Tile';
-import { Vector as olVectorSource } from 'ol/source';
+import { Vector as olVectorLayer, Tile as TileLayer } from 'ol/layer';
+import { Vector as olVectorSource, TileWMS } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import Feature from 'ol/Feature';
 import {getWidth} from 'ol/extent';
 import { MapOlService } from '@dlr-eoc/map-ol';
-import TileWMS from 'ol/source/TileWMS';
 import * as olEvents from 'ol/events';
 import XYZ from 'ol/source/XYZ';
 import TileGrid from 'ol/tilegrid/TileGrid';
@@ -268,7 +266,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        this.mapSvc.setProjection(getProjection(mapProjection));
         // listening for change in scenario - afterViewInit
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             this.mapSvc.setProjection(getProjection(mapProjection));
@@ -310,46 +307,25 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         layers.push(osmLayer);
 
-
-        // Works fine in q-gis:
-        // curl 'https://tiles.geoservice.dlr.de/service/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=bmng_topo_bathy&STYLE=_empty
-        // &FORMAT=image/png&TILEMATRIXSET=EPSG:4326&TILEMATRIX=EPSG:4326:1&TILEROW=0&TILECOL=1' -H 'Accept: */*' -H 'User-Agent: Mozilla/5.0 QGIS/31201'  --compressed
-        const bm = new BlueMarbleTile({
+        const gebco = new CustomLayer({
+            id: 'gebco',
+            name: 'GEBCO',
+            custom_layer: new TileLayer({
+                source: new TileWMS({
+                    url: 'https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?',
+                    params: {
+                        layers: 'GEBCO_2019_Grid',
+                        tiled: true
+                    },
+                    crossOrigin: 'anonymous'
+                })
+            }),
             visible: false,
-            removable: true,
-            params: {
-                layer: 'bmng_topo_bathy',
-                format: 'image/png',
-                style: '_empty',
-                matrixSetOptions: {
-                    matrixSet: mapProjection,
-                    tileMatrixPrefix: mapProjection,
-                },
-                projection: mapProjection
-            }
+            opacity: 0.6,
+            legendImg: 'https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&layers=GEBCO_2019_Grid&tiled=true&WIDTH=128&HEIGHT=128&CRS=EPSG%3A4326&STYLES=&BBOX=-22.5%2C-90%2C0%2C-67.5',
+            attribution: '&copy, <a href="https://www.gebco.net/">GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)</a>'
         });
-        layers.push(bm);
-
-
-        // const relief2 = new CustomLayer({
-        //     name: 'Hillshade',
-        //     id: 'shade',
-        //     type: 'custom',
-        //     custom_layer: new TileLayer({
-        //         source: new XYZ({
-        //             url: 'https://maps.heigit.org/openmapsurfer/tiles/asterh/webmercator/{z}/{x}/{y}.png'
-        //         })
-        //     }),
-        //     bbox: [-180, -56, 180, 60],
-        //     description: 'OpenMapSurfer, <a href="https://heigit.org/>Heidelberg institute for geoinformation technology</a>',
-        //     attribution: '&copy, <a href="https://maps.openrouteservice.org">OpenMapSurfer</a>',
-        //     legendImg: 'assets/layer-preview/hillshade-96px.jpg',
-        //     opacity: 0.3,
-        //     visible: false,
-        //     removable: true
-        // });
-        // layers.push(relief2);
-
+        layers.push(gebco);
 
         if (scenario === 'c1') {
 

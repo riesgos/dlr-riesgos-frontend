@@ -6,6 +6,9 @@
 
 <clr-vertical-nav [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsedLayerControl"
     [clr-nav-level]="2">
+
+    <app-changedetector></app-changedetector>
+
     <h3 class="clr-vertical-nav-header is-highlight">{{'Layer control' | translate}}</h3>
     <ukis-layercontrol [navExpanded]="!collapsedLayerControl"></ukis-layercontrol>
 </clr-vertical-nav>

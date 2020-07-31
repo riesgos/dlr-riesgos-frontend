@@ -1,4 +1,10 @@
 <div *ngIf="display">
-    <app-fpser></app-fpser>
-    <app-blinker></app-blinker>
+    <clr-vertical-nav-group>
+        <clr-icon shape="clock" clrVerticalNavIcon></clr-icon>
+        Performance
+        <clr-vertical-nav-group-children>
+            <ukis-fpser></ukis-fpser>
+            <ukis-blinker></ukis-blinker>
+        </clr-vertical-nav-group-children>
+    </clr-vertical-nav-group>
 </div>

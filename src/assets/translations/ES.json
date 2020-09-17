@@ -269,5 +269,14 @@
 
     "Processes only": "Procesos",
     "Full view": "Vista completa",
-    "Don't show this again": "No volver a mostrar"
+    "Don't show this again": "No volver a mostrar",
+
+    "probability of range": "probabilidad de rango",
+
+    "Deus Ashfall description": "Este servicio calcula el daño causado por un evento de caída de ceniza determinado.",
+    "Deus Lahar description": "Este servicio calcula el daño causado por un determinado evento de lahar.",
+    "Deus Lahar + Ashfall description": "Este servicio calcula el daño combinado causado por la caída de ceniza y un lahar.",
+    "Ashfall Service description": "Este servicio devuelve una simulación de una nube de cenizas y la deposición resultante",
+    "This is a process to compute the damage of a flood in Ecuador.": "Este es un proceso para calcular el daño de una inundación en Ecuador.",
+    "Process to compute the damage of a flood in ecuador.": "Este es un proceso para calcular el daño de una inundación en Ecuador."
 }

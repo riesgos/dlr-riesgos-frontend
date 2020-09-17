@@ -59,7 +59,7 @@ const eqDamagePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 100.000 USD'
+                text: 'Perdida 100.000 USD'
             }, {
                 feature: {
                     "type": "Feature",
@@ -73,7 +73,7 @@ const eqDamagePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 500.000 USD'
+                text: 'Perdida 500.000 USD'
             }, {
                 feature: {
                     "type": "Feature",
@@ -87,10 +87,10 @@ const eqDamagePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 1.000.000 USD'
+                text: 'Perdida 1.000.000 USD'
             }],
             text: (props: object) => {
-                return `<h4>Loss </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4>Perdida </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
             summary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
@@ -151,7 +151,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Transitions'
+                text: 'Transiciones'
             }],
             text: (props: object) => {
 
@@ -170,7 +170,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>desde\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -181,7 +181,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                     }
                 }
 
-                return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
+                return `<h4>Transiciones </h4>${createTableHtml(labeledMatrix, 'medium')}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const matrix = zeros(1, 5);
@@ -201,7 +201,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>desde\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -212,7 +212,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                     }
                 }
 
-                return createTableHtml(labeledMatrix);
+                return createTableHtml(labeledMatrix, 'medium');
             }
         },
         description: 'Change from previous state to current one'
@@ -275,7 +275,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 90/10/0/0'
+                text: 'Estados de daño: 90/10/0/0'
             }, {
                 feature: {
                     "type": "Feature",
@@ -289,7 +289,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 0/50/50/0'
+                text: 'Estados de daño: 0/50/50/0'
             }, {
                 feature: {
                     "type": "Feature",
@@ -303,7 +303,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 0/0/20/80'
+                text: 'Estados de daño: 0/0/20/80'
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -329,15 +329,15 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                 
                 const legend = `
                     <ul>
-                        <li><b>D0:</b> no damage</li>
-                        <li><b>D1:</b> slight damage</li>
-                        <li><b>D2:</b> moderate damage</li>
-                        <li><b>D3:</b> extensive damage</li>
-                        <li><b>D4:</b> collapse</li>
+                        <li><b>D0:</b> sin daños</li>
+                        <li><b>D1:</b> daño leve</li>
+                        <li><b>D2:</b> daño moderato</li>
+                        <li><b>D3:</b> daño extenso</li>
+                        <li><b>D4:</b> colapso</li>
                     </ul>
                 `;
 
-                return `<h4>Updated exposure</h4>${anchor.innerHTML}<br/>${legend}`;
+                return `<h4>Exposición actualizada</h4>${anchor.innerHTML}<br/>${legend}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

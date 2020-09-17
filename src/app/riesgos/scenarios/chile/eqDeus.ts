@@ -153,7 +153,7 @@ export const transitionProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Transitions'
+                text: 'Transiciones'
             }],
             text: (props: object) => {
 

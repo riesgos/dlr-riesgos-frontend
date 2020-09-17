@@ -114,7 +114,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Transitions'
+                text: 'Transiciones'
             }],
             text: (props: object) => {
 
@@ -133,7 +133,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>desde\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -144,7 +144,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                     }
                 }
 
-                return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
+                return `<h4>Transiciones </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const matrix = zeros(5, 5);
@@ -164,7 +164,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>desde\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -237,7 +237,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states'
+                text: 'Estados de daño'
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -260,7 +260,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
-                return `<h4>Updated exposure </h4>${anchor.innerHTML}`;
+                return `<h4>Exposición actualizada </h4>${anchor.innerHTML}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

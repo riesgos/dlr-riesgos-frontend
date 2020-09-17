@@ -225,7 +225,7 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                 };
                 if (properties['origin.time.value'] && etypePeru.value === 'observed') {
                     const date = new Date(Date.parse(properties['origin.time.value']));
-                    selectedProperties['Date'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                    selectedProperties['Fecha'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
                 }
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {

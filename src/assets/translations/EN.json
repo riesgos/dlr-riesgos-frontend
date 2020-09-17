@@ -113,5 +113,10 @@
 
     "Unavailable": "Downstream",
     "Available": "Ready",
-    "This process can not be configured yet.": "This process still requires inputs from upstream."
+    "This process can not be configured yet.": "This process still requires inputs from upstream.",
+
+    "Deus Ashfall description": "This service calculates the damage caused by a given ashfall-event.",
+    "Deus Lahar description": "This service calculates the damage caused by a given lahar-event.",
+    "Ashfall Service description": "This service returns a simulation of an ash-cloud and the resulting deposition",
+    "Deus Lahar + Ashfall description": "This service calculates the combined damage caused by ashfall and a lahar."
 }

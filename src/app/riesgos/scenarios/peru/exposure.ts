@@ -190,7 +190,8 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
     this.wizardProperties =  {
       shape: 'building',
       providerName: 'Helmholtz Centre Potsdam',
-      providerUrl: 'https://www.gfz-potsdam.de/en/'
+      providerUrl: 'https://www.gfz-potsdam.de/en/',
+      wikiLink: 'Vulnerability'
     };
   }
 }

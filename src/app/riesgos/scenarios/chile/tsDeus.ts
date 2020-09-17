@@ -190,7 +190,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>desde\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {

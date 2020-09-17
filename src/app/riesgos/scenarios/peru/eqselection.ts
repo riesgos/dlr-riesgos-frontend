@@ -39,10 +39,10 @@ export const userinputSelectedEqPeru: FeatureSelectUconfProduct & VectorLayerPro
                 });
             },
             text: (properties: object) => {
-                let text = `<h3>Selected earthquake</h3>`;
+                let text = `<h3>Terremoto elegido</h3>`;
                 const selectedProperties = {
-                    Magnitude: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
-                    Depth: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
+                    Magnitud: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                     // Latitude: toDecimalPlaces(1, 1),
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],

@@ -50,10 +50,10 @@ const ashfallDamageProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 500.000 USD'
+                text: 'Perdida 500.000 USD'
             }],
             text: (props: object) => {
-                return `<h4>Loss </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4>Perdida </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
             summary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
@@ -113,7 +113,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Transitions'
+                text: 'Transiciones'
             }],
             text: (props: object) => {
 
@@ -132,7 +132,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>desde\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -143,7 +143,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                     }
                 }
 
-                return `<h4>Transitions </h4>${createTableHtml(labeledMatrix)}`;
+                return `<h4>Transiciones </h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const matrix = zeros(4, 4);
@@ -163,7 +163,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>from\\to</b>';
+                            labeledMatrix[r][c] = '<b>desde\\a</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
@@ -236,7 +236,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states'
+                text: 'Estados de daño'
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -258,7 +258,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
                 const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
-                return `<h4>Updated exposure </h4>${anchor.innerHTML}`;
+                return `<h4>Exposición actualizada</h4>${anchor.innerHTML}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

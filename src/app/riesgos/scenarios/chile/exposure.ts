@@ -171,7 +171,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
 
         const anchor = document.createElement('div');
         const anchorUpdated = createBigBarchart(anchor, barchartData, 400, 300, 'taxonomy', 'buildings');
-        return `<h4>Exposición </h4>${anchor.innerHTML}`;
+        return `<h4>Exposición</h4>${anchor.innerHTML}`;
       }
     }
   },

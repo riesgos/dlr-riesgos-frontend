@@ -62,7 +62,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
             legendEntries: [{
                 feature: {
                     "type": "Feature",
-                    "properties": {'thickness': 0.05},
+                    "properties": {'espesor': 0.05},
                     "geometry": {
                       "type": "Polygon",
                       "coordinates": [ [
@@ -72,7 +72,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'thickness: 5 mm'
+                text: 'Espesor: 5 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -86,7 +86,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'thickness: 50 mm'
+                text: 'Espesor: 50 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -100,7 +100,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'thickness: 90 mm'
+                text: 'Espesor: 90 mm'
             }],
             text: (properties) => {
                 const thickness = properties['thickness'];
@@ -119,7 +119,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                     const selectedProperties = {
                         Profundidad: thicknessText,
                         VEI: toDecimalPlaces(properties['vei'] as number, 1),
-                        'Expected load ': `${load} kPa`,
+                        'Carga esperada ': `${load} kPa`,
                         Probabilidad: properties['prob'] + ' %'
                     };
                     return createKeyValueTableHtml('Ceniza', selectedProperties, 'medium');
@@ -171,7 +171,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             [vei.uid, probability.uid],
             [ashfall.uid, ashfallPoint.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
-            '',
+            'Ashfall Service description',
             'http://riesgos.dlr.de/wps/WebProcessingService?',
             '1.0.0',
             http,

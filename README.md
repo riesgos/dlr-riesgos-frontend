@@ -1,5 +1,11 @@
 ![RIESGOS Logo](src/assets/logos/riesgos_base_small_en.svg "RIESGOS Logo")
 
+
+
+## Disclaimer
+> :warning: This is the prototype of a multi-risk exploration tool and still under development. **IMPORTANT**: the results shown here are not yet consolidated and therefore not suitable for planning or other practical applications. As explained in our [License](LICENSE), we cannot take any responsibility for damages arising from the use of this tool.
+
+
 ## Rationale
 Natural hazards often consist of multiple, cascading processes (an earthquake causes a tsunami which damages powerlines, ...), whereas scientific models usually try to model just one of these processes at a time.
 We exposed several scientific models as WPS and combined them in a simple web-frontend to allow for a more holistic approach to multistep risk-management.

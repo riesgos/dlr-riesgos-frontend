@@ -11,6 +11,43 @@ Our RIESGOS business model consists of `processes` and `products`. They form a d
 This project depends on the 'UKIS frontend libraries', which are distributed as packages on github. To use these packages, please follow the instructions on [the UKIS frontend libraries github page](https://github.com/dlr-eoc/ukis-frontend-libraries).
 
 
+Usually, you'll want to use [one of our stable releases](https://github.com/riesgos/dlr-riesgos-frontend/tags).
+```bash
+    git clone https://github.com/riesgos/dlr-riesgos-frontend -b v1.0_peru
+    cd dlr-riesgos-frontend
+    npm install
+```
+
+From there, you can ...
+ - ... host a development version on your machine: ```npm run start```
+ - ... or build a deployable version of the code: ```npm run build```
+
+
+## Hosting
+Since this is a simple angular-application, not much is required in terms of hosting.
+
+### 1. A webserver
+You should host this app as simple, static files.
+ - Deploy the output of the build (that is, the contents of the `dist` folder, created with ```npm run build``` as described above) to your server (commonly `/var/www/<your domain name>`)
+ - Configure your webserver to serve your files from that directory.
+
+A common configuration for nginx might look like this:
+```
+server {
+    listen 80;
+    listen [::] 80;
+    server_name <your domain name>;
+    root /var/www/<your domain name>;
+    index index.html;
+    location / {
+        try_files $uri$args $uri$args/ /index.html;
+    }
+}
+```
+
+### 2. A domain
+Finally, your application should be available behind a dedicated address. If your organization does not handle domain-names for you, there are many services where you can [obtain a domain name](https://www.google.com/search?q=get+a+domain+name).
+
 ## Integrating external webservices
 
 Usually, you'll be in one of the following situations:

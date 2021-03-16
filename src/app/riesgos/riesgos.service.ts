@@ -87,16 +87,6 @@ export class RiesgosService {
 
     public loadScenarioMetadata(): RiesgosScenarioMetadata[] {
       return [{
-        id: 'c1',
-        title: 'Showcase Chile',
-        preview: `assets/images/tsunami_en.jpg`,
-        description: '',
-      }, {
-        id: 'e1',
-        title: 'Showcase Ecuador',
-        preview: `assets/images/lahar_en.jpg`,
-        description: '',
-      }, {
         id: 'p1',
         title: 'Showcase Peru',
         preview: `assets/images/tsunami_en.jpg`,
@@ -110,34 +100,6 @@ export class RiesgosService {
     let processes: Process[] = [];
     let products: Product[] = [];
     switch (scenario) {
-      case 'c1':
-        processes = [
-          new ExposureSelection(this.httpClient, cache),
-          new QuakeLedger(this.httpClient, cache),
-          EqSelection,
-          new Shakyground(this.httpClient, cache),
-          new EqDeus(this.httpClient, cache),
-          new TsService(this.httpClient, cache),
-          new TsDeus(this.httpClient, cache),
-          new EqReliability(this.httpClient, cache),
-          // PhysicalImpactAssessment
-        ];
-        products = [
-          modelChoice,
-          lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
-          assetcategory, losscategory, taxonomies,
-          initialExposure,
-          new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
-          selectedEqs, userinputSelectedEq,
-          selectedEq, shakemapWmsOutput, eqShakemapRef,
-          loss, eqDamageM, eqUpdatedExposureRef,
-          tsWms, tsShakemap,
-          countryChile, hazardEq,
-          damageConsumerAreas,
-          tsDamage, tsTransition, tsUpdatedExposure,
-          // physicalImpact
-        ];
-        break;
       case 'p1':
         processes = [
           new ExposureModelPeru(this.httpClient, cache),
@@ -161,44 +123,6 @@ export class RiesgosService {
           tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru,
           countryPeru, hazardEqPeru,
           damageConsumerAreasPeru
-        ];
-        break;
-      case 'e1':
-        processes = [
-          VeiProvider,
-
-          new AshfallService(this.httpClient, cache),
-          new AshfallExposureModel(this.httpClient, cache),
-          new DeusAshfall(this.httpClient, cache),
-
-          new LaharWrapper(this.httpClient, cache),
-          new LaharExposureModel(this.httpClient, cache),
-          new DeusLahar(this.httpClient, cache),
-
-          new DeusLaharAndAshfall(this.httpClient, cache),
-          new LaharReliability(this.httpClient, cache),
-
-          FloodMayRunProcess,
-          geomerFlood,
-          new FlooddamageProcess(this.httpClient, cache),
-          FlooddamageTranslator
-        ];
-        products = [
-          schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
-          fragilityRef, initialExposureAshfall, initialExposureAshfallRef, initialExposureLahar, initialExposureLaharRef,
-          selectableVei, vei, FloodMayRun,
-          probability, ashfall, ashfallPoint,
-          ashfallDamageM, ashfallUpdatedExposureRef,
-          direction, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
-          laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms,
-          assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
-          laharDamageM, laharUpdatedExposureRef,
-          laharAshfallDamageM,
-          countryEcuador, hazardLahar,
-          damageConsumerAreasEcuador,
-          userinputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,
-          damageManzanas, damageBuildings,
-          damageManzanasGeojson
         ];
         break;
       default:

@@ -18,7 +18,9 @@
     "Showcase Ecuador": "Quito / Región Cotopaxi",
     "Showcase Peru": "Lima Metropolitana y Callao",
 
-    
+    "Data licenses": "Licencias data",
+    "Data licenses disclaimer": "Esta aplicación web permite el procesamiento, la visualización y la descarga de datos de varios autores. La licencia de estos datos y las condiciones de uso son siempre responsabilidad de los autores de los mismos.",
+    "Code licenses": "Licencias codigo",
     "Licenses": "Licencias",
     "Licenses disclaimer": "Se usaron muchas bibliotecas de terceros para crear este proyecto. Sus licencias se enumeran aquí.",
     "Library name": "Nombre de biblioteca",
@@ -192,7 +194,7 @@
 
 
     "Disclaimer": "Descargo de responsabilidad",
-    "DisclaimerText": "Este es el prototipo de una herramienta de exploración multiriesgo y aún se encuentra en fase de construcción. IMPORTANTE: los resultados mostrados todavía no están consolidados y en ningún caso son aptos para la planificación u otras aplicaciones prácticas.",
+    "DisclaimerText": "Este es el prototipo de una herramienta de exploración multiriesgo y aún se encuentra en fase de construcción. IMPORTANTE: los resultados mostrados todavía no están consolidados y en ningún caso son aptos para la planificación u otras aplicaciones prácticas. Esta aplicación web permite el procesamiento, la visualización y la descarga de datos de varios autores. La licencia de estos datos y las condiciones de uso son siempre responsabilidad de los autores de los mismos.",
     "Understood and accept": "Entendido y aceptado",
 
     "System reliability after Lahar": "Infraestructura – red eléctrica",

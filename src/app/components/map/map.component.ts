@@ -8,10 +8,8 @@ import { get as getProjection } from 'ol/proj';
 import Feature from 'ol/Feature';
 import {getWidth} from 'ol/extent';
 import { MapOlService } from '@dlr-eoc/map-ol';
-import * as olEvents from 'ol/events';
-import XYZ from 'ol/source/XYZ';
 import TileGrid from 'ol/tilegrid/TileGrid';
-import {click, noModifierKeys, altKeyOnly} from 'ol/events/condition';
+import {click, noModifierKeys} from 'ol/events/condition';
 import Select from 'ol/interaction/Select';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
@@ -31,7 +29,6 @@ import { map, withLatestFrom, switchMap, tap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { WpsBboxValue } from '@dlr-eoc/services-ogc';
-import { BlueMarbleTile } from '@dlr-eoc/base-layers-raster';
 
 
 const mapProjection = 'EPSG:4326';
@@ -522,7 +519,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: 'infrastructureLayers',
                 name: 'Infrastructure layer',
                 layers: [
-                    new ProductRasterLayer({
+                    new RasterLayer({
                         id: 'distribPeru',
                         name: 'distribución',
                         description: 'Concesiones de Distribución',
@@ -538,7 +535,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         // @ts-ignore
                         crossOrigin: 'anonymous'
                     }),
-                    new ProductRasterLayer({
+                    new RasterLayer({
                         id: 'generacionPeru',
                         name: 'generación',
                         description: 'Concesiones de Generación',
@@ -554,7 +551,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         // @ts-ignore
                         crossOrigin: 'anonymous'
                     }),
-                    new ProductRasterLayer({
+                    new RasterLayer({
                         id: 'transmissionPeru',
                         name: 'transmisión',
                         description: 'Concesiones de Transmisión',

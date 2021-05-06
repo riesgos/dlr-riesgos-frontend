@@ -522,7 +522,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: 'infrastructureLayers',
                 name: 'Infrastructure layer',
                 layers: [
-                    new ProductRasterLayer({
+                    new RasterLayer({
                         id: 'distribPeru',
                         name: 'distribución',
                         description: 'Concesiones de Distribución',
@@ -538,7 +538,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         // @ts-ignore
                         crossOrigin: 'anonymous'
                     }),
-                    new ProductRasterLayer({
+                    new RasterLayer({
                         id: 'generacionPeru',
                         name: 'generación',
                         description: 'Concesiones de Generación',
@@ -554,7 +554,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         // @ts-ignore
                         crossOrigin: 'anonymous'
                     }),
-                    new ProductRasterLayer({
+                    new RasterLayer({
                         id: 'transmissionPeru',
                         name: 'transmisión',
                         description: 'Concesiones de Transmisión',

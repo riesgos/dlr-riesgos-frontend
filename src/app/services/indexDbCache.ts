@@ -30,9 +30,10 @@ export class IndexDbCache implements Cache {
         const request$ = get(key).then((entry: Entry | undefined) => {
             if (entry) {
                 const delta = new Date().getTime() - entry.created.getTime();
-                if (delta > this.maxCacheAge) {
+                if (delta < this.maxCacheAge) {
                     return JSON.parse(entry.data);
                 } else {
+                    console.log(`entry is expired by ${delta / (1000 * 60)} minutes`, entry);
                     del(key);
                     return null;
                 }

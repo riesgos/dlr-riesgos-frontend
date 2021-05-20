@@ -43,7 +43,7 @@ export class ReadMoreComponent implements OnInit {
         this.isExpanded = true;
       }
       const wordsShort = words.slice(0, Math.min(this.threshold, words.length));
-      this.shortText = wordsShort.join(' ');
+      this.shortText = wordsShort.join(' ') + '...';
     } else {
       this.fullText = '';
       this.shortText = '';

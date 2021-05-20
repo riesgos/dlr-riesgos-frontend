@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { selectedEq } from './eqselection';
 import { HttpClient } from '@angular/common/http';
@@ -13,6 +13,7 @@ export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
     uid: 'Shakyground_wms',
     description: {
         id: 'shakeMapFile',
+        title: 'shakeMapFile',
         icon: 'earthquake',
         name: 'shakemap',
         type: 'complex',
@@ -21,8 +22,8 @@ export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
         styles: ['shakemap-pga', 'another style'],
         featureInfoRenderer: (fi: FeatureCollection) => {
             const html = `
-            <p>Aceleración del suelo:<p>
-            ${createKeyValueTableHtml('EQ', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s²'}, 'medium')}
+            <p>{{ Ground_acceleration }}:<p>
+            ${createKeyValueTableHtml('{{ Earthquake }}', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s²'}, 'medium')}
             `;
             return html;
         },
@@ -34,6 +35,7 @@ export const eqShakemapRef: WpsData & Product = {
     uid: 'Shakyground_shakemap',
     description: {
         id: 'shakeMapFile',
+        title: 'shakeMapFile',
         type: 'complex',
         reference: true,
         format: 'text/xml',
@@ -49,7 +51,7 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
     constructor(http: HttpClient, cache: Cache) {
         super(
             'Shakyground',
-            'Groundmotion Simulation',
+            'GroundmotionService',
             [selectedEq].map(p => p.uid),
             [shakemapWmsOutput, eqShakemapRef].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
@@ -62,8 +64,9 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
         );
         this.wizardProperties = {
             shape: 'earthquake',
-            providerName: 'Helmholtz Centre Potsdam',
-            providerUrl: 'https://www.gfz-potsdam.de/en/'
+            providerName: 'GFZ',
+            providerUrl: 'https://www.gfz-potsdam.de/en/',
+            wikiLink: 'Groundmotion'
         };
     }
 

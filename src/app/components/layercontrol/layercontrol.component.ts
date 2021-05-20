@@ -12,6 +12,7 @@ export class LayercontrolComponent implements OnInit {
   @Input() navExpanded = true;
   @Input() expandedResults = true;
   @Input() expandedLayers = true;
+  @Input() expandedBaseLayers = true;
   constructor(
     public layersSvc: LayersService,
     public mapStateSvc: MapStateService

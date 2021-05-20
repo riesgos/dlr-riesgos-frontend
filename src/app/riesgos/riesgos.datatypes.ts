@@ -1,9 +1,9 @@
-import { WpsDataDescription, WpsVerion, ProductId, WpsData, WpsClient, FakeCache, Cache } from '@dlr-eoc/services-ogc';
+import { WpsDataDescription, WpsVersion, ProductId, WpsData, WpsClient, FakeCache, Cache } from '@dlr-eoc/utils-ogc';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
-import { RemoteCache } from '../services/remoteCache';
-import { IndexDbCache } from '../services/indexDbCache';
+import { RemoteCache } from '../services/cache/remoteCache';
+import { IndexDbCache } from '../services/cache/indexDbCache';
 import { environment } from 'src/environments/environment';
 
 
@@ -110,7 +110,7 @@ export class WpsProcess implements ExecutableProcess {
         readonly id: string,
         readonly description: string,
         readonly url: string,
-        readonly wpsVersion: WpsVerion,
+        readonly wpsVersion: WpsVersion,
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
         cache: Cache = new FakeCache()
@@ -183,6 +183,8 @@ export class WpsProcess implements ExecutableProcess {
                     ...equivalentWpsData,
                     uid: prod.uid
                 });
+            } else {
+                console.warn(`Warning: could not find a WPS-process output for ProductDescription ${prod.uid} / ${prod.description.id}`);
             }
 
         }

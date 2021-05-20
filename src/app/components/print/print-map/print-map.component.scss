@@ -1,0 +1,45 @@
+.preview-container {
+  display: inline-table;
+  position: relative;
+  border: solid 1px var(--clr-forms-border-color, #b3b3b3);
+  width: 100%;
+  height: 100%;
+}
+
+.fullPage {
+  /* position: relative;
+    border: solid 1px; */
+
+  display: block;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.innerPage {
+  // position: absolute;
+
+  display: block;
+  position: relative;
+  width: 100%;
+  height: auto;
+
+  .inner-page-title {
+    margin-top: 0;
+  }
+}
+
+
+.preview-map {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.copy-only {
+  display: block;
+  position: absolute;
+  left: -9999999px;
+  top: -9999999px;
+}

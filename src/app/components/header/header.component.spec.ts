@@ -1,27 +1,30 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeaderComponent } from './header.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { ClarityModule } from '@clr/angular';
-import { DisclaimerComponent } from '../disclaimer/disclaimer.component';
-import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
-import { ShowgraphComponent } from '../showgraph/showgraph.component';
-import { GraphvizcompComponent } from '../graphvizcomp/graphvizcomp.component';
+import { ClarityModule, ClrMainContainer } from '@clr/angular';
+import { Component } from '@angular/core';
+
+
+@Component({
+  selector: 'ukis-nested-component',
+  template: `<clr-main-container><ukis-header></ukis-header></clr-main-container>`
+})
+class NestedTestComponent { }
 
 describe('HeaderComponent', () => {
-  let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
+  let component: NestedTestComponent;
+  let fixture: ComponentFixture<NestedTestComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeaderComponent, DisclaimerComponent, LanguageSwitcherComponent, ShowgraphComponent, GraphvizcompComponent ],
-      imports: [TranslateModule.forRoot(), ClarityModule]
+      imports: [ClarityModule],
+      declarations: [HeaderComponent, NestedTestComponent, ClrMainContainer]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HeaderComponent);
+    fixture = TestBed.createComponent(NestedTestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

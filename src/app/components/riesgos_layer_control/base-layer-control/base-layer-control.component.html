@@ -1,0 +1,7 @@
+<div class="list-item" *ngFor="let group of layergroups | reverse;">
+  <riesgos-layerentry-group *ngIf="isLayerGroup(group)" [layersSvc]="layersSvc" [mapState]="mapStateSvc" [group]="group"
+    [layerGroups]="layergroups"></riesgos-layerentry-group>
+
+  <riesgos-layerentry *ngIf="!isLayerGroup(group)" [layerGroups]="layergroups" [expanded]="false" [layersSvc]="layersSvc"
+    [mapState]="mapStateSvc" [layer]="group" [group]="null"></riesgos-layerentry>
+</div>

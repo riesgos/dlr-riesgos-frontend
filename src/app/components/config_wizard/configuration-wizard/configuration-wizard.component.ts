@@ -14,14 +14,14 @@ import { WizardableProcess, isWizardableProcess } from '../wizardable_processes'
 @Component({
     selector: 'ukis-configuration-wizard',
     templateUrl: './configuration-wizard.component.html',
-    styleUrls: ['./configuration-wizard.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./configuration-wizard.component.scss']
 })
 export class ConfigurationWizardComponent implements OnInit {
 
     @Input() navExpanded = true;
     private focussedPageId$: Observable<string>;
     public processes$: Observable<WizardableProcess[]>;
+
     constructor(
         private store: Store<State>
     ) {

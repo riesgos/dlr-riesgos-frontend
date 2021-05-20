@@ -1,17 +1,21 @@
-<button class="btn btn-primary" (click)="showResetModal = true">
+<button class="btn btn-primary" (click)="showResetModal = true" title="{{ 'Reset' | translate }}">
     <clr-icon shape="refresh"></clr-icon>
-    <span style="padding-left: 7px;">{{'Reset' | translate}}</span>
+    <!-- <span style="padding-left: 7px;">{{'Reset' | translate}}</span> -->
 </button>
 
-<button class="btn btn-primary" (click)="showStoreModal = true">
-    <clr-icon shape="download"></clr-icon>
-    <span style="padding-left: 7px;">{{'Save' | translate}}</span>
+<button class="btn btn-primary" (click)="showStoreModal = true" title="{{ 'Save' | translate }}">
+    <clr-icon shape="download-cloud"></clr-icon>
+    <!-- <span style="padding-left: 7px;">{{'Save' | translate}}</span> -->
 </button>
 
-<button class="btn btn-primary" (click)="showRestoreModal = true">
-    <clr-icon shape="upload"></clr-icon>
-    <span style="padding-left: 7px;">{{'Restore' | translate}}</span>
+<button class="btn btn-primary" (click)="showRestoreModal = true" title="{{ 'Restore' | translate }}">
+    <clr-icon shape="upload-cloud"></clr-icon>
+    <!-- <span style="padding-left: 7px;">{{'Restore' | translate}}</span> -->
 </button>
+
+<app-showgraph></app-showgraph>
+
+<ukis-print *ngIf="isRiesgos2"></ukis-print>
 
 
 <clr-modal [(clrModalOpen)]="showResetModal" [clrModalStaticBackdrop]="false">
@@ -22,8 +26,8 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="showResetModal = false">{{'Cancel' | translate}}</button>
         <button type="button" class="btn btn-primary" (click)="onResetClicked()">{{'Reset' | translate}}</button>
+        <button type="button" class="btn btn-outline" (click)="showResetModal = false">{{'Cancel' | translate}}</button>
     </div>
 </clr-modal>
 
@@ -42,8 +46,8 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="showStoreModal = false">{{'Cancel' | translate}}</button>
         <button type="button" class="btn btn-primary" (click)="saveState()">{{'Store' | translate}}</button>
+        <button type="button" class="btn btn-outline" (click)="showStoreModal = false">{{'Cancel' | translate}}</button>
     </div>
 </clr-modal>
 
@@ -62,7 +66,7 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="cancelRestoreState()">{{'Cancel' | translate}}</button>
         <button type="button" class="btn btn-primary" (click)="restoreState()" [disabled] = "!(stateToBeRestored$ | async)" >{{'Restore' | translate}}</button>
+        <button type="button" class="btn btn-outline" (click)="cancelRestoreState()">{{'Cancel' | translate}}</button>
     </div>
 </clr-modal>

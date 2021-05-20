@@ -1,6 +1,9 @@
 
 
-
+/**
+ * sum_i (D_i * nr_buildings_i / nr_buildings_total)
+ * @param damageStates: nr. buildings per damage state
+ */
 export function weightedDamage(damageStates: number[]) {
     const maxDamage = damageStates.length;
     const nrBuildingsTotal = damageStates.reduce((carry, current) => carry + current, 0);
@@ -8,7 +11,19 @@ export function weightedDamage(damageStates: number[]) {
     for (let d = 0; d < maxDamage; d++) {
         weightedSum += d * damageStates[d] / nrBuildingsTotal;
     }
-    return (1 / maxDamage) * weightedSum;
+    return weightedSum;
+}
+
+
+export function greenYellowRedRange(startVal: number, endVal: number, currentVal): [number, number, number] {
+  const halfwayPoint = startVal + ((endVal - startVal) / 2);
+  if (currentVal < halfwayPoint) {
+    const degree = (currentVal - startVal) / (halfwayPoint - startVal);
+    return [degree * 255, 255, 0];
+  } else {
+    const degree = (currentVal - halfwayPoint) / (endVal - halfwayPoint);
+    return [255, (1 - degree) * 255, 0];
+  }
 }
 
 

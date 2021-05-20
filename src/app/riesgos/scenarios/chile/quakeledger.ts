@@ -5,13 +5,11 @@ import {
 } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerProduct, BboxLayerProduct, BboxLayerDescription } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '@dlr-eoc/services-ogc';
-import { toDecimalPlaces, redGreenRange, linInterpolate, linInterpolateXY } from 'src/app/helpers/colorhelpers';
+import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '@dlr-eoc/utils-ogc';
+import { toDecimalPlaces, redGreenRange, linInterpolateXY } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { createOlFeature } from 'src/app/helpers/others';
-import { feature } from '@turf/helpers';
 
 
 export class InputBoundingbox implements BboxUconfProduct, BboxLayerProduct, WpsData {
@@ -22,6 +20,7 @@ export class InputBoundingbox implements BboxUconfProduct, BboxLayerProduct, Wps
     constructor() {
         this.description = {
             id: 'input-boundingbox',
+            title: '',
             name: 'eq-selection: boundingbox',
             type: 'bbox',
             icon: 'earthquake',
@@ -34,7 +33,7 @@ export class InputBoundingbox implements BboxUconfProduct, BboxLayerProduct, Wps
             wizardProperties: {
                 name: 'AOI',
                 fieldtype: 'bbox',
-                description: 'Please select an area of interest'
+                description: 'Please select an area of interest',
             },
         },
         this.value = null;
@@ -45,6 +44,7 @@ export const mmin: StringUconfProduct & WpsData = {
     uid: 'mmin',
     description: {
         id: 'mmin',
+        title: '',
         type: 'literal',
         wizardProperties: {
             name: 'mmin',
@@ -62,6 +62,7 @@ export const mmax: StringUconfProduct & WpsData = {
     uid: 'mmax',
     description: {
         id: 'mmax',
+        title: '',
         type: 'literal',
         wizardProperties: {
             name: 'mmax',
@@ -79,6 +80,7 @@ export const zmin: StringUconfProduct & WpsData = {
     uid: 'zmin',
     description: {
         id: 'zmin',
+        title: '',
         defaultValue: '0',
         type: 'literal',
         wizardProperties: {
@@ -95,6 +97,7 @@ export const zmax: StringUconfProduct & WpsData = {
     uid: 'zmax',
     description: {
         id: 'zmax',
+        title: '',
         defaultValue: '100',
         type: 'literal',
         wizardProperties: {
@@ -112,6 +115,7 @@ export const p: Product & WpsData = {
     uid: 'p',
     description: {
         id: 'p',
+        title: '',
         description: 'p',
         type: 'literal',
         reference: false,
@@ -125,6 +129,7 @@ export const etype: StringSelectUconfProduct & WpsData = {
     uid: 'etype',
     description: {
         id: 'etype',
+        title: '',
         description: 'etype',
         defaultValue: 'expert', // 'deaggregation',
         reference: false,
@@ -144,6 +149,7 @@ export const tlon: Product & WpsData = {
     uid: 'tlon',
     description: {
         id: 'tlon',
+        title: '',
         description: 'longitude [decimal degrees]',
         defaultValue: '-71.5',
         reference: false,
@@ -157,6 +163,7 @@ export const tlat: Product & WpsData = {
     uid: 'tlat',
     description: {
         id: 'tlat',
+        title: '',
         description: 'latitude [decimal degrees]',
         defaultValue: '-33.1',
         reference: false,
@@ -171,8 +178,10 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
     uid: 'QuakeledgerProcess_selectedRows',
     description: {
         id: 'selectedRows',
+        title: '',
         icon: 'earthquake',
         name: 'available earthquakes',
+        description: 'Catalog data',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
@@ -199,25 +208,20 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                         }),
                         stroke: new olStroke({
                             color: [r, g, b, 1]
-                        }),
-                        text: new olText({
-                            text: text
                         })
                     })
                 });
             },
             text: (properties) => {
-                let text = `<h3>Terremotos disponibles</h3>`;
+                let text = `<h3>{{ Available_earthquakes }}</h3>`;
                 const selectedProperties = {
-                    Magnitud: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
-                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
-                    // Latitude: toDecimalPlaces(1, 1),
-                    // Longitude: toDecimalPlaces(2, 1),
+                    '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    '{{ Depth }}': toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                     Id: properties['origin.publicID'],
                 };
                 if (properties['origin.time.value'] && etype.value === 'observed') {
                     const date = new Date(Date.parse(properties['origin.time.value']));
-                    selectedProperties['Date'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                    selectedProperties['{{ Date }}'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
                 }
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {
@@ -233,7 +237,7 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 6.0,
+                        'magnitude.mag.value': 3.0,
                         'origin.depth.value': 40.0
                     },
                     "geometry": {
@@ -241,7 +245,46 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Terremoto<br/>Radius: magnitud<br/>color: profundidad'
+                text: 'Magnitude 3, depth 40'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 8.0,
+                        'origin.depth.value': 40.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'Magnitude 8, depth 40'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 3.0,
+                        'origin.depth.value': 20.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'Magnitude 3, depth 20'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 8.0,
+                        'origin.depth.value': 20.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'Magnitude 8, depth 20'
             }]
         }
     },
@@ -271,9 +314,10 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
 
         this.wizardProperties = {
             shape: 'earthquake',
-            providerName: 'Helmholtz Centre Potsdam',
-            providerUrl: 'https://www.gfz-potsdam.de/en/'
+            providerName: 'GFZ',
+            providerUrl: 'https://www.gfz-potsdam.de/en/',
+            wikiLink: 'quakeledger'
         };
     }
 
-};
+}

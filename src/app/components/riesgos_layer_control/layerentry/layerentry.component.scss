@@ -1,0 +1,17 @@
+.title {
+  cursor: pointer;
+}
+
+.head {
+  border-radius: 15px;
+  padding: 0 5px 0 5px;
+}
+
+.item-title-replacement:empty {
+  display: none;
+}
+
+.tabsbody {
+  overflow: hidden;
+  word-break: break-all;
+}

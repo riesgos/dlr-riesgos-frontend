@@ -1,17 +1,18 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsData } from '@dlr-eoc/services-ogc';
+import { WpsData } from '@dlr-eoc/utils-ogc';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import { Feature as olFeature } from 'ol';
 import { HttpClient } from '@angular/common/http';
-import { Bardata, createBigBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBigBarchart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
-import { Cache } from '@dlr-eoc/services-ogc';
+import { Cache } from '@dlr-eoc/utils-ogc';
 
 export const lonmin: Product & WpsData = {
   uid: 'lonmin',
   description: {
     id: 'lonmin',
+    title: '',
     type: 'literal',
     reference: false,
     defaultValue: '-71.8'
@@ -24,6 +25,7 @@ export const lonmax: Product & WpsData = {
   uid: 'lonmax',
   description: {
     id: 'lonmax',
+    title: '',
     type: 'literal',
     reference: false,
     defaultValue: '-71.4'
@@ -36,6 +38,7 @@ export const latmin: Product & WpsData = {
   uid: 'latmin',
   description: {
     id: 'latmin',
+    title: '',
     type: 'literal',
     reference: false,
     defaultValue: '-33.2'
@@ -48,6 +51,7 @@ export const latmax: Product & WpsData = {
   uid: 'latmax',
   description: {
     id: 'latmax',
+    title: '',
     type: 'literal',
     reference: false,
     defaultValue: '-33.0'
@@ -60,6 +64,7 @@ export const schema: Product & WpsData = {
   uid: 'schema',
   description: {
     id: 'schema',
+    title: '',
     defaultValue: 'SARA_v1.0',
     reference: false,
     type: 'literal'
@@ -73,6 +78,7 @@ export const assettype: Product & WpsData = {
   uid: 'assettype',
   description: {
     id: 'assettype',
+    title: '',
     defaultValue: 'res',
     reference: false,
     type: 'literal',
@@ -85,6 +91,7 @@ export const querymode: Product & WpsData = {
   uid: 'querymode',
   description: {
     id: 'querymode',
+    title: '',
     // options: ['intersects', 'within'],
     defaultValue: 'intersects',
     reference: false,
@@ -98,6 +105,7 @@ export const initialExposureRef: WpsData & Product = {
   uid: 'initial_Exposure_Ref',
   description: {
     id: 'selectedRowsGeoJson',
+    title: '',
     type: 'complex',
     reference: true,
     format: 'application/json'
@@ -109,6 +117,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
   uid: 'initial_Exposure',
   description: {
     id: 'selectedRowsGeoJson',
+    title: '',
     type: 'complex',
     reference: false,
     icon: 'building',
@@ -134,7 +143,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
             total += nrBuildings;
         }
 
-        const dr = weightedDamage(Object.values(counts));
+        const dr = weightedDamage(Object.values(counts)) / 4;
 
         let r: number;
         let g: number;
@@ -152,26 +161,31 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
           }),
           stroke: new olStroke({
             color: [r, g, b, 1],
-            witdh: 2
+            width: 2
           })
         });
       },
       text: (props: object) => {
 
-        const taxonomies = props['expo']['Taxonomy'];
-        const buildings = props['expo']['Buildings'];
-        const keys = Object.keys(taxonomies);
-        const barchartData: Bardata[] = [];
-        for (const key of keys) {
-          barchartData.push({
-            label: taxonomies[key],
-            value: buildings[key]
-          });
+        const expo = props['expo'];
+
+        const data: BarData[] = [];
+        for (let i = 0; i < Object.values(expo.Taxonomy).length; i++) {
+            const tax = expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
+            const bld = expo['Buildings'][i];
+            if (!data.map(dp => dp.label).includes(tax)) {
+                data.push({
+                  label: tax,
+                  value: bld
+                });
+            } else {
+              data.find(dp => dp.label === tax).value += bld;
+            }
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBigBarchart(anchor, barchartData, 400, 300, 'taxonomy', 'buildings');
-        return `<h4>Exposición</h4>${anchor.innerHTML}`;
+        const anchorUpdated = createBigBarchart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
+        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}`;
       }
     }
   },
@@ -197,6 +211,3 @@ export class ExposureModel extends WpsProcess {
     );
   }
 }
-
-
-

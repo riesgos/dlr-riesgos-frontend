@@ -1,4 +1,5 @@
-<clr-main-container [ngClass]="{'floating':ui.floating}">
+
+<clr-main-container [class]="theme$ | async">
   <ukis-global-alert *ngIf="ui.alert" [(alert)]="ui.alert"></ukis-global-alert>
   <ukis-global-progress *ngIf="ui.progress" [(progress)]="ui.progress"></ukis-global-progress>
 
@@ -8,12 +9,8 @@
     <a routerLink="/documentation" routerLinkActive="active" class="nav-link nav-text header-nav-el">{{'Documentation' | translate}}</a>
     <a routerLink="/licenses" routerLinkActive="active" class="nav-link nav-text header-nav-el">{{'Licenses' | translate}}</a>
   </ukis-header>
-
   <router-outlet></router-outlet>
-
-  <!-- <ukis-global-footer *ngIf="ui.footer">
-    <p>This is the Footer</p>
-    <router-outlet name="footer"></router-outlet>
-  </ukis-global-footer> -->
-
 </clr-main-container>
+
+
+

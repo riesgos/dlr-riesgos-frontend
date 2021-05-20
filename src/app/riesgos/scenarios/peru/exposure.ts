@@ -1,11 +1,11 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { Bardata, createBarchart, createBigBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBarchart, createBigBarchart } from 'src/app/helpers/d3charts';
 import { weightedDamage, redGreenRange, greenRedRange } from 'src/app/helpers/colorhelpers';
 
 
@@ -13,6 +13,7 @@ export const lonminPeru: Product & WpsData = {
   uid: 'lonmin',
   description: {
     id: 'lonmin',
+    title: 'lonmin',
     type: 'literal',
     reference: false,
     defaultValue: '-88'
@@ -25,6 +26,7 @@ export const lonmaxPeru: Product & WpsData = {
   uid: 'lonmax',
   description: {
     id: 'lonmax',
+    title: 'lonmax',
     type: 'literal',
     reference: false,
     defaultValue: '-66'
@@ -37,6 +39,7 @@ export const latminPeru: Product & WpsData = {
   uid: 'latmin',
   description: {
     id: 'latmin',
+    title: '',
     type: 'literal',
     reference: false,
     defaultValue: '-21'
@@ -49,6 +52,7 @@ export const latmaxPeru: Product & WpsData = {
   uid: 'latmax',
   description: {
     id: 'latmax',
+    title: '',
     type: 'literal',
     reference: false,
     defaultValue: '-0'
@@ -61,6 +65,7 @@ export const schemaPeru: Product & WpsData = {
   uid: 'schema',
   description: {
     id: 'schema',
+    title: '',
     defaultValue: 'SARA_v1.0',
     reference: false,
     type: 'literal'
@@ -74,6 +79,7 @@ export const assettypePeru: Product & WpsData = {
   uid: 'assettype',
   description: {
     id: 'assettype',
+    title: '',
     defaultValue: 'res',
     reference: false,
     type: 'literal',
@@ -86,6 +92,7 @@ export const querymodePeru: Product & WpsData = {
   uid: 'querymode',
   description: {
     id: 'querymode',
+    title: '',
     // options: ['intersects', 'within'],
     defaultValue: 'intersects',
     reference: false,
@@ -99,6 +106,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
   uid: 'AssetmasterProcess_Exposure_Peru',
   description: {
     id: 'selectedRowsGeoJson',
+    title: '',
     icon: 'building',
     type: 'complex',
     reference: false,
@@ -124,7 +132,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
             total += nrBuildings;
         }
 
-        const dr = weightedDamage(Object.values(counts));
+        const dr = weightedDamage(Object.values(counts)) / 4;
 
         let r: number;
         let g: number;
@@ -148,21 +156,46 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
       },
       text: (props: object) => {
 
-        const taxonomies = props['expo']['Taxonomy'];
-        const buildings = props['expo']['Buildings'];
-        const keys = Object.keys(taxonomies);
-        const barchartData: Bardata[] = [];
-        for (const key of keys) {
-          barchartData.push({
-            label: taxonomies[key],
-            value: buildings[key]
-          });
+        const expo = props['expo'];
+
+        const data: BarData[] = [];
+        for (let i = 0; i < Object.values(expo.Taxonomy).length; i++) {
+            const tax = expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
+            const bld = expo['Buildings'][i];
+            if (!data.map(dp => dp.label).includes(tax)) {
+                data.push({
+                  label: tax,
+                  value: bld
+                });
+            } else {
+              data.find(dp => dp.label === tax).value += bld;
+            }
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBigBarchart(anchor, barchartData, 400, 300, 'taxonomy', 'buildings');
-        return `<h4>Exposición </h4>${anchor.innerHTML}`;
-      }
+        const anchorUpdated = createBigBarchart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
+        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}`;
+      },
+      legendEntries: [{
+        feature: {
+          "type": "Feature",
+          "properties": {
+            'expo': {
+              Damage: ['D0', 'D1', 'D2', 'D3', 'D4'],
+              Buildings: [0, 0, 0, 0]
+            }
+          },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [ [
+                [ 5.627918243408203, 50.963075942052164 ],
+                [ 5.627875328063965, 50.958886259879264 ],
+                [ 5.635471343994141, 50.95634523633128 ],
+                [ 5.627918243408203, 50.963075942052164 ] ] ]
+          }
+        },
+        text: 'Exposure'
+      }],
     }
   },
   value: null
@@ -189,7 +222,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
     );
     this.wizardProperties =  {
       shape: 'building',
-      providerName: 'Helmholtz Centre Potsdam',
+      providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
       wikiLink: 'Vulnerability'
     };

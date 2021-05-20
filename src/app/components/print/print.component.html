@@ -1,0 +1,71 @@
+<button class="btn btn-primary" (click)="show = true" title="{{ 'Print' | translate }}">
+  <clr-icon shape="printer"></clr-icon>
+</button>
+
+<clr-modal [(clrModalOpen)]="show" [clrModalClosable]="true" [clrModalSize]="'xl'">
+  <h3 class="modal-title"> {{ 'Print preview' | translate }}</h3>
+  <div class="modal-body">
+    <div class="clr-row">
+      <div class="clr-col-4">
+
+        <form [formGroup]="pdfParametersForm" clrForm [clrLayout]="'compact'" [clrLabelSize]="3">
+
+          <clr-input-container>
+            <label>{{ 'Map title' | translate }}</label>
+            <input clrInput type="text" formControlName="title" />
+          </clr-input-container>
+
+          <clr-textarea-container>
+            <label>{{ 'Description' | translate }}</label>
+            <textarea clrTextarea type="text" formControlName="description"></textarea>
+          </clr-textarea-container>
+
+          <clr-control-container>
+            <label>{{ 'Format' | translate }}:</label>
+            <select type="text" formControlName="format" clrControl>
+              <option *ngFor="let format of formatOptions" [value]="format">{{format}}</option>
+            </select>
+            <clr-control-helper></clr-control-helper>
+            <clr-control-error *clrIfError="'required'">{{ 'This is a required field' | translate }}</clr-control-error>
+          </clr-control-container>
+
+          <clr-control-container>
+            <label>{{ 'Orientation' | translate }}:</label>
+            <select type="text" formControlName="orientation" clrControl>
+              <option *ngFor="let orientation of orientationOptions" [value]="orientation">{{orientation | translate}}</option>
+            </select>
+            <clr-control-helper></clr-control-helper>
+            <clr-control-error *clrIfError="'required'">{{ 'This is a required field' | translate }}</clr-control-error>
+          </clr-control-container>
+
+          <clr-control-container>
+            <label>{{ 'Resolution' | translate }}:</label>
+            <select type="text" formControlName="resolution" clrControl>
+              <option *ngFor="let resolution of resolutionOptions" [value]="resolution">{{resolution}}</option>
+            </select>
+            <clr-control-helper>DPI</clr-control-helper>
+            <clr-control-error *clrIfError="'required'">{{ 'This is a required field' | translate }}</clr-control-error>
+          </clr-control-container>
+
+          <!-- Submitting here was also triggered for exportToPdf -->
+          <button *ngIf="!isRendering" [disabled]="!pdfParametersForm.valid" class="btn btn-primary"
+            (click)="updateMap()">Update page</button>
+
+          <span class="spinner-container" *ngIf="isRendering">
+            <clr-spinner clrMedium clrAssertive>{{ 'Rendering...' | translate }}</clr-spinner>
+            <span class="spinner-text">{{ 'Map is being rendered in' | translate }} {{pdfParametersForm.controls.resolution.value}} DPI</span>
+          </span>
+
+          <button *ngIf="!isRendering" [disabled]="!pdfParametersForm.valid" (click)="exportToPdf()"
+            class="btn btn-primary">{{ 'Print page' | translate }}
+          </button>
+        </form>
+      </div>
+      <div class="clr-col-8">
+        <ukis-scaler [width]=previewWidth [height]=previewHeight>
+          <ukis-print-map (mapRendered)="onMapRendered()"></ukis-print-map>
+        </ukis-scaler>
+      </div>
+    </div>
+  </div>
+</clr-modal>

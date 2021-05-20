@@ -10,6 +10,7 @@ import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from './scenarios/c
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
 import { lonmin, lonmax, latmin, latmax, assettype, schema, querymode, initialExposure } from './scenarios/chile/exposure';
 import { assetcategory, losscategory, taxonomies, fragilityRef } from './scenarios/chile/modelProp';
+import { PhysicalImpactAssessment, physicalImpact } from './scenarios/chile/pia';
 import { ExposureModelPeru, lonminPeru, lonmaxPeru, latminPeru,
   latmaxPeru, assettypePeru, schemaPeru, querymodePeru, initialExposurePeru } from './scenarios/peru/exposure';
 import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
@@ -40,11 +41,11 @@ import { vei, direction } from './scenarios/ecuador/lahar';
 import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './scenarios/ecuador/vulnerability';
 import { HttpClient } from '@angular/common/http';
 import { RiesgosScenarioMetadata } from './riesgos.state';
-import { ConfigService, Config } from '../services/config.service';
-import { Cache } from '@dlr-eoc/services-ogc';
-import { FakeCache } from '@dlr-eoc/services-ogc';
-import { IndexDbCache } from '../services/indexDbCache';
-import { RemoteCache } from '../services/remoteCache';
+import { ConfigService, Config } from '../services/config/config.service';
+import { Cache } from '@dlr-eoc/utils-ogc';
+import { FakeCache } from '@dlr-eoc/utils-ogc';
+import { IndexDbCache } from '../services/cache/indexDbCache';
+import { RemoteCache } from '../services/cache/remoteCache';
 
 
 
@@ -112,15 +113,15 @@ export class RiesgosService {
     switch (scenario) {
       case 'c1':
         processes = [
-          new ExposureSelection(this.httpClient, cache),
           new QuakeLedger(this.httpClient, cache),
           EqSelection,
           new Shakyground(this.httpClient, cache),
+          new ExposureSelection(this.httpClient, cache),
           new EqDeus(this.httpClient, cache),
           new TsService(this.httpClient, cache),
           new TsDeus(this.httpClient, cache),
           new EqReliability(this.httpClient, cache),
-          // PhysicalImpactAssessment
+          // new PhysicalImpactAssessment(this.httpClient)
         ];
         products = [
           modelChoice,
@@ -140,10 +141,10 @@ export class RiesgosService {
         break;
       case 'p1':
         processes = [
-          new ExposureModelPeru(this.httpClient, cache),
           new QuakeLedgerPeru(this.httpClient, cache),
           EqSelectionPeru,
           new ShakygroundPeru(this.httpClient, cache),
+          new ExposureModelPeru(this.httpClient, cache),
           new EqDeusPeru(this.httpClient, cache),
           new TsServicePeru(this.httpClient, cache),
           new TsDeusPeru(this.httpClient, cache),

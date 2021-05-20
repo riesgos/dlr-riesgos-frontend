@@ -1,0 +1,10 @@
+<clr-dropdown>
+    <button class="btn btn-outline" aria-label="dropdown" clrDropdownTrigger>
+        {{currentTheme.displayName | translate}}
+        <clr-icon shape="caret down"></clr-icon>
+    </button>
+    <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+        <a *ngFor="let theme of themes" (click)="selectTheme(theme.name)" 
+        [ngClass]="{'active': theme.name==currentTheme.name}" clrDropdownItem>{{theme.displayName | translate}}</a>
+    </clr-dropdown-menu>
+</clr-dropdown>

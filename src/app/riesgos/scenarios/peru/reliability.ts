@@ -1,7 +1,7 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { vei } from '../ecuador/lahar';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { eqShakemapRefPeru } from './shakyground';
 import { Observable } from 'rxjs';
+import { greenYellowRedRange } from 'src/app/helpers/colorhelpers';
 
 
 
@@ -17,6 +18,7 @@ export const countryPeru: WpsData & Product = {
     uid: 'systemreliability_country_peru',
     description: {
         id: 'country',
+        title: '',
         defaultValue: 'chile',
         description: 'What country are we working in?',
         reference: false,
@@ -31,6 +33,7 @@ export const hazardEqPeru: WpsData & Product = {
     uid: 'systemreliability_hazard_eq_peru',
     description: {
         id: 'hazard',
+        title: '',
         defaultValue: 'earthquake',
         description: 'What hazard are we dealing with?',
         reference: false,
@@ -44,6 +47,7 @@ export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
     uid: 'systemreliability_damage_consumerareas_peru',
     description: {
         id: 'damage_consumer_areas',
+        title: '',
         format: 'application/vnd.geo+json',
         name: 'Damage to consumer areas',
         icon: 'router',
@@ -57,21 +61,7 @@ export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
                     probDisr = props['Prob_Disruption'];
                 }
 
-                let r, g, b;
-                if (probDisr <= 0.1) {
-                    r = 0;
-                    g = 255;
-                    b = 0;
-                } else if (probDisr <= 0.5) {
-                    const perc = ((probDisr - 0.5) / (0.1 - 0.5));
-                    r = 255 * perc;
-                    g = 255 * (1 - perc);
-                    b = 0;
-                } else {
-                    r = 255;
-                    g = 0;
-                    b = 0;
-                }
+                const [r, g, b] = greenYellowRedRange(0, 1, probDisr);
 
                 return new olStyle({
                   fill: new olFill({
@@ -86,10 +76,41 @@ export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
             text: (props: object) => {
                 const selectedProps = {
                     'Area': props['Area'],
-                    'Prob. of disruption': props['Prob_Disruption'],
+                    '{{ Prob_Interuption }}': props['Prob_Disruption'],
                 };
-                return createKeyValueTableHtml('Suministro eléctrico', selectedProps, 'medium');
-            }
+                return createKeyValueTableHtml('{{ PowerGrid }}', selectedProps, 'medium');
+            },
+            legendEntries: [{
+                feature: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    },
+                    properties: {Prob_Disruption: 0.1}
+                },
+                text: 'Prob. 0.1',
+            }, {
+                feature: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    },
+                    properties: {Prob_Disruption: 0.5}
+                },
+                text: 'Prob. 0.5',
+            }, {
+                feature: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    },
+                    properties: {Prob_Disruption: 0.9}
+                },
+                text: 'Prob. 0.9',
+            }]
         }
     },
     value: null

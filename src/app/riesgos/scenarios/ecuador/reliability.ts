@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
@@ -16,6 +16,7 @@ export const countryEcuador: WpsData & Product = {
     uid: 'systemreliability_country_ecuador',
     description: {
         id: 'country',
+        title: '',
         defaultValue: 'ecuador',
         description: 'What country are we working in?',
         reference: false,
@@ -30,6 +31,7 @@ export const hazardLahar: WpsData & Product = {
     uid: 'systemreliability_hazard_lahar',
     description: {
         id: 'hazard',
+        title: '',
         defaultValue: 'lahar',
         description: 'What hazard are we dealing with?',
         reference: false,
@@ -43,6 +45,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
     uid: 'systemreliability_damage_consumerareas',
     description: {
         id: 'damage_consumer_areas',
+        title: '',
         icon: 'router',
         format: 'application/vnd.geo+json',
         name: 'Damage to consumer areas',
@@ -127,11 +130,11 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
             }],
             text: (props: object) => {
                 const selectedProps = {
-                    'Nombre': props['Name'],
-                    'Población': props['population'],
-                    'Prob. de interrupción': props['Prob_Disruption'],
+                    '{{ Name }}': props['Name'],
+                    '{{ Population }}': props['population'],
+                    '{{ Prob_Interuption }}': props['Prob_Disruption'],
                 };
-                return createKeyValueTableHtml('Red eléctrica', selectedProps, 'medium');
+                return createKeyValueTableHtml('{{ PowerGrid }}', selectedProps, 'medium');
             }
         }
     },

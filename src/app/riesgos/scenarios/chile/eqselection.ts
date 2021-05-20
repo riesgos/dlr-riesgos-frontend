@@ -1,7 +1,7 @@
 import { FeatureSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { ProductTransformingProcess, ProcessStateTypes, Product, ExecutableProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from '@dlr-eoc/services-ogc';
+import { WpsData } from '@dlr-eoc/utils-ogc';
 import { Observable, of } from 'rxjs';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -16,13 +16,14 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct
     uid: 'eq_selectedRow',
     description: {
         id: 'selectedRow',
+        title: 'selectedRow',
         icon: 'earthquake',
-        options: {},
+        featureSelectionOptions: {},
         defaultValue: null,
         reference: false,
         type: 'complex',
         format: 'application/vnd.geo+json',
-        name: 'selected earthquake',
+        name: 'Selected_earthquake',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 return new olStyle({
@@ -33,16 +34,16 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct
                         }),
                         stroke: new olStroke({
                             color: 'white',
-                            witdh: 1
+                            width: 1
                         })
                     })
                 });
             },
             text: (properties: object) => {
-                let text = `<h3>Terremoto seleccionado</h3>`;
+                let text = `<h3>{{ Selected_earthquake }}</h3>`;
                 const selectedProperties = {
-                    Magnitud: toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
-                    Profundidad: toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
+                    '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                    '{{ Depth }}': toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                     // Latitude: toDecimalPlaces(1, 1),
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],
@@ -60,7 +61,7 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct
         },
         wizardProperties: {
             fieldtype: 'select',
-            name: 'Selected EQ'
+            name: 'SelectedEQ'
         }
     },
     value: null
@@ -71,6 +72,7 @@ export const selectedEq: WpsData & Product = {
     uid: 'EqSelection_quakeMLFile',
     description: {
         id: 'quakeMLFile',
+        title: '',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex'
@@ -109,7 +111,7 @@ export const EqSelection: WizardableProcess & ExecutableProcess & ProductTransfo
                     options[feature.id] = featureCollection([feature]);
                 }
 
-                userinputSelectedEq.description.options = options;
+                userinputSelectedEq.description.featureSelectionOptions = options;
                 userinputSelectedEq.description.defaultValue = [Object.values(options)[0]];
 
                 return [userinputSelectedEq];

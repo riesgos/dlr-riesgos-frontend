@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, WpsClient, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, WpsClient, Cache } from '@dlr-eoc/utils-ogc';
 import { selectedEq } from './eqselection';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -16,6 +16,7 @@ const lat: WpsData & Product = {
     uid: 'auto_lat',
     description: {
         id: 'lat',
+        title: 'lat',
         reference: false,
         type: 'literal',
     },
@@ -26,6 +27,7 @@ const lon: WpsData & Product = {
     uid: 'auto_lon',
     description: {
         id: 'lon',
+        title: '',
         reference: false,
         type: 'literal',
     },
@@ -36,6 +38,7 @@ const mag: WpsData & Product = {
     uid: 'auto_mag',
     description: {
         id: 'mag',
+        title: '',
         reference: false,
         type: 'literal',
     },
@@ -47,6 +50,7 @@ export const tsWms: WpsData & WmsLayerProduct = {
     uid: 'get_scenario_epiCenter',
     description: {
         id: 'epiCenter',
+        title: '',
         name: 'ts-wms',
         icon: 'tsunami',
         reference: false,
@@ -54,7 +58,7 @@ export const tsWms: WpsData & WmsLayerProduct = {
         type: 'literal',
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features[0] && fi.features[0].properties['GRAY_INDEX']) {
-                return createKeyValueTableHtml('Tsunami', {'mwh': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'});
+                return createKeyValueTableHtml('Tsunami', {'mwh': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'}, 'medium');
             }
         }
     },
@@ -87,6 +91,7 @@ export const tsShakemap: WpsData & Product = {
     uid: 'ts_shakemap',
     description: {
         id: 'tsunamap',
+        title: '',
         reference: true,
         type: 'complex',
         format: 'application/xml'
@@ -121,7 +126,7 @@ export class TsService implements WizardableProcess, ExecutableProcess {
     state: ProcessState;
 
     wizardProperties = {
-        providerName: 'Alfred Wegener Institute',
+        providerName: 'AWI',
         providerUrl: 'https://www.awi.de/en/',
         shape: 'tsunami' as 'tsunami',
         wikiLink: 'Tsunami'

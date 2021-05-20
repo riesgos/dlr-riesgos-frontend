@@ -1,0 +1,13 @@
+.modal-body {}
+
+.spinner-container {
+  top: 0.7rem;
+  position: relative;
+  padding-right: 0.5rem;
+
+  .spinner-text {
+    position: relative;
+    bottom: 0.6rem;
+    margin-left: 0.5rem;
+  }
+}

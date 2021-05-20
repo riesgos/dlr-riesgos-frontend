@@ -1,0 +1,12 @@
+<div class="preview-container">
+  <div #previewMap class="preview-map"></div>
+  <div class='fullPage' #fullPage [ngStyle]="{'width': pageWidth + 'px', 'height': pageHeight + 'px'}">
+    <div class="innerPage" #innerPage
+      [ngStyle]="{'width': innerPageWidth + 'px', 'height': innerPageHeight + 'px', 'margin-left': marginWidth + 'px', 'margin-top': marginHeight + 'px'}">
+      <h2 [ngStyle]="{'font-size': headerFontSize + 'rem'}" class="inner-page-title">{{ title }}</h2>
+      <canvas id="printCanvas" #printCanvas crossorigin="Anonymous"
+        [ngStyle]="{'width': mapWidth + 'px', 'height': mapHeight + 'px'}"></canvas>
+      <p [ngStyle]="{'font-size': fontSize + 'rem'}">{{ description }}</p>
+    </div>
+  </div>
+</div>

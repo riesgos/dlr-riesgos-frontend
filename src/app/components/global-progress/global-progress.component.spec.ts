@@ -1,24 +1,30 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GlobalProgressComponent } from './global-progress.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { ProgressService, IProgress } from './progress.service';
 import { ClarityModule } from '@clr/angular';
 
 describe('GlobalProgressComponent', () => {
   let component: GlobalProgressComponent;
   let fixture: ComponentFixture<GlobalProgressComponent>;
+  let progressSvc: ProgressService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GlobalProgressComponent ],
-      imports: [TranslateModule.forRoot(), ClarityModule]
+      imports: [ClarityModule],
+      declarations: [GlobalProgressComponent],
+      providers: [ProgressService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GlobalProgressComponent);
     component = fixture.componentInstance;
+    progressSvc = TestBed.inject(ProgressService);
+    component.progress = {
+      indeterminate: true
+    } as IProgress;
     fixture.detectChanges();
   });
 

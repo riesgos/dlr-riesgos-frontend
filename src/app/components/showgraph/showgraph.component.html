@@ -1,4 +1,7 @@
-<button class="btn btn-outline" (click)="showModal=true">Graph</button>
+<button class="btn btn-primary" (click)="showModal=true" title="{{ 'Graph' | translate}}">
+    <clr-icon shape="organization"></clr-icon>
+    <!-- <span style="padding-left: 7px;">{{ 'Graph' | translate }}</span> -->
+</button>
 
 
 <clr-modal [(clrModalOpen)]="showModal" [clrModalSize]="'xl'" style='z-index: 1000001;'>

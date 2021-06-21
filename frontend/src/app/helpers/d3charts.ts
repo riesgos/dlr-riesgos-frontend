@@ -7,6 +7,15 @@ export function createGroupedBarchart(
     anchorSelector: any, data: {[groupName: string]: BarData[]}, width: number, height: number, xLabel: string, yLabel: string
 ) {
 
+    let dataLength = 0;
+    for (const key in data) {
+        dataLength += data[key].length;
+    }
+    if (dataLength === 0) {
+        anchorSelector.innerHTML = '<p>--</p>';
+        return;
+    }
+
     // completing data: all groups must contain the same datasets
     const labels = [];
     for (const key in data) {
@@ -96,6 +105,15 @@ export interface BarData {
 export function createBarchart(
     anchorSelector: any, data: BarData[], width: number, height: number, xLabel: string, yLabel: string,
     xAxisAngle = 0, yAxisAngle = 0) {
+        
+        let dataLength = 0;
+        for (const dp of data) {
+            dataLength += dp.value;
+        }
+        if (dataLength === 0) {
+            anchorSelector.innerHTML = '<p>--</p>';
+            return;
+        }
 
         const newData = [{
             type: 'bar',
@@ -133,6 +151,15 @@ export function createBarchart(
 
 export function createBigBarchart(
     anchorSelector: any, data: BarData[], width: number, height: number, xLabel: string, yLabel: string) {
+
+        let dataLength = 0;
+        for (const dp of data) {
+            dataLength += dp.value;
+        }
+        if (dataLength === 0) {
+            anchorSelector.innerHTML = '<p>--</p>';
+            return;
+        }
 
         const newData = [{
             type: 'bar',
@@ -172,6 +199,11 @@ export function createBigBarchart(
 export function createConfusionMatrix(
     anchorSelector: any, data: number[][], width: number, height: number, xLabel: string, yLabel: string) {
 
+    if (data.length === 0) {
+        anchorSelector.innerHTML = '<p>--</p>';
+        return;
+    }
+    
     const newData = [{
         type: 'heatmap',
         z: data

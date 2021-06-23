@@ -482,6 +482,8 @@
     "DamageStatesTorres": "<p>Clasificación según Torres-Corredor et al. 2017 (http://dx.doi.org/10.18273/revbol.v39n2-2017005)</p><ul><li><b>D0:</b> Sin daño. Ausencia de daño</li><li><b>D1:</b> Daño leve</li><li><b>D2:</b> Daño moderado</li><li><b>D4:</b> Colapso / Destrucción</li></ul>",
     "BuildingTypesSara": "<p> Clasificación ajustada de SARA (Yepes-Estrada et al, 2017) </p><ul><li> <b> CR </b>: hormigón armado </li><li> <b> ER </b>: tierra apisonada reforzada </li><li> <b> MCF </b>: mampostería confinada </li><li> <b> MR </b>: mampostería reforzada </li><li> <b> MUR </b>: mampostería no reforzada </li><li> <b> S </b>: marco de momento de acero </li><li> <b> W </b>: madera </li><li> <b> UNK </b>: Desconocido </li></ul>",
 
-    "StatesNotComparable": "<p><b>Nota</b>: Los estados de daño para diferentes peligros (como terremotos y tsunamis, o lahares e inundaciones) no son comparables.</p>"
+    "StatesNotComparable": "<p><b>Nota</b>: Los estados de daño para diferentes peligros (como terremotos y tsunamis, o lahares e inundaciones) no son comparables.</p>",
+
+    "invalid filename": "Nombre de archivo inválido"
 }
 

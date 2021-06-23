@@ -2,6 +2,7 @@
 <clr-vertical-nav-group *ngFor="let process of processes$ | async" (clrVerticalNavGroupExpandedChange)="onBlockClicked($event, process)">
     
     <clr-icon [attr.shape]="process.wizardProperties.shape" [ngClass]="getClassForProcess(process.state.type)" clrVerticalNavIcon></clr-icon>
+    
 
     <div class="clr-row">
         <div class="clr-col-8" style="overflow: hidden;">

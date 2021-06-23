@@ -1,24 +1,25 @@
-.scenario-footer {
-  position: absolute;
-  background-color: #fff;
-  bottom: 0px;
-  height: 20%;
-}
+// .scenario-footer {
+//   position: absolute;
+//   background-color: #fff;
+//   bottom: 0px;
+//   height: 20%;
+// }
 
 .scenario-footer-inner {
   border-top: 1px solid #e5e5e5;
-  width: 100vw;
-  margin: 0 auto;
-  max-width: 80%;
   padding: 2em 0 0 0;
+
+  .consortium-logos {
+    width: 10%;
+    img {
+      width: 100%;
+    }
+  }
 }
 
 .scenario-footer-second {
   border-top: 1px solid #e5e5e5;
-  width: 100vw;
   text-align: right;
-  margin: 0 auto;
-  max-width: 80%;
 }
 
 

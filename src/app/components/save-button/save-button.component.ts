@@ -32,7 +32,7 @@ export class SaveButtonComponent implements OnInit {
     constructor(
         private store: Store<State>
     ) {
-        this.nameControl = new FormControl('Save state', [Validators.required]);
+        this.nameControl = new FormControl('Save state', [Validators.required, noSpecialChars]);
         this.isRiesgos2 = environment.isRiesgos2;
     }
 
@@ -111,4 +111,12 @@ export class SaveButtonComponent implements OnInit {
         return state$;
     }
 
+}
+
+
+function noSpecialChars(control: FormControl): { [key: string]: boolean } {
+    const nameRegexp: RegExp = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (control.value && nameRegexp.test(control.value)) {
+       return { invalidName: true };
+    }
 }

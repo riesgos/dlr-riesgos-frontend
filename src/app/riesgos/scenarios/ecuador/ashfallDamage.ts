@@ -11,12 +11,13 @@ import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
-import { BarData, createBarchart, createGroupedBarchart } from 'src/app/helpers/d3charts';
-import { weightedDamage, greenRedRange, toDecimalPlaces, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
-import { createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { weightedDamage, greenRedRange, toDecimalPlaces, yellowBlueRange } from 'src/app/helpers/colorhelpers';
+import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
+import { maxDamage$ } from '../chile/constants';
 
 
 
@@ -27,7 +28,7 @@ const ashfallLossProps: VectorLayerProperties = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value / 1000000);
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.5],
@@ -112,20 +113,29 @@ const ashfallTransitionProps: VectorLayerProperties = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = Array(4).fill(0);
-                let total = 0;
+                const I = props['transitions']['n_buildings'].length;
+                const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
+
+                const toStates = props['transitions']['to_damage_state'];
+                const fromStates = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
-                const states = props['transitions']['to_damage_state'];
-                for (let i = 0; i < states.length; i++) {
-                    const nr = nrBuildings[i];
-                    const state = states[i];
-                    counts[state] += nr;
-                    total += nr;
+
+                let sumTo = 0;
+                let sumFrom = 0;
+                let sumBuildings = 0;
+                for (let i = 0; i < I; i++) {
+                    sumBuildings += nrBuildings[i];
+                    sumTo += toStates[i] * nrBuildings[i];
+                    sumFrom += fromStates[i] * nrBuildings[i];
                 }
+                const meanStateFrom = sumFrom / sumBuildings;
+                const meanStateTo = sumTo / sumBuildings;
+
+                const weightedChange = (meanStateTo - meanStateFrom) / (4 - meanStateFrom);
 
                 let r; let g; let b;
                 if (total > 0) {
-                    [r, g, b] = greenRedRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
                     r = g = b = 0;
                 }
@@ -178,7 +188,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 0);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
                         }
                     }
                 }
@@ -337,7 +347,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                 }
 
                 const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
-                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Ashfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesTorres }}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Ashfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesTorres }}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

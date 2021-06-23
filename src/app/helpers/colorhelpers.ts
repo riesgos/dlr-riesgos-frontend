@@ -1,4 +1,4 @@
-
+import * as d3color from 'd3-color';
 
 /**
  * sum_i (D_i * nr_buildings_i / nr_buildings_total)
@@ -28,20 +28,62 @@ export function greenYellowRedRange(startVal: number, endVal: number, currentVal
 
 
 export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-    const degree = (currentVal - startVal) / (endVal - startVal);
-    const degreeTop = Math.max(Math.min(degree, 1), 0);
-    const hue = 110 * degreeTop;
+    const hue = linInterpolateXY(startVal, 0, endVal, 110, currentVal);
     const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
     return [rgb.r, rgb.g, rgb.b];
 }
 
 export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-    const degree = (currentVal - startVal) / (endVal - startVal);
-    const degreeTop = Math.max(Math.min(degree, 1), 0);
-    const hue = 110 * (1 - degreeTop);
+    const hue = linInterpolateXY(startVal, 110, endVal, 0, currentVal);
     const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
     return [rgb.r, rgb.g, rgb.b];
 }
+
+export function yellowBlueRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
+  const degree = (currentVal - startVal) / (endVal - startVal);
+  const rgb = scaleInterpolation(yellowBlueScale, degree);
+  return rgb;
+}
+
+export interface Scale {
+  [key: string]: [number, number, number];
+}
+
+export const yellowBlueScale: Scale = {
+  0.25: [237, 248, 177],
+  0.50: [127, 205, 187],
+  0.75: [44, 127, 184]
+};
+
+export function scaleInterpolation(scale: Scale, value: number, smooth = true): [number, number, number] {
+  const keys = Object.keys(scale);
+  const colors = Object.values(scale);
+  const nrKeys =  keys.length;
+  if (value < +keys[0]) {
+    return colors[0];
+  }
+  for (let i = 1; i < nrKeys; i++) {
+    const startKey = +keys[i - 1];
+    const endKey = +keys[i];
+    if (startKey <= value && value < endKey) {
+      if (!smooth) {
+        return colors[i];
+      }
+      const degree = (value - startKey) / (endKey - startKey);
+      const startColorRGB = colors[i - 1];
+      const endColorRGB = colors[i];
+      const startColorHSL = d3color.hsl(d3color.rgb(... startColorRGB));
+      const endColorHSL = d3color.hsl(d3color.rgb(... endColorRGB));
+      const h = linInterpolate(startColorHSL.h, endColorHSL.h, degree);
+      const s = linInterpolate(startColorHSL.s, endColorHSL.s, degree);
+      const l = linInterpolate(startColorHSL.l, endColorHSL.l, degree);
+      const rgb = d3color.rgb(d3color.hsl(h, s, l));
+      return [rgb.r, rgb.g, rgb.b];
+    }
+  }
+  return colors[nrKeys - 1];
+}
+
 
 export function ninetyPercentLowerThan(data: number[]): number {
     const total = data.reduce((carry, current) => carry + current, 0);
@@ -55,6 +97,36 @@ export function ninetyPercentLowerThan(data: number[]): number {
     }
     return data.length;
 }
+
+export function percentileValue(data: number[], percentile: number): number {
+  const sorted = data.sort();
+  let out = sorted[0];
+
+  const counts = {};
+  for (const val of sorted) {
+    if (counts[val]) {
+      counts[val] += 1;
+    } else {
+      counts[val] = 1;
+    }
+  }
+
+  const l = sorted.length;
+  let cuml = 0;
+  for (const val in counts) {
+    if (counts[val] !== undefined) {
+      const count = counts[val];
+      cuml += count;
+      const perc = cuml / l;
+
+      if (percentile <= perc) {
+        return out;
+      }
+      out = +val;
+    }
+  }
+}
+
 
 export function toDecimalPlaces(value: number, decimalPlaces: number): string {
     switch (typeof value) {
@@ -132,7 +204,7 @@ var twoPi = 2 * Math.PI;
  * @param {Array<number>} pixel A pixel in RGB space.
  * @return {Array<number>} A pixel in HCL space.
  */
-function rgb2hcl(pixel) {
+function rgb2hcl(pixel: [number, number, number]): [number, number, number] {
   var red = rgb2xyz(pixel[0]);
   var green = rgb2xyz(pixel[1]);
   var blue = rgb2xyz(pixel[2]);
@@ -167,7 +239,7 @@ function rgb2hcl(pixel) {
  * @param {Array<number>} pixel A pixel in HCL space.
  * @return {Array<number>} A pixel in RGB space.
  */
-function hcl2rgb(pixel) {
+function hcl2rgb(pixel: [number, number, number]): [number, number, number] {
   var h = pixel[0];
   var c = pixel[1];
   var l = pixel[2];

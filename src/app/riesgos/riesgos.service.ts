@@ -92,16 +92,6 @@ export class RiesgosService {
         title: 'Showcase Chile',
         preview: `assets/images/tsunami_en.jpg`,
         description: '',
-      }, {
-        id: 'e1',
-        title: 'Showcase Ecuador',
-        preview: `assets/images/lahar_en.jpg`,
-        description: '',
-      }, {
-        id: 'p1',
-        title: 'Showcase Peru',
-        preview: `assets/images/tsunami_en.jpg`,
-        description: '',
       }];
   }
 

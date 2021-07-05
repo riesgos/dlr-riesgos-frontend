@@ -139,6 +139,9 @@ This class and all relevant methods are documented with annotations that give Ja
 
 Once a WPS is available via the internet, you can register it in the frontend. This process differs between Riesgos 1.0 and 2.0. Within Riesgos 1.0 it is required to code the services name, url, and a few other properties in the frontend-source.
 
+
+Note: currently, the application only supports GeoJSON as vector-format, not GML. But work is underway to change that. 
+
 ##### Riesgos 1.0
 Adding a WPS into an existing scenario is a three step process. 
 
@@ -201,6 +204,22 @@ const greeting: WpsData & Product = {
     value: null // ... null, as of yet. But that value will be set by `MyGreeterService`
 };
 ```
+
+###### List of base-classes and interfaces
+
+ - Product
+   - BboxProduct
+   - VectorLayerProduct
+   - MultiVectorLayerProduct
+   - WmsLayerProduct
+   - StringUconfProduct
+   - StringSelectUconfProduct
+   - BboxUconfProduct
+   - FeatureSelectUconfProduct
+ - Process
+   - WpsProcess
+   - WizardableProcess
+
 
 ###### Registering service and products in the scenario
 Finally, for your service to be integrated into a scenario, it must be listed in the scenario's list of processes (and products).

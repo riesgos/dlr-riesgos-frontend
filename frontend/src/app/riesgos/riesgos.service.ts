@@ -46,6 +46,7 @@ import { Cache } from '@dlr-eoc/utils-ogc';
 import { FakeCache } from '@dlr-eoc/utils-ogc';
 import { IndexDbCache } from '../services/cache/indexDbCache';
 import { RemoteCache } from '../services/cache/remoteCache';
+import { elevation, gml, LocalService } from './scenarios/chile/localService';
 
 
 
@@ -122,6 +123,7 @@ export class RiesgosService {
           new TsDeus(this.httpClient, cache),
           new EqReliability(this.httpClient, cache),
           // new PhysicalImpactAssessment(this.httpClient)
+          new LocalService(this.httpClient)
         ];
         products = [
           modelChoice,
@@ -137,6 +139,7 @@ export class RiesgosService {
           damageConsumerAreas,
           tsDamage, tsTransition, tsUpdatedExposure,
           // physicalImpact
+          gml, elevation
         ];
         break;
       case 'p1':

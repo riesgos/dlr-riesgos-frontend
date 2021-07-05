@@ -54,7 +54,7 @@ export const mmin: StringUconfProduct & WpsData = {
         reference: false,
         defaultValue: '6.0',
     },
-    value: null
+    value: '6.0'
 };
 
 
@@ -313,7 +313,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
         );
 
         this.wizardProperties = {
-            shape: 'earthquake',
+            shape: 'bullseye',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             wikiLink: 'quakeledger'

@@ -41,6 +41,7 @@
             <clr-input-container>
                 <label for="name">{{'Name' | translate }}</label>
                 <input clrInput type="text" id="name" [formControl]="nameControl" />
+                <clr-control-error>{{ 'invalid filename' | translate }}</clr-control-error>
             </clr-input-container>
         </form>
 
@@ -62,11 +63,11 @@
                 <div class="centered">{{dropFieldText$ | async | translate}}</div>
             </div>
         </div>
-        
+
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="restoreState()" [disabled] = "!(stateToBeRestored$ | async)" >{{'Restore' | translate}}</button>
+        <button type="button" class="btn btn-primary" (click)="restoreState()" [disabled]="!(stateToBeRestored$ | async)">{{'Restore' | translate}}</button>
         <button type="button" class="btn btn-outline" (click)="cancelRestoreState()">{{'Cancel' | translate}}</button>
     </div>
 </clr-modal>

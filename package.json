@@ -7,7 +7,8 @@
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build:licenses": "npx license-checker --production --json --out ./src/assets/licenses.json"
   },
   "private": true,
   "dependencies": {
@@ -43,6 +44,7 @@
     "@turf/helpers": "^6.1.4",
     "@turf/turf": "^5.1.6",
     "@webcomponents/webcomponentsjs": "^2.0.0",
+    "d3-color": "^2.0.0",
     "d3-graphviz": "^2.6.1",
     "delaunator": "^4.0.1",
     "geojson": "^0.5.0",
@@ -82,6 +84,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~3.3.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "license-checker": "^25.0.1",
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",

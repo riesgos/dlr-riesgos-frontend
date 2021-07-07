@@ -10,7 +10,6 @@ import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from './scenarios/c
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
 import { lonmin, lonmax, latmin, latmax, assettype, schema, querymode, initialExposure } from './scenarios/chile/exposure';
 import { assetcategory, losscategory, taxonomies, fragilityRef } from './scenarios/chile/modelProp';
-import { PhysicalImpactAssessment, physicalImpact } from './scenarios/chile/pia';
 import { ExposureModelPeru, lonminPeru, lonmaxPeru, latminPeru,
   latmaxPeru, assettypePeru, schemaPeru, querymodePeru, initialExposurePeru } from './scenarios/peru/exposure';
 import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
@@ -46,7 +45,8 @@ import { Cache } from '@dlr-eoc/utils-ogc';
 import { FakeCache } from '@dlr-eoc/utils-ogc';
 import { IndexDbCache } from '../services/cache/indexDbCache';
 import { RemoteCache } from '../services/cache/remoteCache';
-
+import { elevation, gml, LocalService } from './scenarios/chile/localService';
+import { CigidenEqCatalogue, availableEarthquakes as cigidenAvailableEarthquakes, CigidenEqSimulation, damage, eqSelectionList } from './scenarios/chile2/cigidenEqService';
 
 
 @Injectable()
@@ -93,6 +93,11 @@ export class RiesgosService {
         preview: `assets/images/tsunami_en.jpg`,
         description: '',
       }, {
+        id: 'c2',
+        title: 'Chile CIGIDEN',
+        preview: `assets/images/tsunami_en.jpg`,
+        description: '',
+      }, {
         id: 'e1',
         title: 'Showcase Ecuador',
         preview: `assets/images/lahar_en.jpg`,
@@ -122,6 +127,7 @@ export class RiesgosService {
           new TsDeus(this.httpClient, cache),
           new EqReliability(this.httpClient, cache),
           // new PhysicalImpactAssessment(this.httpClient)
+          new LocalService(this.httpClient)
         ];
         products = [
           modelChoice,
@@ -137,7 +143,12 @@ export class RiesgosService {
           damageConsumerAreas,
           tsDamage, tsTransition, tsUpdatedExposure,
           // physicalImpact
+          gml, elevation
         ];
+        break;
+      case 'c2':
+        processes = [new CigidenEqCatalogue(this.httpClient, cache), new CigidenEqSimulation(this.httpClient, cache)];
+        products = [cigidenAvailableEarthquakes, eqSelectionList, damage];
         break;
       case 'p1':
         processes = [

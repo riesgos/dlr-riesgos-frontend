@@ -293,6 +293,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getCenter(scenario: string): [number, number] {
         switch (scenario) {
             case 'c1':
+            case 'c2':
                 return [-70.799, -33.990];
             case 'e1':
                 return [-78.4386, -0.6830];

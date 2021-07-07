@@ -1,7 +1,7 @@
 import { WpsProcess, ProcessStateAvailable, ProductTransformingProcess, Product, ProcessStateUnavailable } from '../../riesgos.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { Cache, WpsData } from '@dlr-eoc/utils-ogc';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { FeatureSelectUconfProduct, StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Observable, of } from 'rxjs';
 import { VectorLayerProduct } from '../../riesgos.datatypes.mappable';
@@ -56,11 +56,7 @@ export const eqSelectionList: StringSelectUconfProduct = {
 
 export class CigidenEqCatalogue extends WpsProcess implements WizardableProcess, ProductTransformingProcess {
 
-    wizardProperties = {
-        providerName: 'CIGIDEN',
-        providerUrl: 'https://cigiden.org',
-        shape: 'earthquake'
-    }
+    wizardProperties: WizardProperties;
 
     constructor(http: HttpClient, cache: Cache) {
         super(
@@ -76,6 +72,12 @@ export class CigidenEqCatalogue extends WpsProcess implements WizardableProcess,
             new ProcessStateAvailable(),
             cache
         );
+
+        this.wizardProperties = {
+            providerName: 'CIGIDEN',
+            providerUrl: 'https://cigiden.org',
+            shape: 'earthquake'
+        };
     }
 
     /**
@@ -192,11 +194,7 @@ export const damage: WpsData & VectorLayerProduct = {
 };
 
 export class CigidenEqSimulation extends WpsProcess implements WizardableProcess {
-    public wizardProperties = {
-        shape: 'earthquake',
-        providerName: 'CIGIDEN',
-        providerUrl: 'https://cigiden.org',
-    };
+    public wizardProperties: WizardProperties;
 
     constructor(http: HttpClient, cache: Cache) {
         super(
@@ -212,6 +210,12 @@ export class CigidenEqSimulation extends WpsProcess implements WizardableProcess
             new ProcessStateUnavailable(),
             cache
         );
+
+        this.wizardProperties = {
+            shape: 'earthquake',
+            providerName: 'CIGIDEN',
+            providerUrl: 'https://cigiden.org',
+        };
     }
 
     /**

@@ -63,10 +63,6 @@ export class AppComponent implements OnInit, OnDestroy {
           case 'c1':
           case 'c2':
             return 'Chile';
-          case 'e1':
-            return 'Ecuador';
-          case 'p1':
-            return 'Peru';
           default:
             const out = params.get('id') || '';
             return out;

@@ -295,10 +295,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             case 'c1':
             case 'c2':
                 return [-70.799, -33.990];
-            case 'e1':
-                return [-78.4386, -0.6830];
-            case 'p1':
-                return [-75.902, -11.490];
             default:
                 throw new Error(`Unknown scenario: ${scenario}`);
         }

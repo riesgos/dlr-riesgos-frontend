@@ -1,12 +1,12 @@
-import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
+import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { schemaPeru, initialExposurePeru } from './exposure';
 import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { VectorLayerProduct, VectorLayerProperties, MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { VectorLayerProperties, MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { createBarchart, BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
-import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { toDecimalPlaces, weightedDamage, greenRedRange, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './modelProp';
 import { eqShakemapRefPeru } from './shakyground';
@@ -14,10 +14,11 @@ import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
 import { switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import { maxDamage$ } from '../chile/constants';
 
 
 
@@ -38,7 +39,7 @@ const eqDamagePeruProps: VectorLayerProperties = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 3, props.loss_value / 1000000);
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.5],
@@ -121,20 +122,29 @@ const eqTransitionPeruProps: VectorLayerProperties = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = Array(5).fill(0);
-                let total = 0;
+                const I = props['transitions']['n_buildings'].length;
+                const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
+
+                const toStates = props['transitions']['to_damage_state'];
+                const fromStates = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
-                const states = props['transitions']['to_damage_state'];
-                for (let i = 0; i < states.length; i++) {
-                    const nr = nrBuildings[i];
-                    const state = states[i];
-                    counts[state] += nr;
-                    total += nr;
+
+                let sumTo = 0;
+                let sumFrom = 0;
+                let sumBuildings = 0;
+                for (let i = 0; i < I; i++) {
+                    sumBuildings += nrBuildings[i];
+                    sumTo += toStates[i] * nrBuildings[i];
+                    sumFrom += fromStates[i] * nrBuildings[i];
                 }
+                const meanStateFrom = sumFrom / sumBuildings;
+                const meanStateTo = sumTo / sumBuildings;
+
+                const weightedChange = (meanStateTo - meanStateFrom) / (5 - meanStateFrom);
 
                 let r; let g; let b;
                 if (total > 0) {
-                    [r, g, b] = greenRedRange(0, 5, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
                     r = g = b = 0;
                 }
@@ -187,7 +197,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 0);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
                         }
                     }
                 }
@@ -358,7 +368,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                     </ul>
                 `;
 
-                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}<br/>{{GroupsSimplified}}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}<br/>{{GroupsSimplified}}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

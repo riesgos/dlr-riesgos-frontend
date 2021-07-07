@@ -1,8 +1,8 @@
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WpsData } from '@dlr-eoc/utils-ogc';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, greenRedRange, weightedDamage } from 'src/app/helpers/colorhelpers';
-import { BarData, createBarchart, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
+import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqDamageM, eqUpdatedExposureRef } from './eqDeus';
 import { schema } from './exposure';
@@ -20,6 +20,7 @@ import { Cache } from '@dlr-eoc/utils-ogc';
 import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import { maxDamage$ } from './constants';
 
 
 export const tsDamage: VectorLayerProduct & WpsData & Product = {
@@ -35,7 +36,7 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value / 1000000 );
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$ );
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.5],
@@ -131,20 +132,29 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = Array(7).fill(0);
-                let total = 0;
+                const I = props['transitions']['n_buildings'].length;
+                const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
+
+                const toStates = props['transitions']['to_damage_state'];
+                const fromStates = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
-                const states = props['transitions']['to_damage_state'];
-                for (let i = 0; i < states.length; i++) {
-                    const nr = nrBuildings[i];
-                    const state = states[i];
-                    counts[state] += nr;
-                    total += nr;
+
+                let sumTo = 0;
+                let sumFrom = 0;
+                let sumBuildings = 0;
+                for (let i = 0; i < I; i++) {
+                    sumBuildings += nrBuildings[i];
+                    sumTo += toStates[i] * nrBuildings[i];
+                    sumFrom += fromStates[i] * nrBuildings[i];
                 }
+                const meanStateFrom = sumFrom / sumBuildings;
+                const meanStateTo = sumTo / sumBuildings;
+
+                const weightedChange = (meanStateTo - meanStateFrom) / (7 - meanStateFrom);
 
                 let r; let g; let b;
                 if (total > 0) {
-                    [r, g, b] = greenRedRange(0, 7, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
                     r = g = b = 0;
                 }
@@ -182,7 +192,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 0);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
                         }
                     }
                 }
@@ -362,7 +372,7 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
 
                 const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 
-                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}`; // <br/>{{GroupsSimplified}}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}{{StatesNotComparable}}`; // <br/>{{GroupsSimplified}}`;
             },
             summary: (value: FeatureCollection | FeatureCollection[]) => {
                 let features;

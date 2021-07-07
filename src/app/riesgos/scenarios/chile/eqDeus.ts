@@ -6,7 +6,7 @@ import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } fr
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { createBarchart, BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
-import { redGreenRange, ninetyPercentLowerThan, toDecimalPlaces, weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, weightedDamage, greenRedRange, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
@@ -19,7 +19,7 @@ import { Cache } from '@dlr-eoc/utils-ogc';
 import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
-
+import { maxDamage$ } from './constants';
 
 
 
@@ -39,7 +39,7 @@ export const damageProps: VectorLayerProperties = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value / 1000000);
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.5],
@@ -81,7 +81,7 @@ export const damageProps: VectorLayerProperties = {
             }, {
                 feature: {
                     "type": "Feature",
-                    "properties": {'loss_value': 1000000},
+                    "properties": {'loss_value': maxDamage$},
                     "geometry": {
                       "type": "Polygon",
                       "coordinates": [ [
@@ -94,7 +94,7 @@ export const damageProps: VectorLayerProperties = {
                 text: 'Loss 1000000 USD'
             }],
             text: (props: object) => {
-                return `<h4>{{ Loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4>{{ Loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / maxDamage$, 2)} M${props['loss_unit']}</p>`;
             },
             summary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
@@ -123,20 +123,31 @@ export const transitionProps: VectorLayerProperties = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = Array(5).fill(0);
-                let total = 0;
+
+                const I = props['transitions']['n_buildings'].length;
+                const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
+
+                const toStates = props['transitions']['to_damage_state'];
+                const fromStates = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
-                const states = props['transitions']['to_damage_state'];
-                for (let i = 0; i < states.length; i++) {
-                    const nr = nrBuildings[i];
-                    const state = states[i];
-                    counts[state] += nr;
-                    total += nr;
+
+                let sumTo = 0;
+                let sumFrom = 0;
+                let sumBuildings = 0;
+                for (let i = 0; i < I; i++) {
+                    sumBuildings += nrBuildings[i];
+                    sumTo += toStates[i] * nrBuildings[i];
+                    sumFrom += fromStates[i] * nrBuildings[i];
                 }
+                const meanStateFrom = sumFrom / sumBuildings;
+                const meanStateTo = sumTo / sumBuildings;
+
+                const weightedChange = (meanStateTo - meanStateFrom) / (5 - meanStateFrom);
+
 
                 let r; let g; let b;
                 if (total > 0) {
-                    [r, g, b] = greenRedRange(0, 5, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] =yellowBlueRange(0, 1, weightedChange);
                 } else {
                     r = g = b = 0;
                 }
@@ -189,7 +200,7 @@ export const transitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 0);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
                         }
                     }
                 }
@@ -360,7 +371,7 @@ const updatedExposureProps: VectorLayerProperties = {
                     </ul>
                 `;
 
-                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}<br/>{{GroupsSimplified}}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}<br/>{{GroupsSimplified}}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {

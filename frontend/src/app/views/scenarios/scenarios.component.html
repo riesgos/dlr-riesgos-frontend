@@ -44,7 +44,7 @@
   <div class="clr-row scenarios-view">
     <div class="center">
       <span>
-        <a href="http://riesgos.de/en/" target="_blank">
+        <a [href]="'https://riesgos.de/' + (translator.currentLang | lowercase)" target="_blank">
           <img [src]="'/assets/logos/riesgos_base_small_' + (translator.currentLang | lowercase) + '.svg'" alt="{{'website' | translate}}" style="height: 100px;">
         </a>
       </span>

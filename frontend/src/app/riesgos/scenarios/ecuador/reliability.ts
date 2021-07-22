@@ -154,8 +154,8 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             [damageConsumerAreasEcuador].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess',
             'Process for evaluating the reliability of infrastructure networks',
-            'http://91.250.85.221/wps/WebProcessingService',
-            '1.0.0',
+            'https://riesgos.52north.org/javaps/service',
+            '2.0.0',
             http,
             new ProcessStateUnavailable(),
             cache

@@ -128,8 +128,8 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
             [damageConsumerAreas].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess',
             'Process for evaluating the reliability of infrastructure networks',
-            'http://91.250.85.221/wps/WebProcessingService',
-            '1.0.0',
+            'https://riesgos.52north.org/javaps/service',
+            '2.0.0',
             http,
             new ProcessStateUnavailable(),
             cache

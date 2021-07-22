@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { PrintMapComponent } from './print-map.component';
+import { ScalerComponent } from './scaler.component';
 
-describe('PrintMapComponent', () => {
-  let component: PrintMapComponent;
-  let fixture: ComponentFixture<PrintMapComponent>;
+describe('ScalerComponent', () => {
+  let component: ScalerComponent;
+  let fixture: ComponentFixture<ScalerComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PrintMapComponent ]
+      declarations: [ ScalerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PrintMapComponent);
+    fixture = TestBed.createComponent(ScalerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,176 +1,170 @@
-import { Component, ViewChild, ElementRef, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { simpleMapToCanvas } from '@dlr-eoc/utils-maps';
-import { Paper, Orientation, PaperFormat } from '@dlr-eoc/utils-browser';
-import { PrintService, MapParameters, PrintInstruction } from '../print-service/print.service';
-import { Subscription } from 'rxjs';
+import { Component, ViewChild, ElementRef, OnDestroy, ViewEncapsulation, OnInit } from '@angular/core';
 
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { simpleMapToCanvas } from '@dlr-eoc/utils-maps';
+import { Paper, Orientation, PaperFormat, downloadUrl } from '@dlr-eoc/utils-browser';
+
+import { PrintService, PrintLegendImage, ConcreteMapParameters, PrintingComponent } from '../print-service/print.service';
+
+import { Observable, Subscription } from 'rxjs';
 // NOTE: jsPDF has an 'optional' dependency on `html2canvas`. This dependency is required for `html`. We need to npm-install this manually.
 // And it gets worse: since jsPDF tries to load that dependency per UML dynamically, it must be attached to `window`. Ugh.
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
-// @ts-ignore
-window.html2canvas = html2canvas;
+import domtoimage from 'dom-to-image';
 
 
+
+
+
+/**
+ * A printable map.
+ * Printing happens after instructions from print-service.
+ * Configuration of print-parameters and print-preview happen in PrintComponent.
+ */
 @Component({
   selector: 'ukis-print-map',
   templateUrl: './print-map.component.html',
-  styleUrls: ['./print-map.component.scss']
+  styleUrls: ['./print-map.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
-export class PrintMapComponent implements OnDestroy {
+export class PrintMapComponent implements OnDestroy, PrintingComponent, OnInit {
 
   public title = 'Some title';
   public description = 'Some description';
   public headerFontSize = 1.0;
-  public fontSize = 0.7;
-  public pageWidth = 600;
-  public pageHeight = 400;
-  public innerPageWidth = 480;
-  public innerPageHeight = 320;
-  public mapWidth = 480;
-  public mapHeight = 290;
+  public fontSize = 0.4;
+  public pageWidth = 600;  // includes margin
+  public pageHeight = 400; // includes margin
+  public innerPageWidth = 480;  // without margin
+  public innerPageHeight = 320; // without margin
+  public totalMapWidth = 480;  //  includes legend
+  public totalMapHeight = 290;  // includes legend
+  public mapWidth = 432;   // without legend
+  public mapHeight = 290;  // without legend
   public marginWidth = 60;
   public marginHeight = 40;
+  public legendEntries: PrintLegendImage[] = [];
+  public resolution = 72;
+  public kmPerCmPaper: number;
+  public rotationDegrees = 0;
 
-  @ViewChild('fullPage', { static: true }) fullPageEl: ElementRef<HTMLCanvasElement>;
-  @ViewChild('innerPage', { static: true }) innerPageEl: ElementRef<HTMLCanvasElement>;
-  @ViewChild('printCanvas', { static: true }) printCanvasEl: ElementRef<HTMLCanvasElement>;
-
-  @Output() mapRendered = new EventEmitter<any>();
+  @ViewChild('fullPage', { static: true }) fullPageEl: ElementRef<HTMLDivElement>;
+  @ViewChild('innerPage', { static: true }) innerPageEl: ElementRef<HTMLDivElement>;
+  @ViewChild('legend', { static: true }) legendEl: ElementRef<HTMLDivElement>;
+  @ViewChild('mapCanvas', { static: true }) mapCanvasEl: ElementRef<HTMLCanvasElement>;
 
   private orientation: Orientation = 'landscape';
-  private resolution = 72;
   private format: PaperFormat = 'A4';
   private subscriptions: Subscription[] = [];
+  private outputFormat: 'pdf' | 'png';
 
   constructor(
-    private printSvc: PrintService
+    private printSvc: PrintService,
+    private mapSvc: MapOlService
   ) {
-    const s1 = this.printSvc.getParameters().subscribe((paras: MapParameters) => {
-      this.updateProperties(paras);
-    });
-    this.subscriptions.push(s1);
+    this.printSvc.registerPrinter(this);
+  }
 
-    const s2 = this.printSvc.getInstructions().subscribe((instruction: PrintInstruction) => {
-      switch (instruction) {
-        case 'init':
-          break;
-        case 'print':
-          this.printPage();
-          break;
-        default:
-          throw new Error(`Unexpected instruction: ${instruction}`);
+  ngOnInit(): void { }
+
+  update(measures: ConcreteMapParameters): Observable<boolean> {
+    return new Observable<boolean>((subscriber) => {
+
+      const requiresRedraw = this.mapWidth !== measures.mapWidth || this.mapHeight !== measures.mapHeight;
+
+      this.title = measures.title;
+      this.description = measures.description;
+
+      this.pageWidth = measures.pageWidth;
+      this.pageHeight = measures.pageHeight;
+      this.innerPageWidth = measures.innerPageWidth;
+      this.innerPageHeight = measures.innerPageHeight;
+      this.totalMapWidth = measures.totalMapWidth;
+      this.totalMapHeight = measures.totalMapHeight;
+      this.mapWidth = measures.mapWidth;
+      this.mapHeight = measures.mapHeight;
+      this.marginWidth = measures.marginWidth;
+      this.marginHeight = measures.marginHeight;
+      this.orientation = measures.orientation;
+      this.format = measures.format;
+      this.resolution = measures.resolution;
+      this.kmPerCmPaper = measures.kmPerCmPaper;
+      this.rotationDegrees = measures.heading * 360 / (2 * Math.PI);
+
+      this.headerFontSize = 0.04 * Math.max(this.pageWidth, this.pageHeight);
+      this.fontSize = 0.012 * Math.max(this.pageWidth, this.pageHeight);
+
+      this.outputFormat = measures.output;
+
+      if (this.legendEl && this.legendEl.nativeElement && measures.legendImages) {
+        this.legendEntries = measures.legendImages;
       }
-    });
-    this.subscriptions.push(s2);
-  }
 
-  private updateProperties(paras: MapParameters): void {
-    // @TODO: move this calculation to PrintService. In: MapAbstractParas, Out: MapConcreteParas
-    this.title = paras.title;
-    this.description = paras.description;
-    this.orientation = paras.orientation;
-    this.resolution = paras.resolution;
-    this.format = paras.format;
-
-    let headerFontSize = paras.resolution / 72;
-    switch (paras.format) {
-      case 'A3':
-        headerFontSize *= 1.414;
-        break;
-      case 'A4':
-        headerFontSize = headerFontSize;
-        break;
-      case 'A5':
-        headerFontSize *= 1.0 / 1.414;
-        break;
-      default:
-        throw new Error(`Unexpected format ${paras.format}.`);
-    }
-    this.headerFontSize = headerFontSize;
-    this.fontSize = this.headerFontSize * 0.72;
-
-    const page = new Paper(paras.format, paras.resolution, paras.orientation);
-    this.pageWidth = page.widthPx;
-    this.pageHeight = page.heightPx;
-    this.innerPageWidth = 0.9 * this.pageWidth;
-    this.innerPageHeight = 0.9 * this.pageHeight;
-    this.mapWidth = 1.0 * this.innerPageWidth;
-    this.mapHeight = 0.9 * this.innerPageHeight;
-    this.marginWidth = (this.pageWidth - this.innerPageWidth) / 2.0;
-    this.marginHeight = (this.pageHeight - this.innerPageHeight) / 2.0;
-
-    if (this.printCanvasEl && this.printCanvasEl.nativeElement) {
-      simpleMapToCanvas(paras.map, this.printCanvasEl.nativeElement, this.mapWidth, this.mapHeight, (newCanvas) => {
-        this.mapRendered.emit(newCanvas);
-      });
-    }
-  }
-
-  private printPage(): void {
-    const page = new Paper(this.format, this.resolution, this.orientation);
-    const doc = new jsPDF({
-      orientation: page.orientation,
-      format: [page.widthPx, page.heightPx],
-      unit: 'px'
-    });
-
-
-    const padding = 25;
-    const fontSize = 18 * (this.resolution / 72);
-    doc.setFontSize(fontSize);
-
-    const marginRight = (page.widthPx - this.mapWidth) / 2;
-    const marginTop = padding * (this.resolution / 72);
-    doc.text(this.title, marginRight, marginTop);
-
-    const marginTopMap = marginTop + padding;
-    doc.addImage(this.printCanvasEl.nativeElement, 'JPEG', marginRight, marginTopMap, this.mapWidth, this.mapHeight);
-    doc.saveGraphicsState();
-
-    if (this.description !== '') {
-      const descriptionheight = ((this.description.length * fontSize) / (page.widthPx - 2 * marginRight)) * fontSize;
-      console.log(descriptionheight);
-      const fromTopBelowMap = (marginTopMap + this.mapHeight + padding);
-      const placeBelowMap = page.heightPx - fromTopBelowMap;
-
-      if (placeBelowMap > descriptionheight) {
-        const marginTopDescription = fromTopBelowMap;
-        doc.text(this.description, marginRight, marginTopDescription, { maxWidth: this.mapWidth });
+      if (requiresRedraw) {
+        simpleMapToCanvas(this.mapSvc.map, this.mapCanvasEl.nativeElement, this.mapWidth, this.mapHeight, (canvas) => {
+          subscriber.next(true);
+          subscriber.complete();
+        });
       } else {
-        doc.addPage([page.widthPx, page.heightPx], page.orientation);
-        doc.text(this.description, marginRight, marginTop, { maxWidth: this.mapWidth });
-        // add new Page
+        subscriber.next(true);
+        subscriber.complete();
       }
-    }
-    doc.save(`${this.title2Filename(`${this.title}-${this.resolution}dpi`)}.pdf`);
 
-    /** @types/jspdf is outdated! */
-    /* doc.html(this.fullPageEl.nativeElement, {
-      callback: (d) => {
-        d.save(`${this.title2Filename(`${this.title}-${this.resolution}dpi`)}.pdf`);
-      },
-      // html2canvas options
-      html2canvas: {
-        allowTaint: true, // @TODO: I don't think this option can really allow a tainted canvas ...
-        svgRendering: true,
-        width: this.pageWidth,
-        height: this.pageHeight
-      },
-      // number | array	<optional> Array of margins [left, bottom, right, top]
-      margin: [50, 50],
-      // string	<optional>  name of the file
-      filename: this.title,
-      // HTMLOptionImage	<optional> image settings when converting HTML to image
-      image: {
-        type: 'jpeg',
-        quality: this.resolution
-      },
-      // number<optional> x position on the PDF document
-      x: 0,
-      // y position on the PDF document
-      y: 0
-    } as any); */
+
+    });
+  }
+
+
+  print(): Observable<boolean> {
+
+    /**
+     * I've tried a few libraries to get this to work.
+     *  - html2canvas messes up flexboxes
+     *  - html2pdf is just a wrapper around html2canvas + jspdf
+     *  - domtoimage seems to be doing best (but somehow duplicates svgs?)
+     *
+     * If you want to try another library, here are some factors to consider:
+     *   - do flexboxes work?
+     *   - does Cors cause problems? Can you proxy images?
+     *   - is font & fontsize correctly transformed?
+     *   - do svgs work?
+     *   - do WebGl canvases work?
+     *   - do VectorTiles work?
+     *   - do transparent images work?
+     *   - do legend-images work?
+     *
+     * But long term it might be better to do server-side rendering with something like puppeteer.
+     */
+
+    return new Observable<boolean>((subscriber) => {
+
+      // This code below does not help printing webgl, either....
+      // const canvas = document.createElement('canvas');
+      // simpleMapToCanvas(this.map, canvas, this.pageWidth, this.pageHeight, (canvas: HTMLCanvasElement) => {
+      //   canvas.toBlob((blob) => {
+      //     downloadBlob(blob, this.title2Filename(this.title) + '.png');
+      //   }, 'image/png');
+      // });
+
+      domtoimage.toPng(this.fullPageEl.nativeElement).then((dataUrl) => {
+        if (this.outputFormat === 'png') {
+          downloadUrl(dataUrl, this.title2Filename(this.title) + '.png');
+        } else {
+          const image = document.createElement('img');
+          image.src = dataUrl;
+          const page = new Paper(this.format, this.resolution, this.orientation);
+          const doc = new jsPDF({
+            orientation: page.orientation,
+            format: [page.widthPx, page.heightPx],
+            unit: 'px',
+          });
+          doc.addImage(image, 'png', 0, 0, page.widthPx, page.heightPx);
+          doc.save(this.title2Filename(this.title) + '.pdf');
+        }
+        subscriber.next(true);
+        subscriber.complete();
+      });
+    });
   }
 
   title2Filename(title: string) {
@@ -180,4 +174,19 @@ export class PrintMapComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.map(s => s.unsubscribe());
   }
+
+
+  /**
+   * obj: {any| IDynamicComponent}
+   */
+  checkIsComponentItem(obj: any) {
+    let isComp = false;
+    if (obj && typeof obj === 'object') {
+      if ('component' in obj) {
+        isComp = true;
+      }
+    }
+    return isComp;
+  }
+
 }

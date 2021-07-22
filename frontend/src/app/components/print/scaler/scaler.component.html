@@ -1,0 +1,7 @@
+<div #sizedDiv [ngStyle]="{'width': width + 'px', 'height': height + 'px', 'overflow': 'hidden'}" class="sized-div">
+    <div #scalingDiv [ngStyle]="{'transform': 'scale(' + scale + ')', 'transform-origin': 'top left'}" class="scaling-div">
+        <div #wrappingDiv class="wrapping-div">
+            <ng-content #ngContent></ng-content>
+        </div>
+    </div>
+</div>

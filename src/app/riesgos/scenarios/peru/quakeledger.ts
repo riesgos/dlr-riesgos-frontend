@@ -4,7 +4,7 @@ import { BboxLayerProduct, BboxLayerDescription, VectorLayerProduct } from 'src/
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '@dlr-eoc/utils-ogc';
 import { HttpClient } from '@angular/common/http';
-import { toDecimalPlaces, linInterpolateXY, redGreenRange } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, linInterpolateXY, redGreenRange, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { TableEntry, InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
@@ -32,7 +32,7 @@ export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerProduct,
             wizardProperties: {
                 name: 'AOI',
                 fieldtype: 'bbox',
-                description: 'Please select an area of interest',
+                description: 'AOI_selection',
             },
         },
         this.value = null;
@@ -181,7 +181,7 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
         title: '',
         icon: 'earthquake',
         name: 'available earthquakes',
-        description: 'Catalog data',
+        description: 'CatalogueData',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
@@ -193,8 +193,8 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                 const depth = props['origin.depth.value'];
 
                 const text = depth + ' km';
-                let radius = linInterpolateXY(7, 5, 9, 20, magnitude);
-                const [r, g, b] = redGreenRange(5, 60, depth);
+                let radius = linInterpolateXY(5, 10, 60, 5, depth);
+                const [r, g, b] = greenRedRange(6, 9, magnitude);
 
                 if (selected) {
                     radius += 4;
@@ -240,7 +240,7 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 3.0,
+                        'magnitude.mag.value': 6.0,
                         'origin.depth.value': 40.0
                     },
                     "geometry": {
@@ -248,7 +248,20 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 3, depth 40'
+                text: 'Mag. 6'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 7.0,
+                        'origin.depth.value': 40.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'Mag. 7'
             }, {
                 feature: {
                     "type": "Feature",
@@ -261,33 +274,20 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 8, depth 40'
+                text: 'Mag. 8'
             }, {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 3.0,
-                        'origin.depth.value': 20.0
+                        'magnitude.mag.value': 9.0,
+                        'origin.depth.value': 40.0
                     },
                     "geometry": {
                         "type": "Point",
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 3, depth 20'
-            }, {
-                feature: {
-                    "type": "Feature",
-                    "properties": {
-                        'magnitude.mag.value': 8.0,
-                        'origin.depth.value': 20.0
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [ 5.625, 50.958426723359935 ]
-                      }
-                  },
-                text: 'Magnitude 8, depth 20'
+                text: 'Mag. 9'
             }]
         }
     },

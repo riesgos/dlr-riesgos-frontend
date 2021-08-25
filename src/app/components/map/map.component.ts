@@ -5,7 +5,6 @@ import { Graph } from 'graphlib';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { Store, select } from '@ngrx/store';
-import { TranslateService } from '@ngx-translate/core';
 
 import { DragBox } from 'ol/interaction';
 import { Vector as olVectorLayer, Tile as TileLayer } from 'ol/layer';
@@ -31,6 +30,7 @@ import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { WMTSLayerFactory } from './wmts';
 import { LayerMarshaller } from './layer_marshaller';
 import { ProductLayer } from './map.types';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 const mapProjection = 'EPSG:4326';
 
@@ -55,9 +55,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         public mapSvc: MapOlService,
         private store: Store<State>,
         private layerMarshaller: LayerMarshaller,
-        private wmtsFactory: WMTSLayerFactory,
         public layersSvc: LayersService,
-        private translator: TranslateService
+        private translator: SimplifiedTranslationService
     ) {
         this.controls = { attribution: true, scaleLine: true };
     }
@@ -88,7 +87,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     const inputs = inEdges.map(edge => edge.v);
                     const outputs = outEdges.map(edge => edge.w);
                     for (const layer of currentOverlays) {
-                        if (inputs.includes((layer as ProductLayer).productId) || outputs.includes((layer as ProductLayer).productId)) {
+                        if (outputs.includes((layer as ProductLayer).productId)) {
                             layer.hasFocus = true;
                         } else {
                             layer.hasFocus = false;
@@ -267,7 +266,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub5);
 
         // closing popups when language changes, to mask the fact that they are not rebuilt dynamically.
-        this.translator.onLangChange.subscribe(lce => {
+        this.translator.getCurrentLang().subscribe((lang) => {
             this.mapSvc.removeAllPopups();
         });
     }
@@ -293,6 +292,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getCenter(scenario: string): [number, number] {
         switch (scenario) {
             case 'c1':
+            case 'c2':
                 return [-70.799, -33.990];
             case 'e1':
                 return [-78.4386, -0.6830];
@@ -322,14 +322,18 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: 'powerlines',
                 type: 'custom',
                 visible: false,
-                popup: true
+                popup: true,
+                description: 'PowerlinesDescription',
+                attribution: '&copy, <a href="http://energiamaps.cne.cl">energiamaps.cne.cl/</a>',
+                legendImg: 'http://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?service=wms&request=GetLegendGraphic&LAYER=sic_20181016234835&FORMAT=image/png',
             });
             layers.push(powerlineLayer);
 
             const civilServiceLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'CivilServiceLayers',
-                name: 'Civil Service',
+                name: 'CivilService',
+                description: 'GeoportalChileDescription',
                 layers: [
                     new RasterLayer({
                         id: 'police',
@@ -377,6 +381,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 filtertype: 'Layers',
                 id: 'shoaLayers',
                 name: 'Tsunami Flood Layers (CITSU)',
+                description: 'CITSU_description',
                 layers: [
                     new CustomLayer({
                         custom_layer: new olVectorLayer({
@@ -410,7 +415,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const sniLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'sniLayers',
-                name: 'Sistema Nacional de Información',
+                name: 'SNI',
                 layers: [
                     new CustomLayer({
                         custom_layer: new olVectorLayer({
@@ -420,7 +425,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 crossOrigin: 'anonymous'
                             })
                         }),
-                        name: 'transmisión',
+                        name: 'Transmission',
                         id: 'transmision',
                         type: 'custom',
                         visible: false,
@@ -436,7 +441,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 crossOrigin: 'anonymous'
                             })
                         }),
-                        name: 'subtransmisión',
+                        name: 'Subtransmission',
                         id: 'subtransmision',
                         type: 'custom',
                         visible: false,
@@ -444,8 +449,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         // legendImg: 'assets/layer-preview/citsu-96px.jpg',
                         popup: true
                     })
-
-                ]
+                ],
+                description: 'SNIDescription'
             });
             layers.push(sniLayers);
         }

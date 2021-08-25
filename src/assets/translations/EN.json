@@ -9,11 +9,11 @@
     "DLR": "DLR: German Aerospace Center",
     "TUM": "TUM: Technical University of Munich",
     "geomer": "geomer",
-    "IGN": "Instituto Geofísico EPN",
+    "IGN": "IG-EPN: Instituto Geofísico",
 
 
-    "GroundmotionService": "Seismic acceleration",
-
+    "GroundmotionService": "Ground motion simulation",
+    "EqSimulationShortText": "Simulates the ground motion caused by the selected earthquake.",
 
     "Showcase Chile": "Coastal area of Greater Valparaíso",
     "Showcase Ecuador": "Cotopaxi volcano and surroundings",
@@ -25,14 +25,23 @@
     "Licenses disclaimer": "A lot of third party libraries were used to create this project. Their licenses are listed here.",
 
     "TS-Service": "Tsunami simulation",
+    "TsunamiWiki": "Tsunami simulation",
 
     "Exposure (extended)": "Exposure",
-    "Multihazard damage estimation / EQ": "Earthquake damage",
-    "Multihazard damage estimation / TS": "Tsunami damage",
+    "ExposureSelection": "Exposure",
+    "Multihazard_damage_estimation/Earthquake": "Earthquake damage",
+    "Multihazard_damage_estimation/Tsunami": "Tsunami damage",
+    "Multihazard_damage_estimation/TsunamiEarthquake": "Tsunami and earthquake damage",
+    
 
     "VEI Selection": "VEI selection",
-    "Ashfall Service": "Ashfall service",
+    "AshfallService": "Ashfall simulation",
 
+    "Lahar_S_VEI3mio_maxheight_25m": "Lahar: maximum depth",
+    "Lahar_S_VEI3mio_maxpressure_25m": "Lahar: maximum preassure",
+    "Lahar_S_VEI3mio_maxvelocity_25m": "Lahar: maximum velocity",
+    "Lahar_S_VEI3mio_maxerosion_25m": "Lahar: maximum erosion",
+    "Lahar_S_VEI3mio_maxdeposition_25m": "Lahar: maximum deposition",
     "Lahar_S_VEI10mio_maxheight_25m": "Lahar: maximum depth",
     "Lahar_S_VEI10mio_maxpressure_25m": "Lahar: maximum preassure",
     "Lahar_S_VEI10mio_maxvelocity_25m": "Lahar: maximum velocity",
@@ -124,18 +133,22 @@
     "primary tif": "Shakemap",
     "shakemap": "Shakemap",
 
-    "LaharService": "Lahar service",
+    "LaharService": "Lahar simulation",
     "Lahar Damage": "Lahar damage",
-    "Lahar and Ashfall Damage": "Lahar and ashfall damage",
+    "LaharAndAshfallDamage": "Lahar and ashfall damage",
+    "LaharAndAshfallTransition": "Lahar and ashfall transition",
+    "LaharAndAshfallExposure": "Lahar and ashfall exposure",
+    "LaharAndAshfall": "Ashfall and lahar",
 
     "Ashfall Damage": "Ashfall damage",
     "ashfallDamage": "Ashfall damage", 
     "ashfallExposure": "Ashfall exposure",
-    "eq-selection: boundingbox": "Eq-selection: boundingbox",
+    "eq-selection: boundingbox": "Boundingbox",
+    "CatalogueData": "Catalogue data",
     "available earthquakes": "Available earthquakes",
 
     "How to use this site ...": "The configuration wizard on the left side of the screen contains a list of all processes that you will step through in order. Processes are colored according to their current state. If a process requires you to make decisions about inputs, these can be entered in a form. When you are content with your selection, hit 'run' to execute the process.",
-    "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'Additional layers'",
+    "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'AdditionalLayers'",
     "instructions bbox": "You can now draw a  bounding box on the map.",
     "instructions featureselection": "You can now select a point of interest on the map.",
 
@@ -144,14 +157,14 @@
     "DisclaimerText": "This is the demonstrator of a multi-risk exploration tool and still under development. IMPORTANT: the results shown here are not yet consolidated and therefore not suitable for planning or other practical applications.",
     "Understood and accept": "Understood and accepted",
 
-    "System reliability after Lahar": "Power supply",
-    "System reliability after EQ": "Power supply",
+    "System reliability after Lahar": "Power grid",
+    "System reliability after EQ": "Power grid",
 
     "etype": "subcategory",
 
     "Process for evaluating the reliability of infrastructure networks": "This is a process for evaluating the reliability of infrastructure networks.",
     "Process to compute the damage caused by a flood.": "This is a process to compute the damage  caused by a flood.",
-    "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Enter here the parameters to narrow down your selection of earthquakes from the catalogue. You may also select an area with possible earthquake-epicenters by drawing a box on the map.",
+    "Enter here the parameters that determine which earthquakes would be appropriate for your simulation.": "Enter here the parameters to narrow down your selection of earthquakes from the catalogue. You may also select an area with possible earthquake epicenters by drawing a box on the map.",
 
     "AvailableEarthquakes": "Available earthquakes",
 
@@ -163,14 +176,16 @@
 
     "Thickness": "Thickness",
     "Exposure": "Exposure",
-    "Exposure Ashfall": "Exposure ashfall",
-    "eq-exposure": "Exposure and damage / EQ",
-    "eq-transition": "Damage transitions / EQ",
-    "eq-damage": "Loss / EQ",
-    "ts-exposure": "Exposure and damage / TS",
-    "ts-transition": "Damage transitions / TS",
-    "ts-damage": "Loss / TS",
+    "Exposure Ashfall": "Ashfall exposure",
+    "Exposure Lahar": "Lahar exposure",
+    "eq-exposure": "Exposure and damage / Earthquake",
+    "eq-transition": "Damage transitions / Earthquake",
+    "eq-damage": "Loss / Earthquake",
+    "ts-exposure": "Exposure and damage / Tsunami",
+    "ts-transition": "Damage transitions / Tsunami",
+    "ts-damage": "Loss / Tsunami",
     "lahar-exposure": "Exposure and damage / lahar",
+    "laharExposure": "Exposure and damage / lahar",
     "lahar-transitions": "Damage transitions / lahar",
     "lahar-damage": "Loss / lahar",
     "exposure_description": "The situation of people, infrastructure, housing, production capacities and other tangible human assets located in hazard-prone areas.",
@@ -182,10 +197,10 @@
     "Amount of goods that are exposed to a hazard.": "Goods in a damage state",
 
     "depth_cm": "Depth (cm)",
-
-    "wd_max": "flood depth",
-    "v_atwdmax": "velocity at max. depth",
-    "duration": "duration",
+    "FloodService": "Flood simulation",
+    "wd_max": "Flood depth",
+    "v_atwdmax": "Velocity at max. depth",
+    "duration": "Duration",
     "Lahar_maxheight": "Max. depth",
     "Lahar_deposition": "Deposition",
     "Lahar_maxerosion": "Max. erosion",
@@ -202,12 +217,14 @@
     "Unavailable": "Downstream",
     "Available": "Ready",
     "This process can not be configured yet.": "This process still requires inputs from upstream.",
-
-    "Deus Ashfall description": "This service calculates the damage caused by a given ashfall-event.",
-    "Deus Lahar description": "This service calculates the damage caused by a given lahar-event.",
-    "Ashfall Service description": "This service returns a simulation of an ash-cloud and the resulting deposition",
+    "Reliability": "System reliability",
+    "Deus Ashfall description": "This service calculates the damage caused by a given ashfall event.",
+    "Deus Lahar description": "This service calculates the damage caused by a given lahar event.",
+    "AshfallServiceDescription": "This service returns a simulation of an ash-cloud and the resulting deposition.",
     "Deus Lahar + Ashfall description": "This service calculates the combined damage caused by ashfall and a lahar.",
     "ashfall-depth": "Ashfall depth",
+    "SNI": "Transmission network",
+    "SNIDescription": "Data by <a href='https://sni.gob.ec/inicio' target='_blank'>National Information System</a>",
 
     "Available_earthquakes": "Available earthquakes",
     "Magnitude": "Magnitude",
@@ -250,28 +267,35 @@
     "Quickstart": "Quickstart",
     "RIESGOS Demonstrator": "RIESGOS Demonstrator",
     "Ground_acceleration": "Ground acceleration",
+    "acceleration": "Acceleration",
     "Earthquake": "Earthquake",
     "EQ Exposure Model Selection": "Exposure model",
     "EQ Exposure Model": "Exposure model",
-    "Groundmotion Simulation": "Groundmotion",
+    "Groundmotion Simulation": "Ground motion",
+    "Groundmotion": "Ground motion simulation",
 
     "VEI1": "VEI 1 - 2",
     "VEI2": "VEI 2 - 3",
     "VEI3": "VEI 3 - 4",
     "VEI4": "VEI > 4",
 
-    "SelectedEQ": "Selected EQ",
-    "GroupsSimplified": "Note: groups have been simplified for graph.",
+    "SelectedEQ": "Selection",
+    "SelectEQ": "Select epicenter",
+    "GroupsSimplified": "<b>Note</b>: Groups have been simplified for graph.",
 
     "ashfallLoss": "Ashfall loss",
     "Total_loss": "Total loss",
     "laharLoss": "Lahar loss",
-    "Lahar_and_Ashfall_Loss": "Lahar & ashfall loss",
+    "Lahar_and_Ashfall_Loss": "Lahar and ashfall loss",
+    "NumberGoodsInDamageState": "Number of goods per damage state",
 
     "taxonomy_DX": "Taxonomy/damage class",
     "nr_buildings": "# buildings",
     "damage_classification": "Damage classification",
 
+    "TsShortDescription": "Simulates a tsunami based on the earlier selected earthquake parameters.",
+    "CivilService": "Points of interest",
+    "PowerlinesDescription": "Data from <a href='http://energiamaps.cne.cl' target='_blank'>energiamaps.cne.cl/</a>",
     "geomerFloodDescription": "This service provides the option to simulate a break of a lake created by a lahar. <b>Note</b>: Only works with lahars moving north of Cotopaxi.",
 
     "UnavailableStateDescription": "This service cannot be executed yet because another service must be run first.",
@@ -280,13 +304,33 @@
     "CompletedStateDescription": "This service has already been executed and all its products are now provided.",
     "ErrorStateDescription": "An error has occurred. There is more information in the red info-box.",
 
-    "BuildingTypesMavrouli": "<p> Classification according to Mavrouli et al. 2014. (DOI 10.1007 / s10064-014-0573-0) </p> <ul> <li> <b> RC_LD </b>: Low ductility reinforced concrete buildings </li> <li> <b> RC_S_HD </b>: Reinforced concrete or steel buildings of high ductility </li> <li> <b> RC_MD </b>: Reinforced concrete buildings of moderate ductility </li> <li> <b> W_MR_LD </b>: Wood or masonry buildings with low ductility </li> <li> <b> W_MR_MD </b>: Wood or masonry buildings of moderate ductility </li> <li> <b> W_MR_HD </b>: Buildings with wooden or masonry roofs of high ductility. </li> </ul> ",
-    "BuildingTypesTorres": "<p>Classification according to Torres-Corredor et al. 2017 (http://dx.doi.org/10.18273/revbol.v39n2-2017005)</p><ul> <li> <b> LM_B </b>: Ceilings of light material. Good constructive quality. </li> <li> <b> LM_R </b>: Ceilings of light material. Regular construction quality. </li> <li> <b> LM_M </b>: Ceilings of light material. Bad constructive quality. </li> <li> <b> P_B </b>: clay tile roofs supported by wood. Good constructive quality. </li> <li> <b> P_M </b>: clay tile roofs supported by wood. Bad constructive quality. </li> <li> <b> P_R </b>: clay tile roofs supported on wood. Regular construction quality. </li> <li> <b> L_B </b>: Reinforced concrete plate. Good constructive quality. </li> <li> <b> L_R </b>: Solid slabs (concrete). Regular construction quality. </li> <li> <b> L_M </b>: Lightened plate in reinforced concrete. Bad constructive quality. </li> </ul> ",
-    "DamageStatesMavrouli": "<p> Classification according to Mavrouli et al. 2014. (DOI 10.1007 / s10064-014-0573-0) </p> <ul> <li> <b> D0 </b>: No damage. Absence of damage </li> <li> <b> D1 </b>: Slight damage (Not present in this model) </li> <li> <b> D2 </b>: Moderate damage to structural elements </li> <li> <b> D3 </b>: Extensive damage to structural elements </li> <li> <b> D4 </b>: Collapse/Destruction. </li> </ul>",
-    "DamageStatesTorres": "<p> Classification according to Torres-Corredor et al. 2017 (http://dx.doi.org/10.18273/revbol.v39n2-2017005) </p> <ul> <li> <b> D0: </b> No harm. No damage </li> <li> <b> D1: </b> Slight damage </li> <li> <b> D2: </b> Moderate damage </li> <li> <b> D4 : </b> Collapse / Destruction </li> </ul>",
+    "BuildingTypesMavrouli": "<p> Classification according to Mavrouli et al. 2014. (DOI 10.1007 / s10064-014-0573-0) </p> <ul> <li> <b> RC_LD</b>: Low ductility reinforced concrete buildings </li> <li> <b> RC_S_HD</b>: Reinforced concrete or steel buildings of high ductility </li> <li> <b> RC_MD</b>: Reinforced concrete buildings of moderate ductility </li> <li> <b> W_MR_LD</b>: Wood or masonry buildings with low ductility </li> <li> <b> W_MR_MD</b>: Wood or masonry buildings of moderate ductility </li> <li> <b> W_MR_HD</b>: Buildings with wooden or masonry roofs of high ductility. </li> </ul> ",
+    "BuildingTypesTorres": "<p>Classification according to Torres-Corredor et al. 2017 (http://dx.doi.org/10.18273/revbol.v39n2-2017005)</p><ul> <li> <b> LM_B</b>: Ceilings of light material. Good constructive quality. </li> <li> <b> LM_R</b>: Ceilings of light material. Regular construction quality. </li> <li> <b> LM_M</b>: Ceilings of light material. Bad constructive quality. </li> <li> <b> P_B</b>: Clay tile roofs supported by wood. Good constructive quality. </li> <li> <b> P_M</b>: Clay tile roofs supported by wood. Bad constructive quality. </li> <li> <b> P_R</b>: Clay tile roofs supported on wood. Regular construction quality. </li> <li> <b> L_B</b>: Reinforced concrete plate. Good constructive quality. </li> <li> <b> L_R</b>: Solid slabs (concrete). Regular construction quality. </li> <li> <b> L_M</b>: Lightened plate in reinforced concrete. Bad constructive quality. </li> </ul> ",
+    "DamageStatesMavrouli": "<p> Classification according to Mavrouli et al. 2014. (DOI 10.1007 / s10064-014-0573-0) </p> <ul> <li> <b> D0</b>: No damage </li> <li> <b> D1</b>: Slight damage (not present in this model) </li> <li> <b> D2</b>: Moderate damage to structural elements </li> <li> <b> D3</b>: Extensive damage to structural elements </li> <li> <b> D4</b>: Collapse </li> </ul>",
+    "DamageStatesTorres": "<p> Classification according to Torres-Corredor et al. 2017 (http://dx.doi.org/10.18273/revbol.v39n2-2017005) </p> <ul> <li> <b> D0: </b> No harm.</li> <li> <b> D1: </b> Slight damage </li> <li> <b> D2: </b> Moderate damage </li> <li> <b> D4: </b> Collapse / Destruction </li> </ul>",
     "BuildingTypesSara": "<p>Classification adjusted from SARA (Yepes-Estrada et al, 2017)</p><ul><li><b>CR</b>: Reinforced concrete</li><li><b>ER</b>: Reinforced rammed earth</li><li><b>MCF</b>: Confined masonry</li><li><b>MR</b>: Reinforced masonry</li><li><b>MUR</b>: Unreinforced masonry</li><li><b>S</b>: Steel moment frame</li><li><b>W</b>: Wooden</li><li><b>UNK</b>: Unknown</li></ul>",
 
-    "StatesNotComparable": "<p><b>Note</b>: The damage states for different hazards (like earthquakes and tsunamis, or lahars and floods) are not comparable</p>",
+    "StatesNotComparable": "<p><b>Note</b>: The damage states for different hazards (like earthquakes and tsunamis, or lahars and floods) are not comparable.</p>",
 
-    "invalid filename": "Invalid filename"
+    "invalid filename": "Invalid filename",
+    "NoData": "No data",
+
+    "quakeledger": "Earthquake catalogue",
+    "CITSU_description": "As part of the Tsunami Inundation Maps project (CITSU), the Hydrographic and Oceanographic Service of the Chilean Navy (SHOA) made available information related to the occurrence of tsunamis on the Chilean coast.",
+    "SmallDamageChange": "Small change in damage-states",
+    "LargeDamageChange": "Large change in damage-states",
+    "GeoportalChileDescription": "Geoportal Chile: National catalogue of geospatial information",
+    "VEI_description": "The Volcanic Explosivity Index (VEI) is a relative measure of the explosiveness of volcanic eruptions. Volume of products, eruption cloud height, and qualitative observations are used to determine the explosivity value.",
+    "LaharWiki": "VEI selection",
+    "laharMaxDepth": "Maximum lahar-depth",
+    "laharVelocity": "Maximum lahar velocity",
+    "laharPressure": "Maximum lahar pressure",
+    "laharErosion": "Maximum lahar erosion",
+    "laharDeposition": "Lahar deposition",
+    "floodDamageDescription": "Damage to blocks",
+    "FloodWiki": "Flood damage",
+    "AdditionalLayers": "Additional layers",
+    "Results": "Results",
+    "Tools": "Tools",
+    "AOI_selection": "selection of study area"
 }

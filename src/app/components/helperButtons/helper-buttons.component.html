@@ -17,7 +17,6 @@
 
 <ukis-print *ngIf="isRiesgos2"></ukis-print>
 
-
 <clr-modal [(clrModalOpen)]="showResetModal" [clrModalStaticBackdrop]="false">
     <h3 class="modal-title">{{'Reset' | translate}}</h3>
     <div class="modal-body">
@@ -51,7 +50,6 @@
         <button type="button" class="btn btn-outline" (click)="showStoreModal = false">{{'Cancel' | translate}}</button>
     </div>
 </clr-modal>
-
 
 <clr-modal [(clrModalOpen)]="showRestoreModal" [clrModalStaticBackdrop]="false">
     <h3 class="modal-title">{{'Restore data' | translate }}</h3>

@@ -24,13 +24,13 @@ import olTileLayer from 'ol/layer/Tile';
 import olTileWMS from 'ol/source/TileWMS';
 import olLayerGroup from 'ol/layer/Group';
 import Polygon from 'ol/geom/Polygon';
-import { SldParserService } from 'src/app/services/sld/sld-parser.service';
 import { laharContoursWms } from 'src/app/riesgos/scenarios/ecuador/laharWrapper';
 import { GroupSliderComponent, SliderEntry } from '../dynamic/group-slider/group-slider.component';
 import { VectorLegendComponent } from '../dynamic/vector-legend/vector-legend.component';
 import { WebGlPolygonLayer } from '../../helpers/custom_renderers/renderers/polygon.renderer';
 import * as hashfunction from 'imurmurhash';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 
 
@@ -55,43 +55,15 @@ interface CacheEntry {
 @Injectable()
 export class LayerMarshaller  {
 
-    private dictEn: Object;
-    private dictEs: Object;
-    private currentLang: string;
     private cache: {[uid: string]: CacheEntry} = {};
 
     constructor(
         private httpClient: HttpClient,
         private mapSvc: MapOlService,
         public mapStateSvc: MapStateService,
-        private sldParser: SldParserService,
         private store: Store<State>,
-        private translator: TranslateService,
-        private translateParser: TranslateParser
-        ) {
-            this.translator.getTranslation('EN').subscribe(d => this.dictEn = d);
-            this.translator.getTranslation('ES').subscribe(d => this.dictEs = d);
-            this.currentLang = this.translator.currentLang;
-            this.translator.onLangChange.subscribe((lce: LangChangeEvent) => {
-                this.currentLang = lce.lang;
-            });
-    }
-
-    private getDict(): Object {
-        switch (this.currentLang) {
-            case 'EN':
-                return this.dictEn;
-            case 'ES':
-                return this.dictEs;
-            default:
-                const defaultLang = this.translator.getDefaultLang();
-                if (defaultLang === 'EN') {
-                    return this.dictEn;
-                } else {
-                    return this.dictEs;
-                }
-        }
-    }
+        private translator: SimplifiedTranslationService
+        ) {}
 
     productsToLayers(products: Product[]): Observable<ProductLayer[]> {
         if (products.length === 0) {
@@ -141,7 +113,7 @@ export class LayerMarshaller  {
         }
         if (['initial_Exposure', 'initial_Exposure_Lahar',
             'ts_damage', 'ts_transition', 'ts_updated_exposure',
-            'AssetmasterProcess_Exposure_Peru', 
+            'AssetmasterProcess_Exposure_Peru',
             'ts_damage_peru', 'ts_transition_peru', 'ts_updated_exposure_peru'].includes(product.uid)) {
             return this.createWebglLayer(product as VectorLayerProduct).pipe(map(layer => [layer]));
         }
@@ -171,7 +143,8 @@ export class LayerMarshaller  {
                 description: {
                     id: product.uid + '_' + vectorLayerProps.name,
                     ... vectorLayerProps,
-                    ... product.description,
+                    format: 'application/vnd.geo+json',
+                    type: 'complex'
                 }
             };
             const pcl$ = this.createWebglLayer(vectorLayerProduct, source);
@@ -213,8 +186,7 @@ export class LayerMarshaller  {
             popup: {
                 pupupFunktion: (obj) => {
                     let html = product.description.vectorLayerAttributes.text(obj);
-                    const dict = this.getDict();
-                    html = this.translateParser.interpolate(html, dict);
+                    html = this.translator.syncTranslate(html);
                     return html;
                 }
             },
@@ -399,8 +371,7 @@ export class LayerMarshaller  {
                 popup: {
                     pupupFunktion: (obj) => {
                         let html = vectorLayerProps.vectorLayerAttributes.text(obj);
-                        const dict = this.getDict();
-                        html = this.translateParser.interpolate(html, dict);
+                        html = this.translator.syncTranslate(html);
                         return html;
                     }
                 },
@@ -478,8 +449,7 @@ export class LayerMarshaller  {
                     popup: {
                         pupupFunktion: (obj) => {
                             let html = product.description.vectorLayerAttributes.text(obj);
-                            const dict = this.getDict();
-                            html = this.translateParser.interpolate(html, dict);
+                            html = this.translator.syncTranslate(html);
                             return html;
                         }
                     },
@@ -532,7 +502,9 @@ export class LayerMarshaller  {
         if (product.description.vectorLayerAttributes.style) {
             return of(product.description.vectorLayerAttributes.style);
         } else if (product.description.vectorLayerAttributes.sldFile) {
-            return this.sldParser.readStyleForLayer(product.description.vectorLayerAttributes.sldFile, product.description.id);
+            // return this.sldParser.readStyleForLayer(product.description.vectorLayerAttributes.sldFile, product.description.id);
+            console.error('niewlandgeo/sldreader is currently not compatible with ol6')
+            return null;
         } else {
             return of(null);
         }
@@ -753,8 +725,7 @@ export class LayerMarshaller  {
             } else {
                 html = this.formatFeatureCollectionToTable(response);
             }
-            const dict = this.getDict();
-            html = this.translateParser.interpolate(html, dict);
+            html = this.translator.syncTranslate(html);
             callback(html);
         });
     }

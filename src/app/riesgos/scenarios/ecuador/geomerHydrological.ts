@@ -1,14 +1,12 @@
-import { ExecutableProcess, ProcessStateUnavailable, Product, ProductTransformingProcess, ProcessStateAvailable } from 'src/app/riesgos/riesgos.datatypes';
+import { ExecutableProcess, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Observable, of } from 'rxjs';
 import { WpsData } from '@dlr-eoc/utils-ogc';
-import { laharWms, direction, vei, laharShakemap } from './lahar';
+import { direction, vei } from './lahar';
 import { laharHeightWms } from './laharWrapper';
-import { FeatureSelectUconfProduct, StringUconfProduct, StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol';
+import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+
 
 
 export const hydrologicalSimulation: WmsLayerProduct & WpsData = {
@@ -83,7 +81,6 @@ export const userinputSelectedOutburst: StringSelectUconfProduct & WpsData = {
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'outburstSite',
-            description: 'outburstSite',
             signpost: 'You can choose here from two lake locations. The process will create the flood scenario for the selected lake.'
         }
     },
@@ -125,7 +122,7 @@ export const FloodMayRunProcess: ProductTransformingProcess = {
 
 export const geomerFlood: WizardableProcess & ExecutableProcess = {
     uid: 'geomerFlood',
-    name: 'Flood',
+    name: 'FloodService',
     requiredProducts: [vei, laharHeightWms, userinputSelectedOutburst, FloodMayRun].map(p => p.uid),
     providedProducts: [hydrologicalSimulation, durationTiff, velocityTiff, depthTiff].map(pr => pr.uid),  // durationTiff, velocityTiff,
     state: new ProcessStateUnavailable(),
@@ -133,6 +130,7 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
         providerName: 'geomer',
         providerUrl: 'https://www.geomer.de/en/index.html',
         shape: 'tsunami',
+        wikiLink: 'Flood'
     },
     description: 'geomerFloodDescription',
     execute: (inputs: Product[]): Observable<Product[]> => {

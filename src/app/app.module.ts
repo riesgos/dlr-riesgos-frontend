@@ -19,7 +19,6 @@ import { GlobalAlertComponent } from './components/global-alert/global-alert.com
 import { GlobalFooterComponent } from './components/global-footer/global-footer.component';
 import { GlobalProgressComponent } from './components/global-progress/global-progress.component';
 import { HeaderComponent } from './components/header/header.component';
-import { SaveButtonComponent } from './components/save-button/save-button.component';
 import { ConfigurationWizardComponent } from './components/config_wizard/configuration-wizard/configuration-wizard.component';
 import { FormComponent } from './components/config_wizard/form/form.component';
 import { FormFeatureSelectFieldComponent } from './components/config_wizard/form-featureselect-field/form-featureselect-field.component';
@@ -60,6 +59,7 @@ import { ScalerComponent } from './components/scaler/scaler.component';
 import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
 import { DynamicComponentComponent, ViewRefDirective } from './components/dynamic-component/dynamic-component.component';
 import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
+import { HelperButtonsComponent } from './components/helperButtons/helper-buttons.component';
 
 import { ConfigService } from './services/config/config.service';
 import { RiesgosService } from './riesgos/riesgos.service';
@@ -69,8 +69,9 @@ import { AlertService } from './components/global-alert/alert.service';
 
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { VarDirective } from './ng-var.directive';
-import { DndDirective } from './components/save-button/dnd/dnd.directive';
-import { RegexTranslatePipe } from './helpers/regex-translate.pipe';
+import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
+import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-translate.pipe';
+import { SimpleTranslatePipe } from './services/simplifiedTranslation/simple-translate.pipe';
 import { ReversePipe } from './components/riesgos_layer_control/utils/array-reverse.pipe';
 import { WMTSLayerFactory } from './components/map/wmts';
 import { reducers, effects } from './ngrx_register';
@@ -91,7 +92,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     GlobalFooterComponent,
     GlobalProgressComponent,
     HeaderComponent,
-    SaveButtonComponent,
+    HelperButtonsComponent,
     ConfigurationWizardComponent,
     FormComponent,
     FormFeatureSelectFieldComponent,
@@ -126,6 +127,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CanvasComponent,
     ReversePipe,
     RegexTranslatePipe,
+    SimpleTranslatePipe,
     ChangedetectorComponent,
     BlinkerComponent,
     FpserComponent,
@@ -167,7 +169,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         deps: [HttpClient]
       }
     }),
-    // !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 2 }) : []
+    // !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 3 }) : []
+    []
   ],
   providers: [
     AlertService,

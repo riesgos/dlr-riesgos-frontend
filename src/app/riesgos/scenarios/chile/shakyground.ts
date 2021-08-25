@@ -5,7 +5,6 @@ import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { selectedEq } from './eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
@@ -22,8 +21,7 @@ export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
         styles: ['shakemap-pga', 'another style'],
         featureInfoRenderer: (fi: FeatureCollection) => {
             const html = `
-            <p>{{ Ground_acceleration }}:<p>
-            ${createKeyValueTableHtml('{{ Earthquake }}', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s²'}, 'medium')}
+            <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
             `;
             return html;
         },
@@ -39,6 +37,8 @@ export const eqShakemapRef: WpsData & Product = {
         type: 'complex',
         reference: true,
         format: 'text/xml',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+        encoding: 'UTF-8'
     },
     value: null
 };
@@ -55,7 +55,7 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
             [selectedEq].map(p => p.uid),
             [shakemapWmsOutput, eqShakemapRef].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
-            'Simulates the ground motion caused by the selected earthquake',
+            'EqSimulationShortText',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,

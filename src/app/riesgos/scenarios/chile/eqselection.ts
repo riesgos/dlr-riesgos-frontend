@@ -61,7 +61,8 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct
         },
         wizardProperties: {
             fieldtype: 'select',
-            name: 'SelectedEQ'
+            name: 'SelectedEQ',
+            description: 'SelectEQ'
         }
     },
     value: null

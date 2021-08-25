@@ -5,6 +5,7 @@ import { Feature } from '@turf/helpers';
 import Style from 'ol/style/Style';
 import 'ol/ol.css';
 import 'ol-ext/control/Legend.css';
+import { SimplifiedTranslationService } from '../../../services/simplifiedTranslation/simplified-translation.service';
 
 
 export interface LegendElement {
@@ -31,7 +32,10 @@ export class VectorLegendComponent implements OnInit {
   @Input() elementList: LegendElement[];
   public entries: Entry[] = [];
 
-  constructor() { }
+
+  constructor(
+    private translator: SimplifiedTranslationService
+  ) {}
 
   ngOnInit() {
     const legend = new Legend({
@@ -39,13 +43,13 @@ export class VectorLegendComponent implements OnInit {
       style: (feature: olFeature) => {
         const style = this.styleFunction(feature, this.resolution);
         if (style.text_) {
-          delete(style.text_);
+          delete (style.text_);
         }
         return style;
       },
       collapsible: false,
       margin: 0,
-      size: [20, 20],
+      size: [7, 7],
     });
 
     for (const element of this.elementList) {
@@ -54,9 +58,11 @@ export class VectorLegendComponent implements OnInit {
         typeGeom: element.feature.geometry.type
       }, null, null);
 
+      const html = this.translator.syncTranslate(element.text);
+
       this.entries.push({
         canvas: canvas,
-        text: element.text
+        text: html
       });
     }
 

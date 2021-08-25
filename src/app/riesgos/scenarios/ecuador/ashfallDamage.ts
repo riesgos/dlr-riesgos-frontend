@@ -153,7 +153,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
             legendEntries: [{
                 feature: {
                     'type': 'Feature',
-                    'properties': {'transitions': {'n_buildings': 100, 'to_damage_state': [10, 80, 10]}},
+                    'properties': {'transitions': {'n_buildings': [100], 'to_damage_state': [10, 80, 10]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -282,7 +282,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
             legendEntries: [{
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [80, 20, 0, 0]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [90, 10, 0, 0]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -292,11 +292,30 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage 80/20/0/0'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>90</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 80, 80, 10]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 40, 40, 10]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -306,11 +325,30 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage 10/80/80/10'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>10</td>
+                        <td>40</td>
+                        <td>40</td>
+                        <td>10</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 20, 80]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 10, 90]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -320,7 +358,26 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage 0/0/20/80'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>10</td>
+                        <td>90</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');

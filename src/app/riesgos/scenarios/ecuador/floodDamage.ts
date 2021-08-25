@@ -67,7 +67,7 @@ export class FlooddamageProcess extends WpsProcess implements WizardableProcess 
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle',
-            wikiLink: 'Flood'
+            wikiLink: 'FloodWiki'
         };
     }
 
@@ -82,7 +82,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
         reference: false,
         type: 'complex',
         format: 'application/vnd.geo+json',
-        description: 'geojson with damage to manzanas',
+        description: 'floodDamageDescription',
         name: 'Flood damage',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {

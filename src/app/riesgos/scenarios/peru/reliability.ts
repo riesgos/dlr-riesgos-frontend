@@ -1,10 +1,8 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { vei } from '../ecuador/lahar';
 import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
@@ -23,7 +21,7 @@ export const countryPeru: WpsData & Product = {
         description: 'What country are we working in?',
         reference: false,
         type: 'literal',
-        format: 'application/text'
+        format: 'text/plain'
     },
     value: 'peru'
 };
@@ -38,7 +36,7 @@ export const hazardEqPeru: WpsData & Product = {
         description: 'What hazard are we dealing with?',
         reference: false,
         type: 'literal',
-        format: 'application/text'
+        format: 'text/plain'
     },
     value: 'earthquake'
 };
@@ -129,8 +127,8 @@ export class EqReliabilityPeru extends WpsProcess implements WizardableProcess {
             [damageConsumerAreasPeru].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess',
             'Process for evaluating the reliability of infrastructure networks',
-            'http://91.250.85.221/wps/WebProcessingService',
-            '1.0.0',
+            'https://riesgos.52north.org/javaps/service',
+            '2.0.0',
             http,
             new ProcessStateUnavailable(),
             cache

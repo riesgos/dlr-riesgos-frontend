@@ -3,9 +3,8 @@ import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { laharShakemap } from './lahar';
 import { Observable } from 'rxjs';
 import { laharVelocityShakemapRef, laharHeightShakemapRef } from './laharWrapper';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
@@ -21,7 +20,7 @@ export const countryEcuador: WpsData & Product = {
         description: 'What country are we working in?',
         reference: false,
         type: 'literal',
-        format: 'application/text',
+        format: 'text/plain'
     },
     value: 'ecuador'
 };
@@ -36,7 +35,7 @@ export const hazardLahar: WpsData & Product = {
         description: 'What hazard are we dealing with?',
         reference: false,
         type: 'literal',
-        format: 'application/text',
+        format: 'text/plain'
     },
     value: 'lahar'
 };
@@ -154,8 +153,8 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             [damageConsumerAreasEcuador].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess',
             'Process for evaluating the reliability of infrastructure networks',
-            'http://91.250.85.221/wps/WebProcessingService',
-            '1.0.0',
+            'https://riesgos.52north.org/javaps/service',
+            '2.0.0',
             http,
             new ProcessStateUnavailable(),
             cache

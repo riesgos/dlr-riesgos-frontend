@@ -61,6 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
       map(params => {
         switch (params.get('id')) {
           case 'c1':
+          case 'c2':
             return 'Chile';
           case 'e1':
             return 'Ecuador';

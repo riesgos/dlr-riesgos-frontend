@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
 import { RiesgosScenarioState, isRiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
-import { RestaringScenario, ProductsProvided, RiesgosDataUpdate } from 'src/app/riesgos/riesgos.actions';
+import { RestaringScenario, ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { downloadJson, parseFile } from 'src/app/helpers/others';
 import { map, tap } from 'rxjs/operators';
@@ -14,11 +14,11 @@ import { environment } from 'src/environments/environment';
 
 
 @Component({
-    selector: 'ukis-save-buttons',
-    templateUrl: './save-button.component.html',
-    styleUrls: ['./save-button.component.scss']
+    selector: 'ukis-helper-buttons',
+    templateUrl: './helper-buttons.component.html',
+    styleUrls: ['./helper-buttons.component.scss']
 })
-export class SaveButtonComponent implements OnInit {
+export class HelperButtonsComponent implements OnInit {
 
     isRiesgos2: boolean;
     showResetModal = false;

@@ -9,10 +9,12 @@ export function createGroupedBarchart(
 
     let dataLength = 0;
     for (const key in data) {
-        dataLength += data[key].length;
+        for (const el of data[key]) {
+            dataLength += el.value;
+        }
     }
     if (dataLength === 0) {
-        anchorSelector.innerHTML = '<p>--</p>';
+        anchorSelector.innerHTML = '<p>{{ NoData }}</p>';
         return;
     }
 
@@ -111,7 +113,7 @@ export function createBarchart(
             dataLength += dp.value;
         }
         if (dataLength === 0) {
-            anchorSelector.innerHTML = '<p>--</p>';
+            anchorSelector.innerHTML = '<p>{{ NoData }}</p>';
             return;
         }
 
@@ -157,7 +159,7 @@ export function createBigBarchart(
             dataLength += dp.value;
         }
         if (dataLength === 0) {
-            anchorSelector.innerHTML = '<p>--</p>';
+            anchorSelector.innerHTML = '<p>{{ NoData }}</p>';
             return;
         }
 
@@ -187,7 +189,7 @@ export function createBigBarchart(
             margin: {
                 l: 50,
                 r: 30,
-                b: 130,
+                b: 30,
                 t: 15,
                 pad: 5
             },
@@ -200,7 +202,7 @@ export function createConfusionMatrix(
     anchorSelector: any, data: number[][], width: number, height: number, xLabel: string, yLabel: string) {
 
     if (data.length === 0) {
-        anchorSelector.innerHTML = '<p>--</p>';
+        anchorSelector.innerHTML = '<p>{{ NoData }}</p>';
         return;
     }
     

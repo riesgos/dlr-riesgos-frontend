@@ -6,7 +6,7 @@ import {
 import { VectorLayerProduct, BboxLayerProduct, BboxLayerDescription } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '@dlr-eoc/utils-ogc';
-import { toDecimalPlaces, redGreenRange, linInterpolateXY } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, redGreenRange, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
@@ -33,7 +33,7 @@ export class InputBoundingbox implements BboxUconfProduct, BboxLayerProduct, Wps
             wizardProperties: {
                 name: 'AOI',
                 fieldtype: 'bbox',
-                description: 'Please select an area of interest',
+                description: 'AOI_selection',
             },
         },
         this.value = null;
@@ -54,7 +54,7 @@ export const mmin: StringUconfProduct & WpsData = {
         reference: false,
         defaultValue: '6.0',
     },
-    value: null
+    value: '6.0'
 };
 
 
@@ -181,7 +181,7 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
         title: '',
         icon: 'earthquake',
         name: 'available earthquakes',
-        description: 'Catalog data',
+        description: 'CatalogueData',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
@@ -193,8 +193,8 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                 const depth = props['origin.depth.value'];
 
                 const text = depth + ' km';
-                let radius = linInterpolateXY(7, 5, 9, 20, magnitude);
-                const [r, g, b] = redGreenRange(5, 60, depth);
+                let radius = linInterpolateXY(5, 10, 60, 5, depth);
+                const [r, g, b] = greenRedRange(6, 9, magnitude);
 
                 if (selected) {
                     radius += 4;
@@ -237,7 +237,7 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 3.0,
+                        'magnitude.mag.value': 6.0,
                         'origin.depth.value': 40.0
                     },
                     "geometry": {
@@ -245,7 +245,20 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 3, depth 40'
+                text: 'Mag. 6'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 7.0,
+                        'origin.depth.value': 40.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'Mag. 7'
             }, {
                 feature: {
                     "type": "Feature",
@@ -258,33 +271,20 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 8, depth 40'
+                text: 'Mag. 8'
             }, {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 3.0,
-                        'origin.depth.value': 20.0
+                        'magnitude.mag.value': 9.0,
+                        'origin.depth.value': 40.0
                     },
                     "geometry": {
                         "type": "Point",
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 3, depth 20'
-            }, {
-                feature: {
-                    "type": "Feature",
-                    "properties": {
-                        'magnitude.mag.value': 8.0,
-                        'origin.depth.value': 20.0
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [ 5.625, 50.958426723359935 ]
-                      }
-                  },
-                text: 'Magnitude 8, depth 20'
+                text: 'Mag. 9'
             }]
         }
     },
@@ -313,7 +313,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
         );
 
         this.wizardProperties = {
-            shape: 'earthquake',
+            shape: 'bullseye',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             wikiLink: 'quakeledger'

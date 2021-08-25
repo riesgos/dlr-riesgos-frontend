@@ -251,7 +251,8 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
     this.wizardProperties = {
       shape: 'building',
       providerName: 'GFZ',
-      providerUrl: 'https://www.gfz-potsdam.de/en/'
+      providerUrl: 'https://www.gfz-potsdam.de/en/',
+      wikiLink: 'Vulnerability'
     };
   }
 
@@ -293,7 +294,8 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
     this.wizardProperties = {
       shape: 'building',
       providerName: 'GFZ',
-      providerUrl: 'https://www.gfz-potsdam.de/en/'
+      providerUrl: 'https://www.gfz-potsdam.de/en/',
+      wikiLink: 'Vulnerability'
     };
   }
 

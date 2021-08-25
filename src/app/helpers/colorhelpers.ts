@@ -28,13 +28,15 @@ export function greenYellowRedRange(startVal: number, endVal: number, currentVal
 
 
 export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-    const hue = linInterpolateXY(startVal, 0, endVal, 110, currentVal);
+    let hue = linInterpolateXY(startVal, -30, endVal, 110, currentVal);
+    if (hue < 0) {hue = 360 + hue; }
     const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
     return [rgb.r, rgb.g, rgb.b];
 }
 
 export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-    const hue = linInterpolateXY(startVal, 110, endVal, 0, currentVal);
+    let hue = linInterpolateXY(startVal, 110, endVal, -30, currentVal);
+    if (hue < 0) {hue = 360 + hue; }
     const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
     return [rgb.r, rgb.g, rgb.b];
 }

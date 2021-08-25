@@ -44,7 +44,7 @@
   <div class="clr-row scenarios-view">
     <div class="center">
       <span>
-        <a href="http://riesgos.de/en/" target="_blank">
+        <a [href]="'https://riesgos.de/' + (translator.currentLang | lowercase)" target="_blank">
           <img [src]="'/assets/logos/riesgos_base_small_' + (translator.currentLang | lowercase) + '.svg'" alt="{{'website' | translate}}" style="height: 100px;">
         </a>
       </span>
@@ -73,7 +73,7 @@
         </div>
   
         <div class="consortium-logos clr-col-1 clr-col-sm-auto">
-          <a href="https://www.awi.de/en.html" target="_blank">
+          <a href="https://www.awi.de/en/" target="_blank">
             <img src="/assets/logos/AWI.png" width="100">
           </a>
         </div>
@@ -113,14 +113,20 @@
             <img src="/assets/logos/dialogik.png" width="100">
           </a>
         </div>
+
+        <div class="consortium-logos clr-col-1 clr-col-sm-auto">
+          <a href="https://www.slu-web.eu/" target="_blank">
+            <img src="/assets/logos/slu.png" width="100">
+          </a>
+        </div>
   
       </div>
     </div>
   
     <div class="scenario-footer-second">
       {{ 'Made with ' | translate }}
-      <a href="https://www.dlr.de/eoc/desktopdefault.aspx/tabid-5413/10560_read-21914" target="_blank" alt="link to dlr ukis">
-        <clr-icon shape="ukis" class="is-solid" size="33" alt="ukis icon"></clr-icon>
+      <a href="https://github.com/dlr-eoc/ukis-frontend-libraries" target="_blank" alt="link to dlr ukis">
+        <clr-icon shape="ukis" class="is-solid" size="33" alt="ukis icon" style="color: black;"></clr-icon>
       </a>
     </div>
   </footer>

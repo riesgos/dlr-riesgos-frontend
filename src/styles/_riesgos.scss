@@ -27,6 +27,11 @@
  *******************************************************/
 
 .table-small {
+    margin-top: 0;
+    th {
+        font-size: 0.4rem !important;
+        padding: .2rem !important;
+    }
     td {
         font-size: 0.4rem !important;
         padding: .2rem !important;
@@ -47,3 +52,4 @@
 .tabsbody p, .tabsbody li, .ol-popup-content p, .ol-popup-content li {
     font-size: 0.6rem !important;
 }
+

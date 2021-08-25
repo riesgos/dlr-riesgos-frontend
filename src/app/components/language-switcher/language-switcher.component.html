@@ -1,6 +1,6 @@
 <clr-dropdown>
     <button class="btn btn-outline" aria-label="dropdown" clrDropdownTrigger>
-        {{translator.currentLang}}
+        {{translator.getCurrentLangSync()}}
         <clr-icon shape="caret down"></clr-icon>
     </button>
     <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">

@@ -1,17 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostBinding } from '@angular/core';
-import { Graph } from 'graphlib';
 import {
   LayerGroup, Layer, RasterLayer, isRasterLayertype, WmsLayertype, WmtsLayertype, isRasterLayer,
   isVectorLayer, LayersService
 } from '@dlr-eoc/services-layers';
 import { MapStateService } from '@dlr-eoc/services-map-state';
-import {  } from '@dlr-eoc/services-layers';
+import { } from '@dlr-eoc/services-layers';
 import { ProductLayer } from '../../map/map.types';
-import { Store, select } from '@ngrx/store';
-import { State } from 'src/app/ngrx_register';
-import { withLatestFrom, map } from 'rxjs/operators';
-import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { getGraph } from 'src/app/riesgos/riesgos.selectors';
 import { state, style, transition, animate, trigger } from '@angular/animations';
 import { ThemeService, ThemeMetadata } from 'src/app/services/theme/theme.service';
 
@@ -119,11 +113,11 @@ export class RiesgosLayerentryComponent implements OnInit {
   constructor(
     //private store: Store<State>
     private themeService: ThemeService
-    ) {
-      this.themeService.getActiveTheme().subscribe((tm: ThemeMetadata) => {
-        this.theme = tm.name;
+  ) {
+    this.themeService.getActiveTheme().subscribe((tm: ThemeMetadata) => {
+      this.theme = tm.name;
     });
-    }
+  }
 
   getFocusState(): string {
     let out = '';
@@ -355,7 +349,7 @@ export class RiesgosLayerentryComponent implements OnInit {
   getExpandShape() {
     // return this.openProperties ? 'down' : 'right';
     if (this.layer.icon) {
-      return {transform: 'rotate(0deg)'};
+      return { transform: 'rotate(0deg)' };
     } else {
       return this.expanded ? { transform: 'rotate(90deg)' } : { transform: 'rotate(0deg)' };
     }

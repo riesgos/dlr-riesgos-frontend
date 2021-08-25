@@ -162,17 +162,31 @@ const eqTransitionPeruProps: VectorLayerProperties = {
             legendEntries: [{
                 feature: {
                     "type": "Feature",
-                    "properties": {'transitions': {'n_buildings': 100, 'to_damage_state': [10, 80, 10]}},
+                    "properties": { 'transitions': { 'n_buildings': [100], 'from_damage_state': [0, 0, 0, 0, 0], 'to_damage_state': [90, 10, 0, 0, 0] } },
                     "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [5.627918243408203, 50.963075942052164],
+                            [5.627875328063965, 50.958886259879264],
+                            [5.635471343994141, 50.95634523633128],
+                            [5.627918243408203, 50.963075942052164]]]
                     }
                 },
-                text: 'Transitions'
+                text: `{{ SmallDamageChange }}`,
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": { 'transitions': { 'n_buildings': [100], 'from_damage_state': [0, 0, 0, 0, 0], 'to_damage_state': [0, 0, 0, 10, 90] } },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [5.627918243408203, 50.963075942052164],
+                            [5.627875328063965, 50.958886259879264],
+                            [5.635471343994141, 50.95634523633128],
+                            [5.627918243408203, 50.963075942052164]]]
+                    }
+                },
+                text: '{{ LargeDamageChange }}',
             }],
             text: (props: object) => {
 
@@ -302,7 +316,26 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 90/10/0/0'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>90</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     "type": "Feature",
@@ -316,7 +349,26 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 0/50/50/0'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>50</td>
+                        <td>50</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     "type": "Feature",
@@ -330,7 +382,26 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 0/0/20/80'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>20</td>
+                        <td>80</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -395,7 +466,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                   return comp;
             }
         },
-        description: 'Number of goods exposed to a threat'
+        description: 'NumberGoodsInDamageState'
 };
 
 export const eqDamagePeruM: WpsData & MultiVectorLayerProduct = {
@@ -443,7 +514,7 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
     constructor(http: HttpClient, cache: Cache) {
         this.state = new ProcessStateUnavailable();
         this.uid = 'EQ-Deus';
-        this.name = 'Multihazard damage estimation / EQ';
+        this.name = 'Multihazard_damage_estimation/Earthquake';
         this.requiredProducts = [eqShakemapRefPeru, initialExposurePeru].map(p => p.uid);
         this.providedProducts = [eqDamagePeruM, eqUpdatedExposureRefPeru].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected earthquake.';

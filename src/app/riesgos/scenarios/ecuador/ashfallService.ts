@@ -119,7 +119,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
 
                     const selectedProperties = {
                         '{{ Thickness }}': thicknessText,
-                        VEI: toDecimalPlaces(properties['vei'] as number, 1),
+                        '{{ VEI }}': toDecimalPlaces(properties['vei'] as number, 1),
                         '{{ Expected_load }}': `${load} kPa`,
                         '{{ Probability }}': properties['prob'] + ' %'
                     };
@@ -170,11 +170,11 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
     constructor(private http: HttpClient, cache: Cache) {
         super(
             'ashfall-service',
-            'Ashfall Service',
+            'AshfallService',
             [vei.uid, probability.uid],
             [ashfall.uid, ashfallPoint.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
-            'Ashfall Service description',
+            'AshfallServiceDescription',
             'http://riesgos.dlr.de/wps/WebProcessingService?',
             '1.0.0',
             http,
@@ -184,7 +184,8 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         this.wizardProperties = {
             providerName: 'IGN',
             providerUrl: 'https://www.igepn.edu.ec',
-            shape: 'volcanoe'
+            shape: 'volcanoe',
+            wikiLink: 'Lahar'
         };
     }
 

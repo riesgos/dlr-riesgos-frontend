@@ -103,10 +103,12 @@ export class WpsProcess implements ExecutableProcess {
     private wpsClient: WpsClient;
 
     constructor(
+        /** unique for all of riesgos */
         readonly uid: string,
         readonly name: string,
         readonly requiredProducts: string[],
         readonly providedProducts: string[],
+        /** processes name on server; unique on remote server */
         readonly id: string,
         readonly description: string,
         readonly url: string,

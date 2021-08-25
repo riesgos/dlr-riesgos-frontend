@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { SimplifiedTranslationService, RiesgosLang } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 @Component({
   selector: 'ukis-language-switcher',
@@ -10,18 +10,14 @@ export class LanguageSwitcherComponent implements OnInit {
 
 
   constructor(
-    public translator: TranslateService
-  ) {
-    this.translator.setDefaultLang('EN');
-    this.translator.getTranslation('ES');
-    this.translator.use('ES');
-  }
+    public translator: SimplifiedTranslationService
+  ) {}
 
   ngOnInit() {
   }
 
-  setLanguage(lang: string): void {
-    this.translator.use(lang);
+  setLanguage(lang: RiesgosLang): void {
+    this.translator.setCurrentLang(lang);
   }
 
 }

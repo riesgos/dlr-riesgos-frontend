@@ -1,10 +1,10 @@
 <clr-input-container [class.clr-error]="control.invalid && (control.dirty || control.touched)">
     
-    <label class="clr-col-md-3">
+    <label class="clr-col">
       {{parameter.description.wizardProperties.name | translate}}:
     </label>
 
-    <input class="clr-col-md-9" type="text" clrInput [formControl]="control" [value]="control.value" />
+    <input class="clr-col" type="text" clrInput [formControl]="control" [value]="control.value" />
 
     <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
     <clr-control-error>Invalid input</clr-control-error>

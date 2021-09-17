@@ -37,7 +37,7 @@ export const VeiProvider: WizardableProcess & ExecutableProcess = {
         providerName: '',
         providerUrl: '',
         shape: 'volcanoe',
-        wikiLink: 'LaharWiki'
+        wikiLink: 'VeiSelection'
     },
     execute: (products: Product[]): Observable<Product[]> => {
         const selectedVeiProd = products.find(p => p.uid === selectableVei.uid);

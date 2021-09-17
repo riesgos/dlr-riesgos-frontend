@@ -11,6 +11,8 @@
     "geomer": "geomer",
     "IGN": "IG-EPN: Instituto Geofísico",
 
+    "VeiSelection": "VEI selection",
+
 
     "GroundmotionService": "Ground motion simulation",
     "EqSimulationShortText": "Simulates the ground motion caused by the selected earthquake.",
@@ -32,7 +34,7 @@
     "Multihazard_damage_estimation/Earthquake": "Earthquake damage",
     "Multihazard_damage_estimation/Tsunami": "Tsunami damage",
     "Multihazard_damage_estimation/TsunamiEarthquake": "Tsunami and earthquake damage",
-    
+    "ExposureLahar": "Exposure",
 
     "VEI Selection": "VEI selection",
     "AshfallService": "Ashfall simulation",

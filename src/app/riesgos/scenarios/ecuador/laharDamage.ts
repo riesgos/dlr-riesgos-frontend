@@ -497,7 +497,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
         shape: 'dot-circle',
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
-        wikiLink: 'Vulnerability'
+        wikiLink: 'ExposureLahar'
     };
 
     private deus: Deus;

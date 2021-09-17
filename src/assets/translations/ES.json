@@ -11,10 +11,10 @@
     "p1": "Peru", 
     "e1": "Ecuador",
 
-    "DLR": "DLR - Centro Aeroespacial Alemán",
-    "GFZ": "GFZ - Centro Alemán de Geoinvestigaciones",
-    "AWI": "AWI - Instituto Alfred Wegener",
-    "TUM": "TUM - Universidad Técnica de Múnich",
+    "DLR": "DLR: Centro Aeroespacial Alemán",
+    "GFZ": "GFZ: Centro Alemán de Geoinvestigaciones",
+    "AWI": "AWI: Instituto Alfred Wegener",
+    "TUM": "TUM: Universidad Técnica de Múnich",
     "geomer": "geomer",
     "IGN": "IG-EPN: Instituto Geofísico",
 
@@ -247,6 +247,8 @@
     "mwh": "Amplitud máxima del tsunami",
     "mwhLand": "Profundidad máxima de inundación",
 
+    "VeiSelection": "Selección del VEI",
+
     "Amount of goods that are exposed to a hazard.": "Exposición",
 
     "You can also select a boundingbox by clicking and dragging on the map.": "También puede seleccionar un cuadro delimitador haciendo clic y arrastrando en el mapa.",
@@ -316,7 +318,7 @@
     "VEI Selection": "Selección del VEI",
     "VEI": "VEI",
 
-
+    "ExposureLahar": "Exposición",
     "intensity": "intensidad",
     "probability": "probabilidad",
     "direction": "dirección",

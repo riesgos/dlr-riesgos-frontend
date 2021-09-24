@@ -9,7 +9,7 @@ import { UtilStoreService } from '@dlr-eoc/services-util-store';
 export class TextModalComponent implements OnInit {
 
   showModal: boolean;
-  showModalKey = 'WDS_SM';
+  showModalKey = 'showModal';
 
   constructor(private storageService: UtilStoreService) { }
 

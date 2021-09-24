@@ -1,0 +1,96 @@
+/**
+ * NOTE:
+ * This css file does not contain any width- or height-statements (except for the top level .preview-container).
+ * That's because concrete width and height is being set via the PrintMapComponent based on instructions from PrintService.
+ * The css here only contains information about the *relative arrangement* of elements, not about their absolute sizes.
+ */
+
+
+.preview-container {
+  display: inline-table;
+  position: relative;
+  border: solid 1px var(--clr-forms-border-color, #b3b3b3);
+  width: 100%;
+  height: 100%;
+
+  .fullPage {
+  
+    display: block;
+    position: relative;
+    overflow: hidden;
+
+    outline: darkgray;
+    outline-style: solid;
+    outline-style: inset;
+    outline-width: 5px;
+    
+  
+    .innerPage {
+      position: relative;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+    
+      .inner-page-title {
+      }
+    
+      .mapContainer {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        flex-direction: row;
+        .map {
+        }
+        .legend {
+          margin-left: 2%;
+          background-color: rgba(224, 221, 221, 0.575);
+          border-radius: 1%;
+          .legendEntry {
+            overflow: hidden;
+            padding: 2%;
+          }
+        }
+      }
+  
+      .footerContainer {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        flex-direction: row;
+        // justify-content: space-between;
+
+        .description {
+          background-color: rgba(224, 221, 221, 0.575);
+          border-radius: 1%;
+          p {
+            margin: 1%;
+          }
+        }
+      
+        .pdfFooter {
+          margin-left: 2%;
+        }
+      }
+    }
+    
+  
+  }  
+}
+
+
+.compassElement {
+  background: hsla(0,0%,100%,.4);
+  width: 3%;
+  padding: 0.2%;
+  left: 2%;
+  top: 2%;
+  .compassSpan {
+    background-color: var(--ukis-ol-control-bg-color);
+    text-align: center;
+    color: white;
+    border-radius: 3px;
+    width: 100%;
+    display: block;
+  }
+}

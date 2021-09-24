@@ -1,6 +1,5 @@
-import { Process, WpsProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsVerion } from '@dlr-eoc/services-ogc';
-import { HttpClient } from '@angular/common/http';
+import { Process } from 'src/app/riesgos/riesgos.datatypes';
+
 
 
 export type shape = 'dot-circle' | 'earthquake' | 'avalance' | 'tsunami' | 'volcanoe'

@@ -29,7 +29,7 @@ export class FormFeatureSelectFieldComponent implements OnInit {
   constructor(private store: Store<State>) { }
 
   ngOnInit() {
-    this.options = this.parameter.description.options;
+    this.options = this.parameter.description.featureSelectionOptions;
     const startValue = this.control.value || this.parameter.description.defaultValue;
 
     this.stringOptions = Object.keys(this.options);

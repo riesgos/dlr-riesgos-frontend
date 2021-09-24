@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';
@@ -15,6 +15,7 @@ const latPeru: WpsData & Product = {
     uid: 'auto_lat_peru',
     description: {
         id: 'lat',
+        title: 'lat',
         reference: false,
         type: 'literal',
     },
@@ -25,6 +26,7 @@ const lonPeru: WpsData & Product = {
     uid: 'auto_lon_peru',
     description: {
         id: 'lon',
+        title: 'lon',
         reference: false,
         type: 'literal',
     },
@@ -35,6 +37,7 @@ const magPeru: WpsData & Product = {
     uid: 'auto_mag_peru',
     description: {
         id: 'mag',
+        title: 'mag',
         reference: false,
         type: 'literal',
     },
@@ -46,6 +49,7 @@ export const tsWmsPeru: WpsData & WmsLayerProduct = {
     uid: 'get_scenario_epiCenter_peru',
     description: {
         id: 'epiCenter',
+        title: 'epiCenter',
         name: 'ts-wms',
         icon: 'tsunami',
         reference: false,
@@ -86,6 +90,7 @@ export const tsShakemapPeru: WpsData & Product = {
     uid: 'ts_shakemap_peru',
     description: {
         id: 'tsunamap',
+        title: 'tsunamap',
         reference: true,
         type: 'complex',
         format: 'application/xml'
@@ -117,12 +122,13 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
     uid = 'ts-service_peru';
     name = 'TS-Service';
     state: ProcessState;
-    description = 'Simulates a tsunami based on the earlier selected earthquake-parameters.';
+    description = 'TsShortDescription';
 
     wizardProperties = {
-        providerName: 'Alfred Wegener Institute',
+        providerName: 'AWI',
         providerUrl: 'https://www.awi.de/en/',
-        shape: 'tsunami' as 'tsunami'
+        shape: 'tsunami' as 'tsunami',
+        wikiLink: 'TsunamiWiki'
     };
 
     private tsShakemapService: TsShakemapServicePeru;

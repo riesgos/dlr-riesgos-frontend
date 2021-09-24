@@ -1,10 +1,10 @@
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { ninetyPercentLowerThan, toDecimalPlaces, greenRedRange, weightedDamage } from 'src/app/helpers/colorhelpers';
-import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
+import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
+import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { eqUpdatedExposureRefPeru } from './eqDeus';
+import { eqDamagePeruM, eqUpdatedExposureRefPeru } from './eqDeus';
 import { schemaPeru } from './exposure';
 import { tsShakemapPeru } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -13,9 +13,13 @@ import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './modelProp';
 import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
+import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
+import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import { maxDamage$ } from '../chile/constants';
 
 
 
@@ -23,6 +27,7 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_damage_peru',
     description: {
         id: 'damage',
+        title: '',
         reference: false,
         icon: 'dot-circle',
         type: 'complex',
@@ -31,7 +36,7 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value / 1000000);
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$ );
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.5],
@@ -55,7 +60,7 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Perdida 100.000 USD'
+                text: 'Loss 100000 USD'
             }, {
                 feature: {
                     'type': 'Feature',
@@ -69,7 +74,7 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Perdida 500.000 USD'
+                text: 'Loss 500000 USD'
             }, {
                 feature: {
                     'type': 'Feature',
@@ -83,20 +88,32 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Perdida 1000.000 USD'
+                text: 'Loss 1000000 USD'
             }],
             text: (props: object) => {
-                return `<h4>Perdida </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4>{{ Loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
-            summary: (value: [FeatureCollection]) => {
-                const features = value[0].features;
+            summary: (value: FeatureCollection | FeatureCollection[]) => {
+                let features;
+                if (Array.isArray(value)) {
+                    features = value[0].features;
+                } else {
+                    features = value.features;
+                }
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
-                return createKeyValueTableHtml('', {'Daño total': totalDamageFormatted}, 'medium');
+
+                return {
+                    component: InfoTableComponentComponent,
+                    inputs: {
+                        title: 'Total damage',
+                        data: [[{ value: 'Total damage'}, { value: totalDamageFormatted }]]
+                    }
+                };
             }
         },
-        description: 'Concrete damage in USD.'
+        description: 'Damage in USD'
     },
     value: null
 };
@@ -105,6 +122,7 @@ export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_transition_peru',
     description: {
         id: 'transition',
+        title: '',
         icon: 'dot-circle',
         reference: false,
         type: 'complex',
@@ -114,20 +132,29 @@ export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = Array(7).fill(0);
-                let total = 0;
+                const I = props['transitions']['n_buildings'].length;
+                const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
+
+                const toStates = props['transitions']['to_damage_state'];
+                const fromStates = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
-                const states = props['transitions']['to_damage_state'];
-                for (let i = 0; i < states.length; i++) {
-                    const nr = nrBuildings[i];
-                    const state = states[i];
-                    counts[state] += nr;
-                    total += nr;
+
+                let sumTo = 0;
+                let sumFrom = 0;
+                let sumBuildings = 0;
+                for (let i = 0; i < I; i++) {
+                    sumBuildings += nrBuildings[i];
+                    sumTo += toStates[i] * nrBuildings[i];
+                    sumFrom += fromStates[i] * nrBuildings[i];
                 }
+                const meanStateFrom = sumFrom / sumBuildings;
+                const meanStateTo = sumTo / sumBuildings;
+
+                const weightedChange = (meanStateTo - meanStateFrom) / (7 - meanStateFrom);
 
                 let r; let g; let b;
                 if (total > 0) {
-                    [r, g, b] = greenRedRange(0, 7, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
                     r = g = b = 0;
                 }
@@ -142,6 +169,35 @@ export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
                   })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": { 'transitions': { 'n_buildings': [100], 'from_damage_state': [0, 0, 0, 0, 0, 0, 0], 'to_damage_state': [90, 10, 0, 0, 0, 0] } },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [5.627918243408203, 50.963075942052164],
+                            [5.627875328063965, 50.958886259879264],
+                            [5.635471343994141, 50.95634523633128],
+                            [5.627918243408203, 50.963075942052164]]]
+                    }
+                },
+                text: `{{ SmallDamageChange }}`,
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": { 'transitions': { 'n_buildings': [100], 'from_damage_state': [0, 0, 0, 0, 0, 0, 0], 'to_damage_state': [0, 0, 0, 0, 0, 10, 90] } },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [5.627918243408203, 50.963075942052164],
+                            [5.627875328063965, 50.958886259879264],
+                            [5.635471343994141, 50.95634523633128],
+                            [5.627918243408203, 50.963075942052164]]]
+                    }
+                },
+                text: '{{ LargeDamageChange }}',
+            }],
             text: (props: object) => {
 
                 const matrix = zeros(6, 7);
@@ -159,22 +215,28 @@ export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>desde\\a</b>';
+                            labeledMatrix[r][c] = '<b>{{ from_to }}</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 2);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
                         }
                     }
                 }
 
-                return `<h4>Transiciones </h4>${createTableHtml(labeledMatrix, 'medium')}`;
+                return `<h4>{{ Transitions }}</h4>${createTableHtml(labeledMatrix, 'medium')}`;
             },
-            summary: (value: [FeatureCollection]) => {
+            summary: (value: FeatureCollection | FeatureCollection[]) => {
+                let features;
+                if (Array.isArray(value)) {
+                    features = value[0].features;
+                } else {
+                    features = value.features;
+                }
                 const matrix = zeros(6, 7);
-                for (const feature of value[0].features) {
+                for (const feature of features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
                     const nrBuildings = feature.properties['transitions']['n_buildings'];
                     const toDamageState = feature.properties['transitions']['to_damage_state'];
@@ -190,21 +252,27 @@ export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>desde\\a</b>';
+                            labeledMatrix[r][c] = { value: 'from_to', style: {'font-weight': 'bold'}};
                         } else if (r === 0) {
-                            labeledMatrix[r][c] = `<b>${c - 1}</b>`;
+                            labeledMatrix[r][c] =  { value: `${c - 1}`, style: {'font-weight': 'bold'}};
                         } else if (c === 0) {
-                            labeledMatrix[r][c] = `<b>${r - 1}</b>`;
+                            labeledMatrix[r][c] =  { value: `${r - 1}`, style: {'font-weight': 'bold'}};
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 0);
+                            labeledMatrix[r][c] =  { value: toDecimalPlaces(matrix[r-1][c-1], 0) };
                         }
                     }
                 }
 
-                return createTableHtml(labeledMatrix, 'medium');
+                return {
+                    component: InfoTableComponentComponent,
+                    inputs: {
+                        title: 'Transitions',
+                        data: labeledMatrix
+                    }
+                };
             }
         },
-        description: 'Change from previous state to current one'
+        description: 'Change from previous state'
     },
     value: null
 };
@@ -213,6 +281,7 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_updated_exposure_peru',
     description: {
         id: 'updated_exposure',
+        title: '',
         icon: 'dot-circle',
         reference: false,
         type: 'complex',
@@ -240,7 +309,7 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                     total += nrBuildings;
                 }
 
-                const dr = weightedDamage(Object.values(counts));
+                const dr = weightedDamage(Object.values(counts)) / 6;
 
                 let r: number;
                 let g: number;
@@ -274,7 +343,30 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Estados de daño: 90/10/0/0/0/0'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                        <th>D4</th>
+                        <th>D5</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>90</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     'type': 'Feature',
@@ -288,7 +380,30 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Estados de daño: 0/10/40/40/10/0'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                        <th>D4</th>
+                        <th>D5</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>10</td>
+                        <td>40</td>
+                        <td>40</td>
+                        <td>10</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     'type': 'Feature',
@@ -302,47 +417,68 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Estados de daño: 0/0/0/0/20/80'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                        <th>D4</th>
+                        <th>D5</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>20</td>
+                        <td>80</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
-
                 const expo = props['expo'];
-                const counts = {
-                    'D0': 0,
-                    'D1': 0,
-                    'D2': 0,
-                    'D3': 0,
-                    'D4': 0,
-                    'D5': 0,
-                    'D6': 0
-                };
-                for (let i = 0; i < expo.Damage.length; i++) {
-                    const damageClass = expo.Damage[i];
-                    const nrBuildings = expo.Buildings[i];
-                    counts[damageClass] += nrBuildings;
-                }
-                const data: Bardata[] = [];
-                for (const damageClass in counts) {
-                    data.push({label: damageClass, value: counts[damageClass]});
-                }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
 
-                const legend = `
-                    <ul>
-                        <li><b>D0:</b> sin daños</li>
-                        <li><b>D1:</b> minor damage</li>
-                        <li><b>D2:</b> daño moderato</li>
-                        <li><b>D3:</b> major damage</li>
-                        <li><b>D4:</b> complete damage</li>
-                        <li><b>D5:</b> colapsod</li>
-                        <li><b>D6:</b> washed away</li>
-                    </ul>
-                `;
+                const data: {[groupName: string]: BarData[]} = {};
+                for (let i = 0; i < expo['Taxonomy'].length; i++) {
+                    const dmg = expo['Damage'][i];
+                    const tax = expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
+                    const bld = expo['Buildings'][i];
+                    if (!data[tax]) {
+                        data[tax] = [];
+                    }
+                    data[tax].push({
+                        label: dmg,
+                        value: bld
+                    });
+                }
 
-                return `<h4>Exposición actualizada</h4>${anchor.innerHTML}<br/>${legend}`;
+                for (const label in data) {
+                    if (data[label]) {
+                        data[label].sort((dp1, dp2) => dp1.label > dp2.label ? 1 : -1);
+                    }
+                }
+
+                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+
+                const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
+
+                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}{{StatesNotComparable}}`;
             },
-            summary: (value: [FeatureCollection]) => {
+            summary: (value: FeatureCollection | FeatureCollection[]) => {
+                let features;
+                if (Array.isArray(value)) {
+                    features = value[0].features;
+                } else {
+                    features = value.features;
+                }
                 const counts = {
                     'D0': 0,
                     'D1': 0,
@@ -352,17 +488,24 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                     'D5': 0,
                     'D6': 0
                 };
-                for (const feature of value[0].features) {
+                for (const feature of features) {
                     for (let i = 0; i < feature.properties.expo.Damage.length; i++) {
                         const damageClass = feature.properties.expo.Damage[i];
                         const nrBuildings = feature.properties.expo.Buildings[i];
                         counts[damageClass] += nrBuildings;
                     }
                 }
-                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+                const html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+                const comp: IDynamicComponent = {
+                    component: TranslatableStringComponent,
+                    inputs: {
+                      text: html
+                    }
+                  };
+                  return comp;
             }
         },
-        description: 'Amount of goods that are exposed to a hazard.'
+        description: 'NumberGoodsInDamageState'
     },
     value: null
 };
@@ -387,12 +530,12 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
     constructor(http: HttpClient, cache: Cache) {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
-        this.name = 'Multihazard damage estimation / TS';
-        this.requiredProducts = [tsShakemapPeru, eqUpdatedExposureRefPeru].map(p => p.uid);
+        this.name = 'Multihazard_damage_estimation/Tsunami';
+        this.requiredProducts = [eqDamagePeruM, tsShakemapPeru, eqUpdatedExposureRefPeru].map(p => p.uid);
         this.providedProducts = [tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru].map(p => p.uid);
-        this.description = 'This service returns damage caused by the selected earthquake.';
+        this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
-            providerName: 'Helmholtz Centre Potsdam',
+            providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle',
             wikiLink: 'Vulnerability'
@@ -407,6 +550,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
+        // Step 1.1: preparing vulnerability-service inputs
         const vulnerabilityInputs = [
             assetcategoryPeru,
             losscategoryPeru,
@@ -418,10 +562,12 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         ];
         const vulnerabilityOutputs = [fragilityRefPeru];
 
+        // Step 1.2: executing vulnerability-service
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
             .pipe(
                 switchMap((resultProducts: Product[]) => {
 
+                    // Step 2.1: preparing deus inputs
                     const fragility = resultProducts.find(prd => prd.uid === fragilityRefPeru.uid);
                     const shakemap = inputProducts.find(prd => prd.uid === tsShakemapPeru.uid);
                     const exposure = inputProducts.find(prd => prd.uid === eqUpdatedExposureRefPeru.uid);
@@ -451,7 +597,18 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
                         }
                     ];
                     const deusOutputs = outputProducts;
+
+                    // Step 2.2: executing deus
                     return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
+                }),
+                map((results: Product[]) => {
+                    // Step 3: adding losses-by-eq to losses-from-eq-to-tsunami
+                    const lossesByEq = inputProducts.find(ip => ip.uid === eqDamagePeruM.uid).value[0];
+                    const lossesFromEqToTsunami = results[0].value[0];
+                    for (let i = 0; i < lossesFromEqToTsunami.features.length; i++) {
+                        lossesFromEqToTsunami.features[i].properties['loss_value'] += lossesByEq.features[i].properties['loss_value'];
+                    }
+                    return results;
                 })
             );
     }

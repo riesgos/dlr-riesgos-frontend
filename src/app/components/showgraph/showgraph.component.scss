@@ -1,3 +1,7 @@
-.tabs-vertical > .nav .nav-link {
-    background-color: #e5e9ec;
+.dark .tabs-vertical > .nav .nav-link {
+    background-color: var(--clr-btn-primary-disabled-color);
+}
+
+.light .tabs-vertical > .nav .nav-link {
+    background-color: var(--clr-btn-primary-disabled-bg-color);
 }

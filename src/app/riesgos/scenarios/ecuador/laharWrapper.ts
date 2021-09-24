@@ -2,7 +2,7 @@ import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } fro
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -13,12 +13,12 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 export const laharHeightWms: WmsLayerProduct & Product = {
-    ... laharWms,
+    ...laharWms,
     description: {
-        ... laharWms.description,
+        ...laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'}, 'small');
+                return createKeyValueTableHtml('', { '{{ laharMaxDepth }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m' }, 'medium');
             } else {
                 return '';
             }
@@ -28,17 +28,17 @@ export const laharHeightWms: WmsLayerProduct & Product = {
 };
 
 export const laharHeightShakemapRef: WpsData & Product = {
-    ... laharShakemap,
+    ...laharShakemap,
     uid: 'LaharHeightShakemap'
 };
 
 export const laharVelocityWms: WmsLayerProduct & Product = {
-    ... laharWms,
+    ...laharWms,
     description: {
-        ... laharWms.description,
+        ...laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s'}, 'small');
+                return createKeyValueTableHtml('', { '{{ laharVelocity }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s' }, 'medium');
             } else {
                 return '';
             }
@@ -48,17 +48,17 @@ export const laharVelocityWms: WmsLayerProduct & Product = {
 };
 
 export const laharVelocityShakemapRef: WpsData & Product = {
-    ... laharShakemap,
+    ...laharShakemap,
     uid: 'LaharVelocityShakemap'
 };
 
 export const laharPressureWms: WmsLayerProduct & Product = {
-    ... laharWms,
+    ...laharWms,
     description: {
-        ... laharWms.description,
+        ...laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' kPa'}, 'small');
+                return createKeyValueTableHtml('', { '{{ laharPressure }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' kPa' }, 'medium');
             } else {
                 return '';
             }
@@ -68,12 +68,12 @@ export const laharPressureWms: WmsLayerProduct & Product = {
 };
 
 export const laharErosionWms: WmsLayerProduct & Product = {
-    ... laharWms,
+    ...laharWms,
     description: {
-        ... laharWms.description,
+        ...laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'}, 'small');
+                return createKeyValueTableHtml('', { '{{ laharErosion }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m' }, 'medium');
             } else {
                 return '';
             }
@@ -83,12 +83,12 @@ export const laharErosionWms: WmsLayerProduct & Product = {
 };
 
 export const laharDepositionWms: WmsLayerProduct & Product = {
-    ... laharWms,
+    ...laharWms,
     description: {
-        ... laharWms.description,
+        ...laharWms.description,
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'}, 'small');
+                return createKeyValueTableHtml('', { '{{ laharDeposition }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m' }, 'medium');
             } else {
                 return '';
             }
@@ -136,18 +136,18 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
         const veiV = inputs.find(prd => prd.uid === vei.uid);
 
         const heightProc$ = this.laharWps.execute(
-            [directionV, veiV, { ... parameter, value: 'MaxHeight' }], [laharHeightWms, laharHeightShakemapRef], doWhile);
+            [directionV, veiV, { ...parameter, value: 'MaxHeight' }], [laharHeightWms, laharHeightShakemapRef], doWhile);
         const velProc$ = this.laharWps.execute(
-            [directionV, veiV, { ... parameter, value: 'MaxVelocity' }], [laharVelocityWms, laharVelocityShakemapRef], doWhile);
-        const preassureProc$ = this.laharWps.execute(
-            [directionV, veiV, { ... parameter, value: 'MaxPressure' }], [laharPressureWms], doWhile);
+            [directionV, veiV, { ...parameter, value: 'MaxVelocity' }], [laharVelocityWms, laharVelocityShakemapRef], doWhile);
+        const pressureProc$ = this.laharWps.execute(
+            [directionV, veiV, { ...parameter, value: 'MaxPressure' }], [laharPressureWms], doWhile);
         const erosionProc$ = this.laharWps.execute(
-            [directionV, veiV, { ... parameter, value: 'MaxErosion' }], [laharErosionWms], doWhile);
+            [directionV, veiV, { ...parameter, value: 'MaxErosion' }], [laharErosionWms], doWhile);
         const depositionProc$ = this.laharWps.execute(
-            [directionV, veiV, { ... parameter, value: 'Deposition' }], [laharDepositionWms], doWhile);
+            [directionV, veiV, { ...parameter, value: 'Deposition' }], [laharDepositionWms], doWhile);
 
         // merge
-        return forkJoin([heightProc$, velProc$, preassureProc$, erosionProc$, depositionProc$]).pipe(
+        return forkJoin([heightProc$, velProc$, pressureProc$, erosionProc$, depositionProc$]).pipe(
             map((results: Product[][]) => {
                 const flattened: Product[] = [];
                 for (const result of results) {
@@ -155,21 +155,45 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
                         flattened.push(data);
                     }
                 }
-                if (veiV.value === 'VEI3') {
-                    const dirLetter = directionV.value === 'South' ? 'S' : 'N';
-                    const vals = [
-                        `http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s1200&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s3600&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s7200&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                    ];
-                    if (directionV.value === 'South') {
-                        vals.push(`http://91.250.85.221/geoserver/riesgos/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_${dirLetter}_VEI3_wgs_s18000&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+
+                const vals = [];
+                if (directionV.value === 'South') {
+                    vals.push(
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min10&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min20&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min40&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min60&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min80&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min100&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                    );
+                    if (veiV.value !== 'VEI4') {
+                        vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min120&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
                     }
-                    flattened.push({
-                        ... laharContoursWms,
-                        value: vals
-                    })
+                } else {
+                    vals.push(
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min10&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min20&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min40&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min60&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min80&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min100&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min120&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+                    );
+                    if (veiV.value !== 'VEI4') {
+                        vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min140&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+                        if (veiV.value !== 'VEI3') {
+                            vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min160&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+                            if (veiV.value !== 'VEI2') {
+                                vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min180&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+                            }
+                        }
+                    }
                 }
+                flattened.push({
+                    ...laharContoursWms,
+                    value: vals
+                });
+
                 return flattened;
             })
         );

@@ -6,27 +6,29 @@ import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, t
 import { Volcanus } from './volcanus';
 import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './ashfallService';
-import { WpsData, WpsDataDescription } from '@dlr-eoc/services-ogc';
-import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { WpsData, WpsDataDescription } from '@dlr-eoc/utils-ogc';
+import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
-import { Bardata, createBarchart } from 'src/app/helpers/d3charts';
-import { weightedDamage, greenRedRange, toDecimalPlaces, ninetyPercentLowerThan } from 'src/app/helpers/colorhelpers';
-import { createHeaderTableHtml, createTableHtml, createKeyValueTableHtml, zeros, filledMatrix, sum } from 'src/app/helpers/others';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { weightedDamage, greenRedRange, toDecimalPlaces, yellowBlueRange } from 'src/app/helpers/colorhelpers';
+import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
+import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
+import { maxDamage$ } from '../chile/constants';
 
 
 
 
-const ashfallDamageProps: VectorLayerProperties = {
-        name: 'ashfallDamage',
+const ashfallLossProps: VectorLayerProperties = {
+        name: 'ashfallLoss',
         icon: 'volcanoe',
         vectorLayerAttributes: {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value / 1000000);
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 0.5],
@@ -40,6 +42,20 @@ const ashfallDamageProps: VectorLayerProperties = {
             legendEntries: [{
                 feature: {
                     'type': 'Feature',
+                    'properties': {'loss_value': 100000},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Loss 100000 USD'
+            }, {
+                feature: {
+                    'type': 'Feature',
                     'properties': {'loss_value': 500000},
                     'geometry': {
                       'type': 'Polygon',
@@ -50,17 +66,42 @@ const ashfallDamageProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Perdida 500.000 USD'
+                text: 'Loss 500000 USD'
+            }, {
+                feature: {
+                    'type': 'Feature',
+                    'properties': {'loss_value': 1000000},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Loss 1000000 USD'
             }],
             text: (props: object) => {
-                return `<h4>Perdida </h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
             summary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
-                return createKeyValueTableHtml('', {'Daño total': totalDamageFormatted}, 'medium');
+
+                return {
+                    component: InfoTableComponentComponent,
+                    inputs: {
+                        title: 'Total_loss',
+                        data: [[ {
+                            value: 'Total_loss'
+                        }, {
+                            value: totalDamageFormatted
+                        }]]
+                    }
+                }
             }
         }
 };
@@ -72,20 +113,29 @@ const ashfallTransitionProps: VectorLayerProperties = {
             style: (feature: olFeature, resolution: number) => {
                 const props = feature.getProperties();
 
-                const counts = Array(4).fill(0);
-                let total = 0;
+                const I = props['transitions']['n_buildings'].length;
+                const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
+
+                const toStates = props['transitions']['to_damage_state'];
+                const fromStates = props['transitions']['from_damage_state'];
                 const nrBuildings = props['transitions']['n_buildings'];
-                const states = props['transitions']['to_damage_state'];
-                for (let i = 0; i < states.length; i++) {
-                    const nr = nrBuildings[i];
-                    const state = states[i];
-                    counts[state] += nr;
-                    total += nr;
+
+                let sumTo = 0;
+                let sumFrom = 0;
+                let sumBuildings = 0;
+                for (let i = 0; i < I; i++) {
+                    sumBuildings += nrBuildings[i];
+                    sumTo += toStates[i] * nrBuildings[i];
+                    sumFrom += fromStates[i] * nrBuildings[i];
                 }
+                const meanStateFrom = sumFrom / sumBuildings;
+                const meanStateTo = sumTo / sumBuildings;
+
+                const weightedChange = (meanStateTo - meanStateFrom) / (4 - meanStateFrom);
 
                 let r; let g; let b;
                 if (total > 0) {
-                    [r, g, b] = greenRedRange(0, 4, ninetyPercentLowerThan(Object.values(counts)));
+                    [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
                     r = g = b = 0;
                 }
@@ -103,7 +153,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
             legendEntries: [{
                 feature: {
                     'type': 'Feature',
-                    'properties': {'transitions': {'n_buildings': 100, 'to_damage_state': [10, 80, 10]}},
+                    'properties': {'transitions': {'n_buildings': [100], 'to_damage_state': [10, 80, 10]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -113,7 +163,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Transiciones'
+                text: 'Transitions'
             }],
             text: (props: object) => {
 
@@ -132,18 +182,18 @@ const ashfallTransitionProps: VectorLayerProperties = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>desde\\a</b>';
+                            labeledMatrix[r][c] = '<b>{{ from_to }}</b>';
                         } else if (r === 0) {
                             labeledMatrix[r][c] = `<b>${c - 1}</b>`;
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 2);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
                         }
                     }
                 }
 
-                return `<h4>Transiciones </h4>${createTableHtml(labeledMatrix)}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Transitions }}</h4>${createTableHtml(labeledMatrix)}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const matrix = zeros(4, 4);
@@ -163,18 +213,24 @@ const ashfallTransitionProps: VectorLayerProperties = {
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>desde\\a</b>';
+                            labeledMatrix[r][c] = { value: 'from_to', style: {'font-weight': 'bold'}};
                         } else if (r === 0) {
-                            labeledMatrix[r][c] = `<b>${c - 1}</b>`;
+                            labeledMatrix[r][c] = {value: `${c - 1}`, style: {'font-weight': 'bold'}};
                         } else if (c === 0) {
-                            labeledMatrix[r][c] = `<b>${r - 1}</b>`;
+                            labeledMatrix[r][c] = {value: `${r - 1}`, style: {'font-weight': 'bold'}};
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 0);
+                            labeledMatrix[r][c] = {value: toDecimalPlaces(matrix[r-1][c-1], 0) };
                         }
                     }
                 }
 
-                return createTableHtml(labeledMatrix);
+                return {
+                    component: InfoTableComponentComponent,
+                    inputs: {
+                        title: 'Transitions',
+                        data: labeledMatrix
+                    }
+                };
             }
         }
 
@@ -202,7 +258,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                     total += nrBuildings;
                 }
 
-                const dr = weightedDamage(Object.values(counts));
+                const dr = weightedDamage(Object.values(counts)) / 3;
 
                 let r: number;
                 let g: number;
@@ -226,7 +282,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
             legendEntries: [{
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 80, 80, 10]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [90, 10, 0, 0]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -236,29 +292,119 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Estados de daño'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>90</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
+            }, {
+                feature: {
+                    'type': 'Feature',
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 40, 40, 10]}},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>10</td>
+                        <td>40</td>
+                        <td>40</td>
+                        <td>10</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
+            }, {
+                feature: {
+                    'type': 'Feature',
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 10, 90]}},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>10</td>
+                        <td>90</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
-
                 const expo = props['expo'];
-                const counts = {
-                    'D0': 0,
-                    'D1': 0,
-                    'D2': 0,
-                    'D3': 0
-                };
-                for (let i = 0; i < expo.Damage.length; i++) {
-                    const damageClass = expo.Damage[i];
-                    const nrBuildings = expo.Buildings[i];
-                    counts[damageClass] += nrBuildings;
+
+                const data: {[groupName: string]: BarData[]} = {};
+                for (let i = 0; i < expo['Taxonomy'].length; i++) {
+                    const dmg = expo['Damage'][i];
+                    const tax = expo['Taxonomy'][i];
+                    const bld = expo['Buildings'][i];
+                    if (!data[tax]) {
+                        data[tax] = [];
+                    }
+                    data[tax].push({
+                        label: dmg,
+                        value: bld
+                    });
                 }
-                const data: Bardata[] = [];
-                for (const damageClass in counts) {
-                    data.push({label: damageClass, value: counts[damageClass]});
+
+                for (const label in data) {
+                    if (data[label]) {
+                        data[label].sort((dp1, dp2) => dp1.label > dp2.label ? 1 : -1);
+                    }
                 }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, 'Damage state', '# buildings');
-                return `<h4>Exposición actualizada</h4>${anchor.innerHTML}`;
+
+                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Ashfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesTorres }}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {
                 const counts = {
@@ -274,7 +420,24 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                         counts[damageClass] += nrBuildings;
                     }
                 }
-                return createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))], 'small');
+
+                const data: TableEntry[][] = [[], []];
+                for (const dc in counts) {
+                    data[0].push({
+                        value: dc
+                    });
+                    data[1].push({
+                        value: toDecimalPlaces(counts[dc], 0)
+                    });
+                }
+
+                return {
+                    component: InfoTableComponentComponent,
+                    inputs: {
+                        data: data,
+                        bottomText: 'DamageStatesTorres'
+                    }
+                };
             }
         }
 };
@@ -283,12 +446,13 @@ export const ashfallDamageM: WpsData & MultiVectorLayerProduct = {
     uid: 'ashfall_damage_output_values',
     description: {
         id: 'merged_output',
+        title: '',
         reference: false,
         defaultValue: null,
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [ashfallUpdatedExposureProps, ashfallDamageProps]
+        vectorLayers: [ashfallUpdatedExposureProps, ashfallLossProps]
     },
     value: null
 };
@@ -297,6 +461,7 @@ export const ashfallUpdatedExposureRef: WpsData & Product = {
     uid: 'ashfallExposureRef',
     description: {
         id: 'updated_exposure',
+        title: '',
         reference: true,
         type: 'complex',
         format: 'application/json'
@@ -317,8 +482,9 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     readonly description?: string = 'Deus Ashfall description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
-        providerName: 'Helmholtz Centre Potsdam',
-        providerUrl: 'https://www.gfz-potsdam.de/en/'
+        providerName: 'GFZ',
+        providerUrl: 'https://www.gfz-potsdam.de/en/',
+        wikiLink: 'ExposureLahar'
     };
 
     private volcanus: Volcanus;

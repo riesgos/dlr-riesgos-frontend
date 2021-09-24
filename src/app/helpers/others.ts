@@ -4,6 +4,17 @@ import Feature from 'ol/Feature';
 import { Observable } from 'rxjs';
 
 
+export function unique(arr: any[]): any[] {
+    const u: any[] = [];
+    for (const el of arr) {
+        if (!u.includes(el)) {
+            u.push(el);
+        }
+    }
+    return u;
+}
+
+
 export function deepValMap(obj: object, mapFn: (key: string, val: any) => any, callStacksize = 0): void {
     if (callStacksize > 10) {
         return;
@@ -130,14 +141,6 @@ export function downloadBlob(blob: Blob, fileName: string) {
 
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
-}
-
-export function createOlFeature(geojson: object): Feature[] {
-    const geoJsonReader = new GeoJSON({
-        defaultDataProjection: 'EPSG:4326',
-        featureProjection: 'EPSG:4326'
-      });
-      return geoJsonReader.readFeature(geojson);
 }
 
 

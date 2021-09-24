@@ -8,12 +8,9 @@ import { IProgress } from './progress.service';
 })
 export class GlobalProgressComponent implements OnInit {
   @Input() progress: null | IProgress;
-  constructor() {
-    
-   }
+  constructor() { }
 
   ngOnInit() {
-    console.log(this.progress)
   }
 
 }

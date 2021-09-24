@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { RaquelsExposureModel } from './raquelsExposure';
-import { Cache } from '@dlr-eoc/services-ogc';
+import { Cache } from '@dlr-eoc/utils-ogc';
 
 
 
@@ -33,20 +33,20 @@ export class ExposureSelection implements ExecutableProcess, WizardableProcess {
     name = 'EQ Exposure Model Selection';
     requiredProducts: string[] = [modelChoice, lonmin, lonmax, latmin, latmax, querymode, schema, assettype].map(p => p.uid);
     providedProducts: string[] = [initialExposure.uid];
-    description?: string = 'exposure_description';
+    description = 'exposure_description';
     readonly wizardProperties: WizardProperties;
     private standardModel: ExposureModel;
-    private raqelsModel: RaquelsExposureModel;
+    private raquelsModel: RaquelsExposureModel;
 
     constructor(httpClient: HttpClient, cache: Cache) {
         this.wizardProperties = {
             shape: 'building',
-            providerName: 'Helmholtz Centre Potsdam',
+            providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'Vulnerability'
+            wikiLink: 'ExposureSelection'
         };
         this.standardModel = new ExposureModel(httpClient, cache);
-        this.raqelsModel = new RaquelsExposureModel(httpClient, cache);
+        this.raquelsModel = new RaquelsExposureModel(httpClient, cache);
     }
 
     execute(inputs: Product[], outputs?: Product[],
@@ -57,7 +57,7 @@ export class ExposureSelection implements ExecutableProcess, WizardableProcess {
         if (modelChoicePara.value === 'GFZ 2019') {
             chosenModel = this.standardModel;
         } else if (modelChoicePara.value === 'GFZ 2020') {
-            chosenModel = this.raqelsModel;
+            chosenModel = this.raquelsModel;
         }
 
         const newInputs = inputs.filter(i => i.uid !== modelChoice.uid);

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GlobalAlertComponent } from './global-alert.component';
+import { AlertService, IAlert } from './alert.service';
 import { ClarityModule } from '@clr/angular';
 
 describe('GlobalAlertComponent', () => {
@@ -9,15 +10,21 @@ describe('GlobalAlertComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GlobalAlertComponent ],
-      imports: [ClarityModule]
+      imports: [ClarityModule],
+      declarations: [GlobalAlertComponent],
+      providers: [AlertService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GlobalAlertComponent);
     component = fixture.componentInstance;
+    component.alert = {
+      type: 'info',
+      text: 'test Alert',
+      closeable: true
+    } as IAlert;
     fixture.detectChanges();
   });
 

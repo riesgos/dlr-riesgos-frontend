@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export interface IProgress {
-  value?: number
-  max?: number
-  class?: string
-  indeterminate?: boolean
+  value?: number;
+  max?: number;
+  class?: string;
+  indeterminate?: boolean;
 }
 
 @Injectable({

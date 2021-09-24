@@ -2,7 +2,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
@@ -14,6 +14,7 @@ export const direction: StringSelectUconfProduct & WpsData = {
     uid: 'direction',
     description: {
         id: 'direction',
+        title: '',
         reference: false,
         type: 'literal',
         options: ['South', 'North'],
@@ -30,6 +31,7 @@ export const vei: Product & WpsData = {
     uid: 'intensity',
     description: {
         id: 'intensity',
+        title: '',
         reference: false,
         type: 'literal',
         defaultValue: 'VEI1',
@@ -41,6 +43,7 @@ export const parameter: StringSelectUconfProduct & WpsData = {
     uid: 'parameter',
     description: {
         id: 'parameter',
+        title: '',
         reference: false,
         type: 'literal',
         options: ['MaxHeight', 'MaxVelocity', 'MaxPressure', 'MaxErosion', 'Deposition'],
@@ -48,15 +51,7 @@ export const parameter: StringSelectUconfProduct & WpsData = {
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'parameter',
-            signpost: `
-            <ol>
-                <li>MaxHeight [m]: Maximum flow height, that the lahar can reach during the event</li>
-                <li>MaxVelocity [m/s]: Maximum flow velocity, that the lahar can reach during the event</li>
-                <li>MaxPressure [kPa]: Maximum flow pressure, that the lahar can reach during the event</li>
-                <li>MaxErosion [m]: Maximum depth of erosion, that the lahar can entrain during the event</li>
-                <li>Deposition [m]: Height of deposited material after the lahar event</li>
-            </ol>
-            `
+            signpost: `lahar_parameter_signpost`,
         }
     },
     value: null
@@ -67,14 +62,15 @@ export const laharWms: WmsLayerProduct & WpsData = {
     uid: 'lahar_wms',
     description: {
         id: 'wms',
+        title: '',
         icon: 'avalance',
         name: 'laharWms',
-        type: 'literal',  // this is deliberate. layer-wps returns this value as a litteral, not as a complex.
+        type: 'literal',  // this is deliberate. layer-wps returns this value as a literal, not as a complex.
         reference: false,
         format: 'application/WMS',
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', {'valor local': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)});
+                return createKeyValueTableHtml('', {'{{ local_value }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)});
             } else {
                 return '';
             }
@@ -88,9 +84,12 @@ export const laharShakemap: Product & WpsData = {
     uid: 'lahar_shakemap',
     description: {
         id: 'shakemap',
+        title: '',
         format: 'application/xml',
         reference: true,
-        type: 'complex'
+        type: 'complex',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+        encoding: 'UTF-8'
     },
     value: null,
 };
@@ -108,7 +107,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             [laharWms.uid, laharShakemap.uid],
             'gs:LaharModel',
             'The lahar service returns the area inundated by lahars of the Cotopaxi volcano, and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion, and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.',
-            'http://91.250.85.221/geoserver/riesgos/wps',
+            'https://riesgos.52north.org/geoserver/ows',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
@@ -118,7 +117,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
             shape: 'avalance',
-            wikiLink: 'Lahar'
+            wikiLink: 'LaharWiki'
         };
     }
 }

@@ -1,11 +1,10 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { selectedEqPeru } from './eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
@@ -13,6 +12,7 @@ export const shakemapWmsOutputPeru: WpsData & WmsLayerProduct = {
     uid: 'ShakygroundProcess_shakeMapFile_wmsPeru',
     description: {
         id: 'shakeMapFile',
+        title: '',
         icon: 'earthquake',
         name: 'shakemap',
         type: 'complex',
@@ -20,8 +20,11 @@ export const shakemapWmsOutputPeru: WpsData & WmsLayerProduct = {
         format: 'application/WMS',
         styles: ['shakemap-pga', 'another style'],
         featureInfoRenderer: (fi: FeatureCollection) => {
-            return createKeyValueTableHtml('Terremoto', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s²'}, 'medium');
-        }
+            const html = `
+            <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
+            `;
+            return html;
+        },
     },
     value: null
 };
@@ -30,9 +33,12 @@ export const eqShakemapRefPeru: WpsData & Product = {
     uid: 'ShakygroundProcess_shakeMapFile_shakemapPeru',
     description: {
         id: 'shakeMapFile',
+        title: '',
         type: 'complex',
         reference: true,
         format: 'text/xml',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+        encoding: 'UTF-8'
     },
     value: null
 };
@@ -45,11 +51,11 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
     constructor(http: HttpClient, cache: Cache) {
         super(
             'ShakygroundPeru',
-            'Groundmotion Simulation',
+            'GroundmotionService',
             [selectedEqPeru].map(p => p.uid),
             [shakemapWmsOutputPeru, eqShakemapRefPeru].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
-            'Simulates the ground motion caused by the selected earthquake',
+            'EqSimulationShortText',
             'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
@@ -58,8 +64,9 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
         );
         this.wizardProperties = {
             shape: 'earthquake',
-            providerName: 'Helmholtz Centre Potsdam',
-            providerUrl: 'https://www.gfz-potsdam.de/en/'
+            providerName: 'GFZ',
+            providerUrl: 'https://www.gfz-potsdam.de/en/',
+            wikiLink: 'Groundmotion'
         };
     }
 

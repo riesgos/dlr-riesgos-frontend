@@ -6,9 +6,11 @@ import { RiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
 import { BehaviorSubject } from 'rxjs';
 import { Process, Product, ProcessStateTypes } from 'src/app/riesgos/riesgos.datatypes';
 import { Graph } from 'graphlib';
-import { TranslateService } from '@ngx-translate/core';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 
+const black = '"#000000"';
+const white = '"#ffffff"';
 const green = '"#b3ffb3"';
 const blue = '"#b3f0ff"';
 const red = '"#ffb3b3"';
@@ -30,7 +32,7 @@ export class ShowgraphComponent implements OnInit {
 
   constructor(
     private store: Store<State>,
-    private translator: TranslateService
+    private translator: SimplifiedTranslationService
   ) {
     this.dotStringFull$ = new BehaviorSubject<string>('digraph {}');
     this.dotStringPO$ = new BehaviorSubject<string>('digraph {}');
@@ -50,7 +52,7 @@ export class ShowgraphComponent implements OnInit {
       }
     });
 
-    this.translator.onLangChange.subscribe(() => {
+    this.translator.getCurrentLang().subscribe(() => {
       const processes = this.currentState.processStates;
       const products = this.currentState.productValues;
       const graph = this.currentState.graph;
@@ -66,7 +68,9 @@ export class ShowgraphComponent implements OnInit {
 
     const processIds = processes.map(prc => prc.uid);
 
-    lines.push('digraph G {');
+    lines.push('digraph Dependencies {');
+    lines.push('bgcolor="#ffffff00";');
+    lines.push('truecolor=true;');
 
     for (const process of processes) {
       const attrs = this.attrsFromProcessStateTypes(process.state.type);
@@ -101,7 +105,10 @@ export class ShowgraphComponent implements OnInit {
   private toGraphvizFull(processes: Process[], products: Product[], graph: Graph): string {
     const lines: string[] = [];
 
-    lines.push('digraph G {');
+    lines.push('digraph Dependencies {');
+    lines.push('bgcolor="#ffffff00";');
+    lines.push('truecolor=true;');
+
 
     for (const process of processes) {
       const attrs = this.attrsFromProcessStateTypes(process.state.type);
@@ -129,18 +136,18 @@ export class ShowgraphComponent implements OnInit {
   private attrsFromProcessStateTypes(processState: string): string[] {
     const attrs: string[] = [];
 
+    attrs.push('style="filled,solid"');
+    attrs.push('color=' + black);
     if (processState === ProcessStateTypes.completed) {
-      attrs.push('style=filled');
-      attrs.push('color=' + green);
+      attrs.push('fillcolor=' + green);
     } else if (processState === ProcessStateTypes.error) {
-      attrs.push('style=filled');
-      attrs.push('color=' + red);
+      attrs.push('fillcolor=' + red);
     } else if (processState === ProcessStateTypes.available) {
-      attrs.push('style=filled');
-      attrs.push('color=' + blue);
+      attrs.push('fillcolor=' + blue);
     } else if (processState === ProcessStateTypes.running) {
-      attrs.push('style=filled');
-      attrs.push('color=' + yellow);
+      attrs.push('fillcolor=' + yellow);
+    } else {
+      attrs.push('fillcolor=' + white);
     }
 
     return attrs;
@@ -149,9 +156,12 @@ export class ShowgraphComponent implements OnInit {
   private attrsFromProductState(product: Product): string[] {
     const attrs: string[] = [];
 
+    attrs.push('style="filled,solid"');
+    attrs.push('color=' + black);
     if (product.value) {
-      attrs.push('style=filled');
-      attrs.push('color=' + green);
+      attrs.push('fillcolor=' + green);
+    } else {
+      attrs.push('fillcolor=' + white);
     }
 
     return attrs;
@@ -162,7 +172,7 @@ export class ShowgraphComponent implements OnInit {
   }
 
   private translate(text: string): string {
-    return this.translator.instant(text);
+    return this.translator.syncTranslate(text);
   }
 
 }

@@ -1,0 +1,25 @@
+<main class="content-area">
+<h2>{{ 'Data licenses' | translate }}</h2>
+<p>{{ 'Data licenses disclaimer' | translate }}</p>
+
+
+<h2>{{ 'Code licenses' | translate }}</h2>
+<p>{{ 'Licenses disclaimer' | translate}}</p>
+
+
+    <clr-datagrid>
+        <clr-dg-column>{{ 'Library name' | translate }}</clr-dg-column>
+        <clr-dg-column>{{ 'Publisher' | translate }}</clr-dg-column>
+        <clr-dg-column>{{ 'License' | translate }}</clr-dg-column>
+        <clr-dg-column>{{ 'Repository' | translate }}</clr-dg-column>
+    
+        <clr-dg-row *ngFor="let l of (licenses | async)">
+            <clr-dg-cell>{{l.name}}</clr-dg-cell>
+            <clr-dg-cell>{{l.publisher}}</clr-dg-cell>
+            <clr-dg-cell>{{l.license}}</clr-dg-cell>
+            <clr-dg-cell><a href="{{l.repository}}">{{l.repository}}</a></clr-dg-cell>
+        </clr-dg-row>
+    
+        <clr-dg-footer>{{(licenses | async).length}} {{ 'third party dependencies' | translate }}</clr-dg-footer>
+    </clr-datagrid>
+</main>

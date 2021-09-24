@@ -1,25 +1,25 @@
-import { ExecutableProcess, ProcessStateUnavailable, Product, ProductTransformingProcess, ProcessStateAvailable } from 'src/app/riesgos/riesgos.datatypes';
+import { ExecutableProcess, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Observable, of } from 'rxjs';
-import { WpsData } from '@dlr-eoc/services-ogc';
-import { laharWms, direction, vei, laharShakemap } from './lahar';
+import { WpsData } from '@dlr-eoc/utils-ogc';
+import { direction, vei } from './lahar';
 import { laharHeightWms } from './laharWrapper';
-import { FeatureSelectUconfProduct, StringUconfProduct, StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+
 
 
 export const hydrologicalSimulation: WmsLayerProduct & WpsData = {
     uid: 'geomerHydrological_hydrologicalSimulation',
     description: {
         id: 'hydrologicalSimulation',
+        title: '',
         icon: 'tsunami',
         name: 'Hydrological Simulation',
         format: 'application/WMS',
         reference: false,
         type: 'complex',
+        legendImg: 'assets/images/inundation_legend.png',
     },
     value: null
 };
@@ -31,6 +31,7 @@ export const durationTiff: WpsData & Product = {
     uid: 'FlooddamageProcess_duration',
     description: {
         id: 'duration-h',
+        title: '',
         reference: true,
         type: 'complex',
         format: 'image/geotiff',
@@ -43,6 +44,7 @@ export const velocityTiff: WpsData & Product = {
     uid: 'FlooddamageProcess_velocity',
     description: {
         id: 'vsmax-ms',
+        title: '',
         reference: true,
         type: 'complex',
         format: 'image/geotiff',
@@ -55,6 +57,7 @@ export const depthTiff: WpsData & Product = {
     uid: 'FlooddamageProcess_depth',
     description: {
         id: 'wdmax-cm',
+        title: '',
         reference: true,
         type: 'complex',
         format: 'image/geotiff',
@@ -69,15 +72,15 @@ export const depthTiff: WpsData & Product = {
 export const userinputSelectedOutburst: StringSelectUconfProduct & WpsData = {
     uid: 'outburstSite',
     description: {
-        id: 'outburstSite',
         type: 'literal',
+        id: 'outburstSite',
+        title: 'outburstSite',
         reference: false,
         options: ['Rio San Pedro', 'Rio Pita'],
         defaultValue: 'Rio San Pedro',
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'outburstSite',
-            description: 'outburstSite',
             signpost: 'You can choose here from two lake locations. The process will create the flood scenario for the selected lake.'
         }
     },
@@ -119,7 +122,7 @@ export const FloodMayRunProcess: ProductTransformingProcess = {
 
 export const geomerFlood: WizardableProcess & ExecutableProcess = {
     uid: 'geomerFlood',
-    name: 'Flood',
+    name: 'FloodService',
     requiredProducts: [vei, laharHeightWms, userinputSelectedOutburst, FloodMayRun].map(p => p.uid),
     providedProducts: [hydrologicalSimulation, durationTiff, velocityTiff, depthTiff].map(pr => pr.uid),  // durationTiff, velocityTiff,
     state: new ProcessStateUnavailable(),
@@ -127,8 +130,9 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
         providerName: 'geomer',
         providerUrl: 'https://www.geomer.de/en/index.html',
         shape: 'tsunami',
+        wikiLink: 'Flood'
     },
-    description: 'This service provides the option to simulate a break of a lake created by a lahar.',
+    description: 'geomerFloodDescription',
     execute: (inputs: Product[]): Observable<Product[]> => {
         const veiVal = inputs.find(prd => prd.uid === vei.uid).value.toLowerCase();
         const outburstVal = inputs.find(prd => prd.uid === userinputSelectedOutburst.uid);

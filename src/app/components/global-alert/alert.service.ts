@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export interface IAlert {
-  type: string | 'info'
-  text: string
-  closeable: boolean
-  actions?: { title: string, callback: Function }[]
+  type: string | 'info';
+  text: string;
+  closeable: boolean;
+  actions?: { title: string, callback: () => void }[];
 }
 
 @Injectable({

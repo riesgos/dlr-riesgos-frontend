@@ -40,12 +40,12 @@ import { vei, direction } from './scenarios/ecuador/lahar';
 import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './scenarios/ecuador/vulnerability';
 import { HttpClient } from '@angular/common/http';
 import { RiesgosScenarioMetadata } from './riesgos.state';
-import { ConfigService, Config } from '../services/config.service';
-import { Cache } from '@dlr-eoc/services-ogc';
-import { FakeCache } from '@dlr-eoc/services-ogc';
-import { IndexDbCache } from '../services/indexDbCache';
-import { RemoteCache } from '../services/remoteCache';
-
+import { ConfigService, Config } from '../services/config/config.service';
+import { Cache } from '@dlr-eoc/utils-ogc';
+import { FakeCache } from '@dlr-eoc/utils-ogc';
+import { IndexDbCache } from '../services/cache/indexDbCache';
+import { RemoteCache } from '../services/cache/remoteCache';
+import { CigidenEqCatalogue, availableEarthquakes as cigidenAvailableEarthquakes, CigidenEqSimulation, damage, eqSelectionList } from './scenarios/chile2/cigidenEqService';
 
 
 @Injectable()
@@ -102,10 +102,10 @@ export class RiesgosService {
     switch (scenario) {
       case 'p1':
         processes = [
-          new ExposureModelPeru(this.httpClient, cache),
           new QuakeLedgerPeru(this.httpClient, cache),
           EqSelectionPeru,
           new ShakygroundPeru(this.httpClient, cache),
+          new ExposureModelPeru(this.httpClient, cache),
           new EqDeusPeru(this.httpClient, cache),
           new TsServicePeru(this.httpClient, cache),
           new TsDeusPeru(this.httpClient, cache),

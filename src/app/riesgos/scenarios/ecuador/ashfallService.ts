@@ -1,7 +1,7 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { vei } from './lahar';
-import { WpsData, Cache } from '@dlr-eoc/services-ogc';
+import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
@@ -21,6 +21,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
     uid: 'ashfall',
     description: {
         id: 'ashfall',
+        title: '',
         icon: 'volcanoe',
         reference: false,
         type: 'complex',
@@ -62,7 +63,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
             legendEntries: [{
                 feature: {
                     "type": "Feature",
-                    "properties": {'espesor': 0.05},
+                    "properties": {'thickness': 0.05},
                     "geometry": {
                       "type": "Polygon",
                       "coordinates": [ [
@@ -72,7 +73,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Espesor: 5 mm'
+                text: 'Thickness: 5 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -86,7 +87,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Espesor: 50 mm'
+                text: 'Thickness: 50 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -100,7 +101,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Espesor: 90 mm'
+                text: 'Thickness: 90 mm'
             }],
             text: (properties) => {
                 const thickness = properties['thickness'];
@@ -117,12 +118,12 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                     const load = thickness * (1250 / 1250);
 
                     const selectedProperties = {
-                        Profundidad: thicknessText,
-                        VEI: toDecimalPlaces(properties['vei'] as number, 1),
-                        'Carga esperada ': `${load} kPa`,
-                        Probabilidad: properties['prob'] + ' %'
+                        '{{ Thickness }}': thicknessText,
+                        '{{ VEI }}': toDecimalPlaces(properties['vei'] as number, 1),
+                        '{{ Expected_load }}': `${load} kPa`,
+                        '{{ Probability }}': properties['prob'] + ' %'
                     };
-                    return createKeyValueTableHtml('Ceniza', selectedProperties, 'medium');
+                    return createKeyValueTableHtml('{{ Ashfall }}', selectedProperties, 'medium');
                 }
             }
         }
@@ -134,6 +135,7 @@ export const ashfallPoint: WpsData & Product = {
     uid: 'ashfallPoint',
     description: {
         id: 'intensity',
+        title: '',
         reference: false,
         format: 'application/vnd.geo+json',
         type: 'complex'
@@ -146,6 +148,7 @@ export const probability: StringSelectUconfProduct & WpsData = {
     uid: 'ashfall_range_prob',
     description: {
         id: 'probability',
+        title: '',
         type: 'literal',
         reference: false,
         options: ['1', '50', '99'],
@@ -167,11 +170,11 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
     constructor(private http: HttpClient, cache: Cache) {
         super(
             'ashfall-service',
-            'Ashfall Service',
+            'AshfallService',
             [vei.uid, probability.uid],
             [ashfall.uid, ashfallPoint.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
-            'Ashfall Service description',
+            'AshfallServiceDescription',
             'http://riesgos.dlr.de/wps/WebProcessingService?',
             '1.0.0',
             http,
@@ -179,9 +182,10 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             cache
         );
         this.wizardProperties = {
-            providerName: 'Instituto Geofísico EPN',
+            providerName: 'IGN',
             providerUrl: 'https://www.igepn.edu.ec',
-            shape: 'volcanoe'
+            shape: 'volcanoe',
+            wikiLink: 'Ashfall'
         };
     }
 
@@ -208,7 +212,9 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
 
         const newOutputProducts = outputProducts.find(p => p.uid === ashfall.uid);
 
-        const obs1$ = super.execute(newInputProducts, [newOutputProducts], doWhileExecuting);
+        // service temporarily out of commission
+        // const obs1$ = super.execute(newInputProducts, [newOutputProducts], doWhileExecuting);
+        const obs1$ = this.loadAshfallPpolygonFromFile(ashfall, veiV.value, probV.value);
         const obs2$ = this.loadAshfallPointFromFile(ashfallPoint, veiV.value, probV.value);
         return forkJoin(obs1$, obs2$).pipe(
             map((results: Product[][]) => {
@@ -223,11 +229,21 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         );
     }
 
-    private loadAshfallPointFromFile(ashfallPoint: Product, vei: string, prob: string): Observable<Product[]> {
+    private loadAshfallPointFromFile(ashfall: Product, vei: string, prob: string): Observable<Product[]> {
         if (parseInt(prob) === 1) {
             prob = '01';
         }
         const url = `assets/data/geojson/VEI_${vei}_${prob}percent.geojson`;
+        return this.http.get(url).pipe(map((val) => {
+            return [{
+                ... ashfall,
+                value: [val]
+            }];
+        }));
+    }
+
+    private loadAshfallPpolygonFromFile(ashfallPoint: Product, vei: string, prob: string): Observable<Product[]> {
+        const url = `assets/data/geojson/ashfall/ash_prob${prob}_vei${vei}.geojson`;
         return this.http.get(url).pipe(map((val) => {
             return [{
                 ... ashfallPoint,

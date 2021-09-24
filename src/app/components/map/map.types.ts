@@ -1,6 +1,7 @@
 import { IVectorLayerOptions, IRasterLayerOptions, ICustomLayerOptions,
     VectorLayer, RasterLayer, Layer, CustomLayer } from '@dlr-eoc/services-layers';
-import { LegendElement } from '../layer_control/vector-legend/vector-legend.component';
+import { LegendElement } from '../dynamic/vector-legend/vector-legend.component';
+import { IDynamicComponent } from '../dynamic-component/dynamic-component.component';
 
 
 
@@ -17,6 +18,7 @@ export interface IProductVectorLayerOptions extends IVectorLayerOptions {
     attribution?: string;
     icon?: string;
     legendEntries?: LegendElement[];
+    dynamicDescription?: IDynamicComponent;
 }
 
 
@@ -26,6 +28,7 @@ export class ProductVectorLayer extends VectorLayer implements IProductVectorLay
     icon?: string;
     legendEntries?: LegendElement[];
     zIndex?: number;
+    dynamicDescription?: IDynamicComponent;
     constructor(options: IProductVectorLayerOptions) {
         super(options);
         Object.assign(this, options);
@@ -57,6 +60,7 @@ export interface IProductCustomLayerOptions extends ICustomLayerOptions {
     productId: string;
     hasFocus: boolean;
     icon?: string;
+    dynamicDescription?: IDynamicComponent;
 }
 
 
@@ -64,6 +68,7 @@ export class ProductCustomLayer extends CustomLayer implements IProductCustomLay
     icon?: string;
     productId: string;
     hasFocus: boolean;
+    dynamicDescription?: IDynamicComponent;
     constructor(options: IProductCustomLayerOptions) {
         super(options);
         Object.assign(this, options);

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 @Component({
   selector: 'app-read-more',
@@ -16,7 +16,7 @@ export class ReadMoreComponent implements OnInit {
   exceedsThreshold = false;
 
   constructor(
-    private translator: TranslateService
+    private translator: SimplifiedTranslationService
   ) { }
 
   ngOnInit() {
@@ -26,14 +26,14 @@ export class ReadMoreComponent implements OnInit {
 
     this.setText(this.text);
 
-    this.translator.onLangChange.subscribe(() => {
+    this.translator.getCurrentLang().subscribe(() => {
       this.setText(this.text);
     });
   }
 
   private setText(text: string): void {
     if (text) {
-      const translatedText = this.translator.instant(text);
+      const translatedText = this.translator.syncTranslate(text);
 
       this.fullText = translatedText;
 
@@ -43,7 +43,7 @@ export class ReadMoreComponent implements OnInit {
         this.isExpanded = true;
       }
       const wordsShort = words.slice(0, Math.min(this.threshold, words.length));
-      this.shortText = wordsShort.join(' ');
+      this.shortText = wordsShort.join(' ') + '...';
     } else {
       this.fullText = '';
       this.shortText = '';

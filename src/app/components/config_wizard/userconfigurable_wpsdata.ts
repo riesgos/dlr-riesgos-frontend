@@ -1,6 +1,6 @@
 import { FeatureCollection } from '@turf/helpers';
 import { Product, ProductDescription } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsBboxData, WpsBboxValue } from '@dlr-eoc/services-ogc';
+import { WpsBboxData, WpsBboxValue } from '@dlr-eoc/utils-ogc';
 
 
 
@@ -47,7 +47,7 @@ export interface FeatureSelectUconfPD extends ProductDescription {
         description?: string,
         signpost?: string,
     };
-    options: {[key: string]: FeatureCollection};
+    featureSelectionOptions: {[key: string]: FeatureCollection};
     defaultValue: [FeatureCollection];
 }
 

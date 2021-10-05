@@ -538,7 +538,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle',
-            wikiLink: 'Vulnerability'
+            wikiLink: 'TsSimulation'
         };
 
         this.vulnerabilityProcess = new VulnerabilityModelPeru(http, cache);

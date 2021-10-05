@@ -129,7 +129,7 @@ export class TsService implements WizardableProcess, ExecutableProcess {
         providerName: 'AWI',
         providerUrl: 'https://www.awi.de/en/',
         shape: 'tsunami' as 'tsunami',
-        wikiLink: 'TsunamiWiki'
+        wikiLink: 'TsSimulation'
     };
 
     private tsShakemapService: TsShakemapService;

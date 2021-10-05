@@ -163,7 +163,7 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
             shape: 'router',
-            wikiLink: 'Reliability'
+            wikiLink: 'CriticalInfrastructureEcuador'
         };
     }
 

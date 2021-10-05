@@ -508,6 +508,20 @@
     "laharDeposition": "Deposición de lahar",
     "floodDamageDescription": "Daño en manzanas",
     "FloodWiki": "Daños por inundación",
-    "Graph": "Gráfico"
+    "Graph": "Gráfico",
+
+
+    "Wiki": "Wiki",
+    "EqCatalogue": "Catálogo",
+    "EqSimulation": "Movimiento de tierra",
+    "TsSimulation": "Tsunami",
+    "ExposureAndVulnerability": "Exposición y vulnerabilidad",
+    "CriticalInfrastructure": "Infraestructura crítica",
+    "VeiSelection": "VEI",
+    "AshfallSimulation": "Caída de ceniza",
+    "LaharSimulation": "Lahar",
+    "FloodSimulation": "Inundación",
+    "ExposureAndVulnerabilityEcuador": "Exposición y vulnerabilidad (Ecuador)",
+    "CriticalInfrastructureEcuador": "Infraestructura crítica (Ecuador)"
 }
 

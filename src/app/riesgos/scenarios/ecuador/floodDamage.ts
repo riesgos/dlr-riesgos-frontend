@@ -67,7 +67,7 @@ export class FlooddamageProcess extends WpsProcess implements WizardableProcess 
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle',
-            wikiLink: 'FloodWiki'
+            wikiLink: 'ExposureAndVulnerabilityEcuador'
         };
     }
 

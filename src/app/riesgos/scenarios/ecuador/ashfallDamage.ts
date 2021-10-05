@@ -484,7 +484,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
         shape: 'dot-circle',
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
-        wikiLink: 'ExposureLahar'
+        wikiLink: 'ExposureAndVulnerabilityEcuador'
     };
 
     private volcanus: Volcanus;

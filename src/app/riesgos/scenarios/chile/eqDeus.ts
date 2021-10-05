@@ -513,7 +513,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
         shape: 'dot-circle',
-        wikiLink: 'Vulnerability'
+        wikiLink: 'ExposureAndVulnerability'
     };
 
     private vulnerabilityProcess: VulnerabilityModel;

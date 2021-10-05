@@ -334,5 +334,19 @@
     "AdditionalLayers": "Additional layers",
     "Results": "Results",
     "Tools": "Tools",
-    "AOI_selection": "selection of study area"
+    "AOI_selection": "selection of study area",
+
+
+    "Wiki": "Wiki",
+    "EqCatalogue": "Catalogue",
+    "EqSimulation": "Groundmotion",
+    "TsSimulation": "Tsunami",
+    "ExposureAndVulnerability": "Exposure & vulnerability",
+    "CriticalInfrastructure": "Critical infrastructure",
+    "VeiSelection": "VEI",
+    "AshfallSimulation": "Ashfall",
+    "LaharSimulation": "Lahar",
+    "FloodSimulation": "Flood",
+    "ExposureAndVulnerabilityEcuador": "Exposure & vulnerability (Ecuador)",
+    "CriticalInfrastructureEcuador": "Critical infrastructure (Ecuador)"
 }

@@ -66,7 +66,7 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
             shape: 'earthquake',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'Groundmotion'
+            wikiLink: 'EqSimulation'
         };
     }
 

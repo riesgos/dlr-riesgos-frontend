@@ -317,7 +317,7 @@ export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
             shape: 'earthquake',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'quakeledger'
+            wikiLink: 'EqCatalogue'
         };
     }
 

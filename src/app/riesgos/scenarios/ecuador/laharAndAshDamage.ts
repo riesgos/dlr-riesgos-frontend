@@ -89,7 +89,7 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
         shape: 'dot-circle',
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
-        wikiLink: 'Vulnerability'
+        wikiLink: 'ExposureAndVulnerabilityEcuador'
     };
 
     private deus: Deus;

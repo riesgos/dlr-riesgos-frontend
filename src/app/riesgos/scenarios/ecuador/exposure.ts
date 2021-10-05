@@ -252,7 +252,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       shape: 'building',
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
-      wikiLink: 'Vulnerability'
+      wikiLink: 'ExposureAndVulnerabilityEcuador'
     };
   }
 
@@ -295,7 +295,7 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
       shape: 'building',
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
-      wikiLink: 'Vulnerability'
+      wikiLink: 'ExposureAndVulnerabilityEcuador'
     };
   }
 

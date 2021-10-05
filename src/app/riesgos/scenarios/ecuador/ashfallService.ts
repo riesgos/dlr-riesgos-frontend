@@ -185,7 +185,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             providerName: 'IGN',
             providerUrl: 'https://www.igepn.edu.ec',
             shape: 'volcanoe',
-            wikiLink: 'Ashfall'
+            wikiLink: 'AshfallSimulation'
         };
     }
 

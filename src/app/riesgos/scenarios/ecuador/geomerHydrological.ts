@@ -130,7 +130,7 @@ export const geomerFlood: WizardableProcess & ExecutableProcess = {
         providerName: 'geomer',
         providerUrl: 'https://www.geomer.de/en/index.html',
         shape: 'tsunami',
-        wikiLink: 'Flood'
+        wikiLink: 'FloodSimulation'
     },
     description: 'geomerFloodDescription',
     execute: (inputs: Product[]): Observable<Product[]> => {

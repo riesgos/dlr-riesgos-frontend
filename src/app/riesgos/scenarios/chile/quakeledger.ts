@@ -316,7 +316,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
             shape: 'bullseye',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'quakeledger'
+            wikiLink: 'EqSimulation'
         };
     }
 

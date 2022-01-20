@@ -5,12 +5,11 @@ import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 
 import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqDamagePeruM, eqUpdatedExposureRefPeru } from './eqDeus';
-import { schemaPeru } from './exposure';
 import { tsShakemapPeru } from './tsService';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { fragilityRefPeru, VulnerabilityModelPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './modelProp';
+import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
 import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
 import { map, switchMap } from 'rxjs/operators';
@@ -20,14 +19,34 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from '../chile/constants';
+import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
-
+export const schemaPeru: StringSelectUconfProduct & WpsData = {
+    uid: 'schema',
+    description: {
+      id: 'schema',
+      title: 'schema',
+      defaultValue: 'SUPPASRI2013_v2.0',
+      reference: false,
+      type: 'literal',
+      wizardProperties: {
+          fieldtype: 'stringselect',
+          name: 'schema',
+          description: '',
+        },
+        options: [
+            'SUPPASRI2013_v2.0',
+            'Medina_2019',
+        ],
+    },
+    value: 'SUPPASRI2013_v2.0'
+};
 
 export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_damage_peru',
     description: {
         id: 'damage',
-        title: '',
+        title: 'damage',
         reference: false,
         icon: 'dot-circle',
         type: 'complex',
@@ -122,7 +141,7 @@ export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_transition_peru',
     description: {
         id: 'transition',
-        title: '',
+        title: 'transition',
         icon: 'dot-circle',
         reference: false,
         type: 'complex',
@@ -281,7 +300,7 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_updated_exposure_peru',
     description: {
         id: 'updated_exposure',
-        title: '',
+        title: 'updated_exposure',
         icon: 'dot-circle',
         reference: false,
         type: 'complex',
@@ -510,10 +529,6 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
     value: null
 };
 
-
-
-
-
 export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
 
     readonly state: ProcessState;
@@ -538,7 +553,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle',
-            wikiLink: 'TsSimulation'
+            wikiLink: 'ExposureAndVulnerability'
         };
 
         this.vulnerabilityProcess = new VulnerabilityModelPeru(http, cache);
@@ -551,15 +566,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
         // Step 1.1: preparing vulnerability-service inputs
-        const vulnerabilityInputs = [
-            assetcategoryPeru,
-            losscategoryPeru,
-            taxonomiesPeru,
-            {
-                ... schemaPeru,
-                value: 'SUPPASRI2013_v2.0'
-            }
-        ];
+        const vulnerabilityInputs = [ schemaPeru ];
         const vulnerabilityOutputs = [fragilityRefPeru];
 
         // Step 1.2: executing vulnerability-service

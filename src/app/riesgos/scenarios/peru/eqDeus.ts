@@ -1,5 +1,5 @@
 import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { schemaPeru, initialExposurePeru } from './exposure';
+import { initialExposurePeru } from './exposure';
 import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { VectorLayerProperties, MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
@@ -8,7 +8,7 @@ import { Feature as olFeature } from 'ol/Feature';
 import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { toDecimalPlaces, weightedDamage, greenRedRange, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
-import { fragilityRefPeru, VulnerabilityModelPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './modelProp';
+import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
 import { eqShakemapRefPeru } from './shakyground';
 import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
@@ -201,7 +201,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                     matrix[r][c] += nr;
                 }
 
-                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1, '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
@@ -211,7 +211,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
+                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r - 1][c - 1], 1);
                         }
                     }
                 }
@@ -232,17 +232,17 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                     }
                 }
 
-                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1, '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = {value: 'from_to', style: {'font-weight': 'bold'} };
+                            labeledMatrix[r][c] = { value: 'from_to', style: { 'font-weight': 'bold' } };
                         } else if (r === 0) {
-                            labeledMatrix[r][c] = {value: `${c - 1}`, style: {'font-weight': 'bold'} };
+                            labeledMatrix[r][c] = { value: `${c - 1}`, style: { 'font-weight': 'bold' } };
                         } else if (c === 0) {
-                            labeledMatrix[r][c] = {value: `${r - 1}`, style: {'font-weight': 'bold'} };
+                            labeledMatrix[r][c] = { value: `${r - 1}`, style: { 'font-weight': 'bold' } };
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = {value: toDecimalPlaces(matrix[r-1][c-1], 0) };
+                            labeledMatrix[r][c] = { value: toDecimalPlaces(matrix[r - 1][c - 1], 0) };
                         }
                     }
                 }
@@ -253,7 +253,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                         title: 'Transitions',
                         data: labeledMatrix
                     }
-                }
+                };
             }
         },
         description: 'Change from previous state'
@@ -497,34 +497,26 @@ export const eqUpdatedExposureRefPeru: WpsData & Product = {
     value: null
 };
 
-
 export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
 
     readonly state: ProcessState;
-    readonly uid: string;
-    readonly name: string;
-    readonly requiredProducts: string[];
-    readonly providedProducts: string[];
-    readonly description?: string;
-    readonly wizardProperties: WizardProperties;
+    readonly uid = 'EQ-Deus';
+    readonly name = 'Multihazard_damage_estimation/Earthquake';
+    readonly requiredProducts = [eqShakemapRefPeru, initialExposurePeru].map(p => p.uid);
+    readonly providedProducts = [eqDamagePeruM, eqUpdatedExposureRefPeru].map(p => p.uid);
+    readonly description = 'This service returns damage caused by the selected earthquake.';
+    readonly wizardProperties = {
+        providerName: 'GFZ',
+        providerUrl: 'https://www.gfz-potsdam.de/en/',
+        shape: 'dot-circle' as 'dot-circle',
+        wikiLink: 'ExposureAndVulnerability'
+    };
 
     private vulnerabilityProcess: VulnerabilityModelPeru;
     private deusProcess: Deus;
 
     constructor(http: HttpClient, cache: Cache) {
         this.state = new ProcessStateUnavailable();
-        this.uid = 'EQ-Deus';
-        this.name = 'Multihazard_damage_estimation/Earthquake';
-        this.requiredProducts = [eqShakemapRefPeru, initialExposurePeru].map(p => p.uid);
-        this.providedProducts = [eqDamagePeruM, eqUpdatedExposureRefPeru].map(p => p.uid);
-        this.description = 'This service returns damage caused by the selected earthquake.';
-        this.wizardProperties = {
-            providerName: 'GFZ',
-            providerUrl: 'https://www.gfz-potsdam.de/en/',
-            shape: 'dot-circle' as 'dot-circle',
-            wikiLink: 'ExposureAndVulnerability'
-        };
-
         this.vulnerabilityProcess = new VulnerabilityModelPeru(http, cache);
         this.deusProcess = new Deus(http, cache);
     }
@@ -534,15 +526,19 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const vulnerabilityInputs = [
-            assetcategoryPeru,
-            losscategoryPeru,
-            taxonomiesPeru,
-            {
-                ... schemaPeru,
+            const schemaPeru: Product & WpsData = {
+                uid: 'schema',
+                description: {
+                  id: 'schema',
+                  title: 'schema',
+                  defaultValue: 'SARA_v1.0',
+                  reference: false,
+                  type: 'literal'
+                },
                 value: 'SARA_v1.0'
-            }
-        ];
+              };
+
+        const vulnerabilityInputs = [ schemaPeru ];
         const vulnerabilityOutputs = [fragilityRefPeru];
 
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)

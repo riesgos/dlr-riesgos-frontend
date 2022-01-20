@@ -140,12 +140,11 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
 
   execute(inputs: Product[], outputs: Product[], doWhileExecuting): Observable<Product[]> {
 
-
     const lonmin: Product = {
       uid: 'lonmin',
       description: {
         id: 'lonmin',
-        title: '',
+        title: 'lonmin',
         type: 'literal',
         reference: false,
         defaultValue: '-71.8'
@@ -157,7 +156,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       uid: 'lonmax',
       description: {
         id: 'lonmax',
-        title: '',
+        title: 'lonmax',
         type: 'literal',
         reference: false,
         defaultValue: '-71.4'
@@ -169,7 +168,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       uid: 'latmin',
       description: {
         id: 'latmin',
-        title: '',
+        title: 'latmin',
         type: 'literal',
         reference: false,
         defaultValue: '-33.2'
@@ -181,7 +180,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       uid: 'latmax',
       description: {
         id: 'latmax',
-        title: '',
+        title: 'latmax',
         type: 'literal',
         reference: false,
         defaultValue: '-33.0'
@@ -193,7 +192,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       uid: 'schema',
       description: {
         id: 'schema',
-        title: '',
+        title: 'schema',
         reference: false,
         type: 'literal',
       },

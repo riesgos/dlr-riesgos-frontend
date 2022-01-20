@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Process, Product } from './riesgos.datatypes';
+import { HttpClient } from '@angular/common/http';
+import { RiesgosScenarioMetadata } from './riesgos.state';
+import { ConfigService, Config } from '../services/config/config.service';
+import { Cache } from '@dlr-eoc/utils-ogc';
+import { FakeCache } from '@dlr-eoc/utils-ogc';
+import { IndexDbCache } from '../services/cache/indexDbCache';
+import { RemoteCache } from '../services/cache/remoteCache';
+
+// chile
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs } from './scenarios/chile/quakeledger';
 import { EqSelection, userinputSelectedEq, selectedEq } from './scenarios/chile/eqselection';
 import { Shakyground, shakemapWmsOutput, eqShakemapRef, Gmpe, VsGrid } from './scenarios/chile/shakyground';
@@ -9,8 +18,9 @@ import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure, schema } from './sce
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
 import { initialExposure, ExposureModel, modelChoice } from './scenarios/chile/exposure';
 import { fragilityRef } from './scenarios/chile/modelProp';
-import { ExposureModelPeru, lonminPeru, lonmaxPeru, latminPeru,
-  latmaxPeru, assettypePeru, schemaPeru, querymodePeru, initialExposurePeru } from './scenarios/peru/exposure';
+
+// peru
+import { ExposureModelPeru, initialExposurePeru, modelChoicePeru } from './scenarios/peru/exposure';
 import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
   zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru, selectedEqsPeru } from './scenarios/peru/quakeledger';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scenarios/peru/eqselection';
@@ -19,7 +29,8 @@ import { EqDeusPeru, lossPeru, eqDamagePeruM, eqUpdatedExposureRefPeru } from '.
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
 import { TsDeusPeru, tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru } from './scenarios/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './scenarios/peru/reliability';
-import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './scenarios/peru/modelProp';
+
+// ecuador
 import { VeiProvider, selectableVei } from './scenarios/ecuador/vei';
 import { AshfallService, probability, ashfall, ashfallPoint } from './scenarios/ecuador/ashfallService';
 import { AshfallExposureModel, LaharExposureModel, schemaEcuador,
@@ -37,14 +48,8 @@ import { FloodMayRunProcess, geomerFlood, FloodMayRun, userinputSelectedOutburst
 import { FlooddamageProcess, FlooddamageTranslator, damageManzanas, damageBuildings, damageManzanasGeojson } from './scenarios/ecuador/floodDamage';
 import { vei, direction } from './scenarios/ecuador/lahar';
 import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './scenarios/ecuador/vulnerability';
-import { HttpClient } from '@angular/common/http';
-import { RiesgosScenarioMetadata } from './riesgos.state';
-import { ConfigService, Config } from '../services/config/config.service';
-import { Cache } from '@dlr-eoc/utils-ogc';
-import { FakeCache } from '@dlr-eoc/utils-ogc';
-import { IndexDbCache } from '../services/cache/indexDbCache';
-import { RemoteCache } from '../services/cache/remoteCache';
-import { CigidenEqCatalogue, availableEarthquakes as cigidenAvailableEarthquakes, CigidenEqSimulation, damage, eqSelectionList } from './scenarios/chile2/cigidenEqService';
+
+
 
 
 @Injectable()
@@ -91,11 +96,6 @@ export class RiesgosService {
         preview: `assets/images/tsunami_en.jpg`,
         description: '',
       }, {
-      //   id: 'c2',
-      //   title: 'Chile CIGIDEN',
-      //   preview: `assets/images/tsunami_en.jpg`,
-      //   description: '',
-      // }, {
         id: 'e1',
         title: 'Showcase Ecuador',
         preview: `assets/images/lahar_en.jpg`,
@@ -140,10 +140,6 @@ export class RiesgosService {
           // physicalImpact
         ];
         break;
-      case 'c2':
-        processes = [new CigidenEqCatalogue(this.httpClient, cache), new CigidenEqSimulation(this.httpClient, cache)];
-        products = [cigidenAvailableEarthquakes, eqSelectionList, damage];
-        break;
       case 'p1':
         processes = [
           new QuakeLedgerPeru(this.httpClient, cache),
@@ -156,11 +152,9 @@ export class RiesgosService {
           new EqReliabilityPeru(this.httpClient, cache)
         ];
         products = [
-          lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
-          assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
-          initialExposurePeru,
+          modelChoicePeru, initialExposurePeru,
           new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
-          lossPeru, eqDamagePeruM,
+          lossPeru, eqDamagePeruM, Gmpe, VsGrid,
           selectedEqsPeru, userinputSelectedEqPeru,
           selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
           tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,

@@ -7,100 +7,36 @@ import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { BarData, createBarchart, createBigBarchart } from 'src/app/helpers/d3charts';
 import { weightedDamage, redGreenRange, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { Observable } from 'rxjs';
+import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
 
-export const lonminPeru: Product & WpsData = {
-  uid: 'lonmin',
+
+export const modelChoicePeru: WpsData & StringSelectUconfProduct = {
+  uid: 'eq_exposure_model_choice',
   description: {
-    id: 'lonmin',
-    title: 'lonmin',
-    type: 'literal',
-    reference: false,
-    defaultValue: '-88'
+      wizardProperties: {
+          fieldtype: 'stringselect',
+          name: 'model',
+          description: 'exposure model',
+      },
+      id: 'model',
+      reference: false,
+      title: 'model',
+      type: 'literal',
+      options: [
+        'LimaCVT1_PD30_TI70_5000',
+        'LimaCVT2_PD30_TI70_10000',
+        'LimaCVT3_PD30_TI70_50000',
+        'LimaCVT4_PD40_TI60_5000',
+        'LimaCVT5_PD40_TI60_10000',
+        'LimaCVT6_PD40_TI60_50000',
+        'LimaBlocks',
+      ],
+      defaultValue: 'LimaCVT1_PD30_TI70_5000',
   },
-  value: '-88'
+  value: 'LimaCVT1_PD30_TI70_5000'
 };
-
-
-export const lonmaxPeru: Product & WpsData = {
-  uid: 'lonmax',
-  description: {
-    id: 'lonmax',
-    title: 'lonmax',
-    type: 'literal',
-    reference: false,
-    defaultValue: '-66'
-  },
-  value: '-66'
-};
-
-
-export const latminPeru: Product & WpsData = {
-  uid: 'latmin',
-  description: {
-    id: 'latmin',
-    title: '',
-    type: 'literal',
-    reference: false,
-    defaultValue: '-21'
-  },
-  value:  '-21'
-};
-
-
-export const latmaxPeru: Product & WpsData = {
-  uid: 'latmax',
-  description: {
-    id: 'latmax',
-    title: '',
-    type: 'literal',
-    reference: false,
-    defaultValue: '-0'
-  },
-  value: '-0'
-};
-
-
-export const schemaPeru: Product & WpsData = {
-  uid: 'schema',
-  description: {
-    id: 'schema',
-    title: '',
-    defaultValue: 'SARA_v1.0',
-    reference: false,
-    type: 'literal'
-  },
-  value: 'SARA_v1.0'
-};
-
-
-
-export const assettypePeru: Product & WpsData = {
-  uid: 'assettype',
-  description: {
-    id: 'assettype',
-    title: '',
-    defaultValue: 'res',
-    reference: false,
-    type: 'literal',
-  },
-  value: 'res'
-};
-
-
-export const querymodePeru: Product & WpsData = {
-  uid: 'querymode',
-  description: {
-    id: 'querymode',
-    title: '',
-    // options: ['intersects', 'within'],
-    defaultValue: 'intersects',
-    reference: false,
-    type: 'literal'
-  },
-  value: 'intersects'
-};
-
 
 export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
   uid: 'AssetmasterProcess_Exposure_Peru',
@@ -204,27 +140,123 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
 
 export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
 
-  readonly wizardProperties: WizardProperties;
+  public wizardProperties: WizardProperties;
 
   constructor(httpClient: HttpClient, cache: Cache) {
     super(
       'ExposurePeru',
       'EQ Exposure Model',
-      [lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, querymodePeru, schemaPeru, assettypePeru].map(p => p.uid),
+      [modelChoicePeru].map(p => p.uid),
       [initialExposurePeru.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       '',
-      'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+      'http://rz-vm140.gfz-potsdam.de:8080/wps/WebProcessingService',
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable(),
       cache
     );
-    this.wizardProperties =  {
+    this.wizardProperties = {
       shape: 'building',
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
       wikiLink: 'ExposureAndVulnerability'
     };
+  }
+
+  execute(inputs: Product[], outputs: Product[], doWhileExecuting): Observable<Product[]> {
+    
+    const lonminPeru: Product & WpsData = {
+      uid: 'lonmin',
+      description: {
+        id: 'lonmin',
+        title: 'lonmin',
+        type: 'literal',
+        reference: false,
+        defaultValue: '-88'
+      },
+      value: '-88'
+    };
+    
+    const lonmaxPeru: Product & WpsData = {
+      uid: 'lonmax',
+      description: {
+        id: 'lonmax',
+        title: 'lonmax',
+        type: 'literal',
+        reference: false,
+        defaultValue: '-66'
+      },
+      value: '-66'
+    };
+    
+    const latminPeru: Product & WpsData = {
+      uid: 'latmin',
+      description: {
+        id: 'latmin',
+        title: 'latmin',
+        type: 'literal',
+        reference: false,
+        defaultValue: '-21'
+      },
+      value:  '-21'
+    };
+    
+    const latmaxPeru: Product & WpsData = {
+      uid: 'latmax',
+      description: {
+        id: 'latmax',
+        title: 'latmax',
+        type: 'literal',
+        reference: false,
+        defaultValue: '-0'
+      },
+      value: '-0'
+    };
+    
+    const schemaPeru: Product & WpsData = {
+      uid: 'schema',
+      description: {
+        id: 'schema',
+        title: 'schema',
+        defaultValue: 'SARA_v1.0',
+        reference: false,
+        type: 'literal',
+      },
+      value: 'SARA_v1.0'
+    };
+    
+    const assettypePeru: Product & WpsData = {
+      uid: 'assettype',
+      description: {
+        id: 'assettype',
+        title: '',
+        defaultValue: 'res',
+        reference: false,
+        type: 'literal',
+      },
+      value: 'res'
+    };
+    
+    const querymodePeru: Product & WpsData = {
+      uid: 'querymode',
+      description: {
+        id: 'querymode',
+        title: '',
+        // options: ['intersects', 'within'],
+        defaultValue: 'intersects',
+        reference: false,
+        type: 'literal'
+      },
+      value: 'intersects'
+    };
+
+
+    const allInputs = [
+      ... inputs,
+      lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, schemaPeru, assettypePeru, querymodePeru
+    ];
+
+    return super.execute(allInputs, outputs, doWhileExecuting);
   }
 }

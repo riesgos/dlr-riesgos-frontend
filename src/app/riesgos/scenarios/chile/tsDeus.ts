@@ -492,7 +492,7 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
 
                 const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 
-                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}{{StatesNotComparable}}`; // <br/>{{GroupsSimplified}}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}{{StatesNotComparable}}`;
             },
             summary: (value: FeatureCollection | FeatureCollection[]) => {
                 let features;

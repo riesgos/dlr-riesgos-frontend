@@ -1,0 +1,39 @@
+<wps:Execute xmlns:wps="http://www.opengis.net/wps/1.0.0" service="WPS" version="1.0.0">
+    <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess</p0:Identifier>
+    <wps:DataInputs>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">quakeMLFile</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">quakeMLFile</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:ComplexData mimeType="application/vnd.geo+json">[{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[-77.9318,-12.1908]},"properties":{"publicID":"quakeml:quakeledger/peru_70000011","preferredOriginID":"quakeml:quakeledger/peru_70000011","preferredMagnitudeID":"quakeml:quakeledger/peru_70000011","type":"earthquake","description.text":"observed","origin.publicID":"quakeml:quakeledger/peru_70000011","origin.time.value":"1746-10-28T00:00:00.000000Z","origin.depth.value":"8.0","origin.creationInfo.value":"GFZ","magnitude.publicID":"quakeml:quakeledger/peru_70000011","magnitude.mag.value":"9.0","magnitude.type":"MW","magnitude.creationInfo.value":"GFZ","focalMechanism.publicID":"quakeml:quakeledger/peru_70000011","focalMechanism.nodalPlanes.nodalPlane1.strike.value":"329.0","focalMechanism.nodalPlanes.nodalPlane1.dip.value":"20.0","focalMechanism.nodalPlanes.nodalPlane1.rake.value":"90.0","focalMechanism.nodalPlanes.preferredPlane":"nodalPlane1"},"id":"quakeml:quakeledger/peru_70000011"}]}]</wps:ComplexData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">gmpe</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">gmpe</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>MontalvaEtAl2016SInter</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">vsgrid</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">vsgrid</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>USGSSlopeBasedTopographyProxy</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+    </wps:DataInputs>
+    <wps:ResponseForm>
+        <wps:ResponseDocument storeExecuteResponse="true" status="true">
+            <wps:Output mimeType="application/WMS" asReference="false">
+                <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">shakeMapFile</p0:Identifier>
+            </wps:Output>
+            <wps:Output mimeType="text/xml" asReference="true">
+                <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">shakeMapFile</p0:Identifier>
+            </wps:Output>
+        </wps:ResponseDocument>
+    </wps:ResponseForm>
+</wps:Execute>

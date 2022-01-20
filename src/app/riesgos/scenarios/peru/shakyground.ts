@@ -6,19 +6,20 @@ import { selectedEqPeru } from './eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { Gmpe, VsGrid } from '../chile/shakyground';
 
 
 export const shakemapWmsOutputPeru: WpsData & WmsLayerProduct = {
     uid: 'ShakygroundProcess_shakeMapFile_wmsPeru',
     description: {
         id: 'shakeMapFile',
-        title: '',
+        title: 'shakeMapFile',
         icon: 'earthquake',
         name: 'shakemap',
         type: 'complex',
         reference: false,
         format: 'application/WMS',
-        styles: ['shakemap-pga', 'another style'],
+        styles: ['shakemap-pga'],
         featureInfoRenderer: (fi: FeatureCollection) => {
             const html = `
             <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
@@ -33,7 +34,7 @@ export const eqShakemapRefPeru: WpsData & Product = {
     uid: 'ShakygroundProcess_shakeMapFile_shakemapPeru',
     description: {
         id: 'shakeMapFile',
-        title: '',
+        title: 'shakeMapFile',
         type: 'complex',
         reference: true,
         format: 'text/xml',
@@ -52,11 +53,11 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
         super(
             'ShakygroundPeru',
             'GroundmotionService',
-            [selectedEqPeru].map(p => p.uid),
+            [selectedEqPeru, Gmpe, VsGrid].map(p => p.uid),
             [shakemapWmsOutputPeru, eqShakemapRefPeru].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
             'EqSimulationShortText',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            'http://rz-vm140.gfz-potsdam.de:8080/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),

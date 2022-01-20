@@ -1,0 +1,8 @@
+- bugfix bbox
+  - replace layer-service and ol-service
+- workflowcontrol
+  - move from effect to reducer
+- update ngrx
+- update to newest angular
+- revamp layerselection
+- replace translation service

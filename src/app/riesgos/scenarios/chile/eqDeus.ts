@@ -112,8 +112,7 @@ export const damageProps: VectorLayerProperties = {
         }
     },
     description: 'Loss in USD',
-    icon: 'dot-circle'
-
+    icon: 'dot-circle',
 };
 
 export const transitionProps: VectorLayerProperties = {
@@ -143,7 +142,6 @@ export const transitionProps: VectorLayerProperties = {
             const meanStateTo = sumTo / sumBuildings;
 
             const weightedChange = (meanStateTo - meanStateFrom) / (5 - meanStateFrom);
-
 
             let r; let g; let b;
             if (total > 0) {

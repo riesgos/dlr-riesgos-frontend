@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Process, Product } from './riesgos.datatypes';
-import { ExposureSelection, modelChoice } from './scenarios/chile/exposureSelection';
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs } from './scenarios/chile/quakeledger';
 import { EqSelection, userinputSelectedEq, selectedEq } from './scenarios/chile/eqselection';
-import { Shakyground, shakemapWmsOutput, eqShakemapRef } from './scenarios/chile/shakyground';
+import { Shakyground, shakemapWmsOutput, eqShakemapRef, Gmpe, VsGrid } from './scenarios/chile/shakyground';
 import { EqDeus, loss, eqDamageM, eqUpdatedExposureRef } from './scenarios/chile/eqDeus';
 import { TsService, tsWms, tsShakemap } from './scenarios/chile/tsService';
-import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from './scenarios/chile/tsDeus';
+import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure, schema } from './scenarios/chile/tsDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
-import { lonmin, lonmax, latmin, latmax, assettype, schema, querymode, initialExposure } from './scenarios/chile/exposure';
-import { assetcategory, losscategory, taxonomies, fragilityRef } from './scenarios/chile/modelProp';
+import { initialExposure, ExposureModel, modelChoice } from './scenarios/chile/exposure';
+import { fragilityRef } from './scenarios/chile/modelProp';
 import { ExposureModelPeru, lonminPeru, lonmaxPeru, latminPeru,
   latmaxPeru, assettypePeru, schemaPeru, querymodePeru, initialExposurePeru } from './scenarios/peru/exposure';
 import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
@@ -120,25 +119,23 @@ export class RiesgosService {
           new QuakeLedger(this.httpClient, cache),
           EqSelection,
           new Shakyground(this.httpClient, cache),
-          new ExposureSelection(this.httpClient, cache),
+          new ExposureModel(this.httpClient, cache),
           new EqDeus(this.httpClient, cache),
           new TsService(this.httpClient, cache),
           new TsDeus(this.httpClient, cache),
-          new EqReliability(this.httpClient, cache),
-          // new PhysicalImpactAssessment(this.httpClient)
+          new EqReliability(this.httpClient, cache)
         ];
         products = [
           modelChoice,
-          lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
-          assetcategory, losscategory, taxonomies,
           initialExposure,
           new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
           selectedEqs, userinputSelectedEq,
+          Gmpe, VsGrid,
           selectedEq, shakemapWmsOutput, eqShakemapRef,
           loss, eqDamageM, eqUpdatedExposureRef,
           tsWms, tsShakemap,
           countryChile, hazardEq,
-          damageConsumerAreas,
+          damageConsumerAreas, schema,
           tsDamage, tsTransition, tsUpdatedExposure,
           // physicalImpact
         ];

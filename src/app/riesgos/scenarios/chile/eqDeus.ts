@@ -1,20 +1,20 @@
-import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { schema, initialExposure } from './exposure';
+import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
+import { initialExposure } from './exposure';
 import { WpsData } from '@dlr-eoc/utils-ogc';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
-import { createBarchart, BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { toDecimalPlaces, weightedDamage, greenRedRange, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
+import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
-import { FeatureCollection, Feature } from '@turf/helpers';
-import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { FeatureCollection } from '@turf/helpers';
+import { createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { Cache } from '@dlr-eoc/utils-ogc';
 import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
@@ -530,16 +530,19 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const vulnerabilityInputs = [
-            assetcategory,
-            losscategory,
-            taxonomies,
-            {
-                ...schema,
-                value: 'SARA_v1.0'
-            }
-        ];
-        const vulnerabilityOutputs = [fragilityRef];
+        const schema: Product & WpsData = {
+            uid: 'schema',
+            description: {
+              id: 'schema',
+              title: 'schema',
+              reference: false,
+              type: 'literal',
+            },
+            value: 'SARA_v1.0'
+          };
+
+        const vulnerabilityInputs = [ schema ];
+        const vulnerabilityOutputs = [ fragilityRef ];
 
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
             .pipe(

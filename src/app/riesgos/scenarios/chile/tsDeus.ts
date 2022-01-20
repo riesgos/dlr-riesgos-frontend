@@ -5,12 +5,11 @@ import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 
 import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqDamageM, eqUpdatedExposureRef } from './eqDeus';
-import { schema } from './exposure';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
+import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { Observable } from 'rxjs';
 import { Deus } from './deus';
 import { map, switchMap } from 'rxjs/operators';
@@ -21,7 +20,30 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from './constants';
+import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
+
+
+export const schema: StringSelectUconfProduct & WpsData = {
+    uid: 'schema',
+    description: {
+      id: 'schema',
+      title: 'schema',
+      defaultValue: 'SUPPASRI2013_v2.0',
+      reference: false,
+      type: 'literal',
+      wizardProperties: {
+          fieldtype: 'stringselect',
+          name: 'schema',
+          description: '',
+        },
+        options: [
+            'SUPPASRI2013_v2.0',
+            'Medina_2019',
+        ],
+    },
+    value: 'SUPPASRI2013_v2.0'
+};
 
 export const tsDamage: VectorLayerProduct & WpsData & Product = {
     uid: 'ts_damage',
@@ -531,7 +553,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
-        this.requiredProducts = [eqDamageM, tsShakemap, eqUpdatedExposureRef].map(p => p.uid);
+        this.requiredProducts = [eqDamageM, tsShakemap, eqUpdatedExposureRef, schema].map(p => p.uid);
         this.providedProducts = [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
@@ -551,16 +573,8 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
         // Step 1.1: preparing vulnerability-service inputs
-        const vulnerabilityInputs = [
-            assetcategory,
-            losscategory,
-            taxonomies,
-            {
-                ... schema,
-                value: 'SUPPASRI2013_v2.0'
-            }
-        ];
-        const vulnerabilityOutputs = [fragilityRef];
+        const vulnerabilityInputs = [ schema ];
+        const vulnerabilityOutputs = [ fragilityRef] ;
 
         // Step 1.2: executing vulnerability-service
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)

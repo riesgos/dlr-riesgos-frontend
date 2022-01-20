@@ -6,6 +6,7 @@ import { selectedEq } from './eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
 
 export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
@@ -18,7 +19,7 @@ export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
         type: 'complex',
         reference: false,
         format: 'application/WMS',
-        styles: ['shakemap-pga', 'another style'],
+        styles: ['shakemap-pga'],
         featureInfoRenderer: (fi: FeatureCollection) => {
             const html = `
             <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
@@ -44,6 +45,51 @@ export const eqShakemapRef: WpsData & Product = {
 };
 
 
+export const Gmpe: WpsData & StringSelectUconfProduct = {
+    uid: 'Shakyground_gmpe',
+    description: {
+        id: 'gmpe',
+        title: 'gmpe',
+        type: 'literal',
+        reference: false,
+        options: [
+            'MontalvaEtAl2016SInter',
+            'GhofraniAtkinson2014',
+            'AbrahamsonEtAl2015SInter',
+            'YoungsEtAl1997SInterNSHMP2008'
+        ],
+        defaultValue: 'MontalvaEtAl2016SInter',
+        wizardProperties: {
+            fieldtype: 'stringselect',
+            name: 'gmpe',
+            description: ''
+        }
+    },
+    value: null
+};
+
+export const VsGrid: WpsData & StringSelectUconfProduct = {
+    uid: 'Shakyground_vsgrid',
+    description: {
+        id: 'vsgrid',
+        title: 'vsgrid',
+        type: 'literal',
+        reference: false,
+        options: [
+            'USGSSlopeBasedTopographyProxy',
+            'FromSeismogeotechnicsMicrozonation'
+        ],
+        defaultValue: 'USGSSlopeBasedTopographyProxy',
+        wizardProperties: {
+            fieldtype: 'stringselect',
+            name: 'vsgrid',
+            description: ''
+        }
+    },
+    value: null
+};
+
+
 export class Shakyground extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
@@ -52,11 +98,11 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
         super(
             'Shakyground',
             'GroundmotionService',
-            [selectedEq].map(p => p.uid),
+            [selectedEq, Gmpe, VsGrid].map(p => p.uid),
             [shakemapWmsOutput, eqShakemapRef].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
             'EqSimulationShortText',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            'http://rz-vm140.gfz-potsdam.de:8080/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),

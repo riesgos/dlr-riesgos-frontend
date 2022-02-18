@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FormBboxFieldComponent } from './form-bbox-field.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ describe('FormBboxFieldComponent', () => {
   let component: FormBboxFieldComponent;
   let fixture: ComponentFixture<FormBboxFieldComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FormBboxFieldComponent, BboxfieldComponent, FormComponent, FormStringFieldComponent ],
       imports: [TranslateModule.forRoot(), FormsModule, ReactiveFormsModule, ClarityModule]

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HelperButtonsComponent } from './helper-buttons.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ describe('SaveButtonComponent', () => {
   let component: HelperButtonsComponent;
   let fixture: ComponentFixture<HelperButtonsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HelperButtonsComponent ],
       imports: [TranslateModule.forRoot(), FormsModule, ReactiveFormsModule, ClarityModule, StoreModule.forRoot(reducers)]

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FpserComponent } from './fpser.component';
 import { repeatPromise, timeOneCycle, mean, meanFps } from './helpers';
@@ -7,7 +7,7 @@ describe('FpserComponent', () => {
   let component: FpserComponent;
   let fixture: ComponentFixture<FpserComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FpserComponent ]
     })

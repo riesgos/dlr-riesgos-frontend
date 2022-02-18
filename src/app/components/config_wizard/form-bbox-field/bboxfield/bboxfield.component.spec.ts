@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BboxfieldComponent } from './bboxfield.component';
 import { FormComponent } from '../../form/form.component';
@@ -9,7 +9,7 @@ describe('BboxfieldComponent', () => {
   let component: BboxfieldComponent;
   let fixture: ComponentFixture<BboxfieldComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ BboxfieldComponent, FormComponent ],
       imports: [FormsModule, ReactiveFormsModule, ClarityModule]

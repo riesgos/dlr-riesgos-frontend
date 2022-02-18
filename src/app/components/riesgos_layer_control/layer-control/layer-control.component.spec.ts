@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RiesgosLayerControlComponent } from '../layer-control/layer-control.component';
 
@@ -19,7 +19,7 @@ describe('LayerControlComponent', () => {
   let layersSvc: LayersService;
   let mapStateSvc: MapStateService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ClarityModule, FormsModule],
       declarations: [RiesgosLayerControlComponent, LayerentryGroupComponent, RiesgosLayerentryComponent, ObjTypePipe, ReversePipe],

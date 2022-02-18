@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GroupSliderComponent } from './group-slider.component';
 
@@ -6,7 +6,7 @@ describe('GroupSliderComponent', () => {
   let component: GroupSliderComponent;
   let fixture: ComponentFixture<GroupSliderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ GroupSliderComponent ]
     })

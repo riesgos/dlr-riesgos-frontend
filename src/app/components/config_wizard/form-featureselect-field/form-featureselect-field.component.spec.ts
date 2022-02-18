@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FormFeatureSelectFieldComponent } from './form-featureselect-field.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ describe('FormSelectFieldComponent', () => {
   let component: FormFeatureSelectFieldComponent;
   let fixture: ComponentFixture<FormFeatureSelectFieldComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FormFeatureSelectFieldComponent ],
       imports: [TranslateModule.forRoot(), FormsModule, ReactiveFormsModule, ClarityModule]

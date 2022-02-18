@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WizardPageComponent } from './wizard-page.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ describe('WizardPageComponent', () => {
   let component: WizardPageComponent;
   let fixture: ComponentFixture<WizardPageComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WizardPageComponent, ReadMoreComponent, RouteMapComponent, ScenariosComponent ],
       imports: [TranslateModule.forRoot(), UkisRoutingModule]

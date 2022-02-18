@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import Legend from 'ol-ext/control/Legend';
+import Legend from 'ol-ext/legend/Legend';
 import olFeature from 'ol/Feature';
 import { Feature } from '@turf/helpers';
 import Style from 'ol/style/Style';
@@ -53,7 +53,7 @@ export class VectorLegendComponent implements OnInit {
     });
 
     for (const element of this.elementList) {
-      const canvas: HTMLCanvasElement = legend.getStyleImage({
+      const canvas: HTMLCanvasElement = legend.getLegendImage({
         properties: element.feature.properties,
         typeGeom: element.feature.geometry.type
       }, null, null);

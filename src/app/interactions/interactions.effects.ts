@@ -1,25 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from '@ngrx/effects';
+import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { InteractionAction, InteractionActionTypes, InteractionCompleted } from './interactions.actions';
 import { ProductsProvided } from '../riesgos/riesgos.actions';
-import { map, withLatestFrom } from 'rxjs/operators';
-import { State } from '../ngrx_register';
-import { Store } from '@ngrx/store';
-import { Product } from '../riesgos/riesgos.datatypes';
+import { map } from 'rxjs/operators';
 
 
 
 @Injectable()
 export class InteractionEffects {
 
-    @Effect()
-    $interactionCompleted = this.actions$.pipe(
-        ofType<InteractionAction>(InteractionActionTypes.completed),
-        map((action: InteractionCompleted) => {
-            return new ProductsProvided({products: [action.payload.product]});
-        })
-    );
-
+    $interactionCompleted = createEffect(() => {
+        return this.actions$.pipe(
+            ofType<InteractionAction>(InteractionActionTypes.completed),
+            map((action: InteractionCompleted) => {
+                return new ProductsProvided({products: [action.payload.product]});
+            })
+        );
+    });
 
     constructor(private actions$: Actions) {}
 

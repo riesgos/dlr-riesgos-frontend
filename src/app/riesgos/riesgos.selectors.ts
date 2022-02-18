@@ -1,8 +1,7 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { RiesgosState, RiesgosScenarioState } from './riesgos.state';
-import { Product, Process, ProcessId, ImmutableProcess } from './riesgos.datatypes';
-import { ProductsProvided } from './riesgos.actions';
+import { Product, ProcessId, ImmutableProcess } from './riesgos.datatypes';
 import { isVectorLayerProduct, isBboxLayerProduct, isWmsProduct, isMultiVectorLayerProduct } from './riesgos.datatypes.mappable';
 
 

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { XhrFactory, HttpClient, HttpXhrBackend } from '@angular/common/http';
+import { XhrFactory } from '@angular/common';
+import { HttpClient, HttpXhrBackend } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { effects, reducers } from '../ngrx_register';

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { RestartingFromProcess } from 'src/app/riesgos/riesgos.actions';
-import { UserconfigurableProduct, isUserconfigurableProduct, isStringSelectableProduct } from '../userconfigurable_wpsdata';
+import { UserconfigurableProduct, isUserconfigurableProduct } from '../userconfigurable_wpsdata';
 import { Product, WpsProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { getInputsForProcess } from 'src/app/riesgos/riesgos.selectors';
 import { map } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class WizardPageComponent implements OnInit {
 
   ngOnInit() {
     this.parameters$ = this.store.pipe(
-      select(getInputsForProcess, {processId: this.process.uid}),
+      select(getInputsForProcess(this.process.uid)),
       map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableProduct(i)) as UserconfigurableProduct[] )
     );
   }

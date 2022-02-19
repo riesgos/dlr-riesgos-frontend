@@ -182,7 +182,7 @@ export class RiesgosEffects {
 
     private loadScenarioData(scenario: string): Observable<[Process[], Product[]]> {
         // @TODO: per default, load data from store.
-        return this.store$.select(getScenarioRiesgosState, {scenario}).pipe(map((scenarioState: RiesgosScenarioState) => {
+        return this.store$.select(getScenarioRiesgosState(scenario)).pipe(map((scenarioState: RiesgosScenarioState) => {
             if (scenarioState) {
                 return [scenarioState.processStates, scenarioState.productValues];
             } else {

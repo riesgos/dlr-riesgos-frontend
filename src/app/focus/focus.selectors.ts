@@ -3,7 +3,7 @@ import { FocusState } from './focus.state';
 import { State } from '../ngrx_register';
 
 
-const getFocusState = function(state: State): FocusState {
+const getFocusState = (state: State): FocusState => {
     return state.focusState;
 };
 

@@ -3,6 +3,7 @@
 /ukis-frontend-libraries
 
 # compiled output
+/target
 /dist
 /tmp
 /out-tsc

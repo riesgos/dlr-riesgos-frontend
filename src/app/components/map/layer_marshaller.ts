@@ -184,7 +184,7 @@ export class LayerMarshaller  {
             time: null,
             filtertype: 'Overlays',
             popup: {
-                pupupFunktion: (obj) => {
+                popupFunction: (obj) => {
                     let html = product.description.vectorLayerAttributes.text(obj);
                     html = this.translator.syncTranslate(html);
                     return html;
@@ -369,7 +369,7 @@ export class LayerMarshaller  {
                 time: null,
                 filtertype: 'Overlays',
                 popup: {
-                    pupupFunktion: (obj) => {
+                    popupFunction: (obj) => {
                         let html = vectorLayerProps.vectorLayerAttributes.text(obj);
                         html = this.translator.syncTranslate(html);
                         return html;
@@ -447,7 +447,7 @@ export class LayerMarshaller  {
                         style: styleFunction
                     },
                     popup: {
-                        pupupFunktion: (obj) => {
+                        popupFunction: (obj) => {
                             let html = product.description.vectorLayerAttributes.text(obj);
                             html = this.translator.syncTranslate(html);
                             return html;
@@ -579,7 +579,7 @@ export class LayerMarshaller  {
                             `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
                             `&TRANSPARENT=TRUE&LAYER=${layername}`,
                         popup: {
-                            asyncPupup: (obj, callback) => {
+                            asyncPopup: (obj, callback) => {
                                 this.getFeatureInfoPopup(obj, callback, description.featureInfoRenderer);
                             }
                         },

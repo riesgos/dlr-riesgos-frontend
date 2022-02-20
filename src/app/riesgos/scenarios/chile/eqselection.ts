@@ -5,10 +5,11 @@ import { WpsData } from '@dlr-eoc/utils-ogc';
 import { Observable, of } from 'rxjs';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { selectedEqs } from './quakeledger';
 import { FeatureCollection, featureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -25,7 +26,7 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct
         format: 'application/vnd.geo+json',
         name: 'Selected_earthquake',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 return new olStyle({
                     image: new olCircle({
                         radius: 30,

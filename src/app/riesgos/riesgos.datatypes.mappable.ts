@@ -1,9 +1,12 @@
 import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsBboxValue } from '@dlr-eoc/utils-ogc';
 import { shape } from '../components/config_wizard/wizardable_processes';
-import { FeatureCollection, Feature } from '@turf/helpers';
+import { FeatureCollection } from '@turf/helpers';
+import Feature from 'ol/Feature';
+import Geometry from 'ol/geom/Geometry';
 import { LegendElement } from '../components/dynamic/vector-legend/vector-legend.component';
 import { IDynamicComponent } from '../components/dynamic-component/dynamic-component.component';
+import GeometryCollection from 'ol/geom/GeometryCollection';
 
 
 
@@ -32,7 +35,7 @@ export const isBboxLayerProduct = (data: Product): data is BboxLayerProduct => {
 
 export interface VectorLayerProperties {
     vectorLayerAttributes: {
-        style?: (feature: Feature, resolution: number, selected: boolean) => any;
+        style?: (feature: Feature<Geometry | GeometryCollection>, resolution: number, selected: boolean) => any;
         text?: any;
         summary?: (value: any) => IDynamicComponent,
         sldFile?: string,

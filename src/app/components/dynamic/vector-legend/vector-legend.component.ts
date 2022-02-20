@@ -28,7 +28,7 @@ export class VectorLegendComponent implements OnInit {
 
   @Input() legendTitle: string;
   @Input() resolution: number;
-  @Input() styleFunction: (feature: olFeature, resolution: number) => Style;
+  @Input() styleFunction: (feature: olFeature<any>, resolution: number) => Style;
   @Input() elementList: LegendElement[];
   public entries: Entry[] = [];
 
@@ -40,9 +40,11 @@ export class VectorLegendComponent implements OnInit {
   ngOnInit() {
     const legend = new Legend({
       title: this.legendTitle,
-      style: (feature: olFeature) => {
+      style: (feature: olFeature<any>) => {
         const style = this.styleFunction(feature, this.resolution);
+        // @ts-ignore
         if (style.text_) {
+          // @ts-ignore
           delete (style.text_);
         }
         return style;

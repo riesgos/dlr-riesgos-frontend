@@ -6,14 +6,13 @@ import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { Store, select } from '@ngrx/store';
 
-import { DragBox } from 'ol/interaction';
-import { Vector as olVectorLayer, Tile as TileLayer } from 'ol/layer';
-import { Vector as olVectorSource, TileWMS } from 'ol/source';
+import { DragBox, Select } from 'ol/interaction';
+import { Vector as olVectorLayer } from 'ol/layer';
+import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import Feature from 'ol/Feature';
 import {click, noModifierKeys} from 'ol/events/condition';
-import Select from 'ol/interaction/Select';
 
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
@@ -27,10 +26,11 @@ import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { WMTSLayerFactory } from './wmts';
 import { LayerMarshaller } from './layer_marshaller';
 import { ProductLayer } from './map.types';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+import Geometry from 'ol/geom/Geometry';
+import { SelectEvent } from 'ol/interaction/Select';
 
 const mapProjection = 'EPSG:4326';
 
@@ -45,8 +45,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
     private geoJson = new GeoJSON();
-    private highlightedFeatures$ = new BehaviorSubject<Feature[]>([]);
-    private highlightedFeatures: Feature[] = [];
+    private highlightedFeatures$ = new BehaviorSubject<Feature<Geometry>[]>([]);
+    private highlightedFeatures: Feature<Geometry>[] = [];
     private interactionState$ = new BehaviorSubject<InteractionState>(initialInteractionState);
     private subs: Subscription[] = [];
 
@@ -171,18 +171,18 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.store.dispatch(new InteractionCompleted({ product }));
             }
         });
-        this.mapSvc.map.addInteraction(dragBox);
+        this.mapSvc.map.addInteraction(dragBox as any);
 
 
-        // adding featureselect interaction and hooking it into the store
+        // adding feature-select interaction and hooking it into the store
         const clickInteraction = new Select({
             condition: (mapBrowserEvent) => {
                 return click(mapBrowserEvent) && noModifierKeys(mapBrowserEvent);
             },
             style: null // we don't want ol to automatically apply another style on selected items.
         });
-        clickInteraction.on('select', (e) => {
-                const features = e.target.getFeatures().getArray();
+        clickInteraction.on('select', (e: SelectEvent) => {
+                const features = (e.target as any).getFeatures().getArray();
                 if (features.length) {
                     if (this.interactionState$.getValue().mode === 'featureselection') {
                         const feature = features[0];
@@ -197,7 +197,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     }
                 }
         });
-        this.mapSvc.map.addInteraction(clickInteraction);
+        this.mapSvc.map.addInteraction(clickInteraction as any);
 
 
         // // adding multi-featureselect interaction
@@ -228,7 +228,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
         // listening for changes in highlighted features
-        this.highlightedFeatures$.subscribe((features: Feature[]) => {
+        this.highlightedFeatures$.subscribe((features: Feature<Geometry>[]) => {
             this.highlightedFeatures.map(f => f.set('selected', false));
             features.map(f => f.set('selected', true));
             this.highlightedFeatures = features;
@@ -274,7 +274,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
         // listening for change in scenario - afterViewInit
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
-            this.mapSvc.setProjection(getProjection(mapProjection));
+            const p = getProjection(mapProjection);
+            this.mapSvc.setProjection(p.getCode());
             const center = this.getCenter(scenario);
             this.mapSvc.setZoom(8);
             this.mapSvc.setCenter(center, true);
@@ -421,8 +422,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/linea_transmision_ecuador.geojson',
-                                format: new GeoJSON(),
-                                crossOrigin: 'anonymous'
+                                format: new GeoJSON()
                             })
                         }),
                         name: 'Transmission',
@@ -438,7 +438,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/linea_subtransmision_ecuador.geojson',
                                 format: new GeoJSON(),
-                                crossOrigin: 'anonymous'
                             })
                         }),
                         name: 'Subtransmission',

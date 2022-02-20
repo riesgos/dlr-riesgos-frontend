@@ -15,9 +15,10 @@ import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange, toDecimalPlaces, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { maxDamage$ } from '../chile/constants';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -26,7 +27,7 @@ const ashfallLossProps: VectorLayerProperties = {
         name: 'ashfallLoss',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
@@ -35,7 +36,7 @@ const ashfallLossProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -110,7 +111,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
         name: 'ashfallTransition',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -146,7 +147,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -240,7 +241,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
         name: 'ashfallExposure',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -275,7 +276,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },

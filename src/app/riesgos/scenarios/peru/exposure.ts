@@ -1,14 +1,15 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
-import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
+import olFeature from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { BarData, createBarchart, createBigBarchart } from 'src/app/helpers/d3charts';
-import { weightedDamage, redGreenRange, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { BarData, createBigBarchart } from 'src/app/helpers/d3charts';
+import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Observable } from 'rxjs';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -49,7 +50,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
     format: 'application/json',
     name: 'Exposure',
     vectorLayerAttributes: {
-      style: (feature: olFeature, resolution: number) => {
+      style: (feature: olFeature<Geometry>, resolution: number) => {
         const props = feature.getProperties();
 
         const expo = props.expo;
@@ -86,7 +87,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
           }),
           stroke: new olStroke({
             color: [r, g, b, 1],
-            witdh: 2
+            width: 2
           })
         });
       },

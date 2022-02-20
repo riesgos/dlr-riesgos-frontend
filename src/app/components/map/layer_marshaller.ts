@@ -31,6 +31,7 @@ import { WebGlPolygonLayer } from '../../helpers/custom_renderers/renderers/poly
 import * as hashfunction from 'imurmurhash';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -153,7 +154,7 @@ export class LayerMarshaller  {
         return forkJoin(layers$);
     }
 
-    createWebglLayer(product: VectorLayerProduct, source?: olVectorSource): Observable<ProductCustomLayer> {
+    createWebglLayer(product: VectorLayerProduct, source?: olVectorSource<any>): Observable<ProductCustomLayer> {
         if (!source) {
             const data = product.value[0];
             source = new olVectorSource({
@@ -211,7 +212,7 @@ export class LayerMarshaller  {
         // Ugly hack: a custom layer is not supposed to have an 'options' property.
         // We set it here anyway, because we need options.style to be able to create a custom legend.
         ukisLayer['options'] = {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 return product.description.vectorLayerAttributes.style(feature, resolution, props.selected);
             }
@@ -296,7 +297,7 @@ export class LayerMarshaller  {
             features: (new GeoJSON()).readFeatures(
                 featureCollection([bboxPolygon(bboxArray)]))
         });
-        const olLayer: olVectorLayer = new olVectorLayer({
+        const olLayer: olVectorLayer<olVectorSource<any>> = new olVectorLayer({
             source: source
         });
 
@@ -347,9 +348,9 @@ export class LayerMarshaller  {
         const layers = [];
         for (const vectorLayerProps of product.description.vectorLayers) {
 
-            const layer: olVectorLayer = new olVectorLayer({
+            const layer: olVectorLayer<olVectorSource<any>> = new olVectorLayer({
                 source: source,
-                style: (feature: olFeature, resolution: number) => {
+                style: (feature: olFeature<Geometry>, resolution: number) => {
                     const props = feature.getProperties();
                     return vectorLayerProps.vectorLayerAttributes.style(feature, resolution, props.selected);
                 }
@@ -396,7 +397,7 @@ export class LayerMarshaller  {
             // Ugly hack: a custom layer is not supposed to have an 'options' property.
             // We set it here anyway, because we need options.style to be able to create a custom legend.
             productLayer['options'] = {
-                style: (feature: olFeature, resolution: number) => {
+                style: (feature: olFeature<Geometry>, resolution: number) => {
                     const props = feature.getProperties();
                     return vectorLayerProps.vectorLayerAttributes.style(feature, resolution, props.selected);
                 }
@@ -488,7 +489,7 @@ export class LayerMarshaller  {
     private getSelectionAwareStyle(product: VectorLayerProduct): Observable<CallableFunction | null> {
         return this.getStyle(product).pipe(map(style => {
             if (style) {
-                return (feature: olFeature, resolution: number) => {
+                return (feature: olFeature<Geometry>, resolution: number) => {
                     const props = feature.getProperties();
                     return style(feature, resolution, props.selected);
                 }

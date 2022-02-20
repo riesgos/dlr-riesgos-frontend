@@ -1,13 +1,13 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
-import { StringSelectUconfProduct, BboxUconfProduct, BboxUconfPD, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { BboxUconfProduct, BboxUconfPD, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { BboxLayerProduct, BboxLayerDescription, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '@dlr-eoc/utils-ogc';
 import { HttpClient } from '@angular/common/http';
-import { toDecimalPlaces, linInterpolateXY, redGreenRange, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
-import { TableEntry, InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
+import olFeature from 'ol/Feature';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -186,7 +186,7 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number, selected: boolean) => {
+            style: (feature: olFeature<Geometry>, resolution: number, selected: boolean) => {
 
                 const props = feature.getProperties();
                 const magnitude = props['magnitude.mag.value'];
@@ -208,10 +208,10 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                         }),
                         stroke: new olStroke({
                             color: [r, g, b, 1]
-                        }),
-                        text: new olText({
-                            text: text
                         })
+                    }),
+                    text: new olText({
+                        text: text
                     })
                 });
             },

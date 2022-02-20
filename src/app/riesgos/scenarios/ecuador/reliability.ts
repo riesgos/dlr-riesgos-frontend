@@ -4,10 +4,11 @@ import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/ri
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { Observable } from 'rxjs';
 import { laharVelocityShakemapRef, laharHeightShakemapRef } from './laharWrapper';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -51,7 +52,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 let probDisr = 0;
                 if (props['Prob_Disruption']) {
@@ -80,7 +81,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },

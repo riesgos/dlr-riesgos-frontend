@@ -4,7 +4,7 @@ import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { VectorLayerProperties, MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { toDecimalPlaces, weightedDamage, greenRedRange, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
@@ -19,6 +19,7 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from '../chile/constants';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -37,7 +38,7 @@ export const lossPeru: WpsData & Product = {
 const eqDamagePeruProps: VectorLayerProperties = {
         name: 'eq-damage',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
@@ -46,7 +47,7 @@ const eqDamagePeruProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -119,7 +120,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
         name: 'eq-transition',
         icon: 'dot-circle',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -155,7 +156,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -263,7 +264,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
         icon: 'dot-circle',
         name: 'eq-exposure',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -299,7 +300,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },

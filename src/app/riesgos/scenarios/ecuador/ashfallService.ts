@@ -7,11 +7,12 @@ import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { Observable, forkJoin } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -28,7 +29,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
         format: 'application/vnd.geo+json',
         name: 'ashfall-depth',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const thickness = props.thickness;
                 allDepths.push(thickness);
@@ -45,7 +46,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                     }),
                     stroke: new olStroke({
                         color: [0, 0, 0, 1],
-                        witdh: 2
+                        width: 2
                     }),
                     text: new olText({
                         font: 'bold 14px Calibri,sans-serif',

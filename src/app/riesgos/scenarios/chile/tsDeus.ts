@@ -7,7 +7,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { eqDamageM, eqUpdatedExposureRef } from './eqDeus';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { Observable } from 'rxjs';
@@ -21,6 +21,7 @@ import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from './constants';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -56,7 +57,7 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
         format: 'application/json',
         name: 'ts-damage',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$ );
                 return new olStyle({
@@ -65,7 +66,7 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -151,7 +152,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
         format: 'application/json',
         name: 'ts-transition',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -187,7 +188,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -310,7 +311,7 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
         format: 'application/json',
         name: 'ts-exposure',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -348,7 +349,7 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },

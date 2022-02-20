@@ -9,7 +9,8 @@ import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '@dlr-eoc/utils
 import { toDecimalPlaces, redGreenRange, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
+import Geometry from 'ol/geom/Geometry';
 
 
 export class InputBoundingbox implements BboxUconfProduct, BboxLayerProduct, WpsData {
@@ -186,7 +187,7 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number, selected: boolean) => {
+            style: (feature: olFeature<Geometry>, resolution: number, selected: boolean) => {
 
                 const props = feature.getProperties();
                 const magnitude = props['magnitude.mag.value'];

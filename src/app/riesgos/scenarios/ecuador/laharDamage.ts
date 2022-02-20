@@ -10,7 +10,7 @@ import { fragilityRef } from '../chile/modelProp';
 import { switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { greenRedRange, toDecimalPlaces, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
@@ -19,6 +19,7 @@ import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
 import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { maxDamage$ } from '../chile/constants';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -26,7 +27,7 @@ export const laharLossProps: VectorLayerProperties = {
         name: 'laharLoss',
         icon: 'avalance',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
@@ -35,7 +36,7 @@ export const laharLossProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -107,7 +108,7 @@ export const laharTransitionProps: VectorLayerProperties = {
         name: 'laharTransition',
         icon: 'avalance',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -143,7 +144,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -250,7 +251,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
         name: 'laharExposure',
         icon: 'avalance',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -286,7 +287,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },

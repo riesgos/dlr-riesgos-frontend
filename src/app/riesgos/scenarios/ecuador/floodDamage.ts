@@ -4,13 +4,14 @@ import { WpsData } from '@dlr-eoc/utils-ogc';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { FeatureCollection, MultiPolygon, Polygon } from '@turf/helpers';
 import proj4 from 'proj4';  // requires "allowSyntheticDefaultImports": true
 import { HttpClient } from '@angular/common/http';
 import { greenRedRange } from 'src/app/helpers/colorhelpers';
 import { BarData, createBarchart } from 'src/app/helpers/d3charts';
 import { Cache } from '@dlr-eoc/utils-ogc';
+import Geometry from 'ol/geom/Geometry';
 
 
 proj4.defs('EPSG:32717', '+proj=utm +zone=17 +south +datum=WGS84 +units=m +no_defs');
@@ -85,7 +86,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
         description: 'floodDamageDescription',
         name: 'Flood damage',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const inundation = props['inundation'];
                 let [r, g, b] = greenRedRange(0, 50, inundation);
@@ -96,7 +97,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
               },

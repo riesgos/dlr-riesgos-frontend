@@ -10,6 +10,7 @@ import { Cache } from '@dlr-eoc/utils-ogc';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
+import Geometry from 'ol/geom/Geometry';
 
 
 export const modelChoice: WpsData & StringSelectUconfProduct = {
@@ -42,7 +43,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
     format: 'application/json',
     name: 'Exposure',
     vectorLayerAttributes: {
-      style: (feature: olFeature, resolution: number) => {
+      style: (feature: olFeature<Geometry>, resolution: number) => {
         const props = feature.getProperties();
 
         const expo = props.expo;

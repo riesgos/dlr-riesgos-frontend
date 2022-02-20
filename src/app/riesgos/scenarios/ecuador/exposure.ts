@@ -7,9 +7,10 @@ import { BarData, createBarchart } from 'src/app/helpers/d3charts';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import Geometry from 'ol/geom/Geometry';
 
 
 export const lonminEcuador: Product & WpsData = {
@@ -121,7 +122,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
     format: 'application/json',
     name: 'Exposure Ashfall',
     vectorLayerAttributes: {
-      style: (feature: olFeature, resolution: number) => {
+      style: (feature: olFeature<Geometry>, resolution: number) => {
         const props = feature.getProperties();
 
         const expo = props.expo;
@@ -157,7 +158,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
           }),
           stroke: new olStroke({
             color: [r, g, b, 1],
-            witdh: 2
+            width: 2
           })
         });
       },

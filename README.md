@@ -1,6 +1,8 @@
 ![RIESGOS Logo](src/assets/logos/riesgos_base_small_en.svg "RIESGOS Logo")
 
 
+![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/riesgos/dlr-riesgos-frontend?include_prereleases)
+
 [![DOI](https://zenodo.org/badge/203112525.svg)](https://zenodo.org/badge/latestdoi/203112525)
 
 ## Disclaimer

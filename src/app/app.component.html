@@ -3,9 +3,9 @@
   <ukis-global-alert *ngIf="ui.alert" [(alert)]="ui.alert"></ukis-global-alert>
   <ukis-global-progress *ngIf="ui.progress" [(progress)]="ui.progress"></ukis-global-progress>
 
-  <ukis-header [ukis-title]="title">
+  <ukis-header [ukis-title]="title" [ukis-version]="version">
     <a routerLink="/scenarios" routerLinkActive="active" class="nav-link nav-text header-nav-el">{{'Stories' | translate}}</a>
-    <a class="nav-link nav-text header-nav-el">{{currentMapName | async}}</a>
+    <a routerLink="/map" routerLinkActive="active" *ngIf="currentMapName | async" class="nav-link nav-text header-nav-el">{{currentMapName | async}}</a>
     <a routerLink="/documentation" routerLinkActive="active" class="nav-link nav-text header-nav-el">{{'Documentation' | translate}}</a>
     <a routerLink="/licenses" routerLinkActive="active" class="nav-link nav-text header-nav-el">{{'Licenses' | translate}}</a>
   </ukis-header>

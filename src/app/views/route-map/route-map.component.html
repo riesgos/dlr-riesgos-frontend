@@ -1,3 +1,6 @@
+
+<ukis-configuration-wizard [navExpanded]="!collapsedConfigurationWizard"></ukis-configuration-wizard>
+
 <main class="content-area">
     <app-interactionstatemonitor></app-interactionstatemonitor>
     <ukis-map></ukis-map>
@@ -23,14 +26,6 @@
     <!-- </perfect-scrollbar> -->
 </clr-vertical-nav>
 
-<clr-vertical-nav [clrVerticalNavCollapsible]="false" [(clrVerticalNavCollapsed)]="collapsedConfigurationWizard" class="sidenav" id="serviceControl" #serviceControl>
-    <!-- <perfect-scrollbar> -->
-
-        <h3 class="clr-vertical-nav-header is-highlight">{{'Configuration Wizard' | translate}}</h3>
-        <ukis-configuration-wizard [navExpanded]="!collapsedConfigurationWizard"></ukis-configuration-wizard>
-
-    <!-- </perfect-scrollbar> -->
-</clr-vertical-nav>
 
 
 

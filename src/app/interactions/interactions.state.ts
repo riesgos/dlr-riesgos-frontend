@@ -1,4 +1,4 @@
-import { ProductId } from '@dlr-eoc/utils-ogc';
+import { ProductId } from 'src/app/services/wps';
 import { Product } from '../riesgos/riesgos.datatypes';
 
 export type InteractionMode = 'normal' | 'featureselection' | 'bbox';

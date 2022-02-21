@@ -1,4 +1,4 @@
-import { Cache } from '@dlr-eoc/utils-ogc';
+import { Cache } from 'src/app/services/wps';
 import { set, get, del } from 'idb-keyval';
 import { Observable, from } from 'rxjs';
 import md5 from 'md5';

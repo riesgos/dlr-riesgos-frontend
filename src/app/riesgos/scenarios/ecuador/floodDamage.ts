@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from '@dlr-eoc/utils-ogc';
+import { WpsData } from 'src/app/services/wps';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -10,7 +10,7 @@ import proj4 from 'proj4';  // requires "allowSyntheticDefaultImports": true
 import { HttpClient } from '@angular/common/http';
 import { greenRedRange } from 'src/app/helpers/colorhelpers';
 import { BarData, createBarchart } from 'src/app/helpers/d3charts';
-import { Cache } from '@dlr-eoc/utils-ogc';
+import { Cache } from 'src/app/services/wps';
 import Geometry from 'ol/geom/Geometry';
 
 

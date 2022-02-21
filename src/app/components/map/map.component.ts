@@ -18,7 +18,7 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
-import { WpsBboxValue } from '@dlr-eoc/utils-ogc';
+import { WpsBboxValue } from 'src/app/services/wps';
 
 import { State } from 'src/app/ngrx_register';
 import { getMapableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
@@ -314,9 +314,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 custom_layer: new olVectorLayer({
                     source: new olVectorSource({
                         url: 'assets/data/geojson/powerlines_chile.geojson',
-                        format: new GeoJSON(),
-                        // @ts-ignore
-                        crossOrigin: 'anonymous'
+                        format: new GeoJSON()
                     })
                 }),
                 name: 'Powerlines',

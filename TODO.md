@@ -7,7 +7,6 @@
 - workflowcontrol
   - move from effect to reducer
 - remove dependencies
-  - jsonix
+  - ng5-slider
   - turf
   - ngx-translate
-  - ng5-slider

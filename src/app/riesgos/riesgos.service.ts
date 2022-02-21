@@ -3,8 +3,8 @@ import { Process, Product } from './riesgos.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { RiesgosScenarioMetadata } from './riesgos.state';
 import { ConfigService, Config } from '../services/config/config.service';
-import { Cache } from '@dlr-eoc/utils-ogc';
-import { FakeCache } from '@dlr-eoc/utils-ogc';
+import { Cache } from 'src/app/services/wps';
+import { FakeCache } from 'src/app/services/wps';
 import { IndexDbCache } from '../services/cache/indexDbCache';
 import { RemoteCache } from '../services/cache/remoteCache';
 

@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { HttpClient } from '@angular/common/http';
-import { Cache } from '@dlr-eoc/utils-ogc';
+import { Cache } from 'src/app/services/wps';
 
 
 

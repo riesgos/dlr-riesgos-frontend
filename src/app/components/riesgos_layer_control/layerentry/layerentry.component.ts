@@ -196,8 +196,8 @@ export class RiesgosLayerentryComponent implements OnInit {
     if (!group) {
       if (selectedLayer.filtertype === 'Baselayers') {
         selectedLayer.visible = !selectedLayer.visible;
-        const filterdlayers = this.layerGroups.filter((l) => l.filtertype === 'Baselayers');
-        for (const layer of filterdlayers) {
+        const filteredLayers = this.layerGroups.filter((l) => l.filtertype === 'Baselayers');
+        for (const layer of filteredLayers) {
           if (layer instanceof Layer && layer.id !== selectedLayer.id) {
             layer.visible = !selectedLayer.visible;
             this.layersSvc.updateLayer(layer, layer.filtertype || 'Baselayers');

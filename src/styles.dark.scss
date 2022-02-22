@@ -1,0 +1,33 @@
+/* You can add global styles to this file, and also import other style files */
+// @import "styles/ukis-theme";
+
+:root {
+  /** Clarity variables */
+  --clr-vertical-nav-toggle-icon-color: var(--clr-vertical-nav-item-color, var(--fallback-color-no-clr));
+  --clr-color-neutral-400: #fff;
+  --clr-color-action-600: #fff;
+  --clr-vertical-nav-trigger-divider-border-color: var(--clr-color-neutral-400);
+
+  /** UKIS variables */
+  --nav-icon-size: 1rem;
+  --nav-items-distance-side: calc(var(--nav-icon-size) / 1.6);
+}
+
+
+@import "./styles/ukis-variables";
+@import "./styles/overwrites-clr-variables";
+@import "@clr/ui/src/dark-theme";
+// needed for cds-icons
+@import "~@cds/core/global.min.css"; // clarity global styles
+
+@import "./styles/clr-vertival-nav-layout";
+@import "./styles/ukis-inputs";
+@import "./styles/ukis-layer-nav";
+@import "./styles/ukis-core-ui-layout";
+@import "./styles/riesgos";
+
+
+.light .sidenav .nav-group .nav-list,
+.light .sidenav .nav-group label {
+  padding: 0 0 0 0.3rem;
+}

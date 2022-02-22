@@ -1,10 +1,12 @@
+::ng-deep .clr-vertical-nav {
+  &.left,
+  &.right {
+    .clr-vertical-nav-header{
+      margin-top: 0.5rem;
+      > span {
+        margin-left: 0.5rem;
+      }
+    }
+  }
 
-
-.main-container .content-container .content-area {
-  padding: 0px;
-}
-
-
-.ps-content {
-  height: 100%;
 }

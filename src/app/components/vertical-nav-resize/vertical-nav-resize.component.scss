@@ -1,0 +1,116 @@
+::ng-deep .main-container {
+  &.floating
+  .input-container {
+    position: absolute;
+    width: calc(100% - 1.5rem);
+  }
+}
+
+.input-container {
+  position: absolute;
+  display: flex;
+  height: 1.8rem;
+  padding-left: 0.5rem;
+  padding-top: 0rem;
+  margin-top: -1.8rem;
+  cursor: default;
+  // 100% - badge width
+  width: auto; //TODO: fix (auto) - if main-container not floating, clr-vertical-nav not position absolute
+
+  cds-icon {
+    margin-top: 0.4rem;
+
+    &.input {
+      cursor: pointer;
+
+      &:hover,
+      :focus {
+        --color: var(--clr-vertical-nav-item-active-color, #666666);
+        background: var(--clr-vertical-nav-hover-bg-color, #cccccc);
+      }
+    }
+  }
+
+
+  .resize-input {
+    opacity: 0;
+    // opacity: 1;
+
+    &:hover,
+    :focus {
+      opacity: 1;
+    }
+  }
+
+  .input-slider {
+    margin-top: 0.3rem;
+    margin-left: 0.5rem;
+
+    .ukis-range-input {
+      width: 100%;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+
+  .badge.badge-slider,
+  .badge.badge-icons {
+    padding: 0.5rem;
+    margin-left: 0.2rem;
+    margin-top: 0.35rem;
+    background: var(--clr-forms-range-progress-fill-color);
+    cursor: pointer;
+  }
+}
+
+::ng-deep .clr-vertical-nav {
+  // add padding if no trigger
+  padding-top: 1.8rem; // default 0.9rem
+
+  .nav-trigger {
+    // default -0.9rem
+    margin-top: -1.8rem;
+  }
+
+  &.is-collapsed {
+    .input-container {
+      display: none;
+    }
+  }
+}
+
+/** right layout */
+::ng-deep .clr-vertical-nav {
+  &.right {
+    .input-container {
+      right: 0;
+      padding-right: 0.5rem;
+      padding-left: 0;
+      // 100% - badge width - right
+
+      .input-slider {
+        margin-left: 0.3rem;
+        margin-right: 0.5rem;
+      }
+
+      // reverse items in the input-container
+      flex-direction: row-reverse;
+
+      .input {
+        &[direction="right"] {
+          transform: rotate(270deg);
+        }
+
+        &[direction="left"] {
+          transform: rotate(90deg);
+        }
+      }
+
+      .badge-slider {
+        margin-right: 0;
+      }
+    }
+  }
+}

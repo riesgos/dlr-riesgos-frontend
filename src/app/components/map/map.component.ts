@@ -172,7 +172,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.store.dispatch(new InteractionCompleted({ product }));
             }
         });
-        this.mapSvc.map.addInteraction(dragBox);
+        this.mapSvc.map.addInteraction(dragBox as any);
 
 
         // adding feature-select interaction and hooking it into the store
@@ -198,7 +198,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     }
                 }
         });
-        this.mapSvc.map.addInteraction(clickInteraction);
+        this.mapSvc.map.addInteraction(clickInteraction as any);
 
 
         // remove popups when no feature has been clicked

@@ -1,1 +1,12 @@
+::ng-deep .clr-vertical-nav {
+  &.left,
+  &.right {
+    .clr-vertical-nav-header{
+      margin-top: 0.5rem;
+      > span {
+        margin-left: 0.5rem;
+      }
+    }
+  }
 
+}

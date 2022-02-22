@@ -7,7 +7,7 @@
   <app-vertical-nav-resize [width]="nav.left.width" [minWidth]="nav.left.minWidth" [maxWidth]="nav.left.maxWidth" (widthChange)="nav.left.width = $event;">
   </app-vertical-nav-resize>
   <!-- <app-changedetector></app-changedetector> -->
-        <h3 class="clr-vertical-nav-header is-highlight">{{'Configuration Wizard' | translate}}</h3>
+        <h3 class="clr-vertical-nav-header is-highlight"><span>{{'Configuration Wizard' | translate}}</span></h3>
         <ukis-configuration-wizard *ngIf="processes" [processes]="processes" [navExpanded]="!collapsedConfigurationWizard" ></ukis-configuration-wizard>
 </clr-vertical-nav>
 
@@ -20,7 +20,7 @@
 
         <!-- <app-changedetector></app-changedetector> -->
 
-        <h3 class="clr-vertical-nav-header is-highlight">{{'Layer control' | translate}}</h3>
+        <h3 class="clr-vertical-nav-header is-highlight"><span>{{'Layer control' | translate}}</span></h3>
         <ukis-layercontrol [navExpanded]="!collapsedLayerControl"></ukis-layercontrol>
 
         <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers" style="margin-top: auto;">

@@ -1,0 +1,23 @@
+<!-- shape="angle" direction="right" direction="left" -->
+<div class="input-container">
+  <ng-container *ngIf="!slider; else sliderInput">
+    <cds-icon title="shrink" size="18" shape="download" direction="right" (click)="resizeToggle('-')" class="input">
+    </cds-icon>
+    <cds-icon title="resize" size="18" shape="download" direction="left" (click)="resizeToggle('+')" class="input">
+    </cds-icon>
+    <span *ngIf="width !== startWidth" class="badge badge-icons" (click)="setWidth(startWidth)">Reset</span>
+  </ng-container>
+
+  <ng-template #sliderInput>
+    <cds-icon class="input" title="shrink" size="18" shape="resize" (click)="showSlider = !showSlider;">
+    </cds-icon>
+
+    <ng-container *ngIf="showSlider">
+      <clr-range-container *ngIf="showSlider" class="input-slider">
+        <input class="ukis-range-input" type="range" clrRange [(ngModel)]="width" name="resize"
+          (ngModelChange)="setWidth()" [step]="inputStepSize" [max]="maxWidth" [min]="minWidth" />
+      </clr-range-container>
+      <span *ngIf="width !== startWidth" class="badge badge-slider" (click)="setWidth(startWidth)">Reset</span>
+    </ng-container>
+  </ng-template>
+</div>

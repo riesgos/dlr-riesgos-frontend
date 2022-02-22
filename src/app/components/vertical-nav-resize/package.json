@@ -1,0 +1,26 @@
+{
+  "name": "vertical-nav-resize",
+  "version": "1.0.0",
+  "description": "Resize component for Clr-Vertical-Nav",
+  "main": "vertical-nav-resize.component.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.dlr.de/ukis-frontend/frontend-ui-components.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "@angular/common": "^12.2.5",
+    "@angular/core": "^12.2.5",
+    "@cds/core": "^5.6.2",
+    "@clr/angular": "^12.0.0",
+    "@clr/icons": "^12.0.0",
+    "@clr/ui": "^12.0.0",
+    "@webcomponents/webcomponentsjs": "^2.5.0"
+  }
+}

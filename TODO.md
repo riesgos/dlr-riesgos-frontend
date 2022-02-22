@@ -1,7 +1,3 @@
-- bugfix bbox
-  - replace layer-service and ol-service
-- bugfix legend
-  - minimap no longer works with newest version of ol
 - revamp layerselection
 - replace translation service
 - workflowcontrol

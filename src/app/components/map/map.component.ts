@@ -146,7 +146,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub3);
 
 
-        // adding dragbox interaction and hooking it into the store
+        // adding drag-box interaction and hooking it into the store
         const dragBox = new DragBox({
             condition: (event) => {
                 return this.interactionState$.getValue().mode === 'bbox';
@@ -172,7 +172,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.store.dispatch(new InteractionCompleted({ product }));
             }
         });
-        this.mapSvc.map.addInteraction(dragBox as any);
+        this.mapSvc.map.addInteraction(dragBox);
 
 
         // adding feature-select interaction and hooking it into the store
@@ -193,20 +193,20 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         };
                         this.store.dispatch(new InteractionCompleted({ product }));
                     } else {
+                        // reacting to click on single feature: changing highlight
                         this.highlightedFeatures$.next(features);
-                        console.log("reacted to click on single feature: changed highlighted")
                     }
                 }
         });
-        this.mapSvc.map.addInteraction(clickInteraction as any);
+        this.mapSvc.map.addInteraction(clickInteraction);
 
 
         // remove popups when no feature has been clicked
         this.mapSvc.map.on('click', () => {
             if (this.interactionState$.getValue().mode !== 'featureselection') {
+                // reacting on click into nothing - removing popups and highlighted
                 this.mapSvc.removeAllPopups();
                 this.highlightedFeatures$.next([]);
-                console.log("reacted on click into nothing - removed popups and highlighted")
             }
         });
 
@@ -216,7 +216,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.highlightedFeatures.map(f => f.set('selected', false));
             features.map(f => f.set('selected', true));
             this.highlightedFeatures = features;
-            console.log('new features selected: ', features.length, features);
         });
 
 

@@ -80,6 +80,13 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 import { environment } from '../environments/environment';
 import { TranslatableStringComponent } from './components/dynamic/translatable-string/translatable-string.component';
+import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
+import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
+
+// import all used icons
+import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from '@cds/core/icon';
+// loading an icon from the "core set" now must be done manually
+ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -139,7 +146,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     DynamicComponentComponent,
     ViewRefDirective,
     InfoTableComponentComponent,
-    TranslatableStringComponent
+    TranslatableStringComponent,
+    VerticalNavResizeComponent,
+    NavResizeDirectiveDirective
   ],
   imports: [
     BrowserModule,

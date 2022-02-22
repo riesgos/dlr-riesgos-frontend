@@ -1,13 +1,12 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { NewProcessClicked } from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map, distinctUntilChanged } from 'rxjs/operators';
-import { getProcessStates } from 'src/app/riesgos/riesgos.selectors';
 import { Process } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableProcess, isWizardableProcess } from '../wizardable_processes';
+import { WizardableProcess} from '../wizardable_processes';
 
 
 
@@ -16,29 +15,19 @@ import { WizardableProcess, isWizardableProcess } from '../wizardable_processes'
     templateUrl: './configuration-wizard.component.html',
     styleUrls: ['./configuration-wizard.component.scss']
 })
-export class ConfigurationWizardComponent implements OnInit {
+export class ConfigurationWizardComponent {
 
     @Input() navExpanded = true;
     private focussedPageId$: Observable<string>;
-    public processes$: Observable<WizardableProcess[]>;
+    @Input() public processes: WizardableProcess[];
 
     constructor(
         private store: Store<State>
     ) {
-
-        this.processes$ = this.store.pipe(
-            select(getProcessStates),
-            map(processes => {
-                return processes.filter(process => isWizardableProcess(process)) as WizardableProcess[];
-            })
-        );
-
         this.focussedPageId$ = this.store.pipe(
             select(getFocussedProcessId)
         );
     }
-
-    ngOnInit() { }
 
     onBlockClicked(event, processDescr: Process) {
         this.store.dispatch(new NewProcessClicked({ processId: processDescr.uid }));

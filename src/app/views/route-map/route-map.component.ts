@@ -31,8 +31,8 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   public nav = {
     left: {
       width: 19,
-      minWidth: 12,
-      maxWidth: 40,
+      minWidth: 16,
+      maxWidth: 30,
       unit: 'rem'
     },
     right: {

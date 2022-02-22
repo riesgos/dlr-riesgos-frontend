@@ -48,7 +48,7 @@ export class VerticalNavResizeComponent implements OnInit {
 
   ngOnInit(): void {
     /* this.width = this.startWidth; */
-    this.toggleStep = this.maxWidth / this.steps;
+    this.toggleStep = (this.maxWidth - this.minWidth) / this.steps;
     if (this.toggleStep === 0) {
       this.toggleStep = 1;
     }

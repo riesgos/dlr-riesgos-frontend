@@ -151,7 +151,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       [initialExposurePeru.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       '',
-      'http://rz-vm140.gfz-potsdam.de:8080/wps/WebProcessingService',
+      'https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService',
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable(),

@@ -133,7 +133,7 @@
     "mwhLand_global": "Maximum flow depth / 100m",
     "mwhLand_local": "Maximum flow depth / 10m",
     "primary tif": "Shakemap",
-    "shakemap": "Shakemap",
+    "shakemap": "GMF",
 
     "LaharService": "Lahar simulation",
     "Lahar Damage": "Lahar damage",

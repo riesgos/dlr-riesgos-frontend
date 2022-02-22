@@ -58,7 +58,7 @@ export class FlooddamageProcess extends WpsProcess implements WizardableProcess 
             [damageManzanas].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess',
             'Process to compute the damage caused by a flood.',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            'https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),

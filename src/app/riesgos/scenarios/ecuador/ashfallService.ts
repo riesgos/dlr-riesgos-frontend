@@ -74,7 +74,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 5 mm'
+                text: 'Thickness: 5.0 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -88,7 +88,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 50 mm'
+                text: 'Thickness: 50.0 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -102,7 +102,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 90 mm'
+                text: 'Thickness: 90.0 mm'
             }],
             text: (properties) => {
                 const thickness = properties['thickness'];

@@ -132,7 +132,7 @@
     "exposure_description": "La situación de las personas, la infraestructura, la vivienda, la capacidad de producción y otros activos humanos tangibles ubicados en áreas propensas a los peligros.",
     "Please note that the model GFZ 2020 may not yet be fully integrated.": "Tenga en cuenta que es posible que el modelo GFZ 2020 aún no esté completamente integrado.",
 
-    "primary tif": "Shakemap",
+    "primary tif": "GMF",
 
     "TsShortDescription": "Simula un tsunami basado en los parámetros de terremoto seleccionados anteriormente.",
 
@@ -425,9 +425,9 @@
     "Taxonomy": "Taxonomía",
     "Buildings": "Edificios",
     "Thickness": "Espesor",
-    "Thickness: 5 mm": "Espesor: 5 mm",
-    "Thickness: 50 mm": "Espesor: 50 mm",
-    "Thickness: 90 mm": "Espesor: 90 mm",
+    "Thickness: 5.0 mm": "Espesor: 5.0 mm",
+    "Thickness: 50.0 mm": "Espesor: 50.0 mm",
+    "Thickness: 90.0 mm": "Espesor: 90.0 mm",
     "Expected_load": "Carga esperada",
     "Ashfall": "Ceniza",
     "Nr_buildings": "Numero de edificios",

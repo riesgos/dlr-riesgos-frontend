@@ -13,7 +13,6 @@ import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
   selector: 'ukis-route-map',
   templateUrl: './route-map.component.html',
   styleUrls: ['./route-map.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   /**
    * Note that the services LayersService, MapStateService and MapOlService
    * must be provided here, in the route-map component, not the map component.
@@ -24,6 +23,21 @@ import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
 })
 export class RouteMapComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
+
+  public nav = {
+    left: {
+      width: 19,
+      minWidth: 12,
+      maxWidth: 40,
+      unit: 'rem'
+    },
+    right: {
+      width: 12,
+      minWidth: 12,
+      maxWidth: 24,
+      unit: 'rem'
+    }
+  };
 
   constructor(
     private activeRoute: ActivatedRoute,

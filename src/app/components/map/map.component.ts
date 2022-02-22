@@ -7,11 +7,12 @@ import { parse } from 'url';
 import { Store, select } from '@ngrx/store';
 
 import { DragBox, Select } from 'ol/interaction';
-import { Vector as olVectorLayer } from 'ol/layer';
-import { Vector as olVectorSource } from 'ol/source';
+import olVectorLayer from 'ol/layer/Vector';
+import olVectorSource from 'ol/source/Vector';
 import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import Feature from 'ol/Feature';
+import olLayer from 'ol/layer/Layer';
 import {click, noModifierKeys} from 'ol/events/condition';
 
 import { MapOlService } from '@dlr-eoc/map-ol';
@@ -145,7 +146,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub3);
 
 
-        // adding dragbox interaction and hooking it into the store
+        // adding drag-box interaction and hooking it into the store
         const dragBox = new DragBox({
             condition: (event) => {
                 return this.interactionState$.getValue().mode === 'bbox';
@@ -171,7 +172,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.store.dispatch(new InteractionCompleted({ product }));
             }
         });
-        this.mapSvc.map.addInteraction(dragBox as any);
+        this.mapSvc.map.addInteraction(dragBox);
 
 
         // adding feature-select interaction and hooking it into the store
@@ -192,37 +193,20 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         };
                         this.store.dispatch(new InteractionCompleted({ product }));
                     } else {
+                        // reacting to click on single feature: changing highlight
                         this.highlightedFeatures$.next(features);
-                        console.log("reacted to click on single feature: changed highlighted")
                     }
                 }
         });
-        this.mapSvc.map.addInteraction(clickInteraction as any);
-
-
-        // // adding multi-featureselect interaction
-        // const altClickInteraction = new Select({
-        //     condition: (mapBrowserEvent) => {
-        //         return click(mapBrowserEvent) && altKeyOnly(mapBrowserEvent);
-        //     },
-        //     style: false
-        // });
-        // altClickInteraction.on('select', (e) => {
-        //     const features = e.target.getFeatures().getArray();
-        //     const highlighted = this.highlightedFeatures;
-        //     const allFeatures = Array.prototype.concat(features, highlighted);
-        //     this.highlightedFeatures$.next(allFeatures);
-        //     console.log("reacted on alt-selection: appended to highlighted")
-        // });
-        // this.mapSvc.map.addInteraction(altClickInteraction);
+        this.mapSvc.map.addInteraction(clickInteraction);
 
 
         // remove popups when no feature has been clicked
         this.mapSvc.map.on('click', () => {
             if (this.interactionState$.getValue().mode !== 'featureselection') {
+                // reacting on click into nothing - removing popups and highlighted
                 this.mapSvc.removeAllPopups();
                 this.highlightedFeatures$.next([]);
-                console.log("reacted on click into nothing - removed poups and highlighted")
             }
         });
 
@@ -232,7 +216,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.highlightedFeatures.map(f => f.set('selected', false));
             features.map(f => f.set('selected', true));
             this.highlightedFeatures = features;
-            console.log('new features selected: ', features.length, features);
         });
 
 
@@ -326,6 +309,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 attribution: '&copy, <a href="http://energiamaps.cne.cl">energiamaps.cne.cl/</a>',
                 legendImg: 'http://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?service=wms&request=GetLegendGraphic&LAYER=sic_20181016234835&FORMAT=image/png',
             });
+            console.log(powerlineLayer.custom_layer instanceof olLayer);
             layers.push(powerlineLayer);
 
             const civilServiceLayers = new LayerGroup({

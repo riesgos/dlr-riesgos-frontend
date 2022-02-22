@@ -29,7 +29,7 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 return new olStyle({
                     image: new olCircle({
-                        radius: 30,
+                        radius: 20,
                         fill: new olFill({
                             color: 'blue'
                         }),

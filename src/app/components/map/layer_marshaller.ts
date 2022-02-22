@@ -105,6 +105,8 @@ export class LayerMarshaller  {
 
 
     toLayers(product: Product): Observable<ProductLayer[]> {
+
+        // First of all, a bunch of special cases. Each one of those layers has some customizations after user-requests
         if (product.uid === laharContoursWms.uid) {
             return this.createLaharContourLayers(product);
         }
@@ -119,6 +121,7 @@ export class LayerMarshaller  {
             return this.createWebglLayer(product as VectorLayerProduct).pipe(map(layer => [layer]));
         }
 
+        // Secondly, standard processing of mappable products.
         if (isWmsProduct(product)) {
             return this.makeWmsLayers(product);
         } else if (isMultiVectorLayerProduct(product)) {
@@ -426,11 +429,12 @@ export class LayerMarshaller  {
 
                 const data = product.value[0];
                 let bx = null;
-                // switched off for performance reasons.
-                try {
-                    bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
-                } catch (error) {
-                    console.log('could not do buffer with ', data, error);
+                if (data.length > 1) { // don't want a buffer around single-entry layers
+                    try {
+                        bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
+                    } catch (error) {
+                        console.log('could not do buffer with ', data, error);
+                    }
                 }
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({

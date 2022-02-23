@@ -315,7 +315,7 @@ export class LayerMarshaller  {
             type: 'custom',
             removable: true,
             filtertype: 'Overlays',
-            hasFocus: false
+            hasFocus: false,
         });
         return of(riesgosLayer);
         // const layer: ProductVectorLayer = new ProductVectorLayer({
@@ -452,6 +452,7 @@ export class LayerMarshaller  {
                         style: styleFunction
                     },
                     popup: {
+                        single: true,
                         popupFunction: (obj) => {
                             let html = product.description.vectorLayerAttributes.text(obj);
                             html = this.translator.syncTranslate(html);

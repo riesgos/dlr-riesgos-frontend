@@ -1,7 +1,5 @@
 - revamp layerselection
 - replace translation service
-- workflowcontrol
-  - move from effect to reducer
 - remove dependencies
   - ng5-slider
   - turf

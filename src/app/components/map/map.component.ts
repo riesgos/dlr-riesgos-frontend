@@ -192,10 +192,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                             value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
                         };
                         this.store.dispatch(new InteractionCompleted({ product }));
-                    } else {
-                        // reacting to click on single feature: changing highlight
-                        this.highlightedFeatures$.next(features);
                     }
+                    // reacting to click on single feature: changing highlight
+                    this.highlightedFeatures$.next(features);
                 }
         });
         this.mapSvc.map.addInteraction(clickInteraction as any);

@@ -133,6 +133,7 @@
     "Please note that the model GFZ 2020 may not yet be fully integrated.": "Tenga en cuenta que es posible que el modelo GFZ 2020 aún no esté completamente integrado.",
 
     "primary tif": "GMF",
+    "exposureLegend": "Datos de exposición que contienen cantidades de edificios y sus clases asociadas",
 
     "TsShortDescription": "Simula un tsunami basado en los parámetros de terremoto seleccionados anteriormente.",
 

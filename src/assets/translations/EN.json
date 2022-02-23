@@ -150,7 +150,7 @@
     "available earthquakes": "Available earthquakes",
 
     "How to use this site ...": "The configuration wizard on the left side of the screen contains a list of all processes that you will step through in order. Processes are colored according to their current state. If a process requires you to make decisions about inputs, these can be entered in a form. When you are content with your selection, hit 'run' to execute the process.",
-    "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'AdditionalLayers'",
+    "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'AdditionalLayers'.",
     "instructions bbox": "You can now draw a  bounding box on the map.",
     "instructions featureselection": "You can now select a point of interest on the map.",
 
@@ -173,7 +173,7 @@
     "This service returns damage caused by the selected tsunami.": "This service generates informations about the damage caused by a given tsunami.",
 
     "Earthquake Catalogue": "Earthquake catalogue",
-
+    "exposureLegend": "Exposure data containing quantities of buildings and their associated classes",
 
 
     "Thickness": "Thickness",

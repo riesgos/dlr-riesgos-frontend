@@ -110,9 +110,9 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
         feature: {
           type: 'Feature',
           geometry: {
-            type: 'Point',
-            coordinates: [[0, 0]],
-          },
+            type: 'Polygon',
+            coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
+        },
           properties: {
             expo: {
               Damage: [],
@@ -120,7 +120,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
             }
           }
         },
-        text: `Exposure data containing quantities of buildings and their associated classes`
+        text: `exposureLegend`
       }]
     }
   },

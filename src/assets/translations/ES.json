@@ -285,6 +285,14 @@
     "SelectEQ": "Elige un epicentro",
     "GroupsSimplified": "<b>Nota</b>: Los grupos han sido simplificado para el gráfico.",
 
+    "observed": "observado",
+    "expert": "experto",
+    "deaggregation": "desagregación",
+    "stochastic": "estocástico",
+
+    
+    "exposure_process_description": "Conjunto de datos de edificios y sus clases. Entrada necesaria para los siguientes pasos.",
+
     "wd_max": "Profundidad de inundación",
     "v_atwdmax": "velocidad en sitio de máxima profundidad",
     "duration": "duración",

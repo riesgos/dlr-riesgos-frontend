@@ -139,7 +139,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       [modelChoice.uid],
       [initialExposure.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-      '',
+      'exposure_process_description',
       'https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService',
       '1.0.0',
       httpClient,

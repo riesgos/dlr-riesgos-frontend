@@ -9,11 +9,14 @@ import { Store, select } from '@ngrx/store';
 import { DragBox, Select } from 'ol/interaction';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
-import { GeoJSON, KML } from 'ol/format';
+import { GeoJSON, KML, MVT } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import Feature from 'ol/Feature';
 import olLayer from 'ol/layer/Layer';
-import {click, noModifierKeys} from 'ol/events/condition';
+import { click, noModifierKeys } from 'ol/events/condition';
+import { applyStyle } from 'ol-mapbox-style';
+import { createXYZ } from 'ol/tilegrid';
+import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
 
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
@@ -32,8 +35,10 @@ import { ProductLayer } from './map.types';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import Geometry from 'ol/geom/Geometry';
 import { SelectEvent } from 'ol/interaction/Select';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import { VectorTile } from 'ol/source';
 
-const mapProjection = 'EPSG:4326';
+const mapProjection = 'EPSG:3857';
 
 @Component({
     selector: 'ukis-map',
@@ -114,7 +119,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 // keep user's visibility-settings
                 for (const oldLayer of oldOverlays) {
-                    const newLayer = newOverlays.find(nl => nl.id === oldLayer.id );
+                    const newLayer = newOverlays.find(nl => nl.id === oldLayer.id);
                     if (newLayer) {
                         newLayer.visible = oldLayer.visible;
                         newLayer.hasFocus = oldLayer.hasFocus;
@@ -133,7 +138,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             })
 
 
-        // add to map
+            // add to map
         ).subscribe(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
             const add: ProductLayer[] = newOverlays.filter(no => !oldOverlays.map(oo => oo.id).includes(no.id));
             const update: ProductLayer[] = newOverlays.filter(no => oldOverlays.map(oo => oo.id).includes(no.id));
@@ -154,10 +159,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             onBoxEnd: () => {
                 const lons = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[0]);
                 const lats = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[1]);
-                const minLon = Math.min(... lons);
-                const maxLon = Math.max(... lons);
-                const minLat = Math.min(... lats);
-                const maxLat = Math.max(... lats);
+                const minLon = Math.min(...lons);
+                const maxLon = Math.max(...lons);
+                const minLat = Math.min(...lats);
+                const maxLat = Math.max(...lats);
                 const box: WpsBboxValue = {
                     crs: mapProjection,
                     lllat: minLat.toFixed(1) as unknown as number,
@@ -183,19 +188,19 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             style: null // we don't want ol to automatically apply another style on selected items.
         });
         clickInteraction.on('select', (e: SelectEvent) => {
-                const features = (e.target as any).getFeatures().getArray();
-                if (features.length) {
-                    if (this.interactionState$.getValue().mode === 'featureselection') {
-                        const feature = features[0];
-                        const product = {
-                            ...this.interactionState$.getValue().product,
-                            value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
-                        };
-                        this.store.dispatch(new InteractionCompleted({ product }));
-                    }
-                    // reacting to click on single feature: changing highlight
-                    this.highlightedFeatures$.next(features);
+            const features = (e.target as any).getFeatures().getArray();
+            if (features.length) {
+                if (this.interactionState$.getValue().mode === 'featureselection') {
+                    const feature = features[0];
+                    const product = {
+                        ...this.interactionState$.getValue().product,
+                        value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
+                    };
+                    this.store.dispatch(new InteractionCompleted({ product }));
                 }
+                // reacting to click on single feature: changing highlight
+                this.highlightedFeatures$.next(features);
+            }
         });
         this.mapSvc.map.addInteraction(clickInteraction as any);
 
@@ -253,7 +258,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         // listening for change in scenario - afterViewInit
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
             const p = getProjection(mapProjection);
@@ -265,7 +270,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub6);
     }
 
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.subs.map(s => s.unsubscribe());
         this.layersSvc.removeBaseLayers();
         this.layersSvc.removeLayers();
@@ -286,7 +291,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    /** TODO add openlayers Drag-and-Drop to add new Additional Layers https://openlayers.org/en/latest/examples/drag-and-drop-image-vector.html */
     private getInfoLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
         const layers: Array<Layer | LayerGroup> = [];
 
@@ -440,90 +444,36 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private getBaseLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
 
-        return of([new OsmTileLayer({
+        const osmLayer = new OsmTileLayer({
             visible: true,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
-        })]);
-        // const lightMap$ = this.wmtsFactory.createWmtsLayer(
-        //     'https://tiles.geoservice.dlr.de/service/wmts', 'eoc:litemap', this.mapSvc.EPSG).pipe(
-        //         map(l => {
-        //             return new CustomLayer({
-        //                 custom_layer: l,
-        //                 id: 'lightMap',
-        //                 name: 'Light map',
-        //                 attribution: '&copy, <a href="//geoservice.dlr.de/eoc/basemap/">DLR</a>',
-        //                 continuousWorld: false,
-        //                 legendImg: 'https://geoservice.dlr.de/eoc/basemap/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=litemap&ATTRIBUTION=&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES=&BBOX=0%2C0%2C10018754.171394622%2C10018754.171394622',
-        //                 description: 'http://www.naturalearthdata.com/about/',
-        //                 opacity: 1,
-        //                 visible: true
-        //             });
-        //         })
-        //     );
-        // const blueMarble$ = this.wmtsFactory.createWmtsLayer(
-        //     'https://tiles.geoservice.dlr.de/service/wmts', 'bmng_topo_bathy', this.mapSvc.EPSG).pipe(
-        //         map(l => {
-        //             return new CustomLayer({
-        //                 custom_layer: l,
-        //                 id: 'blueMarble',
-        //                 name: 'Blue marble',
-        //                 attribution: '&copy, <a href="//geoservice.dlr.de/eoc/basemap/">DLR</a>',
-        //                 continuousWorld: false,
-        //                 legendImg: 'https://tiles.geoservice.dlr.de/service/wmts?layer=bmng_topo_bathy&style=_empty&tilematrixset=EPSG%3A3857&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A3857%3A5&TileCol=18&TileRow=11',
-        //                 description: 'Blue Marble NG dataset with topography and bathymetry',
-        //                 opacity: 1,
-        //                 visible: false
-        //             });
-        //         })
-        //     );
-        // const relief$ = this.wmtsFactory.createWmtsLayer(
-        //     'https://tiles.geoservice.dlr.de/service/wmts', 'eoc:world_relief_bw', this.mapSvc.EPSG).pipe(
-        //         map(l => {
-        //             return new CustomLayer({
-        //                 custom_layer: l,
-        //                 id: 'relief',
-        //                 name: 'World relief',
-        //                 attribution: '&copy, <a href="//geoservice.dlr.de/eoc/basemap/">DLR</a>',
-        //                 continuousWorld: false,
-        //                 legendImg: 'https://tiles.geoservice.dlr.de/service/wmts?layer=eoc%3Aworld_relief_bw&style=_empty&tilematrixset=EPSG%3A3857&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A3857%3A5&TileCol=18&TileRow=11',
-        //                 description: 'World Relief Black / White',
-        //                 opacity: 1,
-        //                 visible: false
-        //             });
-        //         })
-        //     );
+        });
 
-        // return forkJoin([lightMap$, blueMarble$, relief$]).pipe(
-        //     map((layers: (Layer | LayerGroup)[]) => {
+        const vectorTile = new VectorTileLayer({
+            declutter: true,
+            source: new VectorTile({
+                format: new MVT(),
+                tileGrid: createXYZ({
+                    minZoom: 0,
+                    maxZoom: 12
+                }),
+                url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
+            }),
+            renderMode: 'hybrid'
+        });
+        applyStyle(vectorTile, greyScale, 'planet0-12');
 
-        //             const osmLayer = new OsmTileLayer({
-        //                 visible: false,
-        //                 legendImg: 'assets/layer-preview/osm-96px.jpg'
-        //             });
-        //             layers.push(osmLayer);
+        const geoserviceVTiles = new CustomLayer({
+            name: 'Open Map Styles',
+            id: 'planet_eoc_vector_tiles',
+            attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
+            description: `EOC-Geoservice TMS-Service, Vector Tiles with OpenMapTiles and customised <a href="https://openmaptiles.org/styles/#positron">positron</a> Style.`,
+            type: 'custom',
+            visible: false,
+            custom_layer: vectorTile
+        });
 
-        //             const gebco = new CustomLayer({
-        //                 id: 'gebco',
-        //                 name: 'GEBCO',
-        //                 custom_layer: new TileLayer({
-        //                     source: new TileWMS({
-        //                         url: 'https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?',
-        //                         params: {
-        //                             layers: 'GEBCO_2019_Grid',
-        //                             tiled: true
-        //                         },
-        //                         crossOrigin: 'anonymous'
-        //                     })
-        //                 }),
-        //                 visible: false,
-        //                 opacity: 1.0,
-        //                 legendImg: 'https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&layers=GEBCO_2019_Grid&tiled=true&WIDTH=128&HEIGHT=128&CRS=EPSG%3A4326&STYLES=&BBOX=-22.5%2C-90%2C0%2C-67.5',
-        //                 attribution: '&copy, <a href="https://www.gebco.net/">GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)</a>'
-        //             });
-        //             layers.push(gebco);
-        //             return layers;
-        //     }),
-        // );
+        return of([osmLayer, geoserviceVTiles]);
     }
 
 

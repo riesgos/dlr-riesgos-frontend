@@ -161,13 +161,15 @@ export class LayerMarshaller  {
         if (!source) {
             const data = product.value[0];
             source = new olVectorSource({
-                features: new GeoJSON().readFeatures(data)
+                features: new GeoJSON({
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                }).readFeatures(data)
             });
         }
         const data = product.value[0];
         const vl = new WebGlPolygonLayer({
-            // @ts-ignore
-            source: source,
+            source,
             colorFunc: (f: olFeature<Polygon>) => {
                 const style = product.description.vectorLayerAttributes.style(f, null, false);
                 const color = style.fill_.color_;

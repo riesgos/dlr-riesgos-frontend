@@ -445,7 +445,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getBaseLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
 
         const osmLayer = new OsmTileLayer({
-            visible: true,
+            visible: false,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });
 
@@ -469,7 +469,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
             description: `EOC-Geoservice TMS-Service, Vector Tiles with OpenMapTiles and customised <a href="https://openmaptiles.org/styles/#positron">positron</a> Style.`,
             type: 'custom',
-            visible: false,
+            visible: true,
             custom_layer: vectorTile
         });
 

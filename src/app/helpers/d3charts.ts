@@ -1,6 +1,4 @@
-declare const Plotly: any;
-// expects plotly to have been loaded per CDN
-// (required because currently plotly cannot be compiled to es2015)
+import Plotly from 'plotly.js-dist';
 
 
 export function createGroupedBarchart(
@@ -74,7 +72,7 @@ export function createGroupedBarchart(
         },
         xaxis: {
             title: {
-                text: xLabel
+                text: xLabel,
             }
         },
         yaxis: {
@@ -83,8 +81,8 @@ export function createGroupedBarchart(
             },
             range: [0, yMax + 1]
         },
-        width: width,
-        height: height,
+        width,
+        height,
         margin: {
             l: 50,
             r: 30,

@@ -66,7 +66,7 @@ export const isVectorLayerProduct = (data: Product): data is VectorLayerProduct 
     return isVectorLayerDescription(data.description);
 };
 
-export interface MulitVectorLayerDescription extends ProductDescription {
+export interface MultiVectorLayerDescription extends ProductDescription {
     format: 'application/vnd.geo+json' | 'application/json';
     type: 'complex';
     vectorLayers: VectorLayerProperties[];
@@ -77,10 +77,10 @@ export interface MulitVectorLayerDescription extends ProductDescription {
  * A *MultiVectorLayerProduct* uses one VectorSource with multiple layers.
  */
 export interface MultiVectorLayerProduct extends Product {
-    description: MulitVectorLayerDescription;
+    description: MultiVectorLayerDescription;
 }
 
-export const isMultiVectorLayerDescription = (description: ProductDescription): description is MulitVectorLayerDescription => {
+export const isMultiVectorLayerDescription = (description: ProductDescription): description is MultiVectorLayerDescription => {
     return description.hasOwnProperty('vectorLayers');
 };
 

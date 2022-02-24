@@ -139,7 +139,10 @@ export class LayerMarshaller  {
         const layers$: Observable<ProductCustomLayer>[] = [];
         const data = product.value[0];
         const source = new olVectorSource({
-            features: new GeoJSON().readFeatures(data)
+            features: new GeoJSON({
+                dataProjection: 'EPSG:4326',
+                featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+            }).readFeatures(data)
         });
         for (const vectorLayerProps of product.description.vectorLayers) {
             const vectorLayerProduct: VectorLayerProduct = {

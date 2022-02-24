@@ -30,7 +30,7 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
             [fragilityRefPeru.uid],
             'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
             '',
-            'https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService',
+            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),

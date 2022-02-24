@@ -9,6 +9,7 @@
 
 ### Features
 * **Removed @dlr-eoc/services-util-storage:** Better build time, less optimization bailouts due to module formats CommonJS or AMD
+* **Exposure is now passed to backend as a reference:** So no more need to `JSON.stringify` the exposure before uploading it. Speeds up things a lot.
 
 ### Breaking Changes
 * **xyz:**

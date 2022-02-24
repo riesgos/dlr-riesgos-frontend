@@ -134,6 +134,18 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
   value: null
 };
 
+export const initialExposurePeruReference: WpsData & Product = {
+  uid: 'AssetmasterProcess_Exposure_Peru_Ref',
+  description: {
+    id: 'selectedRowsGeoJson',
+    reference: true,
+    title: '',
+    type: 'complex',
+    format: 'application/json',
+  },
+  value: null
+}
+
 
 export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
 
@@ -144,10 +156,10 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       'ExposurePeru',
       'EQ Exposure Model',
       [modelChoicePeru].map(p => p.uid),
-      [initialExposurePeru.uid],
+      [initialExposurePeru, initialExposurePeruReference].map(p => p.uid),
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       'exposure_process_description',
-      'https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService',
+      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable(),

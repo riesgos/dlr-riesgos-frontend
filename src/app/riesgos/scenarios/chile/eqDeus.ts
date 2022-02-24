@@ -1,5 +1,5 @@
 import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { initialExposure } from './exposure';
+import { initialExposureRef } from './exposure';
 import { WpsData } from 'src/app/services/wps';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
@@ -505,7 +505,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
     readonly state: ProcessState;
     readonly uid = 'EQ-Deus';
     readonly name = 'Multihazard_damage_estimation/Earthquake';
-    readonly requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
+    readonly requiredProducts = [eqShakemapRef, initialExposureRef].map(p => p.uid);
     readonly providedProducts = [eqDamageM, eqUpdatedExposureRef].map(p => p.uid);
     readonly description = 'This service returns damage caused by the selected earthquake.';
     readonly wizardProperties: WizardProperties = {
@@ -548,7 +548,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
                 switchMap((resultProducts: Product[]) => {
                     const fragility = resultProducts.find(prd => prd.uid === fragilityRef.uid);
                     const shakemap = inputProducts.find(prd => prd.uid === eqShakemapRef.uid);
-                    const exposure = inputProducts.find(prd => prd.uid === initialExposure.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === initialExposureRef.uid);
 
                     const deusInputs = [{
                         ...schema,
@@ -570,8 +570,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
                         description: {
                             ...exposure.description,
                             id: 'exposure'
-                        },
-                        value: exposure.value[0]
+                        }
                     }
                     ];
                     const deusOutputs = outputProducts;

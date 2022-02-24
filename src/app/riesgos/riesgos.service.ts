@@ -16,11 +16,11 @@ import { EqDeus, loss, eqDamageM, eqUpdatedExposureRef } from './scenarios/chile
 import { TsService, tsWms, tsShakemap } from './scenarios/chile/tsService';
 import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure, schema } from './scenarios/chile/tsDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
-import { initialExposure, ExposureModel, modelChoice } from './scenarios/chile/exposure';
+import { initialExposure, ExposureModel, modelChoice, initialExposureRef } from './scenarios/chile/exposure';
 import { fragilityRef } from './scenarios/chile/modelProp';
 
 // peru
-import { ExposureModelPeru, initialExposurePeru, modelChoicePeru } from './scenarios/peru/exposure';
+import { ExposureModelPeru, initialExposurePeru, initialExposurePeruReference, modelChoicePeru } from './scenarios/peru/exposure';
 import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
   zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru, selectedEqsPeru } from './scenarios/peru/quakeledger';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scenarios/peru/eqselection';
@@ -127,7 +127,7 @@ export class RiesgosService {
         ];
         products = [
           modelChoice,
-          initialExposure,
+          initialExposure, initialExposureRef,
           new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
           selectedEqs, userinputSelectedEq,
           Gmpe, VsGrid,
@@ -152,7 +152,7 @@ export class RiesgosService {
           new EqReliabilityPeru(this.httpClient, cache)
         ];
         products = [
-          modelChoicePeru, initialExposurePeru,
+          modelChoicePeru, initialExposurePeru, initialExposurePeruReference,
           new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
           lossPeru, eqDamagePeruM, Gmpe, VsGrid,
           selectedEqsPeru, userinputSelectedEqPeru,

@@ -275,7 +275,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       [initialExposureAshfall.uid, initialExposureAshfallRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       'exposure_process_description',
-      'https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService',
+      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       http,
       new ProcessStateUnavailable(),

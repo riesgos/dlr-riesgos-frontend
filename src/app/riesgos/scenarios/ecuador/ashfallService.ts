@@ -176,7 +176,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             [ashfall.uid, ashfallPoint.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
             'AshfallServiceDescription',
-            'http://riesgos.dlr.de/wps/WebProcessingService?',
+            'http://riesgos.dlr.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),

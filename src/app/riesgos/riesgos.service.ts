@@ -14,7 +14,7 @@ import { EqSelection, userinputSelectedEq, selectedEq } from './scenarios/chile/
 import { Shakyground, shakemapWmsOutput, eqShakemapRef, Gmpe, VsGrid } from './scenarios/chile/shakyground';
 import { EqDeus, loss, eqDamageM, eqUpdatedExposureRef } from './scenarios/chile/eqDeus';
 import { TsService, tsWms, tsShakemap } from './scenarios/chile/tsService';
-import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure, schema } from './scenarios/chile/tsDeus';
+import { TsDeus, schema, tsDamageM } from './scenarios/chile/tsDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
 import { initialExposure, ExposureModel, modelChoice, initialExposureRef } from './scenarios/chile/exposure';
 import { fragilityRef } from './scenarios/chile/modelProp';
@@ -27,7 +27,7 @@ import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scen
 import { ShakygroundPeru, shakemapWmsOutputPeru, eqShakemapRefPeru } from './scenarios/peru/shakyground';
 import { EqDeusPeru, lossPeru, eqDamagePeruM, eqUpdatedExposureRefPeru } from './scenarios/peru/eqDeus';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
-import { TsDeusPeru, tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru } from './scenarios/peru/tsDeus';
+import { TsDeusPeru, tsDamagePeruM } from './scenarios/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './scenarios/peru/reliability';
 
 // ecuador
@@ -136,7 +136,7 @@ export class RiesgosService {
           tsWms, tsShakemap,
           countryChile, hazardEq,
           damageConsumerAreas, schema,
-          tsDamage, tsTransition, tsUpdatedExposure,
+          tsDamageM,
           // physicalImpact
         ];
         break;
@@ -158,7 +158,7 @@ export class RiesgosService {
           selectedEqsPeru, userinputSelectedEqPeru,
           selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
           tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,
-          tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru,
+          tsDamagePeruM,
           countryPeru, hazardEqPeru,
           damageConsumerAreasPeru
         ];

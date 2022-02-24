@@ -1,4 +1,4 @@
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MultiVectorLayerProduct, VectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WpsData } from 'src/app/services/wps';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
@@ -46,15 +46,8 @@ export const schema: StringSelectUconfProduct & WpsData = {
     value: 'SUPPASRI2013_v2.0'
 };
 
-export const tsDamage: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_damage',
-    description: {
-        id: 'damage',
-        title: 'damage',
-        reference: false,
+const tsDamageProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-damage',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
@@ -137,19 +130,10 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Damage in USD'
-    },
-    value: null
 };
 
-export const tsTransition: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_transition',
-    description: {
-        id: 'transition',
-        title: 'transition',
+const tsTransitionProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-transition',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
@@ -296,19 +280,10 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Change from previous state'
-    },
-    value: null
 };
 
-export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_updated_exposure',
-    description: {
-        id: 'updated_exposure',
-        title: 'updated_exposure',
+const tsUpdatedExposureProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
@@ -529,11 +504,22 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'NumberGoodsInDamageState'
+};
+
+export const tsDamageM: WpsData & MultiVectorLayerProduct = {
+    uid: 'ts_deus_output_values',
+    description: {
+        id: 'merged_output',
+        title: '',
+        reference: false,
+        defaultValue: null,
+        format: 'application/json',
+        type: 'complex',
+        description: '',
+        vectorLayers: [tsUpdatedExposureProps, tsTransitionProps, tsDamageProps]
     },
     value: null
 };
-
-
 
 
 
@@ -555,7 +541,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
         this.requiredProducts = [eqDamageM, tsShakemap, eqUpdatedExposureRef, schema].map(p => p.uid);
-        this.providedProducts = [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid);
+        this.providedProducts = [tsDamageM].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
             providerName: 'GFZ',

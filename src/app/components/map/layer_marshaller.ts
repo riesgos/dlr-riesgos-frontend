@@ -111,7 +111,7 @@ export class LayerMarshaller  {
             return this.createLaharContourLayers(product);
         }
         if (['ashfall_damage_output_values', 'lahar_damage_output_values', 'lahar_ashfall_damage_output_values',
-             'eq_deus_output_values', 'eq_deus_peru_output_values'].includes(product.uid)) {
+             'eq_deus_output_values', 'ts_deus_output_values', 'eq_deus_peru_output_values', 'ts_deus_output_values_peru'].includes(product.uid)) {
             return this.createWebglLayers(product as MultiVectorLayerProduct);
         }
         if (['initial_Exposure', 'initial_Exposure_Lahar',

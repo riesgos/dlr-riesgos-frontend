@@ -262,6 +262,17 @@ export const initialExposureLaharRef = {
   uid: 'inital_exposure_lahar_ref'
 };
 
+export const modelEcuador: WpsData & Product = {
+  uid: 'exposure_model_ecuador',
+  description: {
+    id: 'model',
+    reference: false,
+    title: 'model',
+    type: 'literal',
+  },
+  value: 'LatacungaRuralAreas'
+};
+
 
 export class AshfallExposureModel extends WpsProcess implements WizardableProcess {
 
@@ -271,7 +282,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
     super(
       'AshfallExposure',
       'Ashfall exposure model',
-      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
+      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador, modelEcuador].map(p => p.uid),
       [initialExposureAshfall.uid, initialExposureAshfallRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       'exposure_process_description',
@@ -314,11 +325,11 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
     super(
       'LaharExposure',
       'Lahar exposure model',
-      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
+      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador, modelEcuador].map(p => p.uid),
       [initialExposureLahar.uid, initialExposureLaharRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       'exposure_process_description',
-      'https://rz-vm140.gfz-potsdam.de:8443',
+      'https://rz-vm140.gfz-potsdam.de',
       '1.0.0',
       http,
       new ProcessStateUnavailable(),

@@ -36,7 +36,7 @@ import { AshfallService, probability, ashfall, ashfallPoint } from './scenarios/
 import { AshfallExposureModel, LaharExposureModel, schemaEcuador,
   lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador,
   querymodeEcuador, assettypeEcuador, initialExposureAshfall, initialExposureAshfallRef,
-  initialExposureLahar, initialExposureLaharRef } from './scenarios/ecuador/exposure';
+  initialExposureLahar, initialExposureLaharRef, modelEcuador } from './scenarios/ecuador/exposure';
 import { DeusAshfall, ashfallDamageM, ashfallUpdatedExposureRef } from './scenarios/ecuador/ashfallDamage';
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
   laharVelocityWms, laharVelocityShakemapRef, laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms } from './scenarios/ecuador/laharWrapper';
@@ -184,7 +184,7 @@ export class RiesgosService {
           FlooddamageTranslator
         ];
         products = [
-          schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
+          schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador, modelEcuador,
           fragilityRef, initialExposureAshfall, initialExposureAshfallRef, initialExposureLahar, initialExposureLaharRef,
           selectableVei, vei, FloodMayRun,
           probability, ashfall, ashfallPoint,

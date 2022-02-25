@@ -325,12 +325,12 @@
     "South": "Sur",
     "North": "Norte",
     "VEI Selection": "Selección del VEI",
-    "VEI": "VEI",
-
+    
     "ExposureLahar": "Exposición",
     "intensity": "intensidad",
     "probability": "probabilidad",
     "direction": "dirección",
+    "VEI": "VEI",
     "VEI1": "VEI 1 - 2",
     "VEI2": "VEI 2 - 3",
     "VEI3": "VEI 3 - 4",

@@ -185,10 +185,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             condition: (mapBrowserEvent) => {
                 return click(mapBrowserEvent) && noModifierKeys(mapBrowserEvent);
             },
+            layers: layer => layer.get('id') !== 'planet_eoc_vector_tiles',  // we don't want to select base-map-features.
             style: null // we don't want ol to automatically apply another style on selected items.
         });
         clickInteraction.on('select', (e: SelectEvent) => {
-            const features = (e.target as any).getFeatures().getArray();
+            const features = e.selected;
             if (features.length) {
                 if (this.interactionState$.getValue().mode === 'featureselection') {
                     const feature = features[0];

@@ -28,7 +28,7 @@ import { laharContoursWms } from 'src/app/riesgos/scenarios/ecuador/laharWrapper
 import { GroupSliderComponent, SliderEntry } from '../dynamic/group-slider/group-slider.component';
 import { VectorLegendComponent } from '../dynamic/vector-legend/vector-legend.component';
 import { WebGlPolygonLayer } from '../../helpers/custom_renderers/renderers/polygon.renderer';
-import * as hashfunction from 'imurmurhash';
+import * as hashFunction from 'imurmurhash';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import Geometry from 'ol/geom/Geometry';
@@ -75,7 +75,7 @@ export class LayerMarshaller  {
         for (const product of products) {
             // observables$.push(this.toLayers(product));
             // before marshalling a product, checking if it's already in cache
-            const hash = hashfunction(JSON.stringify(product)).result();
+            const hash = hashFunction(JSON.stringify(product)).result();
             if (this.cache[product.uid] && this.cache[product.uid].hash === hash) {
                 observables$.push(of(this.cache[product.uid].value));
             } else {
@@ -83,7 +83,7 @@ export class LayerMarshaller  {
                     // after marshalling a product, adding it to the cache
                     tap((result: ProductLayer[]) => {
                         this.cache[product.uid] = {
-                            hash: hash,
+                            hash,
                             value: result
                         };
                     }))
@@ -110,8 +110,10 @@ export class LayerMarshaller  {
         if (product.uid === laharContoursWms.uid) {
             return this.createLaharContourLayers(product);
         }
-        if (['ashfall_damage_output_values', 'lahar_damage_output_values', 'lahar_ashfall_damage_output_values',
-             'eq_deus_output_values', 'ts_deus_output_values', 'eq_deus_peru_output_values', 'ts_deus_output_values_peru'].includes(product.uid)) {
+        if (['ashfall_damage_output_values', 'lahar_damage_output_values',
+            'lahar_ashfall_damage_output_values',
+             'eq_deus_output_values', 'ts_deus_output_values',
+             'eq_deus_peru_output_values', 'ts_deus_output_values_peru'].includes(product.uid)) {
             return this.createWebglLayers(product as MultiVectorLayerProduct);
         }
         if (['initial_Exposure', 'initial_Exposure_Lahar',
@@ -302,7 +304,10 @@ export class LayerMarshaller  {
         const bboxArray: [number, number, number, number] =
             [product.value.lllon, product.value.lllat, product.value.urlon, product.value.urlat];
         const source = new olVectorSource({
-            features: (new GeoJSON()).readFeatures(
+            features: (new GeoJSON({
+                dataProjection: 'EPSG:4326',
+                featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+            })).readFeatures(
                 featureCollection([bboxPolygon(bboxArray)]))
         });
         const olLayer: olVectorLayer<olVectorSource<any>> = new olVectorLayer({

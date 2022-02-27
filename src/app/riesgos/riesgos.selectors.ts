@@ -76,7 +76,7 @@ export const getInputsForProcess = (processId: string) => createSelector(
 );
 
 
-export const getMapableProducts = createSelector(
+export const getMappableProducts = createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
         return getCurrentScenarioState(s).productValues

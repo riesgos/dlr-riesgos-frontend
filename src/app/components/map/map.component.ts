@@ -25,7 +25,7 @@ import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr
 import { WpsBboxValue } from 'src/app/services/wps';
 
 import { State } from 'src/app/ngrx_register';
-import { getMapableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
+import { getMappableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
@@ -107,7 +107,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // listening for products that can be displayed on the map
         const sub3 = this.store.pipe(
-            select(getMapableProducts),
+            select(getMappableProducts),
 
             // translate to layers
             switchMap((products: Product[]) => {
@@ -157,6 +157,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 return this.interactionState$.getValue().mode === 'bbox';
             },
             onBoxEnd: () => {
+                const originalProjection = this.interactionState$.getValue().product.value.crs;
+                dragBox.getGeometry().transform(mapProjection, originalProjection);
                 const lons = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[0]);
                 const lats = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[1]);
                 const minLon = Math.min(...lons);
@@ -164,7 +166,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 const minLat = Math.min(...lats);
                 const maxLat = Math.max(...lats);
                 const box: WpsBboxValue = {
-                    crs: mapProjection,
+                    crs: originalProjection,
                     lllat: minLat.toFixed(1) as unknown as number,
                     lllon: minLon.toFixed(1) as unknown as number,
                     urlat: maxLat.toFixed(1) as unknown as number,

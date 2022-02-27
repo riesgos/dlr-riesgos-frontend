@@ -92,10 +92,10 @@ export const isMultiVectorLayerProduct = (product: Product): product is MultiVec
 
 export interface WmsLayerDescription extends ProductDescription {
     legendImg?: string | IDynamicComponent;
-    format: 'application/WMS';
     name: string;
     type: 'complex' | 'literal';
     styles?: string[];
+    format: 'application/WMS' | 'string';  // Ts-service returns wms-data as string-literal. Not sure if this is strictly correct.
     id: string;
     description?: string;
     icon?: shape;
@@ -108,11 +108,17 @@ export interface WmsLayerProduct extends Product {
 
 
 export const isWmsLayerDescription = (description: ProductDescription): description is WmsLayerDescription => {
-    return description['format'] === 'application/WMS'
-            && (description['type'] === 'complex' || description['type'] === 'literal');
+    if (description['type'] === 'complex') {
+        return description['format'] === 'application/WMS';
+    } else if (description['type'] === 'literal') {
+        return !!description['styles'] || !!description['featureInfoRenderer'] || !!description['legendImg'];
+    }
+    return false;
 };
 
 export const isWmsProduct = (data: Product): data is WmsLayerProduct => {
     return isWmsLayerDescription(data.description)
-        || ((data.description['format'] === 'string' || data.description['format'] === 'application/WMS') && (data.value as string).includes('wms'));
+        || data.description['format'] === 'application/WMS'
+        || ((typeof data.value === 'string') && (data.value as string).includes('wms'))
+        || ((Array.isArray(data.value)) && (typeof data.value[0] === 'string') && (data.value[0] as string).includes('wms'));
 };

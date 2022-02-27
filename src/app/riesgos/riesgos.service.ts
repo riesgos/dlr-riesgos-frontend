@@ -11,7 +11,7 @@ import { RemoteCache } from '../services/cache/remoteCache';
 // chile
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs } from './scenarios/chile/quakeledger';
 import { EqSelection, userinputSelectedEq, selectedEq } from './scenarios/chile/eqselection';
-import { Shakyground, shakemapWmsOutput, eqShakemapRef, Gmpe, VsGrid } from './scenarios/chile/shakyground';
+import { Shakyground, shakemapPgaOutput, eqShakemapRef, Gmpe, VsGrid, shakemapSa03WmsOutput, shakemapSa10WmsOutput } from './scenarios/chile/shakyground';
 import { EqDeus, loss, eqDamageM, eqUpdatedExposureRef } from './scenarios/chile/eqDeus';
 import { TsService, tsWms, tsShakemap } from './scenarios/chile/tsService';
 import { TsDeus, schema, tsDamageM } from './scenarios/chile/tsDeus';
@@ -24,7 +24,7 @@ import { ExposureModelPeru, initialExposurePeru, initialExposurePeruReference, m
 import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
   zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru, selectedEqsPeru } from './scenarios/peru/quakeledger';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scenarios/peru/eqselection';
-import { ShakygroundPeru, shakemapWmsOutputPeru, eqShakemapRefPeru } from './scenarios/peru/shakyground';
+import { ShakygroundPeru, shakemapPgaOutputPeru, eqShakemapRefPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru } from './scenarios/peru/shakyground';
 import { EqDeusPeru, lossPeru, eqDamagePeruM, eqUpdatedExposureRefPeru } from './scenarios/peru/eqDeus';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
 import { TsDeusPeru, tsDamagePeruM } from './scenarios/peru/tsDeus';
@@ -130,8 +130,8 @@ export class RiesgosService {
           initialExposure, initialExposureRef,
           new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
           selectedEqs, userinputSelectedEq,
-          Gmpe, VsGrid,
-          selectedEq, shakemapWmsOutput, eqShakemapRef,
+          Gmpe, VsGrid, selectedEq,
+          eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput,
           loss, eqDamageM, eqUpdatedExposureRef,
           tsWms, tsShakemap,
           countryChile, hazardEq,
@@ -156,7 +156,8 @@ export class RiesgosService {
           new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
           lossPeru, eqDamagePeruM, Gmpe, VsGrid,
           selectedEqsPeru, userinputSelectedEqPeru,
-          selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
+          selectedEqPeru,
+          shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru, eqShakemapRefPeru,
           tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,
           tsDamagePeruM,
           countryPeru, hazardEqPeru,

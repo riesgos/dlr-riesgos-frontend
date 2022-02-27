@@ -12,6 +12,7 @@
 - **Exposure is now passed to backend as a reference:** So no more need to `JSON.stringify` the exposure before uploading it. Speeds up things a lot.
 - **Using same data-source for all tsunami-damage-layers:** Saves a lot of memory
 - **Added vector-tile base-map:** Allows individually styling background layer. Adjusts to dark-mode.
+- **Spectral acceleration data:** Now also displayed as another output of the ground-motion-service.
 
 ### Breaking Changes
 - **xyz:**

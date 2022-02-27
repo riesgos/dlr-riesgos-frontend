@@ -7,9 +7,26 @@ import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
-export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
+
+export const eqShakemapRef: WpsData & Product = {
+    uid: 'Shakyground_shakemap',
+    description: {
+        id: 'shakeMapFile',
+        title: 'shakeMapFile',
+        type: 'complex',
+        reference: true,
+        format: 'text/xml',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+        encoding: 'UTF-8'
+    },
+    value: null
+};
+
+export const shakemapPgaOutput: WpsData & WmsLayerProduct = {
     uid: 'Shakyground_wms',
     description: {
         id: 'shakeMapFile',
@@ -30,20 +47,47 @@ export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
     value: null
 };
 
-export const eqShakemapRef: WpsData & Product = {
-    uid: 'Shakyground_shakemap',
+export const shakemapSa03WmsOutput: WpsData & WmsLayerProduct = {
+    uid: 'Shakyground_sa03_wms',
     description: {
-        id: 'shakeMapFile',
-        title: 'shakeMapFile',
+        id: 'SA03_shakeMapFile',
+        title: 'SA03_shakeMapFile',
+        icon: 'earthquake',
+        name: 'SA03_shakemap',
         type: 'complex',
-        reference: true,
-        format: 'text/xml',
-        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
-        encoding: 'UTF-8'
+        reference: false,
+        format: 'application/WMS',
+        styles: ['shakemap-pga'],
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            const html = `
+            <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
+            `;
+            return html;
+        },
     },
     value: null
 };
 
+export const shakemapSa10WmsOutput: WpsData & WmsLayerProduct = {
+    uid: 'Shakyground_sa10_wms',
+    description: {
+        id: 'SA10_shakeMapFile',
+        title: 'SA10_shakeMapFile',
+        icon: 'earthquake',
+        name: 'SA10_shakemap',
+        type: 'complex',
+        reference: false,
+        format: 'application/WMS',
+        styles: ['shakemap-pga'],
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            const html = `
+            <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
+            `;
+            return html;
+        },
+    },
+    value: null
+};
 
 export const Gmpe: WpsData & StringSelectUconfProduct = {
     uid: 'Shakyground_gmpe',
@@ -99,7 +143,7 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
             'Shakyground',
             'GroundmotionService',
             [selectedEq, Gmpe, VsGrid].map(p => p.uid),
-            [shakemapWmsOutput, eqShakemapRef].map(p => p.uid),
+            [eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
             'EqSimulationShortText',
             'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
@@ -114,6 +158,50 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             wikiLink: 'EqSimulation'
         };
+    }
+
+    execute(inputs: Product[], outputs: Product[], doWhile): Observable<Product[]> {
+
+        // step 1: adjusting outputs.
+        // Replacing shakemap-wms'es with shakemap-json-data
+        const newOutputs = outputs.filter(i =>
+                    i.uid !== shakemapPgaOutput.uid
+                &&  i.uid !== shakemapSa03WmsOutput.uid
+                &&  i.uid !== shakemapSa10WmsOutput.uid);
+        const shakemapSaWmsData: WpsData & Product = {
+            uid: 'Shakyground_sa_wms',
+            description: {
+                id: 'shakeMapFile',
+                title: 'shakeMapFile',
+                type: 'complex',
+                reference: false,
+                format: 'application/json',
+            },
+            value: null
+        };
+        newOutputs.push(shakemapSaWmsData);
+
+        // step 2: executing
+        return super.execute(inputs, newOutputs, doWhile).pipe(
+            map((products) => {
+                // step 3: reading shakemap-json-data into shakemap-wms'es
+                const wmsJsonData = products.find(p => p.uid === shakemapSaWmsData.uid).value[0];
+                const newProducts = products.filter(p => p.uid !== shakemapSaWmsData.uid);
+                newProducts.push({
+                    ... shakemapPgaOutput,
+                    value: [wmsJsonData['PGA']]
+                });
+                newProducts.push({
+                    ... shakemapSa03WmsOutput,
+                    value: [wmsJsonData['SA(0.3)']]
+                });
+                newProducts.push({
+                    ... shakemapSa10WmsOutput,
+                    value: [wmsJsonData['SA(1.0)']]
+                });
+                return newProducts;
+            })
+        );
     }
 
 }

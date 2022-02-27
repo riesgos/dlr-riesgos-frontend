@@ -53,7 +53,7 @@ export const tsWmsPeru: WpsData & WmsLayerProduct = {
         name: 'ts-wms',
         icon: 'tsunami',
         reference: false,
-        format: 'application/WMS',
+        format: 'string',
         type: 'literal',
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features[0] && fi.features[0].properties['GRAY_INDEX']) {

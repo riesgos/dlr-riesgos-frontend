@@ -117,8 +117,12 @@ export const isWmsLayerDescription = (description: ProductDescription): descript
 };
 
 export const isWmsProduct = (data: Product): data is WmsLayerProduct => {
+    const matchesWms = (str: string) => {
+        return str.includes('service=wms') || str.includes('Service=Wms') || str.includes('SERVICE=WMS');
+    };
+
     return isWmsLayerDescription(data.description)
         || data.description['format'] === 'application/WMS'
-        || ((typeof data.value === 'string') && (data.value as string).includes('wms'))
-        || ((Array.isArray(data.value)) && (typeof data.value[0] === 'string') && (data.value[0] as string).includes('wms'));
+        || ((typeof data.value === 'string') && matchesWms(data.value as string))
+        || ((Array.isArray(data.value)) && (typeof data.value[0] === 'string') && matchesWms(data.value[0] as string));
 };

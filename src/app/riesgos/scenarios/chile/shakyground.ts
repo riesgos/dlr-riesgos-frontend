@@ -6,7 +6,7 @@ import { selectedEq } from './eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -89,7 +89,7 @@ export const shakemapSa10WmsOutput: WpsData & WmsLayerProduct = {
     value: null
 };
 
-export const Gmpe: WpsData & StringSelectUconfProduct = {
+export const Gmpe: WpsData & StringSelectUserConfigurableProduct = {
     uid: 'Shakyground_gmpe',
     description: {
         id: 'gmpe',
@@ -112,7 +112,7 @@ export const Gmpe: WpsData & StringSelectUconfProduct = {
     value: null
 };
 
-export const VsGrid: WpsData & StringSelectUconfProduct = {
+export const VsGrid: WpsData & StringSelectUserConfigurableProduct = {
     uid: 'Shakyground_vsgrid',
     description: {
         id: 'vsgrid',

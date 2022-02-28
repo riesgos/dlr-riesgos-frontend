@@ -171,12 +171,17 @@ export class WpsProcess implements ExecutableProcess {
         const out: Product[] = [];
 
         for (const prod of initialProds) {
-            const equivalentWpsData = wpsData.find(data => {
+            const equivalentWpsData = wpsData.find(w => {
+                const hasFormat = prod.description.format && w.description.format;
+                const formatMatches = w.description.format === prod.description.format;
+                const formatCriterion = hasFormat ? formatMatches : true;
+
                 return (
-                    data.description.id === prod.description.id &&
-                    data.description.format === prod.description.format &&  // <- not ok? format can change from 'wms' to 'string', like in service-ts!
-                    data.description.reference === prod.description.reference &&
-                    data.description.type === prod.description.type
+                    w.description.id === prod.description.id &&
+                    w.description.reference === prod.description.reference &&
+                    w.description.type === prod.description.type  &&
+                    formatCriterion
+                          // ^- not ok? format can change from 'wms' to 'string', like in service-ts!
                 );
             });
 

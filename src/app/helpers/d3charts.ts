@@ -1,7 +1,7 @@
 import Plotly from 'plotly.js-dist';
 
 
-export function createGroupedBarchart(
+export function createGroupedBarChart(
     anchorSelector: any, data: {[groupName: string]: BarData[]}, width: number, height: number, xLabel: string, yLabel: string
 ) {
 
@@ -86,7 +86,7 @@ export function createGroupedBarchart(
         margin: {
             l: 50,
             r: 30,
-            b: 50,
+            b: 70,
             t: 15,
             pad: 5
         },
@@ -102,10 +102,10 @@ export interface BarData {
 
 
 
-export function createBarchart(
+export function createBarChart(
     anchorSelector: any, data: BarData[], width: number, height: number, xLabel: string, yLabel: string,
-    xAxisAngle = 0, yAxisAngle = 0) {
-        
+    options?: {yRange?: [number, number]}) {
+
         let dataLength = 0;
         for (const dp of data) {
             dataLength += dp.value;
@@ -127,13 +127,13 @@ export function createBarchart(
             xaxis: {
                 title: {
                     text: xLabel
-                }
+                },
             },
             yaxis: {
                 title: {
                     text: yLabel
                 },
-                range: [0, yMax + 1]
+                range: options.yRange ? options.yRange : [0, yMax + 1]
             },
             width: width,
             height: height,
@@ -149,7 +149,7 @@ export function createBarchart(
         Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }
 
-export function createBigBarchart(
+export function createBigBarChart(
     anchorSelector: any, data: BarData[], width: number, height: number, xLabel: string, yLabel: string) {
 
         let dataLength = 0;
@@ -187,7 +187,7 @@ export function createBigBarchart(
             margin: {
                 l: 50,
                 r: 30,
-                b: 30,
+                b: 50,
                 t: 15,
                 pad: 5
             },

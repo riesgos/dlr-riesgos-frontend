@@ -5,7 +5,7 @@ import { WpsBboxData, WpsBboxValue } from 'src/app/services/wps';
 
 
 
-export interface StringUconfPD extends ProductDescription {
+export interface StringUserConfigurableProductDescription extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'string',
@@ -15,7 +15,7 @@ export interface StringUconfPD extends ProductDescription {
     defaultValue: string;
 }
 
-export interface StringSelectUconfPD extends ProductDescription {
+export interface StringSelectUserConfigurableProductDescription extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'stringselect',
@@ -26,7 +26,7 @@ export interface StringSelectUconfPD extends ProductDescription {
     defaultValue: string;
 }
 
-export interface BboxUconfPD extends ProductDescription {
+export interface BboxUserConfigurableProductDescription extends ProductDescription {
     wizardProperties: {
         name: string,
         fieldtype: 'bbox',
@@ -36,7 +36,7 @@ export interface BboxUconfPD extends ProductDescription {
     defaultValue: any;
 }
 
-export const isBboxUconfPD = (descr: ProductDescription): descr is BboxUconfPD => {
+export const isBboxUserConfigurableProductDescription = (descr: ProductDescription): descr is BboxUserConfigurableProductDescription => {
     return descr['wizardProperties'] && descr['wizardProperties']['fieldtype'] === 'bbox';
 };
 
@@ -51,27 +51,27 @@ export interface FeatureSelectUconfPD extends ProductDescription {
     defaultValue: [FeatureCollection];
 }
 
-export type UserconfigurableProductDescription = StringUconfPD | StringSelectUconfPD | BboxUconfPD | FeatureSelectUconfPD;
+export type UserConfigurableProductDescription = StringUserConfigurableProductDescription | StringSelectUserConfigurableProductDescription | BboxUserConfigurableProductDescription | FeatureSelectUconfPD;
 
 
 
-export interface StringUconfProduct extends Product {
-    description: StringUconfPD;
+export interface StringUserConfigurableProduct extends Product {
+    description: StringUserConfigurableProductDescription;
     value: string;
 }
 
-export interface StringSelectUconfProduct extends Product {
-    description: StringSelectUconfPD;
+export interface StringSelectUserConfigurableProduct extends Product {
+    description: StringSelectUserConfigurableProductDescription;
     value: string;
 }
 
-export interface BboxUconfProduct extends Product {
-    description: BboxUconfPD;
+export interface BboxUserConfigurableProduct extends Product {
+    description: BboxUserConfigurableProductDescription;
     value: WpsBboxValue | null;
 }
 
-export const isBboxUconfProd = (prod: Product): prod is BboxUconfProduct => {
-    return isBboxUconfPD(prod.description);
+export const isBboxUserConfigurableProduct = (prod: Product): prod is BboxUserConfigurableProduct => {
+    return isBboxUserConfigurableProductDescription(prod.description);
 };
 
 export interface FeatureSelectUconfProduct extends Product {
@@ -79,20 +79,21 @@ export interface FeatureSelectUconfProduct extends Product {
     value: [FeatureCollection];
 }
 
+export type UserConfigurableProduct =
+    StringUserConfigurableProduct |
+    StringSelectUserConfigurableProduct |
+    BboxUserConfigurableProduct |
+    FeatureSelectUconfProduct;
 
 
-export type UserconfigurableProduct = StringUconfProduct | StringSelectUconfProduct | BboxUconfProduct | FeatureSelectUconfProduct;
-
-
-export const isStringSelectableProduct = (obj: Product): obj is StringSelectUconfProduct => {
+export const isStringSelectableProduct = (obj: Product): obj is StringSelectUserConfigurableProduct => {
     return obj.description.hasOwnProperty('options');
-}
+};
 
-
-export const isUserconfigurableProductDescription = (obj: ProductDescription): obj is UserconfigurableProductDescription => {
+export const isUserConfigurableProductDescription = (obj: ProductDescription): obj is UserConfigurableProductDescription => {
     return obj.hasOwnProperty('wizardProperties');
 };
 
-export const isUserconfigurableProduct = (obj: Product): obj is UserconfigurableProduct => {
-    return isUserconfigurableProductDescription(obj.description);
+export const isUserConfigurableProduct = (obj: Product): obj is UserConfigurableProduct => {
+    return isUserConfigurableProductDescription(obj.description);
 };

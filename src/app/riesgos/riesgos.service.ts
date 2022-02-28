@@ -43,9 +43,9 @@ import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
 import { DeusLahar, laharDamageM, laharUpdatedExposureRef } from './scenarios/ecuador/laharDamage';
 import { DeusLaharAndAshfall, laharAshfallDamageM } from './scenarios/ecuador/laharAndAshDamage';
 import { LaharReliability, countryEcuador, hazardLahar, damageConsumerAreasEcuador } from './scenarios/ecuador/reliability';
-import { FloodMayRunProcess, geomerFlood, FloodMayRun, userinputSelectedOutburst,
+import { FloodMayRunProcess, geomerFlood, FloodMayRun, userInputSelectedOutburst,
   hydrologicalSimulation, durationTiff, velocityTiff, depthTiff } from './scenarios/ecuador/geomerHydrological';
-import { FlooddamageProcess, FlooddamageTranslator, damageManzanas, damageBuildings, damageManzanasGeojson } from './scenarios/ecuador/floodDamage';
+import { FloodDamageProcess, damageBuildings, damageManzanasGeojson } from './scenarios/ecuador/floodDamage';
 import { vei, direction } from './scenarios/ecuador/lahar';
 import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './scenarios/ecuador/vulnerability';
 
@@ -181,8 +181,7 @@ export class RiesgosService {
 
           FloodMayRunProcess,
           geomerFlood,
-          new FlooddamageProcess(this.httpClient, cache),
-          FlooddamageTranslator
+          new FloodDamageProcess(this.httpClient, cache)
         ];
         products = [
           schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador, modelEcuador,
@@ -197,9 +196,8 @@ export class RiesgosService {
           laharAshfallDamageM,
           countryEcuador, hazardLahar,
           damageConsumerAreasEcuador,
-          userinputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,
-          damageManzanas, damageBuildings,
-          damageManzanasGeojson
+          userInputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,
+          damageBuildings, damageManzanasGeojson
         ];
         break;
       default:

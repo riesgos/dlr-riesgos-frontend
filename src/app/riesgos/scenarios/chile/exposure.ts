@@ -4,16 +4,16 @@ import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol';
 import { HttpClient } from '@angular/common/http';
-import { BarData, createBigBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Cache } from 'src/app/services/wps';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import Geometry from 'ol/geom/Geometry';
 
 
-export const modelChoice: WpsData & StringSelectUconfProduct = {
+export const modelChoice: WpsData & StringSelectUserConfigurableProduct = {
   uid: 'eq_exposure_model_choice',
   description: {
       wizardProperties: {
@@ -103,7 +103,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBigBarchart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
+        const anchorUpdated = createBigBarChart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
         return `<h4>{{ Exposure }}</h4>${anchor.outerHTML} <br/> {{ BuildingTypesSara }}`;
       },
       legendEntries: [{

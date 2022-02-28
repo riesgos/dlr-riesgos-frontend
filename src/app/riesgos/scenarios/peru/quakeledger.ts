@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
-import { BboxUconfProduct, BboxUconfPD, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { BboxUserConfigurableProduct, BboxUserConfigurableProductDescription, StringUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { BboxLayerProduct, BboxLayerDescription, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from 'src/app/services/wps';
@@ -11,8 +11,8 @@ import Geometry from 'ol/geom/Geometry';
 
 
 
-export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerProduct, WpsData {
-    description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
+export class InputBoundingboxPeru implements BboxUserConfigurableProduct, BboxLayerProduct, WpsData {
+    description: BboxUserConfigurableProductDescription & BboxLayerDescription & WpsDataDescription;
     value: WpsBboxValue;
     uid = 'input-boundingbox_peru';
 
@@ -88,7 +88,7 @@ export const tlatPeru: Product & WpsData = {
 
 
 
-export const mminPeru: StringUconfProduct & WpsData = {
+export const mminPeru: StringUserConfigurableProduct & WpsData = {
     uid: 'mmin_peru',
     description: {
         id: 'mmin',
@@ -106,7 +106,7 @@ export const mminPeru: StringUconfProduct & WpsData = {
 };
 
 
-export const mmaxPeru: StringUconfProduct & WpsData = {
+export const mmaxPeru: StringUserConfigurableProduct & WpsData = {
     uid: 'mmax_peru',
     description: {
         id: 'mmax',
@@ -124,7 +124,7 @@ export const mmaxPeru: StringUconfProduct & WpsData = {
 };
 
 
-export const zminPeru: StringUconfProduct & WpsData = {
+export const zminPeru: StringUserConfigurableProduct & WpsData = {
     uid: 'zmin_peru',
     description: {
         id: 'zmin',
@@ -141,7 +141,7 @@ export const zminPeru: StringUconfProduct & WpsData = {
     value: null
 };
 
-export const zmaxPeru: StringUconfProduct & WpsData = {
+export const zmaxPeru: StringUserConfigurableProduct & WpsData = {
     uid: 'zmax_peru',
     description: {
         id: 'zmax',
@@ -192,7 +192,6 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                 const magnitude = props['magnitude.mag.value'];
                 const depth = props['origin.depth.value'];
 
-                const text = depth + ' km';
                 let radius = linInterpolateXY(5, 10, 60, 5, depth);
                 const [r, g, b] = greenRedRange(6, 9, magnitude);
 
@@ -210,9 +209,6 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                             color: [r, g, b, 1]
                         })
                     }),
-                    text: new olText({
-                        text: text
-                    })
                 });
             },
             text: (properties) => {

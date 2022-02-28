@@ -5,7 +5,7 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { VectorLayerProperties, MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { toDecimalPlaces, weightedDamage, greenRedRange, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
@@ -187,7 +187,7 @@ const eqTransitionPeruProps: VectorLayerProperties = {
                         [5.627918243408203, 50.963075942052164]]]
                 }
             },
-            text: '{{ LargeDamageChange }}',
+            text: 'LargeDamageChange',
         }],
         text: (props: object) => {
 
@@ -428,7 +428,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                 }
             }
 
-            const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+            const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
 
             const legend = `
                     <ul>

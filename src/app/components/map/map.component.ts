@@ -321,7 +321,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 attribution: '&copy, <a href="http://energiamaps.cne.cl">energiamaps.cne.cl/</a>',
                 legendImg: 'http://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?service=wms&request=GetLegendGraphic&LAYER=sic_20181016234835&FORMAT=image/png',
             });
-            console.log(powerlineLayer.custom_layer instanceof olLayer);
             layers.push(powerlineLayer);
 
             const civilServiceLayers = new LayerGroup({

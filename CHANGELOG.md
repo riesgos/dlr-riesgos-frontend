@@ -6,6 +6,7 @@
 
 ### Bug Fixes
 - **New version of Plotly.js:** Fixes bug where graph axes were not labeled.
+- **Flood damage:** Products were not highlighted when associated process is selected.
 
 ### Features
 - **Removed @dlr-eoc/services-util-storage:** Better build time, less optimization bailouts due to module formats CommonJS or AMD.

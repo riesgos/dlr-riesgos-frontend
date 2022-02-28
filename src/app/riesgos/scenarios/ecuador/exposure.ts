@@ -3,7 +3,7 @@ import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/riesgos/ri
 import { WpsData, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BarData, createBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBarChart } from 'src/app/helpers/d3charts';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
@@ -176,7 +176,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBarchart(anchor, barchartData, 400, 400, '{{ Taxonomy }}', '{{ Buildings }}');
+        const anchorUpdated = createBarChart(anchor, barchartData, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
         return `<h4>{{ Exposure }}</h4>${anchor.innerHTML} {{ BuildingTypesTorres }}`;
       },
       summary: (value: any) => {
@@ -230,7 +230,7 @@ export const initialExposureLahar = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBarchart(anchor, barchartData, 400, 400, '{{ Taxonomy }}', '{{ Buildings }}');
+        const anchorUpdated = createBarChart(anchor, barchartData, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
         return `<h4>{{ Exposure }}</h4>${anchor.innerHTML} {{ BuildingTypesMavrouli }}`;
       },
       legendEntries: [{
@@ -325,11 +325,12 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
     super(
       'LaharExposure',
       'Lahar exposure model',
-      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador, modelEcuador].map(p => p.uid),
+      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador,
+        querymodeEcuador, schemaEcuador, assettypeEcuador, modelEcuador].map(p => p.uid),
       [initialExposureLahar.uid, initialExposureLaharRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       'exposure_process_description',
-      'https://rz-vm140.gfz-potsdam.de',
+      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       http,
       new ProcessStateUnavailable(),

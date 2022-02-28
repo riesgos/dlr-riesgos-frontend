@@ -11,7 +11,7 @@ import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange, toDecimalPlaces, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
@@ -404,7 +404,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Ashfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesTorres }}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {

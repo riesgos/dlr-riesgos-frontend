@@ -5,7 +5,7 @@ import { WpsData, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
@@ -145,7 +145,7 @@ export const ashfallPoint: WpsData & Product = {
 };
 
 
-export const probability: StringSelectUconfProduct & WpsData = {
+export const probability: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'ashfall_range_prob',
     description: {
         id: 'probability',

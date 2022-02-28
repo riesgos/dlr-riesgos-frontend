@@ -2,7 +2,7 @@ import { MultiVectorLayerProduct, VectorLayerProduct, VectorLayerProperties } fr
 import { WpsData } from 'src/app/services/wps';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqDamageM, eqUpdatedExposureRef } from './eqDeus';
 import { tsShakemap } from './tsService';
@@ -20,12 +20,12 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from './constants';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import Geometry from 'ol/geom/Geometry';
 
 
 
-export const schema: StringSelectUconfProduct & WpsData = {
+export const schema: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'schema',
     description: {
       id: 'schema',
@@ -203,7 +203,7 @@ const tsTransitionProps: VectorLayerProperties = {
                             [5.627918243408203, 50.963075942052164]]]
                     }
                 },
-                text: '{{ LargeDamageChange }}',
+                text: 'LargeDamageChange',
             }],
             text: (props: object) => {
 
@@ -464,7 +464,7 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
 
                 const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 

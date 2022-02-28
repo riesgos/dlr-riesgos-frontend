@@ -339,6 +339,13 @@
     "Tools": "Tools",
     "AOI_selection": "selection of study area",
 
+    "flood_depth": "Flood depth",
+    "Inundation_10_cm": "Inundation 10 cm",
+    "Inundation_30_cm": "Inundation 30 cm",
+    "Inundation_50_cm": "Inundation 50 cm",
+    "probability_of_damage_state": "Probability of damage state",
+    "updated_exposure_flood": "Updated exposure (post-flood)",
+
 
     "Wiki": "Wiki",
     "EqCatalogue": "Catalogue",

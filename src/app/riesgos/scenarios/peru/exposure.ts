@@ -5,15 +5,15 @@ import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { BarData, createBigBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Observable } from 'rxjs';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import Geometry from 'ol/geom/Geometry';
 
 
 
-export const modelChoicePeru: WpsData & StringSelectUconfProduct = {
+export const modelChoicePeru: WpsData & StringSelectUserConfigurableProduct = {
   uid: 'eq_exposure_model_choice',
   description: {
       wizardProperties: {
@@ -110,7 +110,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBigBarchart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
+        const anchorUpdated = createBigBarChart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
         return `<h4>{{ Exposure }}</h4>${anchor.innerHTML} <br/> {{ BuildingTypesSara }}`;
       },
       legendEntries: [{

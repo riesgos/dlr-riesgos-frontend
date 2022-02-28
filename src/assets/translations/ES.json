@@ -519,6 +519,12 @@
     "FloodWiki": "Daños por inundación",
     "Graph": "Gráfico",
 
+    "flood_depth": "Produndidad de inundación",
+    "Inundation_10_cm": "Inundación 10 cm",
+    "Inundation_30_cm": "Inundación 30 cm",
+    "Inundation_50_cm": "Inundación 50 cm",
+    "probability_of_damage_state": "Probabilidad de estado de daño",
+    "updated_exposure_flood": "Exposición actualisada (post inundación)",
 
     "Wiki": "Wiki",
     "EqCatalogue": "Catálogo",

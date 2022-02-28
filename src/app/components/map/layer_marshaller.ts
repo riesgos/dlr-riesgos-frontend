@@ -207,7 +207,10 @@ export class LayerMarshaller  {
                 icon: 'download',
                 title: 'download',
                 action: (theLayer: any) => {
-                    const geojsonParser = new GeoJSON();
+                    const geojsonParser = new GeoJSON({
+                        dataProjection: 'EPSG:4326',
+                        featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                    });
                     const olFeatures = theLayer.custom_layer.getSource().getFeatures();
                     const data = JSON.parse(geojsonParser.writeFeatures(olFeatures));
                     if (data) {
@@ -355,7 +358,10 @@ export class LayerMarshaller  {
     makeGeojsonLayers(product: MultiVectorLayerProduct): Observable<ProductCustomLayer[]> {
 
         const source = new olVectorSource({
-            features: (new GeoJSON()).readFeatures(product.value[0])
+            features: (new GeoJSON({
+                dataProjection: 'EPSG:4326',
+                featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+            })).readFeatures(product.value[0])
         });
 
         const layers = [];
@@ -395,7 +401,10 @@ export class LayerMarshaller  {
                     icon: 'download',
                     title: 'download',
                     action: (theLayer: any) => {
-                        const geojsonParser = new GeoJSON();
+                        const geojsonParser = new GeoJSON({
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                        });
                         const olFeatures = theLayer.custom_layer.getSource().getFeatures();
                         const data = JSON.parse(geojsonParser.writeFeatures(olFeatures));
                         if (data) {

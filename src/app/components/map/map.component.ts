@@ -50,7 +50,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
-    private geoJson = new GeoJSON();
+    private geoJson = new GeoJSON({
+        dataProjection: 'EPSG:4326',
+        featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+    });
     private highlightedFeatures$ = new BehaviorSubject<Feature<Geometry>[]>([]);
     private highlightedFeatures: Feature<Geometry>[] = [];
     private interactionState$ = new BehaviorSubject<InteractionState>(initialInteractionState);
@@ -303,7 +306,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 custom_layer: new olVectorLayer({
                     source: new olVectorSource({
                         url: 'assets/data/geojson/powerlines_chile.geojson',
-                        format: new GeoJSON()
+                        format: new GeoJSON({
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                        })
                     })
                 }),
                 name: 'Powerlines',
@@ -410,7 +416,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/linea_transmision_ecuador.geojson',
-                                format: new GeoJSON()
+                                format: new GeoJSON({
+                                    dataProjection: 'EPSG:4326',
+                                    featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                                })
                             })
                         }),
                         name: 'Transmission',
@@ -425,7 +434,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/linea_subtransmision_ecuador.geojson',
-                                format: new GeoJSON(),
+                                format: new GeoJSON({
+                                    dataProjection: 'EPSG:4326',
+                                    featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                                }),
                             })
                         }),
                         name: 'Subtransmission',

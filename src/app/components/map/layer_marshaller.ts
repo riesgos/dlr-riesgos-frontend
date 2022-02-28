@@ -4,19 +4,18 @@ import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduct,
     VectorLayerProduct, WmsLayerProduct, WmsLayerDescription, isMultiVectorLayerProduct,
     MultiVectorLayerProduct } from '../../riesgos/riesgos.datatypes.mappable';
-import { Feature, featureCollection, FeatureCollection } from '@turf/helpers';
+import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { Feature as olFeature } from 'ol';
 import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { WMSCapabilities } from 'ol/format';
-import { map, tap, withLatestFrom } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer, ProductCustomLayer } from './map.types';
 import { downloadBlob, downloadJson } from 'src/app/helpers/others';
-import { TranslateService, TranslateParser, LangChangeEvent } from '@ngx-translate/core';
 import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON } from 'ol/format';
@@ -284,7 +283,7 @@ export class LayerMarshaller  {
                     action: {
                         component: GroupSliderComponent,
                         inputs: {
-                            entries: entries,
+                            entries,
                             selectionHandler: (selectedId: string) => {
                                 layerGroup.getLayers().forEach(l => {
                                     if (l.get('id') === selectedId) {
@@ -576,12 +575,12 @@ export class LayerMarshaller  {
             const layers: ProductRasterLayer[] = [];
             if (paras) {
 
-                for (const layername of paras.layers) {
-                    // @TODO: convert all searchparameter names to uppercase
+                for (const layerName of paras.layers) {
+                    // @TODO: convert all search-parameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
                         productId: uid,
-                        id: `${uid}_${layername}_result_layer`,
-                        name: `${layername}`,
+                        id: `${uid}_${layerName}_result_layer`,
+                        name: `${layerName}`,
                         attribution: '',
                         opacity: 1.0,
                         removable: true,
@@ -591,7 +590,7 @@ export class LayerMarshaller  {
                         url: `${paras.origin}${paras.path}?`,
                         params: {
                             VERSION: paras.version,
-                            LAYERS: layername,
+                            LAYERS: layerName,
                             WIDTH: paras.width,
                             HEIGHT: paras.height,
                             FORMAT: paras.format,
@@ -602,7 +601,7 @@ export class LayerMarshaller  {
                         },
                         legendImg: description.legendImg ? description.legendImg :  `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
                             `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
-                            `&TRANSPARENT=TRUE&LAYER=${layername}`,
+                            `&TRANSPARENT=TRUE&LAYER=${layerName}`,
                         popup: {
                             asyncPopup: (obj, callback) => {
                                 this.getFeatureInfoPopup(obj, callback, description.featureInfoRenderer);
@@ -639,12 +638,12 @@ export class LayerMarshaller  {
                     }
 
                     // special wish by theresa...
-                    if (layername.match(/Lahar_(N|S)_VEI\d\dmio_(maxvelocity|maxpressure|maxerosion|deposition)_\d\dm$/)
-                     || layername.match(/LaharArrival_(N|S)_VEI\d_wgs_s\d/)) {
+                    if (layerName.match(/Lahar_(N|S)_VEI\d\dmio_(maxvelocity|maxpressure|maxerosion|deposition)_\d\dm$/)
+                     || layerName.match(/LaharArrival_(N|S)_VEI\d_wgs_s\d/)) {
                         layer.visible = false;
                     }
                     // special wish: legend for shakemap:
-                    if (layername.match(/N52:primary/)) {
+                    if (layerName.match(/N52:primary/)) {
                         layer.legendImg = 'assets/images/eq_legend_small.png';
                     }
 

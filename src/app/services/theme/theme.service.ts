@@ -45,7 +45,9 @@ export class ThemeService {
         link.id = this.styleID;
         const themeName = link.href.split(this.styleSelector)[1]?.split('.css')[0];
         const initialTheme = this.themes.find(t => t.name === themeName);
-        this.activeTheme.next(initialTheme);
+        if(initialTheme){
+          this.activeTheme.next(initialTheme);
+        }
       }
     }
   }

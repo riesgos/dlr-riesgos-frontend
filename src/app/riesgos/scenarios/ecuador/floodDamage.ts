@@ -79,10 +79,10 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                 const anchor = document.createElement('div');
 
                 const counts = {
-                    'Prob. D1': props['proba_d1_predicted'],
-                    'Prob. D2': props['proba_d2_predicted'],
-                    'Prob. D3': props['proba_d3_predicted'],
-                    'Prob. D4': props['proba_d4_predicted']
+                    'D1': props['proba_d1_predicted'],
+                    'D2': props['proba_d2_predicted'],
+                    'D3': props['proba_d3_predicted'],
+                    'D4': props['proba_d4_predicted']
                 };
                 const data: BarData[] = [];
                 for (const damageClass in counts) {

@@ -117,6 +117,12 @@
     "Powerlines": "Líneas eléctricas",
     "Hillshade": "Sombreado",
     "TS-Service": "Simulación de tsunami",
+    "gmpe": "Ecuación de predicción del movimiento del suelo",
+    "vsgrid": "VS-grid",
+    "MontalvaEtAl2016SInter": "Montalva et al. 2016 SInter",
+    "GhofraniAtkinson2014": "Ghofrani Atkinson 2014",
+    "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015 SInter",
+    "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997 SInter NSHMP 2008",
     
     "Exposure": "Exposición",
     "eq-exposure": "Exposición y daños por terremoto",
@@ -283,7 +289,7 @@
 
     "SelectedEQ": "Selección",
     "SelectEQ": "Elige un epicentro",
-    "GroupsSimplified": "<b>Nota</b>: Los grupos han sido simplificado para el gráfico.",
+    "GroupsSimplified": "<p><b>Nota</b>: Los grupos han sido simplificado para el gráfico.</p>",
 
     "observed": "observado",
     "expert": "experto",
@@ -347,13 +353,15 @@
     "Airports": "Aeropuertos",
     "PowerlinesDescription": "Data de <a href='http://energiamaps.cne.cl' target='_blank'>energiamaps.cne.cl/</a>",
 
-    "model": "modelo",
-    "exposure model": "modelo de exposición",
+    "model": "Modelo",
+    "exposure model": "Modelo de exposición",
     "Vulnerability": "Vulnerabilidad",
     "Reliability": "Fiabilidad del sistema",
     "ExposureSelection": "Exposición",
 
     "shakemap": "Movimiento de tierra",
+    
+    "vtiles_description": "EOC-Geoservice TMS-Service, Vector Tiles con OpenMapTiles y estilo <a href='https://openmaptiles.org/styles/#positron'>positron</a> ajustado.",
 
     "Processes only": "Procesos",
     "Full view": "Vista completa",
@@ -404,6 +412,26 @@
     "Date": "Fecha",
 
     "depth_cm": "Profundidad (cm)",
+    "LimaCVT1_PD30_TI70_5000": "LimaCVT1 PD30 TI70 5000",
+    "LimaCVT2_PD30_TI70_10000": "LimaCVT2 PD30 TI70 10000",
+    "LimaCVT3_PD30_TI70_50000": "LimaCVT3 PD30 TI70 50000",
+    "LimaCVT4_PD40_TI60_5000": "LimaCVT4 PD40 TI60 5000",
+    "LimaCVT5_PD40_TI60_10000": "LimaCVT5 PD40 TI60 10000",
+    "LimaCVT6_PD40_TI60_50000": "LimaCVT6 PD40 TI60 50000",
+    "LimaBlocks": "Lima manzanas",
+    "ValpCVTSaraDownscaled": "Valparaíso CVT Sara (reducido)",
+    "ValpCVTBayesian": "Valparaíso CVT (Bayesian)",
+    "ValpCommuna": "Valparaíso communas",
+    "ValpRegularOriginal": "Valparaíso regular (original)",
+    "ValpRegularGrid": "Valparaíso cuadrícla regular",
+
+    "layer_settings": "Configuración",
+    "layer_legend": "Leyenda",
+    "layer_info": "Información adicional",
+    "change_style": "Cambiar estilo",
+    "download": "Descargar",
+    "show_info": "Muestra información",
+    "hide_info": "Esconde información",
 
     "CatalogueData": "Datos de catálogo",
     "Layer": "Capa",
@@ -432,7 +460,7 @@
     "Updated_exposure": "Exposición actualizada",
     "Probability": "Probabilidad",
     "Taxonomy": "Taxonomía",
-    "Buildings": "Edificios",
+    "Buildings": "Numero de edificios",
     "Thickness": "Espesor",
     "Thickness: 5.0 mm": "Espesor: 5.0 mm",
     "Thickness: 50.0 mm": "Espesor: 50.0 mm",
@@ -498,7 +526,7 @@
     "DamageStatesMavrouli": "<p>Clasificación según Mavrouli et al. 2014. (DOI 10.1007/s10064-014-0573-0)</p><ul><li> <b>D0</b>: Ausencia de daño</li><li> <b>D1</b>: Daño leve (no presente en este modelo)</li><li> <b>D2</b>: Daño moderado a elementos estructurales</li><li> <b>D3</b>: Daño extenso a elementos estructurales</li><li> <b>D4</b>: Colapso </li></ul>",
     "LaharAndAshfall": "Ceniza y lahar",
     "DamageStatesTorres": "<p>Clasificación según Torres-Corredor et al. 2017 (http://dx.doi.org/10.18273/revbol.v39n2-2017005)</p><ul><li><b>D0:</b> Ausencia de daño</li><li><b>D1:</b> Daño leve</li><li><b>D2:</b> Daño moderado</li><li><b>D4:</b> Colapso / Destrucción</li></ul>",
-    "BuildingTypesSara": "<p> Clasificación ajustada de SARA (Yepes-Estrada et al, 2017) </p><ul><li> <b> CR</b>: hormigón armado </li><li> <b> ER</b>: tierra apisonada reforzada </li><li> <b> MCF</b>: mampostería confinada </li><li> <b> MR</b>: mampostería reforzada </li><li> <b> MUR</b>: mampostería no reforzada </li><li> <b> S</b>: marco de momento de acero </li><li> <b> W</b>: madera </li><li> <b> UNK</b>: Desconocido </li></ul>",
+    "BuildingTypesSara": "<p> Clasificación ajustada de SARA (Yepes-Estrada et al, 2017) </p><ul><li> <b> CR</b>: Hormigón armado </li><li> <b> ER</b>: Tierra apisonada reforzada </li><li> <b> MCF</b>: Mampostería confinada </li><li> <b> MR</b>: Mampostería reforzada </li><li> <b> MUR</b>: Mampostería no reforzada </li><li> <b> S</b>: Marco de momento de acero </li><li> <b> W</b>: Madera </li><li> <b> UNK</b>: Desconocido </li></ul>",
 
     "StatesNotComparable": "<p><b>Nota</b>: Los estados de daño para diferentes peligros (como terremotos y tsunamis, o lahares e inundaciones) no son comparables.</p>",
 
@@ -515,7 +543,7 @@
     "laharPressure": "Presión máxima de lahar",
     "laharErosion": "Erosión máxima de lahar",
     "laharDeposition": "Deposición de lahar",
-    "floodDamageDescription": "Daño en manzanas",
+    "floodDamageDescription": "Profundidad de inundación",
     "FloodWiki": "Daños por inundación",
     "Graph": "Gráfico",
 
@@ -523,7 +551,7 @@
     "Inundation_10_cm": "Inundación 10 cm",
     "Inundation_30_cm": "Inundación 30 cm",
     "Inundation_50_cm": "Inundación 50 cm",
-    "probability_of_damage_state": "Probabilidad de estado de daño",
+    "probability_of_damage_state": "Estado de daño",
     "updated_exposure_flood": "Exposición actualisada (post inundación)",
 
     "Wiki": "Wiki",

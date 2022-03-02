@@ -217,7 +217,10 @@ export class LayerMarshaller  {
                     }
                 }
             }],
-            dynamicDescription: product.description.vectorLayerAttributes.summary ? product.description.vectorLayerAttributes.summary(product.value) : undefined
+            dynamicDescription:
+                product.description.vectorLayerAttributes.summary
+                    ? product.description.vectorLayerAttributes.summary(product.value)
+                    : undefined
         });
 
 

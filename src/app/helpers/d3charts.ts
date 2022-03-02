@@ -133,10 +133,10 @@ export function createBarChart(
                 title: {
                     text: yLabel
                 },
-                range: options.yRange ? options.yRange : [0, yMax + 1]
+                range: options?.yRange ? options.yRange : [0, yMax + 1]
             },
-            width: width,
-            height: height,
+            width,
+            height,
             margin: {
                 l: 50,
                 r: 30,

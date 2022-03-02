@@ -4,7 +4,7 @@ import { DOCUMENT } from '@angular/common';
 
 export interface ThemeMetadata {
   name: 'light' | 'dark';
-  displayName: string;
+  themeDisplayName: string;
 }
 
 
@@ -14,10 +14,10 @@ export interface ThemeMetadata {
 export class ThemeService {
 
   private themes: ThemeMetadata[] = [{
-    displayName: 'Light',
+    themeDisplayName: 'Light',
     name: 'light',
   }, {
-    displayName: 'Dark',
+    themeDisplayName: 'Dark',
     name: 'dark',
   }];
 
@@ -45,7 +45,9 @@ export class ThemeService {
         link.id = this.styleID;
         const themeName = link.href.split(this.styleSelector)[1]?.split('.css')[0];
         const initialTheme = this.themes.find(t => t.name === themeName);
-        this.activeTheme.next(initialTheme);
+        if (initialTheme) {
+          this.activeTheme.next(initialTheme);
+        }
       }
     }
   }

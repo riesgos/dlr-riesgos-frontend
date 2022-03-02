@@ -24,5 +24,9 @@
         "ukis-frontend-libraries/projects/*"
       ]
     }
-  }
+  },
+  // "angularCompilerOptions": {
+  //   // "strictTemplates": true,
+  //   "fullTemplateTypeCheck": true
+  // },
 }

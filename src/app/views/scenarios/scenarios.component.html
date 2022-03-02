@@ -55,7 +55,7 @@
     <div class="scenario-footer-inner">
       <div class="clr-row">
         <div class="consortium-logos clr-col-12 clr-col-sm-auto">
-          <a href="https://www.bmbf.de/en" target="_blank">
+          <a href="https://www.bmbf.de/bmbf/en/home/home_node.html" target="_blank">
             <img src="/assets/logos/BMBF_{{translator.currentLang | lowercase}}.png" width="200">
           </a>
         </div>
@@ -138,7 +138,7 @@
   <h3 class="modal-title">{{selectedScenario.title | translate}}</h3>
   <div class="modal-body">
     <img [src]="selectedScenario.preview" alt="ukis logo white">
-    <span [innerHTML]="selectedScenario.content"></span>
+    <span [innerHTML]="selectedScenario.description"></span>
   </div>
   <div class="modal-footer">
   </div>

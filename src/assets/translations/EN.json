@@ -149,6 +149,11 @@
     "CatalogueData": "Catalogue data",
     "available earthquakes": "Available earthquakes",
 
+    "layer_settings": "Layer settings",
+    "layer_legend": "Layer legend",
+    "layer_info": "Layer info",
+    "change_style": "Change style",
+
     "How to use this site ...": "The configuration wizard on the left side of the screen contains a list of all processes that you will step through in order. Processes are colored according to their current state. If a process requires you to make decisions about inputs, these can be entered in a form. When you are content with your selection, hit 'run' to execute the process.",
     "More on how to use this": "As you step through the process, more and more results will accumulate on the right hand side. The results are displayed in the map and listed in the layer-control. In the layer-control, you can change the order of layers, alter their opacity, etc. You can also find more information under 'AdditionalLayers'.",
     "instructions bbox": "You can now draw a  bounding box on the map.",
@@ -161,6 +166,14 @@
 
     "System reliability after Lahar": "Power grid",
     "System reliability after EQ": "Power grid",
+    "Powerlines": "Power lines",
+
+    "gmpe": "Ground motion prediction equation",
+    "vsgrid": "VS-grid",
+    "MontalvaEtAl2016SInter": "Montalva et al. 2016 SInter",
+    "GhofraniAtkinson2014": "Ghofrani Atkinson 2014",
+    "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015 SInter",
+    "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997 SInter NSHMP 2008",
 
     "etype": "subcategory",
 
@@ -197,6 +210,9 @@
     "ESRI Imagery": "Satellite images",
 
     "Amount of goods that are exposed to a hazard.": "Goods in a damage state",
+    "download": "Download",
+    "show_info": "Show info",
+    "hide_info": "Hide info",
 
     "depth_cm": "Depth (cm)",
     "FloodService": "Flood simulation",
@@ -251,7 +267,7 @@
     "Updated_exposure": "Updated exposure",
     "Probability": "Probability",
     "Taxonomy": "Taxonomy",
-    "Buildings": "Buildings",
+    "Buildings": "Number of buildings",
     "Expected_load": "Expected load",
     "Ashfall": "Ashfall",
     "Nr_buildings": "Number of buildings",
@@ -286,7 +302,7 @@
 
     "SelectedEQ": "Selection",
     "SelectEQ": "Select epicenter",
-    "GroupsSimplified": "<b>Note</b>: Groups have been simplified for graph.",
+    "GroupsSimplified": "<p><b>Note</b>: Groups have been simplified for graph.</p>",
 
     "ashfallLoss": "Ashfall loss",
     "Total_loss": "Total loss",
@@ -332,19 +348,36 @@
     "laharPressure": "Maximum lahar pressure",
     "laharErosion": "Maximum lahar erosion",
     "laharDeposition": "Lahar deposition",
-    "floodDamageDescription": "Damage to blocks",
+    "floodDamageDescription": "Inundation depth",
     "FloodWiki": "Flood damage",
     "AdditionalLayers": "Additional layers",
     "Results": "Results",
     "Tools": "Tools",
     "AOI_selection": "selection of study area",
 
+    "model": "Model",
+    "vtiles_description": "EOC-Geoservice TMS-Service, Vector Tiles with OpenMapTiles and customised <a href='https://openmaptiles.org/styles/#positron'>positron</a> Style.",
+
     "flood_depth": "Flood depth",
     "Inundation_10_cm": "Inundation 10 cm",
     "Inundation_30_cm": "Inundation 30 cm",
     "Inundation_50_cm": "Inundation 50 cm",
-    "probability_of_damage_state": "Probability of damage state",
+    "probability_of_damage_state": "Damage state",
     "updated_exposure_flood": "Updated exposure (post-flood)",
+
+
+    "LimaCVT1_PD30_TI70_5000": "LimaCVT1 PD30 TI70 5000",
+    "LimaCVT2_PD30_TI70_10000": "LimaCVT2 PD30 TI70 10000",
+    "LimaCVT3_PD30_TI70_50000": "LimaCVT3 PD30 TI70 50000",
+    "LimaCVT4_PD40_TI60_5000": "LimaCVT4 PD40 TI60 5000",
+    "LimaCVT5_PD40_TI60_10000": "LimaCVT5 PD40 TI60 10000",
+    "LimaCVT6_PD40_TI60_50000": "LimaCVT6 PD40 TI60 50000",
+    "LimaBlocks": "Lima block model",
+    "ValpCVTSaraDownscaled": "Valparaíso CVT Sara (downscaled)",
+    "ValpCVTBayesian": "Valparaíso CVT (Bayesian)",
+    "ValpCommuna": "Valparaíso communas",
+    "ValpRegularOriginal": "Valparaíso regular (original)",
+    "ValpRegularGrid": "Valparaíso regular grid",
 
 
     "Wiki": "Wiki",

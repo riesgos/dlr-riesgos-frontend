@@ -313,7 +313,8 @@ export class RiesgosLayerentryComponent implements OnInit {
     return false;
   }
 
-  executeChangeStyle(newStyleName: string) {
+  executeChangeStyle(evt: Event) {
+    const newStyleName: string = (evt.target as HTMLSelectElement).value;
     if (isRasterLayertype(this.layer.type)) {
       if ((this.layer as RasterLayer).styles) {
         const newStyle = (this.layer as RasterLayer).styles.find(s => s.name === newStyleName);

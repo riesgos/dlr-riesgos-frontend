@@ -478,10 +478,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         applyStyle(vectorTile, greyScale, 'planet0-12');
 
         const geoserviceVTiles = new CustomLayer({
-            name: 'Open Map Styles',
+            name: 'OpenMapStyles',
             id: 'planet_eoc_vector_tiles',
             attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
-            description: `EOC-Geoservice TMS-Service, Vector Tiles with OpenMapTiles and customised <a href="https://openmaptiles.org/styles/#positron">positron</a> Style.`,
+            description: `vtiles_description`,
             type: 'custom',
             visible: true,
             custom_layer: vectorTile

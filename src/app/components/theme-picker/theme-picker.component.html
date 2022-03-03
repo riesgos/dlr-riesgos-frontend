@@ -1,13 +1,13 @@
 <clr-dropdown>
     <ng-container *ngIf="currentTheme$ | async as currentTheme">
         <button class="btn btn-outline" aria-label="dropdown" clrDropdownTrigger>
-            {{currentTheme.displayName | translate}}
+            {{currentTheme.themeDisplayName | translate}}
             <clr-icon shape="caret down"></clr-icon>
         </button>
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
             <ng-container *ngFor="let theme of themes">
                 <a  (click)="selectTheme(theme.name)" 
-                [ngClass]="{'active': theme.name === currentTheme.name}" clrDropdownItem>{{theme.displayName | translate}}</a>
+                [ngClass]="{'active': theme.name === currentTheme.name}" clrDropdownItem>{{theme.themeDisplayName | translate}}</a>
             </ng-container>
         </clr-dropdown-menu>
     </ng-container>

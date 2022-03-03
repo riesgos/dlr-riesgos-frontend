@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { ThemeMetadata, ThemeService } from 'src/app/services/theme/theme.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class ThemePickerComponent {
     this.currentTheme$ = this.themeService.getActiveTheme();
   }
 
-  selectTheme(themeName: string): void {
+  selectTheme(themeName: ThemeMetadata['name']): void {
     this.themeService.selectTheme(themeName);
   }
 }

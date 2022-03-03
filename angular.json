@@ -28,8 +28,8 @@
             ],
             "styles": [
               "node_modules/@clr/icons/clr-icons.min.css",
-              "node_modules/@clr/ui/clr-ui.min.css",
-              "src/styles.scss"
+              { "input": "src/styles.dark.scss",  "bundleName": "styles-theme-dark",  "inject": false },
+              { "input": "src/styles.light.scss", "bundleName": "styles-theme-light", "inject": true }
             ],
             "scripts": [
               "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
@@ -103,7 +103,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "node_modules/@clr/icons/clr-icons.min.css",
+              { "input": "src/styles.dark.scss", "bundleName": "styles-theme-dark", "inject": false },
+              { "input": "src/styles.light.scss", "bundleName": "styles-theme-light", "inject": true}
             ],
             "scripts": []
           }

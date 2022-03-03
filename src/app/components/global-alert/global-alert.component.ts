@@ -12,8 +12,12 @@ export class GlobalAlertComponent {
   constructor() { }
 
   close() {
+    if (this.alert.closeAction) {
+      this.alert.closeAction();
+    }
     this.alert = null;
     this.alertChange.emit(this.alert);
+
   }
 
 }

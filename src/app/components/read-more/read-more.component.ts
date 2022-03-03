@@ -12,7 +12,7 @@ export class ReadMoreComponent implements OnInit {
   @Input() threshold: number;
   shortText: string;
   fullText: string;
-  isExpanded = false;
+  isExpanded = true;
   exceedsThreshold = false;
 
   constructor(

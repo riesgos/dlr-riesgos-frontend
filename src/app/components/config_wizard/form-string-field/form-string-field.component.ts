@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { StringUconfProduct } from '../userconfigurable_wpsdata';
+import { StringUserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
@@ -13,7 +13,7 @@ import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 export class FormStringFieldComponent implements OnInit {
 
   @Input() control: FormControl;
-  @Input() parameter: StringUconfProduct;
+  @Input() parameter: StringUserConfigurableProduct;
 
   constructor(private store: Store<State>) {}
 

@@ -1,14 +1,21 @@
 ### Features
-* show version from package.json in app header.
+- show version from package.json in app header.
 
-# [1.9.0](https://github.com/riesgos/dlr-riesgos-frontend/tree/v1.9) (2021-10-05) (merged in changes from middleware)
+# Ongoing
 
 
 ### Bug Fixes
-* **xyz:**
+- **New version of Plotly.js:** Fixes bug where graph axes were not labeled.
+- **Flood damage:** Products were not highlighted when associated process is selected.
 
 ### Features
-* **xyz:**
+- **Removed @dlr-eoc/services-util-storage:** Better build time, less optimization bailouts due to module formats CommonJS or AMD.
+- **Exposure is now passed to backend as a reference:** So no more need to `JSON.stringify` the exposure before uploading it. Speeds up things a lot.
+- **Using same data-source for all tsunami-damage-layers:** Saves a lot of memory
+- **Added vector-tile base-map:** Allows individually styling background layer. Adjusts to dark-mode.
+- **Spectral acceleration data:** Now also displayed as another output of the ground-motion-service.
 
 ### Breaking Changes
-* **xyz:**
+- **xyz:**
+
+# [1.9.0](https://github.com/riesgos/dlr-riesgos-frontend/tree/v1.9) (2021-10-05) (merged in changes from middleware)

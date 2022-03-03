@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import {  StringSelectUconfProduct } from '../userconfigurable_wpsdata';
+import {  StringSelectUserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 import { FormControl } from '@angular/forms';
 
@@ -13,7 +13,7 @@ import { FormControl } from '@angular/forms';
 export class FormStringselectFieldComponent implements OnInit {
 
     @Input() control: FormControl;
-    @Input() parameter: StringSelectUconfProduct;
+    @Input() parameter: StringSelectUserConfigurableProduct;
     public options: string[];
 
 

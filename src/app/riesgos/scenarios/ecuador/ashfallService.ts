@@ -5,7 +5,7 @@ import { WpsData, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
@@ -74,7 +74,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 5 mm'
+                text: 'Thickness: 5.0 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -88,7 +88,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 50 mm'
+                text: 'Thickness: 50.0 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -102,7 +102,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 90 mm'
+                text: 'Thickness: 90.0 mm'
             }],
             text: (properties) => {
                 const thickness = properties['thickness'];
@@ -145,7 +145,7 @@ export const ashfallPoint: WpsData & Product = {
 };
 
 
-export const probability: StringSelectUconfProduct & WpsData = {
+export const probability: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'ashfall_range_prob',
     description: {
         id: 'probability',
@@ -176,7 +176,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             [ashfall.uid, ashfallPoint.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
             'AshfallServiceDescription',
-            'http://riesgos.dlr.de/wps/WebProcessingService?',
+            'http://riesgos.dlr.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),

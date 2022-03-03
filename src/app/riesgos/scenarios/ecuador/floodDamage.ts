@@ -9,16 +9,18 @@ import { FeatureCollection, MultiPolygon, Polygon } from '@turf/helpers';
 import proj4 from 'proj4';  // requires "allowSyntheticDefaultImports": true
 import { HttpClient } from '@angular/common/http';
 import { greenRedRange } from 'src/app/helpers/colorhelpers';
-import { BarData, createBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBarChart } from 'src/app/helpers/d3charts';
 import { Cache } from 'src/app/services/wps';
 import Geometry from 'ol/geom/Geometry';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 proj4.defs('EPSG:32717', '+proj=utm +zone=17 +south +datum=WGS84 +units=m +no_defs');
 // proj4.defs('EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs'); <-- already known
 
 
-export const damageManzanas: WpsData & Product = {
+const damageManzanas: WpsData & Product = {
     uid: 'FlooddamageProcess_damageManzanas',
     description: {
         id: 'damage_manzanas',
@@ -45,34 +47,6 @@ export const damageBuildings: WpsData & Product = {
 };
 
 
-export class FlooddamageProcess extends WpsProcess implements WizardableProcess {
-
-    readonly wizardProperties: WizardProperties;
-
-    constructor(http: HttpClient, cache: Cache) {
-        super(
-            'FloodService',
-            'Flood damage',
-            [durationTiff, velocityTiff, depthTiff].map(p => p.uid),
-            // [damageManzanas, damageBuildings].map(p => p.uid), // <-- damageBuildings is way too big to fit in browser memory!
-            [damageManzanas].map(p => p.uid),
-            'org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess',
-            'Process to compute the damage caused by a flood.',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
-            '1.0.0',
-            http,
-            new ProcessStateUnavailable(),
-            cache
-        );
-        this.wizardProperties = {
-            providerName: 'GFZ',
-            providerUrl: 'https://www.gfz-potsdam.de/en/',
-            shape: 'dot-circle',
-            wikiLink: 'ExposureAndVulnerabilityEcuador'
-        };
-    }
-
-}
 
 export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
     uid: 'damageManzanasGeojson',
@@ -105,17 +79,17 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                 const anchor = document.createElement('div');
 
                 const counts = {
-                    'Prob. D1': props['proba_d1_predicted'],
-                    'Prob. D2': props['proba_d2_predicted'],
-                    'Prob. D3': props['proba_d3_predicted'],
-                    'Prob. D4': props['proba_d4_predicted']
+                    'D1': props['proba_d1_predicted'],
+                    'D2': props['proba_d2_predicted'],
+                    'D3': props['proba_d3_predicted'],
+                    'D4': props['proba_d4_predicted']
                 };
                 const data: BarData[] = [];
                 for (const damageClass in counts) {
                     data.push({label: damageClass, value: counts[damageClass]});
                 }
-                const anchorUpdated = createBarchart(anchor, data, 300, 200, '{{ Damage_state }}', '{{ Probability }}');
-                return `<h4>{{ Updated_exposure }}</h4>${anchor.innerHTML}`;
+                const anchorUpdated = createBarChart(anchor, data, 300, 200, '{{ probability_of_damage_state }}', '{{ Probability }}', {yRange: [0, 1]});
+                return `<h4>{{ updated_exposure_flood }}</h4>${anchor.innerHTML}`;
               },
               legendEntries: [{
                   feature: {
@@ -130,7 +104,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                             [ 5.627918243408203, 50.963075942052164 ] ] ]
                       }
                   },
-                  text: 'Inundation 10 cm'
+                  text: 'Inundation_10_cm'
               }, {
                 feature: {
                     "type": "Feature",
@@ -144,7 +118,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Inundation 30 cm'
+                text: 'Inundation_30_cm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -158,32 +132,58 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Inundation 50 cm'
+                text: 'Inundation_50_cm'
             }]
         }
     },
     value: null
 };
 
-/**
- * translates Flooddamage's output: needs to be converted to proper coordinate system to be actual geojson.
- */
-export const FlooddamageTranslator: ProductTransformingProcess = {
-    uid: 'ecuadorFlooddamageTranslator',
-    name: 'ecuadorFlooddamageTranslator',
-    requiredProducts: [damageManzanas].map(p => p.uid),
-    providedProducts: [damageManzanasGeojson].map(p => p.uid),
-    state: new ProcessStateUnavailable(),
-    onProductAdded: (newProd: Product, allProds: Product[]): Product[] => {
-        if (newProd.uid === damageManzanas.uid) {
-            const reprojected = reproject(newProd.value[0], 'EPSG:32717', 'EPSG:4326');
-            return [{
-                ... damageManzanasGeojson,
-                value: [reprojected]
-            }];
-        }
-        return [];
+
+export class FloodDamageProcess extends WpsProcess implements WizardableProcess {
+
+    readonly wizardProperties: WizardProperties;
+
+    constructor(http: HttpClient, cache: Cache) {
+        super(
+            'FloodService',
+            'Flood damage',
+            [durationTiff, velocityTiff, depthTiff].map(p => p.uid),
+            // [damageManzanas, damageBuildings].map(p => p.uid), // <-- damageBuildings is way too big to fit in browser memory!
+            [damageManzanasGeojson].map(p => p.uid),
+            'org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess',
+            'Process to compute the damage caused by a flood.',
+            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            '1.0.0',
+            http,
+            new ProcessStateUnavailable(),
+            cache
+        );
+        this.wizardProperties = {
+            providerName: 'GFZ',
+            providerUrl: 'https://www.gfz-potsdam.de/en/',
+            shape: 'dot-circle',
+            wikiLink: 'ExposureAndVulnerabilityEcuador'
+        };
     }
+
+    execute(inputs: Product[], outputs: Product[], doWhile): Observable<Product[]> {
+
+        const newOutputs = outputs.filter(o => o.uid !== damageManzanasGeojson.uid);
+        newOutputs.push(damageManzanas);
+
+        return super.execute(inputs, newOutputs, doWhile).pipe(map((results) => {
+            const damageManzanasResults = results.find(r => r.uid === damageManzanas.uid);
+            const newResults = results.filter(r => r.uid !== damageManzanas.uid);
+            const reprojected = reproject(damageManzanasResults.value[0], 'EPSG:32717', 'EPSG:4326');
+            newResults.push({
+                ... damageManzanasGeojson,
+                value:  [reprojected]
+            });
+            return newResults;
+        }));
+    }
+
 }
 
 

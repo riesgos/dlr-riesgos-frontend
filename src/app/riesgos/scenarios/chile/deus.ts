@@ -13,7 +13,7 @@ export class Deus extends WpsProcess {
             ['updated_exposure', 'transition', 'damage'],
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'This service returns damage caused by the selected earthquake.',
-            'http://rz-vm140.gfz-potsdam.de:8080/wps/WebProcessingService',
+            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),

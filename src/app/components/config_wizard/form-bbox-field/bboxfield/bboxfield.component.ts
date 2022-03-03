@@ -1,5 +1,8 @@
-import { Component, OnInit, forwardRef, Directive, ViewEncapsulation } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, Validator, NG_VALIDATORS } from '@angular/forms';
+import { Component, OnInit, forwardRef, ViewEncapsulation } from '@angular/core';
+import {
+  ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, FormControl,
+  Validators, AbstractControl, ValidationErrors, Validator, NG_VALIDATORS
+} from '@angular/forms';
 
 
 export interface WpsBboxValue {

@@ -5,21 +5,22 @@ import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { BarData, createBigBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Observable } from 'rxjs';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import Geometry from 'ol/geom/Geometry';
 
 
 
-export const modelChoicePeru: WpsData & StringSelectUconfProduct = {
+export const modelChoicePeru: WpsData & StringSelectUserConfigurableProduct = {
   uid: 'eq_exposure_model_choice',
   description: {
       wizardProperties: {
           fieldtype: 'stringselect',
           name: 'model',
           description: 'exposure model',
+          signpost: 'warning_processing_time'
       },
       id: 'model',
       reference: false,
@@ -110,33 +111,41 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBigBarchart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
-        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}`;
+        const anchorUpdated = createBigBarChart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
+        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML} <br/> {{ BuildingTypesSara }}`;
       },
       legendEntries: [{
         feature: {
-          "type": "Feature",
-          "properties": {
-            'expo': {
-              Damage: ['D0', 'D1', 'D2', 'D3', 'D4'],
-              Buildings: [0, 0, 0, 0]
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
+        },
+          properties: {
+            expo: {
+              Damage: [],
+              Buildings: []
             }
-          },
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [ [
-                [ 5.627918243408203, 50.963075942052164 ],
-                [ 5.627875328063965, 50.958886259879264 ],
-                [ 5.635471343994141, 50.95634523633128 ],
-                [ 5.627918243408203, 50.963075942052164 ] ] ]
           }
         },
-        text: 'Exposure'
+        text: `exposureLegend`
       }],
     }
   },
   value: null
 };
+
+export const initialExposurePeruReference: WpsData & Product = {
+  uid: 'AssetmasterProcess_Exposure_Peru_Ref',
+  description: {
+    id: 'selectedRowsGeoJson',
+    reference: true,
+    title: '',
+    type: 'complex',
+    format: 'application/json',
+  },
+  value: null
+}
 
 
 export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
@@ -148,10 +157,10 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       'ExposurePeru',
       'EQ Exposure Model',
       [modelChoicePeru].map(p => p.uid),
-      [initialExposurePeru.uid],
+      [initialExposurePeru, initialExposurePeruReference].map(p => p.uid),
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-      '',
-      'http://rz-vm140.gfz-potsdam.de:8080/wps/WebProcessingService',
+      'exposure_process_description',
+      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable(),

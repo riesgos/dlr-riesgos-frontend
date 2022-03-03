@@ -1,8 +1,8 @@
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MultiVectorLayerProduct, VectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WpsData, Cache } from 'src/app/services/wps';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqDamagePeruM, eqUpdatedExposureRefPeru } from './eqDeus';
 import { tsShakemapPeru } from './tsService';
@@ -19,10 +19,10 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from '../chile/constants';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import Geometry from 'ol/geom/Geometry';
 
-export const schemaPeru: StringSelectUconfProduct & WpsData = {
+export const schemaPeru: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'schema',
     description: {
       id: 'schema',
@@ -43,15 +43,8 @@ export const schemaPeru: StringSelectUconfProduct & WpsData = {
     value: 'SUPPASRI2013_v2.0'
 };
 
-export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_damage_peru',
-    description: {
-        id: 'damage',
-        title: 'damage',
-        reference: false,
+export const tsDamagePeruProperties: VectorLayerProperties = {
         icon: 'dot-circle',
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-damage',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
@@ -134,19 +127,10 @@ export const tsDamagePeru: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Damage in USD'
-    },
-    value: null
 };
 
-export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_transition_peru',
-    description: {
-        id: 'transition',
-        title: 'transition',
+const tsTransitionPeruProperties: VectorLayerProperties = {
         icon: 'dot-circle',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-transition',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number, selected: boolean) => {
@@ -216,7 +200,7 @@ export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
                             [5.627918243408203, 50.963075942052164]]]
                     }
                 },
-                text: '{{ LargeDamageChange }}',
+                text: 'LargeDamageChange',
             }],
             text: (props: object) => {
 
@@ -293,19 +277,10 @@ export const tsTransitionPeru: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Change from previous state'
-    },
-    value: null
 };
 
-export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_updated_exposure_peru',
-    description: {
-        id: 'updated_exposure',
-        title: 'updated_exposure',
+const tsUpdatedExposurePeruProperties: VectorLayerProperties = {
         icon: 'dot-circle',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-exposure',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
@@ -486,7 +461,7 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
 
                 const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 
@@ -526,6 +501,19 @@ export const tsUpdatedExposurePeru: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'NumberGoodsInDamageState'
+};
+
+export const tsDamagePeruM: WpsData & MultiVectorLayerProduct = {
+    uid: 'ts_deus_output_values_peru',
+    description: {
+        id: 'merged_output',
+        title: '',
+        reference: false,
+        defaultValue: null,
+        format: 'application/json',
+        type: 'complex',
+        description: '',
+        vectorLayers: [tsUpdatedExposurePeruProperties, tsTransitionPeruProperties, tsDamagePeruProperties]
     },
     value: null
 };
@@ -548,7 +536,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
         this.requiredProducts = [eqDamagePeruM, tsShakemapPeru, eqUpdatedExposureRefPeru].map(p => p.uid);
-        this.providedProducts = [tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru].map(p => p.uid);
+        this.providedProducts = [tsDamagePeruM].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
             providerName: 'GFZ',

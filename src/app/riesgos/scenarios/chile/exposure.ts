@@ -4,16 +4,16 @@ import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol';
 import { HttpClient } from '@angular/common/http';
-import { BarData, createBigBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Cache } from 'src/app/services/wps';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import Geometry from 'ol/geom/Geometry';
 
 
-export const modelChoice: WpsData & StringSelectUconfProduct = {
+export const modelChoice: WpsData & StringSelectUserConfigurableProduct = {
   uid: 'eq_exposure_model_choice',
   description: {
       wizardProperties: {
@@ -26,7 +26,7 @@ export const modelChoice: WpsData & StringSelectUconfProduct = {
       reference: false,
       title: 'model',
       type: 'literal',
-      options: ['ValpCVTSaraDownscaled', 'ValpCVTBayesian'],
+      options: ['ValpCVTSaraDownscaled', 'ValpCVTBayesian', 'ValpCommuna', 'ValpRegularOriginal', 'ValpRegularGrid'],
       defaultValue: 'ValpCVTSaraDownscaled',
   },
   value: 'ValpCVTSaraDownscaled'
@@ -103,16 +103,16 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBigBarchart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
-        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}`;
+        const anchorUpdated = createBigBarChart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
+        return `<h4>{{ Exposure }}</h4>${anchor.outerHTML} <br/> {{ BuildingTypesSara }}`;
       },
       legendEntries: [{
         feature: {
           type: 'Feature',
           geometry: {
-            type: 'Point',
-            coordinates: [[0, 0]],
-          },
+            type: 'Polygon',
+            coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
+        },
           properties: {
             expo: {
               Damage: [],
@@ -120,9 +120,20 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
             }
           }
         },
-        text: `Exposure data containing quantities of buildings and their associated classes`
+        text: `exposureLegend`
       }]
     }
+  },
+  value: null
+};
+
+export const initialExposureRef: WpsData & Product = {
+  uid: 'initial_Exposure_Ref',
+  description: {
+    id: 'selectedRowsGeoJson',
+    title: '',
+    type: 'complex',
+    reference: true
   },
   value: null
 };
@@ -137,10 +148,10 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       'Exposure',
       'EQ Exposure Model',
       [modelChoice.uid],
-      [initialExposure.uid],
+      [initialExposure.uid, initialExposureRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-      '',
-      'http://rz-vm140.gfz-potsdam.de:8080/wps/WebProcessingService',
+      'exposure_process_description',
+      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable(),

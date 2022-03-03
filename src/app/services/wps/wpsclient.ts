@@ -129,12 +129,12 @@ export class WpsClient {
         return cachedResponse$.pipe(
             switchMap((results) => {
                 if (results) {
+                    console.log(`got data from cache instead of calling ${url} / ${processId}`);
                     return of(results);
                 } else {
                     return query$.pipe(
                         tap((response: WpsData[]) => {
                             this.cache.set({url, processId, inputs, outputs}, response).subscribe(success => {
-                                console.log('set data in cache', success);
                             });
                         })
                     );

@@ -1,7 +1,7 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import {  StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WpsData, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
@@ -10,7 +10,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
-export const direction: StringSelectUconfProduct & WpsData = {
+export const direction: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'direction',
     description: {
         id: 'direction',
@@ -39,7 +39,7 @@ export const vei: Product & WpsData = {
     value: null
 };
 
-export const parameter: StringSelectUconfProduct & WpsData = {
+export const parameter: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'parameter',
     description: {
         id: 'parameter',

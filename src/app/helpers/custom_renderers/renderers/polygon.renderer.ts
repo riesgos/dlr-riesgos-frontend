@@ -118,7 +118,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         canvas.style.setProperty('top', '0px');
         canvas.style.setProperty('width', '100%');
         canvas.style.setProperty('height', '100%');
-        const context = new Context(canvas.getContext('webgl2') as WebGL2RenderingContext, true);
+        const context = new Context(canvas.getContext('webgl2') as WebGL2RenderingContext);
 
 
         const polyShader = new ElementsBundle(new Program(`#version 300 es

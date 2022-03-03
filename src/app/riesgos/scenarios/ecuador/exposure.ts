@@ -3,7 +3,7 @@ import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/riesgos/ri
 import { WpsData, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BarData, createBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createBarChart } from 'src/app/helpers/d3charts';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
@@ -176,7 +176,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBarchart(anchor, barchartData, 400, 400, '{{ Taxonomy }}', '{{ Buildings }}');
+        const anchorUpdated = createBarChart(anchor, barchartData, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
         return `<h4>{{ Exposure }}</h4>${anchor.innerHTML} {{ BuildingTypesTorres }}`;
       },
       summary: (value: any) => {
@@ -187,7 +187,23 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
           }
         };
         return comp;
-      }
+      },
+      legendEntries: [{
+        feature: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
+        },
+          properties: {
+            expo: {
+              Damage: [],
+              Buildings: []
+            }
+          }
+        },
+        text: `exposureLegend`
+      }],
     }
   },
   value: null
@@ -214,9 +230,25 @@ export const initialExposureLahar = {
         }
 
         const anchor = document.createElement('div');
-        const anchorUpdated = createBarchart(anchor, barchartData, 400, 400, '{{ Taxonomy }}', '{{ Buildings }}');
+        const anchorUpdated = createBarChart(anchor, barchartData, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
         return `<h4>{{ Exposure }}</h4>${anchor.innerHTML} {{ BuildingTypesMavrouli }}`;
       },
+      legendEntries: [{
+        feature: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
+        },
+          properties: {
+            expo: {
+              Damage: [],
+              Buildings: []
+            }
+          }
+        },
+        text: `exposureLegend`
+      }],
       summary: (value: any) => {
         return 'BuildingTypesMavrouli';
       }
@@ -230,6 +262,17 @@ export const initialExposureLaharRef = {
   uid: 'inital_exposure_lahar_ref'
 };
 
+export const modelEcuador: WpsData & Product = {
+  uid: 'exposure_model_ecuador',
+  description: {
+    id: 'model',
+    reference: false,
+    title: 'model',
+    type: 'literal',
+  },
+  value: 'LatacungaRuralAreas'
+};
+
 
 export class AshfallExposureModel extends WpsProcess implements WizardableProcess {
 
@@ -239,11 +282,11 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
     super(
       'AshfallExposure',
       'Ashfall exposure model',
-      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
+      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador, modelEcuador].map(p => p.uid),
       [initialExposureAshfall.uid, initialExposureAshfallRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-      '',
-      'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+      'exposure_process_description',
+      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       http,
       new ProcessStateUnavailable(),
@@ -253,7 +296,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       shape: 'building',
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
-      wikiLink: 'ExposureAndVulnerabilityEcuador'
+      wikiLink: 'ExposureAndVulnerabilityEcuador',
     };
   }
 
@@ -282,11 +325,12 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
     super(
       'LaharExposure',
       'Lahar exposure model',
-      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador].map(p => p.uid),
+      [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador,
+        querymodeEcuador, schemaEcuador, assettypeEcuador, modelEcuador].map(p => p.uid),
       [initialExposureLahar.uid, initialExposureLaharRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-      '',
-      'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+      'exposure_process_description',
+      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       http,
       new ProcessStateUnavailable(),

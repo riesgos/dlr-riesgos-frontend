@@ -1,11 +1,11 @@
 import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { initialExposure } from './exposure';
+import { initialExposureRef } from './exposure';
 import { WpsData } from 'src/app/services/wps';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { toDecimalPlaces, weightedDamage, greenRedRange, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -188,7 +188,7 @@ export const transitionProps: VectorLayerProperties = {
                         [5.627918243408203, 50.963075942052164]]]
                 }
             },
-            text: '{{ LargeDamageChange }}',
+            text: 'LargeDamageChange',
         }],
         text: (props: object) => {
 
@@ -429,7 +429,7 @@ const updatedExposureProps: VectorLayerProperties = {
                 }
             }
 
-            const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+            const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
 
             const legend = `
                     <ul>
@@ -505,7 +505,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
     readonly state: ProcessState;
     readonly uid = 'EQ-Deus';
     readonly name = 'Multihazard_damage_estimation/Earthquake';
-    readonly requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
+    readonly requiredProducts = [eqShakemapRef, initialExposureRef].map(p => p.uid);
     readonly providedProducts = [eqDamageM, eqUpdatedExposureRef].map(p => p.uid);
     readonly description = 'This service returns damage caused by the selected earthquake.';
     readonly wizardProperties: WizardProperties = {
@@ -548,7 +548,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
                 switchMap((resultProducts: Product[]) => {
                     const fragility = resultProducts.find(prd => prd.uid === fragilityRef.uid);
                     const shakemap = inputProducts.find(prd => prd.uid === eqShakemapRef.uid);
-                    const exposure = inputProducts.find(prd => prd.uid === initialExposure.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === initialExposureRef.uid);
 
                     const deusInputs = [{
                         ...schema,
@@ -570,8 +570,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
                         description: {
                             ...exposure.description,
                             id: 'exposure'
-                        },
-                        value: exposure.value[0]
+                        }
                     }
                     ];
                     const deusOutputs = outputProducts;

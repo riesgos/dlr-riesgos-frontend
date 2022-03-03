@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { BboxUconfPD, BboxUconfProduct } from '../userconfigurable_wpsdata';
+import { BboxUserConfigurableProductDescription, BboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -19,7 +19,7 @@ export class FormBboxFieldComponent implements OnInit {
 
     public bboxSelectionOngoing$: Observable<boolean>;
 
-    @Input() parameter: BboxUconfProduct;
+    @Input() parameter: BboxUserConfigurableProduct;
     @Input() control: FormControl;
     public disabled = false;
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ThemeMetadata, ThemeService } from 'src/app/services/theme/theme.service';
 
 @Component({
@@ -7,27 +7,19 @@ import { ThemeMetadata, ThemeService } from 'src/app/services/theme/theme.servic
   templateUrl: './theme-picker.component.html',
   styleUrls: ['./theme-picker.component.scss']
 })
-export class ThemePickerComponent implements OnDestroy {
+export class ThemePickerComponent {
 
   public themes: ThemeMetadata[];
-  public currentTheme: ThemeMetadata;
-  subs: Subscription[] = [];
+  public currentTheme$: Observable<ThemeMetadata>;
 
   constructor(
     private themeService: ThemeService
   ) {
     this.themes = this.themeService.getThemes();
-    const themeSub = this.themeService.getActiveTheme().subscribe(t => {
-      this.currentTheme = t;
-    });
-    this.subs.push(themeSub);
+    this.currentTheme$ = this.themeService.getActiveTheme();
   }
 
   selectTheme(themeName: ThemeMetadata['name']): void {
     this.themeService.selectTheme(themeName);
-  }
-
-  ngOnDestroy(): void {
-    this.subs.forEach(s => s.unsubscribe());
   }
 }

@@ -42,7 +42,7 @@
       </clr-icon>
 
       <clr-icon *ngIf="group.description" shape="info-standard" class="iconButton" [ngClass]="{'is-solid':showInfo}"
-        (click)="showInfo = !showInfo" title="{{!showInfo?'Show Info': 'Hide Info'}}"></clr-icon>
+        (click)="showInfo = !showInfo" [title]="!showInfo ? 'show_info' : 'hide_info' | translate"></clr-icon>
       <clr-icon shape="details" class="iconButton" [ngClass]="{'is-solid':openAllLayersProperties}"
         (click)="showHideAllDetails()"
         title="{{!openAllLayersProperties?'Show all layers details': 'Hide all layers details'}}"></clr-icon>

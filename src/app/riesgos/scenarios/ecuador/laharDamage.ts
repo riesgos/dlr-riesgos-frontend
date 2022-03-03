@@ -16,7 +16,7 @@ import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/
 import { greenRedRange, toDecimalPlaces, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { FeatureCollection } from '@turf/helpers';
 import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { maxDamage$ } from '../chile/constants';
 import Geometry from 'ol/geom/Geometry';
@@ -415,7 +415,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">Lahar: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {

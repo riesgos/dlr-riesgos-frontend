@@ -25,9 +25,17 @@ export class RegexTranslatePipe implements PipeTransform {
       return 'EQ ' + id;
     }
   }, {
-    regex: /^N52:primary[\d_]*/,
+    regex: /^N52:primary([\d_]*)/,
     transform: (matches: RegExpMatchArray) => {
-      return 'shakemap';
+      const id = matches[1];
+      return id ? 'GMF-' + id : 'GMF';
+    }
+  }, {
+    regex: /^riesgos:primary([\d_]*)_(pga|sa03|sa10)/,
+    transform: (matches: RegExpMatchArray) => {
+      const id = matches[1];
+      const type = matches[2];
+      return type ? type : 'GMF';
     }
   }, {
     regex: /^[\d_]*_(arrivalTimes|epiCenter|mwhLand_global|mwhLand_local|mwh)$/,

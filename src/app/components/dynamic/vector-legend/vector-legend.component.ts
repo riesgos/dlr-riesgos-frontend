@@ -60,11 +60,11 @@ export class VectorLegendComponent implements OnInit {
         typeGeom: element.feature.geometry.type
       }, null, null);
 
-      const html = this.translator.syncTranslate(element.text);
+      // const html = this.translator.syncTranslate(element.text);
 
       this.entries.push({
         canvas: canvas,
-        text: html
+        text: element.text
       });
     }
 

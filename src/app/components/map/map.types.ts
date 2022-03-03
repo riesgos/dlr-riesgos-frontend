@@ -49,6 +49,7 @@ export class ProductRasterLayer extends RasterLayer implements IProductRasterLay
     hasFocus: boolean;
     icon?: string;
     zIndex?: number;
+    dynamicDescription?: IDynamicComponent;
     constructor(options: IProductRasterLayerOptions) {
         super(options);
         Object.assign(this, options);

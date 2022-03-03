@@ -66,7 +66,7 @@ export const isVectorLayerProduct = (data: Product): data is VectorLayerProduct 
     return isVectorLayerDescription(data.description);
 };
 
-export interface MulitVectorLayerDescription extends ProductDescription {
+export interface MultiVectorLayerDescription extends ProductDescription {
     format: 'application/vnd.geo+json' | 'application/json';
     type: 'complex';
     vectorLayers: VectorLayerProperties[];
@@ -77,10 +77,10 @@ export interface MulitVectorLayerDescription extends ProductDescription {
  * A *MultiVectorLayerProduct* uses one VectorSource with multiple layers.
  */
 export interface MultiVectorLayerProduct extends Product {
-    description: MulitVectorLayerDescription;
+    description: MultiVectorLayerDescription;
 }
 
-export const isMultiVectorLayerDescription = (description: ProductDescription): description is MulitVectorLayerDescription => {
+export const isMultiVectorLayerDescription = (description: ProductDescription): description is MultiVectorLayerDescription => {
     return description.hasOwnProperty('vectorLayers');
 };
 
@@ -92,10 +92,10 @@ export const isMultiVectorLayerProduct = (product: Product): product is MultiVec
 
 export interface WmsLayerDescription extends ProductDescription {
     legendImg?: string | IDynamicComponent;
-    format: 'application/WMS';
     name: string;
     type: 'complex' | 'literal';
     styles?: string[];
+    format: 'application/WMS' | 'string';  // Ts-service returns wms-data as string-literal. Not sure if this is strictly correct.
     id: string;
     description?: string;
     icon?: shape;
@@ -108,11 +108,21 @@ export interface WmsLayerProduct extends Product {
 
 
 export const isWmsLayerDescription = (description: ProductDescription): description is WmsLayerDescription => {
-    return description['format'] === 'application/WMS'
-            && (description['type'] === 'complex' || description['type'] === 'literal');
+    if (description['type'] === 'complex') {
+        return description['format'] === 'application/WMS';
+    } else if (description['type'] === 'literal') {
+        return !!description['styles'] || !!description['featureInfoRenderer'] || !!description['legendImg'];
+    }
+    return false;
 };
 
 export const isWmsProduct = (data: Product): data is WmsLayerProduct => {
+    const matchesWms = (str: string) => {
+        return str.includes('service=wms') || str.includes('Service=Wms') || str.includes('SERVICE=WMS');
+    };
+
     return isWmsLayerDescription(data.description)
-        || ((data.description['format'] === 'string' || data.description['format'] === 'application/WMS') && (data.value as string).includes('wms'));
+        || data.description['format'] === 'application/WMS'
+        || ((typeof data.value === 'string') && matchesWms(data.value as string))
+        || ((Array.isArray(data.value)) && (typeof data.value[0] === 'string') && matchesWms(data.value[0] as string));
 };

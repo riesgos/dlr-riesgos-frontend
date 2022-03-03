@@ -12,7 +12,7 @@ import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
 import { ashfallDamageM, ashfallUpdatedExposureRef } from './ashfallDamage';
 import { laharLossProps, laharTransitionProps, laharUpdatedExposureProps, laharUpdatedExposureRef } from './laharDamage';
-import { createGroupedBarchart, BarData } from 'src/app/helpers/d3charts';
+import { createGroupedBarChart, BarData } from 'src/app/helpers/d3charts';
 
 
 
@@ -54,7 +54,7 @@ const laharAshfallUpdatedExposureProps = {
                 }
             }
 
-            const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+            const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
             return `<h4 style="color: var(--clr-p1-color, #666666);">{{ LaharAndAshfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
         },
     },

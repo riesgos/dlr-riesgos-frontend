@@ -70,7 +70,6 @@ export function createGroupedBarChart(
         showlegend: true, // newData.length > 8 ? false : true,
         legend: {
             orientation: 'h',
-            y: 'auto'
         },
         xaxis: {
             title: {

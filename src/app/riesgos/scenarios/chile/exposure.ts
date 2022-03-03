@@ -104,7 +104,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
 
         const anchor = document.createElement('div');
         const anchorUpdated = createBigBarChart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
-        return `<h4>{{ Exposure }}</h4>${anchor.outerHTML} <br/> {{ BuildingTypesSara }}`;
+        return `<h4>{{ Exposure }}</h4>${anchor.outerHTML}  {{ BuildingTypesSara }}`;
       },
       legendEntries: [{
         feature: {

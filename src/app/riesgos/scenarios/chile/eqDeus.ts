@@ -441,7 +441,7 @@ const updatedExposureProps: VectorLayerProperties = {
                     </ul>
                 `;
 
-            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}<br/>{{GroupsSimplified}}{{StatesNotComparable}}`;
+            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML} ${legend} {{GroupsSimplified}}{{StatesNotComparable}}`;
         },
         summary: (value: [FeatureCollection]) => {
             const counts = {

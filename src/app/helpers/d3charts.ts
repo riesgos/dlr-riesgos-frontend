@@ -62,13 +62,15 @@ export function createGroupedBarChart(
             newData.push(transformedGroupData);
         }
     }
+    console.log(50 + (30 * Math.floor(labels.length / 4)))
 
     const yMax = newData.map(dp => dp.y).flat().reduce((last, curr) => curr > last ? curr : last, 0);
 
     const layout = {
         showlegend: true, // newData.length > 8 ? false : true,
         legend: {
-            orientation: 'h'
+            orientation: 'h',
+            y: 'auto'
         },
         xaxis: {
             title: {
@@ -86,7 +88,7 @@ export function createGroupedBarChart(
         margin: {
             l: 50,
             r: 30,
-            b: 70,
+            b: 50 + (30 * Math.floor(labels.length / 4)),
             t: 15,
             pad: 5
         },

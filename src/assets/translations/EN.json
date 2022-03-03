@@ -169,11 +169,13 @@
     "Powerlines": "Power lines",
 
     "gmpe": "Ground motion prediction equation",
-    "vsgrid": "VS-grid",
+    "vsgrid": "Shear-wave velocity grid",
     "MontalvaEtAl2016SInter": "Montalva et al. 2016 SInter",
     "GhofraniAtkinson2014": "Ghofrani Atkinson 2014",
     "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015 SInter",
     "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997 SInter NSHMP 2008",
+
+    "warning_processing_time": "Please note that the processing time in any downstream services increases with larger exposure models.",
 
     "etype": "subcategory",
 
@@ -303,6 +305,10 @@
     "SelectedEQ": "Selection",
     "SelectEQ": "Select epicenter",
     "GroupsSimplified": "<p><b>Note</b>: Groups have been simplified for graph.</p>",
+
+    
+    "USGSSlopeBasedTopographyProxy": "USGS slope-based topography proxy",
+    "FromSeismogeotechnicsMicrozonation": "From seismo-geotechnics microzonation",
 
     "ashfallLoss": "Ashfall loss",
     "Total_loss": "Total loss",

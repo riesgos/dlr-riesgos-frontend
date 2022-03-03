@@ -31,10 +31,11 @@ export class RegexTranslatePipe implements PipeTransform {
       return id ? 'GMF-' + id : 'GMF';
     }
   }, {
-    regex: /^riesgos:primary([\d_]*)/,
+    regex: /^riesgos:primary([\d_]*)_(pga|sa03|sa10)/,
     transform: (matches: RegExpMatchArray) => {
       const id = matches[1];
-      return id ? 'GMF-' + id : 'GMF';
+      const type = matches[2];
+      return type ? type : 'GMF';
     }
   }, {
     regex: /^[\d_]*_(arrivalTimes|epiCenter|mwhLand_global|mwhLand_local|mwh)$/,

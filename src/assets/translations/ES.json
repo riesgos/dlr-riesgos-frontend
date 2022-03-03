@@ -118,7 +118,7 @@
     "Hillshade": "Sombreado",
     "TS-Service": "Simulación de tsunami",
     "gmpe": "Ecuación de predicción del movimiento del suelo",
-    "vsgrid": "VS-grid",
+    "vsgrid": "Cuadrícula de velocidad de onda de corte",
     "MontalvaEtAl2016SInter": "Montalva et al. 2016 SInter",
     "GhofraniAtkinson2014": "Ghofrani Atkinson 2014",
     "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015 SInter",
@@ -281,7 +281,6 @@
     "TsunamiWiki": "Simulación de tsunami",
     "eq-selection: boundingbox": "Cuadro delimitador",
     "selected earthquake": "Terremoto elegido",
-    "Selected earthquake": "Terremoto elegido",
     "available earthquakes": "Terremotos disponibles",
     "Available earthquakes": "Terremotos disponibles",
     "AvailableEarthquakes": "Terremotos disponibles",
@@ -296,8 +295,11 @@
     "deaggregation": "desagregación",
     "stochastic": "estocástico",
 
+    "USGSSlopeBasedTopographyProxy": "Proxy de topografía basado en pendientes de USGS",
+    "FromSeismogeotechnicsMicrozonation": "De la microzonificación sismo-geotécnica",
     
     "exposure_process_description": "Conjunto de datos de edificios y sus clases. Entrada necesaria para los siguientes pasos.",
+    "warning_processing_time": "Tenga en cuenta que el tiempo de procesamiento en cualquier servicio posterior aumenta con modelos mayores de exposición.",
 
     "wd_max": "Profundidad de inundación",
     "v_atwdmax": "velocidad en sitio de máxima profundidad",

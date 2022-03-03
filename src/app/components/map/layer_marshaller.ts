@@ -121,6 +121,33 @@ export class LayerMarshaller  {
             'ts_damage_peru', 'ts_transition_peru', 'ts_updated_exposure_peru'].includes(product.uid)) {
             return this.createWebglLayer(product as VectorLayerProduct).pipe(map(layer => [layer]));
         }
+        if (['Shakyground_wms', 'Shakyground_sa03_wms', 'Shakyground_sa10_wms',
+            'Shakyground_wmsPeru', 'Shakyground_sa03_wmsPeru', 'Shakyground_sa10_wmsPeru'
+            ].includes(product.uid)) {
+            return this.makeWmsLayers(product as WmsLayerProduct).pipe(map(layers => {
+                switch (product.uid) {
+                    case 'Shakyground_wms':
+                        layers[0].name = 'PGA';
+                        break;
+                    case 'Shakyground_sa03_wms':
+                        layers[0].name = 'SA(0.3)';
+                        break;
+                    case 'Shakyground_sa10_wms':
+                        layers[0].name = 'SA(1.0)';
+                        break;
+                    case 'Shakyground_wmsPeru':
+                        layers[0].name = 'PGA';
+                        break;
+                    case 'Shakyground_sa03_wmsPeru':
+                        layers[0].name = 'SA(0.3)';
+                        break;
+                    case 'Shakyground_sa10_wmsPeru':
+                        layers[0].name = 'SA(1.0)';
+                        break;
+                }
+                return layers;
+            }));
+        }
 
         // Secondly, standard processing of mappable products.
         if (isWmsProduct(product)) {

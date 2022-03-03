@@ -36,9 +36,9 @@ export class RouteMapComponent implements OnInit, OnDestroy {
       unit: 'rem'
     },
     right: {
-      width: 12,
-      minWidth: 12,
-      maxWidth: 24,
+      width: 19,
+      minWidth: 16,
+      maxWidth: 30,
       unit: 'rem'
     }
   };

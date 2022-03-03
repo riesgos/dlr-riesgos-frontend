@@ -519,7 +519,10 @@ export class LayerMarshaller  {
                             }
                         }
                     }],
-                    dynamicDescription: product.description.vectorLayerAttributes.summary ? product.description.vectorLayerAttributes.summary(data) : undefined,
+                    dynamicDescription:
+                        product.description.vectorLayerAttributes.summary
+                        ? product.description.vectorLayerAttributes.summary(data)
+                        : undefined,
                 });
                 layer.productId = product.uid;
 

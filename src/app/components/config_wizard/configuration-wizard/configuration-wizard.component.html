@@ -8,7 +8,7 @@
               {{process.name | translate}}
       </div>
       <div class="clr-col-4">
-          <clr-signpost>
+          <clr-signpost (click)="$event.stopPropagation();">
 
               <span class="label" [ngClass]="getClassForLabel(process.state.type)" clrSignpostTrigger>
                   {{processStateForTranslate(process.state.type) | translate}}

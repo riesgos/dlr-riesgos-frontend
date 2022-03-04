@@ -101,6 +101,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         } else {
                             layer.hasFocus = false;
                         }
+                        this.shouldLayerExpand(layer);
                         this.layersSvc.updateLayer(layer, 'Overlays');
                     }
                 }
@@ -126,14 +127,17 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     if (newLayer) {
                         newLayer.visible = oldLayer.visible;
                         newLayer.hasFocus = oldLayer.hasFocus;
+                        this.shouldLayerExpand(newLayer);
                     }
                 }
 
                 // set hasFocus=true for new layers
+                // also expand new layers if they have legendImg or description
                 for (const newLayer of newOverlays) {
                     const oldLayer = oldOverlays.find(ol => ol.id === newLayer.id);
                     if (!oldLayer) {
                         newLayer.hasFocus = true;
+                        this.shouldLayerExpand(newLayer);
                     }
                 }
 
@@ -146,7 +150,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const add: ProductLayer[] = newOverlays.filter(no => !oldOverlays.map(oo => oo.id).includes(no.id));
             const update: ProductLayer[] = newOverlays.filter(no => oldOverlays.map(oo => oo.id).includes(no.id));
             const remove: ProductLayer[] = oldOverlays.filter(oo => !newOverlays.map(no => no.id).includes(oo.id));
-
             add.map(ol => this.layersSvc.addLayer(ol, ol.filtertype));
             update.map(ol => this.layersSvc.updateLayer(ol, ol.filtertype));
             remove.map(ol => this.layersSvc.removeLayer(ol, ol.filtertype));
@@ -281,6 +284,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.layersSvc.removeBaseLayers();
         this.layersSvc.removeLayers();
         this.layersSvc.removeOverlays();
+    }
+
+    private shouldLayerExpand(layer: ProductLayer) {
+      if (layer.hasFocus) {
+        if (layer.legendImg || layer.description) {
+          layer.expanded = true;
+        }
+      } else {
+        layer.expanded = false;
+      }
     }
 
     private getCenter(scenario: string): [number, number] {

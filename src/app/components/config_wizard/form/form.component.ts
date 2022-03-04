@@ -13,7 +13,7 @@ import { Observable, Subscription } from 'rxjs';
 @Component({
   selector: 'ukis-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css']
+  styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit, OnDestroy {
 

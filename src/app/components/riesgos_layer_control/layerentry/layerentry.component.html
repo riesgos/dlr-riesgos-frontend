@@ -1,8 +1,12 @@
 <div class="layer">
   <div class="head" [@focusUnfocus]="getFocusState()">
     <!-- layer expand icon -->
-    <clr-icon [ngStyle]="getExpandShape()" [attr.shape]="layer.icon || 'angle right'" class="iconButton"
-    [ngClass]="{'disabled': is_expandable()}" (click)="showProperties()" title="Details"></clr-icon>
+    <clr-icon shape="angle" [ngStyle]="getExpandShape()" class="iconButton" [ngClass]="{'disabled': is_expandable()}"
+      (click)="showProperties()" title="Details"></clr-icon>
+
+    <!-- Layer icon symbol -->
+    <clr-icon *ngIf="layer.icon" [attr.shape]="layer.icon" class="iconButton" (click)="showProperties()" title="Details"></clr-icon>
+
 
     <!-- layer title -->
     <div #ref class="item-title-replacement title" (click)="showProperties()" [title]="getLayerName(layer) | regexTranslate | translate">

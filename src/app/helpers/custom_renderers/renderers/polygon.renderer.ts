@@ -137,7 +137,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         out vec4 vertexColor;
 
         void main() {
-            vertexColor = vec4(v_color.xyz, 0.8);
+            vertexColor = vec4(v_color.xyz, 1.0);
         }`), {
             a_coord: data.coords,
             a_color: data.colors
@@ -161,7 +161,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         out vec4 vertexColor;
 
         void main() {
-            vertexColor = vec4(v_color.xyz, 1.0);
+            vertexColor = vec4(0.8 * v_color.xyz, 1.0);
         }`), {
             a_coord: data.coords,
             a_color: data.colors

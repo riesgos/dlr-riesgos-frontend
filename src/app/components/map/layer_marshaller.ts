@@ -31,6 +31,7 @@ import * as hashFunction from 'imurmurhash';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import Geometry from 'ol/geom/Geometry';
+import { Fill, Stroke, Style } from 'ol/style';
 
 
 
@@ -145,6 +146,7 @@ export class LayerMarshaller  {
                         layers[0].name = 'SA(1.0)';
                         break;
                 }
+                layers[0].legendImg = 'assets/images/shakemap_pga_legend_labeled.svg';
                 return layers;
             }));
         }
@@ -343,7 +345,19 @@ export class LayerMarshaller  {
                 featureCollection([bboxPolygon(bboxArray)]))
         });
         const olLayer: olVectorLayer<olVectorSource<any>> = new olVectorLayer({
-            source: source
+            source: source,
+            style: (feature, resolution) => {
+                const a = Math.min(0.8, Math.pow(resolution / 10000, 2.30));
+                return new Style({
+                    stroke: new Stroke({
+                        color: `rgba(0, 0, 255, ${a + 0.2})`,
+                        width: 2,
+                    }),
+                    fill: new Fill({
+                        color: `rgba(0, 0, 255, ${a})`,
+                    }),
+                });
+            }
         });
 
         const riesgosLayer: ProductCustomLayer = new ProductCustomLayer({
@@ -360,23 +374,6 @@ export class LayerMarshaller  {
             hasFocus: false,
         });
         return of(riesgosLayer);
-        // const layer: ProductVectorLayer = new ProductVectorLayer({
-        //     productId: product.uid,
-        //     id: `${product.uid}_${product.description.id}_result_layer`,
-        //     name: `${product.description.name}`,
-        //     attribution: '',
-        //     removable: true,
-        //     opacity: 1.0,
-        //     type: 'geojson',
-        //     filtertype: 'Overlays',
-        //     data: featureCollection([bboxPolygon(bboxArray)]),
-        //     options: { style: undefined },
-        //     popup: null,
-        //     icon: product.description.icon,
-        //     hasFocus: false
-        // });
-        // layer.productId = product.uid;
-        // return of(layer);
     }
 
     /**
@@ -519,7 +516,10 @@ export class LayerMarshaller  {
                             }
                         }
                     }],
-                    dynamicDescription: product.description.vectorLayerAttributes.summary ? product.description.vectorLayerAttributes.summary(data) : undefined,
+                    dynamicDescription:
+                        product.description.vectorLayerAttributes.summary
+                        ? product.description.vectorLayerAttributes.summary(data)
+                        : undefined,
                 });
                 layer.productId = product.uid;
 

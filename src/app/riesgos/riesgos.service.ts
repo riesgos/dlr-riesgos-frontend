@@ -27,7 +27,7 @@ import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scen
 import { ShakygroundPeru, shakemapPgaOutputPeru, eqShakemapRefPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru } from './scenarios/peru/shakyground';
 import { EqDeusPeru, lossPeru, eqDamagePeruM, eqUpdatedExposureRefPeru } from './scenarios/peru/eqDeus';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
-import { TsDeusPeru, tsDamagePeruM } from './scenarios/peru/tsDeus';
+import { TsDeusPeru, tsDamagePeruM, schemaPeru } from './scenarios/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './scenarios/peru/reliability';
 
 // ecuador
@@ -158,7 +158,7 @@ export class RiesgosService {
           selectedEqsPeru, userinputSelectedEqPeru,
           selectedEqPeru,
           shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru, eqShakemapRefPeru,
-          tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,
+          tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru, schemaPeru, 
           tsDamagePeruM,
           countryPeru, hazardEqPeru,
           damageConsumerAreasPeru

@@ -160,7 +160,7 @@ const tsTransitionPeruProperties: VectorLayerProperties = {
                 if (total > 0) {
                     [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
-                    r = g = b = 0;
+                    r = b = g = 160;
                 }
 
                 return new olStyle({
@@ -186,7 +186,7 @@ const tsTransitionPeruProperties: VectorLayerProperties = {
                             [5.627918243408203, 50.963075942052164]]]
                     }
                 },
-                text: `{{ SmallDamageChange }}`,
+                text: `SmallDamageChange`,
             }, {
                 feature: {
                     "type": "Feature",
@@ -310,7 +310,7 @@ const tsUpdatedExposurePeruProperties: VectorLayerProperties = {
                 let g: number;
                 let b: number;
                 if (total === 0) {
-                    r = b = g = 0;
+                    r = b = g = 160;
                 } else {
                     [r, g, b] = greenRedRange(0, 0.6, dr);
                 }
@@ -465,7 +465,7 @@ const tsUpdatedExposurePeruProperties: VectorLayerProperties = {
 
                 const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 
-                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}{{StatesNotComparable}}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML} ${legend}{{StatesNotComparable}}`;
             },
             summary: (value: FeatureCollection | FeatureCollection[]) => {
                 let features;
@@ -535,7 +535,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
-        this.requiredProducts = [eqDamagePeruM, tsShakemapPeru, eqUpdatedExposureRefPeru].map(p => p.uid);
+        this.requiredProducts = [schemaPeru, eqDamagePeruM, tsShakemapPeru, eqUpdatedExposureRefPeru].map(p => p.uid);
         this.providedProducts = [tsDamagePeruM].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {

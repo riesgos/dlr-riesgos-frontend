@@ -39,7 +39,7 @@ export const shakemapPgaOutput: WpsData & WmsLayerProduct = {
         styles: ['shakemap-pga'],
         featureInfoRenderer: (fi: FeatureCollection) => {
             const html = `
-            <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
+            <p><b>{{ Ground_acceleration_PGA }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
             `;
             return html;
         },
@@ -60,7 +60,7 @@ export const shakemapSa03WmsOutput: WpsData & WmsLayerProduct = {
         styles: ['shakemap-pga'],
         featureInfoRenderer: (fi: FeatureCollection) => {
             const html = `
-            <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
+            <p><b>{{ Ground_acceleration_SA03 }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
             `;
             return html;
         },
@@ -81,7 +81,7 @@ export const shakemapSa10WmsOutput: WpsData & WmsLayerProduct = {
         styles: ['shakemap-pga'],
         featureInfoRenderer: (fi: FeatureCollection) => {
             const html = `
-            <p><b>{{ Ground_acceleration }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} m/s²</p>
+            <p><b>{{ Ground_acceleration_SA10 }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
             `;
             return html;
         },

@@ -298,7 +298,12 @@
     "USGSSlopeBasedTopographyProxy": "Proxy de topografía basado en pendientes de USGS",
     "FromSeismogeotechnicsMicrozonation": "De la microzonificación sismo-geotécnica",
     
-    "exposure_process_description": "Conjunto de datos de edificios y sus clases. Entrada necesaria para los siguientes pasos.",
+    "OpenMapStyles": "OpenStreetMap (OpenMapStyles)",
+    "OpenStreetMap": "OpenStreetMap (Estándar)",
+
+    "exposure_process_description": "La exposición se refiere a los edificios presentes en el área de estudio. El tiempo de cálculo de los servicios siguientes para la evaluación de daños varía según el modelo de exposición seleccionado.",
+    "exposure_process_description_peru": "La exposición se refiere a los edificios presentes en el área de estudio. El tiempo de cálculo de los servicios siguientes para la evaluación de daños varía según el modelo de exposición seleccionado (por ejemplo, hasta aproximadamente 20 minutos para el modelo de manzanas).",
+
     "warning_processing_time": "Tenga en cuenta que el tiempo de procesamiento en cualquier servicio posterior aumenta con modelos mayores de exposición.",
 
     "wd_max": "Profundidad de inundación",
@@ -363,12 +368,15 @@
 
     "shakemap": "Movimiento de tierra",
     
-    "vtiles_description": "EOC-Geoservice TMS-Service, Vector Tiles con OpenMapTiles y estilo <a href='https://openmaptiles.org/styles/#positron'>positron</a> ajustado.",
+    "vtiles_description": "Proporcionado por <a href='https://geoservice.dlr.de/web/'>EOC-Geoservice</a>, Vector Tiles con OpenMapTiles y estilo <a href='https://openmaptiles.org/styles/#positron'>positron</a> ajustado.",
 
     "Processes only": "Procesos",
     "Full view": "Vista completa",
     "Don't show this again": "No volver a mostrar",
 
+    "Prob. 0.1": "Probabilidad de interrupción: 0.1",
+    "Prob. 0.5": "Probabilidad de interrupción: 0.5",
+    "Prob. 0.9": "Probabilidad de interrupción: 0.9",
     "probability of range": "probabilidad de rango",
 
     "Deus Ashfall description": "Este servicio calcula el daño causado por un evento de caída de ceniza determinado.",
@@ -480,7 +488,7 @@
     "Complete_damage": "Daño completo",
     "Collapsed": "Colapsado",
     "Washed_away": "Devastado",
-    "Number of goods exposed to a threat": "Cantidad de bienes que están expuestos a un peligro",
+    "Number of goods exposed to a threat": "Cantidad de edificios residenciales que están expuestos a un peligro",
     "NumberGoodsInDamageState": "Cantidad de bienes en un estado de daño",
     "Ground_acceleration": "Aceleración del suelo",
     "acceleration": "Aceleración",
@@ -495,6 +503,16 @@
     "Magnitude 8, depth 40": "Mag. 8, profundidad 40",
 
     "Catalogue type": "Tipo de catalogo", 
+    "SUPPASRI2013_v2.0": "Suppasri et.al. 2013",
+    "Medina_2019": "Medina 2019",
+
+    
+    "PGA": "P.G.A.",
+    "SA(0.3)": "S.A.(0.3s)",
+    "SA(1.0)": "S.A.(1.0s)",
+    "Ground_acceleration_PGA": "Aceleración P.G.A.",
+    "Ground_acceleration_SA03": "Aceleración S.A.(0.3s)",
+    "Ground_acceleration_SA10": "Aceleración S.A.(1.0s)",
 
     "inundation 10 cm": "Inundación 10 cm",
     "inundation 30 cm": "Inundación 30 cm",

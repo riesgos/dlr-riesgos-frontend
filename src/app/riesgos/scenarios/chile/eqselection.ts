@@ -13,18 +13,31 @@ import Geometry from 'ol/geom/Geometry';
 
 
 
-export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct & WpsData = {
+export const userinputSelectedEq: FeatureSelectUconfProduct = {
     uid: 'eq_selectedRow',
     description: {
-        id: 'selectedRow',
-        title: 'selectedRow',
-        icon: 'earthquake',
         featureSelectionOptions: {},
         defaultValue: null,
+        wizardProperties: {
+            fieldtype: 'select',
+            name: 'SelectedEQ',
+            description: 'SelectEQ'
+        }
+    },
+    value: null
+};
+
+
+export const selectedEq: WpsData & VectorLayerProduct = {
+    uid: 'EqSelection_quakeMLFile',
+    description: {
+        id: 'quakeMLFile',
+        title: '',
+        name: 'Selected_earthquake',
+        icon: 'earthquake',
+        format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
-        format: 'application/vnd.geo+json',
-        name: 'Selected_earthquake',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 return new olStyle({
@@ -60,24 +73,6 @@ export const userinputSelectedEq: FeatureSelectUconfProduct & VectorLayerProduct
                 return text;
               }
         },
-        wizardProperties: {
-            fieldtype: 'select',
-            name: 'SelectedEQ',
-            description: 'SelectEQ'
-        }
-    },
-    value: null
-};
-
-
-export const selectedEq: WpsData & Product = {
-    uid: 'EqSelection_quakeMLFile',
-    description: {
-        id: 'quakeMLFile',
-        title: '',
-        format: 'application/vnd.geo+json',
-        reference: false,
-        type: 'complex'
     },
     value: null
 };
@@ -96,6 +91,10 @@ export const EqSelection: WizardableProcess & ExecutableProcess & ProductTransfo
         shape: 'earthquake'
     },
 
+    /**
+     * From all possible values in `userinputSelectedEq` the user selects one.
+     * We use this selection as the value for `selectedEq`.
+     */
     execute: (inputs: Product[]): Observable<Product[]> => {
         const eqVal = inputs.find(i => i.uid === userinputSelectedEq.uid).value;
         return of([{
@@ -104,11 +103,15 @@ export const EqSelection: WizardableProcess & ExecutableProcess & ProductTransfo
         }]);
     },
 
+    /**
+     * Wait for eq-catalogue to return its data (`selectedEqs`)
+     * Once they are available, use those values as selectable options for `userinputSelectedEq`
+     */
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch (newProduct.uid) {
 
             case selectedEqs.uid:
-                const options = {};
+                const options: {[key: string]: FeatureCollection} = {};
                 for (const feature of newProduct.value[0].features) {
                     options[feature.id] = featureCollection([feature]);
                 }

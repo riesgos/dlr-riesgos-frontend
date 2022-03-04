@@ -76,7 +76,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
         let g: number;
         let b: number;
         if (total === 0) {
-            r = b = g = 0;
+            r = b = g = 160;
         } else {
             [r, g, b] = greenRedRange(0, 1, dr);
         }
@@ -112,7 +112,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
 
         const anchor = document.createElement('div');
         const anchorUpdated = createBigBarChart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
-        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML} <br/> {{ BuildingTypesSara }}`;
+        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}  {{ BuildingTypesSara }}`;
       },
       legendEntries: [{
         feature: {
@@ -159,7 +159,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       [modelChoicePeru].map(p => p.uid),
       [initialExposurePeru, initialExposurePeruReference].map(p => p.uid),
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-      'exposure_process_description',
+      'exposure_process_description_peru',
       'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       httpClient,

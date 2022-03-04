@@ -148,7 +148,7 @@ export const transitionProps: VectorLayerProperties = {
             if (total > 0) {
                 [r, g, b] = yellowBlueRange(0, 1, weightedChange);
             } else {
-                r = g = b = 0;
+                r = b = g = 160;
             }
 
             return new olStyle({
@@ -174,7 +174,7 @@ export const transitionProps: VectorLayerProperties = {
                         [5.627918243408203, 50.963075942052164]]]
                 }
             },
-            text: `{{ SmallDamageChange }}`,
+            text: `SmallDamageChange`,
         }, {
             feature: {
                 "type": "Feature",
@@ -290,7 +290,7 @@ const updatedExposureProps: VectorLayerProperties = {
             let g: number;
             let b: number;
             if (total === 0) {
-                r = b = g = 0;
+                r = b = g = 160;
             } else {
                 [r, g, b] = greenRedRange(0, 0.6, dr);
             }
@@ -441,7 +441,7 @@ const updatedExposureProps: VectorLayerProperties = {
                     </ul>
                 `;
 
-            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}<br/>{{GroupsSimplified}}{{StatesNotComparable}}`;
+            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML} ${legend} {{GroupsSimplified}}{{StatesNotComparable}}`;
         },
         summary: (value: [FeatureCollection]) => {
             const counts = {

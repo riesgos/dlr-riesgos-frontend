@@ -13,18 +13,31 @@ import Geometry from 'ol/geom/Geometry';
 
 
 
-export const userinputSelectedEqPeru: FeatureSelectUconfProduct & VectorLayerProduct & WpsData = {
+export const userinputSelectedEqPeru: FeatureSelectUconfProduct = {
     uid: 'selectedRowPeru',
     description: {
-        id: 'selectedRow',
-        title: 'selectedRow',
-        icon: 'earthquake',
         featureSelectionOptions: {},
         defaultValue: null,
+        wizardProperties: {
+            fieldtype: 'select',
+            name: 'SelectedEQ',
+            description: 'SelectEQ'
+        }
+    },
+    value: null
+};
+
+
+export const selectedEqPeru: WpsData & VectorLayerProduct = {
+    uid: 'EqSelection_quakeMLFilePeru',
+    description: {
+        id: 'quakeMLFile',
+        title: '',
+        name: 'Selected_earthquake',
+        icon: 'earthquake',
+        format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
-        format: 'application/vnd.geo+json',
-        name: 'Selected_earthquake',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 return new olStyle({
@@ -60,24 +73,6 @@ export const userinputSelectedEqPeru: FeatureSelectUconfProduct & VectorLayerPro
                 return text;
               }
         },
-        wizardProperties: {
-            fieldtype: 'select',
-            name: 'SelectedEQ',
-            description: 'SelectEQ'
-        }
-    },
-    value: null
-};
-
-
-export const selectedEqPeru: WpsData & Product = {
-    uid: 'EqSelection_quakeMLFilePeru',
-    description: {
-        id: 'quakeMLFile',
-        title: '',
-        format: 'application/vnd.geo+json',
-        reference: false,
-        type: 'complex'
     },
     value: null
 };

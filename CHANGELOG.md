@@ -7,6 +7,7 @@
 ### Bug Fixes
 - **New version of Plotly.js:** Fixes bug where graph axes were not labeled.
 - **Flood damage:** Products were not highlighted when associated process is selected.
+- **Focus on selected earthquake:** Preliminarily selected earthquake is no longer a mappable-product. Only the finally selected one is. This way the right output product is highlighted in the layer-selection when a user focuses on the eq-selection step.
 
 ### Features
 - **Removed @dlr-eoc/services-util-storage:** Better build time, less optimization bailouts due to module formats CommonJS or AMD.

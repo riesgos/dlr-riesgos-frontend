@@ -234,7 +234,11 @@
     "LaharArrival_N_VEI3_wgs_s7200": "Reach 120 min",
     "LaharArrival_N_VEI3_wgs_s18000": "Reach 300 min",
 
-    "exposure_process_description": "Dataset of buildings and their classes. Required input for the following steps.",
+    "exposure_process_description": "Exposure refers to buildings present in the study area. The calculation time of the downstream service for the damage assessment varies depending on the selected exposure model.",
+    "exposure_process_description_peru": "Exposure refers to buildings present in the study area. The calculation time of the downstream service for the damage assessment varies depending on the selected exposure model (e.g. up to approx. 20 minutes for building blocks).",
+
+    "OpenMapStyles": "OpenStreetMap (OpenMapStyles)",
+    "OpenStreetMap": "OpenStreetMap (Default)",
 
     "Unavailable": "Downstream",
     "Available": "Ready",
@@ -372,7 +376,7 @@
     "AOI_selection": "selection of study area",
 
     "model": "Model",
-    "vtiles_description": "EOC-Geoservice TMS-Service, Vector Tiles with OpenMapTiles and customised <a href='https://openmaptiles.org/styles/#positron'>positron</a> Style.",
+    "vtiles_description": "Provided by <a href='https://geoservice.dlr.de/web/'>EOC-Geoservice</a>, Vector Tiles with OpenMapTiles and customized <a href='https://openmaptiles.org/styles/#positron'>positron</a> Style.",
 
     "flood_depth": "Flood depth",
     "Inundation_10_cm": "Inundation 10 cm",
@@ -380,6 +384,10 @@
     "Inundation_50_cm": "Inundation 50 cm",
     "probability_of_damage_state": "Damage state",
     "updated_exposure_flood": "Updated exposure (post-flood)",
+
+    "Prob. 0.1": "Probability of disruption: 0.1",
+    "Prob. 0.5": "Probability of disruption: 0.5",
+    "Prob. 0.9": "Probability of disruption: 0.9",
 
 
     "LimaCVT1_PD30_TI70_5000": "LimaCVT1 PD30 TI70 5000",

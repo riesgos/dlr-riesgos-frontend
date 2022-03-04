@@ -5,6 +5,7 @@ export interface IAlert {
   type: string | 'info';
   text: string;
   closeable: boolean;
+  closeAction?: () => void,
   actions?: { title: string, callback: () => void }[];
 }
 

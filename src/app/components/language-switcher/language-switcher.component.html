@@ -4,7 +4,7 @@
         <clr-icon shape="caret down"></clr-icon>
     </button>
     <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-        <a *ngFor="let lang of translator.getLangs()" (click)="setLanguage(lang)" 
-        [ngClass]="{'active': lang==translator.currentLang}" clrDropdownItem>{{lang}}</a>
+        <a *ngFor="let lang of translator.getLangs()" (click)="setLanguage(lang)"
+        [ngClass]="{'active': lang === translator.currentLang.getValue()}" clrDropdownItem>{{lang}}</a>
     </clr-dropdown-menu>
 </clr-dropdown>

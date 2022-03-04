@@ -146,7 +146,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
         let g: number;
         let b: number;
         if (total === 0) {
-          r = b = g = 0;
+          r = b = g = 160;
         } else {
           [r, g, b] = greenRedRange(0, 1, dr);
         }

@@ -28,17 +28,23 @@ export function greenYellowRedRange(startVal: number, endVal: number, currentVal
 
 
 export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-    let hue = linInterpolateXY(startVal, -30, endVal, 110, currentVal);
-    if (hue < 0) {hue = 360 + hue; }
-    const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
-    return [rgb.r, rgb.g, rgb.b];
+    // let hue = linInterpolateXY(startVal, -30, endVal, 110, currentVal);
+    // if (hue < 0) {hue = 360 + hue; }
+    // const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
+    // return [rgb.r, rgb.g, rgb.b];
+    const degree = (currentVal - startVal) / (endVal - startVal);
+    const rgb = scaleInterpolation(redGreenScale2, 1.0 - degree);
+    return rgb;
 }
 
 export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-    let hue = linInterpolateXY(startVal, 110, endVal, -30, currentVal);
-    if (hue < 0) {hue = 360 + hue; }
-    const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
-    return [rgb.r, rgb.g, rgb.b];
+    // let hue = linInterpolateXY(startVal, 110, endVal, -30, currentVal);
+    // if (hue < 0) {hue = 360 + hue; }
+    // const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
+    // return [rgb.r, rgb.g, rgb.b];
+    const degree = (currentVal - startVal) / (endVal - startVal);
+    const rgb = scaleInterpolation(redGreenScale2, degree);
+    return rgb;
 }
 
 export function yellowBlueRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
@@ -55,6 +61,22 @@ export const yellowBlueScale: Scale = {
   0.25: [237, 248, 177],
   0.50: [127, 205, 187],
   0.75: [44, 127, 184]
+};
+
+export const redGreenScale: Scale = {
+  0.1: [215, 25, 28],
+  0.3: [253, 174, 97],
+  0.5: [255, 255, 191],
+  0.7: [166, 217, 106],
+  0.9: [26, 150, 65],
+};
+
+export const redGreenScale2: Scale = {
+  0.1: [213, 62, 79],
+  0.3: [252, 141, 89],
+  0.5: [254, 224, 139],
+  0.7: [230, 245, 152],
+  0.9: [153, 213, 148],
 };
 
 export function scaleInterpolation(scale: Scale, value: number, smooth = true): [number, number, number] {

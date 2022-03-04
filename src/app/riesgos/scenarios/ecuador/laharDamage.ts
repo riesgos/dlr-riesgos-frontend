@@ -135,7 +135,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                 if (total > 0) {
                     [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
-                    r = g = b = 0;
+                    r = b = g = 160;
                 }
 
                 return new olStyle({
@@ -276,7 +276,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                 let g: number;
                 let b: number;
                 if (total === 0) {
-                    r = b = g = 0;
+                    r = b = g = 160;
                 } else {
                     [r, g, b] = greenRedRange(0, 0.6, dr);
                 }

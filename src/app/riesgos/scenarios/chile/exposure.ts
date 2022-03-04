@@ -20,7 +20,6 @@ export const modelChoice: WpsData & StringSelectUserConfigurableProduct = {
           fieldtype: 'stringselect',
           name: 'model',
           description: 'exposure model',
-          signpost: 'Please note that the model GFZ 2020 may not yet be fully integrated.'
       },
       id: 'model',
       reference: false,
@@ -68,7 +67,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
         let g: number;
         let b: number;
         if (total === 0) {
-            r = b = g = 0;
+            r = b = g = 160;
         } else {
             [r, g, b] = greenRedRange(0, 1, dr);
         }

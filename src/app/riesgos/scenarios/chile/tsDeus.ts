@@ -163,7 +163,7 @@ const tsTransitionProps: VectorLayerProperties = {
                 if (total > 0) {
                     [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
-                    r = g = b = 0;
+                    r = b = g = 160;
                 }
 
                 return new olStyle({
@@ -189,7 +189,7 @@ const tsTransitionProps: VectorLayerProperties = {
                             [5.627918243408203, 50.963075942052164]]]
                     }
                 },
-                text: `{{ SmallDamageChange }}`,
+                text: `SmallDamageChange`,
             }, {
                 feature: {
                     "type": "Feature",
@@ -313,7 +313,7 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
                 let g: number;
                 let b: number;
                 if (total === 0) {
-                    r = b = g = 0;
+                    r = b = g = 160;
                 } else {
                     [r, g, b] = greenRedRange(0, 0.6, dr);
                 }

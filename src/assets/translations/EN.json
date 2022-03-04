@@ -314,7 +314,17 @@
     "Total_loss": "Total loss",
     "laharLoss": "Lahar loss",
     "Lahar_and_Ashfall_Loss": "Lahar and ashfall loss",
-    "NumberGoodsInDamageState": "Number of goods per damage state",
+    "NumberGoodsInDamageState": "Number of residential buildings per damage state",
+
+    "SUPPASRI2013_v2.0": "Suppasri et.al. 2013",
+    "Medina_2019": "Medina 2019",
+
+    "PGA": "P.G.A.",
+    "SA(0.3)": "S.A.(0.3s)",
+    "SA(1.0)": "S.A.(1.0s)",
+    "Ground_acceleration_PGA": "Acceleration P.G.A.",
+    "Ground_acceleration_SA03": "Acceleration S.A.(0.3s)",
+    "Ground_acceleration_SA10": "Acceleration S.A.(1.0s)",
 
     "taxonomy_DX": "Taxonomy/damage class",
     "nr_buildings": "# buildings",

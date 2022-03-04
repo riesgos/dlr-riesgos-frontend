@@ -26,7 +26,7 @@ export class DisclaimerComponent implements OnInit, OnDestroy {
     }
   }
   ngOnDestroy(): void {
-    if(this.onLangChange){
+    if (this.onLangChange) {
       this.onLangChange.unsubscribe();
     }
   }
@@ -42,17 +42,19 @@ export class DisclaimerComponent implements OnInit, OnDestroy {
   }
 
   toggleAlert() {
+    if (this.onLangChange) {
+      this.onLangChange.unsubscribe();
+    }
+
     if (!this.isExpanded) {
       this.setAlert();
 
       this.onLangChange = this.translate.onLangChange.subscribe(() => {
-        console.log('change')
-        this.setAlert();
+        if (this.isExpanded) {
+          this.setAlert();
+        }
       });
     } else {
-      if(this.onLangChange){
-        this.onLangChange.unsubscribe();
-      }
       this.alertService.alert(null);
       this.isExpanded = false;
     }

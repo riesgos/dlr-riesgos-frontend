@@ -146,6 +146,7 @@ export class LayerMarshaller  {
                         layers[0].name = 'SA(1.0)';
                         break;
                 }
+                layers[0].legendImg = 'assets/images/shakemap_pga_legend_labeled.svg';
                 return layers;
             }));
         }

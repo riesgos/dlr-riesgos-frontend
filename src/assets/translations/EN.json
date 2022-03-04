@@ -170,10 +170,10 @@
 
     "gmpe": "Ground motion prediction equation",
     "vsgrid": "Shear-wave velocity grid",
-    "MontalvaEtAl2016SInter": "Montalva et al. 2016 SInter",
-    "GhofraniAtkinson2014": "Ghofrani Atkinson 2014",
-    "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015 SInter",
-    "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997 SInter NSHMP 2008",
+    "MontalvaEtAl2016SInter": "Montalva et al. 2016",
+    "GhofraniAtkinson2014": "Ghofrani & Atkinson 2014",
+    "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015",
+    "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997",
 
     "warning_processing_time": "Please note that the processing time in any downstream services increases with larger exposure models.",
 
@@ -333,6 +333,7 @@
     "taxonomy_DX": "Taxonomy/damage class",
     "nr_buildings": "# buildings",
     "damage_classification": "Damage classification",
+    "damage_classification_tsunami": "Damage classification in terms of tsunami-schema",
 
     "TsShortDescription": "Simulates a tsunami based on the earlier selected earthquake parameters.",
     "CivilService": "Points of interest",

@@ -228,7 +228,7 @@ const tsTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
+                            labeledMatrix[r][c] = Math.round(matrix[r-1][c-1]);
                         }
                     }
                 }
@@ -265,7 +265,7 @@ const tsTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] =  { value: `${r - 1}`, style: {'font-weight': 'bold'}};
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] =  { value: toDecimalPlaces(matrix[r-1][c-1], 0) };
+                            labeledMatrix[r][c] =  { value: Math.round(matrix[r-1][c-1]) };
                         }
                     }
                 }
@@ -468,7 +468,7 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
 
                 const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 
-                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML} ${legend}{{StatesNotComparable}}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ damage_classification_tsunami }}</h4>${anchor.innerHTML} ${legend}{{StatesNotComparable}}`;
             },
             summary: (value: FeatureCollection | FeatureCollection[]) => {
                 let features;

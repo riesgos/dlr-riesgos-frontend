@@ -117,12 +117,12 @@
     "Powerlines": "Líneas eléctricas",
     "Hillshade": "Sombreado",
     "TS-Service": "Simulación de tsunami",
-    "gmpe": "Ecuación de predicción del movimiento del suelo",
+    "gmpe": "Ecuación de predicción de aceleración sísmica",
     "vsgrid": "Cuadrícula de velocidad de onda de corte",
-    "MontalvaEtAl2016SInter": "Montalva et al. 2016 SInter",
-    "GhofraniAtkinson2014": "Ghofrani Atkinson 2014",
-    "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015 SInter",
-    "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997 SInter NSHMP 2008",
+    "MontalvaEtAl2016SInter": "Montalva et al. 2016",
+    "GhofraniAtkinson2014": "Ghofrani & Atkinson 2014",
+    "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015",
+    "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997",
     
     "Exposure": "Exposición",
     "eq-exposure": "Exposición y daños por terremoto",
@@ -295,8 +295,8 @@
     "deaggregation": "desagregación",
     "stochastic": "estocástico",
 
-    "USGSSlopeBasedTopographyProxy": "Proxy de topografía basado en pendientes de USGS",
-    "FromSeismogeotechnicsMicrozonation": "De la microzonificación sismo-geotécnica",
+    "USGSSlopeBasedTopographyProxy": "Modelo basado en pendientes topográficas del USGS",
+    "FromSeismogeotechnicsMicrozonation": "Basado en la microzonificación sismo-geotécnico de Mendonza et.al. 2018",
     
     "OpenMapStyles": "OpenStreetMap (OpenMapStyles)",
     "OpenStreetMap": "OpenStreetMap (Estándar)",
@@ -532,6 +532,7 @@
     "taxonomy_DX": "Taxonomía/clase de daño",
     "nr_buildings": "# edificios",
     "damage_classification": "Clasificación de daños",
+    "damage_classification_tsunami": "Clasificación de daños en terminos del esquema de tsunami",
 
     "UnavailableStateDescription": "Este servicio aún no se puede ejecutar porque primero se debe ejecutar otro servicio.",
     "AvailableStateDescription": "Este servicio está listo para ejecutarse.",

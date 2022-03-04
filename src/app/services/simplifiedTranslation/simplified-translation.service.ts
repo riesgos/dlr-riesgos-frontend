@@ -12,7 +12,7 @@ export type RiesgosLang = 'EN' | 'ES';
 })
 export class SimplifiedTranslationService {
 
-  private currentLang: BehaviorSubject<RiesgosLang> = new BehaviorSubject('ES');
+  public currentLang: BehaviorSubject<RiesgosLang> = new BehaviorSubject('ES');
   private dictEn: any;
   private dictEs: any;
 

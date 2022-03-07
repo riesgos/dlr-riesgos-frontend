@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { MapOlModule } from '@dlr-eoc/map-ol';
+import { CoreUiModule } from '@dlr-eoc/core-ui';
 import { LayersModule } from '@dlr-eoc/services-layers';
 import { Ng5SliderModule } from 'ng5-slider';
 
@@ -57,7 +58,6 @@ import { PrintComponent } from './components/print/print.component';
 import { PrintMapComponent } from './components/print/print-map/print-map.component';
 import { ScalerComponent } from './components/scaler/scaler.component';
 import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
-import { DynamicComponentComponent, ViewRefDirective } from './components/dynamic-component/dynamic-component.component';
 import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
 import { HelperButtonsComponent } from './components/helperButtons/helper-buttons.component';
 
@@ -143,8 +143,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     PrintMapComponent,
     ScalerComponent,
     GroupSliderComponent,
-    DynamicComponentComponent,
-    ViewRefDirective,
     InfoTableComponentComponent,
     TranslatableStringComponent,
     VerticalNavResizeComponent,
@@ -153,6 +151,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   imports: [
     BrowserModule,
     UkisRoutingModule,
+    CoreUiModule,
     MapOlModule,
     LayersModule,
     ClarityModule,

@@ -72,6 +72,16 @@
 
     "Physical Impact": "Impacto físico",
 
+    "peru_administrative": "Capas administrativas",
+    "peru_distritos": "Distritos",
+    "peru_departamentos": "Departamentos",
+    "NOMBDIST": "Distrito",
+    "NOMBPROV": "Provinia",
+    "NOMBDEP": "Departamento",
+    "DCTO": "DCTO",
+    "FECHA": "Fecha",
+    "NOM_CAP": "Capital",
+
     "Layer control": "Control de las capas",
     "Results": "Resultados",
     "AdditionalLayers": "Capas adicionales",

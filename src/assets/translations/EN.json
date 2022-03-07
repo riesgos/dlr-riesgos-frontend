@@ -330,6 +330,16 @@
     "Ground_acceleration_SA03": "Acceleration S.A.(0.3s)",
     "Ground_acceleration_SA10": "Acceleration S.A.(1.0s)",
 
+    "peru_administrative": "Administrative layers",
+    "peru_distritos": "Districts",
+    "peru_departamentos": "Departments",
+    "NOMBDIST": "District",
+    "NOMBPROV": "Province",
+    "NOMBDEP": "Department",
+    "DCTO": "DCTO",
+    "FECHA": "Date",
+    "NOM_CAP": "Capital",
+
     "taxonomy_DX": "Taxonomy/damage class",
     "nr_buildings": "# buildings",
     "damage_classification": "Damage classification",

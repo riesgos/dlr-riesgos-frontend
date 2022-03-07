@@ -10,7 +10,7 @@ import { DragBox, Select } from 'ol/interaction';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
 import { GeoJSON, KML, MVT } from 'ol/format';
-import { get as getProjection } from 'ol/proj';
+import { get as getProjection, METERS_PER_UNIT } from 'ol/proj';
 import Feature from 'ol/Feature';
 import olLayer from 'ol/layer/Layer';
 import { click, noModifierKeys } from 'ol/events/condition';
@@ -21,7 +21,7 @@ import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@dlr-eoc/services-layers';
 import { WpsBboxValue } from 'src/app/services/wps';
 
 import { State } from 'src/app/ngrx_register';
@@ -37,6 +37,7 @@ import Geometry from 'ol/geom/Geometry';
 import { SelectEvent } from 'ol/interaction/Select';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { VectorTile } from 'ol/source';
+import { createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
 
 const mapProjection = 'EPSG:3857';
 
@@ -416,6 +417,52 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (scenario === 'p1') {
+
+            const peruDistritos = new VectorLayer({
+                id: 'peru_distritos',
+                name: 'peru_distritos',
+                type: 'geojson',
+                url: 'assets/data/geojson/peru_distritos.geojson',
+                visible: false,
+                popup: {
+                    popupFunction: (props) => {
+                        const keys = [ 'NOMBDIST', 'NOMBPROV', 'NOMBDEP', 'NOM_CAP'];
+                        const rows = [];
+                        for (const key of keys) {
+                            rows.push(['{{ ' + key + ' }}', props[key]]);
+                        }
+                        return  this.translator.syncTranslate(createTableHtml(rows));
+                    }
+                },
+                attribution: '<a href="https://www.gob.pe/idep">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/">Geoservidor MINAM</a>',
+                description: '<a href="https://www.gob.pe/idep">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/">Geoservidor MINAM</a>',
+            });
+            const peruDepartamentos = new VectorLayer({
+                id: 'peru_departamentos',
+                name: 'peru_departamentos',
+                type: 'geojson',
+                url: 'assets/data/geojson/peru_departamentos.geojson',
+                visible: false,
+                popup: {
+                    popupFunction: (props) => {
+                        const keys = ['NOMBDEP'];
+                        const rows = [];
+                        for (const key of keys) {
+                            rows.push(['{{ ' + key + ' }}', props[key]]);
+                        }
+                        return  this.translator.syncTranslate(createTableHtml(rows));
+                    }
+                },
+                attribution: '<a href="https://www.gob.pe/idep">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/">Geoservidor MINAM</a>',
+                description: '<a href="https://www.gob.pe/idep">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/">Geoservidor MINAM</a>',
+            });
+            const peruAdministrative = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'peru_administrative',
+                layers: [peruDepartamentos, peruDistritos],
+                name: 'peru_administrative'
+            });
+            layers.push(peruAdministrative);
         }
 
         if (scenario === 'e1') {

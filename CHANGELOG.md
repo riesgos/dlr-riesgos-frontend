@@ -16,6 +16,7 @@
 - **Added vector-tile base-map:** Allows individually styling background layer. Adjusts to dark-mode.
 - **Spectral acceleration data:** Now also displayed as another output of the ground-motion-service.
 - **Colors:** updated color scales to be less saturated.
+- **Administrative layers Peru**
 
 ### Breaking Changes
 - **xyz:**

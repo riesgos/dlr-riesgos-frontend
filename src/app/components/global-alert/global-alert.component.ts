@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { IAlert } from './alert.service';
 
 @Component({
-  selector: 'ukis-global-alert',
+  selector: 'app-global-alert',
   templateUrl: './global-alert.component.html',
   styleUrls: ['./global-alert.component.scss']
 })

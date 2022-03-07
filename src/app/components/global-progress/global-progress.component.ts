@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { IProgress } from './progress.service';
 
 @Component({
-  selector: 'ukis-global-progress',
+  selector: 'app-global-progress',
   templateUrl: './global-progress.component.html',
   styleUrls: ['./global-progress.component.scss']
 })

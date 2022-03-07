@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect, createEffect } from '@ngrx/effects';
 import { RiesgosActions, ERiesgosActionTypes, ProductsProvided, ScenarioChosen,
-        ClickRunProcess, RiesgosDataUpdate, RestartingFromProcess, RestaringScenario, MetadataProvided } from './riesgos.actions';
+        ClickRunProcess, RiesgosDataUpdate, RestartingFromProcess, RestartingScenario, MetadataProvided } from './riesgos.actions';
 import { map, switchMap, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { Store, Action } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -33,15 +33,15 @@ export class RiesgosEffects {
     restartingScenario$ = createEffect(() => {
         return this.actions$.pipe(
             ofType<RiesgosActions>(ERiesgosActionTypes.restartingScenario),
-            switchMap((action: RestaringScenario) => {
-    
+            switchMap((action: RestartingScenario) => {
+
                 const [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
-    
+
                 this.wfc = new WorkflowControl(procs, prods, this.errorParser);
                 const processes = this.wfc.getImmutableProcesses();
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
-    
+
                 const actions: Action[] = [
                     new RiesgosDataUpdate({processes, products, graph}),
                     new NewProcessClicked({processId: null})
@@ -49,7 +49,7 @@ export class RiesgosEffects {
                 return actions;
             })
         );
-    
+
     });
 
 

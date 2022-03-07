@@ -11,33 +11,28 @@ import Geometry from 'ol/geom/Geometry';
 
 
 
-export class InputBoundingboxPeru implements BboxUserConfigurableProduct, BboxLayerProduct, WpsData {
-    description: BboxUserConfigurableProductDescription & BboxLayerDescription & WpsDataDescription;
-    value: WpsBboxValue;
-    uid = 'input-boundingbox_peru';
-
-    constructor() {
-        this.description = {
-            id: 'input-boundingbox',
-            title: '',
-            icon: 'earthquake',
-            name: 'eq-selection: boundingbox',
-            type: 'bbox',
-            reference: false,
-            defaultValue: {
-                crs: 'EPSG:4326',
-                lllon: -86.5, lllat: -20.5,
-                urlon: -68.5, urlat: -0.6
-            },
-            wizardProperties: {
-                name: 'AOI',
-                fieldtype: 'bbox',
-                description: 'AOI_selection',
-            },
+export const InputBoundingboxPeru: BboxUserConfigurableProduct & BboxLayerProduct & WpsData = {
+    uid: 'input-boundingbox_peru',
+    description: {
+        id: 'input-boundingbox',
+        title: '',
+        icon: 'earthquake',
+        name: 'eq-selection: boundingbox',
+        type: 'bbox',
+        reference: false,
+        defaultValue: {
+            crs: 'EPSG:4326',
+            lllon: -86.5, lllat: -20.5,
+            urlon: -68.5, urlat: -0.6
         },
-        this.value = null;
-    }
-}
+        wizardProperties: {
+            name: 'AOI',
+            fieldtype: 'bbox',
+            description: 'AOI_selection',
+        },
+    },
+    value: null
+};
 
 
 export const etypePeru = {

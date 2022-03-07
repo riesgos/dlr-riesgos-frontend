@@ -13,33 +13,29 @@ import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 
 
-export class InputBoundingbox implements BboxUserConfigurableProduct, BboxLayerProduct, WpsData {
-    description: BboxUserConfigurableProductDescription & BboxLayerDescription & WpsDataDescription;
-    value: WpsBboxValue;
-    uid = 'input-boundingbox';
-
-    constructor() {
-        this.description = {
-            id: 'input-boundingbox',
-            title: '',
-            name: 'eq-selection: boundingbox',
-            type: 'bbox',
-            icon: 'earthquake',
-            reference: false,
-            defaultValue: {
-                crs: 'EPSG:4326',
-                lllon: -73.5, lllat: -34,
-                urlon: -70.5, urlat: -29.0
-            },
-            wizardProperties: {
-                name: 'AOI',
-                fieldtype: 'bbox',
-                description: 'AOI_selection',
-            },
+export const InputBoundingbox: BboxUserConfigurableProduct & BboxLayerProduct & WpsData = {
+    uid: 'input-boundingbox',
+    description: {
+        id: 'input-boundingbox',
+        title: '',
+        name: 'eq-selection: boundingbox',
+        type: 'bbox',
+        icon: 'earthquake',
+        reference: false,
+        defaultValue: {
+            crs: 'EPSG:4326',
+            lllon: -73.5, lllat: -34,
+            urlon: -70.5, urlat: -29.0
         },
-        this.value = null;
-    }
-}
+        wizardProperties: {
+            name: 'AOI',
+            fieldtype: 'bbox',
+            description: 'AOI_selection',
+        },
+    },
+    value: null
+};
+
 
 export const mmin: StringUserConfigurableProduct & WpsData = {
     uid: 'mmin',

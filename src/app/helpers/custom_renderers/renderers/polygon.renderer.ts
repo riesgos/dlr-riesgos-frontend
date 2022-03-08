@@ -1,5 +1,5 @@
 import { ElementsBundle, Program, Index, AttributeData, Context, UniformData } from '../engine/engine.core';
-import { setup3dScene } from '../engine/webgl';
+import { getCurrentFramebuffersPixel, getCurrentFramebuffersPixels, setup3dScene } from '../engine/webgl';
 import earcut from 'earcut';
 
 import { Feature } from 'ol';
@@ -13,7 +13,16 @@ import { Options } from 'ol/layer/BaseVector';
 import { Pixel } from 'ol/pixel';
 import { Coordinate } from 'ol/coordinate';
 import VectorSource from 'ol/source/Vector';
+import { containsXY } from 'ol/extent';
 
+
+function apply(transform, coordinate) {
+    const x = coordinate[0];
+    const y = coordinate[1];
+    coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
+    coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
+    return coordinate;
+  }
 
 export interface PolygonRendererData {
     coords: AttributeData;
@@ -100,6 +109,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
     lineShader: ElementsBundle;
     context: Context;
     canvas: HTMLCanvasElement;
+    bbox: number[];
 
     constructor(layer: VectorLayer<VectorSource<Polygon>>, colorFunc: (f: Feature<Polygon>) => number[], data?: PolygonRendererData) {
         super(layer);
@@ -107,6 +117,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         if (!data) {
             const features = layer.getSource().getFeatures();
             data = parseFeaturesToRendererData(features, colorFunc);
+            this.bbox = layer.getSource().getExtent();
         }
 
 
@@ -118,7 +129,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         canvas.style.setProperty('top', '0px');
         canvas.style.setProperty('width', '100%');
         canvas.style.setProperty('height', '100%');
-        const context = new Context(canvas.getContext('webgl2') as WebGL2RenderingContext);
+        const context = new Context(canvas.getContext('webgl2', {preserveDrawingBuffer: true}) as WebGL2RenderingContext);
 
 
         const polyShader = new ElementsBundle(new Program(`#version 300 es
@@ -211,12 +222,39 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
      * @param pixel Pixel.
      * @param frameState FrameState.
      * @param hitTolerance Hit tolerance in pixels.
-     * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
+     * @return {Uint8ClampedArray|Uint8Array|} The result.  If there is no data at the pixel
      *    location, null will be returned.  If there is data, but pixel values cannot be
      *    returned, and empty array will be returned.
      */
     getDataAtPixel(pixel: Pixel, frameState: FrameState, hitTolerance: number) {
-        return new Uint8Array([Math.random(), Math.random(), Math.random(), Math.random()]);
+        const coordinate = apply(
+            frameState.pixelToCoordinateTransform,
+            pixel.slice()
+        );
+        if (!containsXY(this.bbox, coordinate[0], coordinate[1])) {
+            return null;
+        }
+
+        // const source = this.getLayer().getSource();
+        // const features = source.getFeaturesAtCoordinate(coordinate);
+        // if (features.length) {
+        //     return new Uint8Array([255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255 * Math.random()]);
+        // }
+        // return null;
+
+        const viewBox = frameState.extent;
+        const fractionX = (coordinate[0] - viewBox[0]) / (viewBox[2] - viewBox[0]);
+        const fractionY = (coordinate[1] - viewBox[1]) / (viewBox[3] - viewBox[1]);
+        const pixelX = this.canvas.width * fractionX;
+        const pixelY = this.canvas.height * fractionY;
+        const x = Math.round(pixelX);
+        const y = Math.round(pixelY);
+
+        const rawData = getCurrentFramebuffersPixel(this.canvas, [x, y]) as Uint8Array;
+        if (rawData[3] > 0) {
+            return rawData;
+        }
+        return null;
     }
 
     /**
@@ -234,6 +272,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         for (const feature of features) {
             return callback(feature, layer);
         }
+        return undefined;
     }
 }
 

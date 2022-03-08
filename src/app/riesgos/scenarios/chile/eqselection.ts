@@ -10,6 +10,7 @@ import { selectedEqs } from './quakeledger';
 import { FeatureCollection, featureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import Geometry from 'ol/geom/Geometry';
+import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 
 
 
@@ -71,7 +72,26 @@ export const selectedEq: WpsData & VectorLayerProduct = {
                 }
                 text += '</tbody></table>';
                 return text;
-              }
+              },
+              summary: (value) => {
+                const feature = value.features[0];
+                const properties = feature.properties;
+                const magnitude = toDecimalPlaces(properties['magnitude.mag.value'] as number, 1);
+                const depth = toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km';
+                const id = properties['origin.publicID'];
+
+                return {
+                    component: InfoTableComponentComponent,
+                    inputs: {
+                        title: 'Selected earthquake',
+                        data: [
+                            [{ value: 'Id'}, { value: id }],
+                            [{ value: 'Magnitude'}, { value: magnitude }],
+                            [{ value: 'Depth'}, { value: depth }],
+                        ]
+                    }
+                };
+            }
         },
     },
     value: null
@@ -113,7 +133,8 @@ export const EqSelection: WizardableProcess & ExecutableProcess & ProductTransfo
             case selectedEqs.uid:
                 const options: {[key: string]: FeatureCollection} = {};
                 for (const feature of newProduct.value[0].features) {
-                    options[feature.id] = featureCollection([feature]);
+                    const key = getEqKey(feature);
+                    options[key] = featureCollection([feature]);
                 }
 
                 userinputSelectedEq.description.featureSelectionOptions = options;
@@ -126,3 +147,8 @@ export const EqSelection: WizardableProcess & ExecutableProcess & ProductTransfo
         }
     }
 };
+
+function getEqKey(feature) {
+    const key = `Mag. ${feature.properties['magnitude.mag.value']} / ID ${feature.id}`;
+    return key;
+}

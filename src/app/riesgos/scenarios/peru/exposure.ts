@@ -145,7 +145,7 @@ export const initialExposurePeruReference: WpsData & Product = {
     format: 'application/json',
   },
   value: null
-}
+};
 
 
 export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
@@ -175,7 +175,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
   }
 
   execute(inputs: Product[], outputs: Product[], doWhileExecuting): Observable<Product[]> {
-    
+
     const lonminPeru: Product & WpsData = {
       uid: 'lonmin',
       description: {
@@ -187,7 +187,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       },
       value: '-88'
     };
-    
+
     const lonmaxPeru: Product & WpsData = {
       uid: 'lonmax',
       description: {
@@ -199,7 +199,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       },
       value: '-66'
     };
-    
+
     const latminPeru: Product & WpsData = {
       uid: 'latmin',
       description: {
@@ -211,7 +211,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       },
       value:  '-21'
     };
-    
+
     const latmaxPeru: Product & WpsData = {
       uid: 'latmax',
       description: {
@@ -223,7 +223,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       },
       value: '-0'
     };
-    
+
     const schemaPeru: Product & WpsData = {
       uid: 'schema',
       description: {
@@ -235,7 +235,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       },
       value: 'SARA_v1.0'
     };
-    
+
     const assettypePeru: Product & WpsData = {
       uid: 'assettype',
       description: {
@@ -247,7 +247,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       },
       value: 'res'
     };
-    
+
     const querymodePeru: Product & WpsData = {
       uid: 'querymode',
       description: {

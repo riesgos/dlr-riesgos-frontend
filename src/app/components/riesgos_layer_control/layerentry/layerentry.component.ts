@@ -162,14 +162,21 @@ export class RiesgosLayerentryComponent implements OnInit {
     if (!this.layersSvc) {
       console.error('you need to provide a layersService!');
     }
-    if (!this.layer.legendImg) {
+    if (!this.layer.legendImg && this.layer.description) {
       this.activeTabs.description = true;
       this.activeTabs.legend = false;
       this.activeTabs.settings = false;
       this.activeTabs.changeStyle = false;
     }
 
-    if (!this.layer.legendImg && !this.layer.description) {
+    if (!this.layer.legendImg && !this.layer.description && this.layer.dynamicDescription) {
+      this.activeTabs.dynamicDescription = true;
+      this.activeTabs.description = false;
+      this.activeTabs.legend = false;
+      this.activeTabs.settings = false;
+    }
+
+    if (!this.layer.legendImg && !this.layer.description && !this.layer.dynamicDescription) {
       this.activeTabs.description = false;
       this.activeTabs.legend = false;
       this.activeTabs.settings = true;

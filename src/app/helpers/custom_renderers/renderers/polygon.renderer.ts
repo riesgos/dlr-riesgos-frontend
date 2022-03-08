@@ -13,7 +13,7 @@ import { Options } from 'ol/layer/BaseVector';
 import { Pixel } from 'ol/pixel';
 import { Coordinate } from 'ol/coordinate';
 import VectorSource from 'ol/source/Vector';
-import { applyTransform } from 'ol/extent';
+import { containsXY } from 'ol/extent';
 
 
 function apply(transform, coordinate) {
@@ -109,6 +109,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
     lineShader: ElementsBundle;
     context: Context;
     canvas: HTMLCanvasElement;
+    bbox: number[];
 
     constructor(layer: VectorLayer<VectorSource<Polygon>>, colorFunc: (f: Feature<Polygon>) => number[], data?: PolygonRendererData) {
         super(layer);
@@ -116,6 +117,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         if (!data) {
             const features = layer.getSource().getFeatures();
             data = parseFeaturesToRendererData(features, colorFunc);
+            this.bbox = layer.getSource().getExtent();
         }
 
 
@@ -225,19 +227,37 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
      *    returned, and empty array will be returned.
      */
     getDataAtPixel(pixel: Pixel, frameState: FrameState, hitTolerance: number) {
-        const renderPixel = apply(
-            [frameState.pixelRatio, 0, 0, frameState.pixelRatio, 0, 0],
+        const coordinate = apply(
+            frameState.pixelToCoordinateTransform,
             pixel.slice()
         );
-        const x = Math.round(renderPixel[0]);
-        const y = Math.round(renderPixel[1]);
-
-        const rawData = getCurrentFramebuffersPixel(this.canvas, [x, y]) as Uint8Array;
-        if (rawData[3] > 0) {
-            return rawData;
-        } else {
+        if (!containsXY(this.bbox, coordinate[0], coordinate[1])) {
             return null;
         }
+
+        const source = this.getLayer().getSource();
+        const features = source.getFeaturesAtCoordinate(coordinate);
+        if (features.length) {
+            return new Uint8Array([255 * Math.random(), 255 * Math.random(), 255 * Math.random(), 255 * Math.random()]);
+        }
+        return null;
+
+        // The below method does not work well,
+        // probably because the preserved drawing buffer contains the *line* data, not the polygon-data.
+        
+        // const fractionX = (coordinate[0] - this.bbox[0]) / (this.bbox[2] - this.bbox[0]);
+        // const fractionY = (coordinate[1] - this.bbox[1]) / (this.bbox[3] - this.bbox[1]);
+        // const pixelX = this.canvas.width * fractionX;
+        // const pixelY = this.canvas.height * fractionY;
+        // const x = Math.round(pixelX);
+        // const y = Math.round(pixelY);
+
+        // const rawData = getCurrentFramebuffersPixel(this.canvas, [x, y]) as Uint8Array;
+        // console.log(pixel, [x, y], rawData)
+        // if (rawData[3] > 0) {
+        //     return rawData;
+        // }
+        // return null;
     }
 
     /**

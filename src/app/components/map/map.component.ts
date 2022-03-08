@@ -289,7 +289,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private shouldLayerExpand(layer: ProductLayer) {
       if (layer.hasFocus) {
-        if (layer.legendImg || layer.description) {
+        if (layer.legendImg || layer.description || layer.dynamicDescription) {
           layer.expanded = true;
         }
       } else {

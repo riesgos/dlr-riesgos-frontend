@@ -36,9 +36,9 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
   description: {
     id: 'selectedRowsGeoJson',
     title: '',
+    icon: 'building',
     type: 'complex',
     reference: false,
-    icon: 'building',
     format: 'application/json',
     name: 'Exposure',
     vectorLayerAttributes: {
@@ -103,7 +103,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
 
         const anchor = document.createElement('div');
         const anchorUpdated = createBigBarChart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
-        return `<h4>{{ Exposure }}</h4>${anchor.outerHTML}  {{ BuildingTypesSara }}`;
+        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}  {{ BuildingTypesSara }}`;
       },
       legendEntries: [{
         feature: {
@@ -120,7 +120,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
           }
         },
         text: `exposureLegend`
-      }]
+      }],
     }
   },
   value: null
@@ -130,9 +130,9 @@ export const initialExposureRef: WpsData & Product = {
   uid: 'initial_Exposure_Ref',
   description: {
     id: 'selectedRowsGeoJson',
+    reference: true,
     title: '',
     type: 'complex',
-    reference: true
   },
   value: null
 };

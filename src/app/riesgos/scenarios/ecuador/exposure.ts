@@ -8,7 +8,7 @@ import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
-import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
+import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import Geometry from 'ol/geom/Geometry';
 

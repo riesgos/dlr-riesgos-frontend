@@ -1,28 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { environment } from 'src/environments/environment';
+import { Component } from '@angular/core';
+import { DisclaimerService } from './disclaimer.service';
 
 @Component({
-  selector: 'ukis-disclaimer',
+  selector: 'app-disclaimer',
   templateUrl: './disclaimer.component.html',
   styleUrls: ['./disclaimer.component.scss']
 })
-export class DisclaimerComponent implements OnInit {
+export class DisclaimerComponent {
 
+  constructor(public disclaimerSvc: DisclaimerService) {
 
-  public isExpanded: boolean;
-
-  constructor(private route: ActivatedRoute) {
-    this.isExpanded = environment.production ? true : false;
   }
 
-  ngOnInit() {
-    // this.route.queryParams.subscribe((data) => {
-    //   if (data['id']) {
-    //     this.isExpanded = true;
-    //   } else {
-    //     this.isExpanded = false;
-    //   }
-    // });
+  close() {
+    this.disclaimerSvc.alertClosed = true;
+    /* this.alertClosed = true;
+    this.alertClosedChange.emit(true); */
   }
 }

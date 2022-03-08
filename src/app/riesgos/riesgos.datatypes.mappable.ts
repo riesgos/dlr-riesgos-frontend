@@ -5,7 +5,7 @@ import { FeatureCollection } from '@turf/helpers';
 import Feature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 import { LegendElement } from '../components/dynamic/vector-legend/vector-legend.component';
-import { IDynamicComponent } from '../components/dynamic-component/dynamic-component.component';
+import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import GeometryCollection from 'ol/geom/GeometryCollection';
 
 

@@ -1,0 +1,13 @@
+<!-- <clr-alert *ngIf="!alertClosed" class="disclaimer-alert" [(clrAlertClosed)]="alertClosed">
+  <clr-alert-item>
+    <div class="alert-text" title="{{ 'This is a demonstrator!' | translate }}">{{ 'This is a demonstrator!' | translate }}</div>
+  </clr-alert-item>
+</clr-alert> -->
+
+<!-- <button *ngIf="alertClosed" (click)="toggleAlert()" class="btn btn-icon btn-link">
+  <clr-icon shape="info" class="is-highlight" size="24"></clr-icon>
+</button> -->
+
+<button *ngIf="disclaimerSvc.alertClosed" (click)="toggle()" class="btn btn-icon">
+  <clr-icon shape="info" class="is-highlight" size="24"></clr-icon>
+</button>

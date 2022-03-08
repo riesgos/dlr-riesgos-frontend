@@ -16,7 +16,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
 import { createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
-import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
+import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from '../chile/constants';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';

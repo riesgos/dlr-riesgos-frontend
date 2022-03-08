@@ -1,5 +1,5 @@
 import { ElementsBundle, Program, Index, AttributeData, Context, UniformData } from '../engine/engine.core';
-import { setup3dScene } from '../engine/webgl';
+import { getCurrentFramebuffersPixel, getCurrentFramebuffersPixels, setup3dScene } from '../engine/webgl';
 import earcut from 'earcut';
 
 import { Feature } from 'ol';
@@ -13,7 +13,16 @@ import { Options } from 'ol/layer/BaseVector';
 import { Pixel } from 'ol/pixel';
 import { Coordinate } from 'ol/coordinate';
 import VectorSource from 'ol/source/Vector';
+import { applyTransform } from 'ol/extent';
 
+
+function apply(transform, coordinate) {
+    const x = coordinate[0];
+    const y = coordinate[1];
+    coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
+    coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
+    return coordinate;
+  }
 
 export interface PolygonRendererData {
     coords: AttributeData;
@@ -118,7 +127,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         canvas.style.setProperty('top', '0px');
         canvas.style.setProperty('width', '100%');
         canvas.style.setProperty('height', '100%');
-        const context = new Context(canvas.getContext('webgl2') as WebGL2RenderingContext);
+        const context = new Context(canvas.getContext('webgl2', {preserveDrawingBuffer: true}) as WebGL2RenderingContext);
 
 
         const polyShader = new ElementsBundle(new Program(`#version 300 es
@@ -211,12 +220,24 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
      * @param pixel Pixel.
      * @param frameState FrameState.
      * @param hitTolerance Hit tolerance in pixels.
-     * @return {Uint8ClampedArray|Uint8Array} The result.  If there is no data at the pixel
+     * @return {Uint8ClampedArray|Uint8Array|} The result.  If there is no data at the pixel
      *    location, null will be returned.  If there is data, but pixel values cannot be
      *    returned, and empty array will be returned.
      */
     getDataAtPixel(pixel: Pixel, frameState: FrameState, hitTolerance: number) {
-        return new Uint8Array([Math.random(), Math.random(), Math.random(), Math.random()]);
+        const renderPixel = apply(
+            [frameState.pixelRatio, 0, 0, frameState.pixelRatio, 0, 0],
+            pixel.slice()
+        );
+        const x = Math.round(renderPixel[0]);
+        const y = Math.round(renderPixel[1]);
+
+        const rawData = getCurrentFramebuffersPixel(this.canvas, [x, y]) as Uint8Array;
+        if (rawData[3] > 0) {
+            return rawData;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -234,6 +255,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         for (const feature of features) {
             return callback(feature, layer);
         }
+        return undefined;
     }
 }
 

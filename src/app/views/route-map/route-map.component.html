@@ -3,7 +3,7 @@
     <ukis-map></ukis-map>
 </main>
 
-<clr-vertical-nav  class="left" appNavResize [width]="nav.left.width" [unit]="nav.left.unit" [clrVerticalNavCollapsible]="false" [(clrVerticalNavCollapsed)]="collapsedConfigurationWizard" id="serviceControl" #serviceControl>
+<clr-vertical-nav  class="left" appNavResize [width]="nav.left.width" [unit]="nav.left.unit" [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsedConfigurationWizard" id="serviceControl" #serviceControl>
   <app-vertical-nav-resize [width]="nav.left.width" [minWidth]="nav.left.minWidth" [maxWidth]="nav.left.maxWidth" (widthChange)="nav.left.width = $event;">
   </app-vertical-nav-resize>
   <!-- <app-changedetector></app-changedetector> -->

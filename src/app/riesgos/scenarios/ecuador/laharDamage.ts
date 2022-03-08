@@ -25,7 +25,7 @@ import Geometry from 'ol/geom/Geometry';
 
 export const laharLossProps: VectorLayerProperties = {
         name: 'laharLoss',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
@@ -106,7 +106,7 @@ export const laharLossProps: VectorLayerProperties = {
 
 export const laharTransitionProps: VectorLayerProperties = {
         name: 'laharTransition',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
@@ -249,7 +249,7 @@ export const laharTransitionProps: VectorLayerProperties = {
 
 export const laharUpdatedExposureProps: VectorLayerProperties = {
         name: 'laharExposure',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
@@ -466,7 +466,7 @@ export const laharDamageM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [laharLossProps, laharUpdatedExposureProps]
+        vectorLayers: [laharUpdatedExposureProps, laharLossProps]
     },
     value: null
 };

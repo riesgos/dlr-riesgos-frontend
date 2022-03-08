@@ -120,7 +120,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
     reference: false,
     icon: 'building',
     format: 'application/json',
-    name: 'Exposure Ashfall',
+    name: 'Exposure_ashfall_initial',
     vectorLayerAttributes: {
       style: (feature: olFeature<Geometry>, resolution: number) => {
         const props = feature.getProperties();
@@ -253,7 +253,7 @@ export const initialExposureLahar = {
         return 'BuildingTypesMavrouli';
       }
     },
-    name: 'Exposure Lahar'
+    name: 'Exposure_lahar_initial'
   }
 };
 

@@ -1,7 +1,7 @@
 {
     "Pilot region description": "To understand, describe, and quantify multi-risk situations, RIESGOS works with stories (specific case studies) in selected pilot regions in Chile, Ecuador, and Peru. These stories represent realistic multi-risk situations with cascading effects. Please select one of the following:",
     "c1": "Chile",
-    "p1": "Peru", 
+    "p1": "Peru",
     "e1": "Ecuador",
 
     "GFZ": "GFZ: German Research Centre for Geosciences",
@@ -143,7 +143,7 @@
     "LaharAndAshfall": "Ashfall and lahar",
 
     "Ashfall Damage": "Ashfall damage",
-    "ashfallDamage": "Ashfall damage", 
+    "ashfallDamage": "Ashfall damage",
     "ashfallExposure": "Ashfall exposure",
     "eq-selection: boundingbox": "Boundingbox",
     "CatalogueData": "Catalogue data",
@@ -292,6 +292,7 @@
 
     "Quickstart": "Quickstart",
     "RIESGOS Demonstrator": "RIESGOS Demonstrator",
+    "ShortTitle": "RIESGOS Demonstrator",
     "Ground_acceleration": "Ground acceleration",
     "acceleration": "Acceleration",
     "Earthquake": "Earthquake",
@@ -310,7 +311,7 @@
     "SelectEQ": "Select epicenter",
     "GroupsSimplified": "<p><b>Note</b>: Groups have been simplified for graph.</p>",
 
-    
+
     "USGSSlopeBasedTopographyProxy": "USGS slope-based topography proxy",
     "FromSeismogeotechnicsMicrozonation": "From seismo-geotechnics microzonation",
 

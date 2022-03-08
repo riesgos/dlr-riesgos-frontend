@@ -1,5 +1,6 @@
 {
     "RIESGOS Demonstrator": "RIESGOS demostrador",
+    "ShortTitle": "RIESGOS demostrador",
     "Stories": "Escenarios",
     "Pilot regions": "Áreas de Estudio",
     "Pilot region description": "Para comprender, describir y cuantificar situaciones de riesgo múltiple, RIESGOS trabaja con escenarios (casos  de  estudio  específicos)  en  áreas  de estudio seleccionadas de Chile, Ecuador y Perú. Los escenarios representarán situaciones realistas de riesgos múltiples con efectos en cascada. Por favor, seleccione una de las siguientes opciones:",
@@ -8,7 +9,7 @@
     "Made with ": "Hecho con ",
 
     "c1": "Chile",
-    "p1": "Peru", 
+    "p1": "Peru",
     "e1": "Ecuador",
 
     "DLR": "DLR: Centro Aeroespacial Alemán",
@@ -52,7 +53,7 @@
     "Earthquake Catalogue": "Catálogo de terremotos",
     "Select earthquake": "Elija un terremoto",
     "Selected earthquake": "Terremoto elegido",
-    
+
     "EQ Exposure Model": "Modelo de exposición",
     "EQ Exposure Model Selection": "Modelo de exposición",
     "EQ Vulnerability Model": "Modelo de vulnerabilidad",
@@ -133,7 +134,7 @@
     "GhofraniAtkinson2014": "Ghofrani & Atkinson 2014",
     "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015",
     "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997",
-    
+
     "Exposure": "Exposición",
     "eq-exposure": "Exposición y daños por terremoto",
     "eq-transition": "Transiciones de daños por terremoto",
@@ -307,7 +308,7 @@
 
     "USGSSlopeBasedTopographyProxy": "Modelo basado en pendientes topográficas del USGS",
     "FromSeismogeotechnicsMicrozonation": "Basado en la microzonificación sismo-geotécnico de Mendonza et.al. 2018",
-    
+
     "OpenMapStyles": "OpenStreetMap (OpenMapStyles)",
     "OpenStreetMap": "OpenStreetMap (Estándar)",
 
@@ -348,7 +349,7 @@
     "South": "Sur",
     "North": "Norte",
     "VEI Selection": "Selección del VEI",
-    
+
     "ExposureLahar": "Exposición",
     "intensity": "intensidad",
     "probability": "probabilidad",
@@ -363,7 +364,7 @@
     "ashfallExposure": "Exposición post-ceniza",
     "ashfallDamage": "Pérdida por ceniza",
     "ashfallTransition": "Transiciones por ceniza",
-    
+
     "CivilService": "Puntos de interés",
     "Firefighters": "Bomberos",
     "Police": "Carabineros",
@@ -377,7 +378,7 @@
     "ExposureSelection": "Exposición",
 
     "shakemap": "Movimiento de tierra",
-    
+
     "vtiles_description": "Proporcionado por <a href='https://geoservice.dlr.de/web/'>EOC-Geoservice</a>, Vector Tiles con OpenMapTiles y estilo <a href='https://openmaptiles.org/styles/#positron'>positron</a> ajustado.",
 
     "Processes only": "Procesos",
@@ -512,11 +513,11 @@
     "Magnitude 3, depth 40": "Mag. 3, profundidad 40",
     "Magnitude 8, depth 40": "Mag. 8, profundidad 40",
 
-    "Catalogue type": "Tipo de catalogo", 
+    "Catalogue type": "Tipo de catalogo",
     "SUPPASRI2013_v2.0": "Suppasri et.al. 2013",
     "Medina_2019": "Medina 2019",
 
-    
+
     "PGA": "P.G.A.",
     "SA(0.3)": "S.A.(0.3s)",
     "SA(1.0)": "S.A.(1.0s)",

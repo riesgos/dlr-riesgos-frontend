@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class HeaderComponent implements OnInit {
   @Input('ukis-title') title: string;
+  @Input('ukis-short-title') shortTitle: string;
   @Input('ukis-version') version: string;
 
   constructor(

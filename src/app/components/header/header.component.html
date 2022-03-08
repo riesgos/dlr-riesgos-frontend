@@ -1,5 +1,5 @@
 <clr-header class="header-1">
-  <div class="branding">
+  <div class="branding" [ngClass]="{'short-title':shortTitle}">
     <a href="http://www.riesgos.de/{{translator.currentLang | lowercase}}" target="_blank" alt="link to riesgos homepage">
       <clr-icon shape="riesgos" class="is-slolid" size="33" alt="riesgos icon" style="color: white;"></clr-icon>
     </a>
@@ -7,10 +7,10 @@
       <clr-icon shape="ukis" class="is-solid" size="33" alt="ukis icon"></clr-icon>
     </a> -->
     <a class="nav-link" routerLink="/" routerLinkActive="active">
-      <span class="title">{{title | translate}}</span>
+      <span class="title" title="{{title | translate}}">{{title | translate}}</span>
+      <span class="title short" title="{{title | translate}}">{{shortTitle | translate}}</span>
     </a>
-
-    <span class="version">v{{version}}</span>
+    <span class="version" *ngIf="version">v{{version}}</span>
   </div>
 
   <div class="header-nav" [clr-nav-level]="1">

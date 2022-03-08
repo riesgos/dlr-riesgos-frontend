@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { DisclaimerService } from './disclaimer.service';
 
 @Component({
@@ -7,11 +7,9 @@ import { DisclaimerService } from './disclaimer.service';
   styleUrls: ['./disclaimer.component.scss']
 })
 export class DisclaimerComponent {
-  /* @Input() alertClosed = false;
-  @Output() alertClosedChange = new EventEmitter<boolean>();
- */
+
   constructor(public disclaimerSvc: DisclaimerService) {
-    // this.alertClosed = environment.production ? false : true;
+
   }
 
   close() {

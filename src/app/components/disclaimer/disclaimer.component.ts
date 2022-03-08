@@ -1,62 +1,22 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
-import { AlertService } from '../global-alert/alert.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { DisclaimerService } from './disclaimer.service';
 
 @Component({
-  selector: 'ukis-disclaimer',
+  selector: 'app-disclaimer',
   templateUrl: './disclaimer.component.html',
   styleUrls: ['./disclaimer.component.scss']
 })
-export class DisclaimerComponent implements OnInit, OnDestroy {
-  public isExpanded: boolean;
-  onLangChange: Subscription;
-
-  constructor(private translate: TranslateService, private alertService: AlertService) {
-    this.isExpanded = environment.production ? true : false;
+export class DisclaimerComponent {
+  /* @Input() alertClosed = false;
+  @Output() alertClosedChange = new EventEmitter<boolean>();
+ */
+  constructor(public disclaimerSvc: DisclaimerService) {
+    // this.alertClosed = environment.production ? false : true;
   }
 
-  ngOnInit() {
-    if (this.isExpanded) {
-      this.translate.get('This is a demonstrator!').pipe(first()).subscribe(() => {
-        this.setAlert();
-      })
-    }
-  }
-  ngOnDestroy(): void {
-    if (this.onLangChange) {
-      this.onLangChange.unsubscribe();
-    }
-  }
-
-  setAlert() {
-    this.alertService.alert({
-      type: 'info',
-      text: this.translate.instant('This is a demonstrator!'),
-      closeable: true,
-      closeAction: () => { this.isExpanded = false; }
-    });
-    this.isExpanded = true;
-  }
-
-  toggleAlert() {
-    if (this.onLangChange) {
-      this.onLangChange.unsubscribe();
-    }
-
-    if (!this.isExpanded) {
-      this.setAlert();
-
-      this.onLangChange = this.translate.onLangChange.subscribe(() => {
-        if (this.isExpanded) {
-          this.setAlert();
-        }
-      });
-    } else {
-      this.alertService.alert(null);
-      this.isExpanded = false;
-    }
+  close() {
+    this.disclaimerSvc.alertClosed = true;
+    /* this.alertClosed = true;
+    this.alertClosedChange.emit(true); */
   }
 }

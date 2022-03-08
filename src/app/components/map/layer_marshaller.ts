@@ -151,6 +151,16 @@ export class LayerMarshaller  {
             }));
         }
 
+        if (['QuakeledgerProcess_selectedRows', 'QuakeledgerProcess_selectedRowsPeru'].includes(product.uid)) {
+            return this.makeGeojsonLayer(product as VectorLayerProduct).pipe(
+                map(p => {
+                    // @ts-ignore
+                    p.popup.event = 'move';  // eq-selection shall show popups on hover, not on click.
+                    return [p];
+                })
+            );
+        }
+
         // Secondly, standard processing of mappable products.
         if (isWmsProduct(product)) {
             return this.makeWmsLayers(product);

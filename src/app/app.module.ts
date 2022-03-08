@@ -85,6 +85,8 @@ import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/n
 
 // import all used icons
 import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from '@cds/core/icon';
+import { DisclaimerTriggerComponent } from './components/disclaimer-trigger/disclaimer-trigger.component';
+import { DisclaimerService } from './components/disclaimer/disclaimer.service';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
@@ -146,7 +148,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     InfoTableComponentComponent,
     TranslatableStringComponent,
     VerticalNavResizeComponent,
-    NavResizeDirectiveDirective
+    NavResizeDirectiveDirective,
+    DisclaimerTriggerComponent
   ],
   imports: [
     BrowserModule,
@@ -182,6 +185,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   ],
   providers: [
     AlertService,
+    DisclaimerService,
     FooterService,
     ProgressService,
     RiesgosService,

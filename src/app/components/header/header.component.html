@@ -7,8 +7,8 @@
       <clr-icon shape="ukis" class="is-solid" size="33" alt="ukis icon"></clr-icon>
     </a> -->
     <a class="nav-link" routerLink="/" routerLinkActive="active">
-      <span class="title" [title]="title">{{title | translate}}</span>
-      <span class="title short" [title]="title">{{shortTitle | translate}}</span>
+      <span class="title" title="{{title | translate}}">{{title | translate}}</span>
+      <span class="title short" title="{{title | translate}}">{{shortTitle | translate}}</span>
     </a>
     <span class="version" *ngIf="version">v{{version}}</span>
   </div>

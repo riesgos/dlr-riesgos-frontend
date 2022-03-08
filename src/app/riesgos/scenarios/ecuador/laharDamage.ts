@@ -200,7 +200,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
+                            labeledMatrix[r][c] = Math.round(matrix[r-1][c-1]);
                         }
                     }
                 }
@@ -231,7 +231,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = {value: `${r - 1}`, style: {'font-weight': 'bold'}};
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = {value: toDecimalPlaces(matrix[r-1][c-1], 0) };
+                            labeledMatrix[r][c] = {value: Math.round(matrix[r-1][c-1]) };
                         }
                     }
                 }

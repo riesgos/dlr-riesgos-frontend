@@ -46,7 +46,7 @@ export class RestartingFromProcess implements Action {
     constructor(public payload: {process: ImmutableProcess}) {}
 }
 
-export class RestaringScenario implements Action {
+export class RestartingScenario implements Action {
     type: string = ERiesgosActionTypes.restartingScenario;
     constructor(public payload: {scenario: Scenario}) {}
 }

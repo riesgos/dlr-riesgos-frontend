@@ -128,7 +128,7 @@ export class RiesgosService {
         products = [
           modelChoice,
           initialExposure, initialExposureRef,
-          new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
+          InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
           selectedEqs, userinputSelectedEq,
           Gmpe, VsGrid, selectedEq,
           eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput,
@@ -153,7 +153,7 @@ export class RiesgosService {
         ];
         products = [
           modelChoicePeru, initialExposurePeru, initialExposurePeruReference,
-          new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
+          InputBoundingboxPeru, mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
           lossPeru, eqDamagePeruM, Gmpe, VsGrid,
           selectedEqsPeru, userinputSelectedEqPeru,
           selectedEqPeru,

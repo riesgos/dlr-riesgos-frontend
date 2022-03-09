@@ -9,6 +9,7 @@
 - **Flood damage:** Products were not highlighted when associated process is selected.
 - **Focus on selected earthquake:** Preliminarily selected earthquake is no longer a mappable-product. Only the finally selected one is. This way the right output product is highlighted in the layer-selection when a user focuses on the eq-selection step.
 - **WebGL Polygon Renderer:** Now returns correct pixel value in `getDataAtPixel` method.
+- **Translatable-String Component:** Now also updates dynamically when language changes.
 
 ### Features
 - **Removed @dlr-eoc/services-util-storage:** Better build time, less optimization bailouts due to module formats CommonJS or AMD.

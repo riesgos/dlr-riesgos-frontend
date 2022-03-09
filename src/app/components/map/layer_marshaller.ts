@@ -192,8 +192,12 @@ export class LayerMarshaller  {
             source,
             colorFunc: (f: olFeature<Polygon>) => {
                 const style = product.description.vectorLayerAttributes.style(f, null, false);
-                const color = style.fill_.color_;
-                return [color[0] / 255, color[1] / 255, color[2] / 255];
+                const fillColor = style.fill_.color_;
+                const lineColor = style.stroke_.color_;
+                return {
+                    'fillColor': [fillColor[0] / 255, fillColor[1] / 255, fillColor[2] / 255, fillColor[3]],
+                    'lineColor': [lineColor[0] / 255, lineColor[1] / 255, lineColor[2] / 255, lineColor[3]],
+                };
             }
         });
         const ukisLayer = new ProductCustomLayer({
@@ -346,6 +350,7 @@ export class LayerMarshaller  {
                 });
             }
         });
+        olLayer.set('is_bbox_layer', true);
 
         const riesgosLayer: ProductCustomLayer = new ProductCustomLayer({
             custom_layer: olLayer,
@@ -359,6 +364,7 @@ export class LayerMarshaller  {
             removable: true,
             filtertype: 'Overlays',
             hasFocus: false,
+            popup: false,
         });
         return of(riesgosLayer);
     }

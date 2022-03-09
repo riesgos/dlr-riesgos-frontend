@@ -19,6 +19,7 @@
 - **Colors:** updated color scales to be less saturated.
 - **Administrative layers Peru**
 - **Feature selection for earthquakes:** Now also includes magnitude in selection-field. Also displays detailed information in sidebar for selected earthquake.
+- **WebGL layers:** Can now display user-configured opacities as well as different colors for outlines and fills.
 
 ### Breaking Changes
 - **xyz:**

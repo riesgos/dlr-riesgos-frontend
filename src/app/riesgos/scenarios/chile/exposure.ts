@@ -54,7 +54,8 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
             'D4': 0
         };
         let total = 0;
-        for (let i = 0; i < expo.Damage.length; i++) {
+        // v-- note that the exposure dataset for chile returns a dict, while the one in peru returns an array.
+        for (let i in expo.Damage) {  
             const damageClass = expo.Damage[i];
             const nrBuildings = expo.Buildings[i];
             counts[damageClass] += nrBuildings;
@@ -66,15 +67,19 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
         let r: number;
         let g: number;
         let b: number;
+        let a: number;
         if (total === 0) {
-            r = b = g = 160;
-        } else {
-            [r, g, b] = greenRedRange(0, 1, dr);
-        }
+          r = b = g = 160;
+          a = 0.9;
+      } else {
+          // [r, g, b] = greenRedRange(0, 1, dr);
+          [r, g, b] = [160, 160, 160];
+          a = 0.05;
+      }
 
         return new olStyle({
           fill: new olFill({
-            color: [r, g, b, 0.5],
+            color: [r, g, b, a],
 
           }),
           stroke: new olStroke({

@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 export class WMTSLayerFactory {
     constructor(private http: HttpClient) {}
 
-    createWmtsLayer(serverUrl: string, layerName: string, matrixSet: string): Observable<TileLayer> {
+    createWmtsLayer(serverUrl: string, layerName: string, matrixSet: string): Observable<TileLayer<WMTS>> {
         return this.getWMTSCapabilities(serverUrl).pipe(
             map(r => {
                 const options = this.capabilitiesToOptions(r, layerName, matrixSet);
@@ -22,7 +22,7 @@ export class WMTSLayerFactory {
         );
     }
 
-    layerFromOptions(options): TileLayer {
+    layerFromOptions(options): TileLayer<WMTS> {
         return new TileLayer({
             source: new WMTS({
                 ...options,

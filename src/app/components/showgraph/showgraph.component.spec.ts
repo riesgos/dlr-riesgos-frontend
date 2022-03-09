@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ShowgraphComponent } from './showgraph.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ describe('ShowgraphComponent', () => {
   let component: ShowgraphComponent;
   let fixture: ComponentFixture<ShowgraphComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ShowgraphComponent, GraphvizcompComponent ],
       imports: [TranslateModule.forRoot(), ClarityModule, StoreModule.forRoot(reducers)]

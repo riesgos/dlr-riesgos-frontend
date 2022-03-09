@@ -1,46 +1,43 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import {
-    StringSelectUconfProduct, BboxUconfProduct, StringUconfProduct,
-    BboxUconfPD
+    StringSelectUserConfigurableProduct, BboxUserConfigurableProduct, StringUserConfigurableProduct,
+    BboxUserConfigurableProductDescription
 } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerProduct, BboxLayerProduct, BboxLayerDescription } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '@dlr-eoc/utils-ogc';
-import { toDecimalPlaces, redGreenRange, linInterpolateXY } from 'src/app/helpers/colorhelpers';
+import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from 'src/app/services/wps';
+import { toDecimalPlaces, redGreenRange, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
+import Geometry from 'ol/geom/Geometry';
 
 
-export class InputBoundingbox implements BboxUconfProduct, BboxLayerProduct, WpsData {
-    description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
-    value: WpsBboxValue;
-    uid = 'input-boundingbox';
-
-    constructor() {
-        this.description = {
-            id: 'input-boundingbox',
-            title: '',
-            name: 'eq-selection: boundingbox',
-            type: 'bbox',
-            icon: 'earthquake',
-            reference: false,
-            defaultValue: {
-                crs: 'EPSG:4326',
-                lllon: -73.5, lllat: -34,
-                urlon: -70.5, urlat: -29.0
-            },
-            wizardProperties: {
-                name: 'AOI',
-                fieldtype: 'bbox',
-                description: 'Please select an area of interest',
-            },
+export const InputBoundingbox: BboxUserConfigurableProduct & BboxLayerProduct & WpsData = {
+    uid: 'input-boundingbox',
+    description: {
+        id: 'input-boundingbox',
+        title: '',
+        name: 'eq-selection: boundingbox',
+        type: 'bbox',
+        icon: 'earthquake',
+        reference: false,
+        defaultValue: {
+            crs: 'EPSG:4326',
+            lllon: -73.5, lllat: -34,
+            urlon: -70.5, urlat: -29.0
         },
-        this.value = null;
-    }
-}
+        wizardProperties: {
+            name: 'AOI',
+            fieldtype: 'bbox',
+            description: 'AOI_selection',
+        },
+    },
+    value: null
+};
 
-export const mmin: StringUconfProduct & WpsData = {
+
+export const mmin: StringUserConfigurableProduct & WpsData = {
     uid: 'mmin',
     description: {
         id: 'mmin',
@@ -54,11 +51,11 @@ export const mmin: StringUconfProduct & WpsData = {
         reference: false,
         defaultValue: '6.0',
     },
-    value: null
+    value: '6.0'
 };
 
 
-export const mmax: StringUconfProduct & WpsData = {
+export const mmax: StringUserConfigurableProduct & WpsData = {
     uid: 'mmax',
     description: {
         id: 'mmax',
@@ -76,7 +73,7 @@ export const mmax: StringUconfProduct & WpsData = {
 };
 
 
-export const zmin: StringUconfProduct & WpsData = {
+export const zmin: StringUserConfigurableProduct & WpsData = {
     uid: 'zmin',
     description: {
         id: 'zmin',
@@ -93,7 +90,7 @@ export const zmin: StringUconfProduct & WpsData = {
     value: null
 };
 
-export const zmax: StringUconfProduct & WpsData = {
+export const zmax: StringUserConfigurableProduct & WpsData = {
     uid: 'zmax',
     description: {
         id: 'zmax',
@@ -125,7 +122,7 @@ export const p: Product & WpsData = {
 };
 
 
-export const etype: StringSelectUconfProduct & WpsData = {
+export const etype: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'etype',
     description: {
         id: 'etype',
@@ -181,20 +178,19 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
         title: '',
         icon: 'earthquake',
         name: 'available earthquakes',
-        description: 'Catalog data',
+        description: 'CatalogueData',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number, selected: boolean) => {
+            style: (feature: olFeature<Geometry>, resolution: number, selected: boolean) => {
 
                 const props = feature.getProperties();
                 const magnitude = props['magnitude.mag.value'];
                 const depth = props['origin.depth.value'];
 
-                const text = depth + ' km';
-                let radius = linInterpolateXY(7, 5, 9, 20, magnitude);
-                const [r, g, b] = redGreenRange(5, 60, depth);
+                let radius = linInterpolateXY(5, 10, 60, 5, depth);
+                const [r, g, b] = greenRedRange(6, 9, magnitude);
 
                 if (selected) {
                     radius += 4;
@@ -237,7 +233,7 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 3.0,
+                        'magnitude.mag.value': 6.0,
                         'origin.depth.value': 40.0
                     },
                     "geometry": {
@@ -245,7 +241,20 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 3, depth 40'
+                text: 'Mag. 6'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 7.0,
+                        'origin.depth.value': 40.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'Mag. 7'
             }, {
                 feature: {
                     "type": "Feature",
@@ -258,33 +267,20 @@ export const selectedEqs: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 8, depth 40'
+                text: 'Mag. 8'
             }, {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 3.0,
-                        'origin.depth.value': 20.0
+                        'magnitude.mag.value': 9.0,
+                        'origin.depth.value': 40.0
                     },
                     "geometry": {
                         "type": "Point",
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 3, depth 20'
-            }, {
-                feature: {
-                    "type": "Feature",
-                    "properties": {
-                        'magnitude.mag.value': 8.0,
-                        'origin.depth.value': 20.0
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [ 5.625, 50.958426723359935 ]
-                      }
-                  },
-                text: 'Magnitude 8, depth 20'
+                text: 'Mag. 9'
             }]
         }
     },
@@ -305,7 +301,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
             [selectedEqs.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
             'Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
@@ -313,10 +309,10 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
         );
 
         this.wizardProperties = {
-            shape: 'earthquake',
+            shape: 'bullseye',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'quakeledger'
+            wikiLink: 'EqSimulation'
         };
     }
 

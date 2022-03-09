@@ -1,49 +1,65 @@
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData } from '@dlr-eoc/utils-ogc';
+import { MultiVectorLayerProduct, VectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { WpsData } from 'src/app/services/wps';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqDamageM, eqUpdatedExposureRef } from './eqDeus';
-import { schema } from './exposure';
 import { tsShakemap } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
-import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
+import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { Observable } from 'rxjs';
 import { Deus } from './deus';
 import { map, switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
 import { createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
-import { Cache } from '@dlr-eoc/utils-ogc';
+import { Cache } from 'src/app/services/wps';
 import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
-import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
+import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from './constants';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import Geometry from 'ol/geom/Geometry';
 
 
-export const tsDamage: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_damage',
+
+export const schema: StringSelectUserConfigurableProduct & WpsData = {
+    uid: 'schema',
     description: {
-        id: 'damage',
-        title: 'damage',
-        reference: false,
+      id: 'schema',
+      title: 'schema',
+      defaultValue: 'SUPPASRI2013_v2.0',
+      reference: false,
+      type: 'literal',
+      wizardProperties: {
+          fieldtype: 'stringselect',
+          name: 'schema',
+          description: '',
+        },
+        options: [
+            'SUPPASRI2013_v2.0',
+            'Medina_2019',
+        ],
+    },
+    value: 'SUPPASRI2013_v2.0'
+};
+
+const tsDamageProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-damage',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$ );
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
@@ -114,22 +130,13 @@ export const tsDamage: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Damage in USD'
-    },
-    value: null
 };
 
-export const tsTransition: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_transition',
-    description: {
-        id: 'transition',
-        title: 'transition',
+const tsTransitionProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-transition',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -156,19 +163,48 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                 if (total > 0) {
                     [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
-                    r = g = b = 0;
+                    r = b = g = 160;
                 }
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
+            legendEntries: [{
+                feature: {
+                    "type": "Feature",
+                    "properties": { 'transitions': { 'n_buildings': [100], 'from_damage_state': [0, 0, 0, 0, 0, 0, 0], 'to_damage_state': [90, 10, 0, 0, 0, 0] } },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [5.627918243408203, 50.963075942052164],
+                            [5.627875328063965, 50.958886259879264],
+                            [5.635471343994141, 50.95634523633128],
+                            [5.627918243408203, 50.963075942052164]]]
+                    }
+                },
+                text: `SmallDamageChange`,
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": { 'transitions': { 'n_buildings': [100], 'from_damage_state': [0, 0, 0, 0, 0, 0, 0], 'to_damage_state': [0, 0, 0, 0, 0, 10, 90] } },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [5.627918243408203, 50.963075942052164],
+                            [5.627875328063965, 50.958886259879264],
+                            [5.635471343994141, 50.95634523633128],
+                            [5.627918243408203, 50.963075942052164]]]
+                    }
+                },
+                text: 'LargeDamageChange',
+            }],
             text: (props: object) => {
 
                 const matrix = zeros(6, 7);
@@ -192,7 +228,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
+                            labeledMatrix[r][c] = Math.round(matrix[r-1][c-1]);
                         }
                     }
                 }
@@ -229,7 +265,7 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] =  { value: `${r - 1}`, style: {'font-weight': 'bold'}};
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] =  { value: toDecimalPlaces(matrix[r-1][c-1], 0) };
+                            labeledMatrix[r][c] =  { value: Math.round(matrix[r-1][c-1]) };
                         }
                     }
                 }
@@ -244,22 +280,13 @@ export const tsTransition: VectorLayerProduct & WpsData & Product = {
             }
         },
         description: 'Change from previous state'
-    },
-    value: null
 };
 
-export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
-    uid: 'ts_updated_exposure',
-    description: {
-        id: 'updated_exposure',
-        title: 'updated_exposure',
+const tsUpdatedExposureProps: VectorLayerProperties = {
         icon: 'dot-circle',
-        reference: false,
-        type: 'complex',
-        format: 'application/json',
         name: 'ts-exposure',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -286,18 +313,18 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                 let g: number;
                 let b: number;
                 if (total === 0) {
-                    r = b = g = 0;
+                    r = b = g = 160;
                 } else {
                     [r, g, b] = greenRedRange(0, 0.6, dr);
                 }
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
@@ -314,7 +341,30 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 90/10/0/0/0/0'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                        <th>D4</th>
+                        <th>D5</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>90</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     'type': 'Feature',
@@ -328,7 +378,30 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 0/10/40/40/10/0'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                        <th>D4</th>
+                        <th>D5</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>10</td>
+                        <td>40</td>
+                        <td>40</td>
+                        <td>10</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     'type': 'Feature',
@@ -342,7 +415,30 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage states: 0/0/0/0/20/80'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                        <th>D4</th>
+                        <th>D5</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>20</td>
+                        <td>80</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -368,11 +464,11 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
 
                 const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 
-                return `<h4 style="color: var(--clr-p1-color, #666666);">Tsunami: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}{{StatesNotComparable}}`; // <br/>{{GroupsSimplified}}`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ damage_classification_tsunami }}</h4>${anchor.innerHTML} ${legend}{{StatesNotComparable}}`;
             },
             summary: (value: FeatureCollection | FeatureCollection[]) => {
                 let features;
@@ -407,12 +503,23 @@ export const tsUpdatedExposure: VectorLayerProduct & WpsData & Product = {
                   return comp;
             }
         },
-        description: 'Number of goods exposed to a threat'
+        description: 'NumberGoodsInDamageState'
+};
+
+export const tsDamageM: WpsData & MultiVectorLayerProduct = {
+    uid: 'ts_deus_output_values',
+    description: {
+        id: 'merged_output',
+        title: '',
+        reference: false,
+        defaultValue: null,
+        format: 'application/json',
+        type: 'complex',
+        description: '',
+        vectorLayers: [tsUpdatedExposureProps, tsTransitionProps, tsDamageProps]
     },
     value: null
 };
-
-
 
 
 
@@ -432,15 +539,15 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
     constructor(http: HttpClient, cache: Cache) {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
-        this.name = 'Multihazard damage estimation / TS';
-        this.requiredProducts = [eqDamageM, tsShakemap, eqUpdatedExposureRef].map(p => p.uid);
-        this.providedProducts = [tsDamage, tsTransition, tsUpdatedExposure].map(p => p.uid);
+        this.name = 'Multihazard_damage_estimation/Tsunami';
+        this.requiredProducts = [eqDamageM, tsShakemap, eqUpdatedExposureRef, schema].map(p => p.uid);
+        this.providedProducts = [tsDamageM].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             shape: 'dot-circle',
-            wikiLink: 'Vulnerability'
+            wikiLink: 'ExposureAndVulnerability'
         };
 
         this.vulnerabilityProcess = new VulnerabilityModel(http, cache);
@@ -453,16 +560,8 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
         // Step 1.1: preparing vulnerability-service inputs
-        const vulnerabilityInputs = [
-            assetcategory,
-            losscategory,
-            taxonomies,
-            {
-                ... schema,
-                value: 'SUPPASRI2013_v2.0'
-            }
-        ];
-        const vulnerabilityOutputs = [fragilityRef];
+        const vulnerabilityInputs = [ schema ];
+        const vulnerabilityOutputs = [ fragilityRef] ;
 
         // Step 1.2: executing vulnerability-service
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)

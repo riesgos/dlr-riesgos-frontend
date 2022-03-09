@@ -1,43 +1,38 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
-import { StringSelectUconfProduct, BboxUconfProduct, BboxUconfPD, StringUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { BboxUserConfigurableProduct, BboxUserConfigurableProductDescription, StringUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { BboxLayerProduct, BboxLayerDescription, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
-import { toDecimalPlaces, linInterpolateXY, redGreenRange } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
-import { TableEntry, InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
+import olFeature from 'ol/Feature';
+import Geometry from 'ol/geom/Geometry';
 
 
 
-export class InputBoundingboxPeru implements BboxUconfProduct, BboxLayerProduct, WpsData {
-    description: BboxUconfPD & BboxLayerDescription & WpsDataDescription;
-    value: WpsBboxValue;
-    uid = 'input-boundingbox_peru';
-
-    constructor() {
-        this.description = {
-            id: 'input-boundingbox',
-            title: '',
-            icon: 'earthquake',
-            name: 'eq-selection: boundingbox',
-            type: 'bbox',
-            reference: false,
-            defaultValue: {
-                crs: 'EPSG:4326',
-                lllon: -86.5, lllat: -20.5,
-                urlon: -68.5, urlat: -0.6
-            },
-            wizardProperties: {
-                name: 'AOI',
-                fieldtype: 'bbox',
-                description: 'Please select an area of interest',
-            },
+export const InputBoundingboxPeru: BboxUserConfigurableProduct & BboxLayerProduct & WpsData = {
+    uid: 'input-boundingbox_peru',
+    description: {
+        id: 'input-boundingbox',
+        title: '',
+        icon: 'earthquake',
+        name: 'eq-selection: boundingbox',
+        type: 'bbox',
+        reference: false,
+        defaultValue: {
+            crs: 'EPSG:4326',
+            lllon: -86.5, lllat: -20.5,
+            urlon: -68.5, urlat: -0.6
         },
-        this.value = null;
-    }
-}
+        wizardProperties: {
+            name: 'AOI',
+            fieldtype: 'bbox',
+            description: 'AOI_selection',
+        },
+    },
+    value: null
+};
 
 
 export const etypePeru = {
@@ -88,7 +83,7 @@ export const tlatPeru: Product & WpsData = {
 
 
 
-export const mminPeru: StringUconfProduct & WpsData = {
+export const mminPeru: StringUserConfigurableProduct & WpsData = {
     uid: 'mmin_peru',
     description: {
         id: 'mmin',
@@ -106,7 +101,7 @@ export const mminPeru: StringUconfProduct & WpsData = {
 };
 
 
-export const mmaxPeru: StringUconfProduct & WpsData = {
+export const mmaxPeru: StringUserConfigurableProduct & WpsData = {
     uid: 'mmax_peru',
     description: {
         id: 'mmax',
@@ -124,7 +119,7 @@ export const mmaxPeru: StringUconfProduct & WpsData = {
 };
 
 
-export const zminPeru: StringUconfProduct & WpsData = {
+export const zminPeru: StringUserConfigurableProduct & WpsData = {
     uid: 'zmin_peru',
     description: {
         id: 'zmin',
@@ -141,7 +136,7 @@ export const zminPeru: StringUconfProduct & WpsData = {
     value: null
 };
 
-export const zmaxPeru: StringUconfProduct & WpsData = {
+export const zmaxPeru: StringUserConfigurableProduct & WpsData = {
     uid: 'zmax_peru',
     description: {
         id: 'zmax',
@@ -181,20 +176,19 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
         title: '',
         icon: 'earthquake',
         name: 'available earthquakes',
-        description: 'Catalog data',
+        description: 'CatalogueData',
         format: 'application/vnd.geo+json',
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number, selected: boolean) => {
+            style: (feature: olFeature<Geometry>, resolution: number, selected: boolean) => {
 
                 const props = feature.getProperties();
                 const magnitude = props['magnitude.mag.value'];
                 const depth = props['origin.depth.value'];
 
-                const text = depth + ' km';
-                let radius = linInterpolateXY(7, 5, 9, 20, magnitude);
-                const [r, g, b] = redGreenRange(5, 60, depth);
+                let radius = linInterpolateXY(5, 10, 60, 5, depth);
+                const [r, g, b] = greenRedRange(6, 9, magnitude);
 
                 if (selected) {
                     radius += 4;
@@ -208,11 +202,8 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                         }),
                         stroke: new olStroke({
                             color: [r, g, b, 1]
-                        }),
-                        text: new olText({
-                            text: text
                         })
-                    })
+                    }),
                 });
             },
             text: (properties) => {
@@ -240,7 +231,7 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 3.0,
+                        'magnitude.mag.value': 6.0,
                         'origin.depth.value': 40.0
                     },
                     "geometry": {
@@ -248,7 +239,20 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 3, depth 40'
+                text: 'Mag. 6'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {
+                        'magnitude.mag.value': 7.0,
+                        'origin.depth.value': 40.0
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [ 5.625, 50.958426723359935 ]
+                      }
+                  },
+                text: 'Mag. 7'
             }, {
                 feature: {
                     "type": "Feature",
@@ -261,33 +265,20 @@ export const selectedEqsPeru: VectorLayerProduct & WpsData = {
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 8, depth 40'
+                text: 'Mag. 8'
             }, {
                 feature: {
                     "type": "Feature",
                     "properties": {
-                        'magnitude.mag.value': 3.0,
-                        'origin.depth.value': 20.0
+                        'magnitude.mag.value': 9.0,
+                        'origin.depth.value': 40.0
                     },
                     "geometry": {
                         "type": "Point",
                         "coordinates": [ 5.625, 50.958426723359935 ]
                       }
                   },
-                text: 'Magnitude 3, depth 20'
-            }, {
-                feature: {
-                    "type": "Feature",
-                    "properties": {
-                        'magnitude.mag.value': 8.0,
-                        'origin.depth.value': 20.0
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [ 5.625, 50.958426723359935 ]
-                      }
-                  },
-                text: 'Magnitude 8, depth 20'
+                text: 'Mag. 9'
             }]
         }
     },
@@ -306,7 +297,7 @@ export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
             [selectedEqsPeru.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
             'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?',
+            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
@@ -317,7 +308,7 @@ export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
             shape: 'earthquake',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'quakeledger'
+            wikiLink: 'EqCatalogue'
         };
     }
 

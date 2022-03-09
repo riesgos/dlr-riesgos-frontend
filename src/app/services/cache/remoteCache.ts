@@ -1,4 +1,4 @@
-import { Cache, WpsData } from '@dlr-eoc/utils-ogc';
+import { Cache, WpsData } from 'src/app/services/wps';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';

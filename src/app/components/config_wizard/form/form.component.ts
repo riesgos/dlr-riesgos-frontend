@@ -1,24 +1,24 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, RequiredValidator, Validators } from '@angular/forms';
-import { UserconfigurableProductDescription, UserconfigurableProduct, isBboxUconfProd } from '../userconfigurable_wpsdata';
+import { UserConfigurableProductDescription, UserConfigurableProduct, isBboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { WizardableProcess } from '../wizardable_processes';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ClickRunProcess, ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { isBbox } from '@dlr-eoc/utils-ogc';
+import { isBbox } from 'src/app/services/wps';
 import { debounceTime } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'ukis-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css']
+  styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit, OnDestroy {
 
   @Input() process: WizardableProcess;
-  @Input() parameters: UserconfigurableProduct[];
+  @Input() parameters: UserConfigurableProduct[];
   @Input() disabled = false;  // <------------ @TODO: can we infer this from formgroup?
   public formGroup: FormGroup;
   private subscriptions: Subscription[] = [];
@@ -39,7 +39,7 @@ export class FormComponent implements OnInit, OnDestroy {
     this.formGroup = new FormGroup(controls);
 
     for (const parameter of this.parameters) {
-      if (isBboxUconfProd(parameter)) {
+      if (isBboxUserConfigurableProduct(parameter)) {
         const control = this.formGroup.get(parameter.uid);
         const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
           if (control.valid) {

@@ -1,7 +1,7 @@
 <div>
     <h5 *ngIf="legendTitle">{{ legendTitle | translate }}</h5>
-    <div *ngFor="let entry of entries" class="ukisLegendRow clr-row">
+    <div *ngFor="let entry of entries" class="ukisLegendRow">
         <ukis-canvas [resolution]="0.00001" [canvas]="entry.canvas" class="ukisLegendImage"></ukis-canvas>
-        <div class="ukisLegendText clr-col-sm-auto" innerHTML="{{ entry.text | translate }}"></div>
+        <div class="ukisLegendText" innerHTML="{{ entry.text | translate }}"></div>
     </div>
 </div>

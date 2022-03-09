@@ -1,17 +1,18 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { vei } from './lahar';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { Observable, forkJoin } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -28,7 +29,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
         format: 'application/vnd.geo+json',
         name: 'ashfall-depth',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const thickness = props.thickness;
                 allDepths.push(thickness);
@@ -45,7 +46,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                     }),
                     stroke: new olStroke({
                         color: [0, 0, 0, 1],
-                        witdh: 2
+                        width: 2
                     }),
                     text: new olText({
                         font: 'bold 14px Calibri,sans-serif',
@@ -73,7 +74,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 5 mm'
+                text: 'Thickness: 5.0 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -87,7 +88,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 50 mm'
+                text: 'Thickness: 50.0 mm'
             }, {
                 feature: {
                     "type": "Feature",
@@ -101,7 +102,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 90 mm'
+                text: 'Thickness: 90.0 mm'
             }],
             text: (properties) => {
                 const thickness = properties['thickness'];
@@ -119,7 +120,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
 
                     const selectedProperties = {
                         '{{ Thickness }}': thicknessText,
-                        VEI: toDecimalPlaces(properties['vei'] as number, 1),
+                        '{{ VEI }}': toDecimalPlaces(properties['vei'] as number, 1),
                         '{{ Expected_load }}': `${load} kPa`,
                         '{{ Probability }}': properties['prob'] + ' %'
                     };
@@ -144,7 +145,7 @@ export const ashfallPoint: WpsData & Product = {
 };
 
 
-export const probability: StringSelectUconfProduct & WpsData = {
+export const probability: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'ashfall_range_prob',
     description: {
         id: 'probability',
@@ -170,12 +171,12 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
     constructor(private http: HttpClient, cache: Cache) {
         super(
             'ashfall-service',
-            'Ashfall Service',
+            'AshfallService',
             [vei.uid, probability.uid],
             [ashfall.uid, ashfallPoint.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
-            'Ashfall Service description',
-            'http://riesgos.dlr.de/wps/WebProcessingService?',
+            'AshfallServiceDescription',
+            'http://riesgos.dlr.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
@@ -184,7 +185,8 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         this.wizardProperties = {
             providerName: 'IGN',
             providerUrl: 'https://www.igepn.edu.ec',
-            shape: 'volcanoe'
+            shape: 'volcanoe',
+            wikiLink: 'AshfallSimulation'
         };
     }
 

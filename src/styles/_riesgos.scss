@@ -1,49 +1,46 @@
-
-/*******************************************************
- *                                                     *
- *******************************************************/
-.sidenav {
-    max-width: unset;
-    min-width: 19rem;
-}
-
-.clr-row {
-    margin-right: 1.0rem;
-}
-
-
-.clr-form-control {
-    margin-top: 0rem;
-    margin-bottom: 0.5rem;
-}
-
-.clr-control-label {
-    color: darkgray;
-}
-
-
 /*******************************************************
  *                                                     *
  *******************************************************/
 
 .table-small {
-    td {
-        font-size: 0.4rem !important;
-        padding: .2rem !important;
-    }
+  margin-top: 0;
+
+  th {
+    font-size: 0.4rem !important;
+    padding: .2rem !important;
+  }
+
+  td {
+    font-size: 0.4rem !important;
+    padding: .2rem !important;
+  }
 }
 
 .table-medium {
-    td {
-        // font-size: 0.4rem !important;
-        padding: .2rem !important;
+  td {
+    // font-size: 0.4rem !important;
+    padding: .2rem !important;
+  }
+}
+
+.label,
+a.label {
+  margin: 0 .25rem .25rem 0;
+}
+
+.tabsbody p,
+.tabsbody li,
+.ol-popup-content p,
+.ol-popup-content li {
+  font-size: 0.6rem !important;
+}
+
+.clr-vertical-nav {
+  &.is-collapsed {
+    .nav-content {
+      .clr-vertical-nav-header {
+        display: none;
+      }
     }
-}
-
-.label, a.label {
-    margin: 0 .25rem .25rem 0;
-}
-
-.tabsbody p, .tabsbody li, .ol-popup-content p, .ol-popup-content li {
-    font-size: 0.6rem !important;
+  }
 }

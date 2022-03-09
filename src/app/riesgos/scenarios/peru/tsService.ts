@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';
@@ -53,7 +53,7 @@ export const tsWmsPeru: WpsData & WmsLayerProduct = {
         name: 'ts-wms',
         icon: 'tsunami',
         reference: false,
-        format: 'application/WMS',
+        format: 'string',
         type: 'literal',
         featureInfoRenderer: (fi: FeatureCollection) => {
             if (fi.features && fi.features[0] && fi.features[0].properties['GRAY_INDEX']) {
@@ -122,13 +122,13 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
     uid = 'ts-service_peru';
     name = 'TS-Service';
     state: ProcessState;
-    description = 'Simulates a tsunami based on the earlier selected earthquake-parameters.';
+    description = 'TsShortDescription';
 
     wizardProperties = {
         providerName: 'AWI',
         providerUrl: 'https://www.awi.de/en/',
         shape: 'tsunami' as 'tsunami',
-        wikiLink: 'Tsunami'
+        wikiLink: 'TsunamiWiki'
     };
 
     private tsShakemapService: TsShakemapServicePeru;

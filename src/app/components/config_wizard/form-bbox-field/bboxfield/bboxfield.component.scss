@@ -12,22 +12,19 @@
 .container {
     width: 100%;
     margin: auto;
-    display: table-row;
+    display: flex;
 }
 
-.content {
-    .clr-input {
-        max-width: 50px;
-    }
-}
 
 .content {
-    display: table-cell;
     width: 25%;
-    max-width: 50px;
+    max-width: 60px;
     border-bottom: 1px solid #999999;
     .clr-form-control {
         margin-bottom: 0rem;
+    }
+    .clr-input {
+        max-width: 50px;
     }
 }
 

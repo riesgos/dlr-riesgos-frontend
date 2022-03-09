@@ -1,0 +1,14 @@
+form[disabled="true"] {
+  .form-input {
+    display: block;
+    pointer-events: none;
+    opacity: 0.3;
+  }
+}
+::ng-deep form{
+  .signpost{
+    .signpost-action{
+      margin-top: 1rem;
+    }
+  }
+}

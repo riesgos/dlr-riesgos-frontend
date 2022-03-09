@@ -1,12 +1,41 @@
 <div class="preview-container">
-  <div #previewMap class="preview-map"></div>
   <div class='fullPage' #fullPage [ngStyle]="{'width': pageWidth + 'px', 'height': pageHeight + 'px'}">
     <div class="innerPage" #innerPage
-      [ngStyle]="{'width': innerPageWidth + 'px', 'height': innerPageHeight + 'px', 'margin-left': marginWidth + 'px', 'margin-top': marginHeight + 'px'}">
-      <h2 [ngStyle]="{'font-size': headerFontSize + 'rem'}" class="inner-page-title">{{ title }}</h2>
-      <canvas id="printCanvas" #printCanvas crossorigin="Anonymous"
-        [ngStyle]="{'width': mapWidth + 'px', 'height': mapHeight + 'px'}"></canvas>
-      <p [ngStyle]="{'font-size': fontSize + 'rem'}">{{ description }}</p>
+      [ngStyle]="{'width': innerPageWidth + 'px',
+                  'height': innerPageHeight + 'px',
+                  'margin-left': marginWidth + 'px',
+                  'margin-right': marginWidth + 'px',
+                  'margin-top': marginHeight + 'px',
+                  'margin-bottom': marginHeight + 'px'
+                }">
+      
+      <h2 [ngStyle]="{'font-size': headerFontSize + 'px'}" class="inner-page-title">{{ title }}</h2>
+
+      <div class="mapContainer" [ngStyle]="{'width': totalMapWidth + 'px', 'height': totalMapHeight + 'px'}">
+
+        <canvas #mapCanvas [ngStyle]="{'width': mapWidth + 'px', 'height': totalMapHeight + 'px'}"></canvas>
+
+        <div class="legend" [ngStyle]="{'width': totalMapWidth - mapWidth + 'px', 'height': totalMapHeight + 'px'}" #legend>
+          <div class="legendEntry" *ngFor="let entry of legendEntries" [ngStyle]="{'font-size': fontSize + 'px', 'line-height': 1.1 * fontSize + 'px'}">
+            <h4>{{entry.title}}</h4>
+            <ng-container *ngIf="checkIsComponentItem(entry.image); else imageUrl">
+              <ukis-dynamic-component [dynamicComponent]="entry.image"></ukis-dynamic-component>
+            </ng-container>
+            <ng-template #imageUrl>
+              <img [src]="entry.image" />
+            </ng-template>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footerContainer">
+        <div class="description" [ngStyle]="{'width': mapWidth + 'px' }">
+          <p [ngStyle]="{'font-size': fontSize + 'px', 'line-height': 1.1 * fontSize + 'px'}">{{ description }}</p>
+        </div>
+        <app-footer class="pdfFooter" [ngStyle]="{'width': totalMapWidth - mapWidth + 'px', 'font-size': 0.7 * fontSize + 'px', 'line-height': 0.7 * 1.1 * fontSize + 'px'}"></app-footer>      
+      </div>
+    
     </div>
   </div>
 </div>

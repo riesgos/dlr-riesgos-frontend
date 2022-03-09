@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
-import { laharShakemap } from './lahar';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
+import olFeature from 'ol/Feature';
 import { Observable } from 'rxjs';
 import { laharVelocityShakemapRef, laharHeightShakemapRef } from './laharWrapper';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -21,7 +21,7 @@ export const countryEcuador: WpsData & Product = {
         description: 'What country are we working in?',
         reference: false,
         type: 'literal',
-        format: 'application/text',
+        format: 'text/plain'
     },
     value: 'ecuador'
 };
@@ -36,7 +36,7 @@ export const hazardLahar: WpsData & Product = {
         description: 'What hazard are we dealing with?',
         reference: false,
         type: 'literal',
-        format: 'application/text',
+        format: 'text/plain'
     },
     value: 'lahar'
 };
@@ -52,7 +52,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 let probDisr = 0;
                 if (props['Prob_Disruption']) {
@@ -81,7 +81,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -154,8 +154,8 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             [damageConsumerAreasEcuador].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess',
             'Process for evaluating the reliability of infrastructure networks',
-            'http://91.250.85.221/wps/WebProcessingService',
-            '1.0.0',
+            'https://riesgos.52north.org/javaps/service',
+            '2.0.0',
             http,
             new ProcessStateUnavailable(),
             cache
@@ -164,7 +164,7 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
             shape: 'router',
-            wikiLink: 'Reliability'
+            wikiLink: 'CriticalInfrastructureEcuador'
         };
     }
 

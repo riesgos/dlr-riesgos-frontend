@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UtilStoreService } from '@dlr-eoc/services-util-store';
+import { StoreService } from 'src/app/services/store.service';
 
 @Component({
   selector: 'ukis-text-modal',
@@ -11,12 +11,12 @@ export class TextModalComponent implements OnInit {
   showModal: boolean;
   showModalKey = 'showModal';
 
-  constructor(private storageService: UtilStoreService) { }
+  constructor(private storageService: StoreService) { }
 
   ngOnInit() {
-    const storedVal = this.storageService.local(this.showModalKey);
+    const storedVal = this.storageService.readLocal(this.showModalKey);
     if (storedVal !== null) {
-      this.showModal = storedVal;
+      this.showModal = storedVal === 'false' ? false : true;
     } else {
       this.showModal = true;
     }
@@ -24,7 +24,7 @@ export class TextModalComponent implements OnInit {
 
   hideModalSave() {
     this.showModal = false;
-    this.storageService.local(this.showModalKey, false);
+    this.storageService.local(this.showModalKey, 'false');
   }
 
 }

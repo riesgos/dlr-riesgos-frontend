@@ -1,8 +1,8 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import {  StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import {  StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
@@ -10,7 +10,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
-export const direction: StringSelectUconfProduct & WpsData = {
+export const direction: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'direction',
     description: {
         id: 'direction',
@@ -39,7 +39,7 @@ export const vei: Product & WpsData = {
     value: null
 };
 
-export const parameter: StringSelectUconfProduct & WpsData = {
+export const parameter: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'parameter',
     description: {
         id: 'parameter',
@@ -63,7 +63,7 @@ export const laharWms: WmsLayerProduct & WpsData = {
     description: {
         id: 'wms',
         title: '',
-        icon: 'avalance',
+        icon: 'avalanche',
         name: 'laharWms',
         type: 'literal',  // this is deliberate. layer-wps returns this value as a literal, not as a complex.
         reference: false,
@@ -87,7 +87,9 @@ export const laharShakemap: Product & WpsData = {
         title: '',
         format: 'application/xml',
         reference: true,
-        type: 'complex'
+        type: 'complex',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+        encoding: 'UTF-8'
     },
     value: null,
 };
@@ -105,7 +107,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             [laharWms.uid, laharShakemap.uid],
             'gs:LaharModel',
             'The lahar service returns the area inundated by lahars of the Cotopaxi volcano, and relies on pre-calculated simulation results for flow height, flow velocity, flow pressure, erosion, and deposition. The simulation software used for lahar modelling is the physically based numerical model RAMMS::DEBRIS FLOW.',
-            'http://91.250.85.221/geoserver/riesgos/wps',
+            'https://riesgos.52north.org/geoserver/ows',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
@@ -114,8 +116,8 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
         this.wizardProperties = {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
-            shape: 'avalance',
-            wikiLink: 'Lahar'
+            shape: 'avalanche',
+            wikiLink: 'LaharSimulation'
         };
     }
 }

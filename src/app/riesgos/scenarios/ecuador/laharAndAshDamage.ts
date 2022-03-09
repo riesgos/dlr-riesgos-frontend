@@ -6,12 +6,13 @@ import { map, switchMap } from 'rxjs/operators';
 import { laharVelocityShakemapRef } from './laharWrapper';
 import { HttpClient } from '@angular/common/http';
 import { MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { schemaEcuador } from './exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
 import { ashfallDamageM, ashfallUpdatedExposureRef } from './ashfallDamage';
 import { laharLossProps, laharTransitionProps, laharUpdatedExposureProps, laharUpdatedExposureRef } from './laharDamage';
+import { createGroupedBarChart, BarData } from 'src/app/helpers/d3charts';
 
 
 
@@ -22,12 +23,42 @@ const laharAshfallLossProps = {
 
 const laharAshfallTransitionProps = {
     ... laharTransitionProps,
-    name: 'Lahar and Ashfall Transition',
+    name: 'LaharAndAshfallTransition',
 };
 
 const laharAshfallUpdatedExposureProps = {
     ... laharUpdatedExposureProps,
-    name: 'Lahar and Ashfall Exposure',
+    vectorLayerAttributes: {
+        ... laharUpdatedExposureProps.vectorLayerAttributes,
+        text: (props: object) => {
+            const anchor = document.createElement('div');
+            const expo = props['expo'];
+
+            const data: {[groupName: string]: BarData[]} = {};
+            for (let i = 0; i < expo['Taxonomy'].length; i++) {
+                const dmg = expo['Damage'][i];
+                const tax = expo['Taxonomy'][i];
+                const bld = expo['Buildings'][i];
+                if (!data[tax]) {
+                    data[tax] = [];
+                }
+                data[tax].push({
+                    label: dmg,
+                    value: bld
+                });
+            }
+
+            for (const label in data) {
+                if (data[label]) {
+                    data[label].sort((dp1, dp2) => dp1.label > dp2.label ? 1 : -1);
+                }
+            }
+
+            const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ LaharAndAshfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
+        },
+    },
+    name: 'LaharAndAshfallExposure',
 };
 
 export const laharAshfallDamageM: WpsData & MultiVectorLayerProduct = {
@@ -40,7 +71,7 @@ export const laharAshfallDamageM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [laharAshfallLossProps, laharAshfallTransitionProps, laharAshfallUpdatedExposureProps]
+        vectorLayers: [laharAshfallTransitionProps, laharAshfallUpdatedExposureProps, laharAshfallLossProps]
     },
     value: null
 };
@@ -49,7 +80,7 @@ export const laharAshfallDamageM: WpsData & MultiVectorLayerProduct = {
 export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess {
 
     readonly uid: string = 'DeusLaharAndAshfall';
-    readonly name: string = 'Lahar and Ashfall Damage';
+    readonly name: string = 'LaharAndAshfallDamage';
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] = [ashfallDamageM, ashfallUpdatedExposureRef, laharUpdatedExposureRef, laharVelocityShakemapRef].map(p => p.uid);
     readonly providedProducts: string[] = [laharAshfallDamageM].map(p => p.uid);
@@ -57,7 +88,8 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
         providerName: 'GFZ',
-        providerUrl: 'https://www.gfz-potsdam.de/en/'
+        providerUrl: 'https://www.gfz-potsdam.de/en/',
+        wikiLink: 'ExposureAndVulnerabilityEcuador'
     };
 
     private deus: Deus;

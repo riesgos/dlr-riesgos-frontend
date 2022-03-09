@@ -1,6 +1,9 @@
 ![RIESGOS Logo](src/assets/logos/riesgos_base_small_en.svg "RIESGOS Logo")
 
 
+![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/riesgos/dlr-riesgos-frontend?include_prereleases)
+
+[![DOI](https://zenodo.org/badge/203112525.svg)](https://zenodo.org/badge/latestdoi/203112525)
 
 ## Disclaimer
 > :warning: This is the prototype of a multi-risk exploration tool and still under development. **IMPORTANT**: the results shown here are not yet consolidated and therefore not suitable for planning or other practical applications. As explained in our [License](LICENSE), we cannot take any responsibility for damages arising from the use of this tool. This web application allows the processing, visualization and download of data from various authors. The licensing of this data and terms of use is always the responsibility of the authors of the data.

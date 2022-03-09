@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GlobalFooterComponent } from './global-footer.component';
 
@@ -6,7 +6,7 @@ describe('GlobalFooterComponent', () => {
   let component: GlobalFooterComponent;
   let fixture: ComponentFixture<GlobalFooterComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ GlobalFooterComponent ]
     })

@@ -1,10 +1,10 @@
 <div class="container">
   <div class="one">
       <clr-select-container>
-          <label class="clr-col-md-3">
+          <label class="clr-col">
             {{parameter.description.wizardProperties.name | translate}}:
           </label>
-          <select class="clr-col-md-9" clrSelect [formControl]="stringControl">
+          <select class="clr-col" clrSelect [formControl]="stringControl">
               <option *ngFor="let item of stringOptions" [ngValue]="item">{{item | regexTranslate}}</option>
           </select>
           <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>

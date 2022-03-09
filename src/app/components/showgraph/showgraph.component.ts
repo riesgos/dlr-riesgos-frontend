@@ -6,7 +6,7 @@ import { RiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
 import { BehaviorSubject } from 'rxjs';
 import { Process, Product, ProcessStateTypes } from 'src/app/riesgos/riesgos.datatypes';
 import { Graph } from 'graphlib';
-import { TranslateService } from '@ngx-translate/core';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 
 const black = '"#000000"';
@@ -32,7 +32,7 @@ export class ShowgraphComponent implements OnInit {
 
   constructor(
     private store: Store<State>,
-    private translator: TranslateService
+    private translator: SimplifiedTranslationService
   ) {
     this.dotStringFull$ = new BehaviorSubject<string>('digraph {}');
     this.dotStringPO$ = new BehaviorSubject<string>('digraph {}');
@@ -52,7 +52,7 @@ export class ShowgraphComponent implements OnInit {
       }
     });
 
-    this.translator.onLangChange.subscribe(() => {
+    this.translator.getCurrentLang().subscribe(() => {
       const processes = this.currentState.processStates;
       const products = this.currentState.productValues;
       const graph = this.currentState.graph;
@@ -172,7 +172,7 @@ export class ShowgraphComponent implements OnInit {
   }
 
   private translate(text: string): string {
-    return this.translator.instant(text);
+    return this.translator.syncTranslate(text);
   }
 
 }

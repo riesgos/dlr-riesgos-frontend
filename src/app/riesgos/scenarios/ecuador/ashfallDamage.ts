@@ -6,18 +6,19 @@ import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, t
 import { Volcanus } from './volcanus';
 import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './ashfallService';
-import { WpsData, WpsDataDescription } from '@dlr-eoc/utils-ogc';
+import { WpsData, WpsDataDescription } from 'src/app/services/wps';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange, toDecimalPlaces, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { maxDamage$ } from '../chile/constants';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -26,16 +27,16 @@ const ashfallLossProps: VectorLayerProperties = {
         name: 'ashfallLoss',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
@@ -110,7 +111,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
         name: 'ashfallTransition',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -137,23 +138,23 @@ const ashfallTransitionProps: VectorLayerProperties = {
                 if (total > 0) {
                     [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
-                    r = g = b = 0;
+                    r = b = g = 160;
                 }
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
             legendEntries: [{
                 feature: {
                     'type': 'Feature',
-                    'properties': {'transitions': {'n_buildings': 100, 'to_damage_state': [10, 80, 10]}},
+                    'properties': {'transitions': {'n_buildings': [100], 'to_damage_state': [10, 80, 10]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -188,7 +189,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
+                            labeledMatrix[r][c] = Math.round(matrix[r-1][c-1]);
                         }
                     }
                 }
@@ -219,7 +220,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = {value: `${r - 1}`, style: {'font-weight': 'bold'}};
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = {value: toDecimalPlaces(matrix[r-1][c-1], 0) };
+                            labeledMatrix[r][c] = {value: Math.round(matrix[r-1][c-1]) };
                         }
                     }
                 }
@@ -240,7 +241,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
         name: 'ashfallExposure',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -264,25 +265,25 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                 let g: number;
                 let b: number;
                 if (total === 0) {
-                    r = b = g = 0;
+                    r = b = g = 160;
                 } else {
                     [r, g, b] = greenRedRange(0, 0.6, dr);
                 }
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
             legendEntries: [{
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [80, 20, 0, 0]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [90, 10, 0, 0]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -292,11 +293,30 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage 80/20/0/0'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>90</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 80, 80, 10]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 40, 40, 10]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -306,11 +326,30 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage 10/80/80/10'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>10</td>
+                        <td>40</td>
+                        <td>40</td>
+                        <td>10</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }, {
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 20, 80]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 10, 90]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -320,7 +359,26 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Damage 0/0/20/80'
+                text: `
+                <table class="table table-small">
+                    <thead>
+                    <tr>
+                        <th>D0</th>
+                        <th>D1</th>
+                        <th>D2</th>
+                        <th>D3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>10</td>
+                        <td>90</td>
+                    </tr>
+                    </tbody>
+                </table>
+                `
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -346,7 +404,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Ashfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesTorres }}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {
@@ -426,7 +484,8 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
         providerName: 'GFZ',
-        providerUrl: 'https://www.gfz-potsdam.de/en/'
+        providerUrl: 'https://www.gfz-potsdam.de/en/',
+        wikiLink: 'ExposureAndVulnerabilityEcuador'
     };
 
     private volcanus: Volcanus;

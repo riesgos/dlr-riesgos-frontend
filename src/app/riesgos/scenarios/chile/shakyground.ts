@@ -1,35 +1,16 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { selectedEq } from './eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
-export const shakemapWmsOutput: WpsData & WmsLayerProduct = {
-    uid: 'Shakyground_wms',
-    description: {
-        id: 'shakeMapFile',
-        title: 'shakeMapFile',
-        icon: 'earthquake',
-        name: 'shakemap',
-        type: 'complex',
-        reference: false,
-        format: 'application/WMS',
-        styles: ['shakemap-pga', 'another style'],
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            const html = `
-            <p>{{ Ground_acceleration }}:<p>
-            ${createKeyValueTableHtml('{{ Earthquake }}', {'a': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s²'}, 'medium')}
-            `;
-            return html;
-        },
-    },
-    value: null
-};
 
 export const eqShakemapRef: WpsData & Product = {
     uid: 'Shakyground_shakemap',
@@ -39,6 +20,115 @@ export const eqShakemapRef: WpsData & Product = {
         type: 'complex',
         reference: true,
         format: 'text/xml',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+        encoding: 'UTF-8'
+    },
+    value: null
+};
+
+export const shakemapPgaOutput: WpsData & WmsLayerProduct = {
+    uid: 'Shakyground_wms',
+    description: {
+        id: 'shakeMapFile',
+        title: 'shakeMapFile',
+        icon: 'earthquake',
+        name: 'shakemap',
+        type: 'complex',
+        reference: false,
+        format: 'application/WMS',
+        styles: ['shakemap-pga'],
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            const html = `
+            <p><b>{{ Ground_acceleration_PGA }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
+            `;
+            return html;
+        },
+    },
+    value: null
+};
+
+export const shakemapSa03WmsOutput: WpsData & WmsLayerProduct = {
+    uid: 'Shakyground_sa03_wms',
+    description: {
+        id: 'SA03_shakeMapFile',
+        title: 'SA03_shakeMapFile',
+        icon: 'earthquake',
+        name: 'SA03_shakemap',
+        type: 'complex',
+        reference: false,
+        format: 'application/WMS',
+        styles: ['shakemap-pga'],
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            const html = `
+            <p><b>{{ Ground_acceleration_SA03 }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
+            `;
+            return html;
+        },
+    },
+    value: null
+};
+
+export const shakemapSa10WmsOutput: WpsData & WmsLayerProduct = {
+    uid: 'Shakyground_sa10_wms',
+    description: {
+        id: 'SA10_shakeMapFile',
+        title: 'SA10_shakeMapFile',
+        icon: 'earthquake',
+        name: 'SA10_shakemap',
+        type: 'complex',
+        reference: false,
+        format: 'application/WMS',
+        styles: ['shakemap-pga'],
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            const html = `
+            <p><b>{{ Ground_acceleration_SA10 }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
+            `;
+            return html;
+        },
+    },
+    value: null
+};
+
+export const Gmpe: WpsData & StringSelectUserConfigurableProduct = {
+    uid: 'Shakyground_gmpe',
+    description: {
+        id: 'gmpe',
+        title: 'gmpe',
+        type: 'literal',
+        reference: false,
+        options: [
+            'MontalvaEtAl2016SInter',
+            'GhofraniAtkinson2014',
+            'AbrahamsonEtAl2015SInter',
+            'YoungsEtAl1997SInterNSHMP2008'
+        ],
+        defaultValue: 'MontalvaEtAl2016SInter',
+        wizardProperties: {
+            fieldtype: 'stringselect',
+            name: 'gmpe',
+            description: ''
+        }
+    },
+    value: null
+};
+
+export const VsGrid: WpsData & StringSelectUserConfigurableProduct = {
+    uid: 'Shakyground_vsgrid',
+    description: {
+        id: 'vsgrid',
+        title: 'vsgrid',
+        type: 'literal',
+        reference: false,
+        options: [
+            'USGSSlopeBasedTopographyProxy',
+            'FromSeismogeotechnicsMicrozonation'
+        ],
+        defaultValue: 'USGSSlopeBasedTopographyProxy',
+        wizardProperties: {
+            fieldtype: 'stringselect',
+            name: 'vsgrid',
+            description: ''
+        }
     },
     value: null
 };
@@ -52,11 +142,11 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
         super(
             'Shakyground',
             'GroundmotionService',
-            [selectedEq].map(p => p.uid),
-            [shakemapWmsOutput, eqShakemapRef].map(p => p.uid),
+            [selectedEq, Gmpe, VsGrid].map(p => p.uid),
+            [eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
-            'Simulates the ground motion caused by the selected earthquake',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            'EqSimulationShortText',
+            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
@@ -66,8 +156,52 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
             shape: 'earthquake',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'Groundmotion'
+            wikiLink: 'EqSimulation'
         };
+    }
+
+    execute(inputs: Product[], outputs: Product[], doWhile): Observable<Product[]> {
+
+        // step 1: adjusting outputs.
+        // Replacing shakemap-wms'es with shakemap-json-data
+        const newOutputs = outputs.filter(i =>
+                    i.uid !== shakemapPgaOutput.uid
+                &&  i.uid !== shakemapSa03WmsOutput.uid
+                &&  i.uid !== shakemapSa10WmsOutput.uid);
+        const shakemapSaWmsData: WpsData & Product = {
+            uid: 'Shakyground_sa_wms',
+            description: {
+                id: 'shakeMapFile',
+                title: 'shakeMapFile',
+                type: 'complex',
+                reference: false,
+                format: 'application/json',
+            },
+            value: null
+        };
+        newOutputs.push(shakemapSaWmsData);
+
+        // step 2: executing
+        return super.execute(inputs, newOutputs, doWhile).pipe(
+            map((products) => {
+                // step 3: reading shakemap-json-data into shakemap-wms'es
+                const wmsJsonData = products.find(p => p.uid === shakemapSaWmsData.uid).value[0];
+                const newProducts = products.filter(p => p.uid !== shakemapSaWmsData.uid);
+                newProducts.push({
+                    ... shakemapPgaOutput,
+                    value: [wmsJsonData['PGA']]
+                });
+                newProducts.push({
+                    ... shakemapSa03WmsOutput,
+                    value: [wmsJsonData['SA(0.3)']]
+                });
+                newProducts.push({
+                    ... shakemapSa10WmsOutput,
+                    value: [wmsJsonData['SA(1.0)']]
+                });
+                return newProducts;
+            })
+        );
     }
 
 }

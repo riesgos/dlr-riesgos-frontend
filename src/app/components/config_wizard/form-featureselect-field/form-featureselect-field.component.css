@@ -1,11 +1,11 @@
 .container {
     width: 100%;
-    margin: auto;
+    display: flex;
+    flex-direction: row;
 }
 .one {
-    width: 90%;
-    float: left;
+    flex-grow: 9;
 }
 .two {
-    margin-left: 90%;
+    flex-grow: 1;
 }

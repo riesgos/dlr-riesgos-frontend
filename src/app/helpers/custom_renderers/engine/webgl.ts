@@ -1179,6 +1179,33 @@ export const getCurrentFramebuffersPixels = (canvas: HTMLCanvasElement): ArrayBu
     return pixels;
 };
 
+export const getCurrentFramebuffersPixel = (canvas: HTMLCanvasElement, coords: [number, number]): ArrayBuffer  => {
+    const gl = canvas.getContext('webgl2') as WebGL2RenderingContext;
+    if (!gl) {
+        throw new Error('no context');
+    }
+
+    const format = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
+    const type = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
+
+    let pixels;
+    if (type === gl.UNSIGNED_BYTE) {
+        pixels = new Uint8Array(4);
+    } else if (type === gl.UNSIGNED_SHORT_5_6_5 || type === gl.UNSIGNED_SHORT_4_4_4_4 || type === gl.UNSIGNED_SHORT_5_5_5_1) {
+        pixels = new Uint16Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+    } else if (type === gl.FLOAT) {
+        pixels = new Float32Array(4);
+    } else {
+        throw new Error(`Did not understand pixel data type ${type} for format ${format}`);
+    }
+
+    // Just like `toDataURL` or `toBlob`, `readPixels` does not access the frontbuffer.
+    // It accesses the backbuffer or any other currently active framebuffer.
+    gl.readPixels(coords[0], coords[1], 1, 1, format, type, pixels);
+
+    return pixels;
+};
+
 export const getDebugInfo = (gl: WebGL2RenderingContext): object => {
     const baseInfo = {
         renderer: gl.getParameter(gl.RENDERER),

@@ -1,11 +1,32 @@
 .ukisLegendRow {
-    // position: absolute;
+    margin-right: 0rem;
+    margin-left: 0rem;
+    display: flex;
+    flex-direction: row;
 }
 
 .ukisLegendImage {
-    // float: left;
+    flex: 0 0 15px;
 }
 
 .ukisLegendText {
-    // float: right;
+    word-wrap: normal;
+    margin-left: 5px;
 }
+
+
+// .ukisLegendRow {
+//     // position: absolute;
+//     margin-right: 0rem;
+//     margin-left: 0rem;
+// }
+
+// .ukisLegendImage {
+//     display: inline-block;
+//     // float: left;
+// }
+
+// .ukisLegendText {
+//     display: inline-block;
+//     margin-left: 3px;
+// }

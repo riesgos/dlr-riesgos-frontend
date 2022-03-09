@@ -1,51 +1,54 @@
 import { Injectable } from '@angular/core';
 import { Process, Product } from './riesgos.datatypes';
-import { ExposureSelection, modelChoice } from './scenarios/chile/exposureSelection';
+import { HttpClient } from '@angular/common/http';
+import { RiesgosScenarioMetadata } from './riesgos.state';
+import { ConfigService, Config } from '../services/config/config.service';
+import { Cache } from 'src/app/services/wps';
+import { FakeCache } from 'src/app/services/wps';
+import { IndexDbCache } from '../services/cache/indexDbCache';
+import { RemoteCache } from '../services/cache/remoteCache';
+
+// chile
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, selectedEqs } from './scenarios/chile/quakeledger';
 import { EqSelection, userinputSelectedEq, selectedEq } from './scenarios/chile/eqselection';
-import { Shakyground, shakemapWmsOutput, eqShakemapRef } from './scenarios/chile/shakyground';
+import { Shakyground, shakemapPgaOutput, eqShakemapRef, Gmpe, VsGrid, shakemapSa03WmsOutput, shakemapSa10WmsOutput } from './scenarios/chile/shakyground';
 import { EqDeus, loss, eqDamageM, eqUpdatedExposureRef } from './scenarios/chile/eqDeus';
 import { TsService, tsWms, tsShakemap } from './scenarios/chile/tsService';
-import { TsDeus, tsDamage, tsTransition, tsUpdatedExposure } from './scenarios/chile/tsDeus';
+import { TsDeus, schema, tsDamageM } from './scenarios/chile/tsDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
-import { lonmin, lonmax, latmin, latmax, assettype, schema, querymode, initialExposure } from './scenarios/chile/exposure';
-import { assetcategory, losscategory, taxonomies, fragilityRef } from './scenarios/chile/modelProp';
-import { PhysicalImpactAssessment, physicalImpact } from './scenarios/chile/pia';
-import { ExposureModelPeru, lonminPeru, lonmaxPeru, latminPeru,
-  latmaxPeru, assettypePeru, schemaPeru, querymodePeru, initialExposurePeru } from './scenarios/peru/exposure';
+import { initialExposure, ExposureModel, modelChoice, initialExposureRef } from './scenarios/chile/exposure';
+import { fragilityRef } from './scenarios/chile/modelProp';
+
+// peru
+import { ExposureModelPeru, initialExposurePeru, initialExposurePeruReference, modelChoicePeru } from './scenarios/peru/exposure';
 import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
   zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru, selectedEqsPeru } from './scenarios/peru/quakeledger';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scenarios/peru/eqselection';
-import { ShakygroundPeru, shakemapWmsOutputPeru, eqShakemapRefPeru } from './scenarios/peru/shakyground';
+import { ShakygroundPeru, shakemapPgaOutputPeru, eqShakemapRefPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru } from './scenarios/peru/shakyground';
 import { EqDeusPeru, lossPeru, eqDamagePeruM, eqUpdatedExposureRefPeru } from './scenarios/peru/eqDeus';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
-import { TsDeusPeru, tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru } from './scenarios/peru/tsDeus';
+import { TsDeusPeru, tsDamagePeruM, schemaPeru } from './scenarios/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './scenarios/peru/reliability';
-import { assetcategoryPeru, losscategoryPeru, taxonomiesPeru } from './scenarios/peru/modelProp';
+
+// ecuador
 import { VeiProvider, selectableVei } from './scenarios/ecuador/vei';
 import { AshfallService, probability, ashfall, ashfallPoint } from './scenarios/ecuador/ashfallService';
 import { AshfallExposureModel, LaharExposureModel, schemaEcuador,
   lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador,
   querymodeEcuador, assettypeEcuador, initialExposureAshfall, initialExposureAshfallRef,
-  initialExposureLahar, initialExposureLaharRef } from './scenarios/ecuador/exposure';
+  initialExposureLahar, initialExposureLaharRef, modelEcuador } from './scenarios/ecuador/exposure';
 import { DeusAshfall, ashfallDamageM, ashfallUpdatedExposureRef } from './scenarios/ecuador/ashfallDamage';
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
   laharVelocityWms, laharVelocityShakemapRef, laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms } from './scenarios/ecuador/laharWrapper';
 import { DeusLahar, laharDamageM, laharUpdatedExposureRef } from './scenarios/ecuador/laharDamage';
 import { DeusLaharAndAshfall, laharAshfallDamageM } from './scenarios/ecuador/laharAndAshDamage';
 import { LaharReliability, countryEcuador, hazardLahar, damageConsumerAreasEcuador } from './scenarios/ecuador/reliability';
-import { FloodMayRunProcess, geomerFlood, FloodMayRun, userinputSelectedOutburst,
+import { FloodMayRunProcess, geomerFlood, FloodMayRun, userInputSelectedOutburst,
   hydrologicalSimulation, durationTiff, velocityTiff, depthTiff } from './scenarios/ecuador/geomerHydrological';
-import { FlooddamageProcess, FlooddamageTranslator, damageManzanas, damageBuildings, damageManzanasGeojson } from './scenarios/ecuador/floodDamage';
+import { FloodDamageProcess, damageBuildings, damageManzanasGeojson } from './scenarios/ecuador/floodDamage';
 import { vei, direction } from './scenarios/ecuador/lahar';
 import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './scenarios/ecuador/vulnerability';
-import { HttpClient } from '@angular/common/http';
-import { RiesgosScenarioMetadata } from './riesgos.state';
-import { ConfigService, Config } from '../services/config/config.service';
-import { Cache } from '@dlr-eoc/utils-ogc';
-import { FakeCache } from '@dlr-eoc/utils-ogc';
-import { IndexDbCache } from '../services/cache/indexDbCache';
-import { RemoteCache } from '../services/cache/remoteCache';
+
 
 
 
@@ -106,26 +109,24 @@ export class RiesgosService {
           new QuakeLedger(this.httpClient, cache),
           EqSelection,
           new Shakyground(this.httpClient, cache),
-          new ExposureSelection(this.httpClient, cache),
+          new ExposureModel(this.httpClient, cache),
           new EqDeus(this.httpClient, cache),
           new TsService(this.httpClient, cache),
           new TsDeus(this.httpClient, cache),
-          new EqReliability(this.httpClient, cache),
-          // new PhysicalImpactAssessment(this.httpClient)
+          new EqReliability(this.httpClient, cache)
         ];
         products = [
           modelChoice,
-          lonmin, lonmax, latmin, latmax, assettype, schema, querymode,
-          assetcategory, losscategory, taxonomies,
-          initialExposure,
-          new InputBoundingbox(), mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
+          initialExposure, initialExposureRef,
+          InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat,
           selectedEqs, userinputSelectedEq,
-          selectedEq, shakemapWmsOutput, eqShakemapRef,
+          Gmpe, VsGrid, selectedEq,
+          eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput,
           loss, eqDamageM, eqUpdatedExposureRef,
           tsWms, tsShakemap,
           countryChile, hazardEq,
-          damageConsumerAreas,
-          tsDamage, tsTransition, tsUpdatedExposure,
+          damageConsumerAreas, schema,
+          tsDamageM,
           // physicalImpact
         ];
         break;
@@ -141,15 +142,14 @@ export class RiesgosService {
           new EqReliabilityPeru(this.httpClient, cache)
         ];
         products = [
-          lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, assettypePeru, schemaPeru, querymodePeru,
-          assetcategoryPeru, losscategoryPeru, taxonomiesPeru,
-          initialExposurePeru,
-          new InputBoundingboxPeru(), mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
-          lossPeru, eqDamagePeruM,
+          modelChoicePeru, initialExposurePeru, initialExposurePeruReference,
+          InputBoundingboxPeru, mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
+          lossPeru, eqDamagePeruM, Gmpe, VsGrid,
           selectedEqsPeru, userinputSelectedEqPeru,
-          selectedEqPeru, shakemapWmsOutputPeru, eqShakemapRefPeru,
-          tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru,
-          tsDamagePeru, tsTransitionPeru, tsUpdatedExposurePeru,
+          selectedEqPeru,
+          shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru, eqShakemapRefPeru,
+          tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru, schemaPeru, 
+          tsDamagePeruM,
           countryPeru, hazardEqPeru,
           damageConsumerAreasPeru
         ];
@@ -171,11 +171,10 @@ export class RiesgosService {
 
           FloodMayRunProcess,
           geomerFlood,
-          new FlooddamageProcess(this.httpClient, cache),
-          FlooddamageTranslator
+          new FloodDamageProcess(this.httpClient, cache)
         ];
         products = [
-          schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador,
+          schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador, modelEcuador,
           fragilityRef, initialExposureAshfall, initialExposureAshfallRef, initialExposureLahar, initialExposureLaharRef,
           selectableVei, vei, FloodMayRun,
           probability, ashfall, ashfallPoint,
@@ -187,9 +186,8 @@ export class RiesgosService {
           laharAshfallDamageM,
           countryEcuador, hazardLahar,
           damageConsumerAreasEcuador,
-          userinputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,
-          damageManzanas, damageBuildings,
-          damageManzanasGeojson
+          userInputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,
+          damageBuildings, damageManzanasGeojson
         ];
         break;
       default:

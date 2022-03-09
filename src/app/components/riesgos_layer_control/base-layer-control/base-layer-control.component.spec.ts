@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BaseLayerControlComponent } from './base-layer-control.component';
 import { ReversePipe } from '../array-reverse.pipe';
@@ -47,7 +47,7 @@ describe('BaseLayerControlComponent', () => {
   let component: BaseLayerControlComponent;
   let fixture: ComponentFixture<BaseLayerControlComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     
     TestBed.configureTestingModule({

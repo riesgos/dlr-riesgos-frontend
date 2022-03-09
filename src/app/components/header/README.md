@@ -12,13 +12,13 @@ For examples [see demo maps](../demo-maps/README.md)
 ```
 <clr-main-container [ngClass]="{'floating':ui.floating}">
   ...
-  <ukis-header [ukis-title]="title">
+  <app-header [ukis-title]="title">
     <a class="nav-link nav-text header-nav-el" routerLink="/{{route.path}}" routerLinkActive="active">{{route.data.title}}</a>
 
     <clr-dropdown class="header-action-el">
       ...
     </clr-dropdown>
-  </ukis-header>
+  </app-header>
   ...
 </clr-main-container>
 ```

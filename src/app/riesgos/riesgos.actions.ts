@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Product, ImmutableProcess, ProcessId } from './riesgos.datatypes';
-import { ProductId } from '@dlr-eoc/utils-ogc';
+import { ProductId } from 'src/app/services/wps';
 import { Scenario, RiesgosScenarioMetadata } from './riesgos.state';
 import { Graph } from 'graphlib';
 
@@ -46,7 +46,7 @@ export class RestartingFromProcess implements Action {
     constructor(public payload: {process: ImmutableProcess}) {}
 }
 
-export class RestaringScenario implements Action {
+export class RestartingScenario implements Action {
     type: string = ERiesgosActionTypes.restartingScenario;
     constructor(public payload: {scenario: Scenario}) {}
 }

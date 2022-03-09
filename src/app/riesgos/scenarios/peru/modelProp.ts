@@ -1,46 +1,8 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { HttpClient } from '@angular/common/http';
-import { schemaPeru } from './exposure';
-
-
-
-export const assetcategoryPeru: Product & WpsData = {
-    uid: 'assetcategoryPeru',
-    description: {
-        id: 'assetcategory',
-        title: '',
-        defaultValue: 'buildings',
-        reference: false,
-        type: 'literal'
-    },
-    value: 'buildings'
-};
-
-export const losscategoryPeru: Product & WpsData = {
-    uid: 'losscategoryPeru',
-    description: {
-        id: 'losscategory',
-        title: '',
-        defaultValue: 'structural',
-        reference: false,
-        type: 'literal'
-    },
-    value: 'structural'
-};
-
-export const taxonomiesPeru: Product & WpsData = {
-    uid: 'taxonomiesPeru',
-    description: {
-        id: 'taxonomies',
-        title: '',
-        reference: false,
-        type: 'literal',
-        defaultValue: 'none'
-    },
-    value: 'none'
-};
+import { Observable } from 'rxjs';
 
 
 export const fragilityRefPeru: WpsData & Product = {
@@ -64,11 +26,11 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
         super(
             'Vulnerability',
             'EQ Vulnerability Model',
-            [schemaPeru, assetcategoryPeru, losscategoryPeru, taxonomiesPeru].map(p => p.uid),
+            ['schema'],
             [fragilityRefPeru.uid],
             'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
             '',
-            'http://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable(),
@@ -80,5 +42,47 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/'
         };
+    }
+    
+    execute(inputs, outputs, doWhileExecuting): Observable<Product[]> {
+
+
+        const assetCategory: Product & WpsData = {
+            uid: 'assetcategory',
+            description: {
+                id: 'assetcategory',
+                title: '',
+                reference: false,
+                type: 'literal'
+            },
+            value: 'buildings'
+        };
+
+        const lossCategory: Product & WpsData = {
+            uid: 'losscategory',
+            description: {
+                id: 'losscategory',
+                title: '',
+                reference: false,
+                type: 'literal'
+            },
+            value: 'structural'
+        };
+
+        const taxonomies: Product & WpsData = {
+            uid: 'taxonomies',
+            description: {
+                id: 'taxonomies',
+                title: '',
+                reference: false,
+                type: 'literal',
+            },
+            value: 'none'
+        };
+
+        const allInputs = [
+            ... inputs, assetCategory, lossCategory, taxonomies
+        ];
+        return super.execute(allInputs, outputs, doWhileExecuting);
     }
 }

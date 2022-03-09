@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentChecked, HostBinding } from '@angular/core';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { Component, OnInit, AfterContentChecked, HostBinding } from '@angular/core';
+import { Observable, combineLatest } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
-import { withLatestFrom, map, delay } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 
 
@@ -37,14 +37,13 @@ export class RouteDocumentationComponent implements OnInit, AfterContentChecked 
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private translator: TranslateService
+    private translator: SimplifiedTranslationService
   ) { }
 
   ngOnInit() {
 
     const wikiData$ = this.http.get<TranslatableEntry[]>('assets/wiki/wiki.json');
-    const currentLang$ = new BehaviorSubject<string>(this.translator.currentLang);
-    this.translator.onLangChange.subscribe((newLang: LangChangeEvent) => currentLang$.next(newLang.lang));
+    const currentLang$ = this.translator.getCurrentLang();
 
 
     this.entries$ = combineLatest([currentLang$, wikiData$]).pipe(map(([lang, wikiData]: [string, TranslatableEntry[]]) => {

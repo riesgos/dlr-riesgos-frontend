@@ -4,19 +4,18 @@ import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduct,
     VectorLayerProduct, WmsLayerProduct, WmsLayerDescription, isMultiVectorLayerProduct,
     MultiVectorLayerProduct } from '../../riesgos/riesgos.datatypes.mappable';
-import { Feature, featureCollection, FeatureCollection } from '@turf/helpers';
+import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { Feature as olFeature } from 'ol';
 import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { WMSCapabilities } from 'ol/format';
-import { map, tap, withLatestFrom } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { ProductVectorLayer, ProductRasterLayer, ProductLayer, ProductCustomLayer } from './map.types';
 import { downloadBlob, downloadJson } from 'src/app/helpers/others';
-import { TranslateService, TranslateParser, LangChangeEvent } from '@ngx-translate/core';
 import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON } from 'ol/format';
@@ -24,13 +23,14 @@ import olTileLayer from 'ol/layer/Tile';
 import olTileWMS from 'ol/source/TileWMS';
 import olLayerGroup from 'ol/layer/Group';
 import Polygon from 'ol/geom/Polygon';
-import { SldParserService } from 'src/app/services/sld/sld-parser.service';
 import { laharContoursWms } from 'src/app/riesgos/scenarios/ecuador/laharWrapper';
 import { GroupSliderComponent, SliderEntry } from '../dynamic/group-slider/group-slider.component';
 import { VectorLegendComponent } from '../dynamic/vector-legend/vector-legend.component';
 import { WebGlPolygonLayer } from '../../helpers/custom_renderers/renderers/polygon.renderer';
-import * as hashfunction from 'imurmurhash';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+import Geometry from 'ol/geom/Geometry';
+import { Fill, Stroke, Style } from 'ol/style';
 
 
 
@@ -46,52 +46,17 @@ interface WmsParameters {
     srs: string;
 }
 
-interface CacheEntry {
-    hash: number;
-    value: ProductLayer[];
-}
-
 
 @Injectable()
 export class LayerMarshaller  {
-
-    private dictEn: Object;
-    private dictEs: Object;
-    private currentLang: string;
-    private cache: {[uid: string]: CacheEntry} = {};
 
     constructor(
         private httpClient: HttpClient,
         private mapSvc: MapOlService,
         public mapStateSvc: MapStateService,
-        private sldParser: SldParserService,
         private store: Store<State>,
-        private translator: TranslateService,
-        private translateParser: TranslateParser
-        ) {
-            this.translator.getTranslation('EN').subscribe(d => this.dictEn = d);
-            this.translator.getTranslation('ES').subscribe(d => this.dictEs = d);
-            this.currentLang = this.translator.currentLang;
-            this.translator.onLangChange.subscribe((lce: LangChangeEvent) => {
-                this.currentLang = lce.lang;
-            });
-    }
-
-    private getDict(): Object {
-        switch (this.currentLang) {
-            case 'EN':
-                return this.dictEn;
-            case 'ES':
-                return this.dictEs;
-            default:
-                const defaultLang = this.translator.getDefaultLang();
-                if (defaultLang === 'EN') {
-                    return this.dictEn;
-                } else {
-                    return this.dictEs;
-                }
-        }
-    }
+        private translator: SimplifiedTranslationService
+        ) {}
 
     productsToLayers(products: Product[]): Observable<ProductLayer[]> {
         if (products.length === 0) {
@@ -100,22 +65,7 @@ export class LayerMarshaller  {
 
         const observables$ = [];
         for (const product of products) {
-            // observables$.push(this.toLayers(product));
-            // before marshalling a product, checking if it's already in cache
-            const hash = hashfunction(JSON.stringify(product)).result();
-            if (this.cache[product.uid] && this.cache[product.uid].hash === hash) {
-                observables$.push(of(this.cache[product.uid].value));
-            } else {
-                observables$.push(this.toLayers(product).pipe(
-                    // after marshalling a product, adding it to the cache
-                    tap((result: ProductLayer[]) => {
-                        this.cache[product.uid] = {
-                            hash: hash,
-                            value: result
-                        };
-                    }))
-                );
-            }
+            observables$.push(this.toLayers(product));
         }
         return forkJoin(observables$).pipe(
             map((results: ProductLayer[][]) => {
@@ -132,20 +82,64 @@ export class LayerMarshaller  {
 
 
     toLayers(product: Product): Observable<ProductLayer[]> {
+
+        // First of all, a bunch of special cases. Each one of those layers has some customizations after user-requests
         if (product.uid === laharContoursWms.uid) {
             return this.createLaharContourLayers(product);
         }
-        if (['ashfall_damage_output_values', 'lahar_damage_output_values', 'lahar_ashfall_damage_output_values',
-             'eq_deus_output_values', 'eq_deus_peru_output_values'].includes(product.uid)) {
+        if (['ashfall_damage_output_values', 'lahar_damage_output_values',
+            'lahar_ashfall_damage_output_values',
+             'eq_deus_output_values', 'ts_deus_output_values',
+             'eq_deus_peru_output_values', 'ts_deus_output_values_peru'].includes(product.uid)) {
             return this.createWebglLayers(product as MultiVectorLayerProduct);
         }
         if (['initial_Exposure', 'initial_Exposure_Lahar',
             'ts_damage', 'ts_transition', 'ts_updated_exposure',
-            'AssetmasterProcess_Exposure_Peru', 
+            'AssetmasterProcess_Exposure_Peru',
             'ts_damage_peru', 'ts_transition_peru', 'ts_updated_exposure_peru'].includes(product.uid)) {
             return this.createWebglLayer(product as VectorLayerProduct).pipe(map(layer => [layer]));
         }
+        if (['Shakyground_wms', 'Shakyground_sa03_wms', 'Shakyground_sa10_wms',
+            'Shakyground_wmsPeru', 'Shakyground_sa03_wmsPeru', 'Shakyground_sa10_wmsPeru'
+            ].includes(product.uid)) {
+            return this.makeWmsLayers(product as WmsLayerProduct).pipe(map(layers => {
+                switch (product.uid) {
+                    case 'Shakyground_wms':
+                        layers[0].name = 'PGA';
+                        break;
+                    case 'Shakyground_sa03_wms':
+                        layers[0].name = 'SA(0.3)';
+                        break;
+                    case 'Shakyground_sa10_wms':
+                        layers[0].name = 'SA(1.0)';
+                        break;
+                    case 'Shakyground_wmsPeru':
+                        layers[0].name = 'PGA';
+                        break;
+                    case 'Shakyground_sa03_wmsPeru':
+                        layers[0].name = 'SA(0.3)';
+                        break;
+                    case 'Shakyground_sa10_wmsPeru':
+                        layers[0].name = 'SA(1.0)';
+                        break;
+                }
+                layers[0].legendImg = 'assets/images/shakemap_pga_legend_labeled.svg';
+                layers[0].opacity = 0.3;
+                return layers;
+            }));
+        }
 
+        if (['QuakeledgerProcess_selectedRows', 'QuakeledgerProcess_selectedRowsPeru'].includes(product.uid)) {
+            return this.makeGeojsonLayer(product as VectorLayerProduct).pipe(
+                map(p => {
+                    // @ts-ignore
+                    p.popup.event = 'move';  // eq-selection shall show popups on hover, not on click.
+                    return [p];
+                })
+            );
+        }
+
+        // Secondly, standard processing of mappable products.
         if (isWmsProduct(product)) {
             return this.makeWmsLayers(product);
         } else if (isMultiVectorLayerProduct(product)) {
@@ -163,7 +157,10 @@ export class LayerMarshaller  {
         const layers$: Observable<ProductCustomLayer>[] = [];
         const data = product.value[0];
         const source = new olVectorSource({
-            features: new GeoJSON().readFeatures(data)
+            features: new GeoJSON({
+                dataProjection: 'EPSG:4326',
+                featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+            }).readFeatures(data)
         });
         for (const vectorLayerProps of product.description.vectorLayers) {
             const vectorLayerProduct: VectorLayerProduct = {
@@ -171,7 +168,8 @@ export class LayerMarshaller  {
                 description: {
                     id: product.uid + '_' + vectorLayerProps.name,
                     ... vectorLayerProps,
-                    ... product.description,
+                    format: 'application/vnd.geo+json',
+                    type: 'complex'
                 }
             };
             const pcl$ = this.createWebglLayer(vectorLayerProduct, source);
@@ -180,21 +178,27 @@ export class LayerMarshaller  {
         return forkJoin(layers$);
     }
 
-    createWebglLayer(product: VectorLayerProduct, source?: olVectorSource): Observable<ProductCustomLayer> {
+    createWebglLayer(product: VectorLayerProduct, source?: olVectorSource<any>): Observable<ProductCustomLayer> {
         if (!source) {
             const data = product.value[0];
             source = new olVectorSource({
-                features: new GeoJSON().readFeatures(data)
+                features: new GeoJSON({
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                }).readFeatures(data)
             });
         }
         const data = product.value[0];
         const vl = new WebGlPolygonLayer({
-            // @ts-ignore
-            source: source,
+            source,
             colorFunc: (f: olFeature<Polygon>) => {
                 const style = product.description.vectorLayerAttributes.style(f, null, false);
-                const color = style.fill_.color_;
-                return [color[0] / 255, color[1] / 255, color[2] / 255];
+                const fillColor = style.fill_.color_;
+                const lineColor = style.stroke_.color_;
+                return {
+                    'fillColor': [fillColor[0] / 255, fillColor[1] / 255, fillColor[2] / 255, fillColor[3]],
+                    'lineColor': [lineColor[0] / 255, lineColor[1] / 255, lineColor[2] / 255, lineColor[3]],
+                };
             }
         });
         const ukisLayer = new ProductCustomLayer({
@@ -211,10 +215,9 @@ export class LayerMarshaller  {
             time: null,
             filtertype: 'Overlays',
             popup: {
-                pupupFunktion: (obj) => {
+                popupFunction: (obj) => {
                     let html = product.description.vectorLayerAttributes.text(obj);
-                    const dict = this.getDict();
-                    html = this.translateParser.interpolate(html, dict);
+                    html = this.translator.syncTranslate(html);
                     return html;
                 }
             },
@@ -224,7 +227,10 @@ export class LayerMarshaller  {
                 icon: 'download',
                 title: 'download',
                 action: (theLayer: any) => {
-                    const geojsonParser = new GeoJSON();
+                    const geojsonParser = new GeoJSON({
+                        dataProjection: 'EPSG:4326',
+                        featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                    });
                     const olFeatures = theLayer.custom_layer.getSource().getFeatures();
                     const data = JSON.parse(geojsonParser.writeFeatures(olFeatures));
                     if (data) {
@@ -232,14 +238,17 @@ export class LayerMarshaller  {
                     }
                 }
             }],
-            dynamicDescription: product.description.vectorLayerAttributes.summary ? product.description.vectorLayerAttributes.summary(product.value) : undefined
+            dynamicDescription:
+                product.description.vectorLayerAttributes.summary
+                    ? product.description.vectorLayerAttributes.summary(product.value)
+                    : undefined
         });
 
 
         // Ugly hack: a custom layer is not supposed to have an 'options' property.
         // We set it here anyway, because we need options.style to be able to create a custom legend.
         ukisLayer['options'] = {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 return product.description.vectorLayerAttributes.style(feature, resolution, props.selected);
             }
@@ -298,7 +307,7 @@ export class LayerMarshaller  {
                     action: {
                         component: GroupSliderComponent,
                         inputs: {
-                            entries: entries,
+                            entries,
                             selectionHandler: (selectedId: string) => {
                                 layerGroup.getLayers().forEach(l => {
                                     if (l.get('id') === selectedId) {
@@ -321,11 +330,26 @@ export class LayerMarshaller  {
         const bboxArray: [number, number, number, number] =
             [product.value.lllon, product.value.lllat, product.value.urlon, product.value.urlat];
         const source = new olVectorSource({
-            features: (new GeoJSON()).readFeatures(
+            features: (new GeoJSON({
+                dataProjection: 'EPSG:4326',
+                featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+            })).readFeatures(
                 featureCollection([bboxPolygon(bboxArray)]))
         });
-        const olLayer: olVectorLayer = new olVectorLayer({
-            source: source
+        const olLayer: olVectorLayer<olVectorSource<any>> = new olVectorLayer({
+            source: source,
+            style: (feature, resolution) => {
+                const a = Math.min(0.8, Math.pow(resolution / 10000, 2.30));
+                return new Style({
+                    stroke: new Stroke({
+                        color: `rgba(0, 0, 255, ${a + 0.2})`,
+                        width: 2,
+                    }),
+                    fill: new Fill({
+                        color: `rgba(0, 0, 255, ${a})`,
+                    }),
+                });
+            }
         });
 
         const riesgosLayer: ProductCustomLayer = new ProductCustomLayer({
@@ -339,26 +363,10 @@ export class LayerMarshaller  {
             type: 'custom',
             removable: true,
             filtertype: 'Overlays',
-            hasFocus: false
+            hasFocus: false,
+            popup: false,
         });
         return of(riesgosLayer);
-        // const layer: ProductVectorLayer = new ProductVectorLayer({
-        //     productId: product.uid,
-        //     id: `${product.uid}_${product.description.id}_result_layer`,
-        //     name: `${product.description.name}`,
-        //     attribution: '',
-        //     removable: true,
-        //     opacity: 1.0,
-        //     type: 'geojson',
-        //     filtertype: 'Overlays',
-        //     data: featureCollection([bboxPolygon(bboxArray)]),
-        //     options: { style: undefined },
-        //     popup: null,
-        //     icon: product.description.icon,
-        //     hasFocus: false
-        // });
-        // layer.productId = product.uid;
-        // return of(layer);
     }
 
     /**
@@ -369,15 +377,18 @@ export class LayerMarshaller  {
     makeGeojsonLayers(product: MultiVectorLayerProduct): Observable<ProductCustomLayer[]> {
 
         const source = new olVectorSource({
-            features: (new GeoJSON()).readFeatures(product.value[0])
+            features: (new GeoJSON({
+                dataProjection: 'EPSG:4326',
+                featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+            })).readFeatures(product.value[0])
         });
 
         const layers = [];
         for (const vectorLayerProps of product.description.vectorLayers) {
 
-            const layer: olVectorLayer = new olVectorLayer({
+            const layer: olVectorLayer<olVectorSource<any>> = new olVectorLayer({
                 source: source,
-                style: (feature: olFeature, resolution: number) => {
+                style: (feature: olFeature<Geometry>, resolution: number) => {
                     const props = feature.getProperties();
                     return vectorLayerProps.vectorLayerAttributes.style(feature, resolution, props.selected);
                 }
@@ -397,10 +408,9 @@ export class LayerMarshaller  {
                 time: null,
                 filtertype: 'Overlays',
                 popup: {
-                    pupupFunktion: (obj) => {
+                    popupFunction: (obj) => {
                         let html = vectorLayerProps.vectorLayerAttributes.text(obj);
-                        const dict = this.getDict();
-                        html = this.translateParser.interpolate(html, dict);
+                        html = this.translator.syncTranslate(html);
                         return html;
                     }
                 },
@@ -410,7 +420,10 @@ export class LayerMarshaller  {
                     icon: 'download',
                     title: 'download',
                     action: (theLayer: any) => {
-                        const geojsonParser = new GeoJSON();
+                        const geojsonParser = new GeoJSON({
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                        });
                         const olFeatures = theLayer.custom_layer.getSource().getFeatures();
                         const data = JSON.parse(geojsonParser.writeFeatures(olFeatures));
                         if (data) {
@@ -425,7 +438,7 @@ export class LayerMarshaller  {
             // Ugly hack: a custom layer is not supposed to have an 'options' property.
             // We set it here anyway, because we need options.style to be able to create a custom legend.
             productLayer['options'] = {
-                style: (feature: olFeature, resolution: number) => {
+                style: (feature: olFeature<Geometry>, resolution: number) => {
                     const props = feature.getProperties();
                     return vectorLayerProps.vectorLayerAttributes.style(feature, resolution, props.selected);
                 }
@@ -454,11 +467,12 @@ export class LayerMarshaller  {
 
                 const data = product.value[0];
                 let bx = null;
-                // switched off for performance reasons.
-                try {
-                    bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
-                } catch (error) {
-                    console.log('could not do buffer with ', data, error);
+                if (data.length > 1) { // don't want a buffer around single-entry layers
+                    try {
+                        bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
+                    } catch (error) {
+                        console.log('could not do buffer with ', data, error);
+                    }
                 }
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({
@@ -476,10 +490,10 @@ export class LayerMarshaller  {
                         style: styleFunction
                     },
                     popup: {
-                        pupupFunktion: (obj) => {
+                        single: true,
+                        popupFunction: (obj) => {
                             let html = product.description.vectorLayerAttributes.text(obj);
-                            const dict = this.getDict();
-                            html = this.translateParser.interpolate(html, dict);
+                            html = this.translator.syncTranslate(html);
                             return html;
                         }
                     },
@@ -495,7 +509,10 @@ export class LayerMarshaller  {
                             }
                         }
                     }],
-                    dynamicDescription: product.description.vectorLayerAttributes.summary ? product.description.vectorLayerAttributes.summary(data) : undefined,
+                    dynamicDescription:
+                        product.description.vectorLayerAttributes.summary
+                        ? product.description.vectorLayerAttributes.summary(data)
+                        : undefined,
                 });
                 layer.productId = product.uid;
 
@@ -518,7 +535,7 @@ export class LayerMarshaller  {
     private getSelectionAwareStyle(product: VectorLayerProduct): Observable<CallableFunction | null> {
         return this.getStyle(product).pipe(map(style => {
             if (style) {
-                return (feature: olFeature, resolution: number) => {
+                return (feature: olFeature<Geometry>, resolution: number) => {
                     const props = feature.getProperties();
                     return style(feature, resolution, props.selected);
                 }
@@ -532,7 +549,9 @@ export class LayerMarshaller  {
         if (product.description.vectorLayerAttributes.style) {
             return of(product.description.vectorLayerAttributes.style);
         } else if (product.description.vectorLayerAttributes.sldFile) {
-            return this.sldParser.readStyleForLayer(product.description.vectorLayerAttributes.sldFile, product.description.id);
+            // return this.sldParser.readStyleForLayer(product.description.vectorLayerAttributes.sldFile, product.description.id);
+            console.error('niewlandgeo/sldreader is currently not compatible with ol6')
+            return null;
         } else {
             return of(null);
         }
@@ -579,12 +598,12 @@ export class LayerMarshaller  {
             const layers: ProductRasterLayer[] = [];
             if (paras) {
 
-                for (const layername of paras.layers) {
-                    // @TODO: convert all searchparameter names to uppercase
+                for (const layerName of paras.layers) {
+                    // @TODO: convert all search-parameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
                         productId: uid,
-                        id: `${uid}_${layername}_result_layer`,
-                        name: `${layername}`,
+                        id: `${uid}_${layerName}_result_layer`,
+                        name: `${layerName}`,
                         attribution: '',
                         opacity: 1.0,
                         removable: true,
@@ -594,7 +613,7 @@ export class LayerMarshaller  {
                         url: `${paras.origin}${paras.path}?`,
                         params: {
                             VERSION: paras.version,
-                            LAYERS: layername,
+                            LAYERS: layerName,
                             WIDTH: paras.width,
                             HEIGHT: paras.height,
                             FORMAT: paras.format,
@@ -605,9 +624,9 @@ export class LayerMarshaller  {
                         },
                         legendImg: description.legendImg ? description.legendImg :  `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
                             `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
-                            `&TRANSPARENT=TRUE&LAYER=${layername}`,
+                            `&TRANSPARENT=TRUE&LAYER=${layerName}`,
                         popup: {
-                            asyncPupup: (obj, callback) => {
+                            asyncPopup: (obj, callback) => {
                                 this.getFeatureInfoPopup(obj, callback, description.featureInfoRenderer);
                             }
                         },
@@ -642,12 +661,12 @@ export class LayerMarshaller  {
                     }
 
                     // special wish by theresa...
-                    if (layername.match(/Lahar_(N|S)_VEI\d\dmio_(maxvelocity|maxpressure|maxerosion|deposition)_\d\dm$/)
-                     || layername.match(/LaharArrival_(N|S)_VEI\d_wgs_s\d/)) {
+                    if (layerName.match(/Lahar_(N|S)_VEI\d\dmio_(maxvelocity|maxpressure|maxerosion|deposition)_\d\dm$/)
+                     || layerName.match(/LaharArrival_(N|S)_VEI\d_wgs_s\d/)) {
                         layer.visible = false;
                     }
                     // special wish: legend for shakemap:
-                    if (layername.match(/N52:primary/)) {
+                    if (layerName.match(/N52:primary/)) {
                         layer.legendImg = 'assets/images/eq_legend_small.png';
                     }
 
@@ -753,8 +772,7 @@ export class LayerMarshaller  {
             } else {
                 html = this.formatFeatureCollectionToTable(response);
             }
-            const dict = this.getDict();
-            html = this.translateParser.interpolate(html, dict);
+            html = this.translator.syncTranslate(html);
             callback(html);
         });
     }

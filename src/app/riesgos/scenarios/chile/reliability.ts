@@ -1,14 +1,15 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { eqShakemapRef } from './shakyground';
 import { Observable } from 'rxjs';
 import { greenYellowRedRange } from 'src/app/helpers/colorhelpers';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -21,7 +22,7 @@ export const countryChile: WpsData & Product = {
         description: 'What country are we working in?',
         reference: false,
         type: 'literal',
-        format: 'application/text'
+        format: 'text/plain'
     },
     value: 'chile'
 };
@@ -36,7 +37,7 @@ export const hazardEq: WpsData & Product = {
         description: 'What hazard are we dealing with?',
         reference: false,
         type: 'literal',
-        format: 'application/text'
+        format: 'text/plain'
     },
     value: 'earthquake'
 };
@@ -52,7 +53,7 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerProduct = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 let probDisr = 0;
                 if (props['Prob_Disruption']) {
@@ -67,7 +68,7 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerProduct = {
                   }),
                   stroke: new olStroke({
                     color: [r, g, b, 1],
-                    witdh: 2
+                    width: 2
                   })
                 });
             },
@@ -128,8 +129,8 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
             [damageConsumerAreas].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess',
             'Process for evaluating the reliability of infrastructure networks',
-            'http://91.250.85.221/wps/WebProcessingService',
-            '1.0.0',
+            'https://riesgos.52north.org/javaps/service',
+            '2.0.0',
             http,
             new ProcessStateUnavailable(),
             cache
@@ -138,7 +139,7 @@ export class EqReliability extends WpsProcess implements WizardableProcess {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
             shape: 'router',
-            wikiLink: 'Reliability'
+            wikiLink: 'CriticalInfrastructure'
         };
     }
 

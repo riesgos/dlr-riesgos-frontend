@@ -2,12 +2,12 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { vei } from './lahar';
 import { ProcessStateUnavailable, ExecutableProcess, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { Observable, of } from 'rxjs';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WpsData } from '@dlr-eoc/utils-ogc';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { WpsData } from 'src/app/services/wps';
 
 
 
-export const selectableVei: StringSelectUconfProduct & WpsData = {
+export const selectableVei: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'selectable_intensity',
     description: {
         id: 'intensity',
@@ -29,7 +29,7 @@ export const selectableVei: StringSelectUconfProduct & WpsData = {
 export const VeiProvider: WizardableProcess & ExecutableProcess = {
     uid: 'vei_provider',
     name: 'VEI Selection',
-    description: 'The Volcanic Explosivity Index (VEI) is a relative measure of the explosiveness of volcanic eruptions. Volume of products, eruption cloud height, and qualitative observations are used to determine the explosivity value.',
+    description: 'VEI_description',
     requiredProducts: [selectableVei.uid],
     providedProducts: [vei.uid],
     state: new ProcessStateUnavailable(),
@@ -37,6 +37,7 @@ export const VeiProvider: WizardableProcess & ExecutableProcess = {
         providerName: '',
         providerUrl: '',
         shape: 'volcanoe',
+        wikiLink: 'VeiSelection'
     },
     execute: (products: Product[]): Observable<Product[]> => {
         const selectedVeiProd = products.find(p => p.uid === selectableVei.uid);

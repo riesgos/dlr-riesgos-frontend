@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LicensesComponent } from './licenses.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ describe('LicensesComponent', () => {
   let component: LicensesComponent;
   let fixture: ComponentFixture<LicensesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LicensesComponent ],
       imports: [TranslateModule.forRoot(), ClarityModule, HttpClientTestingModule ]

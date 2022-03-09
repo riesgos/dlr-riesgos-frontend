@@ -6,10 +6,10 @@
 
 
     <!-- layer title -->
-    <div #ref class="item-title-replacement title" (click)="showProperties()" [title]="getLayerName(group)">
+    <div #ref class="item-title-replacement title" (click)="showProperties()" [title]="getLayerName(group) | regexTranslate | translate">
       <ng-content></ng-content>
     </div>
-    <span *ngIf="ref.children.length == 0" class="title" [title]="getLayerName(group)" (click)="showProperties()">
+    <span *ngIf="ref.children.length == 0" class="title" [title]="getLayerName(group) | regexTranslate | translate" (click)="showProperties()">
       {{getLayerName(group)}}
     </span>
 
@@ -38,11 +38,11 @@
     <div class="tools">
       <span></span>
       <clr-icon *ngFor="let item of group.actions" [attr.shape]="item.icon" class="iconButton"
-        (click)="item.action(group)" [title]="item.title">
+        (click)="item.action(group)" [title]="item.title | regexTranslate | translate">
       </clr-icon>
 
       <clr-icon *ngIf="group.description" shape="info-standard" class="iconButton" [ngClass]="{'is-solid':showInfo}"
-        (click)="showInfo = !showInfo" title="{{!showInfo?'Show Info': 'Hide Info'}}"></clr-icon>
+        (click)="showInfo = !showInfo" [title]="!showInfo ? 'show_info' : 'hide_info' | translate"></clr-icon>
       <clr-icon shape="details" class="iconButton" [ngClass]="{'is-solid':openAllLayersProperties}"
         (click)="showHideAllDetails()"
         title="{{!openAllLayersProperties?'Show all layers details': 'Hide all layers details'}}"></clr-icon>
@@ -51,18 +51,18 @@
     </div>
 
     <div class="info" *ngIf="showInfo">
-      <span [innerHTML]="group.description"></span>
+      <span [innerHTML]="group.description | translate"></span>
     </div>
 
     <!-- (cdkDropListSorted)="sort($event)" -->
     <div cdkDropList (cdkDropListDropped)="drop($event)">
       <div class="sublayers" *ngFor="let layer of group.layers | reverse;" cdkDragLockAxis="y" cdkDrag>
-        <ukis-layerentry [expanded]="openAllLayersProperties" [layersSvc]="layersSvc" [mapState]="mapState"
+        <riesgos-layerentry [expanded]="openAllLayersProperties" [layersSvc]="layersSvc" [mapState]="mapState"
           [layer]="layer" [group]="group" (update)="layerUpdate($event, group)">
           <span class="move-item" cdkDragHandle>
             {{layer.displayName || layer.name | regexTranslate | translate }}
           </span>
-        </ukis-layerentry>
+        </riesgos-layerentry>
       </div>
     </div>
   </div>

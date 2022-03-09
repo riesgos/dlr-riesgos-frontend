@@ -10,6 +10,7 @@ import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Observable } from 'rxjs';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import Geometry from 'ol/geom/Geometry';
+import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 
 
 
@@ -130,6 +131,14 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
         },
         text: `exposureLegend`
       }],
+      summary: (value) => {
+        return {
+          component: TranslatableStringComponent,
+          inputs: {
+            text: 'BuildingTypesSara'
+          }
+        };
+      }
     }
   },
   value: null

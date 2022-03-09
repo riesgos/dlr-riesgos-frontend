@@ -51,7 +51,6 @@
     "graphlib": "^2.1.8",
     "html2canvas": "^1.0.0-rc.7",
     "idb-keyval": "^3.2.0",
-    "imurmurhash": "^0.1.4",
     "jspdf": "^2.1.1",
     "md5": "^2.3.0",
     "ng5-slider": "^1.2.4",

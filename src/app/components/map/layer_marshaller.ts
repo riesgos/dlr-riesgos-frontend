@@ -27,7 +27,6 @@ import { laharContoursWms } from 'src/app/riesgos/scenarios/ecuador/laharWrapper
 import { GroupSliderComponent, SliderEntry } from '../dynamic/group-slider/group-slider.component';
 import { VectorLegendComponent } from '../dynamic/vector-legend/vector-legend.component';
 import { WebGlPolygonLayer } from '../../helpers/custom_renderers/renderers/polygon.renderer';
-import * as hashFunction from 'imurmurhash';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import Geometry from 'ol/geom/Geometry';
@@ -47,16 +46,9 @@ interface WmsParameters {
     srs: string;
 }
 
-interface CacheEntry {
-    hash: number;
-    value: ProductLayer[];
-}
-
 
 @Injectable()
 export class LayerMarshaller  {
-
-    private cache: {[uid: string]: CacheEntry} = {};
 
     constructor(
         private httpClient: HttpClient,
@@ -73,22 +65,7 @@ export class LayerMarshaller  {
 
         const observables$ = [];
         for (const product of products) {
-            // observables$.push(this.toLayers(product));
-            // before marshalling a product, checking if it's already in cache
-            const hash = hashFunction(JSON.stringify(product)).result();
-            if (this.cache[product.uid] && this.cache[product.uid].hash === hash) {
-                observables$.push(of(this.cache[product.uid].value));
-            } else {
-                observables$.push(this.toLayers(product).pipe(
-                    // after marshalling a product, adding it to the cache
-                    tap((result: ProductLayer[]) => {
-                        this.cache[product.uid] = {
-                            hash,
-                            value: result
-                        };
-                    }))
-                );
-            }
+            observables$.push(this.toLayers(product));
         }
         return forkJoin(observables$).pipe(
             map((results: ProductLayer[][]) => {

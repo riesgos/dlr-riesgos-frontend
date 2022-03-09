@@ -32,10 +32,10 @@ export const laharLossProps: VectorLayerProperties = {
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });
@@ -140,10 +140,10 @@ export const laharTransitionProps: VectorLayerProperties = {
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });
@@ -283,10 +283,10 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });

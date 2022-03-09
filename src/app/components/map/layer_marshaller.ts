@@ -124,6 +124,7 @@ export class LayerMarshaller  {
                         break;
                 }
                 layers[0].legendImg = 'assets/images/shakemap_pga_legend_labeled.svg';
+                layers[0].opacity = 0.3;
                 return layers;
             }));
         }
@@ -350,7 +351,6 @@ export class LayerMarshaller  {
                 });
             }
         });
-        olLayer.set('is_bbox_layer', true);
 
         const riesgosLayer: ProductCustomLayer = new ProductCustomLayer({
             custom_layer: olLayer,

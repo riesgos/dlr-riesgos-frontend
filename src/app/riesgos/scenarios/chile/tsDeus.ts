@@ -493,7 +493,9 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
                         counts[damageClass] += nrBuildings;
                     }
                 }
-                const html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+                const html =
+                    createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))])
+                    + '{{ BuildingTypesSuppasri }}';
                 const comp: IDynamicComponent = {
                     component: TranslatableStringComponent,
                     inputs: {

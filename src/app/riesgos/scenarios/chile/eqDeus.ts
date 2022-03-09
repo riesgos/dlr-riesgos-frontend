@@ -123,7 +123,6 @@ export const transitionProps: VectorLayerProperties = {
         style: (feature: olFeature<Geometry>, resolution: number) => {
             const props = feature.getProperties();
 
-
             const I = props['transitions']['n_buildings'].length;
             const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
 
@@ -458,7 +457,9 @@ const updatedExposureProps: VectorLayerProperties = {
                     counts[damageClass] += nrBuildings;
                 }
             }
-            const html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+            const html =
+                createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))])
+                + '{{ BuildingTypesSara }}';
             const comp: IDynamicComponent = {
                 component: TranslatableStringComponent,
                 inputs: {

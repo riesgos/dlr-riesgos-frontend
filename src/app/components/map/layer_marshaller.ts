@@ -377,7 +377,6 @@ export class LayerMarshaller  {
      * because UKIS-VectorLayers are assumed to have their own source of data.
      */
     makeGeojsonLayers(product: MultiVectorLayerProduct): Observable<ProductCustomLayer[]> {
-
         const source = new olVectorSource({
             features: (new GeoJSON({
                 dataProjection: 'EPSG:4326',

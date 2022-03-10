@@ -10,8 +10,6 @@ import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
 import { GeoJSON, KML, MVT } from 'ol/format';
 import { get as getProjection, METERS_PER_UNIT } from 'ol/proj';
-import Feature from 'ol/Feature';
-import olLayer from 'ol/layer/Layer';
 import { click, noModifierKeys } from 'ol/events/condition';
 import { applyStyle } from 'ol-mapbox-style';
 import { createXYZ } from 'ol/tilegrid';
@@ -32,11 +30,10 @@ import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { LayerMarshaller } from './layer_marshaller';
 import { ProductLayer } from './map.types';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
-import Geometry from 'ol/geom/Geometry';
 import { SelectEvent } from 'ol/interaction/Select';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { VectorTile } from 'ol/source';
-import { createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
+import { createTableHtml } from 'src/app/helpers/others';
 import { updateSearchParamsHashRouting } from 'src/app/shared/url.utils';
 
 const mapProjection = 'EPSG:3857';
@@ -55,8 +52,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         dataProjection: 'EPSG:4326',
         featureProjection: this.mapSvc.map.getView().getProjection().getCode()
     });
-    private highlightedFeatures$ = new BehaviorSubject<Feature<Geometry>[]>([]);
-    private highlightedFeatures: Feature<Geometry>[] = [];
     private interactionState$ = new BehaviorSubject<InteractionState>(initialInteractionState);
     private subs: Subscription[] = [];
 
@@ -205,13 +200,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             if (features.length) {
                 if (this.interactionState$.getValue().mode === 'featureselection') {
                     const feature = features[0];
+                    const newFeatureCollection = tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))]);
                     const product = {
                         ...this.interactionState$.getValue().product,
-                        value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
+                        value: [newFeatureCollection]
                     };
                     this.store.dispatch(new InteractionCompleted({ product }));
-                    // reacting to click on single feature: changing highlight
-                    this.highlightedFeatures$.next(features);
                 }
             }
         });
@@ -221,20 +215,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         // remove popups when no feature has been clicked
         this.mapSvc.map.on('click', () => {
             if (this.interactionState$.getValue().mode !== 'featureselection') {
-                // reacting on click into nothing - removing popups and highlighted
                 this.mapSvc.removeAllPopups();
-                this.highlightedFeatures$.next([]);
             }
         });
-
-
-        // listening for changes in highlighted features
-        this.highlightedFeatures$.subscribe((features: Feature<Geometry>[]) => {
-            this.highlightedFeatures.map(f => f.set('selected', false));
-            features.map(f => f.set('selected', true));
-            this.highlightedFeatures = features;
-        });
-
 
         // listening for change in scenario - onInit
         const sub5 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {

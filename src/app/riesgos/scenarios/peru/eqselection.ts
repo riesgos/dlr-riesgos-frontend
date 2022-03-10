@@ -149,6 +149,6 @@ export const EqSelectionPeru: WizardableProcess & ExecutableProcess & ProductTra
 };
 
 function getEqKey(feature) {
-    const key = `Mag. ${feature.properties['magnitude.mag.value']} / ID ${feature.id}`;
+    const key = `Mag. ${feature.properties['magnitude.mag.value']} / ID ${feature.id.replace('quakeml:quakeledger/', '')}`;
     return key;
 }

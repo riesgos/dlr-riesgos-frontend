@@ -27,7 +27,6 @@ import { laharContoursWms } from 'src/app/riesgos/scenarios/ecuador/laharWrapper
 import { GroupSliderComponent, SliderEntry } from '../dynamic/group-slider/group-slider.component';
 import { VectorLegendComponent } from '../dynamic/vector-legend/vector-legend.component';
 import { WebGlPolygonLayer } from '../../helpers/custom_renderers/renderers/polygon.renderer';
-import * as hashFunction from 'imurmurhash';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import Geometry from 'ol/geom/Geometry';
@@ -47,16 +46,9 @@ interface WmsParameters {
     srs: string;
 }
 
-interface CacheEntry {
-    hash: number;
-    value: ProductLayer[];
-}
-
 
 @Injectable()
 export class LayerMarshaller  {
-
-    private cache: {[uid: string]: CacheEntry} = {};
 
     constructor(
         private httpClient: HttpClient,
@@ -73,22 +65,7 @@ export class LayerMarshaller  {
 
         const observables$ = [];
         for (const product of products) {
-            // observables$.push(this.toLayers(product));
-            // before marshalling a product, checking if it's already in cache
-            const hash = hashFunction(JSON.stringify(product)).result();
-            if (this.cache[product.uid] && this.cache[product.uid].hash === hash) {
-                observables$.push(of(this.cache[product.uid].value));
-            } else {
-                observables$.push(this.toLayers(product).pipe(
-                    // after marshalling a product, adding it to the cache
-                    tap((result: ProductLayer[]) => {
-                        this.cache[product.uid] = {
-                            hash,
-                            value: result
-                        };
-                    }))
-                );
-            }
+            observables$.push(this.toLayers(product));
         }
         return forkJoin(observables$).pipe(
             map((results: ProductLayer[][]) => {
@@ -147,6 +124,7 @@ export class LayerMarshaller  {
                         break;
                 }
                 layers[0].legendImg = 'assets/images/shakemap_pga_legend_labeled.svg';
+                layers[0].opacity = 0.3;
                 return layers;
             }));
         }
@@ -215,8 +193,12 @@ export class LayerMarshaller  {
             source,
             colorFunc: (f: olFeature<Polygon>) => {
                 const style = product.description.vectorLayerAttributes.style(f, null, false);
-                const color = style.fill_.color_;
-                return [color[0] / 255, color[1] / 255, color[2] / 255];
+                const fillColor = style.fill_.color_;
+                const lineColor = style.stroke_.color_;
+                return {
+                    'fillColor': [fillColor[0] / 255, fillColor[1] / 255, fillColor[2] / 255, fillColor[3]],
+                    'lineColor': [lineColor[0] / 255, lineColor[1] / 255, lineColor[2] / 255, lineColor[3]],
+                };
             }
         });
         const ukisLayer = new ProductCustomLayer({
@@ -382,6 +364,9 @@ export class LayerMarshaller  {
             removable: true,
             filtertype: 'Overlays',
             hasFocus: false,
+            popup: {
+                filterLayer: true
+            },
         });
         return of(riesgosLayer);
     }

@@ -59,7 +59,7 @@ export class RiesgosEffects {
             withLatestFrom(this.store$),
             switchMap(([action, state]: [ScenarioChosen, State]) => {
                 const newScenario = action.payload.scenario;
-    
+
                 let procs: Process[];
                 let prods: Product[];
                 if (state.riesgosState.scenarioData[newScenario]) {
@@ -71,12 +71,12 @@ export class RiesgosEffects {
                 } else {
                     [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
                 }
-    
+
                 this.wfc = new WorkflowControl(procs, prods, this.errorParser);
                 const processes = this.wfc.getImmutableProcesses();
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
-    
+
                 const actions: Action[] = [new RiesgosDataUpdate({processes, products, graph})];
                 return actions;
             })
@@ -88,7 +88,7 @@ export class RiesgosEffects {
         return this.actions$.pipe(
             ofType<RiesgosActions>(ERiesgosActionTypes.productsProvided),
             map((action: ProductsProvided) => {
-    
+
                 for (const product of action.payload.products) {
                     this.wfc.provideProduct(product.uid, product.value);
                 }
@@ -96,18 +96,18 @@ export class RiesgosEffects {
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
                 return new RiesgosDataUpdate({processes, products, graph});
-    
+
             })
         );
     });
-    
+
 
 
     runProcessClicked$ = createEffect(() => {
         return this.actions$.pipe(
             ofType<RiesgosActions>(ERiesgosActionTypes.clickRunProduct),
             mergeMap((action: ClickRunProcess) =>  {
-    
+
                 const newProducts = action.payload.productsProvided;
                 const process = action.payload.process;
                 for (const prod of newProducts) {
@@ -128,13 +128,13 @@ export class RiesgosEffects {
             }),
             mergeMap(([success, processId]: [boolean, string]) => {
                 const actions: Action[] = [];
-    
+
                 const processes = this.wfc.getImmutableProcesses();
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
                 const wpsUpdate = new RiesgosDataUpdate({processes, products, graph});
                 actions.push(wpsUpdate);
-    
+
                 // We abstain from moving on to the next process for now, until we have a nice way of finding the next one in line.
                 // let nextProcess = this.wfc.getNextActiveChildProcess(processId);
                 // if (! nextProcess) {
@@ -144,26 +144,26 @@ export class RiesgosEffects {
                 //     const processClicked = new NewProcessClicked({processId: nextProcess.id});
                 //     actions.push(processClicked);
                 // }
-    
+
                 return actions;
-    
+
             })
         );
     });
-    
+
 
 
     restartingFromProcess$ = createEffect(() => {
         return this.actions$.pipe(
             ofType<RiesgosActions>(ERiesgosActionTypes.restartingFromProcess),
             map((action: RestartingFromProcess) => {
-    
+
                 this.wfc.invalidateProcess(action.payload.process.uid);
                 const processes = this.wfc.getImmutableProcesses();
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
                 return new RiesgosDataUpdate({processes, products, graph});
-    
+
             })
         );
     });

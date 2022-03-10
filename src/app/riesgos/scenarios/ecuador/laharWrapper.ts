@@ -101,7 +101,7 @@ export const laharDepositionWms: WmsLayerProduct & Product = {
 export const laharContoursWms: WmsLayerProduct & Product = {
     description: {
         id: 'LaharContourLines',
-        icon: 'avalance',
+        icon: 'avalanche',
         name: 'Lahar contour lines',
         format: 'application/WMS',
         type: 'complex',

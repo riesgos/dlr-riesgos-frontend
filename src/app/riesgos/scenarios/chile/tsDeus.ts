@@ -55,10 +55,10 @@ const tsDamageProps: VectorLayerProperties = {
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$ );
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });
@@ -168,10 +168,10 @@ const tsTransitionProps: VectorLayerProperties = {
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });
@@ -320,10 +320,10 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });
@@ -493,7 +493,9 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
                         counts[damageClass] += nrBuildings;
                     }
                 }
-                const html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+                const html =
+                    createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))])
+                    + '{{ BuildingTypesSuppasri }}';
                 const comp: IDynamicComponent = {
                     component: TranslatableStringComponent,
                     inputs: {

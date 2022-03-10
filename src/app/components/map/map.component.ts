@@ -194,7 +194,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             condition: (mapBrowserEvent) => {
                 return click(mapBrowserEvent) && noModifierKeys(mapBrowserEvent);
             },
-            layers: layer => layer.get('id') !== 'planet_eoc_vector_tiles',  // we don't want to select base-map-features.
+            layers: (layer) => {
+                // we don't want to select base-map-features
+                return layer.get('id') !== 'planet_eoc_vector_tiles';
+            },
             style: null // we don't want ol to automatically apply another style on selected items.
         });
         clickInteraction.on('select', (e: SelectEvent) => {
@@ -207,9 +210,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
                     };
                     this.store.dispatch(new InteractionCompleted({ product }));
+                    // reacting to click on single feature: changing highlight
+                    this.highlightedFeatures$.next(features);
                 }
-                // reacting to click on single feature: changing highlight
-                this.highlightedFeatures$.next(features);
             }
         });
         this.mapSvc.map.addInteraction(clickInteraction as any);
@@ -434,8 +437,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '<a href="https://www.gob.pe/idep">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/">Geoservidor MINAM</a>',
-                description: '<a href="https://www.gob.pe/idep">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/">Geoservidor MINAM</a>',
+                attribution: '&copy, <a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
+                description: '<a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
             });
             const peruDepartamentos = new VectorLayer({
                 id: 'peru_departamentos',
@@ -453,14 +456,15 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '<a href="https://www.gob.pe/idep">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/">Geoservidor MINAM</a>',
-                description: '<a href="https://www.gob.pe/idep">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/">Geoservidor MINAM</a>',
+                attribution: '&copy, <a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
+                description: '<a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
             });
             const peruAdministrative = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'peru_administrative',
                 layers: [peruDepartamentos, peruDistritos],
-                name: 'peru_administrative'
+                name: 'peru_administrative',
+                expanded: true,
             });
             layers.push(peruAdministrative);
         }

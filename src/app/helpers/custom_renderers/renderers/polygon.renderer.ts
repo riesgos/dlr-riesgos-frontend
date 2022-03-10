@@ -27,13 +27,14 @@ function apply(transform, coordinate) {
 export interface PolygonRendererData {
     coords: AttributeData;
     colors: AttributeData;
+    lineColors: AttributeData;
     polyIndex: Index;
     lineIndex: Index;
 }
 
 
 export function parseFeaturesToRendererData(
-    features: Feature<Polygon | MultiPolygon>[], colorFunction: (f: Feature<Polygon>) => number[]): PolygonRendererData {
+    features: Feature<Polygon | MultiPolygon>[], colorFunction: (f: Feature<Polygon>) =>  {lineColor: number[], fillColor: number[]}): PolygonRendererData {
 
     /**
      * Path: Coords[]
@@ -45,6 +46,7 @@ export function parseFeaturesToRendererData(
     const lineIndices: number[][] = [];
     const coords: number[][] = [];
     const colors: number[][] = [];
+    const lineColors: number[][] = [];
 
     let prevIndx = 0;
     for (const feature of features) {
@@ -65,7 +67,8 @@ export function parseFeaturesToRendererData(
             lIndices.push(prevIndx);
             lineIndices.push(lIndices);
             const color = colorFunction(feature as Feature<Polygon>);
-            colors.push(... Array(nrPoints).fill(color));
+            colors.push(... Array(nrPoints).fill(color.fillColor));
+            lineColors.push( ... Array(nrPoints).fill(color.lineColor));
 
             prevIndx += nrPoints;
         } else if (type === 'MultiPolygon') {
@@ -84,7 +87,8 @@ export function parseFeaturesToRendererData(
                 lIndices.push(prevIndx);
                 lineIndices.push(lIndices);
                 const color = colorFunction(feature as any);
-                colors.push(... Array(nrPoints).fill(color));
+                colors.push(... Array(nrPoints).fill(color.fillColor));
+                lineColors.push( ... Array(nrPoints).fill(color.lineColor));
 
                 prevIndx += nrPoints;
             }
@@ -92,12 +96,14 @@ export function parseFeaturesToRendererData(
     }
 
     const coordAttr = new AttributeData(coords.flat(), 'vec2', false);
-    const colorsAttr = new AttributeData(colors.flat(), 'vec3', false);
+    const colorsAttr = new AttributeData(colors.flat(), 'vec4', false);
+    const lineColorsAttr = new AttributeData(lineColors.flat(), 'vec4', false);
     const polyIndex = new Index(polygonIndices.flat());
     const lineIndex = new Index(lineIndices.flat());
 
     return {
         colors: colorsAttr,
+        lineColors: lineColorsAttr,
         coords: coordAttr,
         polyIndex: polyIndex,
         lineIndex: lineIndex,
@@ -111,7 +117,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
     canvas: HTMLCanvasElement;
     bbox: number[];
 
-    constructor(layer: VectorLayer<VectorSource<Polygon>>, colorFunc: (f: Feature<Polygon>) => number[], data?: PolygonRendererData) {
+    constructor(layer: VectorLayer<VectorSource<Polygon>>, colorFunc: (f: Feature<Polygon>) =>  {lineColor: number[], fillColor: number[]}, data?: PolygonRendererData) {
         super(layer);
 
         if (!data) {
@@ -135,8 +141,8 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         const polyShader = new ElementsBundle(new Program(`#version 300 es
         precision lowp float;
         in vec2 a_coord;
-        in vec3 a_color;
-        flat out vec3 v_color;
+        in vec4 a_color;
+        flat out vec4 v_color;
         uniform vec4 u_bbox;
 
         void main() {
@@ -144,11 +150,11 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
             v_color = a_color;
         }`, `#version 300 es
         precision lowp float;
-        flat in vec3 v_color;
+        flat in vec4 v_color;
         out vec4 vertexColor;
 
         void main() {
-            vertexColor = vec4(v_color.xyz, 1.0);
+            vertexColor = v_color;
         }`), {
             a_coord: data.coords,
             a_color: data.colors
@@ -159,8 +165,8 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         const lineShader = new ElementsBundle(new Program(`#version 300 es
         precision lowp float;
         in vec2 a_coord;
-        in vec3 a_color;
-        flat out vec3 v_color;
+        in vec4 a_color;
+        flat out vec4 v_color;
         uniform vec4 u_bbox;
 
         void main() {
@@ -168,14 +174,14 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
             v_color = a_color;
         }`, `#version 300 es
         precision lowp float;
-        flat in vec3 v_color;
+        flat in vec4 v_color;
         out vec4 vertexColor;
 
         void main() {
-            vertexColor = vec4(0.8 * v_color.xyz, 1.0);
+            vertexColor = vec4(v_color.xyz, v_color[3]);
         }`), {
             a_coord: data.coords,
-            a_color: data.colors
+            a_color: data.lineColors
         }, {
             u_bbox: new UniformData('vec4', [0, 0, 360, 180])
         }, {}, 'lines', data.lineIndex);
@@ -277,14 +283,14 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
 }
 
 export interface WebGlPolygonLayerOptions extends Options<VectorSource<Polygon>> {
-    colorFunc: (f: Feature<Polygon>) => number[];
+    colorFunc: (f: Feature<Polygon>) => {lineColor: number[], fillColor: number[]};
     webGlData?: PolygonRendererData;
 }
 
 export class WebGlPolygonLayer extends VectorLayer<VectorSource<Polygon>> {
 
     webGlData: PolygonRendererData;
-    colorFunc: (f: Feature<Polygon>) => number[];
+    colorFunc: (f: Feature<Polygon>) =>  {lineColor: number[], fillColor: number[]};
 
     constructor(opt_options: WebGlPolygonLayerOptions) {
         super(opt_options);

@@ -43,10 +43,10 @@ const eqDamagePeruProps: VectorLayerProperties = {
             const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                 })
             });
@@ -152,10 +152,10 @@ const eqTransitionPeruProps: VectorLayerProperties = {
 
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                 })
             });
@@ -296,10 +296,10 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
 
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                 })
             });
@@ -440,7 +440,7 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                     </ul>
                 `;
 
-            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}<br/>{{GroupsSimplified}}{{StatesNotComparable}}`;
+            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML} ${legend} {{GroupsSimplified}}{{StatesNotComparable}}`;
         },
         summary: (value: [FeatureCollection]) => {
             const counts = {
@@ -457,7 +457,9 @@ const eqUpdatedExposurePeruProps: VectorLayerProperties = {
                     counts[damageClass] += nrBuildings;
                 }
             }
-            const html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+            const html =
+                createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))])
+                + '{{ BuildingTypesSara }}';
             const comp: IDynamicComponent = {
                 component: TranslatableStringComponent,
                 inputs: {

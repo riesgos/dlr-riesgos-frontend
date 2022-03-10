@@ -25,17 +25,17 @@ import Geometry from 'ol/geom/Geometry';
 
 export const laharLossProps: VectorLayerProperties = {
         name: 'laharLoss',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });
@@ -106,7 +106,7 @@ export const laharLossProps: VectorLayerProperties = {
 
 export const laharTransitionProps: VectorLayerProperties = {
         name: 'laharTransition',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
@@ -140,10 +140,10 @@ export const laharTransitionProps: VectorLayerProperties = {
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });
@@ -249,7 +249,7 @@ export const laharTransitionProps: VectorLayerProperties = {
 
 export const laharUpdatedExposureProps: VectorLayerProperties = {
         name: 'laharExposure',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
@@ -283,10 +283,10 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                   })
                 });
@@ -466,7 +466,7 @@ export const laharDamageM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [laharLossProps, laharUpdatedExposureProps]
+        vectorLayers: [laharUpdatedExposureProps, laharLossProps]
     },
     value: null
 };

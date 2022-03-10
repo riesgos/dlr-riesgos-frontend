@@ -71,7 +71,7 @@ export const laharAshfallDamageM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [laharAshfallLossProps, laharAshfallTransitionProps, laharAshfallUpdatedExposureProps]
+        vectorLayers: [laharAshfallTransitionProps, laharAshfallUpdatedExposureProps, laharAshfallLossProps]
     },
     value: null
 };

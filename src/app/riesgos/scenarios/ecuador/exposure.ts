@@ -120,7 +120,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
     reference: false,
     icon: 'building',
     format: 'application/json',
-    name: 'Exposure Ashfall',
+    name: 'Exposure_ashfall_initial',
     vectorLayerAttributes: {
       style: (feature: olFeature<Geometry>, resolution: number) => {
         const props = feature.getProperties();
@@ -145,15 +145,19 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
         let r: number;
         let g: number;
         let b: number;
+        let a: number;
         if (total === 0) {
           r = b = g = 160;
+          a = 0.9;
         } else {
-          [r, g, b] = greenRedRange(0, 1, dr);
+            // [r, g, b] = greenRedRange(0, 1, dr);
+            [r, g, b] = [160, 160, 160];
+            a = 0.05;
         }
 
         return new olStyle({
           fill: new olFill({
-            color: [r, g, b, 0.5],
+            color: [r, g, b, a],
 
           }),
           stroke: new olStroke({
@@ -253,7 +257,7 @@ export const initialExposureLahar = {
         return 'BuildingTypesMavrouli';
       }
     },
-    name: 'Exposure Lahar'
+    name: 'Exposure_lahar_initial'
   }
 };
 

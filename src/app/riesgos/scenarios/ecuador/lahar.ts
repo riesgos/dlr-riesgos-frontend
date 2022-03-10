@@ -63,7 +63,7 @@ export const laharWms: WmsLayerProduct & WpsData = {
     description: {
         id: 'wms',
         title: '',
-        icon: 'avalance',
+        icon: 'avalanche',
         name: 'laharWms',
         type: 'literal',  // this is deliberate. layer-wps returns this value as a literal, not as a complex.
         reference: false,
@@ -116,7 +116,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
         this.wizardProperties = {
             providerName: 'TUM',
             providerUrl: 'https://www.tum.de/nc/en/',
-            shape: 'avalance',
+            shape: 'avalanche',
             wikiLink: 'LaharSimulation'
         };
     }

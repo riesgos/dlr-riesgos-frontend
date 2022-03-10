@@ -10,6 +10,7 @@ import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Observable } from 'rxjs';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import Geometry from 'ol/geom/Geometry';
+import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 
 
 
@@ -75,15 +76,19 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
         let r: number;
         let g: number;
         let b: number;
+        let a: number;
         if (total === 0) {
             r = b = g = 160;
+            a = 0.9;
         } else {
-            [r, g, b] = greenRedRange(0, 1, dr);
+            // [r, g, b] = greenRedRange(0, 1, dr);
+            [r, g, b] = [160, 160, 160];
+            a = 0.05;
         }
 
         return new olStyle({
           fill: new olFill({
-            color: [r, g, b, 0.5],
+            color: [r, g, b, a],
 
           }),
           stroke: new olStroke({
@@ -130,6 +135,14 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
         },
         text: `exposureLegend`
       }],
+      summary: (value) => {
+        return {
+          component: TranslatableStringComponent,
+          inputs: {
+            text: 'BuildingTypesSara'
+          }
+        };
+      }
     }
   },
   value: null

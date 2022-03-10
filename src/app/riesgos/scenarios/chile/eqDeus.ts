@@ -43,10 +43,10 @@ export const damageProps: VectorLayerProperties = {
             const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                 })
             });
@@ -123,7 +123,6 @@ export const transitionProps: VectorLayerProperties = {
         style: (feature: olFeature<Geometry>, resolution: number) => {
             const props = feature.getProperties();
 
-
             const I = props['transitions']['n_buildings'].length;
             const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
 
@@ -153,10 +152,10 @@ export const transitionProps: VectorLayerProperties = {
 
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                 })
             });
@@ -297,10 +296,10 @@ const updatedExposureProps: VectorLayerProperties = {
 
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
                     width: 2
                 })
             });
@@ -458,7 +457,9 @@ const updatedExposureProps: VectorLayerProperties = {
                     counts[damageClass] += nrBuildings;
                 }
             }
-            const html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+            const html =
+                createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))])
+                + '{{ BuildingTypesSara }}';
             const comp: IDynamicComponent = {
                 component: TranslatableStringComponent,
                 inputs: {

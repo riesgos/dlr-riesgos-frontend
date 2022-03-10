@@ -2,7 +2,7 @@ import { Process } from 'src/app/riesgos/riesgos.datatypes';
 
 
 
-export type shape = 'dot-circle' | 'earthquake' | 'avalance' | 'tsunami' | 'volcanoe'
+export type shape = 'dot-circle' | 'earthquake' | 'avalanche' | 'tsunami' | 'volcanoe'
 | 'critical_infrastructure' | 'vulnerability' | 'exposure' | 'bolt' | 'flame' | 'bullseye' | 'target' | 'router' | 'building';
 
 export interface WizardProperties {

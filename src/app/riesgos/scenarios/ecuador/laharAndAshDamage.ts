@@ -6,13 +6,13 @@ import { map, switchMap } from 'rxjs/operators';
 import { laharVelocityShakemapRef } from './laharWrapper';
 import { HttpClient } from '@angular/common/http';
 import { MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { schemaEcuador } from './exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
 import { ashfallDamageM, ashfallUpdatedExposureRef } from './ashfallDamage';
 import { laharLossProps, laharTransitionProps, laharUpdatedExposureProps, laharUpdatedExposureRef } from './laharDamage';
-import { createGroupedBarchart, BarData } from 'src/app/helpers/d3charts';
+import { createGroupedBarChart, BarData } from 'src/app/helpers/d3charts';
 
 
 
@@ -54,7 +54,7 @@ const laharAshfallUpdatedExposureProps = {
                 }
             }
 
-            const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+            const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
             return `<h4 style="color: var(--clr-p1-color, #666666);">{{ LaharAndAshfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
         },
     },
@@ -71,7 +71,7 @@ export const laharAshfallDamageM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [laharAshfallLossProps, laharAshfallTransitionProps, laharAshfallUpdatedExposureProps]
+        vectorLayers: [laharAshfallTransitionProps, laharAshfallUpdatedExposureProps, laharAshfallLossProps]
     },
     value: null
 };
@@ -89,7 +89,7 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
         shape: 'dot-circle',
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
-        wikiLink: 'Vulnerability'
+        wikiLink: 'ExposureAndVulnerabilityEcuador'
     };
 
     private deus: Deus;

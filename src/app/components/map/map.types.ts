@@ -1,7 +1,7 @@
 import { IVectorLayerOptions, IRasterLayerOptions, ICustomLayerOptions,
     VectorLayer, RasterLayer, Layer, CustomLayer } from '@dlr-eoc/services-layers';
 import { LegendElement } from '../dynamic/vector-legend/vector-legend.component';
-import { IDynamicComponent } from '../dynamic-component/dynamic-component.component';
+import { IDynamicComponent } from '@dlr-eoc/core-ui';
 
 
 
@@ -49,6 +49,7 @@ export class ProductRasterLayer extends RasterLayer implements IProductRasterLay
     hasFocus: boolean;
     icon?: string;
     zIndex?: number;
+    dynamicDescription?: IDynamicComponent;
     constructor(options: IProductRasterLayerOptions) {
         super(options);
         Object.assign(this, options);

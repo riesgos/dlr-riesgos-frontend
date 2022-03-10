@@ -1,8 +1,7 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { RiesgosState, RiesgosScenarioState } from './riesgos.state';
-import { Product, Process, ProcessId, ImmutableProcess } from './riesgos.datatypes';
-import { ProductsProvided } from './riesgos.actions';
+import { Product, ProcessId, ImmutableProcess } from './riesgos.datatypes';
 import { isVectorLayerProduct, isBboxLayerProduct, isWmsProduct, isMultiVectorLayerProduct } from './riesgos.datatypes.mappable';
 
 
@@ -25,9 +24,9 @@ export const getScenarioMetadata = createSelector(
     (s: RiesgosState) => s.metaData
 );
 
-export const getScenarioRiesgosState = createSelector(
+export const getScenarioRiesgosState = (scenario: string) => createSelector(
     getRiesgosState,
-    (s: RiesgosState, args: {scenario: string}) => getScenarioState(s, args.scenario)
+    (s: RiesgosState) => getScenarioState(s, scenario)
 );
 
 export const getCurrentScenarioRiesgosState = createSelector(
@@ -53,11 +52,11 @@ export const getProducts = createSelector(
     (s: RiesgosState) => getCurrentScenarioState(s).productValues
 );
 
-export const getProduct = createSelector(
+export const getProduct = (productId: string) => createSelector(
     getRiesgosState,
-    (s: RiesgosState, args: {productId: string}) => {
+    (s: RiesgosState) => {
         const products = getCurrentScenarioState(s).productValues;
-        return products.find(p => p.uid === args.productId);
+        return products.find(p => p.uid === productId);
     }
 );
 
@@ -68,16 +67,16 @@ export const getGraph = createSelector(
 );
 
 
-export const getInputsForProcess = createSelector(
+export const getInputsForProcess = (processId: string) => createSelector(
     getRiesgosState,
-    (s: RiesgosState, args: {processId: string}) => {
-        const process = getProcessById(args.processId, getCurrentScenarioState(s).processStates);
+    (s: RiesgosState) => {
+        const process = getProcessById(processId, getCurrentScenarioState(s).processStates);
         return filterInputsForProcess(process, getCurrentScenarioState(s).productValues);
     }
 );
 
 
-export const getMapableProducts = createSelector(
+export const getMappableProducts = createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
         return getCurrentScenarioState(s).productValues

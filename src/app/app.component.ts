@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { State } from './ngrx_register';
 import { AppInit } from './focus/focus.actions';
 import { ThemeService } from './services/theme/theme.service';
+import { appVersion } from 'src/environments/version';
 
 interface IUi {
   floating: boolean;
@@ -39,6 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
     subs: null
   };
   theme$: Observable<string>;
+  version = appVersion;
 
   constructor(
     private alertService: AlertService,

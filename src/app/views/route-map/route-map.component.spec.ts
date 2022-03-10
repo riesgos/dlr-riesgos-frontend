@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RouteMapComponent } from './route-map.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ describe('RouteMapComponent', () => {
   let component: RouteMapComponent;
   let fixture: ComponentFixture<RouteMapComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ RouteMapComponent, InteractionstatemonitorComponent, MapComponent, LayercontrolComponent ],
       imports: [TranslateModule.forRoot(), ClarityModule]

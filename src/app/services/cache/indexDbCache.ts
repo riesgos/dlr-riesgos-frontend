@@ -1,4 +1,4 @@
-import { Cache } from '@dlr-eoc/utils-ogc';
+import { Cache } from 'src/app/services/wps';
 import { set, get, del } from 'idb-keyval';
 import { Observable, from } from 'rxjs';
 import md5 from 'md5';
@@ -31,7 +31,8 @@ export class IndexDbCache implements Cache {
             if (entry) {
                 const delta = new Date().getTime() - entry.created.getTime();
                 if (delta < this.maxCacheAge) {
-                    return JSON.parse(entry.data);
+                    const restoredObject = JSON.parse(entry.data);
+                    return restoredObject;
                 } else {
                     console.log(`entry is expired by ${delta / (1000)} seconds`, entry);
                     del(key);

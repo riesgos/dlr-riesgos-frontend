@@ -2,7 +2,7 @@ import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } fro
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -101,7 +101,7 @@ export const laharDepositionWms: WmsLayerProduct & Product = {
 export const laharContoursWms: WmsLayerProduct & Product = {
     description: {
         id: 'LaharContourLines',
-        icon: 'avalance',
+        icon: 'avalanche',
         name: 'Lahar contour lines',
         format: 'application/WMS',
         type: 'complex',

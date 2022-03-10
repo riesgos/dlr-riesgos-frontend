@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService, TranslateParser, LangChangeEvent } from '@ngx-translate/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { UtilStoreService } from '@dlr-eoc/services-util-store';
+import { StoreService } from '../store.service';
 
 
 export type RiesgosLang = 'EN' | 'ES';
@@ -12,20 +12,20 @@ export type RiesgosLang = 'EN' | 'ES';
 })
 export class SimplifiedTranslationService {
 
-  private currentLang: BehaviorSubject<RiesgosLang> = new BehaviorSubject('ES');
+  public currentLang: BehaviorSubject<RiesgosLang> = new BehaviorSubject('ES');
   private dictEn: any;
   private dictEs: any;
 
   constructor(
     private translator: TranslateService,
     private translateParser: TranslateParser,
-    private localStorage: UtilStoreService
+    private localStorage: StoreService
   ) {
     this.translator.getTranslation('EN').subscribe(d => this.dictEn = d);
     this.translator.getTranslation('ES').subscribe(d => this.dictEs = d);
     this.translator.setDefaultLang('EN');
 
-    const currentLang = this.localStorage.local('LANG');
+    const currentLang = this.localStorage.readLocal('LANG');
     if (currentLang) {
       this.translator.use(currentLang);
     } else {

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DisclaimerpopupComponent } from './disclaimerpopup.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ describe('DisclaimerpopupComponent', () => {
   let component: DisclaimerpopupComponent;
   let fixture: ComponentFixture<DisclaimerpopupComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DisclaimerpopupComponent ],
       imports: [TranslateModule.forRoot(), ClarityModule, BrowserAnimationsModule]

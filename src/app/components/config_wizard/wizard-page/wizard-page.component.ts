@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { RestartingFromProcess } from 'src/app/riesgos/riesgos.actions';
-import { UserconfigurableProduct, isUserconfigurableProduct, isStringSelectableProduct } from '../userconfigurable_wpsdata';
+import { UserConfigurableProduct, isUserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { Product, WpsProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { getInputsForProcess } from 'src/app/riesgos/riesgos.selectors';
 import { map } from 'rxjs/operators';
@@ -19,7 +19,7 @@ import { WizardableProcess } from '../wizardable_processes';
 export class WizardPageComponent implements OnInit {
 
   @Input() process: WpsProcess & WizardableProcess;
-  parameters$: Observable<UserconfigurableProduct[]>;
+  parameters$: Observable<UserConfigurableProduct[]>;
 
 
   constructor(
@@ -28,8 +28,8 @@ export class WizardPageComponent implements OnInit {
 
   ngOnInit() {
     this.parameters$ = this.store.pipe(
-      select(getInputsForProcess, {processId: this.process.uid}),
-      map((inputs: Product[]) =>  inputs.filter(i => isUserconfigurableProduct(i)) as UserconfigurableProduct[] )
+      select(getInputsForProcess(this.process.uid)),
+      map((inputs: Product[]) =>  inputs.filter(i => isUserConfigurableProduct(i)) as UserConfigurableProduct[] )
     );
   }
 

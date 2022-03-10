@@ -1,8 +1,12 @@
 <div class="layer">
   <div class="head" [@focusUnfocus]="getFocusState()">
     <!-- layer expand icon -->
-    <clr-icon [ngStyle]="getExpandShape()" [attr.shape]="layer.icon || 'angle right'" class="iconButton"
-    [ngClass]="{'disabled': is_expandable()}" (click)="showProperties()" title="Details"></clr-icon>
+    <clr-icon shape="angle" [ngStyle]="getExpandShape()" class="iconButton" [ngClass]="{'disabled': is_expandable()}"
+      (click)="showProperties()" title="Details"></clr-icon>
+
+    <!-- Layer icon symbol -->
+    <clr-icon *ngIf="layer.icon" [attr.shape]="layer.icon" class="iconButton" (click)="showProperties()" title="Details"></clr-icon>
+
 
     <!-- layer title -->
     <div #ref class="item-title-replacement title" (click)="showProperties()" [title]="getLayerName(layer) | regexTranslate | translate">
@@ -39,17 +43,17 @@
   <div *ngIf="expandable && expanded" class="body">
     <!-- tools: zoomTo, switch Tab -->
     <div class="tools">
-      <clr-icon *ngIf="!checkBaselayer(layer, group)" title="Layer settings" shape="cog" class="iconButton"
+      <clr-icon *ngIf="!checkBaselayer(layer, group)" [title]="'layer_settings' | translate" shape="cog" class="iconButton"
         [ngClass]="{'active': activeTabs['settings']}" (click)="switchTab('settings')"></clr-icon>
-      <clr-icon *ngIf="layer.legendImg" title="Layer Legend" shape="image" class="iconButton"
+      <clr-icon *ngIf="layer.legendImg" [title]="'layer_legend' | translate" shape="image" class="iconButton"
         [ngClass]="{'active': activeTabs['legend']}" (click)="switchTab('legend')"></clr-icon>
-      <clr-icon *ngIf="layer.options?.style && layer.legendEntries" title="Layer Legend" shape="image" class="iconButton"
+      <clr-icon *ngIf="layer.hasOwnProperty('options') && layer?.options.hasOwnProperty('style') && layer.hasOwnProperty('legendEntries')" [title]="'layer_legend' | translate" shape="image" class="iconButton"
         [ngClass]="{'active': activeTabs['styleLegend']}" (click)="switchTab('styleLegend')"></clr-icon>
-      <clr-icon *ngIf="layer.description" title="Layer info" shape="info-standard" class="iconButton"
+      <clr-icon *ngIf="layer.description" [title]="'layer_info' | translate" shape="info-standard" class="iconButton"
         [ngClass]="{'active': activeTabs['description']}" (click)="switchTab('description')"></clr-icon>
-        <clr-icon *ngIf="layer.dynamicDescription" title="Layer info" shape="info-standard" class="iconButton"
+        <clr-icon *ngIf="layer.dynamicDescription" [title]="'layer_info' | translate" shape="info-standard" class="iconButton"
         [ngClass]="{'active': activeTabs['dynamicDescription']}" (click)="switchTab('dynamicDescription')"></clr-icon>
-      <clr-icon *ngIf="layer.styles?.length > 1" title="Change style" shape="cloud-chart" class="iconButton"
+      <clr-icon *ngIf="layer.styles?.length > 1" [title]="'change_style' | translate" shape="cloud-chart" class="iconButton"
         [ngClass]="{'active': activeTabs['changeStyle']}" (click)="switchTab('changeStyle')"></clr-icon>
 
       <clr-icon *ngFor="let item of layer.actions" [attr.shape]="item.icon" class="iconButton"
@@ -107,7 +111,7 @@
 
       <!-- show style-switcher -->
       <div *ngIf="activeTabs.changeStyle && layer.styles && layer.styles?.length > 1">
-        <select clrSelect (change)="executeChangeStyle($event.target.value)">
+        <select clrSelect (change)="executeChangeStyle($event)">
           <option *ngFor="let style of layer.styles" [value]="style.name"
             [attr.selected]="isSelectedStyle(style.name) ? true : null">{{style.title}}</option>
         </select>

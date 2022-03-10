@@ -6,33 +6,40 @@ import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { parse } from 'url';
 import { Store, select } from '@ngrx/store';
 
-import { DragBox } from 'ol/interaction';
-import { Vector as olVectorLayer, Tile as TileLayer } from 'ol/layer';
-import { Vector as olVectorSource, TileWMS } from 'ol/source';
-import { GeoJSON, KML } from 'ol/format';
-import { get as getProjection } from 'ol/proj';
+import { DragBox, Select } from 'ol/interaction';
+import olVectorLayer from 'ol/layer/Vector';
+import olVectorSource from 'ol/source/Vector';
+import { GeoJSON, KML, MVT } from 'ol/format';
+import { get as getProjection, METERS_PER_UNIT } from 'ol/proj';
 import Feature from 'ol/Feature';
-import {click, noModifierKeys} from 'ol/events/condition';
-import Select from 'ol/interaction/Select';
+import olLayer from 'ol/layer/Layer';
+import { click, noModifierKeys } from 'ol/events/condition';
+import { applyStyle } from 'ol-mapbox-style';
+import { createXYZ } from 'ol/tilegrid';
+import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
 
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
-import { WpsBboxValue } from '@dlr-eoc/utils-ogc';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@dlr-eoc/services-layers';
+import { WpsBboxValue } from 'src/app/services/wps';
 
 import { State } from 'src/app/ngrx_register';
-import { getMapableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
+import { getMappableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { WMTSLayerFactory } from './wmts';
 import { LayerMarshaller } from './layer_marshaller';
 import { ProductLayer } from './map.types';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+import Geometry from 'ol/geom/Geometry';
+import { SelectEvent } from 'ol/interaction/Select';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import { VectorTile } from 'ol/source';
+import { createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
 
-const mapProjection = 'EPSG:4326';
+const mapProjection = 'EPSG:3857';
 
 @Component({
     selector: 'ukis-map',
@@ -44,9 +51,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     controls: { attribution?: boolean, scaleLine?: boolean, zoom?: boolean, crosshair?: boolean };
-    private geoJson = new GeoJSON();
-    private highlightedFeatures$ = new BehaviorSubject<Feature[]>([]);
-    private highlightedFeatures: Feature[] = [];
+    private geoJson = new GeoJSON({
+        dataProjection: 'EPSG:4326',
+        featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+    });
+    private highlightedFeatures$ = new BehaviorSubject<Feature<Geometry>[]>([]);
+    private highlightedFeatures: Feature<Geometry>[] = [];
     private interactionState$ = new BehaviorSubject<InteractionState>(initialInteractionState);
     private subs: Subscription[] = [];
 
@@ -92,6 +102,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         } else {
                             layer.hasFocus = false;
                         }
+                        this.shouldLayerExpand(layer);
                         this.layersSvc.updateLayer(layer, 'Overlays');
                     }
                 }
@@ -101,7 +112,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // listening for products that can be displayed on the map
         const sub3 = this.store.pipe(
-            select(getMapableProducts),
+            select(getMappableProducts),
 
             // translate to layers
             switchMap((products: Product[]) => {
@@ -113,18 +124,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 // keep user's visibility-settings
                 for (const oldLayer of oldOverlays) {
-                    const newLayer = newOverlays.find(nl => nl.id === oldLayer.id );
+                    const newLayer = newOverlays.find(nl => nl.id === oldLayer.id);
                     if (newLayer) {
                         newLayer.visible = oldLayer.visible;
                         newLayer.hasFocus = oldLayer.hasFocus;
+                        this.shouldLayerExpand(newLayer);
                     }
                 }
 
                 // set hasFocus=true for new layers
+                // also expand new layers if they have legendImg or description
                 for (const newLayer of newOverlays) {
                     const oldLayer = oldOverlays.find(ol => ol.id === newLayer.id);
                     if (!oldLayer) {
                         newLayer.hasFocus = true;
+                        this.shouldLayerExpand(newLayer);
                     }
                 }
 
@@ -132,12 +146,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             })
 
 
-        // add to map
+            // add to map
         ).subscribe(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
             const add: ProductLayer[] = newOverlays.filter(no => !oldOverlays.map(oo => oo.id).includes(no.id));
             const update: ProductLayer[] = newOverlays.filter(no => oldOverlays.map(oo => oo.id).includes(no.id));
             const remove: ProductLayer[] = oldOverlays.filter(oo => !newOverlays.map(no => no.id).includes(oo.id));
-
             add.map(ol => this.layersSvc.addLayer(ol, ol.filtertype));
             update.map(ol => this.layersSvc.updateLayer(ol, ol.filtertype));
             remove.map(ol => this.layersSvc.removeLayer(ol, ol.filtertype));
@@ -145,20 +158,22 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub3);
 
 
-        // adding dragbox interaction and hooking it into the store
+        // adding drag-box interaction and hooking it into the store
         const dragBox = new DragBox({
             condition: (event) => {
                 return this.interactionState$.getValue().mode === 'bbox';
             },
             onBoxEnd: () => {
+                const originalProjection = this.interactionState$.getValue().product.value.crs;
+                dragBox.getGeometry().transform(mapProjection, originalProjection);
                 const lons = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[0]);
                 const lats = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[1]);
-                const minLon = Math.min(... lons);
-                const maxLon = Math.max(... lons);
-                const minLat = Math.min(... lats);
-                const maxLat = Math.max(... lats);
+                const minLon = Math.min(...lons);
+                const maxLon = Math.max(...lons);
+                const minLat = Math.min(...lats);
+                const maxLat = Math.max(...lats);
                 const box: WpsBboxValue = {
-                    crs: mapProjection,
+                    crs: originalProjection,
                     lllat: minLat.toFixed(1) as unknown as number,
                     lllon: minLon.toFixed(1) as unknown as number,
                     urlat: maxLat.toFixed(1) as unknown as number,
@@ -171,68 +186,53 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.store.dispatch(new InteractionCompleted({ product }));
             }
         });
-        this.mapSvc.map.addInteraction(dragBox);
+        this.mapSvc.map.addInteraction(dragBox as any);
 
 
-        // adding featureselect interaction and hooking it into the store
+        // adding feature-select interaction and hooking it into the store
         const clickInteraction = new Select({
             condition: (mapBrowserEvent) => {
                 return click(mapBrowserEvent) && noModifierKeys(mapBrowserEvent);
             },
+            layers: (layer) => {
+                // we don't want to select base-map-features
+                return layer.get('id') !== 'planet_eoc_vector_tiles';
+            },
             style: null // we don't want ol to automatically apply another style on selected items.
         });
-        clickInteraction.on('select', (e) => {
-                const features = e.target.getFeatures().getArray();
-                if (features.length) {
-                    if (this.interactionState$.getValue().mode === 'featureselection') {
-                        const feature = features[0];
-                        const product = {
-                            ...this.interactionState$.getValue().product,
-                            value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
-                        };
-                        this.store.dispatch(new InteractionCompleted({ product }));
-                    } else {
-                        this.highlightedFeatures$.next(features);
-                        console.log("reacted to click on single feature: changed highlighted")
-                    }
+        clickInteraction.on('select', (e: SelectEvent) => {
+            const features = e.selected;
+            if (features.length) {
+                if (this.interactionState$.getValue().mode === 'featureselection') {
+                    const feature = features[0];
+                    const product = {
+                        ...this.interactionState$.getValue().product,
+                        value: [tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))])]
+                    };
+                    this.store.dispatch(new InteractionCompleted({ product }));
+                    // reacting to click on single feature: changing highlight
+                    this.highlightedFeatures$.next(features);
                 }
+            }
         });
-        this.mapSvc.map.addInteraction(clickInteraction);
-
-
-        // // adding multi-featureselect interaction
-        // const altClickInteraction = new Select({
-        //     condition: (mapBrowserEvent) => {
-        //         return click(mapBrowserEvent) && altKeyOnly(mapBrowserEvent);
-        //     },
-        //     style: false
-        // });
-        // altClickInteraction.on('select', (e) => {
-        //     const features = e.target.getFeatures().getArray();
-        //     const highlighted = this.highlightedFeatures;
-        //     const allFeatures = Array.prototype.concat(features, highlighted);
-        //     this.highlightedFeatures$.next(allFeatures);
-        //     console.log("reacted on alt-selection: appended to highlighted")
-        // });
-        // this.mapSvc.map.addInteraction(altClickInteraction);
+        this.mapSvc.map.addInteraction(clickInteraction as any);
 
 
         // remove popups when no feature has been clicked
         this.mapSvc.map.on('click', () => {
             if (this.interactionState$.getValue().mode !== 'featureselection') {
+                // reacting on click into nothing - removing popups and highlighted
                 this.mapSvc.removeAllPopups();
                 this.highlightedFeatures$.next([]);
-                console.log("reacted on click into nothing - removed poups and highlighted")
             }
         });
 
 
         // listening for changes in highlighted features
-        this.highlightedFeatures$.subscribe((features: Feature[]) => {
+        this.highlightedFeatures$.subscribe((features: Feature<Geometry>[]) => {
             this.highlightedFeatures.map(f => f.set('selected', false));
             features.map(f => f.set('selected', true));
             this.highlightedFeatures = features;
-            console.log('new features selected: ', features.length, features);
         });
 
 
@@ -271,10 +271,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         // listening for change in scenario - afterViewInit
         const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
-            this.mapSvc.setProjection(getProjection(mapProjection));
+            const p = getProjection(mapProjection);
+            this.mapSvc.setProjection(p.getCode());
             const center = this.getCenter(scenario);
             this.mapSvc.setZoom(8);
             this.mapSvc.setCenter(center, true);
@@ -282,11 +283,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub6);
     }
 
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.subs.map(s => s.unsubscribe());
         this.layersSvc.removeBaseLayers();
         this.layersSvc.removeLayers();
         this.layersSvc.removeOverlays();
+    }
+
+    private shouldLayerExpand(layer: ProductLayer) {
+      if (layer.hasFocus) {
+        if (layer.legendImg || layer.description || layer.dynamicDescription) {
+          layer.expanded = true;
+        }
+      } else {
+        layer.expanded = false;
+      }
     }
 
     private getCenter(scenario: string): [number, number] {
@@ -303,7 +314,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    /** TODO add openlayers Drag-and-Drop to add new Additional Layers https://openlayers.org/en/latest/examples/drag-and-drop-image-vector.html */
     private getInfoLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
         const layers: Array<Layer | LayerGroup> = [];
 
@@ -314,8 +324,204 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         layers.push(osmLayer);
 
+        if (scenario === 'c1') {
+
+            const powerlineLayer = new CustomLayer({
+                custom_layer: new olVectorLayer({
+                    source: new olVectorSource({
+                        url: 'assets/data/geojson/powerlines_chile.geojson',
+                        format: new GeoJSON({
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                        })
+                    })
+                }),
+                name: 'Powerlines',
+                id: 'powerlines',
+                type: 'custom',
+                visible: false,
+                popup: true,
+                description: 'PowerlinesDescription',
+                attribution: '&copy, <a href="http://energiamaps.cne.cl">energiamaps.cne.cl/</a>',
+                legendImg: 'http://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?service=wms&request=GetLegendGraphic&LAYER=sic_20181016234835&FORMAT=image/png',
+            });
+            layers.push(powerlineLayer);
+
+            const civilServiceLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'CivilServiceLayers',
+                name: 'CivilService',
+                description: 'GeoportalChileDescription',
+                layers: [
+                    new RasterLayer({
+                        id: 'police',
+                        name: 'Police',
+                        type: 'wms',
+                        url: 'http://www.geoportal.cl/arcgis/services/MinisteriodeInterior/chile_minterior_carabineros_cuarteles/MapServer/WMSServer?',
+                        visible: false,
+                        attribution: '&copy, <a href="http://www.geoportal.cl">Ministerio del Interior</a>',
+                        legendImg: 'http://www.geoportal.cl/arcgis/services/MinisteriodeInterior/chile_minterior_carabineros_cuarteles/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0',
+                        params: {
+                            LAYERS: '0'
+                        }
+                    }),
+                    new RasterLayer({
+                        id: 'firefighters',
+                        name: 'Firefighters',
+                        type: 'wms',
+                        url: 'http://www.geoportal.cl/arcgis/services/Otros/chile_bomberos_cuerpos/MapServer/WMSServer?',
+                        visible: false,
+                        attribution: '&copy, <a href="http://www.geoportal.cl">Ministerio del Interior</a>',
+                        legendImg: 'http://www.geoportal.cl/arcgis/services/Otros/chile_bomberos_cuerpos/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0',
+                        params: {
+                            LAYERS: '0'
+                        }
+                    }),
+                    new RasterLayer({
+                        id: 'airports',
+                        name: 'Airports',
+                        type: 'wms',
+                        url: 'http://www.geoportal.cl/arcgis/services/MinisteriodeObrasPublicas/chile_mop_infraestructura_aerea/MapServer/WMSServer?',
+                        visible: false,
+                        attribution: '&copy, <a href="http://www.geoportal.cl">Ministerio del Interior</a>',
+                        legendImg: 'http://www.geoportal.cl/arcgis/services/MinisteriodeObrasPublicas/chile_mop_infraestructura_aerea/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0',
+                        params: {
+                            LAYERS: '0'
+                        }
+                    })
+                ],
+                bbox: [-76.202, -33.397, -67.490, -24.899]
+            });
+            layers.push(civilServiceLayers);
+
+
+            const shoaLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'shoaLayers',
+                name: 'Tsunami Flood Layers (CITSU)',
+                description: 'CITSU_description',
+                layers: [
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/kml/citsu_valparaiso_vinna.kml',
+                                format: new KML(),
+                                // @ts-ignore
+                                crossOrigin: 'anonymous'
+                            })
+                        }),
+                        name: 'Valparaiso (SHOA)',
+                        id: 'Valparaiso_SHOA',
+                        type: 'custom',
+                        // bbox: [-71.949, -33.230, -71.257, -32.720],
+                        visible: false,
+                        attribution: '&copy, <a href="http://www.shoa.cl/php/citsu.php">shoa.cl</a>',
+                        legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                        popup: true
+                    })
+
+                ],
+                bbox: [-76.202, -33.397, -67.490, -24.899]
+            });
+            layers.push(shoaLayers);
+        }
 
         if (scenario === 'p1') {
+
+            const peruDistritos = new VectorLayer({
+                id: 'peru_distritos',
+                name: 'peru_distritos',
+                type: 'geojson',
+                url: 'assets/data/geojson/peru_distritos.geojson',
+                visible: false,
+                popup: {
+                    popupFunction: (props) => {
+                        const keys = [ 'NOMBDIST', 'NOMBPROV', 'NOMBDEP', 'NOM_CAP'];
+                        const rows = [];
+                        for (const key of keys) {
+                            rows.push(['{{ ' + key + ' }}', props[key]]);
+                        }
+                        return  this.translator.syncTranslate(createTableHtml(rows));
+                    }
+                },
+                attribution: '&copy, <a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
+                description: '<a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
+            });
+            const peruDepartamentos = new VectorLayer({
+                id: 'peru_departamentos',
+                name: 'peru_departamentos',
+                type: 'geojson',
+                url: 'assets/data/geojson/peru_departamentos.geojson',
+                visible: false,
+                popup: {
+                    popupFunction: (props) => {
+                        const keys = ['NOMBDEP'];
+                        const rows = [];
+                        for (const key of keys) {
+                            rows.push(['{{ ' + key + ' }}', props[key]]);
+                        }
+                        return  this.translator.syncTranslate(createTableHtml(rows));
+                    }
+                },
+                attribution: '&copy, <a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
+                description: '<a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
+            });
+            const peruAdministrative = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'peru_administrative',
+                layers: [peruDepartamentos, peruDistritos],
+                name: 'peru_administrative',
+                expanded: true,
+            });
+            layers.push(peruAdministrative);
+        }
+
+        if (scenario === 'e1') {
+            const sniLayers = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'sniLayers',
+                name: 'SNI',
+                layers: [
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/geojson/linea_transmision_ecuador.geojson',
+                                format: new GeoJSON({
+                                    dataProjection: 'EPSG:4326',
+                                    featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                                })
+                            })
+                        }),
+                        name: 'Transmission',
+                        id: 'transmision',
+                        type: 'custom',
+                        visible: false,
+                        attribution: '&copy, <a href="http://geoportal.regulacionelectrica.gob.ec/visor/index.html">regulacionelectrica.gob.ec</a>',
+                        // legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                        popup: true
+                    }),
+                    new CustomLayer({
+                        custom_layer: new olVectorLayer({
+                            source: new olVectorSource({
+                                url: 'assets/data/geojson/linea_subtransmision_ecuador.geojson',
+                                format: new GeoJSON({
+                                    dataProjection: 'EPSG:4326',
+                                    featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                                }),
+                            })
+                        }),
+                        name: 'Subtransmission',
+                        id: 'subtransmision',
+                        type: 'custom',
+                        visible: false,
+                        attribution: '&copy, <a href="http://geoportal.regulacionelectrica.gob.ec/visor/index.html">regulacionelectrica.gob.ec</a>',
+                        // legendImg: 'assets/layer-preview/citsu-96px.jpg',
+                        popup: true
+                    })
+                ],
+                description: 'SNIDescription'
+            });
+            layers.push(sniLayers);
         }
 
         return of(layers);
@@ -323,90 +529,36 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private getBaseLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
 
-        return of([new OsmTileLayer({
-            visible: true,
+        const osmLayer = new OsmTileLayer({
+            visible: false,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
-        })]);
-        // const lightMap$ = this.wmtsFactory.createWmtsLayer(
-        //     'https://tiles.geoservice.dlr.de/service/wmts', 'eoc:litemap', this.mapSvc.EPSG).pipe(
-        //         map(l => {
-        //             return new CustomLayer({
-        //                 custom_layer: l,
-        //                 id: 'lightMap',
-        //                 name: 'Light map',
-        //                 attribution: '&copy, <a href="//geoservice.dlr.de/eoc/basemap/">DLR</a>',
-        //                 continuousWorld: false,
-        //                 legendImg: 'https://geoservice.dlr.de/eoc/basemap/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=litemap&ATTRIBUTION=&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES=&BBOX=0%2C0%2C10018754.171394622%2C10018754.171394622',
-        //                 description: 'http://www.naturalearthdata.com/about/',
-        //                 opacity: 1,
-        //                 visible: true
-        //             });
-        //         })
-        //     );
-        // const blueMarble$ = this.wmtsFactory.createWmtsLayer(
-        //     'https://tiles.geoservice.dlr.de/service/wmts', 'bmng_topo_bathy', this.mapSvc.EPSG).pipe(
-        //         map(l => {
-        //             return new CustomLayer({
-        //                 custom_layer: l,
-        //                 id: 'blueMarble',
-        //                 name: 'Blue marble',
-        //                 attribution: '&copy, <a href="//geoservice.dlr.de/eoc/basemap/">DLR</a>',
-        //                 continuousWorld: false,
-        //                 legendImg: 'https://tiles.geoservice.dlr.de/service/wmts?layer=bmng_topo_bathy&style=_empty&tilematrixset=EPSG%3A3857&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A3857%3A5&TileCol=18&TileRow=11',
-        //                 description: 'Blue Marble NG dataset with topography and bathymetry',
-        //                 opacity: 1,
-        //                 visible: false
-        //             });
-        //         })
-        //     );
-        // const relief$ = this.wmtsFactory.createWmtsLayer(
-        //     'https://tiles.geoservice.dlr.de/service/wmts', 'eoc:world_relief_bw', this.mapSvc.EPSG).pipe(
-        //         map(l => {
-        //             return new CustomLayer({
-        //                 custom_layer: l,
-        //                 id: 'relief',
-        //                 name: 'World relief',
-        //                 attribution: '&copy, <a href="//geoservice.dlr.de/eoc/basemap/">DLR</a>',
-        //                 continuousWorld: false,
-        //                 legendImg: 'https://tiles.geoservice.dlr.de/service/wmts?layer=eoc%3Aworld_relief_bw&style=_empty&tilematrixset=EPSG%3A3857&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A3857%3A5&TileCol=18&TileRow=11',
-        //                 description: 'World Relief Black / White',
-        //                 opacity: 1,
-        //                 visible: false
-        //             });
-        //         })
-        //     );
+        });
 
-        // return forkJoin([lightMap$, blueMarble$, relief$]).pipe(
-        //     map((layers: (Layer | LayerGroup)[]) => {
+        const vectorTile = new VectorTileLayer({
+            declutter: true,
+            source: new VectorTile({
+                format: new MVT(),
+                tileGrid: createXYZ({
+                    minZoom: 0,
+                    maxZoom: 12
+                }),
+                url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
+            }),
+            renderMode: 'hybrid'
+        });
+        applyStyle(vectorTile, greyScale, 'planet0-12');
 
-        //             const osmLayer = new OsmTileLayer({
-        //                 visible: false,
-        //                 legendImg: 'assets/layer-preview/osm-96px.jpg'
-        //             });
-        //             layers.push(osmLayer);
+        const geoserviceVTiles = new CustomLayer({
+            name: 'OpenMapStyles',
+            id: 'planet_eoc_vector_tiles',
+            attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
+            description: `vtiles_description`,
+            type: 'custom',
+            visible: true,
+            custom_layer: vectorTile
+        });
 
-        //             const gebco = new CustomLayer({
-        //                 id: 'gebco',
-        //                 name: 'GEBCO',
-        //                 custom_layer: new TileLayer({
-        //                     source: new TileWMS({
-        //                         url: 'https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?',
-        //                         params: {
-        //                             layers: 'GEBCO_2019_Grid',
-        //                             tiled: true
-        //                         },
-        //                         crossOrigin: 'anonymous'
-        //                     })
-        //                 }),
-        //                 visible: false,
-        //                 opacity: 1.0,
-        //                 legendImg: 'https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&layers=GEBCO_2019_Grid&tiled=true&WIDTH=128&HEIGHT=128&CRS=EPSG%3A4326&STYLES=&BBOX=-22.5%2C-90%2C0%2C-67.5',
-        //                 attribution: '&copy, <a href="https://www.gebco.net/">GEBCO Compilation Group (2020) GEBCO 2020 Grid (doi:10.5285/a29c5465-b138-234d-e053-6c86abc040b9)</a>'
-        //             });
-        //             layers.push(gebco);
-        //             return layers;
-        //     }),
-        // );
+        return of([osmLayer, geoserviceVTiles]);
     }
 
 

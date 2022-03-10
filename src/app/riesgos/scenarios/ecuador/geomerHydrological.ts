@@ -2,10 +2,11 @@ import { ExecutableProcess, ProcessStateUnavailable, Product, ProductTransformin
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Observable, of } from 'rxjs';
-import { WpsData } from '@dlr-eoc/utils-ogc';
+import { WpsData } from 'src/app/services/wps';
 import { direction, vei } from './lahar';
 import { laharHeightWms } from './laharWrapper';
-import { StringSelectUconfProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 
 
 
@@ -20,6 +21,12 @@ export const hydrologicalSimulation: WmsLayerProduct & WpsData = {
         reference: false,
         type: 'complex',
         legendImg: 'assets/images/inundation_legend.png',
+        featureInfoRenderer: (fi) => {
+            const html = `
+                <p><b>{{ flood_depth }}:</b></br>${toDecimalPlaces(fi.features[0].properties['depth_cm'], 2)} cm</p>
+            `;
+            return html;
+        },
     },
     value: null
 };
@@ -69,7 +76,7 @@ export const depthTiff: WpsData & Product = {
 
 
 
-export const userinputSelectedOutburst: StringSelectUconfProduct & WpsData = {
+export const userInputSelectedOutburst: StringSelectUserConfigurableProduct & WpsData = {
     uid: 'outburstSite',
     description: {
         type: 'literal',
@@ -123,22 +130,23 @@ export const FloodMayRunProcess: ProductTransformingProcess = {
 export const geomerFlood: WizardableProcess & ExecutableProcess = {
     uid: 'geomerFlood',
     name: 'FloodService',
-    requiredProducts: [vei, laharHeightWms, userinputSelectedOutburst, FloodMayRun].map(p => p.uid),
+    requiredProducts: [vei, laharHeightWms, userInputSelectedOutburst, FloodMayRun].map(p => p.uid),
     providedProducts: [hydrologicalSimulation, durationTiff, velocityTiff, depthTiff].map(pr => pr.uid),  // durationTiff, velocityTiff,
     state: new ProcessStateUnavailable(),
     wizardProperties: {
         providerName: 'geomer',
         providerUrl: 'https://www.geomer.de/en/index.html',
         shape: 'tsunami',
-        wikiLink: 'Flood'
+        wikiLink: 'FloodSimulation'
     },
     description: 'geomerFloodDescription',
     execute: (inputs: Product[]): Observable<Product[]> => {
         const veiVal = inputs.find(prd => prd.uid === vei.uid).value.toLowerCase();
-        const outburstVal = inputs.find(prd => prd.uid === userinputSelectedOutburst.uid);
+        const outburstVal = inputs.find(prd => prd.uid === userInputSelectedOutburst.uid);
         const position = outburstVal.value === 'Rio San Pedro' ? 'north' : 'south';
 
         if (veiVal === 'vei1') {
+            console.warn('Geomer hydrological simulation: no data calculated for VEI=1');
             return of([]);
         }
 

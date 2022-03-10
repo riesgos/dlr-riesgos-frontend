@@ -31,9 +31,9 @@ export class FormFeatureSelectFieldComponent implements OnInit {
   ngOnInit() {
     this.options = this.parameter.description.featureSelectionOptions;
     const startValue = this.control.value || this.parameter.description.defaultValue;
-
     this.stringOptions = Object.keys(this.options);
-    const stringStartValue = startValue[0].features[0].id;
+    const stringStartValue = this.stringOptions.find(s => this.options[s].features[0].id === startValue[0].features[0].id);
+
     this.stringControl = new FormControl(stringStartValue, [Validators.required]);
 
     this.stringControl.valueChanges.subscribe(newStringVal => {
@@ -81,4 +81,23 @@ export class FormFeatureSelectFieldComponent implements OnInit {
     }
   }
 
+}
+
+
+function recursiveEqual(obj1: object, obj2: object): boolean {
+  for (const key1 in obj1) {
+    if (!obj2[key1]) {
+      return false;
+    }
+    else if (typeof obj1[key1] === 'object') {
+      const subEqual = recursiveEqual(obj1[key1], obj2[key1]);
+      if (!subEqual) {
+        return false;
+      }
+    }
+    else if (obj2[key1] !== obj1[key1]) {
+      return false;
+    }
+  }
+  return true;
 }

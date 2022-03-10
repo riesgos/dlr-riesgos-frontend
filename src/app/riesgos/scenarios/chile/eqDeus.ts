@@ -1,25 +1,26 @@
-import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { schema, initialExposure } from './exposure';
-import { WpsData } from '@dlr-eoc/utils-ogc';
+import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
+import { initialExposureRef } from './exposure';
+import { WpsData } from 'src/app/services/wps';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { VectorLayerProduct, MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
-import { createBarchart, BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import olFeature from 'ol/Feature';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { toDecimalPlaces, weightedDamage, greenRedRange, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { fragilityRef, VulnerabilityModel, assetcategory, losscategory, taxonomies } from './modelProp';
+import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
-import { FeatureCollection, Feature } from '@turf/helpers';
-import { createKeyValueTableHtml, createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
-import { Cache } from '@dlr-eoc/utils-ogc';
+import { FeatureCollection } from '@turf/helpers';
+import { createHeaderTableHtml, createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { Cache } from 'src/app/services/wps';
 import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
-import { IDynamicComponent } from 'src/app/components/dynamic-component/dynamic-component.component';
+import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { maxDamage$ } from './constants';
+import Geometry from 'ol/geom/Geometry';
 
 
 
@@ -37,16 +38,16 @@ export const loss: WpsData & Product = {
 export const damageProps: VectorLayerProperties = {
     name: 'eq-damage',
     vectorLayerAttributes: {
-        style: (feature: olFeature, resolution: number) => {
+        style: (feature: olFeature<Geometry>, resolution: number) => {
             const props = feature.getProperties();
             const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                 })
             });
         },
@@ -112,17 +113,15 @@ export const damageProps: VectorLayerProperties = {
         }
     },
     description: 'Loss in USD',
-    icon: 'dot-circle'
-
+    icon: 'dot-circle',
 };
 
 export const transitionProps: VectorLayerProperties = {
     name: 'eq-transition',
     icon: 'dot-circle',
     vectorLayerAttributes: {
-        style: (feature: olFeature, resolution: number) => {
+        style: (feature: olFeature<Geometry>, resolution: number) => {
             const props = feature.getProperties();
-
 
             const I = props['transitions']['n_buildings'].length;
             const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
@@ -144,21 +143,20 @@ export const transitionProps: VectorLayerProperties = {
 
             const weightedChange = (meanStateTo - meanStateFrom) / (5 - meanStateFrom);
 
-
             let r; let g; let b;
             if (total > 0) {
                 [r, g, b] = yellowBlueRange(0, 1, weightedChange);
             } else {
-                r = g = b = 0;
+                r = b = g = 160;
             }
 
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                 })
             });
         },
@@ -175,7 +173,7 @@ export const transitionProps: VectorLayerProperties = {
                         [5.627918243408203, 50.963075942052164]]]
                 }
             },
-            text: `{{ SmallDamageChange }}`,
+            text: `SmallDamageChange`,
         }, {
             feature: {
                 "type": "Feature",
@@ -189,7 +187,7 @@ export const transitionProps: VectorLayerProperties = {
                         [5.627918243408203, 50.963075942052164]]]
                 }
             },
-            text: '{{ LargeDamageChange }}',
+            text: 'LargeDamageChange',
         }],
         text: (props: object) => {
 
@@ -214,7 +212,7 @@ export const transitionProps: VectorLayerProperties = {
                     } else if (c === 0) {
                         labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                     } else if (r > 0 && c > 0) {
-                        labeledMatrix[r][c] = toDecimalPlaces(matrix[r - 1][c - 1], 1);
+                        labeledMatrix[r][c] = Math.round(matrix[r - 1][c - 1]);
                     }
                 }
             }
@@ -245,7 +243,7 @@ export const transitionProps: VectorLayerProperties = {
                     } else if (c === 0) {
                         labeledMatrix[r][c] = { value: `${r - 1}`, style: { 'font-weight': 'bold' } };
                     } else if (r > 0 && c > 0) {
-                        labeledMatrix[r][c] = { value: toDecimalPlaces(matrix[r - 1][c - 1], 0) };
+                        labeledMatrix[r][c] = { value: Math.round(matrix[r - 1][c - 1]) };
                     }
                 }
             }
@@ -266,7 +264,7 @@ const updatedExposureProps: VectorLayerProperties = {
     icon: 'dot-circle',
     name: 'eq-exposure',
     vectorLayerAttributes: {
-        style: (feature: olFeature, resolution: number) => {
+        style: (feature: olFeature<Geometry>, resolution: number) => {
             const props = feature.getProperties();
 
             const expo = props.expo;
@@ -291,18 +289,18 @@ const updatedExposureProps: VectorLayerProperties = {
             let g: number;
             let b: number;
             if (total === 0) {
-                r = b = g = 0;
+                r = b = g = 160;
             } else {
                 [r, g, b] = greenRedRange(0, 0.6, dr);
             }
 
             return new olStyle({
                 fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                 }),
                 stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                 })
             });
         },
@@ -430,7 +428,7 @@ const updatedExposureProps: VectorLayerProperties = {
                 }
             }
 
-            const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+            const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
 
             const legend = `
                     <ul>
@@ -442,7 +440,7 @@ const updatedExposureProps: VectorLayerProperties = {
                     </ul>
                 `;
 
-            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML}<br/>${legend}<br/>{{GroupsSimplified}}{{StatesNotComparable}}`;
+            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Earthquake }}: {{ damage_classification }}</h4>${anchor.innerHTML} ${legend} {{GroupsSimplified}}{{StatesNotComparable}}`;
         },
         summary: (value: [FeatureCollection]) => {
             const counts = {
@@ -459,7 +457,9 @@ const updatedExposureProps: VectorLayerProperties = {
                     counts[damageClass] += nrBuildings;
                 }
             }
-            const html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))]);
+            const html =
+                createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))])
+                + '{{ BuildingTypesSara }}';
             const comp: IDynamicComponent = {
                 component: TranslatableStringComponent,
                 inputs: {
@@ -506,14 +506,14 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
     readonly state: ProcessState;
     readonly uid = 'EQ-Deus';
     readonly name = 'Multihazard_damage_estimation/Earthquake';
-    readonly requiredProducts = [eqShakemapRef, initialExposure].map(p => p.uid);
+    readonly requiredProducts = [eqShakemapRef, initialExposureRef].map(p => p.uid);
     readonly providedProducts = [eqDamageM, eqUpdatedExposureRef].map(p => p.uid);
     readonly description = 'This service returns damage caused by the selected earthquake.';
     readonly wizardProperties: WizardProperties = {
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
         shape: 'dot-circle',
-        wikiLink: 'Vulnerability'
+        wikiLink: 'ExposureAndVulnerability'
     };
 
     private vulnerabilityProcess: VulnerabilityModel;
@@ -530,23 +530,26 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
         outputProducts?: Product[],
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
-        const vulnerabilityInputs = [
-            assetcategory,
-            losscategory,
-            taxonomies,
-            {
-                ...schema,
-                value: 'SARA_v1.0'
-            }
-        ];
-        const vulnerabilityOutputs = [fragilityRef];
+        const schema: Product & WpsData = {
+            uid: 'schema',
+            description: {
+              id: 'schema',
+              title: 'schema',
+              reference: false,
+              type: 'literal',
+            },
+            value: 'SARA_v1.0'
+          };
+
+        const vulnerabilityInputs = [ schema ];
+        const vulnerabilityOutputs = [ fragilityRef ];
 
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
             .pipe(
                 switchMap((resultProducts: Product[]) => {
                     const fragility = resultProducts.find(prd => prd.uid === fragilityRef.uid);
                     const shakemap = inputProducts.find(prd => prd.uid === eqShakemapRef.uid);
-                    const exposure = inputProducts.find(prd => prd.uid === initialExposure.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === initialExposureRef.uid);
 
                     const deusInputs = [{
                         ...schema,
@@ -568,8 +571,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
                         description: {
                             ...exposure.description,
                             id: 'exposure'
-                        },
-                        value: exposure.value[0]
+                        }
                     }
                     ];
                     const deusOutputs = outputProducts;

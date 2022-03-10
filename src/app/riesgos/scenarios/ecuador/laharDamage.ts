@@ -10,32 +10,33 @@ import { fragilityRef } from '../chile/modelProp';
 import { switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
-import { Feature as olFeature } from 'ol/Feature';
-import { WpsData, Cache } from '@dlr-eoc/utils-ogc';
+import olFeature from 'ol/Feature';
+import { WpsData, Cache } from 'src/app/services/wps';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { greenRedRange, toDecimalPlaces, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { FeatureCollection } from '@turf/helpers';
 import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
-import { BarData, createGroupedBarchart } from 'src/app/helpers/d3charts';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { maxDamage$ } from '../chile/constants';
+import Geometry from 'ol/geom/Geometry';
 
 
 
 export const laharLossProps: VectorLayerProperties = {
         name: 'laharLoss',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
@@ -105,9 +106,9 @@ export const laharLossProps: VectorLayerProperties = {
 
 export const laharTransitionProps: VectorLayerProperties = {
         name: 'laharTransition',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -134,16 +135,16 @@ export const laharTransitionProps: VectorLayerProperties = {
                 if (total > 0) {
                     [r, g, b] = yellowBlueRange(0, 1, weightedChange);
                 } else {
-                    r = g = b = 0;
+                    r = b = g = 160;
                 }
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
@@ -199,7 +200,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = toDecimalPlaces(matrix[r-1][c-1], 1);
+                            labeledMatrix[r][c] = Math.round(matrix[r-1][c-1]);
                         }
                     }
                 }
@@ -230,7 +231,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = {value: `${r - 1}`, style: {'font-weight': 'bold'}};
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = {value: toDecimalPlaces(matrix[r-1][c-1], 0) };
+                            labeledMatrix[r][c] = {value: Math.round(matrix[r-1][c-1]) };
                         }
                     }
                 }
@@ -248,9 +249,9 @@ export const laharTransitionProps: VectorLayerProperties = {
 
 export const laharUpdatedExposureProps: VectorLayerProperties = {
         name: 'laharExposure',
-        icon: 'avalance',
+        icon: 'avalanche',
         vectorLayerAttributes: {
-            style: (feature: olFeature, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -275,18 +276,18 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                 let g: number;
                 let b: number;
                 if (total === 0) {
-                    r = b = g = 0;
+                    r = b = g = 160;
                 } else {
                     [r, g, b] = greenRedRange(0, 0.6, dr);
                 }
 
                 return new olStyle({
                   fill: new olFill({
-                    color: [r, g, b, 0.5],
+                    color: [r, g, b, 1],
                   }),
                   stroke: new olStroke({
-                    color: [r, g, b, 1],
-                    witdh: 2
+                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
+                    width: 2
                   })
                 });
             },
@@ -414,7 +415,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarchart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">Lahar: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {
@@ -465,7 +466,7 @@ export const laharDamageM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [laharLossProps, laharUpdatedExposureProps]
+        vectorLayers: [laharUpdatedExposureProps, laharLossProps]
     },
     value: null
 };
@@ -497,7 +498,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
         shape: 'dot-circle',
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
-        wikiLink: 'ExposureLahar'
+        wikiLink: 'ExposureAndVulnerabilityEcuador'
     };
 
     private deus: Deus;

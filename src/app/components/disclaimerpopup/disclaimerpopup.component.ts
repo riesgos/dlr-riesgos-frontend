@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UtilStoreService } from '@dlr-eoc/services-util-store';
+import { StoreService } from 'src/app/services/store.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-disclaimerpopup',
@@ -11,7 +12,9 @@ export class DisclaimerpopupComponent implements OnInit {
   showModal: boolean = true;
   showModalKey = 'RIESGOS_SHOW_DISCLAIMER';
 
-  constructor(private storageService: UtilStoreService) { }
+  constructor(private storageService: StoreService) {
+    this.showModal = environment.production ? true : false;
+  }
 
   ngOnInit() {
     // const storedVal = this.storageService.local(this.showModalKey);
@@ -24,7 +27,7 @@ export class DisclaimerpopupComponent implements OnInit {
 
   hideModalSave() {
     this.showModal = false;
-    this.storageService.local(this.showModalKey, false);
+    this.storageService.local(this.showModalKey, 'false');
   }
 
 }

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LayerentryGroupComponent } from './layerentry-group.component';
 import { RiesgosLayerentryComponent } from '../layerentry/layerentry.component';
@@ -16,7 +16,7 @@ describe('LayerentryGroupComponent', () => {
   let layersSvc: LayersService;
   let mapStateSvc: MapStateService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ClarityModule, FormsModule],
       declarations: [LayerentryGroupComponent, RiesgosLayerentryComponent, ReversePipe],

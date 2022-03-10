@@ -1,9 +1,12 @@
 import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsBboxValue } from '@dlr-eoc/utils-ogc';
+import { WpsBboxValue } from 'src/app/services/wps';
 import { shape } from '../components/config_wizard/wizardable_processes';
-import { FeatureCollection, Feature } from '@turf/helpers';
+import { FeatureCollection } from '@turf/helpers';
+import Feature from 'ol/Feature';
+import Geometry from 'ol/geom/Geometry';
 import { LegendElement } from '../components/dynamic/vector-legend/vector-legend.component';
-import { IDynamicComponent } from '../components/dynamic-component/dynamic-component.component';
+import { IDynamicComponent } from '@dlr-eoc/core-ui';
+import GeometryCollection from 'ol/geom/GeometryCollection';
 
 
 
@@ -32,7 +35,7 @@ export const isBboxLayerProduct = (data: Product): data is BboxLayerProduct => {
 
 export interface VectorLayerProperties {
     vectorLayerAttributes: {
-        style?: (feature: Feature, resolution: number, selected: boolean) => any;
+        style?: (feature: Feature<Geometry | GeometryCollection>, resolution: number, selected: boolean) => any;
         text?: any;
         summary?: (value: any) => IDynamicComponent,
         sldFile?: string,
@@ -63,7 +66,7 @@ export const isVectorLayerProduct = (data: Product): data is VectorLayerProduct 
     return isVectorLayerDescription(data.description);
 };
 
-export interface MulitVectorLayerDescription extends ProductDescription {
+export interface MultiVectorLayerDescription extends ProductDescription {
     format: 'application/vnd.geo+json' | 'application/json';
     type: 'complex';
     vectorLayers: VectorLayerProperties[];
@@ -74,10 +77,10 @@ export interface MulitVectorLayerDescription extends ProductDescription {
  * A *MultiVectorLayerProduct* uses one VectorSource with multiple layers.
  */
 export interface MultiVectorLayerProduct extends Product {
-    description: MulitVectorLayerDescription;
+    description: MultiVectorLayerDescription;
 }
 
-export const isMultiVectorLayerDescription = (description: ProductDescription): description is MulitVectorLayerDescription => {
+export const isMultiVectorLayerDescription = (description: ProductDescription): description is MultiVectorLayerDescription => {
     return description.hasOwnProperty('vectorLayers');
 };
 
@@ -89,10 +92,10 @@ export const isMultiVectorLayerProduct = (product: Product): product is MultiVec
 
 export interface WmsLayerDescription extends ProductDescription {
     legendImg?: string | IDynamicComponent;
-    format: 'application/WMS';
     name: string;
     type: 'complex' | 'literal';
     styles?: string[];
+    format: 'application/WMS' | 'string';  // Ts-service returns wms-data as string-literal. Not sure if this is strictly correct.
     id: string;
     description?: string;
     icon?: shape;
@@ -105,11 +108,21 @@ export interface WmsLayerProduct extends Product {
 
 
 export const isWmsLayerDescription = (description: ProductDescription): description is WmsLayerDescription => {
-    return description['format'] === 'application/WMS'
-            && (description['type'] === 'complex' || description['type'] === 'literal');
+    if (description['type'] === 'complex') {
+        return description['format'] === 'application/WMS';
+    } else if (description['type'] === 'literal') {
+        return !!description['styles'] || !!description['featureInfoRenderer'] || !!description['legendImg'];
+    }
+    return false;
 };
 
 export const isWmsProduct = (data: Product): data is WmsLayerProduct => {
+    const matchesWms = (str: string) => {
+        return str.includes('service=wms') || str.includes('Service=Wms') || str.includes('SERVICE=WMS');
+    };
+
     return isWmsLayerDescription(data.description)
-        || ((data.description['format'] === 'string' || data.description['format'] === 'application/WMS') && (data.value as string).includes('wms'));
+        || data.description['format'] === 'application/WMS'
+        || ((typeof data.value === 'string') && matchesWms(data.value as string))
+        || ((Array.isArray(data.value)) && (typeof data.value[0] === 'string') && matchesWms(data.value[0] as string));
 };

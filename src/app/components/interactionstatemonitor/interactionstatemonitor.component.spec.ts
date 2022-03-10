@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InteractionstatemonitorComponent } from './interactionstatemonitor.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ describe('InteractionstatemonitorComponent', () => {
   let component: InteractionstatemonitorComponent;
   let fixture: ComponentFixture<InteractionstatemonitorComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ InteractionstatemonitorComponent ],
       imports: [TranslateModule.forRoot(), ClarityModule, StoreModule.forRoot(reducers)]

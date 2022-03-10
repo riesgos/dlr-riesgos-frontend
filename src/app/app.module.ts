@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { MapOlModule } from '@dlr-eoc/map-ol';
+import { CoreUiModule } from '@dlr-eoc/core-ui';
 import { LayersModule } from '@dlr-eoc/services-layers';
 import { Ng5SliderModule } from 'ng5-slider';
 
@@ -57,7 +58,6 @@ import { PrintComponent } from './components/print/print.component';
 import { PrintMapComponent } from './components/print/print-map/print-map.component';
 import { ScalerComponent } from './components/scaler/scaler.component';
 import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
-import { DynamicComponentComponent, ViewRefDirective } from './components/dynamic-component/dynamic-component.component';
 import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
 import { HelperButtonsComponent } from './components/helperButtons/helper-buttons.component';
 
@@ -80,6 +80,15 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 import { environment } from '../environments/environment';
 import { TranslatableStringComponent } from './components/dynamic/translatable-string/translatable-string.component';
+import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
+import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
+
+// import all used icons
+import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from '@cds/core/icon';
+import { DisclaimerTriggerComponent } from './components/disclaimer-trigger/disclaimer-trigger.component';
+import { DisclaimerService } from './components/disclaimer/disclaimer.service';
+// loading an icon from the "core set" now must be done manually
+ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -136,14 +145,16 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     PrintMapComponent,
     ScalerComponent,
     GroupSliderComponent,
-    DynamicComponentComponent,
-    ViewRefDirective,
     InfoTableComponentComponent,
-    TranslatableStringComponent
+    TranslatableStringComponent,
+    VerticalNavResizeComponent,
+    NavResizeDirectiveDirective,
+    DisclaimerTriggerComponent
   ],
   imports: [
     BrowserModule,
     UkisRoutingModule,
+    CoreUiModule,
     MapOlModule,
     LayersModule,
     ClarityModule,
@@ -174,6 +185,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   ],
   providers: [
     AlertService,
+    DisclaimerService,
     FooterService,
     ProgressService,
     RiesgosService,

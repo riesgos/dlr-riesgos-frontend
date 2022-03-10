@@ -1,9 +1,7 @@
-declare const Plotly: any;
-// expects plotly to have been loaded per CDN
-// (required because currently plotly cannot be compiled to es2015)
+import Plotly from 'plotly.js-dist';
 
 
-export function createGroupedBarchart(
+export function createGroupedBarChart(
     anchorSelector: any, data: {[groupName: string]: BarData[]}, width: number, height: number, xLabel: string, yLabel: string
 ) {
 
@@ -19,80 +17,78 @@ export function createGroupedBarchart(
     }
 
     // completing data: all groups must contain the same datasets
-    const labels = [];
+    const xAxisLabels = [];
+    const groupNames = [];
     for (const key in data) {
         if (data[key]) {
+            groupNames.push(key);
             for (const el of data[key]) {
-                if (!labels.includes(el.label)) {
-                    labels.push(el.label);
+                if (!xAxisLabels.includes(el.label)) {
+                    xAxisLabels.push(el.label);
                 }
             }
         }
     }
 
-    for (const key in data) {
-        if (data[key]) {
-            for (const label of labels) {
-                if (!data[key].find(el => el.label === label)) {
-                    data[key].push({
+    for (const groupName of groupNames) {
+            for (const label of xAxisLabels) {
+                if (!data[groupName].find(el => el.label === label)) {
+                    data[groupName].push({
                         label: label,
                         value: 0
                     });
                 }
             }
-        }
     }
 
     // sorting data alphabetically
-    for (const key in data) {
-        if (data[key]) {
-            data[key].sort((dp1, dp2) => dp1.label > dp2.label ? 1 : -1);
-        }
+    for (const groupName of groupNames) {
+            data[groupName].sort((dp1, dp2) => dp1.label > dp2.label ? 1 : -1);
     }
 
     // rendering
     const newData = [];
-    for (const groupName in data) {
-        if (data[groupName]) {
-            const groupData = data[groupName];
-            const transformedGroupData = {
-                type: 'bar',
-                name: groupName.substr(0, 13),
-                x: groupData.map(dp => dp.label),
-                y: groupData.map(dp => dp.value)
-            };
-            newData.push(transformedGroupData);
-        }
+    for (const groupName of groupNames) {
+        const groupData = data[groupName];
+        const transformedGroupData = {
+            type: 'bar',
+            name: groupName.substr(0, 13),
+            x: groupData.map(dp => dp.label),
+            y: groupData.map(dp => dp.value)
+        };
+        newData.push(transformedGroupData);
     }
 
     const yMax = newData.map(dp => dp.y).flat().reduce((last, curr) => curr > last ? curr : last, 0);
 
     const layout = {
-        showlegend: true, // newData.length > 8 ? false : true,
+        showlegend: true,
         legend: {
-            orientation: 'h'
+          orientation: 'h'
         },
         xaxis: {
-            title: {
-                text: xLabel
-            }
+          automargin: true,
+          title: {
+            text: xLabel,
+            standoff: 30 * Math.ceil(groupNames.length / 4)
+          }
         },
         yaxis: {
-            title: {
-                text: yLabel
-            },
-            range: [0, yMax + 1]
+          title: {
+            text: yLabel
+          },
+          range: [0, yMax + 1]
         },
-        width: width,
-        height: height,
+        width,
+        height,
         margin: {
-            l: 50,
-            r: 30,
-            b: 50,
-            t: 15,
-            pad: 5
-        },
-    };
+          l: 50,
+          r: 30,
+          b: 50,
+          t: 15,
+          pad: 5
+        }
+      };
 
     Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }
@@ -104,10 +100,10 @@ export interface BarData {
 
 
 
-export function createBarchart(
+export function createBarChart(
     anchorSelector: any, data: BarData[], width: number, height: number, xLabel: string, yLabel: string,
-    xAxisAngle = 0, yAxisAngle = 0) {
-        
+    options?: {yRange?: [number, number]}) {
+
         let dataLength = 0;
         for (const dp of data) {
             dataLength += dp.value;
@@ -129,16 +125,16 @@ export function createBarchart(
             xaxis: {
                 title: {
                     text: xLabel
-                }
+                },
             },
             yaxis: {
                 title: {
                     text: yLabel
                 },
-                range: [0, yMax + 1]
+                range: options?.yRange ? options.yRange : [0, yMax + 1]
             },
-            width: width,
-            height: height,
+            width,
+            height,
             margin: {
                 l: 50,
                 r: 30,
@@ -151,7 +147,7 @@ export function createBarchart(
         Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }
 
-export function createBigBarchart(
+export function createBigBarChart(
     anchorSelector: any, data: BarData[], width: number, height: number, xLabel: string, yLabel: string) {
 
         let dataLength = 0;
@@ -189,7 +185,7 @@ export function createBigBarchart(
             margin: {
                 l: 50,
                 r: 30,
-                b: 30,
+                b: 50,
                 t: 15,
                 pad: 5
             },

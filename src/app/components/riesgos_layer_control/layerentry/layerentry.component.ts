@@ -162,14 +162,21 @@ export class RiesgosLayerentryComponent implements OnInit {
     if (!this.layersSvc) {
       console.error('you need to provide a layersService!');
     }
-    if (!this.layer.legendImg) {
+    if (!this.layer.legendImg && this.layer.description) {
       this.activeTabs.description = true;
       this.activeTabs.legend = false;
       this.activeTabs.settings = false;
       this.activeTabs.changeStyle = false;
     }
 
-    if (!this.layer.legendImg && !this.layer.description) {
+    if (!this.layer.legendImg && !this.layer.description && this.layer.dynamicDescription) {
+      this.activeTabs.dynamicDescription = true;
+      this.activeTabs.description = false;
+      this.activeTabs.legend = false;
+      this.activeTabs.settings = false;
+    }
+
+    if (!this.layer.legendImg && !this.layer.description && !this.layer.dynamicDescription) {
       this.activeTabs.description = false;
       this.activeTabs.legend = false;
       this.activeTabs.settings = true;
@@ -196,8 +203,8 @@ export class RiesgosLayerentryComponent implements OnInit {
     if (!group) {
       if (selectedLayer.filtertype === 'Baselayers') {
         selectedLayer.visible = !selectedLayer.visible;
-        const filterdlayers = this.layerGroups.filter((l) => l.filtertype === 'Baselayers');
-        for (const layer of filterdlayers) {
+        const filteredLayers = this.layerGroups.filter((l) => l.filtertype === 'Baselayers');
+        for (const layer of filteredLayers) {
           if (layer instanceof Layer && layer.id !== selectedLayer.id) {
             layer.visible = !selectedLayer.visible;
             this.layersSvc.updateLayer(layer, layer.filtertype || 'Baselayers');
@@ -313,7 +320,8 @@ export class RiesgosLayerentryComponent implements OnInit {
     return false;
   }
 
-  executeChangeStyle(newStyleName: string) {
+  executeChangeStyle(evt: Event) {
+    const newStyleName: string = (evt.target as HTMLSelectElement).value;
     if (isRasterLayertype(this.layer.type)) {
       if ((this.layer as RasterLayer).styles) {
         const newStyle = (this.layer as RasterLayer).styles.find(s => s.name === newStyleName);
@@ -348,11 +356,7 @@ export class RiesgosLayerentryComponent implements OnInit {
 
   getExpandShape() {
     // return this.openProperties ? 'down' : 'right';
-    if (this.layer.icon) {
-      return { transform: 'rotate(0deg)' };
-    } else {
-      return this.expanded ? { transform: 'rotate(90deg)' } : { transform: 'rotate(0deg)' };
-    }
+    return this.expanded ? { transform: 'rotate(180deg)' } : { transform: 'rotate(90deg)' };
   }
 
 }

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RouteDocumentationComponent } from './route-documentation.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ describe('RouteDocumentationComponent', () => {
   let component: RouteDocumentationComponent;
   let fixture: ComponentFixture<RouteDocumentationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ RouteDocumentationComponent, BlogentryComponent ],
       imports: [TranslateModule.forRoot(), StoreModule.forRoot(reducers)]

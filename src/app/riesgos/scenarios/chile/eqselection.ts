@@ -102,6 +102,7 @@ export const selectedEq: WpsData & VectorLayerProduct = {
 export const EqSelection: WizardableProcess & ExecutableProcess & ProductTransformingProcess = {
     uid: 'EqSelection',
     name: 'Select earthquake',
+    description: 'select_eq_description',
     state: { type: ProcessStateTypes.unavailable },
     requiredProducts: [availableEqs, userinputSelectedEq].map(p => p.uid),
     providedProducts: [selectedEq.uid],

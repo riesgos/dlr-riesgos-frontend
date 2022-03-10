@@ -11,6 +11,7 @@ import { StringSelectUserConfigurableProduct } from 'src/app/components/config_w
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import Geometry from 'ol/geom/Geometry';
+import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 
 
 export const modelChoice: WpsData & StringSelectUserConfigurableProduct = {
@@ -126,6 +127,14 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
         },
         text: `exposureLegend`
       }],
+      summary: (value) => {
+        return {
+          component: TranslatableStringComponent,
+          inputs: {
+            text: 'BuildingTypesSara'
+          }
+        };
+      }
     }
   },
   value: null

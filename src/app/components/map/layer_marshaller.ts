@@ -364,7 +364,9 @@ export class LayerMarshaller  {
             removable: true,
             filtertype: 'Overlays',
             hasFocus: false,
-            popup: false,
+            popup: {
+                filterLayer: true
+            },
         });
         return of(riesgosLayer);
     }

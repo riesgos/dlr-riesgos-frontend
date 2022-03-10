@@ -171,7 +171,7 @@ export const tlat: Product & WpsData = {
 
 
 
-export const selectedEqs: VectorLayerProduct & WpsData = {
+export const availableEqs: VectorLayerProduct & WpsData = {
     uid: 'QuakeledgerProcess_selectedRows',
     description: {
         id: 'selectedRows',
@@ -298,7 +298,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
             'Quakeledger',
             'Earthquake Catalogue',
             ['input-boundingbox'].concat([mmin, mmax, zmin, zmax, p, etype, tlon, tlat].map(prd => prd.uid)),
-            [selectedEqs.uid],
+            [availableEqs.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
             'Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
             'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',

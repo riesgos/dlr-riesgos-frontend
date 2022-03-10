@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
-import { selectedEqsPeru } from './quakeledger';
+import { availableEqsPeru } from './quakeledger';
 import { FeatureCollection, featureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import Geometry from 'ol/geom/Geometry';
@@ -103,7 +103,7 @@ export const EqSelectionPeru: WizardableProcess & ExecutableProcess & ProductTra
     uid: 'EqSelectionPeru',
     name: 'Select earthquake',
     state: { type: ProcessStateTypes.unavailable },
-    requiredProducts: [selectedEqsPeru, userinputSelectedEqPeru].map(p => p.uid),
+    requiredProducts: [availableEqsPeru, userinputSelectedEqPeru].map(p => p.uid),
     providedProducts: [selectedEqPeru.uid],
     wizardProperties: {
         providerName: '',
@@ -123,14 +123,12 @@ export const EqSelectionPeru: WizardableProcess & ExecutableProcess & ProductTra
         }]);
     },
 
-    /**
-     * Wait for eq-catalogue to return its data (`selectedEqs`)
-     * Once they are available, use those values as selectable options for `userinputSelectedEq`
-     */
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch (newProduct.uid) {
 
-            case selectedEqsPeru.uid:
+            // Wait for eq-catalogue to return its data (`selectedEqs`)
+            // Once they are available, use those values as selectable options for `userinputSelectedEq`
+            case availableEqsPeru.uid:
                 const options: {[key: string]: FeatureCollection} = {};
                 for (const feature of newProduct.value[0].features) {
                     const key = getEqKey(feature);
@@ -141,6 +139,21 @@ export const EqSelectionPeru: WizardableProcess & ExecutableProcess & ProductTra
                 userinputSelectedEqPeru.description.defaultValue = [Object.values(options)[0]];
 
                 return [userinputSelectedEqPeru];
+
+            // wait for user to have selected an eq.
+            // when selection is made, update the styling of the available eqs
+            case userinputSelectedEqPeru.uid:
+                const selectedEqId = newProduct.value[0].features[0].id;
+                const eqsData = allProducts.find(p => p.uid === availableEqsPeru.uid);
+                const allFeatures = eqsData.value[0].features;
+                for (const feature of allFeatures) {
+                    if (feature.id === selectedEqId) {
+                        feature.properties.selected = true;
+                    } else {
+                        feature.properties.selected = false;
+                    }
+                }
+                return [eqsData];
 
             default:
                 return [];

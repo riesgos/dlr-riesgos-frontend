@@ -3,7 +3,6 @@ import { BehaviorSubject, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { Graph } from 'graphlib';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
-import { parse } from 'url';
 import { Store, select } from '@ngrx/store';
 
 import { DragBox, Select } from 'ol/interaction';
@@ -38,6 +37,7 @@ import { SelectEvent } from 'ol/interaction/Select';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { VectorTile } from 'ol/source';
 import { createHeaderTableHtml, createTableHtml } from 'src/app/helpers/others';
+import { updateSearchParamsHashRouting } from 'src/app/shared/url.utils';
 
 const mapProjection = 'EPSG:3857';
 
@@ -552,16 +552,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     subscribeToMapState() {
-        const sub7 = this.mapStateSvc.getMapState().subscribe((state) => {
-            if (history.pushState) {
-                const url = parse(window.location.href.replace('#/', ''));
-                const query = new URLSearchParams(url.query);
-                const extent = state.extent.map(item => item.toFixed(3));
-                query.set('bbox', extent.join(','))
-                const newurl = `${url.protocol}//${url.host}/#${url.pathname}?${query.toString()}`; // bbox=${extent.join(',') &time=${state.time}
-                window.history.pushState({ path: newurl }, '', newurl);
-            }
-        });
-        this.subs.push(sub7);
+      const sub7 = this.mapStateSvc.getMapState().subscribe((state) => {
+        if (history.pushState) {
+          const extent = state.extent.map(item => item.toFixed(3));
+          const newurl = updateSearchParamsHashRouting({ bbox: extent.join(',') });
+          window.history.pushState({ path: newurl }, '', newurl);
+        }
+      });
+      this.subs.push(sub7);
     }
 }

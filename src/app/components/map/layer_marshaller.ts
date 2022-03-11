@@ -188,17 +188,12 @@ export class LayerMarshaller  {
                 }).readFeatures(data)
             });
         }
-        const data = product.value[0];
         const vl = new WebGlPolygonLayer({
             source,
-            colorFunc: (f: olFeature<Polygon>) => {
+            webGlColorFunction: (f: olFeature<Polygon>) => {
                 const style = product.description.vectorLayerAttributes.style(f, null, false);
                 const fillColor = style.fill_.color_;
-                const lineColor = style.stroke_.color_;
-                return {
-                    'fillColor': [fillColor[0] / 255, fillColor[1] / 255, fillColor[2] / 255, fillColor[3]],
-                    'lineColor': [lineColor[0] / 255, lineColor[1] / 255, lineColor[2] / 255, lineColor[3]],
-                };
+                return [fillColor[0] / 255, fillColor[1] / 255, fillColor[2] / 255, fillColor[3]];
             }
         });
         const ukisLayer = new ProductCustomLayer({

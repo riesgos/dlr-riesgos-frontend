@@ -2,7 +2,9 @@ import { bindIndexBuffer, bindProgram, bindTextureToUniform, bindValueToUniform,
     createIndexBuffer, createShaderProgram, createTexture, drawArray, drawElements, getAttributeLocation,
     getUniformLocation, IndexBufferObject, TextureObject, WebGLUniformType, drawElementsInstanced, drawArrayInstanced,
     GlDrawingMode, bindVertexArray, createVertexArray, VertexArrayObject, bindBufferToAttributeVertexArray,
-    bindBufferToAttributeInstancedVertexArray, updateBufferData, updateTexture, FramebufferObject, bindOutputCanvasToFramebuffer, bindFramebuffer, clearBackground, WebGLAttributeType, createFramebuffer, bindTextureToFramebuffer, createEmptyTexture} from './webgl';
+    bindBufferToAttributeInstancedVertexArray, updateBufferData, updateTexture, FramebufferObject,
+    bindOutputCanvasToFramebuffer, bindFramebuffer, clearBackground, WebGLAttributeType, createFramebuffer,
+    bindTextureToFramebuffer, createEmptyTexture, createDataTexture, TextureType} from './webgl2';
 
 
 
@@ -15,29 +17,6 @@ const hash = function(s: string): string {
     }
     return `${h}`;
 };
-
-export function renderLoop(fps: number, renderFunction: (tDelta: number) => void): void {
-
-    const tDeltaTarget = 1000 * 1.0 / fps;
-    let tDelta = tDeltaTarget;
-    let tStart, tNow, tSleep: number;
-
-    const render = () => {
-        tStart = window.performance.now();
-
-        renderFunction(tDelta);
-
-        tNow = window.performance.now();
-        tDelta = tNow - tStart;
-        tSleep = Math.max(tDeltaTarget - tDelta, 0);
-        setTimeout(() => {
-            requestAnimationFrame(render);
-        }, tSleep);
-
-    };
-
-    render();
-}
 
 
 function parseProgram(program: Program): [string[], string[], string[], string[]] {
@@ -111,11 +90,11 @@ interface IAttributeData {
     hash: string;
     changesOften: boolean;
     attributeType: WebGLAttributeType;
-    data: number[];
+    data: Float32Array;
     buffer: BufferObject;
     upload (gl: WebGL2RenderingContext): void;
     bind (gl: WebGL2RenderingContext, location: number, va: VertexArrayObject): VertexArrayObject;
-    update (gl: WebGL2RenderingContext, newData: number[]): void;
+    update (gl: WebGL2RenderingContext, newData: Float32Array): void;
 }
 
 
@@ -123,20 +102,20 @@ interface IAttributeData {
  * Data container.
  * Abstracts all webgl-calls to attribute-api.
  * Maintains copy of data locally, so it can be up- and unloaded by context
- * without loosing the original data.
+ * without losing the original data.
  */
 export class AttributeData implements IAttributeData {
 
     readonly hash: string;
     changesOften: boolean;
     attributeType: WebGLAttributeType;
-    data: number[];      // raw data, user-provided
+    data: Float32Array;      // raw data, user-provided
     buffer: BufferObject;  // buffer on gpu
-    constructor(data: number[], attrType: WebGLAttributeType, changesOften: boolean) {
+    constructor(data: Float32Array, attrType: WebGLAttributeType, changesOften: boolean) {
         this.data = data;
         this.attributeType = attrType;
         this.changesOften = changesOften;
-        this.hash = hash(data + '');
+        this.hash = hash(data + '' + attrType + changesOften + Math.random());
     }
 
     upload(gl: WebGL2RenderingContext) {
@@ -151,7 +130,7 @@ export class AttributeData implements IAttributeData {
         return va;
     }
 
-    update(gl: WebGL2RenderingContext, newData: number[]) {
+    update(gl: WebGL2RenderingContext, newData: Float32Array) {
         this.data = newData;
         this.buffer = updateBufferData(gl, this.buffer, this.data);
     }
@@ -163,7 +142,7 @@ export class InstancedAttributeData implements IAttributeData {
     readonly hash: string;
     attributeType: WebGLAttributeType;
     changesOften: boolean;
-    data: number[];      // raw data, user-provided
+    data: Float32Array;      // raw data, user-provided
     buffer: BufferObject;  // buffer on gpu
     /**
      * Number of instances that will be rotated through before moving along one step of this buffer.
@@ -171,12 +150,12 @@ export class InstancedAttributeData implements IAttributeData {
      * that is, for `nrInstances * data.length` vertices.
      */
     nrInstances: number;
-    constructor(data: number[], attrType: WebGLAttributeType, changesOften: boolean, nrInstances: number) {
+    constructor(data: Float32Array, attrType: WebGLAttributeType, changesOften: boolean, nrInstances: number) {
         this.data = data;
         this.attributeType = attrType;
         this.changesOften = changesOften;
         this.nrInstances = nrInstances;
-        this.hash = hash(data + '');
+        this.hash = hash(data + '' + attrType + changesOften + nrInstances);
     }
 
     upload(gl: WebGL2RenderingContext) {
@@ -191,7 +170,7 @@ export class InstancedAttributeData implements IAttributeData {
         return va;
     }
 
-    update(gl: WebGL2RenderingContext, newData: number[]) {
+    update(gl: WebGL2RenderingContext, newData: Float32Array) {
         this.data = newData;
         this.buffer = updateBufferData(gl, this.buffer, this.data);
     }
@@ -202,7 +181,7 @@ export class InstancedAttributeData implements IAttributeData {
  * Data container.
  * Abstracts all webgl-calls to uniform-api.
  * Maintains copy of data locally, so it can be up- and unloaded by context
- * without loosing the original data.
+ * without losing the original data.
  */
 export class UniformData {
 
@@ -212,7 +191,7 @@ export class UniformData {
     constructor(type: WebGLUniformType, value: number[]) {
         this.uniformType = type;
         this.value = value;
-        this.hash = hash(value + '');
+        this.hash = hash(value + '' + type);
     }
 
     upload(gl: WebGL2RenderingContext) {
@@ -230,26 +209,31 @@ export class UniformData {
     }
 }
 
+export type TextureDataValue = TextureObject | HTMLImageElement | HTMLCanvasElement | number[][][];
 
 /**
  * Data container.
  * Abstracts all webgl-calls to texture-api.
  * Maintains copy of data locally, so it can be up- and unloaded by context
- * without loosing the original data.
+ * without losing the original data.
  */
 export class TextureData {
 
     hash: string;
-    data: TextureObject | HTMLImageElement | HTMLCanvasElement;  // raw data, user-provided
-    texture: TextureObject;                                      // buffer on gpu
-    constructor(im: HTMLImageElement | HTMLCanvasElement | TextureObject) {
+    data: TextureDataValue;            // raw data, user-provided
+    texture: TextureObject;                      // buffer on gpu
+    textureDataType: TextureType;
+    constructor(im: TextureDataValue, textureDataType?: TextureType) {
         this.data = im;
         this.hash = hash(Math.random() * 1000 + ''); // @TODO: how do you hash textures?
+        this.textureDataType = textureDataType;
     }
 
     upload(gl: WebGL2RenderingContext) {
         if (this.data instanceof HTMLImageElement || this.data instanceof  HTMLCanvasElement) {
             this.texture = createTexture(gl, this.data);
+        } else if (this.data instanceof Array) {
+            this.texture = createDataTexture(gl, this.data, this.textureDataType);
         } else {
             this.texture = this.data;
         }
@@ -262,9 +246,18 @@ export class TextureData {
         bindTextureToUniform(gl, this.texture.texture, bindPoint, location);
     }
 
-    update(gl: WebGL2RenderingContext, newData: HTMLImageElement | HTMLCanvasElement) {
+    /**
+     * In case you're passing a new `TextureObject`: don't forget to call `TextureData.bind(gl, location, bp)`
+     */
+     update(gl: WebGL2RenderingContext, newData: TextureDataValue): TextureObject {
         this.data = newData;
-        this.texture = updateTexture(gl, this.texture, newData);
+        const oldTo = this.texture;
+        if ((newData as TextureObject).texture) { // if (newData instanceof TextureObject) {
+            this.texture = newData as TextureObject;
+        } else {
+            this.texture = updateTexture(gl, this.texture, newData as HTMLImageElement | HTMLCanvasElement | number[][][]);
+        }
+        return oldTo;
     }
 }
 
@@ -272,13 +265,13 @@ export class TextureData {
  * Data container.
  * Abstracts all webgl-calls to index-api.
  * Maintains copy of data locally, so it can be up- and unloaded by context
- * without loosing the original data.
+ * without losing the original data.
  */
 export class Index {
 
-    data: number[];             // raw data, user-provided
+    data: Uint32Array;             // raw data, user-provided
     index: IndexBufferObject;     // buffer on gpu
-    constructor(indices: number[]) {
+    constructor(indices: Uint32Array) {
         this.data = indices;
     }
 
@@ -291,6 +284,10 @@ export class Index {
             throw new Error(`Index: indexBufferObject has not yet been uploaded.`);
         }
         bindIndexBuffer(gl, this.index);
+    }
+
+    update(data: Uint32Array) {
+        this.data = data;
     }
 }
 
@@ -486,7 +483,7 @@ export abstract class Bundle {
     }
 
 
-    public updateAttributeData(context: Context, variableName: string, newData: number[]): void {
+    public updateAttributeData(context: Context, variableName: string, newData: Float32Array): void {
         const attribute = this.attributes[variableName];
         if (!attribute) {
             throw new Error(`No such attribute ${variableName} to be updated.`);
@@ -503,12 +500,13 @@ export abstract class Bundle {
         uniform.update(context.gl, newData, location);
     }
 
-    public updateTextureData(context: Context, variableName: string, newImage: HTMLImageElement | HTMLCanvasElement): void {
+    public updateTextureData(context: Context, variableName: string, newImage: TextureDataValue): void {
         const original = this.textures[variableName];
         if (!original) {
             throw new Error(`No such texture ${variableName} to be updated.`);
         }
         original.update(context.gl, newImage);
+        this.bind(context);   // @TODO: not sure if this is required here.
     }
 
     public draw (context: Context, background?: number[], frameBuffer?: FramebufferObject, viewport?: [number, number, number, number]): void {
@@ -569,6 +567,12 @@ export class ElementsBundle extends Bundle {
         super.draw(context, background, frameBuffer, viewport);
         this.index.bind(context.gl);
         drawElements(context.gl, this.index.index, this.drawingMode);
+    }
+
+
+    public updateIndex(context: Context, newData: Uint32Array): void {
+        this.index.data = newData;
+
     }
 }
 

@@ -1,74 +1,3 @@
-/**
- * WEBGL
- *
- * A rasterization engine that allows to draw points, line segments, or triangles.
- *
- * Vertex shaders take whatever coordinates you use and return a 3-d array with elements between -1 and 1.
- * Basically, this is a 3d-array, but WebGl does not use the z-axis for real perspective, but only to differentiate
- * what pixel lies in front of another.
- * This is not like looking in a 3d-box, but rather like looking on multiple stacked sheets on a projector.
- * Actually, this is a lie. WebGl uses 4 coordinates: x, y, z and w. The above only holds if you keep w at 1.
- * After applying the vertex shader, WebGl divides all coordinates by w, yielding (x/w, y/w, z/w, 1).
- * This can be used to calculate projections - google for 'homogeneous coordinates' to find out more.
- * Compare this [site](https://www.tomdalling.com/blog/modern-opengl/explaining-homogenous-coordinates-and-projective-geometry/)
- * and the shader `basic3d.vert.glsl`.
- *
- * WebGL knows two data structures:
- *  - buffers (generic byte arrays): usually positions, normals, texture-coordinates, vertex-colors etc.
- *    buffers are accessed in shaders as 'attributes'.
- *    note that buffers contain one entry for each vertex.
- *  - textures (bitmap images).
- *
- * Shaders use these data structures in two different ways.
- *  - Attributes are values, one per vertex.
- *    For the shader, attributes are read-only.
- *    Attributes default to [0, 0, 0, 1]
- *  - Uniforms are values, one per shader.
- *    For the shader, uniforms are read-only.
- *
- * Apart from this, shaders know about two more types of data:
- *  - Varyings are values that are passed from vertex-shader to fragment-shader.
- *    They are read-only only for the fragment-shader.
- *  - Const: a compile-time constant.
- *
- * A program is just a list of compiled and linked vertex- and fragment-shaders.
- *
- *
- * Drawing: there's drawArrays and drawElements.
- *  - drawArrays is the robust all-rounder.
- *  - drawElements can be more performant if you share vertices between objects.
- *
- *
- * Rendering data is fast, but uploading it into GPU memory is slow.
- * Optimizing WebGl performance mostly means: Avoiding having GPU and CPU wait for each other.
- * The more the GPU can do in bulk, the better. The more often you have to upload data from CPU to GPU, the worse.
- *  - So avoid switching programs, buffers and uniforms if you can.
- *    (You won't be able to avoid switching buffers, because every object is likely different. But sort your objects by their shaders, and you'll save a lot of time.)
- *  - Try to do translations, rotations and shears inside the vertex-shader instead of altering the object's buffer.
- *  - If appropriate, create über-shaders and über-buffers, that contain information for more than just one object.
- *
- * There is another thing that affects performance:
- * WebGL will only run fragment-shaders when the object's pixels aren't already obscured by a larger object in front of it.
- * That means it makes sense to first draw large objects that are close to the camera - all objects behind them won't need their fragment-shader executed.
- *
- * All `create*` functions unbind variables after setting their values. This is to avoid unwanted side-effects.
- *
- *
- *
- * WebGL components
- *    - global-state
- *        - ARRAY_BUFFER_BINDING: currently bound buffer
- *        - VERTEX_ARRAY_BINDING: currently bound vertex-array (in WebGL 1 this was always only the global vertex-array, in WebGL 2 you can now create your own ones)
- *        - ACTIVE_TEXTURE: currently bound texture
- *        - texture-units: a list of pointers to texture-buffers.
- *        - uniform-buffer-bindings (WebGL2 only): a list of pointers to uniform-buffers.
- *    - vertex-array: a list of pointers to attribute-buffers (+ metadata like datatype, stride, offset etc.).
- *        - all attributes must have the same number of elements (though one attribute's elements may be vec2's, while another one's may be vec3's)
- *        - drawArray: attributes repeat elements in groups of three for drawing triangles
- *        - drawElements: the indices for the triangles are defined in ELEMENT_ARRAY_BUFFER_BINDING
- *        - WebGL 2.0: allows you to create your own vertex-arrays, whereas 1.0 always only used one global vertex-array.
- */
-
 import { isPowerOf, flatten3 } from './math';
 
 
@@ -212,16 +141,14 @@ export interface BufferObject {
 /**
  * Create buffer. Creation is slow! Do *before* render loop.
  */
-export const createBuffer = (gl: WebGL2RenderingContext, datatype: WebGLAttributeType, data: number[], changesOften = false): BufferObject => {
-
-    const dataFlattened = new Float32Array(data);
+export const createBuffer = (gl: WebGL2RenderingContext, datatype: WebGLAttributeType, data: Float32Array, changesOften = false): BufferObject => {
 
     const buffer = gl.createBuffer();
     if (!buffer) {
         throw new Error('No buffer was created');
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, dataFlattened, changesOften ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, data, changesOften ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);  // unbinding
 
     const bufferObject: BufferObject = {
@@ -284,12 +211,10 @@ export const drawArrayInstanced = (gl: WebGL2RenderingContext, drawingMode: GlDr
 };
 
 
-export const updateBufferData = (gl: WebGL2RenderingContext, bo: BufferObject, newData: number[]): BufferObject => {
-
-    const dataFlattened = new Float32Array(newData);
+export const updateBufferData = (gl: WebGL2RenderingContext, bo: BufferObject, newData: Float32Array): BufferObject => {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, bo.buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, dataFlattened, bo.staticOrDynamicDraw);
+    gl.bufferData(gl.ARRAY_BUFFER, newData, bo.staticOrDynamicDraw);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);  // unbinding
 
     const newBufferObject: BufferObject = {
@@ -453,16 +378,14 @@ export interface IndexBufferObject {
     staticOrDynamicDraw: number; // gl.DYNAMIC_DRAW or gl.STATIC_DRAW
 }
 
-export const createIndexBuffer = (gl: WebGL2RenderingContext, indices: number[], changesOften = false): IndexBufferObject => {
-
-    const indicesFlattened = new Uint32Array(indices);
+export const createIndexBuffer = (gl: WebGL2RenderingContext, indices: Uint32Array, changesOften = false): IndexBufferObject => {
 
     const buffer = gl.createBuffer();
     if (!buffer) {
         throw new Error('No buffer was created');
     }
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indicesFlattened, changesOften ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, changesOften ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
     // Back in WebGl 1, index-buffers were restricted to UShort (max allowed value inside `indicesFlattened`: 65535).
@@ -470,7 +393,7 @@ export const createIndexBuffer = (gl: WebGL2RenderingContext, indices: number[],
     // Thank god we now also have UInt indices (max allowed value inside `indicesFlattened`: 4294967296).
     const bufferObject: IndexBufferObject = {
         buffer: buffer,
-        count: indicesFlattened.length,
+        count: indices.length,
         type: gl.UNSIGNED_INT,
         offset: 0,
         staticOrDynamicDraw: changesOften ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW
@@ -549,7 +472,7 @@ export type TextureType = 'ubyte4' | 'float1' | 'float4';
  * | LUMINANCE_ALPHA    | LUMINANCE_ALPHA | UNSIGNED_BYTE	               | 2                      | t                  | f                   |
  * | LUMINANCE          | LUMINANCE       | UNSIGNED_BYTE                  | 1                      | t                  | f                   |
  * | ALPHA              | ALPHA           | UNSIGNED_BYTE                  | 1                      | t                  | f                   |
- * |--------------------|-----------------|--------------------------------|------------------------|--------------------|---------------------| 
+ * |--------------------|-----------------|--------------------------------|------------------------|--------------------|---------------------|
  * | RGBA8              | RGBA            | UNSIGNED_BYTE                  | 4                      |                    |                     |
  * | RGB5_A1            |                 |                                |                        |                    |                     |
  * | RGBA4              |                 |                                |                        |                    |                     |
@@ -658,10 +581,10 @@ export const inferTextureType = (gl: WebGL2RenderingContext, to: TextureObject):
         return 'ubyte4';
     } else if (to.internalformat === gl.R32F && to.type === gl.FLOAT) {
         return 'float1';
-    } else if (to.internalformat === gl.RGBA32F && to.type === gl.FLOAT){
+    } else if (to.internalformat === gl.RGBA32F && to.type === gl.FLOAT) {
         return 'float4';
     } else {
-        throw new Error(`Unknkown texture-object-paras: internalformat ${to.internalformat}, type: ${to.type}`);
+        throw new Error(`Unknown texture-object-paras: internalformat ${to.internalformat}, type: ${to.type}`);
     }
 };
 
@@ -693,6 +616,10 @@ export const createTexture = (gl: WebGL2RenderingContext, image: HTMLImageElemen
 
     gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, format, type, image);  // analog to bufferData
     gl.generateMipmap(gl.TEXTURE_2D); // mipmaps are mini-versions of the texture.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); // when accessing texture2D(u_tex, vec2(1.2, 0.3)), this becomes  texture2D(u_tex, vec2(1.0, 0.3))
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); // when accessing texture2D(u_tex, vec2(0.2, 1.3)), this becomes  texture2D(u_tex, vec2(0.2, 1.0))
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.bindTexture(gl.TEXTURE_2D, null);  // unbinding
 
     let w, h: number;
@@ -730,9 +657,6 @@ export const createDataTexture = (gl: WebGL2RenderingContext, data: number[][][]
     const height = data.length;
     const width = data[0].length;
     const channels = data[0][0].length;
-    if ( !isPowerOf(width, 2) || !isPowerOf(height, 2) ) {
-        throw new Error(`Texture-data-dimensions must be a power of two, but are ${width} x ${height}`);
-    }
     // if ( channels !== 4) {
     //     // @todo: remove this when we implement non-rgba data-textures.
     //     throw new Error(`Expecting 4 channels, but ${channels} provided`);
@@ -758,8 +682,8 @@ export const createDataTexture = (gl: WebGL2RenderingContext, data: number[][][]
     }
 
     gl.texImage2D(gl.TEXTURE_2D, level, paras.internalFormat, width, height, border, paras.format, paras.type, paras.binData); // analog to bufferData
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); // when accessing texture2D(u_tex, vec2(1.2, 0.3)), this becomes  texture2D(u_tex, vec2(1.0, 0.3))
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); // when accessing texture2D(u_tex, vec2(0.2, 1.3)), this becomes  texture2D(u_tex, vec2(0.2, 1.0))
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.bindTexture(gl.TEXTURE_2D, null);  // unbinding
@@ -780,8 +704,10 @@ export const createDataTexture = (gl: WebGL2RenderingContext, data: number[][][]
     return textureObj;
 };
 
-
-export const createEmptyTexture = (gl: WebGL2RenderingContext, width: number, height: number, type: TextureType = 'ubyte4'): TextureObject => {
+/**
+ * @TODO: unify this method with createTexture and createDataTexture
+ */
+export const createEmptyTexture = (gl: WebGL2RenderingContext, width: number, height: number, type: TextureType = 'ubyte4', use: 'data' | 'display' = 'data'): TextureObject => {
     if (width <= 0 || height <= 0) {
         throw new Error('Width and height must be positive.');
     }
@@ -795,10 +721,15 @@ export const createEmptyTexture = (gl: WebGL2RenderingContext, width: number, he
     gl.activeTexture(gl.TEXTURE0 + textureConstructionBindPoint); // so that we don't overwrite another texture in the next line.
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, paras.internalFormat, width, height, 0, paras.format, paras.type, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);  // when accessing texture2D(u_tex, vec2(1.2, 0.3)), this becomes  texture2D(u_tex, vec2(1.0, 0.3))
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);  // when accessing texture2D(u_tex, vec2(0.2, 1.3)), this becomes  texture2D(u_tex, vec2(0.2, 1.0))
+    if (use === 'data') {
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    } else {
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    }
     gl.bindTexture(gl.TEXTURE_2D, null);
 
     const textureObj: TextureObject = {
@@ -844,6 +775,7 @@ export const updateTexture = (gl: WebGL2RenderingContext, to: TextureObject, new
     gl.bindTexture(gl.TEXTURE_2D, to.texture);  // analog to bindBuffer. Binds texture to currently active texture-bindpoint (aka. texture unit).
     if (newData instanceof HTMLImageElement || newData instanceof HTMLCanvasElement) {
         gl.texImage2D(gl.TEXTURE_2D, 0, to.internalformat, to.format, to.type, newData);  // analog to bufferData
+        gl.generateMipmap(gl.TEXTURE_2D); // mipmaps are mini-versions of the texture. 
     } else {
         const width = newData[0].length;
         const height = newData.length;
@@ -854,7 +786,6 @@ export const updateTexture = (gl: WebGL2RenderingContext, to: TextureObject, new
         const paras = getTextureParas(gl, to.textureType, flatten3(newData));
         gl.texImage2D(gl.TEXTURE_2D, to.level, to.internalformat, to.width, to.height, to.border, to.format, to.type, paras.binData);
     }
-    gl.generateMipmap(gl.TEXTURE_2D); // mipmaps are mini-versions of the texture.
     gl.bindTexture(gl.TEXTURE_2D, null);  // unbinding
 
     if (newData instanceof HTMLImageElement) {
@@ -886,6 +817,16 @@ export const createFramebuffer = (gl: WebGL2RenderingContext): WebGLFramebuffer 
         throw new Error(`Error creating framebuffer`);
     }
     return fb;
+};
+
+export const createEmptyFramebufferObject = (gl: WebGL2RenderingContext, width: number, height: number, type: TextureType, use: 'data' | 'display'): FramebufferObject => {
+    if (use === 'display' && type !== 'ubyte4') {
+        throw new Error('When using a texture for "display", it must have type "ubyte4". Float-textures are not renderable. They may be inputs, but they cannot be outputs.');
+    }
+    const fb = createFramebuffer(gl);
+    const fbTexture = createEmptyTexture(gl, width, height, type, use);
+    const fbo = bindTextureToFramebuffer(gl, fbTexture, fb);
+    return fbo;
 };
 
 
@@ -1178,6 +1119,7 @@ export const getCurrentFramebuffersPixels = (canvas: HTMLCanvasElement): ArrayBu
 
     return pixels;
 };
+
 
 export const getCurrentFramebuffersPixel = (canvas: HTMLCanvasElement, coords: [number, number]): ArrayBuffer  => {
     const gl = canvas.getContext('webgl2') as WebGL2RenderingContext;

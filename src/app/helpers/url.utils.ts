@@ -11,8 +11,7 @@ export function getSearchParamsHashRouting(url = window.location.href) {
     url = new URL(url, `${window.location.origin}${window.location.pathname}`).toString();
   }
 
-  // const urlHashRouting = parse(window.location.href);
-  const urlHashRouting = new URL(window.location.href, window.location.origin);
+  const urlHashRouting = new URL(url, window.location.origin);
   const [hash, queryString] = urlHashRouting.hash.split('?');
 
   // hash: "", pathname: "/.../map", search: "?bookmarkId=ccinf"

@@ -482,7 +482,7 @@ export const eqDamagePeruM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [eqUpdatedExposurePeruProps, eqTransitionPeruProps, eqDamagePeruProps]
+        vectorLayers: [eqUpdatedExposurePeruProps, eqDamagePeruProps], // [eqUpdatedExposurePeruProps, eqTransitionPeruProps, eqDamagePeruProps]
     },
     value: null
 };

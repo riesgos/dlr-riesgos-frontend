@@ -515,7 +515,7 @@ export const tsDamagePeruM: WpsData & MultiVectorLayerProduct = {
         format: 'application/json',
         type: 'complex',
         description: '',
-        vectorLayers: [tsUpdatedExposurePeruProperties, tsTransitionPeruProperties, tsDamagePeruProperties]
+        vectorLayers: [tsUpdatedExposurePeruProperties, tsDamagePeruProperties], // [tsUpdatedExposurePeruProperties, tsTransitionPeruProperties, tsDamagePeruProperties]
     },
     value: null
 };

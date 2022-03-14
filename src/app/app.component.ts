@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   title = 'RIESGOS Demonstrator';
   shortTitle = 'RIESGOS Demonstrator';
-  currentMapName: Observable<string>;
+  currentMapName$: Observable<string>;
   ui: IUi = {
     floating: false,
     flipped: false,
@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     this.ui.subs = this.sub2AlertAndProgress();
 
-    this.currentMapName = this.route.queryParamMap.pipe(
+    this.currentMapName$ = this.route.queryParamMap.pipe(
       map(params => {
         switch (params.get('id')) {
           case 'c1':

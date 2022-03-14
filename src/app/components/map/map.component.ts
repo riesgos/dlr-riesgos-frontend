@@ -9,7 +9,7 @@ import { DragBox, Select } from 'ol/interaction';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
 import { GeoJSON, KML, MVT } from 'ol/format';
-import { get as getProjection, METERS_PER_UNIT } from 'ol/proj';
+import { get as getProjection, METERS_PER_UNIT, transformExtent } from 'ol/proj';
 import { click, noModifierKeys } from 'ol/events/condition';
 import { applyStyle } from 'ol-mapbox-style';
 import { createXYZ } from 'ol/tilegrid';
@@ -34,7 +34,7 @@ import { SelectEvent } from 'ol/interaction/Select';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { VectorTile } from 'ol/source';
 import { createTableHtml } from 'src/app/helpers/others';
-import { updateSearchParamsHashRouting } from 'src/app/shared/url.utils';
+import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
 
 const mapProjection = 'EPSG:3857';
 
@@ -255,15 +255,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        // listening for change in scenario - afterViewInit
-        const sub6 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
-            const p = getProjection(mapProjection);
-            this.mapSvc.setProjection(p.getCode());
-            const center = this.getCenter(scenario);
+        // These functions can only be called after view init, because map-service is not yet ready before that.
+        const p = getProjection(mapProjection);
+        this.mapSvc.setProjection(p.getCode());
+
+        const urlParas = getSearchParamsHashRouting();
+
+        const scenarioId = urlParas.query.get('id');
+        const bboxString = urlParas.query.get('bbox');
+
+        if (bboxString && bboxString !== '-180.000,-90.000,180.000,90.000') {
+            const bbox = urlParas.query.get('bbox').split(',').map(v => +v);
+            this.mapSvc.setExtent(bbox as [number, number, number, number], true);
+        } else {
             this.mapSvc.setZoom(8);
+            const center = this.getCenter(scenarioId);
             this.mapSvc.setCenter(center, true);
-        });
-        this.subs.push(sub6);
+        }
     }
 
     ngOnDestroy(): void {
@@ -542,8 +550,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       const sub7 = this.mapStateSvc.getMapState().subscribe((state) => {
         if (history.pushState) {
           const extent = state.extent.map(item => item.toFixed(3));
-          const newurl = updateSearchParamsHashRouting({ bbox: extent.join(',') });
-          window.history.pushState({ path: newurl }, '', newurl);
+          const extentString = extent.join(',');
+          // Ukis sets a default extent. Ignore it.
+          if (extentString !== '-180.000,-90.000,180.000,90.000') { 
+              const newUrl = updateSearchParamsHashRouting({ bbox: extent.join(',') });
+              window.history.pushState({ path: newUrl }, '', newUrl);
+          }
         }
       });
       this.subs.push(sub7);

@@ -34,6 +34,6 @@ export function updateSearchParamsHashRouting(params: { [key: string]: string })
     query.set(key, params[key]);
   });
   const newQueryString = decodeURIComponent(`${query}`);
-  const newurl = `${urlHashRouting.protocol}//${urlHashRouting.host}${urlHashRouting.pathname || '/'}${hash || '#/'}?${newQueryString}`;
-  return newurl;
+  const newUrl = `${urlHashRouting.protocol}//${urlHashRouting.host}${urlHashRouting.pathname || '/'}${hash || '#/'}?${newQueryString}`;
+  return newUrl;
 }

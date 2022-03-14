@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable, of, Subscription } from 'rxjs';
-import { map, withLatestFrom, switchMap } from 'rxjs/operators';
+import { map, withLatestFrom, switchMap, filter } from 'rxjs/operators';
 import { Graph } from 'graphlib';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { Store, select } from '@ngrx/store';
@@ -35,6 +35,7 @@ import VectorTileLayer from 'ol/layer/VectorTile';
 import { VectorTile } from 'ol/source';
 import { createTableHtml } from 'src/app/helpers/others';
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 const mapProjection = 'EPSG:3857';
 
@@ -61,7 +62,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         private store: Store<State>,
         private layerMarshaller: LayerMarshaller,
         public layersSvc: LayersService,
-        private translator: SimplifiedTranslationService
+        private translator: SimplifiedTranslationService,
+        private router: Router
     ) {
         this.controls = { attribution: true, scaleLine: true };
     }
@@ -252,6 +254,17 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.translator.getCurrentLang().subscribe((lang) => {
             this.mapSvc.removeAllPopups();
         });
+
+        // change bbox if user alters it
+        this.router.events.pipe(filter(e => e instanceof NavigationStart)).subscribe((e: NavigationStart) => {
+            const url = e.url;
+            const searchParas = new URLSearchParams(url);
+            const bboxString = searchParas.get('bbox');
+            if (bboxString) {
+                const bbox = bboxString.split(',').map(v => +v);
+                this.mapSvc.setExtent(bbox as [number, number, number, number], true);
+            }
+        });
     }
 
     ngAfterViewInit(): void {
@@ -280,6 +293,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.layersSvc.removeLayers();
         this.layersSvc.removeOverlays();
     }
+
+    subscribeToMapState() {
+        const sub7 = this.mapStateSvc.getMapState().subscribe((state) => {
+          if (history.pushState) {
+            const extent = state.extent.map(item => item.toFixed(3));
+            const extentString = extent.join(',');
+            // Ukis sets a default extent. Ignore it.
+            if (extentString !== '-180.000,-90.000,180.000,90.000') { 
+                const newUrl = updateSearchParamsHashRouting({ bbox: extent.join(',') });
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            }
+          }
+        });
+        this.subs.push(sub7);
+      }
 
     private shouldLayerExpand(layer: ProductLayer) {
       if (layer.hasFocus) {
@@ -545,19 +573,4 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         return of([osmLayer, geoserviceVTiles]);
     }
 
-
-    subscribeToMapState() {
-      const sub7 = this.mapStateSvc.getMapState().subscribe((state) => {
-        if (history.pushState) {
-          const extent = state.extent.map(item => item.toFixed(3));
-          const extentString = extent.join(',');
-          // Ukis sets a default extent. Ignore it.
-          if (extentString !== '-180.000,-90.000,180.000,90.000') { 
-              const newUrl = updateSearchParamsHashRouting({ bbox: extent.join(',') });
-              window.history.pushState({ path: newUrl }, '', newUrl);
-          }
-        }
-      });
-      this.subs.push(sub7);
-    }
 }

@@ -63,7 +63,7 @@ export const tsDamagePeruProperties: VectorLayerProperties = {
         legendEntries: [{
             feature: {
                 'type': 'Feature',
-                'properties': { 'loss_value': 100000 },
+                'properties': {'loss_value': 100000},
                 'geometry': {
                     'type': 'Polygon',
                     'coordinates': [[
@@ -77,7 +77,7 @@ export const tsDamagePeruProperties: VectorLayerProperties = {
         }, {
             feature: {
                 'type': 'Feature',
-                'properties': { 'loss_value': 500000 },
+                'properties': {'loss_value': 500000},
                 'geometry': {
                     'type': 'Polygon',
                     'coordinates': [[
@@ -91,7 +91,7 @@ export const tsDamagePeruProperties: VectorLayerProperties = {
         }, {
             feature: {
                 'type': 'Feature',
-                'properties': { 'loss_value': 1000000 },
+                'properties': {'loss_value': 1000000},
                 'geometry': {
                     'type': 'Polygon',
                     'coordinates': [[
@@ -438,13 +438,17 @@ const tsUpdatedExposurePeruProperties: VectorLayerProperties = {
                 `
         }],
         text: (props: object) => {
+            const schemaName = props['schema'];
+
             const anchor = document.createElement('div');
             const expo = props['expo'];
 
             const data: { [groupName: string]: BarData[] } = {};
             for (let i = 0; i < expo['Taxonomy'].length; i++) {
                 const dmg = expo['Damage'][i];
-                const tax = expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
+                const tax = schemaName === 'Medina_2019' ?
+                    expo['Taxonomy'][i] :
+                    expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
                 const bld = expo['Buildings'][i];
                 if (!data[tax]) {
                     data[tax] = [];
@@ -463,7 +467,9 @@ const tsUpdatedExposurePeruProperties: VectorLayerProperties = {
 
             const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
 
-            const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
+            const legend = schemaName === 'Medina_2019' ?
+                '`<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li></ul>`;' :
+                `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 
             return `<h4 style="color: var(--clr-p1-color, #666666);">{{ damage_classification_tsunami }}</h4>${anchor.innerHTML} ${legend}{{StatesNotComparable}}`;
         },
@@ -474,15 +480,13 @@ const tsUpdatedExposurePeruProperties: VectorLayerProperties = {
             } else {
                 features = value.features;
             }
-            const counts = {
-                'D0': 0,
-                'D1': 0,
-                'D2': 0,
-                'D3': 0,
-                'D4': 0,
-                'D5': 0,
-                'D6': 0
-            };
+
+
+            const schemaName = features[0].properties.schema;
+
+            const counts = schemaName === 'Medina_2019' ?
+                { 'D0': 0, 'D1': 0, 'D2': 0, 'D3': 0, 'D4': 0 } :
+                { 'D0': 0, 'D1': 0, 'D2': 0, 'D3': 0, 'D4': 0, 'D5': 0, 'D6': 0 };
             for (const feature of features) {
                 for (let i = 0; i < feature.properties.expo.Damage.length; i++) {
                     const damageClass = feature.properties.expo.Damage[i];
@@ -490,9 +494,12 @@ const tsUpdatedExposurePeruProperties: VectorLayerProperties = {
                     counts[damageClass] += nrBuildings;
                 }
             }
+            const materialDescription = schemaName === 'Medina_2019' ?
+                '{{ BuildingTypesMedina }}' :
+                '{{ BuildingTypesSuppasri }}';
             const html =
                 createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))])
-                + '{{ BuildingTypesSuppasri }}';
+                + materialDescription;
             const comp: IDynamicComponent = {
                 component: TranslatableStringComponent,
                 inputs: {
@@ -557,7 +564,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
         // Step 1.1: preparing vulnerability-service inputs
-        const vulnerabilityInputs = [schemaPeru];
+        const vulnerabilityInputs = [inputProducts.find(i => i.uid === schemaPeru.uid)];
         const vulnerabilityOutputs = [fragilityRefPeru];
 
         // Step 1.2: executing vulnerability-service
@@ -571,25 +578,25 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
                     const exposure = inputProducts.find(prd => prd.uid === eqUpdatedExposureRefPeru.uid);
 
                     const deusInputs = [{
-                        ...schemaPeru,
+                        ... schemaPeru,
                         value: 'SARA_v1.0' // <-- because last exposure still used SARA!
                     }, {
-                        ...fragility,
+                        ... fragility,
                         description: {
                             ...fragilityRefPeru.description,
                             id: 'fragility'
                         }
                     }, {
-                        ...shakemap,
+                        ... shakemap,
                         description: {
                             ...shakemap.description,
                             format: 'text/xml',
                             id: 'intensity'
                         }
                     }, {
-                        ...exposure,
+                        ... exposure,
                         description: {
-                            ...exposure.description,
+                            ... exposure.description,
                             id: 'exposure'
                         },
                     }

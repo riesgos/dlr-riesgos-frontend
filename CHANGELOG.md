@@ -11,6 +11,7 @@
 - **WebGL Polygon Renderer:** Now returns correct pixel value in `getDataAtPixel` method.
 - **Translatable-String Component:** Now also updates dynamically when language changes.
 - **Eq-Selection:** Styling of selected eq was only adjusted after clicking "send". Now happens immediately after click.
+- **Tsunami damage:** Did not pass the right schema along with a request to modelprop and deus.
 
 ### Features
 - **Removed @dlr-eoc/services-util-storage:** Better build time, less optimization bailouts due to module formats CommonJS or AMD.
@@ -22,6 +23,7 @@
 - **Administrative layers Peru**
 - **Feature selection for earthquakes:** Now also includes magnitude in selection-field. Also displays detailed information in sidebar for selected earthquake.
 - **WebGL layers:** Can now display user-configured opacities as well as different colors for outlines and fills.
+- **Listening to changing bbox**: in url without reload.
 
 ### Breaking Changes
 - **xyz:**

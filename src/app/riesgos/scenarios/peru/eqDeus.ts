@@ -495,7 +495,7 @@ export const eqUpdatedExposureRefPeru: WpsData & Product = {
         reference: true,
         type: 'complex',
         format: 'application/json',
-        description: 'Amount of goods that are exposed to a hazard.'
+        description: 'NumberGoodsInDamageState'
     },
     value: null
 };

@@ -52,7 +52,7 @@ const tsDamageProps: VectorLayerProperties = {
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$ );
+                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 1],
@@ -124,7 +124,7 @@ const tsDamageProps: VectorLayerProperties = {
                     component: InfoTableComponentComponent,
                     inputs: {
                         title: 'Total damage',
-                        data: [[{ value: 'Total damage'}, { value: totalDamageFormatted }]]
+                        data: [[{ value: 'Total damage' }, { value: totalDamageFormatted }]]
                     }
                 };
             }
@@ -136,7 +136,7 @@ const tsTransitionProps: VectorLayerProperties = {
         icon: 'dot-circle',
         name: 'ts-transition',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            style: (feature: olFeature<Geometry>, resolution: number, selected: boolean) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -218,7 +218,7 @@ const tsTransitionProps: VectorLayerProperties = {
                     matrix[r][c] += nr;
                 }
 
-                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
+                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1, '');
                 for (let r = 0; r < labeledMatrix.length; r++) {
                     for (let c = 0; c < labeledMatrix[0].length; c++) {
                         if (r === 0 && c === 0) {
@@ -228,7 +228,7 @@ const tsTransitionProps: VectorLayerProperties = {
                         } else if (c === 0) {
                             labeledMatrix[r][c] = `<b>${r - 1}</b>`;
                         } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = Math.round(matrix[r-1][c-1]);
+                            labeledMatrix[r][c] = Math.round(matrix[r - 1][c - 1]);
                         }
                     }
                 }
@@ -441,13 +441,17 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
                 `
             }],
             text: (props: object) => {
+                const schemaName = props['schema'];
+
                 const anchor = document.createElement('div');
                 const expo = props['expo'];
 
-                const data: {[groupName: string]: BarData[]} = {};
+                const data: { [groupName: string]: BarData[] } = {};
                 for (let i = 0; i < expo['Taxonomy'].length; i++) {
                     const dmg = expo['Damage'][i];
-                    const tax = expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
+                    const tax = schemaName === 'Medina_2019' ?
+                        expo['Taxonomy'][i] :
+                        expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
                     const bld = expo['Buildings'][i];
                     if (!data[tax]) {
                         data[tax] = [];
@@ -466,7 +470,9 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
 
                 const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
 
-                const legend = `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
+                const legend = schemaName === 'Medina_2019' ?
+                '`<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li></ul>`;' :
+                `<ul><li><b>D0:</b> {{No_damage}}</li><li><b>D1:</b> {{Minor_damage}}</li><li><b>D2:</b> {{Moderate_damage}}</li><li><b>D3:</b> {{Major_damage}}</li><li><b>D4:</b> {{ Complete_damage }}</li><li><b>D5:</b> {{ Collapsed }}</li><li><b>D6:</b> {{ Washed_away }}</li></ul>`;
 
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ damage_classification_tsunami }}</h4>${anchor.innerHTML} ${legend}{{StatesNotComparable}}`;
             },
@@ -477,15 +483,12 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
                 } else {
                     features = value.features;
                 }
-                const counts = {
-                    'D0': 0,
-                    'D1': 0,
-                    'D2': 0,
-                    'D3': 0,
-                    'D4': 0,
-                    'D5': 0,
-                    'D6': 0
-                };
+
+                const schemaName = features[0].properties.schema;
+
+                const counts = schemaName === 'Medina_2019' ?
+                    { 'D0': 0, 'D1': 0, 'D2': 0, 'D3': 0, 'D4': 0 } :
+                    { 'D0': 0, 'D1': 0, 'D2': 0, 'D3': 0, 'D4': 0, 'D5': 0, 'D6': 0 };
                 for (const feature of features) {
                     for (let i = 0; i < feature.properties.expo.Damage.length; i++) {
                         const damageClass = feature.properties.expo.Damage[i];
@@ -493,9 +496,12 @@ const tsUpdatedExposureProps: VectorLayerProperties = {
                         counts[damageClass] += nrBuildings;
                     }
                 }
+                const materialDescription = schemaName === 'Medina_2019' ?
+                    '{{ BuildingTypesMedina }}' :
+                    '{{ BuildingTypesSuppasri }}';
                 const html =
                     createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map(c => toDecimalPlaces(c, 0))])
-                    + '{{ BuildingTypesSuppasri }}';
+                    + materialDescription;
                 const comp: IDynamicComponent = {
                     component: TranslatableStringComponent,
                     inputs: {
@@ -562,8 +568,8 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
         // Step 1.1: preparing vulnerability-service inputs
-        const vulnerabilityInputs = [ schema ];
-        const vulnerabilityOutputs = [ fragilityRef] ;
+        const vulnerabilityInputs = [inputProducts.find(i => i.uid === schema.uid)];
+        const vulnerabilityOutputs = [ fragilityRef ];
 
         // Step 1.2: executing vulnerability-service
         return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)

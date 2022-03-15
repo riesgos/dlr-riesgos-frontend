@@ -17,26 +17,26 @@ import { TranslatableStringComponent } from 'src/app/components/dynamic/translat
 export const modelChoicePeru: WpsData & StringSelectUserConfigurableProduct = {
   uid: 'eq_exposure_model_choice',
   description: {
-      wizardProperties: {
-          fieldtype: 'stringselect',
-          name: 'model',
-          description: 'exposure model',
-          signpost: 'warning_processing_time'
-      },
-      id: 'model',
-      reference: false,
-      title: 'model',
-      type: 'literal',
-      options: [
-        'LimaCVT1_PD30_TI70_5000',
-        'LimaCVT2_PD30_TI70_10000',
-        'LimaCVT3_PD30_TI70_50000',
-        'LimaCVT4_PD40_TI60_5000',
-        'LimaCVT5_PD40_TI60_10000',
-        'LimaCVT6_PD40_TI60_50000',
-        'LimaBlocks',
-      ],
-      defaultValue: 'LimaCVT1_PD30_TI70_5000',
+    wizardProperties: {
+      fieldtype: 'stringselect',
+      name: 'model',
+      description: 'exposure model',
+      signpost: 'warning_processing_time'
+    },
+    id: 'model',
+    reference: false,
+    title: 'model',
+    type: 'literal',
+    options: [
+      'LimaCVT1_PD30_TI70_5000',
+      'LimaCVT2_PD30_TI70_10000',
+      'LimaCVT3_PD30_TI70_50000',
+      'LimaCVT4_PD40_TI60_5000',
+      'LimaCVT5_PD40_TI60_10000',
+      'LimaCVT6_PD40_TI60_50000',
+      // 'LimaBlocks',
+    ],
+    defaultValue: 'LimaCVT1_PD30_TI70_5000',
   },
   value: 'LimaCVT1_PD30_TI70_5000'
 };
@@ -57,18 +57,18 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
 
         const expo = props.expo;
         const counts = {
-            'D0': 0,
-            'D1': 0,
-            'D2': 0,
-            'D3': 0,
-            'D4': 0
+          'D0': 0,
+          'D1': 0,
+          'D2': 0,
+          'D3': 0,
+          'D4': 0
         };
         let total = 0;
         for (let i = 0; i < expo.Damage.length; i++) {
-            const damageClass = expo.Damage[i];
-            const nrBuildings = expo.Buildings[i];
-            counts[damageClass] += nrBuildings;
-            total += nrBuildings;
+          const damageClass = expo.Damage[i];
+          const nrBuildings = expo.Buildings[i];
+          counts[damageClass] += nrBuildings;
+          total += nrBuildings;
         }
 
         const dr = weightedDamage(Object.values(counts)) / 4;
@@ -78,12 +78,12 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
         let b: number;
         let a: number;
         if (total === 0) {
-            r = b = g = 160;
-            a = 0.9;
+          r = b = g = 160;
+          a = 0.9;
         } else {
-            // [r, g, b] = greenRedRange(0, 1, dr);
-            [r, g, b] = [160, 160, 160];
-            a = 0.05;
+          // [r, g, b] = greenRedRange(0, 1, dr);
+          [r, g, b] = [160, 160, 160];
+          a = 0.05;
         }
 
         return new olStyle({
@@ -103,16 +103,16 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
 
         const data: BarData[] = [];
         for (let i = 0; i < Object.values(expo.Taxonomy).length; i++) {
-            const tax = expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
-            const bld = expo['Buildings'][i];
-            if (!data.map(dp => dp.label).includes(tax)) {
-                data.push({
-                  label: tax,
-                  value: bld
-                });
-            } else {
-              data.find(dp => dp.label === tax).value += bld;
-            }
+          const tax = expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
+          const bld = expo['Buildings'][i];
+          if (!data.map(dp => dp.label).includes(tax)) {
+            data.push({
+              label: tax,
+              value: bld
+            });
+          } else {
+            data.find(dp => dp.label === tax).value += bld;
+          }
         }
 
         const anchor = document.createElement('div');
@@ -124,8 +124,8 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
           type: 'Feature',
           geometry: {
             type: 'Polygon',
-            coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
-        },
+            coordinates: [[[5.627918243408203, 50.963075942052164], [5.627875328063965, 50.958886259879264], [5.635471343994141, 50.95634523633128], [5.627918243408203, 50.963075942052164]]]
+          },
           properties: {
             expo: {
               Damage: [],
@@ -222,7 +222,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
         reference: false,
         defaultValue: '-21'
       },
-      value:  '-21'
+      value: '-21'
     };
 
     const latmaxPeru: Product & WpsData = {
@@ -276,7 +276,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
 
 
     const allInputs = [
-      ... inputs,
+      ...inputs,
       lonminPeru, lonmaxPeru, latminPeru, latmaxPeru, schemaPeru, assettypePeru, querymodePeru
     ];
 

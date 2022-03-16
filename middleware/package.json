@@ -7,9 +7,9 @@
     "test:watch": "jest --watchAll",
     "build:all": "tsc",
     "build:watch": "tsc -w",
-    "run:server": "node build/run.js",
-    "run:harvest": "node build/harvesting/harvest.js",
-    "run:createScenarios": "node build/scenarios/createScenario.ts"
+    "run:server": "tsc && node build/run.js",
+    "run:harvest": "tsc && node build/harvesting/harvest.js",
+    "run:createScenarios": "tsc && node build/scenarios/createScenario.ts"
   },
   "keywords": [
     "riesgos"

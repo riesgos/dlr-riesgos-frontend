@@ -14,11 +14,14 @@ const servicesToHarvest: WpsServerDescription[] = [{
 }, {
     serverUrl: 'https://riesgos.52north.org/javaps/service',
     serverVersion: '2.0.0'
+}, {
+    serverUrl: 'http://tsunami-wps.awi.de/wps',
+    serverVersion: '1.0.0'
 }];
 
 
 async function run() {
-    const db = new FileDb('data/db.json');
+    const db = new FileDb('./data/db.json');
     await db.init();
     const harvester = new WpsHarvester(new HttpClient(), db);
     for (const service of servicesToHarvest) {

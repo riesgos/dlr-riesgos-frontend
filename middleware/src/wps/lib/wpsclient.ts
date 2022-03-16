@@ -15,7 +15,7 @@ import * as WPS_1_0_0_Factory from 'ogc-schemas/lib/WPS_1_0_0'; const WPS_1_0_0 
 //@ts-ignore
 import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; const WPS_2_0 = WPS_2_0_Factory.WPS_2_0;
 //@ts-ignore
-import * as JsonixFactory from '@michaellangbein/jsonix'; const Jsonix = JsonixFactory.Jsonix;
+import * as JsonixFactory from './jsonix/jsonix'; const Jsonix = JsonixFactory.Jsonix as any;
 import { pollUntil, delayedRetry } from './utils/polling';
 import { Cache, FakeCache } from './cache';
 

@@ -33,7 +33,15 @@
             "request": "launch",
             "name": "Launch run.ts",
             "program": "${workspaceFolder}/src/run.ts",
-            "preLaunchTask": "npm: build",
+            "preLaunchTask": "npm: build:all",
+            "outFiles": ["${workspaceFolder}/build/**/*.js"]
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch harvest.ts",
+            "program": "${workspaceFolder}/src/harvesting/harvest.ts",
+            "preLaunchTask": "npm: build:all",
             "outFiles": ["${workspaceFolder}/build/**/*.js"]
           }
     ]

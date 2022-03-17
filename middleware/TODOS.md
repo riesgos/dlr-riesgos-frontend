@@ -7,12 +7,6 @@
    4. register assetmaster
    5. register vulnerability-service
    6. register eq-damage
-1. anstoßen mehrerer eq-damages
-   1. use the client to connect to the server ............................. done
-   2. have the server run several processes from the eq-scenario 
-   3. use the products to download data
-2. sammle daten, erzeuge tiff mit perzentilen
-   1. 
 
 
 # Open questions
@@ -24,6 +18,5 @@ Server-side:
 
 # Technical
 - Simplification
-  - migrate away from ts-node ......................... done
   - away from rxjs, just use promises
   - 

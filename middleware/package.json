@@ -36,7 +36,6 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "@michaellangbein/jsonix": "^3.0.1-SNAPSHOT-3",
     "atob": "^2.1.2",
     "btoa": "^1.2.1",
     "express": "^4.17.1",

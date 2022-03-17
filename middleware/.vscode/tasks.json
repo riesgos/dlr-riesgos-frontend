@@ -3,10 +3,10 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "build",
+			"script": "build:all",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "npm: build",
+			"label": "npm: build:all",
 			"detail": "tsc"
 		}
 	]

@@ -46,8 +46,8 @@ export interface WpsHttpClient {
 export class WpsClient {
 
     private version: WpsVersion;
-    private xmlmarshaller: any;
-    private xmlunmarshaller: any;
+    private xmlMarshaller: any;
+    private xmlUnmarshaller: any;
     private wpsmarshaller: WpsMarshaller;
     private cache: Cache = new FakeCache();
 
@@ -68,8 +68,8 @@ export class WpsClient {
         } else {
             throw new Error('You entered a WPS version other than 1.0.0 or 2.0.0.');
         }
-        this.xmlunmarshaller = context.createUnmarshaller();
-        this.xmlmarshaller = context.createMarshaller();
+        this.xmlUnmarshaller = context.createUnmarshaller();
+        this.xmlMarshaller = context.createMarshaller();
     }
 
 
@@ -77,9 +77,9 @@ export class WpsClient {
         const getCapabilitiesUrl = this.wpsmarshaller.getCapabilitiesUrl(url);
         return this.getRaw(getCapabilitiesUrl).pipe(
             map((response: any) => {
-                const responseJson = this.xmlunmarshaller.unmarshalString(response);
+                const responseJson = this.xmlUnmarshaller.unmarshalString(response);
                 return this.wpsmarshaller.unmarshalCapabilities(responseJson.value);
-            }) // @TODO: handle case when instead of WpsCapabilites an ExceptionReport is returned
+            }) // @TODO: handle case when instead of WpsCapabilities an ExceptionReport is returned
         );
     }
 
@@ -88,7 +88,7 @@ export class WpsClient {
         const describeProcessUrl = this.wpsmarshaller.getDescribeProcessUrl(url, processId);
         return this.getRaw(describeProcessUrl).pipe(
             map((response: string) => {
-                const responseJson = this.xmlunmarshaller.unmarshalString(response);
+                const responseJson = this.xmlUnmarshaller.unmarshalString(response);
                 return this.wpsmarshaller.unmarshalProcessDescription(responseJson.value);
             })
         );
@@ -179,7 +179,7 @@ export class WpsClient {
                 throw new Error('No job-Id');
             }
             const execbody = this.wpsmarshaller.marshallGetStatusBody(serverUrl, processId, currentState.jobID);
-            const xmlExecbody = this.xmlmarshaller.marshalString(execbody);
+            const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
 
             request$ = this.postRaw(serverUrl, xmlExecbody);
 
@@ -190,7 +190,7 @@ export class WpsClient {
         const request1$: Observable<WpsState> = request$.pipe(
             delayedRetry(2000, 2),
             map((xmlResponse: string) => {
-                const jsonResponse = this.xmlunmarshaller.unmarshalString(xmlResponse);
+                const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
                 const output: WpsState =
                     this.wpsmarshaller.unmarshalGetStateResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
                 return output;
@@ -219,11 +219,11 @@ export class WpsClient {
             }
 
             const execBody = this.wpsmarshaller.marshallGetResultBody(serverUrl, processId, lastState.jobID);
-            const xmlExecBody = this.xmlmarshaller.marshalString(execBody);
+            const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
             return this.postRaw(serverUrl, xmlExecBody).pipe(
                 map((xmlResponse: string) => {
-                    const jsonResponse = this.xmlunmarshaller.unmarshalString(xmlResponse);
+                    const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
                     let output: WpsData[];
                     if (unmarshalFunction) {
                         output = unmarshalFunction(jsonResponse);
@@ -242,11 +242,11 @@ export class WpsClient {
 
         const executeUrl = this.wpsmarshaller.executeUrl(url, processId);
         const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescriptions, true);
-        const xmlExecbody = this.xmlmarshaller.marshalString(execbody);
+        const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
 
         return this.postRaw(executeUrl, xmlExecbody).pipe(
             map((xmlResponse: string) => {
-                const jsonResponse = this.xmlunmarshaller.unmarshalString(xmlResponse);
+                const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
                 const output: WpsState =
                     this.wpsmarshaller.unmarshalAsyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
                 return output;
@@ -259,11 +259,11 @@ export class WpsClient {
 
         const executeUrl = this.wpsmarshaller.executeUrl(url, processId);
         const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescriptions, false);
-        const xmlExecbody = this.xmlmarshaller.marshalString(execbody);
+        const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
 
         return this.postRaw(executeUrl, xmlExecbody).pipe(
             map((xmlResponse: string) => {
-                const jsonResponse = this.xmlunmarshaller.unmarshalString(xmlResponse);
+                const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
                 if (unmarshalFunction) {
                     return unmarshalFunction(jsonResponse);
                 }
@@ -278,11 +278,11 @@ export class WpsClient {
 
         const dismissUrl = this.wpsmarshaller.dismissUrl(serverUrl, processId, jobId);
         const dismissBody = this.wpsmarshaller.marshalDismissBody(jobId);
-        const xmlDismissBody = this.xmlmarshaller.marshalString(dismissBody);
+        const xmlDismissBody = this.xmlMarshaller.marshalString(dismissBody);
 
         return this.postRaw(dismissUrl, xmlDismissBody).pipe(
             map((xmlResponse: string) => {
-                const jsonResponse = this.xmlunmarshaller.unmarshalString(xmlResponse);
+                const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
                 const output = this.wpsmarshaller.unmarshalDismissResponse(jsonResponse, serverUrl, processId);
                 return output;
             })

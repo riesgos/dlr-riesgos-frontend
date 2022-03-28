@@ -18,9 +18,13 @@ import url from 'url';
 
 
 
-const port = 3000;
+const port = 8888;
 
 const expressApp = express();
+
+expressApp.get('/test', (req: Request, res: Response) => {
+    res.send('Proxy working!');
+});
 
 expressApp.use('/proxy/:target', async (req: Request, res: Response) => {
     const targetUrl = req.params.target;

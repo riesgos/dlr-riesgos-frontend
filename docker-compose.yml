@@ -1,0 +1,17 @@
+version: '3'
+services:
+  proxy:
+    build: ./proxy
+    # env_file:
+    #   - ./mysql/resources/mysql.env
+    ports:
+      - "127.0.0.1:8888:8888"
+    volumes:
+      - ./data:/app/data
+  
+  frontend:
+    build: ./frontend
+    depends_on:
+      - proxy
+    ports:
+      - "127.0.0.1:80:80"

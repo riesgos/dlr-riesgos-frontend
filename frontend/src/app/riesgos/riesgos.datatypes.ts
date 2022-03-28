@@ -2,9 +2,6 @@ import { WpsDataDescription, WpsVersion, ProductId, WpsData, WpsClient, FakeCach
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
-import { RemoteCache } from '../services/cache/remoteCache';
-import { IndexDbCache } from '../services/cache/indexDbCache';
-import { environment } from 'src/environments/environment';
 
 
 export type ProductDescription = object;
@@ -100,8 +97,6 @@ export const isProductTransformingProcess = (process: Process): process is Produ
 
 export class WpsProcess implements ExecutableProcess {
 
-    private wpsClient: WpsClient;
-
     constructor(
         /** unique for all of riesgos */
         readonly uid: string,
@@ -116,9 +111,7 @@ export class WpsProcess implements ExecutableProcess {
         httpClient: HttpClient,
         public state = new ProcessStateUnavailable(),
         cache: Cache = new FakeCache()
-        ) {
-            this.wpsClient = new WpsClient(this.wpsVersion, httpClient, cache);
-    }
+        ) {}
 
     public execute(
         inputProducts: Product[],
@@ -128,15 +121,27 @@ export class WpsProcess implements ExecutableProcess {
             const wpsInputs = inputProducts.map(prod => this.prodToWpsData(prod));
             const wpsOutputDescriptions = outputProducts.map(o => o.description) as WpsDataDescription[];
 
-            let requestCounter = 0;
-            return this.wpsClient.executeAsync(this.url, this.id, wpsInputs, wpsOutputDescriptions, 2000,
-                (response: any) => {
-                    if (doWhileExecuting) {
-                        doWhileExecuting(response, requestCounter);
-                    }
-                    requestCounter += 1;
-                }
-            ).pipe(
+            const ws$ = new Observable<WpsData[]>((listener) => {
+                const client = new WebSocket('ws://localhost:3000/execute');
+                client.onopen = () => {
+                    const data = {
+                        version: this.wpsVersion,
+                        inputs: wpsInputs,
+                        outputDescriptions: wpsOutputDescriptions,
+                        processId: this.id,
+                        url: this.url
+                    };
+                    client.send(JSON.stringify(data));
+                };
+                client.onmessage = (event) => {
+                    const parsed = JSON.parse(event.data) as WpsData[];
+                    listener.next(parsed);
+                    listener.complete();
+                    return true;
+                };
+            });
+
+            const products$ = ws$.pipe(
 
                 map((outputs: WpsData[]) => {
                     // Ugly little hack: if outputDescription contained any information that has been lost in translation
@@ -161,10 +166,11 @@ export class WpsProcess implements ExecutableProcess {
                 })
             );
 
+            return products$;
+
     }
 
     public setCache(cache: Cache) {
-        this.wpsClient.setCache(cache);
     }
 
     private assignWpsDataToProducts(wpsData: WpsData[], initialProds: (Product & WpsData)[]): Product[] {

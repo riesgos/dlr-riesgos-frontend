@@ -13,16 +13,14 @@ export function setUpServer(port = 3000, db: RiesgosDatabase) {
     const riesgosService = new RiesgosService(db);
     
     
-    app.get('/getScenarioMetaData', (req: Request, res: Response) => {
-        riesgosService.getScenarios().subscribe((result) => {
-            res.send(result);
-        });
+    app.get('/getScenarioMetaData', async (req: Request, res: Response) => {
+        const result = await riesgosService.getScenarios();
+        res.send(result);
     });
     
-    app.get('/getScenarioData/:id', (req: Request, res: Response) => {
-        riesgosService.getScenarioData(req.params.id).subscribe((result) => {
-            res.send(result);
-        });
+    app.get('/getScenarioData/:id', async (req: Request, res: Response) => {
+        const result = await riesgosService.getScenarioData(req.params.id);
+        res.send(result);
     });
     
     const expressServer = app.listen(port, () => {
@@ -31,7 +29,7 @@ export function setUpServer(port = 3000, db: RiesgosDatabase) {
     
     const wsServer = new WsServer({ noServer: true });
     wsServer.on('connection', (socket) => {
-        socket.on('message', (message) => {
+        socket.on('message', async (message) => {
             
             const parsed = JSON.parse(message.toString());
             const process = parsed.process as RiesgosProcess;
@@ -50,16 +48,16 @@ export function setUpServer(port = 3000, db: RiesgosDatabase) {
                 outputs[o.slot] = product;
             };
 
-            riesgosService.executeProcess(process, inputs, outputs)
-            .subscribe((results: {[slot: string]: RiesgosProduct}) => {
+            try {
+                const results: {[slot: string]: RiesgosProduct} = await riesgosService.executeProcess(process, inputs, outputs);
                 console.log('Server: execution results', results);
                 socket.send(JSON.stringify(results));
                 socket.close();
-            }, (error: any) => {
+            } catch (error: any) {
                 console.log('An error occurred: ', error);
                 socket.send(JSON.stringify(error.message));
                 socket.close();
-            });
+            }
         });
     });
     

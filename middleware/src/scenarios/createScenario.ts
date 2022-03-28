@@ -1,10 +1,11 @@
 import { FileDb } from '../database/file/fileDb';
 import { RiesgosProcess } from '../model/datatypes/riesgos.datatypes';
+import * as path from 'path';
 
 
 async function run() {
 
-    const db = new FileDb('data/db.json');
+    const db = new FileDb(path.join(__dirname, '../../data/db.json'));
     await db.init();
 
     const featureSelector: RiesgosProcess = {

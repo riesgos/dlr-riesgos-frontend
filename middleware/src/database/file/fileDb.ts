@@ -1,4 +1,3 @@
-import { from, Observable, of } from 'rxjs';
 import { readFile, writeFile } from 'fs/promises';
 import { RiesgosScenarioMetaData, RiesgosScenarioData, RiesgosProcess, RiesgosProduct, ExecutableProcess } from '../../model/datatypes/riesgos.datatypes';
 import { RiesgosDatabase } from '../db';
@@ -34,29 +33,33 @@ export class FileDb implements RiesgosDatabase {
     }
 
     private async writeData() {
+        if (!this.data) await this.init();
         await writeFile(this.filePath, JSON.stringify(this.data));
         return true;
     }
 
-    getScenarios(): Observable<RiesgosScenarioMetaData[]> {
-        return of(this.data.scenarios);
+    async getScenarios(): Promise<RiesgosScenarioMetaData[]> {
+        if (!this.data) await this.init();
+        return this.data.scenarios;
     }
     
-    getScenarioData(id: string): Observable<RiesgosScenarioData> {
+    async getScenarioData(id: string): Promise<RiesgosScenarioData> {
+        if (!this.data) await this.init();
+
         const scenarioMetaData: RiesgosScenarioMetaData = this.data.scenarios.find((s: any) => s.uid === id);
         if (!scenarioMetaData) {
             throw Error(`No scenario named '${id}' in database`);
         }
         
-        const processes = this.getProcessesForScenario(scenarioMetaData);
+        const processes = await this.getProcessesForScenario(scenarioMetaData);
 
-        const products = this.getProductsForScenario(scenarioMetaData);
+        const products = await this.getProductsForScenario(scenarioMetaData);
 
-        return of({
+        return {
             metaData: scenarioMetaData,
             processes: processes,
             products: products,
-        });
+        };
     }
 
     
@@ -91,34 +94,46 @@ export class FileDb implements RiesgosDatabase {
         return processes;
     }
 
-    addScenario(data: RiesgosScenarioMetaData): Observable<boolean> {
+    addScenario(data: RiesgosScenarioMetaData): Promise<boolean> {
         this.data.scenarios.push(data);
-        return from(this.writeData());
+        return this.writeData();
     }
 
-    addProcess(data: RiesgosProcess): Observable<boolean> {
+    addProcess(data: RiesgosProcess): Promise<boolean> {
         this.data.processes.push(data);
-        return from(this.writeData());
+        return this.writeData();
     }
 
-    addProduct(data: RiesgosProduct): Observable<boolean> {
+    addProduct(data: RiesgosProduct): Promise<boolean> {
         this.data.products.push(data);
-        return from(this.writeData());
+        return this.writeData();
     }
 
-    getExecutableProcess(id: string): Observable<ExecutableProcess> {
-        switch(id) {
-            case 'Chopping':
-                return of(new ChoppingSvc());
-            case 'Blending':
-                return of(new BlendingSvc());
-            case 'Cooking':
-                return of(new CookingSvc());
-            case 'FeatureSelector':
-                return of(new FeatureSelector());
-            default:
-                throw Error(`Couldn't find a concrete class for ${id}`);
-        }
+
+    async getProducts(): Promise<RiesgosProduct[]> {
+        if (!this.data) await this.init();
+
+        return this.data.products;
+    }
+
+    async getProcesses(): Promise<RiesgosProcess[]> {
+        if (!this.data) await this.init();
+
+        return this.data.processes;
+    }
+
+    async getProduct(id: string): Promise<RiesgosProduct> {
+        if (!this.data) await this.init();
+
+        const product = this.data.products.find((p: RiesgosProduct) => p.uid === id);
+        return product;
+    }
+
+    async getProcess(id: string): Promise<RiesgosProcess> {
+        if (!this.data) await this.init();
+
+        const process = this.data.processes.find((p: RiesgosProcess) => p.uid === id);
+        return process;
     }
 
 }

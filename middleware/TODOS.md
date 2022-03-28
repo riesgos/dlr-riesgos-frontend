@@ -1,19 +1,12 @@
 
-# Content
-0. create eq-scenario
-   1. register eq-catalog ............................... done
-   2. some way of selecting one eq ...................... done
-   3. register eq-simulation ............................ done
-   4. register assetmaster
-   5. register vulnerability-service
-   6. register eq-damage
-
-
-# Open questions
-Server-side:
-    - do products need a value field?
-    - should products be defined inside the scenario-description?
-    - to products need a scenario-field?
+- Store scenarios in database
+  - run frontend & download graph .................................................. done
+  - convert graph's node/edge representation to a call-representation
+- Edit stored scenarios: 
+  - some processes are frontend-based
+- Connect frontend to backend
+- Frontend: remove all obsolete execution-logic
+- Dockerize
 
 
 # Technical

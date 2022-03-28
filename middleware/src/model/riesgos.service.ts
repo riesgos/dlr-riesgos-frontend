@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
 import { switchMap, tap } from "rxjs/operators";
 import { RiesgosDatabase } from "../database/db";
+import { WpsClient } from '../wps/public-api';
 import { ExecutableProcess, RiesgosProcess, RiesgosProduct,
     RiesgosScenarioData, RiesgosScenarioMetaData } from "./datatypes/riesgos.datatypes";
 
@@ -17,26 +18,20 @@ export class RiesgosService {
 
     ) {}
     
-    public getScenarios(): Observable<RiesgosScenarioMetaData[]> {
+    public getScenarios(): Promise<RiesgosScenarioMetaData[]> {
         return this.db.getScenarios();
     }
 
-    public getScenarioData(id: string): Observable<RiesgosScenarioData> {
-        return this.db.getScenarioData(id).pipe(
-            tap((data: RiesgosScenarioData) => {
-                // @ts-ignore
-                if (data.products.includes(undefined)) {
-                    throw Error(`At least one of the requested products could not be found in the database`);
-                }
-            })
-        );
+    public async getScenarioData(id: string): Promise<RiesgosScenarioData> {
+        const scenarioData = await this.db.getScenarioData(id);
+        return scenarioData;
     }
 
-    public executeProcess(
+    public async executeProcess(
         process: RiesgosProcess,
         inputs: {[slot: string]: RiesgosProduct},
         outputs: {[slot: string]: RiesgosProduct})
-        : Observable<{[slot: string]: RiesgosProduct}> {
+        : Promise<{[slot: string]: RiesgosProduct}> {
 
         for (const inputSlot in inputs) {
             const input = inputs[inputSlot];
@@ -45,10 +40,16 @@ export class RiesgosService {
             }
         }
 
-        return this.db.getExecutableProcess(process.uid).pipe(
-            switchMap((executableProcess: ExecutableProcess) => {
-                return executableProcess.execute(inputs, outputs);
-            })
-        );
+
+        const executable = this.getExecutableProcess(process.uid);
+        const results = await executable.execute(inputs, outputs).toPromise();
+        return results;
+    }
+
+    private getExecutableProcess(processId: string): ExecutableProcess {
+        switch (processId) {
+            default:
+                throw Error(`Could not find a concrete class for process '${processId}'`);
+        }
     }
 }

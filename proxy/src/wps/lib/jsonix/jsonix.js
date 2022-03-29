@@ -6179,10 +6179,10 @@ if (typeof require === 'function') {
 	if (typeof define !== 'function') {
 		// ... and if we are not in a browser ...
 		if (typeof window === 'undefined' && !process.browser) {
-			// Load the define function via amdefine
-			var define = require('amdefine')(module);
-			// Require xmldom, xmlhttprequest and fs
-			define(["xmldom", "xmlhttprequest", "fs"], _jsonix_factory);
+			// // Load the define function via amdefine
+			// var define = require('amdefine')(module); <= commented out because this section does not work with webpack
+			// // Require xmldom, xmlhttprequest and fs
+			// define(["xmldom", "xmlhttprequest", "fs"], _jsonix_factory);
 		}
 		else
 		{

@@ -1,5 +1,5 @@
 # Parent image
-FROM node
+FROM node:16
 # All subsequent commands are executed here. May be called mutliple times.
 WORKDIR /app
 # Copy the current directory contents into the container at /app

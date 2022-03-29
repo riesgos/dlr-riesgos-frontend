@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ClickRunProcess, ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { isBbox } from '../../../../../../proxy/src/wps/public-api';
+import { isBbox } from '../../../services/wps/wps.datatypes';
 import { debounceTime } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 

@@ -1,12 +1,11 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import {
     StringSelectUserConfigurableProduct, BboxUserConfigurableProduct, StringUserConfigurableProduct,
-    BboxUserConfigurableProductDescription
 } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { VectorLayerProduct, BboxLayerProduct, BboxLayerDescription } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { VectorLayerProduct, BboxLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, WpsDataDescription, WpsBboxValue, Cache } from '../../../../../../proxy/src/wps/public-api';
-import { toDecimalPlaces, redGreenRange, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { WpsData } from '../../../services/wps/wps.datatypes';
+import { toDecimalPlaces, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
 import olFeature from 'ol/Feature';

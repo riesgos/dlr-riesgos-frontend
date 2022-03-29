@@ -1,5 +1,5 @@
 import { MultiVectorLayerProduct, VectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
+import { WpsData } from '../../../services/wps/wps.datatypes';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';

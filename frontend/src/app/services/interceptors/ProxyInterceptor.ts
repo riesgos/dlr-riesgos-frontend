@@ -10,7 +10,9 @@ export class ProxyInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const originalUrl = req.url;
         const ownUrl = this.router.url;
-        if (originalUrl === ownUrl) {
+        if (originalUrl.slice(0, 22) === 'localhost:8888/execute') {
+            return next.handle(req);
+        } else if (originalUrl.slice(0, 7) !== 'http://' && originalUrl.slice(0, 8) !== 'https://') {
             return next.handle(req);
         } else {
             const proxyReq = req.clone({

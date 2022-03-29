@@ -12,14 +12,14 @@ services:
   frontend:
     build: ./frontend
     depends_on:
-      - proxy
+      - middleware
     ports:
       - "127.0.0.1:8889:8889"
 
   router:
     build: ./router
     depends_on:
-      - proxy
+      - middleware
       - frontend
     ports:
       - "127.0.0.1:80:80"

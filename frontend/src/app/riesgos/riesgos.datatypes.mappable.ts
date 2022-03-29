@@ -1,5 +1,5 @@
 import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsBboxValue } from '../../../../proxy/src/wps/public-api';
+import { WpsBboxValue } from '../services/wps/wps.datatypes';
 import { shape } from '../components/config_wizard/wizardable_processes';
 import { FeatureCollection } from '@turf/helpers';
 import Feature from 'ol/Feature';

@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 import { Server as WsServer } from 'ws';
 import { proxyExecuteRequest } from './serverLogic';
 import url from 'url';

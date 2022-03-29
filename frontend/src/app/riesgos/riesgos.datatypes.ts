@@ -1,4 +1,4 @@
-import { WpsDataDescription, WpsVersion, ProductId, WpsData, WpsClient, FakeCache, Cache } from '../../../../proxy/src/wps/public-api';
+import { WpsDataDescription, WpsVersion, ProductId, WpsData } from '../services/wps/wps.datatypes';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
@@ -109,8 +109,7 @@ export class WpsProcess implements ExecutableProcess {
         readonly url: string,
         readonly wpsVersion: WpsVersion,
         httpClient: HttpClient,
-        public state = new ProcessStateUnavailable(),
-        cache: Cache = new FakeCache()
+        public state = new ProcessStateUnavailable()
         ) {}
 
     public execute(
@@ -168,9 +167,6 @@ export class WpsProcess implements ExecutableProcess {
 
             return products$;
 
-    }
-
-    public setCache(cache: Cache) {
     }
 
     private assignWpsDataToProducts(wpsData: WpsData[], initialProds: (Product & WpsData)[]): Product[] {

@@ -1,6 +1,6 @@
 import { FeatureCollection } from '@turf/helpers';
 import { Product, ProductDescription } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsBboxValue } from '../../../../../proxy/src/wps/public-api';
+import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 
 
 

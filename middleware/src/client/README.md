@@ -1,6 +1,0 @@
- - testClient/riesgosClient:
-   - a client that any frontend may use to connect with server/server
- - server/server:
-   - connects model/riesgos.service with REST-API
- - model/riesgos.service:
-   - backend-side interface to all riesgos-logic, like executing backend-services or getting scenario-data

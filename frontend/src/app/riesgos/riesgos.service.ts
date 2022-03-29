@@ -51,8 +51,6 @@ import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './
 @Injectable()
 export class RiesgosService {
 
-  private cache: Cache;
-
   constructor(
       private httpClient: HttpClient,
       private configSvc: ConfigService

@@ -26,16 +26,6 @@ expressApp.get('/test', (req: Request, res: Response) => {
     res.send('Proxy working!');
 });
 
-expressApp.use('/proxy/:target', async (req: Request, res: Response) => {
-    const targetUrl = req.params.target;
-    const mw = createProxyMiddleware({
-        target: targetUrl,
-        changeOrigin: true,
-        pathRewrite: {'^/proxy': ''}
-    })
-    return mw;
-});
-
 const wsServer = new WsServer({ noServer: true });
 wsServer.on('connection', (socket) => {
     socket.on('message', async (message) => {

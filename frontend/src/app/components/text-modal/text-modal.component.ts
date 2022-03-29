@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { StoreService } from 'src/app/services/store.service';
+import { StoreService } from 'src/app/services/localStorage/store.service';
 
 @Component({
   selector: 'ukis-text-modal',

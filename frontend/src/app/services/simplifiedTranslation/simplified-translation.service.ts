@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService, TranslateParser, LangChangeEvent } from '@ngx-translate/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { StoreService } from '../store.service';
+import { StoreService } from '../localStorage/store.service';
 
 
 export type RiesgosLang = 'EN' | 'ES';

@@ -54,7 +54,6 @@
     "jspdf": "^2.1.1",
     "md5": "^2.3.0",
     "ng5-slider": "^1.2.4",
-    "ngx-perfect-scrollbar": "^10.0.1",
     "ogc-schemas": "^2.6.1",
     "ol": "~6.8.1",
     "ol-ext": "^3.2.21",

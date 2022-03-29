@@ -9,7 +9,7 @@ import { DragBox, Select } from 'ol/interaction';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
 import { GeoJSON, KML, MVT } from 'ol/format';
-import { get as getProjection, METERS_PER_UNIT, transformExtent } from 'ol/proj';
+import { get as getProjection } from 'ol/proj';
 import { click, noModifierKeys } from 'ol/events/condition';
 import { applyStyle } from 'ol-mapbox-style';
 import { createXYZ } from 'ol/tilegrid';

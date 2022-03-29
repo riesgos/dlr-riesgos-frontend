@@ -16,7 +16,6 @@
   "dependencies": {
     "axios": "^0.26.1",
     "express": "^4.17.3",
-    "http-proxy-middleware": "^2.0.4",
     "object-hash": "^3.0.0",
     "ogc-schemas": "^2.6.1",
     "rxjs": "^7.5.5",

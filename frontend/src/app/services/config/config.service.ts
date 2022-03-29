@@ -3,10 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 
-export interface Config {
-  wpsCache: 'none' | 'local' | 'remote';
-  wpsCacheUrl?: string;
-}
+export interface Config {}
 
 @Injectable()
 export class ConfigService {

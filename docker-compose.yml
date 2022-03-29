@@ -1,7 +1,7 @@
 version: '3'
 services:
-  proxy:
-    build: ./proxy
+  middleware:
+    build: ./middleware
     # env_file:
     #   - ./mysql/resources/mysql.env
     ports:
@@ -13,5 +13,13 @@ services:
     build: ./frontend
     depends_on:
       - proxy
+    ports:
+      - "127.0.0.1:8889:8889"
+
+  router:
+    build: ./router
+    depends_on:
+      - proxy
+      - frontend
     ports:
       - "127.0.0.1:80:80"

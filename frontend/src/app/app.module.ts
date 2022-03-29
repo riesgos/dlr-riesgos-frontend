@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { EffectsModule } from '@ngrx/effects';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -75,8 +74,6 @@ import { SimpleTranslatePipe } from './services/simplifiedTranslation/simple-tra
 import { ReversePipe } from './components/riesgos_layer_control/utils/array-reverse.pipe';
 import { WMTSLayerFactory } from './components/map/wmts';
 import { reducers, effects } from './ngrx_register';
-import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 import { environment } from '../environments/environment';
 import { TranslatableStringComponent } from './components/dynamic/translatable-string/translatable-string.component';
@@ -87,12 +84,11 @@ import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/n
 import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from '@cds/core/icon';
 import { DisclaimerTriggerComponent } from './components/disclaimer-trigger/disclaimer-trigger.component';
 import { DisclaimerService } from './components/disclaimer/disclaimer.service';
+import { ProxyInterceptor } from './services/interceptors/ProxyInterceptor';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true
-};
+
 
 @NgModule({
   declarations: [
@@ -159,7 +155,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     LayersModule,
     ClarityModule,
     BrowserAnimationsModule,
-    PerfectScrollbarModule,
     Ng5SliderModule,
     StoreModule.forRoot(reducers, {
       runtimeChecks: {
@@ -199,8 +194,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
       multi: true,
       deps: [ConfigService]
     }, {
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+      provide: HTTP_INTERCEPTORS,
+      multi: true,
+      useClass: ProxyInterceptor
     }
   ],
   bootstrap: [AppComponent]

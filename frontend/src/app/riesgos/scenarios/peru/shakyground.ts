@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { selectedEqPeru } from './eqselection';
 import { HttpClient } from '@angular/common/http';
@@ -19,9 +19,7 @@ export const eqShakemapRefPeru: WpsData & Product = {
         title: 'shakeMapFile',
         type: 'complex',
         reference: true,
-        format: 'text/xml',
-        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
-        encoding: 'UTF-8'
+        format: 'text/xml'
     },
     value: null
 };
@@ -94,7 +92,7 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'ShakygroundPeru',
             'GroundmotionService',
@@ -105,8 +103,7 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
             'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
         this.wizardProperties = {
             shape: 'earthquake',

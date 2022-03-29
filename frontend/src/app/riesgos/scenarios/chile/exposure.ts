@@ -1,12 +1,12 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsData } from 'src/app/services/wps';
+import { WpsData } from '../../../../../../proxy/src/wps/public-api';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import { Feature as olFeature } from 'ol';
 import { HttpClient } from '@angular/common/http';
 import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
-import { Cache } from 'src/app/services/wps';
+import { Cache } from '../../../../../../proxy/src/wps/public-api';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
@@ -156,7 +156,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
 
   public wizardProperties: WizardProperties;
 
-  constructor(httpClient: HttpClient, cache: Cache) {
+  constructor(httpClient: HttpClient) {
     super(
       'Exposure',
       'EQ Exposure Model',
@@ -167,8 +167,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       httpClient,
-      new ProcessStateUnavailable(),
-      cache
+      new ProcessStateUnavailable()
     );
 
     this.wizardProperties = {

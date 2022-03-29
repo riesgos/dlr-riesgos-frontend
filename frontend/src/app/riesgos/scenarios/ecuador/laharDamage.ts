@@ -11,7 +11,7 @@ import { switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { greenRedRange, toDecimalPlaces, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { FeatureCollection } from '@turf/helpers';
@@ -504,9 +504,9 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
     private deus: Deus;
     private vulnerability: VulnerabilityModelEcuador;
 
-    constructor(http: HttpClient, cache: Cache) {
-        this.deus = new Deus(http, cache);
-        this.vulnerability = new VulnerabilityModelEcuador(http, cache);
+    constructor(http: HttpClient) {
+        this.deus = new Deus(http);
+        this.vulnerability = new VulnerabilityModelEcuador(http);
     }
 
     execute(

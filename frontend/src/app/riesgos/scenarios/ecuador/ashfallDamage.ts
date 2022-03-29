@@ -6,7 +6,7 @@ import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, t
 import { Volcanus } from './volcanus';
 import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './ashfallService';
-import { WpsData, WpsDataDescription } from 'src/app/services/wps';
+import { WpsData, WpsDataDescription } from '../../../../../../proxy/src/wps/public-api';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
@@ -491,9 +491,9 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     private volcanus: Volcanus;
     private vulnerability: VulnerabilityModelEcuador;
 
-    constructor(http: HttpClient, cache) {
-        this.volcanus = new Volcanus(http, cache);
-        this.vulnerability = new VulnerabilityModelEcuador(http, cache);
+    constructor(http: HttpClient) {
+        this.volcanus = new Volcanus(http);
+        this.vulnerability = new VulnerabilityModelEcuador(http);
     }
 
     execute(

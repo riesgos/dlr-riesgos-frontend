@@ -1,4 +1,4 @@
-import { WpsDataDescription, WpsVersion, ProductId, WpsData, WpsClient, FakeCache, Cache } from 'src/app/services/wps';
+import { WpsDataDescription, WpsVersion, ProductId, WpsData, WpsClient, FakeCache, Cache } from '../../../../proxy/src/wps/public-api';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';

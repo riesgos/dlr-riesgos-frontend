@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from 'src/app/services/wps';
+import { WpsData } from '../../../../../../proxy/src/wps/public-api';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -10,7 +10,7 @@ import proj4 from 'proj4';  // requires "allowSyntheticDefaultImports": true
 import { HttpClient } from '@angular/common/http';
 import { greenRedRange } from 'src/app/helpers/colorhelpers';
 import { BarData, createBarChart } from 'src/app/helpers/d3charts';
-import { Cache } from 'src/app/services/wps';
+import { Cache } from '../../../../../../proxy/src/wps/public-api';
 import Geometry from 'ol/geom/Geometry';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -144,7 +144,7 @@ export class FloodDamageProcess extends WpsProcess implements WizardableProcess 
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'FloodService',
             'Flood damage',
@@ -156,8 +156,7 @@ export class FloodDamageProcess extends WpsProcess implements WizardableProcess 
             'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
         this.wizardProperties = {
             providerName: 'GFZ',

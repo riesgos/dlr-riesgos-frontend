@@ -2,7 +2,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import {  StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
@@ -87,9 +87,7 @@ export const laharShakemap: Product & WpsData = {
         title: '',
         format: 'application/xml',
         reference: true,
-        type: 'complex',
-        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
-        encoding: 'UTF-8'
+        type: 'complex'
     },
     value: null,
 };
@@ -99,7 +97,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'LaharModel',
             'Lahar',
@@ -110,8 +108,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             'https://riesgos.52north.org/geoserver/ows',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
         this.wizardProperties = {
             providerName: 'TUM',

@@ -2,7 +2,7 @@ import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } fro
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -123,8 +123,8 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient, cache: Cache) {
-        this.laharWps = new LaharWps(http, cache);
+    constructor(http: HttpClient) {
+        this.laharWps = new LaharWps(http);
         this.wizardProperties = this.laharWps.wizardProperties;
         this.description = this.laharWps.description;
         this.state = new ProcessStateUnavailable();

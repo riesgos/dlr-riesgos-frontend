@@ -19,7 +19,7 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@dlr-eoc/services-layers';
-import { WpsBboxValue } from 'src/app/services/wps';
+import { WpsBboxValue } from '../../../../../proxy/src/wps/public-api';
 
 import { State } from 'src/app/ngrx_register';
 import { getMappableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';

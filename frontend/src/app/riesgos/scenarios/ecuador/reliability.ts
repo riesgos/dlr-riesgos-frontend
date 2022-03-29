@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { Product, WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
@@ -146,7 +146,7 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'Reliability',
             'System reliability after Lahar',
@@ -157,8 +157,7 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             'https://riesgos.52north.org/javaps/service',
             '2.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
         this.wizardProperties = {
             providerName: 'TUM',

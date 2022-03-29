@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { Observable, forkJoin, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { selectedEqPeru } from './eqselection';
@@ -67,7 +67,7 @@ export const tsWmsPeru: WpsData & WmsLayerProduct = {
 
 export class TsWmsServicePeru extends WpsProcess {
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'get_scenario_peru',
             'Earthquake/tsunami interaction',
@@ -78,8 +78,7 @@ export class TsWmsServicePeru extends WpsProcess {
             'http://tsunami-wps.awi.de/wps',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
     }
 
@@ -100,7 +99,7 @@ export const tsShakemapPeru: WpsData & Product = {
 
 
 export class TsShakemapServicePeru extends WpsProcess {
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'get_tsunamap_peru',
             'get_tsunamap',
@@ -111,8 +110,7 @@ export class TsShakemapServicePeru extends WpsProcess {
             'http://tsunami-wps.awi.de/wps',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
     }
 }
@@ -136,10 +134,10 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
     readonly requiredProducts: string[];
     readonly providedProducts: string[];
 
-    constructor(private httpClient: HttpClient, cache: Cache) {
+    constructor(private httpClient: HttpClient) {
         this.state = new ProcessStateUnavailable();
-        this.tsWmsService = new TsWmsServicePeru(httpClient, cache);
-        this.tsShakemapService = new TsShakemapServicePeru(httpClient, cache);
+        this.tsWmsService = new TsWmsServicePeru(httpClient);
+        this.tsShakemapService = new TsShakemapServicePeru(httpClient);
         this.requiredProducts = [selectedEqPeru.uid],
         this.providedProducts = this.tsWmsService.providedProducts.concat(this.tsShakemapService.providedProducts);
     }

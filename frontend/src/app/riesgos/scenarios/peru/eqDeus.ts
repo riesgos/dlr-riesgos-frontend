@@ -1,6 +1,6 @@
 import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { initialExposurePeruReference } from './exposure';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { VectorLayerProperties, MultiVectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
@@ -518,10 +518,10 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
     private vulnerabilityProcess: VulnerabilityModelPeru;
     private deusProcess: Deus;
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         this.state = new ProcessStateUnavailable();
-        this.vulnerabilityProcess = new VulnerabilityModelPeru(http, cache);
-        this.deusProcess = new Deus(http, cache);
+        this.vulnerabilityProcess = new VulnerabilityModelPeru(http);
+        this.deusProcess = new Deus(http);
     }
 
     execute(

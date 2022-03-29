@@ -1,11 +1,11 @@
 import { WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { HttpClient } from '@angular/common/http';
-import { Cache } from 'src/app/services/wps';
+import { Cache } from '../../../../../../proxy/src/wps/public-api';
 
 
 export class Volcanus extends WpsProcess {
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'volcanus',
             'Volcanus',
@@ -16,8 +16,7 @@ export class Volcanus extends WpsProcess {
             'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
     }
 

@@ -1,6 +1,6 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BarData, createBarChart } from 'src/app/helpers/d3charts';
@@ -282,7 +282,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
 
   wizardProperties: WizardProperties;
 
-  constructor(http: HttpClient, cache: Cache) {
+  constructor(http: HttpClient) {
     super(
       'AshfallExposure',
       'Ashfall exposure model',
@@ -293,8 +293,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       http,
-      new ProcessStateUnavailable(),
-      cache
+      new ProcessStateUnavailable()
     );
     this.wizardProperties = {
       shape: 'building',
@@ -325,7 +324,7 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
 
   wizardProperties: WizardProperties;
 
-  constructor(http: HttpClient, cache: Cache) {
+  constructor(http: HttpClient) {
     super(
       'LaharExposure',
       'Lahar exposure model',
@@ -337,8 +336,7 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
       'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
       '1.0.0',
       http,
-      new ProcessStateUnavailable(),
-      cache
+      new ProcessStateUnavailable()
     );
     this.wizardProperties = {
       shape: 'building',

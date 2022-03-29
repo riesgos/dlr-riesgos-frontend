@@ -2,7 +2,7 @@ import { ExecutableProcess, ProcessStateUnavailable, Product, ProductTransformin
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { Observable, of } from 'rxjs';
-import { WpsData } from 'src/app/services/wps';
+import { WpsData } from '../../../../../../proxy/src/wps/public-api';
 import { direction, vei } from './lahar';
 import { laharHeightWms } from './laharWrapper';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';

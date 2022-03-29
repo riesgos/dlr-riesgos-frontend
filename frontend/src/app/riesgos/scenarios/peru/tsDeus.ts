@@ -1,5 +1,5 @@
 import { MultiVectorLayerProduct, VectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
@@ -540,7 +540,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
     private vulnerabilityProcess: VulnerabilityModelPeru;
     private deusProcess: Deus;
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
@@ -554,8 +554,8 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
             wikiLink: 'ExposureAndVulnerability'
         };
 
-        this.vulnerabilityProcess = new VulnerabilityModelPeru(http, cache);
-        this.deusProcess = new Deus(http, cache);
+        this.vulnerabilityProcess = new VulnerabilityModelPeru(http);
+        this.deusProcess = new Deus(http);
     }
 
     execute(

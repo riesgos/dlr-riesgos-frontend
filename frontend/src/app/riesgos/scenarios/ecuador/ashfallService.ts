@@ -1,7 +1,7 @@
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { vei } from './lahar';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { HttpClient } from '@angular/common/http';
 import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
@@ -168,7 +168,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
 
     wizardProperties: WizardProperties;
 
-    constructor(private http: HttpClient, cache: Cache) {
+    constructor(private http: HttpClient) {
         super(
             'ashfall-service',
             'AshfallService',
@@ -179,8 +179,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             'http://riesgos.dlr.de/wps/WebProcessingService',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
         this.wizardProperties = {
             providerName: 'IGN',

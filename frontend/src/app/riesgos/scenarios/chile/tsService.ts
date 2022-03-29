@@ -1,6 +1,6 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData, Cache } from 'src/app/services/wps';
+import { WpsData, Cache } from '../../../../../../proxy/src/wps/public-api';
 import { selectedEq } from './eqselection';
 import { Observable, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -67,7 +67,7 @@ export const tsWms: WpsData & WmsLayerProduct = {
 
 export class TsWmsService extends WpsProcess {
 
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'get_scenario',
             'Earthquake/tsunami interaction',
@@ -78,8 +78,7 @@ export class TsWmsService extends WpsProcess {
             'http://tsunami-wps.awi.de/wps',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
     }
 }
@@ -99,7 +98,7 @@ export const tsShakemap: WpsData & Product = {
 
 
 export class TsShakemapService extends WpsProcess {
-    constructor(http: HttpClient, cache: Cache) {
+    constructor(http: HttpClient) {
         super(
             'get_tsunamap',
             'get_tsunamap',
@@ -110,8 +109,7 @@ export class TsShakemapService extends WpsProcess {
             'http://tsunami-wps.awi.de/wps',
             '1.0.0',
             http,
-            new ProcessStateUnavailable(),
-            cache
+            new ProcessStateUnavailable()
         );
     }
 }
@@ -135,10 +133,10 @@ export class TsService implements WizardableProcess, ExecutableProcess {
     readonly requiredProducts: string[];
     readonly providedProducts: string[];
 
-    constructor(private httpClient: HttpClient, cache: Cache) {
+    constructor(private httpClient: HttpClient) {
         this.state = new ProcessStateUnavailable();
-        this.tsWmsService = new TsWmsService(httpClient, cache);
-        this.tsShakemapService = new TsShakemapService(httpClient, cache);
+        this.tsWmsService = new TsWmsService(httpClient);
+        this.tsShakemapService = new TsShakemapService(httpClient);
         this.requiredProducts = [selectedEq.uid],
         this.providedProducts = this.tsWmsService.providedProducts.concat(this.tsShakemapService.providedProducts);
     }

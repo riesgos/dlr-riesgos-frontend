@@ -1,6 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Product, ImmutableProcess, ProcessId } from './riesgos.datatypes';
-import { ProductId } from 'src/app/services/wps';
+import { Product, ImmutableProcess } from './riesgos.datatypes';
 import { Scenario, RiesgosScenarioMetadata } from './riesgos.state';
 import { Graph } from 'graphlib';
 

@@ -7,7 +7,7 @@ COPY . /app
 # Every run command creates another layer
 RUN npm install
 RUN npm run build:all
-# Make port 80 available to the world outside this container
+# Make port 8888 available to the world outside this container
 EXPOSE 8888
 # Define environment variable
 # ENV NAME World

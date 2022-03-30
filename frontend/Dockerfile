@@ -14,4 +14,4 @@ FROM nginx as host
 WORKDIR /app
 COPY --from=build /app/dist/riesgos /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 8889
+EXPOSE 80

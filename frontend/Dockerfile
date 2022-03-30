@@ -1,6 +1,12 @@
-FROM node:16 as build
+# Issue with node:16 getting SOCKET TIMEOUT
+FROM node:14 as build
 WORKDIR /app
 COPY . /app
+# settings for slower network connections
+RUN npm config set fetch-retries 3
+RUN npm config set fetch-retry-mintimeout 60000
+RUN npm config set fetch-retry-maxtimeout 120000
+# building
 RUN npm install
 RUN npm run build
 

@@ -32,16 +32,18 @@
               { "input": "src/styles.light.scss", "bundleName": "styles-theme-light", "inject": true }
             ],
             "scripts": [
-              "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
-              "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js",
               "node_modules/@clr/icons/clr-icons.min.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
             "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true
+            "optimization": true,
+            "namedChunks": true,
+            "allowedCommonJsDependencies": [
+              "graphlib",
+              "d3-graphviz"
+            ]
           },
           "configurations": {
             "production": {

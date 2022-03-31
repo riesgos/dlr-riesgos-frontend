@@ -9,7 +9,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { downloadJson, parseFile } from 'src/app/helpers/others';
 import { map, tap } from 'rxjs/operators';
 import { createGraph } from 'src/app/riesgos/riesgos.workflowcontrol';
-import { environment } from 'src/environments/environment';
 
 
 
@@ -20,7 +19,6 @@ import { environment } from 'src/environments/environment';
 })
 export class HelperButtonsComponent implements OnInit {
 
-    isRiesgos2: boolean;
     showResetModal = false;
     showRestoreModal = false;
     showStoreModal = false;
@@ -33,7 +31,6 @@ export class HelperButtonsComponent implements OnInit {
         private store: Store<State>
     ) {
         this.nameControl = new FormControl('Save state', [Validators.required, noSpecialChars]);
-        this.isRiesgos2 = environment.isRiesgos2;
     }
 
     ngOnInit() {

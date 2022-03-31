@@ -5,7 +5,6 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production",
-    "build:dev": "ng build --configuration production --base-href=/dev/",
     "build:licenses": "npx license-checker --production --json --out ./src/assets/licenses.json",
     "test": "ng test",
     "lint": "ng lint",

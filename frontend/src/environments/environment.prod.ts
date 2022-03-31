@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  isRiesgos2: false,
+  middlewareUrl: 'riesgos.dlr.de/middleware',
+  proxyUrl: 'riesgos.dlr.de/proxy'
 };

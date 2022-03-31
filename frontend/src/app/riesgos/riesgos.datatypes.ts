@@ -121,7 +121,7 @@ export class WpsProcess implements ExecutableProcess {
             const wpsOutputDescriptions = outputProducts.map(o => o.description) as WpsDataDescription[];
 
             const ws$ = new Observable<WpsData[]>((listener) => {
-                const client = new WebSocket('ws://localhost:8888/execute');
+                const client = new WebSocket('ws://localhost:8000/middleware/execute');
                 client.onopen = () => {
                     const data = {
                         version: this.wpsVersion,

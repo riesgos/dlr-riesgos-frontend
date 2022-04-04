@@ -1,5 +1,5 @@
 ┌────dn───────────────────────────────────────────────────────────────────────┐
-│          resolver: 127.0.0.11                                               │
+│          resolver: 127.0.0.11 <-- configure in nginx                        │
 │                                                                             │
 │                      http://middleware:8888                                 │    dn: docker-network
 │             ┌────────────────────────────────────────┐                      │    dc: docker-container

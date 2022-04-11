@@ -2,6 +2,7 @@ import { WpsDataDescription, WpsVersion, ProductId, WpsData } from '../services/
 import { Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 
 export type ProductDescription = object;
@@ -121,7 +122,7 @@ export class WpsProcess implements ExecutableProcess {
             const wpsOutputDescriptions = outputProducts.map(o => o.description) as WpsDataDescription[];
 
             const ws$ = new Observable<WpsData[]>((listener) => {
-                const client = new WebSocket('ws://localhost:8000/middleware/execute');
+                const client = new WebSocket(`ws://${environment.middlewareUrl}/execute`);
                 client.onopen = () => {
                     const data = {
                         version: this.wpsVersion,

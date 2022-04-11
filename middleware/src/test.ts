@@ -5,6 +5,7 @@ import { AxiosClient } from './web/httpClient';
 import { pollUntil, WpsClient, WpsData, WpsState } from './wps/public-api';
 import path from 'path';
 import { deleteFile, writeJsonFile } from './utils/fileApi';
+import { MailClient } from './web/mailClient';
 
 
 const requestData: ExecuteData = { 
@@ -119,6 +120,11 @@ async function main() {
     // test 6
     const filePath = path.join(__dirname, '..', 'data', 'https://michael.com/some/subdir', 'text.json');
     await writeJsonFile(filePath, {test: 'true'});
+
+
+    // test 7     
+    // const mailClient = new MailClient();
+    // mailClient.sendMail(['some.recipient@mail.org'], 'test', 'This is the body');
 }
 
 

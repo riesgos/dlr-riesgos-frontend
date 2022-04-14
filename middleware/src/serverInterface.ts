@@ -4,6 +4,7 @@ import { proxyExecuteRequest } from './serverLogic';
 import url from 'url';
 import { runScheduler } from './scheduled/scheduler';
 import { sendErrorMail } from './utils/mail';
+import { config } from './config';
 
 /**
  * 
@@ -17,8 +18,6 @@ import { sendErrorMail } from './utils/mail';
  */
 
 
-
-const port = 8888;
 
 const expressApp = express();
 runScheduler();
@@ -44,8 +43,8 @@ wsServer.on('connection', (socket) => {
     });
 });
 
-const expressServer = expressApp.listen(port, () => {
-    console.log(`App listening on http://localhost:${port}`);
+const expressServer = expressApp.listen(config.port, () => {
+    console.log(`App listening on http://localhost:${config.port}`);
 });
 
 expressServer.on('upgrade', (request, socket, head) => {

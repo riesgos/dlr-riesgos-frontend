@@ -26,10 +26,16 @@ export const modelChoice: WpsData & StringSelectUserConfigurableProduct = {
       reference: false,
       title: 'model',
       type: 'literal',
-      options: ['ValpCVTSaraDownscaled', 'ValpCVTBayesian', 'ValpCommuna', 'ValpRegularOriginal', 'ValpRegularGrid'],
-      defaultValue: 'ValpCVTSaraDownscaled',
+      options: [
+        // 'ValpCVTSaraDownscaled',
+        'ValpCVTBayesian',
+        'ValpCommuna',
+        'ValpRegularOriginal',
+        'ValpRegularGrid'
+      ],
+      defaultValue: 'ValpCommuna',
   },
-  value: 'ValpCVTSaraDownscaled'
+  value: 'ValpCommuna'
 };
 
 export const initialExposure: VectorLayerProduct & WpsData & Product = {

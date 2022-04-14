@@ -2,8 +2,8 @@ import express, { Request, Response } from 'express';
 import { Server as WsServer } from 'ws';
 import { proxyExecuteRequest } from './serverLogic';
 import url from 'url';
-import { MailClient } from './web/mailClient';
-import { config } from './config';
+import { runScheduler } from './scheduled/scheduler';
+import { sendErrorMail } from './utils/mail';
 
 /**
  * 
@@ -21,7 +21,7 @@ import { config } from './config';
 const port = 8888;
 
 const expressApp = express();
-const mailClient = new MailClient();
+runScheduler();
 
 expressApp.get('/test', (req: Request, res: Response) => {
     res.send('Proxy working!');
@@ -37,17 +37,7 @@ wsServer.on('connection', (socket) => {
             socket.close();
         } catch (error: any) {
             console.log('error', error);
-            const html = `
-                <p>An error has occurred in the execution of the following request.</p>
-                <p>Request:</p>
-                <p>${JSON.stringify(message)}</p>
-                <p>Error:</p>
-                <p>${JSON.stringify(error)}</p>
-                <p>${error.stack}</p>
-                <p>Time:</p>
-                <p>${new Date()}</p>
-            `;
-            mailClient.sendMail(config.siteAdmins, 'Riesgos Middleware: Error on execute-request', html);
+            sendErrorMail(parsed, error);
             socket.send(JSON.stringify(error.message));
             socket.close();
         }
@@ -71,4 +61,3 @@ expressServer.on('upgrade', (request, socket, head) => {
         socket.destroy();
     }
 });
-

@@ -458,10 +458,10 @@ export const ashfallDamageM: WpsData & MultiVectorLayerProduct = {
     value: null
 };
 
-export const ashfallUpdatedExposureRef: WpsData & Product = {
-    uid: 'ashfallExposureRef',
+export const ashfallDamageMRef: WpsData & Product = {
+    uid: 'ashfall_damage_output_values_ref',
     description: {
-        id: 'updated_exposure',
+        id: 'merged_output',
         title: '',
         reference: true,
         type: 'complex',
@@ -479,7 +479,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     readonly requiredProducts: string[] =
         [initialExposureAshfallRef, ashfallPoint].map(p => p.uid);
     readonly providedProducts: string[] =
-        [ashfallDamageM, ashfallUpdatedExposureRef].map(p => p.uid);
+        [ashfallDamageM, ashfallDamageMRef].map(p => p.uid);
     readonly description?: string = 'Deus Ashfall description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
@@ -545,7 +545,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
                     }
                 }];
 
-                const vulcOutputs: Product[] = [ashfallDamageM, ashfallUpdatedExposureRef];
+                const vulcOutputs: Product[] = [ashfallDamageM, ashfallDamageMRef];
 
                 return this.volcanus.execute(vulcInputs, vulcOutputs, doWhileExecuting);
             })

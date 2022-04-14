@@ -1,5 +1,5 @@
 import { FileCache } from './storage/fileCache';
-import { AxiosClient, HttpClient } from './web/httpClient';
+import { AxiosClient } from './web/httpClient';
 import { WpsClient } from './wps/public-api';
 import * as path from 'path';
 import hash from 'object-hash';

@@ -8,7 +8,7 @@ import { ConfigService, Config } from '../services/config/config.service';
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, availableEqs } from './scenarios/chile/quakeledger';
 import { EqSelection, userinputSelectedEq, selectedEq } from './scenarios/chile/eqselection';
 import { Shakyground, shakemapPgaOutput, eqShakemapRef, Gmpe, VsGrid, shakemapSa03WmsOutput, shakemapSa10WmsOutput } from './scenarios/chile/shakyground';
-import { EqDeus, loss, eqDamageM, eqUpdatedExposureRef } from './scenarios/chile/eqDeus';
+import { EqDeus, loss, eqDamageM, eqDamageMRef } from './scenarios/chile/eqDeus';
 import { TsService, tsWms, tsShakemap } from './scenarios/chile/tsService';
 import { TsDeus, schema, tsDamageM } from './scenarios/chile/tsDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
@@ -21,7 +21,7 @@ import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
   zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru, availableEqsPeru } from './scenarios/peru/quakeledger';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scenarios/peru/eqselection';
 import { ShakygroundPeru, shakemapPgaOutputPeru, eqShakemapRefPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru } from './scenarios/peru/shakyground';
-import { EqDeusPeru, lossPeru, eqDamagePeruM, eqUpdatedExposureRefPeru } from './scenarios/peru/eqDeus';
+import { EqDeusPeru, lossPeru, eqDamagePeruM, eqDamagePeruMRef } from './scenarios/peru/eqDeus';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
 import { TsDeusPeru, tsDamagePeruM, schemaPeru } from './scenarios/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './scenarios/peru/reliability';
@@ -33,10 +33,10 @@ import { AshfallExposureModel, LaharExposureModel, schemaEcuador,
   lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador,
   querymodeEcuador, assettypeEcuador, initialExposureAshfall, initialExposureAshfallRef,
   initialExposureLahar, initialExposureLaharRef, modelEcuador } from './scenarios/ecuador/exposure';
-import { DeusAshfall, ashfallDamageM, ashfallUpdatedExposureRef } from './scenarios/ecuador/ashfallDamage';
+import { DeusAshfall, ashfallDamageM, ashfallDamageMRef } from './scenarios/ecuador/ashfallDamage';
 import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
   laharVelocityWms, laharVelocityShakemapRef, laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms } from './scenarios/ecuador/laharWrapper';
-import { DeusLahar, laharDamageM, laharUpdatedExposureRef } from './scenarios/ecuador/laharDamage';
+import { DeusLahar, laharDamageM, laharDamageMRef } from './scenarios/ecuador/laharDamage';
 import { DeusLaharAndAshfall, laharAshfallDamageM } from './scenarios/ecuador/laharAndAshDamage';
 import { LaharReliability, countryEcuador, hazardLahar, damageConsumerAreasEcuador } from './scenarios/ecuador/reliability';
 import { FloodMayRunProcess, geomerFlood, FloodMayRun, userInputSelectedOutburst,
@@ -99,7 +99,7 @@ export class RiesgosService {
           availableEqs, userinputSelectedEq,
           Gmpe, VsGrid, selectedEq,
           eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput,
-          loss, eqDamageM, eqUpdatedExposureRef,
+          loss, eqDamageM, eqDamageMRef,
           tsWms, tsShakemap,
           countryChile, hazardEq,
           damageConsumerAreas, schema,
@@ -125,7 +125,7 @@ export class RiesgosService {
           availableEqsPeru, userinputSelectedEqPeru,
           selectedEqPeru,
           shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru, eqShakemapRefPeru,
-          tsWmsPeru, tsShakemapPeru, eqUpdatedExposureRefPeru, schemaPeru, 
+          tsWmsPeru, tsShakemapPeru, eqDamagePeruMRef, schemaPeru, 
           tsDamagePeruM,
           countryPeru, hazardEqPeru,
           damageConsumerAreasPeru
@@ -155,11 +155,11 @@ export class RiesgosService {
           fragilityRef, initialExposureAshfall, initialExposureAshfallRef, initialExposureLahar, initialExposureLaharRef,
           selectableVei, vei, FloodMayRun,
           probability, ashfall, ashfallPoint,
-          ashfallDamageM, ashfallUpdatedExposureRef,
+          ashfallDamageM, ashfallDamageMRef,
           direction, laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
           laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms,
           assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador,
-          laharDamageM, laharUpdatedExposureRef,
+          laharDamageM, laharDamageMRef,
           laharAshfallDamageM,
           countryEcuador, hazardLahar,
           damageConsumerAreasEcuador,

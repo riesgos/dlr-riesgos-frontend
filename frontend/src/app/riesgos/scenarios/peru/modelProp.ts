@@ -3,6 +3,7 @@ import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/ri
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 
 export const fragilityRefPeru: WpsData & Product = {
@@ -30,7 +31,7 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
             [fragilityRefPeru.uid],
             'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess',
             '',
-            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            `https:///rz-vm140.gfz-potsdam.de${ environment.production ? '' : '8443' }/wps/WebProcessingService`,
             '1.0.0',
             http,
             new ProcessStateUnavailable()

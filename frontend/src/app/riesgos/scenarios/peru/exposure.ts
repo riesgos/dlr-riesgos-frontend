@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import Geometry from 'ol/geom/Geometry';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -173,7 +174,7 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       [initialExposurePeru, initialExposurePeruReference].map(p => p.uid),
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       'exposure_process_description_peru',
-      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+      `https:///rz-vm140.gfz-potsdam.de${ environment.production ? '' : '8443' }/wps/WebProcessingService`,
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable()

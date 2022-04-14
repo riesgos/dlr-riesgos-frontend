@@ -13,6 +13,7 @@ import { BarData, createBarChart } from 'src/app/helpers/d3charts';
 import Geometry from 'ol/geom/Geometry';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 
 proj4.defs('EPSG:32717', '+proj=utm +zone=17 +south +datum=WGS84 +units=m +no_defs');
@@ -152,7 +153,7 @@ export class FloodDamageProcess extends WpsProcess implements WizardableProcess 
             [damageManzanasGeojson].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.FlooddamageProcess',
             'Process to compute the damage caused by a flood.',
-            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            `https:///rz-vm140.gfz-potsdam.de${ environment.production ? '' : '8443' }/wps/WebProcessingService`,
             '1.0.0',
             http,
             new ProcessStateUnavailable()

@@ -10,8 +10,8 @@ import { WpsData } from '../../../services/wps/wps.datatypes';
 import { schemaEcuador } from './exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
-import { ashfallDamageM, ashfallUpdatedExposureRef } from './ashfallDamage';
-import { laharLossProps, laharTransitionProps, laharUpdatedExposureProps, laharUpdatedExposureRef } from './laharDamage';
+import { ashfallDamageM, ashfallDamageMRef } from './ashfallDamage';
+import { laharLossProps, laharTransitionProps, laharUpdatedExposureProps, laharDamageMRef } from './laharDamage';
 import { createGroupedBarChart, BarData } from 'src/app/helpers/d3charts';
 
 
@@ -82,7 +82,7 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
     readonly uid: string = 'DeusLaharAndAshfall';
     readonly name: string = 'LaharAndAshfallDamage';
     readonly state: ProcessState = new ProcessStateUnavailable();
-    readonly requiredProducts: string[] = [ashfallDamageM, ashfallUpdatedExposureRef, laharUpdatedExposureRef, laharVelocityShakemapRef].map(p => p.uid);
+    readonly requiredProducts: string[] = [ashfallDamageM, ashfallDamageMRef, laharDamageMRef, laharVelocityShakemapRef].map(p => p.uid);
     readonly providedProducts: string[] = [laharAshfallDamageM].map(p => p.uid);
     readonly description?: string = 'Deus Lahar + Ashfall description';
     readonly wizardProperties: WizardProperties = {
@@ -119,7 +119,7 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
                 // Step 2.1: Preparing deus inputs
                 const fragility = results.find(prd => prd.uid === fragilityRef.uid);
                 const shakemap = inputs.find(prd => prd.uid === laharVelocityShakemapRef.uid);
-                const exposure = inputs.find(prd => prd.uid === ashfallUpdatedExposureRef.uid);
+                const exposure = inputs.find(prd => prd.uid === ashfallDamageMRef.uid);
 
                 const deusInputs: Product[] = [{
                     ... shakemap,

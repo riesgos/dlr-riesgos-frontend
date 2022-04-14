@@ -1,5 +1,15 @@
 import sendmail from 'sendmail';
 
+
+export interface MailAttachment {
+  type?: string | undefined;
+  filename?: string | undefined;
+  content?: any;
+  path?: string | undefined;
+  contentType?: string | undefined;
+  encoding?: string | undefined;
+};
+
 export class MailClient {
 
     private mailClient;
@@ -24,12 +34,13 @@ export class MailClient {
           });
     }
 
-    public sendMail(recipients: string[], subject: string, html: string) {
+    public sendMail(recipients: string[], subject: string, html: string, attachments?: MailAttachment[]) {
         this.mailClient({
             from: 'errormessages@riesgos.com',
             to: recipients.join(', '),
             subject: subject,
-            html: html
+            html: html,
+            attachments: attachments
           }, function(err, reply) {
             console.log(err && err.stack);
             console.dir(reply);

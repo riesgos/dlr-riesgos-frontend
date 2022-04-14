@@ -11,6 +11,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { Observable } from 'rxjs';
 import Geometry from 'ol/geom/Geometry';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import { environment } from 'src/environments/environment';
 
 
 export const modelChoice: WpsData & StringSelectUserConfigurableProduct = {
@@ -25,10 +26,16 @@ export const modelChoice: WpsData & StringSelectUserConfigurableProduct = {
       reference: false,
       title: 'model',
       type: 'literal',
-      options: ['ValpCVTSaraDownscaled', 'ValpCVTBayesian', 'ValpCommuna', 'ValpRegularOriginal', 'ValpRegularGrid'],
-      defaultValue: 'ValpCVTSaraDownscaled',
+      options: [
+        // 'ValpCVTSaraDownscaled',
+        'ValpCVTBayesian',
+        'ValpCommuna',
+        'ValpRegularOriginal',
+        'ValpRegularGrid'
+      ],
+      defaultValue: 'ValpCVTBayesian',
   },
-  value: 'ValpCVTSaraDownscaled'
+  value: 'ValpCVTBayesian'
 };
 
 export const initialExposure: VectorLayerProduct & WpsData & Product = {
@@ -163,7 +170,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       [initialExposure.uid, initialExposureRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
       'exposure_process_description',
-      'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+      `https:///rz-vm140.gfz-potsdam.de${ environment.production ? '' : '8443' }/wps/WebProcessingService`,
       '1.0.0',
       httpClient,
       new ProcessStateUnavailable()

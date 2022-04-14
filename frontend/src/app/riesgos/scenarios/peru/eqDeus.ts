@@ -487,10 +487,10 @@ export const eqDamagePeruM: WpsData & MultiVectorLayerProduct = {
     value: null
 };
 
-export const eqUpdatedExposureRefPeru: WpsData & Product = {
-    uid: 'updated_exposure_ref_peru',
+export const eqDamagePeruMRef: WpsData & Product = {
+    uid: 'merged_output_ref_peru',
     description: {
-        id: 'updated_exposure',
+        id: 'merged_output',
         title: 'Updated exposure',
         reference: true,
         type: 'complex',
@@ -506,7 +506,7 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
     readonly uid = 'EQ-Deus';
     readonly name = 'Multihazard_damage_estimation/Earthquake';
     readonly requiredProducts = [eqShakemapRefPeru, initialExposurePeruReference].map(p => p.uid);
-    readonly providedProducts = [eqDamagePeruM, eqUpdatedExposureRefPeru].map(p => p.uid);
+    readonly providedProducts = [eqDamagePeruM, eqDamagePeruMRef].map(p => p.uid);
     readonly description = 'This service returns damage caused by the selected earthquake.';
     readonly wizardProperties = {
         providerName: 'GFZ',

@@ -9,6 +9,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -144,7 +145,7 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
             [eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
             'EqSimulationShortText',
-            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            `https:///rz-vm140.gfz-potsdam.de${ environment.production ? '' : '8443' }/wps/WebProcessingService`,
             '1.0.0',
             http,
             new ProcessStateUnavailable()

@@ -4,7 +4,7 @@ import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } fro
 import { toDecimalPlaces, greenRedRange, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { eqDamagePeruM, eqUpdatedExposureRefPeru } from './eqDeus';
+import { eqDamagePeruM, eqDamagePeruMRef } from './eqDeus';
 import { tsShakemapPeru } from './tsService';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
@@ -544,7 +544,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
-        this.requiredProducts = [schemaPeru, eqDamagePeruM, tsShakemapPeru, eqUpdatedExposureRefPeru].map(p => p.uid);
+        this.requiredProducts = [schemaPeru, eqDamagePeruM, tsShakemapPeru, eqDamagePeruMRef].map(p => p.uid);
         this.providedProducts = [tsDamagePeruM].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
@@ -575,7 +575,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
                     // Step 2.1: preparing deus inputs
                     const fragility = resultProducts.find(prd => prd.uid === fragilityRefPeru.uid);
                     const shakemap = inputProducts.find(prd => prd.uid === tsShakemapPeru.uid);
-                    const exposure = inputProducts.find(prd => prd.uid === eqUpdatedExposureRefPeru.uid);
+                    const exposure = inputProducts.find(prd => prd.uid === eqDamagePeruMRef.uid);
 
                     const deusInputs = [{
                         ... schemaPeru,

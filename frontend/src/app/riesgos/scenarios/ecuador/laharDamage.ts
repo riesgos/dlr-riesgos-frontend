@@ -1,6 +1,6 @@
 import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { ashfallUpdatedExposureRef } from './ashfallDamage';
+import { ashfallDamageMRef } from './ashfallDamage';
 import { laharVelocityShakemapRef } from './laharWrapper';
 import { Deus } from '../chile/deus';
 import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
@@ -472,10 +472,10 @@ export const laharDamageM: WpsData & MultiVectorLayerProduct = {
 };
 
 
-export const laharUpdatedExposureRef: WpsData & Product = {
+export const laharDamageMRef: WpsData & Product = {
     uid: 'laharUpdatedExposureRef',
     description: {
-        id: 'updated_exposure',
+        id: 'merged_output',
         title: '',
         format: 'application/json',
         reference: true,
@@ -492,7 +492,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
     readonly name: string = 'Lahar Damage';
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] = [initialExposureLaharRef, laharVelocityShakemapRef].map(p => p.uid);
-    readonly providedProducts: string[] = [laharDamageM, laharUpdatedExposureRef].map(p => p.uid);
+    readonly providedProducts: string[] = [laharDamageM, laharDamageMRef].map(p => p.uid);
     readonly description?: string = 'Deus Lahar description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
@@ -553,7 +553,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
                 }
                 ];
 
-                const deusOutputs: Product[] = [laharDamageM, laharUpdatedExposureRef];
+                const deusOutputs: Product[] = [laharDamageM, laharDamageMRef];
 
                 return this.deus.execute(deusInputs, deusOutputs, doWhileExecuting);
             })

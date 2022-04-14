@@ -9,6 +9,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { Gmpe, VsGrid } from '../chile/shakyground';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -100,7 +101,7 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
             [eqShakemapRefPeru, shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
             'EqSimulationShortText',
-            'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService',
+            `https:///rz-vm140.gfz-potsdam.de${ environment.production ? '' : '8443' }/wps/WebProcessingService`,
             '1.0.0',
             http,
             new ProcessStateUnavailable()

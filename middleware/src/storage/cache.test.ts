@@ -1,16 +1,7 @@
-import { ExecuteData } from './express/serverLogic';
-import { sleep } from './utils/async';
-import { AxiosClient } from './web/httpClient';
+import { ExecuteData } from '../express/serverLogic';
+import { FileCache } from './fileCache';
 import path from 'path';
-import { deleteFile, readJsonFile, writeJsonFile } from './utils/fileApi';
-import { createExpressApp } from './express/serverInterface';
-import { config } from './config';
-
-
-
-const sendLiveRequests = false;
-
-
+import hash from 'object-hash';
 
 
 const requestData: ExecuteData = {
@@ -33,36 +24,11 @@ const requestData: ExecuteData = {
     "url": "https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService"
 };
 
-if (sendLiveRequests) {
-    const http = new AxiosClient();
-    const app = createExpressApp();
-    const server = app.listen(config.port, () => {
-        console.log(`App listening on http://localhost:${config.port}`);
-    });
-    const timeOut = 30000;
-    console.warn('Making actual http-requests to a backend for the following tests');
-
-    test('testing express interface', async () => {
-        const ack = await http.post(`http://localhost:${config.port}/execute`, JSON.stringify(requestData), {headers: {'Content-Type': 'application/json'}});
-        let results = null;
-        while(results === null) {
-            await sleep(5000);
-            results = await http.get(`http://localhost:${config.port}/execute/${ack.id}`);
-        }
-        expect(results).toBeTruthy();
-    }, timeOut);
-}
-
-
-test('test writing and reading files', async () => {
-    const filePath = path.join(__dirname, '..', 'data', 'test', 'subtest', 'text.json');
-    // const filePath = path.join(__dirname, '..', "data/https/rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess");
-    const content = {test: 'true'};
-    await writeJsonFile(filePath, content);
-    const parsedContent = await readJsonFile(filePath);
-    expect(parsedContent).toEqual(content);
-    await deleteFile(filePath); 
+test('testing cache', async () => {
+    const key = hash(requestData);
+    const cache = new FileCache(path.join(__dirname, '..', 'data'), 10000);
+    const storedSuccessfully = await cache.storeData(requestData.url, requestData.processId, key, requestData);
+    expect(storedSuccessfully).toBeTruthy();
+    const retrieved = await cache.getData(requestData.url, requestData.processId, key);
+    expect(retrieved).toEqual(requestData);
 });
-
-
-

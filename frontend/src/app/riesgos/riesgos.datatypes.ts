@@ -1,8 +1,9 @@
 import { WpsDataDescription, WpsVersion, ProductId, WpsData } from '../services/wps/wps.datatypes';
-import { Observable, throwError } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { execute, ExecuteData } from '../services/middleware/middleware';
 
 
 export type ProductDescription = object;
@@ -109,7 +110,7 @@ export class WpsProcess implements ExecutableProcess {
         readonly description: string,
         readonly url: string,
         readonly wpsVersion: WpsVersion,
-        httpClient: HttpClient,
+        private httpClient: HttpClient,
         public state = new ProcessStateUnavailable()
         ) {}
 
@@ -121,27 +122,16 @@ export class WpsProcess implements ExecutableProcess {
             const wpsInputs = inputProducts.map(prod => this.prodToWpsData(prod));
             const wpsOutputDescriptions = outputProducts.map(o => o.description) as WpsDataDescription[];
 
-            const ws$ = new Observable<WpsData[]>((listener) => {
-                const client = new WebSocket(`ws://${environment.middlewareUrl}/execute`);
-                client.onopen = () => {
-                    const data = {
-                        version: this.wpsVersion,
-                        inputs: wpsInputs,
-                        outputDescriptions: wpsOutputDescriptions,
-                        processId: this.id,
-                        url: this.url
-                    };
-                    client.send(JSON.stringify(data));
-                };
-                client.onmessage = (event) => {
-                    const parsed = JSON.parse(event.data) as WpsData[];
-                    listener.next(parsed);
-                    listener.complete();
-                    return true;
-                };
-            });
+            const data: ExecuteData = {
+                version: this.wpsVersion,
+                inputs: wpsInputs,
+                outputDescriptions: wpsOutputDescriptions,
+                processId: this.id,
+                url: this.url
+            };
+            const results$ = from(execute(data, this.httpClient));
 
-            const products$ = ws$.pipe(
+            const products$ = results$.pipe(
 
                 map((outputs: WpsData[]) => {
                     // Ugly little hack: if outputDescription contained any information that has been lost in translation

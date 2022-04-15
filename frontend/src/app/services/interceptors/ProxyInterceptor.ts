@@ -2,6 +2,8 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable()
 export class ProxyInterceptor implements HttpInterceptor {
@@ -10,13 +12,19 @@ export class ProxyInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const originalUrl = req.url;
         const ownUrl = this.router.url;
-        if (originalUrl.slice(0, 22) === 'localhost:8888/execute') {
+
+        // no action required if request goes out to middleware
+        if (originalUrl.includes(environment.middlewareUrl)) {
             return next.handle(req);
-        } else if (originalUrl.slice(0, 7) !== 'http://' && originalUrl.slice(0, 8) !== 'https://') {
+        }
+        // no action required if websocket
+        else if (originalUrl.slice(0, 5) === 'ws://' || originalUrl.slice(0, 6) !== 'wss://') {
             return next.handle(req);
-        } else {
+        } 
+        // all other requests: send over proxy
+        else {
             const proxyReq = req.clone({
-                url: `localhost:8888/proxy/${originalUrl}`,
+                url: `${environment.proxyUrl}/${originalUrl}`,
             });
             return next.handle(proxyReq);
         }

@@ -12,4 +12,4 @@ EXPOSE 8888
 # Define environment variable
 # ENV NAME World
 # Cmd is called when the container launches. This command's stout goes directly into the docker logs.
-CMD ["node", "./build/serverInterface.js"]
+CMD ["node", "./build/main.js"]

@@ -42,7 +42,7 @@ export class MailClient {
             html: html,
             attachments: attachments
           }, function(err, reply) {
-            console.log(err && err.stack);
+            console.error(err && err.stack);
             console.dir(reply);
         });
     }

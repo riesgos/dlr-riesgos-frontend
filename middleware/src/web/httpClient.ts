@@ -141,14 +141,14 @@ export class HttpClient implements IHttpClient {
 
 
 export class AxiosClient implements IHttpClient {
-    async get(url: string, paras?: RequestParameters): Promise<string> {
+    async get(url: string, paras?: RequestParameters): Promise<any> {
         console.log(`GET ${url}`);
         const response = await axios.get(url, {
             ... paras
         });
         return response.data;
     }
-    async post(url: string, data: string, paras?: RequestParameters): Promise<string> {
+    async post(url: string, data: string, paras?: RequestParameters): Promise<any> {
         console.log(`POST ${url}`);
         const response = await axios.post(url, data, paras);
         return response.data;

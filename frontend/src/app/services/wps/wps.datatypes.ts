@@ -8,7 +8,7 @@ export type WpsDataFormat = 'application/vnd.geo+json' | 'application/json' | 'a
 
 export interface WpsDataDescription {
   id: ProductId;
-  title: string;
+  title: string; // @TODO: is this field obsolete?
   type: 'literal' | 'complex' | 'bbox' | 'status' | 'error';
   reference: boolean;
   format?: WpsDataFormat;

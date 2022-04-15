@@ -5,10 +5,9 @@ import { WpsVersion, WpsData, WpsDataDescription } from '../wps/wps.datatypes';
 
 
 async function sleep(sleepTime: number) {
-    const promise = new Promise((resolve) => {
+    return new Promise((resolve) => {
         setTimeout(resolve, sleepTime); 
     });
-    return promise;
 }
 
 export interface ExecuteData {
@@ -23,7 +22,7 @@ export async function execute(data: ExecuteData, httpClient: HttpClient) {
     const reference: any = await httpClient.post(`${environment.middlewareUrl}/execute`, data, {headers: {'Content-Type': 'application/json'}}).toPromise();
     let results = null;
     while(!results) {
-        await sleep(1000);
+        await sleep(3000);
         results = await httpClient.get(`${environment.middlewareUrl}/execute/${reference.id}`).toPromise();
     }
     return results;

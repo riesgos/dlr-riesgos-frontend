@@ -3,16 +3,18 @@ import { AxiosClient } from '../web/httpClient';
 import { WpsClient } from '../wps/public-api';
 import * as path from 'path';
 import hash from 'object-hash';
-import { sendErrorMail } from '../utils/mail';
+import { MailAttachment, MailClient } from '../web/mailClient';
+import { config } from '../config';
 
-const filePath = path.join(__dirname, '../../data');
+
 
 
 const http = new AxiosClient();
+const filePath = path.join(__dirname, '../../data');
 const cache = new FileCache(filePath, 3 * 60 * 60);
 const wpsClient100 = new WpsClient('1.0.0', http);
 const wpsClient200 = new WpsClient('2.0.0', http);
-
+const mailClient = new MailClient();
 
 
 export interface ExecuteData {
@@ -79,8 +81,7 @@ export class ProcessPool {
         result$.then((result) => {
             this.managedProcesses[id].result = result;
         }).catch(reason => {
-            console.log('error', reason);
-            sendErrorMail(data, reason);
+            this.handleError(reason, data);
         });
         
         // Step 3: return id for later reference.
@@ -102,5 +103,39 @@ export class ProcessPool {
     private getNewExecId(): number {
         this.latestId = (this.latestId + 1) % this.maxConcurrentExecs;
         return this.latestId;
+    }
+
+    private handleError(error: any, data: ExecuteData) {
+        console.log('error', error);
+            
+        const client = data.version === '1.0.0' ? wpsClient100 : wpsClient200;
+        const execBody = client.wpsMarshaller.marshalExecBody(data.processId, data.inputs, data.outputDescriptions, true);
+        const xmlExecBody = client.xmlMarshaller.marshalString(execBody);
+
+        const text = `
+Request:
+${xmlExecBody}
+
+Error:
+${error.message}
+
+Stack:
+${error.stack}
+
+Time:
+${new Date()}
+        `;
+
+        const key = `error_message_${new Date().getTime()}`;
+        cache.storeData(data.url, data.processId, key, {text});
+
+
+        const attachment: MailAttachment = {
+            content: text,
+            contentType: 'text',
+            encoding: 'utf-8',
+            filename: 'attachment.txt',
+        };
+        mailClient.sendMail(config.siteAdmins, 'Riesgos Middleware: Error on execute-request', 'An error has occurred. See attachment.', [attachment]);
     }
 }

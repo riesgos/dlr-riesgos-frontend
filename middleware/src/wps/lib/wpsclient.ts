@@ -32,10 +32,10 @@ import { HttpClient } from '../../web/httpClient';
  */
 export class WpsClient {
 
-    private version: WpsVersion;
-    private xmlMarshaller: any;
-    private xmlUnmarshaller: any;
-    private wpsmarshaller: WpsMarshaller;
+    readonly version: WpsVersion;
+    readonly xmlMarshaller: any;
+    readonly xmlUnmarshaller: any;
+    readonly wpsMarshaller: WpsMarshaller;
 
     constructor(
         version: WpsVersion = '1.0.0',
@@ -44,10 +44,10 @@ export class WpsClient {
         this.version = version;
         let context;
         if (this.version === '1.0.0') {
-            this.wpsmarshaller = new WpsMarshaller100();
+            this.wpsMarshaller = new WpsMarshaller100();
             context = new Jsonix.Context([XLink_1_0, OWS_1_1_0, WPS_1_0_0]);
         } else if (this.version === '2.0.0') {
-            this.wpsmarshaller = new WpsMarshaller200();
+            this.wpsMarshaller = new WpsMarshaller200();
             context = new Jsonix.Context([XLink_1_0, OWS_2_0, WPS_2_0]);
         } else {
             throw new Error('You entered a WPS version other than 1.0.0 or 2.0.0.');
@@ -58,21 +58,21 @@ export class WpsClient {
 
 
     getCapabilities(url: string): Observable<WpsCapability[]> {
-        const getCapabilitiesUrl = this.wpsmarshaller.getCapabilitiesUrl(url);
+        const getCapabilitiesUrl = this.wpsMarshaller.getCapabilitiesUrl(url);
         return this.getRaw(getCapabilitiesUrl).pipe(
             map((response: any) => {
                 const responseJson = this.xmlUnmarshaller.unmarshalString(response);
-                return this.wpsmarshaller.unmarshalCapabilities(responseJson.value);
+                return this.wpsMarshaller.unmarshalCapabilities(responseJson.value);
             }) // @TODO: handle case when instead of WpsCapabilities an ExceptionReport is returned
         );
     }
 
     describeProcess(url: string, processId: string): Observable<WpsProcessDescription> {
-        const describeProcessUrl = this.wpsmarshaller.getDescribeProcessUrl(url, processId);
+        const describeProcessUrl = this.wpsMarshaller.getDescribeProcessUrl(url, processId);
         return this.getRaw(describeProcessUrl).pipe(
             map((response: string) => {
                 const responseJson = this.xmlUnmarshaller.unmarshalString(response);
-                return this.wpsmarshaller.unmarshalProcessDescription(responseJson.value);
+                return this.wpsMarshaller.unmarshalProcessDescription(responseJson.value);
             })
         );
     }
@@ -143,7 +143,7 @@ export class WpsClient {
             if (!currentState.jobID) {
                 throw new Error('No job-Id');
             }
-            const execbody = this.wpsmarshaller.marshallGetStatusBody(serverUrl, processId, currentState.jobID);
+            const execbody = this.wpsMarshaller.marshallGetStatusBody(serverUrl, processId, currentState.jobID);
             const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
 
             request$ = this.postRaw(serverUrl, xmlExecbody);
@@ -157,7 +157,7 @@ export class WpsClient {
             map((xmlResponse: string) => {
                 const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
                 const output: WpsState =
-                    this.wpsmarshaller.unmarshalGetStateResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
+                    this.wpsMarshaller.unmarshalGetStateResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
                 return output;
             })
         );
@@ -173,7 +173,7 @@ export class WpsClient {
             if (unmarshalFunction) {
                 output = unmarshalFunction(lastState.results);
             } else {
-                output = this.wpsmarshaller.unmarshalSyncExecuteResponse(lastState.results, serverUrl, processId, inputs, outputDescriptions);
+                output = this.wpsMarshaller.unmarshalSyncExecuteResponse(lastState.results, serverUrl, processId, inputs, outputDescriptions);
             }
             return of(output);
 
@@ -183,7 +183,7 @@ export class WpsClient {
                 throw new Error(`You want me to get a result, but I can't find a jobId. I don't know what to do now!`);
             }
 
-            const execBody = this.wpsmarshaller.marshallGetResultBody(serverUrl, processId, lastState.jobID);
+            const execBody = this.wpsMarshaller.marshallGetResultBody(serverUrl, processId, lastState.jobID);
             const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
             return this.postRaw(serverUrl, xmlExecBody).pipe(
@@ -193,7 +193,7 @@ export class WpsClient {
                     if (unmarshalFunction) {
                         output = unmarshalFunction(jsonResponse);
                     } else {
-                        output = this.wpsmarshaller.unmarshalSyncExecuteResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
+                        output = this.wpsMarshaller.unmarshalSyncExecuteResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
                     }
                     return output;
                 }),
@@ -204,15 +204,15 @@ export class WpsClient {
     executeAsyncBasic(url: string, processId: string, inputs: WpsInput[],
         outputDescriptions: WpsOutputDescription[]): Observable<WpsState> {
 
-        const executeUrl = this.wpsmarshaller.executeUrl(url, processId);
-        const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescriptions, true);
-        const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
+        const executeUrl = this.wpsMarshaller.executeUrl(url, processId);
+        const execBody = this.wpsMarshaller.marshalExecBody(processId, inputs, outputDescriptions, true);
+        const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
-        return this.postRaw(executeUrl, xmlExecbody).pipe(
+        return this.postRaw(executeUrl, xmlExecBody).pipe(
             map((xmlResponse: string) => {
                 const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
                 const output: WpsState =
-                    this.wpsmarshaller.unmarshalAsyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
+                    this.wpsMarshaller.unmarshalAsyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
                 return output;
             })
         );
@@ -221,8 +221,8 @@ export class WpsClient {
     execute(url: string, processId: string, inputs: WpsInput[],
         outputDescriptions: WpsOutputDescription[], unmarshalFunction?: (jsonResponse: any) => WpsData[]): Observable<WpsResult[]> {
 
-        const executeUrl = this.wpsmarshaller.executeUrl(url, processId);
-        const execbody = this.wpsmarshaller.marshalExecBody(processId, inputs, outputDescriptions, false);
+        const executeUrl = this.wpsMarshaller.executeUrl(url, processId);
+        const execbody = this.wpsMarshaller.marshalExecBody(processId, inputs, outputDescriptions, false);
         const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
 
         return this.postRaw(executeUrl, xmlExecbody).pipe(
@@ -232,7 +232,7 @@ export class WpsClient {
                     return unmarshalFunction(jsonResponse);
                 }
                 const output: WpsData[] =
-                    this.wpsmarshaller.unmarshalSyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
+                    this.wpsMarshaller.unmarshalSyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
                 return output;
             })
         );
@@ -240,14 +240,14 @@ export class WpsClient {
 
     dismiss(serverUrl: string, processId: string, jobId: string): Observable<any> {
 
-        const dismissUrl = this.wpsmarshaller.dismissUrl(serverUrl, processId, jobId);
-        const dismissBody = this.wpsmarshaller.marshalDismissBody(jobId);
+        const dismissUrl = this.wpsMarshaller.dismissUrl(serverUrl, processId, jobId);
+        const dismissBody = this.wpsMarshaller.marshalDismissBody(jobId);
         const xmlDismissBody = this.xmlMarshaller.marshalString(dismissBody);
 
         return this.postRaw(dismissUrl, xmlDismissBody).pipe(
             map((xmlResponse: string) => {
                 const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
-                const output = this.wpsmarshaller.unmarshalDismissResponse(jsonResponse, serverUrl, processId);
+                const output = this.wpsMarshaller.unmarshalDismissResponse(jsonResponse, serverUrl, processId);
                 return output;
             })
         );

@@ -28,7 +28,7 @@ export const schema: StringSelectUserConfigurableProduct & WpsData = {
         },
         options: [
             'SUPPASRI2013_v2.0',
-            // 'Medina_2019',  <-- activate once Deus has transition dataset
+            'Medina_2019',
         ],
     },
     value: 'SUPPASRI2013_v2.0'

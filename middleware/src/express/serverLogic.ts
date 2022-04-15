@@ -5,6 +5,7 @@ import * as path from 'path';
 import hash from 'object-hash';
 import { MailAttachment, MailClient } from '../web/mailClient';
 import { config } from '../config';
+import { writeTextFile } from '../utils/fileApi';
 
 
 
@@ -75,8 +76,6 @@ export class ProcessPool {
         };
         
         // Step 2: run process.
-        // When successful, store results.
-        // On failure, send email.
         const result$ = proxyExecuteRequest(data);
         result$.then((result) => {
             this.managedProcesses[id].result = result;
@@ -127,7 +126,8 @@ ${new Date()}
         `;
 
         const key = `error_message_${new Date().getTime()}`;
-        cache.storeData(data.url, data.processId, key, {text});
+        const errorFile = path.join(__dirname, '..', '..', 'data', data.url.replace(/:/g, ''), data.processId.replace(/:/g, ''), key + '.txt');
+        writeTextFile(errorFile, text).then(() => console.log('error-log written to ', errorFile));
 
 
         const attachment: MailAttachment = {

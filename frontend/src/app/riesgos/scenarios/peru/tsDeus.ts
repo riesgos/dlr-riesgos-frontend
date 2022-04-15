@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
 import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 
 

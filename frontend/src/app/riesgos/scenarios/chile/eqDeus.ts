@@ -2,15 +2,17 @@ import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } fro
 import { initialExposureRef } from './exposure';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { MappableProduct, WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
-import { switchMap } from 'rxjs/operators';
-import { ProductRasterLayer } from 'src/app/components/map/map.types';
+import { map, switchMap } from 'rxjs/operators';
+import { ProductLayer } from 'src/app/mappable/map.types';
 import { MapOlService } from '@dlr-eoc/map-ol';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
 
 
 
@@ -28,7 +30,7 @@ export const loss: WpsData & Product = {
 
 
 export const eqDamageWms: WpsData & MappableProduct = {
-    uid: 'eq_deus_economic',
+    uid: 'eq_damage',
     description: {
         id: 'shapefile_summary',
         title: 'shapefile_summary',
@@ -36,30 +38,19 @@ export const eqDamageWms: WpsData & MappableProduct = {
         type: 'complex',
         format: 'application/WMS',
     },
-    toUkisLayers: (layerSvc: MapOlService, ownValue: any) => {
-        console.log(`creating eq ukis layers...`)
-        const damageLayer = new ProductRasterLayer({
-            hasFocus: true,
-            id: 'qe_deus_damage',
-            name: 'eq_deus_damage',
-            productId: 'eq_deus_damage',
-            type: 'wms',
-            url: ownValue[0] + '&STYLES=w_damage',
-            filtertype: 'Overlays',
-            visible: true,
-        });
-        const econLayer = new ProductRasterLayer({
-            hasFocus: true,
-            id: 'qe_deus_economic',
-            name: 'eq_deus_economic',
-            productId: 'eq_deus_economic',
-            type: 'wms',
-            url: ownValue[0] + '&STYLES=style',
-            filtertype: 'Overlays',
-            visible: true,
-        });
-        const layers = [damageLayer, econLayer];
-        return of(layers);
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, layerMarshaller: LayerMarshaller) {
+
+        const layers$ = layerMarshaller.makeWmsLayers(this).pipe(
+            map(layers => {
+                const econLayer: ProductLayer = layers[0];
+                const damageLayer: ProductLayer = { ... econLayer } as ProductLayer;
+                econLayer.name = 'eq-damage';
+                econLayer.params.STYLES = 'w_damage';
+                damageLayer.name = 'eq-exposure';
+                return [econLayer, damageLayer];
+            })
+        )
+        return layers$;
     },
     value: null
 }

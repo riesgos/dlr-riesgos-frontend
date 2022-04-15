@@ -3,7 +3,7 @@ import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/ri
 import { vei } from './lahar';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';

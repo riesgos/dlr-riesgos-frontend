@@ -1,4 +1,4 @@
-import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MappableProduct, WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
@@ -8,8 +8,12 @@ import { HttpClient } from '@angular/common/http';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { Observable } from 'rxjs';
 import { Deus } from './deus';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
+import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';
 
 
 
@@ -34,7 +38,7 @@ export const schema: StringSelectUserConfigurableProduct & WpsData = {
     value: 'SUPPASRI2013_v2.0'
 };
 
-export const tsDamageWms: WpsData & WmsLayerProduct = {
+export const tsDamageWms: WpsData & MappableProduct = {
     uid: 'ts_deus_damage',
     description: {
         id: 'shapefile_summary',
@@ -43,41 +47,26 @@ export const tsDamageWms: WpsData & WmsLayerProduct = {
         type: 'complex',
         description: '',
         format: 'application/WMS',
-        name: 'ts-exposure',
-        styles: ['w_damage']
+    },
+    toUkisLayers: function(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, layerMarshaller: LayerMarshaller) {
+        return layerMarshaller.makeWmsLayers(this).pipe(
+            map(layers => {
+                const tsDamage = layers[0];
+                const tsTransitions = { ... tsDamage } as ProductRasterLayer;
+                const tsEconomic = { ... tsDamage } as ProductRasterLayer;
+                tsDamage.name = 'ts-exposure';
+                tsDamage.params.STYLES = 'w_damage';
+                tsTransitions.name = 'ts-transitions';
+                tsTransitions.params.STYLE = 'm_trans';
+                tsEconomic.name = 'ts-damage';
+
+                return [tsDamage, tsTransitions, tsEconomic];
+            })
+        );
     },
     value: null
 }
 
-export const tsEconomicWms: WpsData & WmsLayerProduct = {
-    uid: 'ts_deus_economic',
-    description: {
-        id: 'shapefile_summary',
-        title: '',
-        reference: false,
-        type: 'complex',
-        description: '',
-        format: 'application/WMS',
-        name: 'ts-damage',
-        styles: ['style']
-    },
-    value: null
-}
-
-export const tsTransitionWms: WpsData & WmsLayerProduct = {
-    uid: 'ts_deus_transitions',
-    description: {
-        id: 'shapefile_summary',
-        title: '',
-        reference: false,
-        type: 'complex',
-        description: '',
-        format: 'application/WMS',
-        name: 'ts-transitions',
-        styles: ['m_trans']
-    },
-    value: null
-}
 
 
 export class TsDeus implements ExecutableProcess, WizardableProcess {
@@ -98,7 +87,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
         this.requiredProducts = [eqDamageWms, tsShakemap, eqDamageMRef, schema].map(p => p.uid);
-        this.providedProducts = [tsDamageWms, tsEconomicWms, tsTransitionWms].map(p => p.uid);
+        this.providedProducts = [tsDamageWms].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
             providerName: 'GFZ',

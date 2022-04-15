@@ -7,7 +7,7 @@ import { Volcanus } from './volcanus';
 import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './ashfallService';
 import { WpsData, WpsDataDescription } from '../../../services/wps/wps.datatypes';
-import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';

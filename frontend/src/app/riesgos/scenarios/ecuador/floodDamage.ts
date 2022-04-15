@@ -2,7 +2,7 @@ import { WpsProcess, ProcessStateUnavailable, Product, ProductTransformingProces
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { durationTiff, velocityTiff, depthTiff } from './geomerHydrological';
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { FeatureCollection, MultiPolygon, Polygon } from '@turf/helpers';

@@ -4,7 +4,7 @@ import { WpsData } from '../../../services/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BarData, createBarChart } from 'src/app/helpers/d3charts';
-import { VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';

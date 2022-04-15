@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { UkisRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
@@ -72,7 +71,7 @@ import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
 import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-translate.pipe';
 import { SimpleTranslatePipe } from './services/simplifiedTranslation/simple-translate.pipe';
 import { ReversePipe } from './components/riesgos_layer_control/utils/array-reverse.pipe';
-import { WMTSLayerFactory } from './components/map/wmts';
+import { WMTSLayerFactory } from './mappable/wmts';
 import { reducers, effects } from './ngrx_register';
 
 import { environment } from '../environments/environment';

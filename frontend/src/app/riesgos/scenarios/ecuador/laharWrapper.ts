@@ -3,7 +3,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { WmsLayerProduct, VectorLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { WmsLayerProduct, VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';

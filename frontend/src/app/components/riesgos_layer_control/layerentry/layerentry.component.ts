@@ -5,7 +5,7 @@ import {
 } from '@dlr-eoc/services-layers';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { } from '@dlr-eoc/services-layers';
-import { ProductLayer } from '../../map/map.types';
+import { ProductLayer } from '../../../mappable/map.types';
 import { state, style, transition, animate, trigger } from '@angular/animations';
 import { ThemeService, ThemeMetadata } from 'src/app/services/theme/theme.service';
 

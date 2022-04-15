@@ -1,6 +1,6 @@
 import { ExecutableProcess, ProcessStateUnavailable, Product, ProductTransformingProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { Observable, of } from 'rxjs';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { direction, vei } from './lahar';

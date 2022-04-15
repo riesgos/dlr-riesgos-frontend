@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { greenRedRange, toDecimalPlaces, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { FeatureCollection } from '@turf/helpers';
 import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';

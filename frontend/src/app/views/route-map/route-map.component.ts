@@ -6,7 +6,7 @@ import { ScenarioChosen } from 'src/app/riesgos/riesgos.actions';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
-import { LayerMarshaller } from 'src/app/components/map/layer_marshaller';
+import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
 
 import { Subscription } from 'rxjs';
 import { isWizardableProcess, WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';

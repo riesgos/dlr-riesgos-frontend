@@ -4,7 +4,7 @@ import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduct,
     VectorLayerProduct, WmsLayerProduct, WmsLayerDescription, isMultiVectorLayerProduct,
     MultiVectorLayerProduct, 
-    isMappableProduct} from '../../riesgos/riesgos.datatypes.mappable';
+    isMappableProduct} from './riesgos.datatypes.mappable';
 import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { Feature as olFeature } from 'ol';
 import { bboxPolygon } from '@turf/turf';
@@ -25,13 +25,14 @@ import olTileWMS from 'ol/source/TileWMS';
 import olLayerGroup from 'ol/layer/Group';
 import Polygon from 'ol/geom/Polygon';
 import { laharContoursWms } from 'src/app/riesgos/scenarios/ecuador/laharWrapper';
-import { GroupSliderComponent, SliderEntry } from '../dynamic/group-slider/group-slider.component';
-import { VectorLegendComponent } from '../dynamic/vector-legend/vector-legend.component';
-import { WebGlPolygonLayer } from '../../helpers/custom_renderers/renderers/polygon.renderer';
+import { GroupSliderComponent, SliderEntry } from '../components/dynamic/group-slider/group-slider.component';
+import { VectorLegendComponent } from '../components/dynamic/vector-legend/vector-legend.component';
+import { WebGlPolygonLayer } from '../helpers/custom_renderers/renderers/polygon.renderer';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import Geometry from 'ol/geom/Geometry';
 import { Fill, Stroke, Style } from 'ol/style';
+import { LayersService } from '@dlr-eoc/services-layers';
 
 
 
@@ -55,6 +56,7 @@ export class LayerMarshaller  {
         private httpClient: HttpClient,
         private mapSvc: MapOlService,
         public mapStateSvc: MapStateService,
+        public layersSvc: LayersService,
         private store: Store<State>,
         private translator: SimplifiedTranslationService
         ) {}
@@ -85,7 +87,7 @@ export class LayerMarshaller  {
     toLayers(product: Product): Observable<ProductLayer[]> {
 
         if (isMappableProduct(product)) {
-            return product.toUkisLayers(this.mapSvc, product.value);
+            return product.toUkisLayers(product.value, this.mapSvc, this.layersSvc, this.httpClient, this);
         }
 
         // First of all, a bunch of special cases. Each one of those layers has some customizations after user-requests

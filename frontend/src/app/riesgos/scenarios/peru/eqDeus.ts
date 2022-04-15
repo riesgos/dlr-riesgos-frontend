@@ -2,13 +2,14 @@ import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } fro
 import { initialExposurePeruReference } from './exposure';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MappableProduct, WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
 import { eqShakemapRefPeru } from './shakyground';
 import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
+import { ProductRasterLayer } from 'src/app/mappable/map.types';
 
 
 
@@ -24,7 +25,7 @@ export const lossPeru: WpsData & Product = {
     value: 'testinputs/loss_sara.json'
 };
 
-export const eqDamageWmsPeru: WpsData & WmsLayerProduct = {
+export const eqDamageWmsPeru: WpsData & MappableProduct = {
     uid: 'eq_deus_damage_peru',
     description: {
         id: 'shapefile_summary',
@@ -33,23 +34,17 @@ export const eqDamageWmsPeru: WpsData & WmsLayerProduct = {
         type: 'complex',
         description: '',
         format: 'application/WMS',
-        name: 'eq-exposure',
-        styles: ['w_damage']
     },
-    value: null
-}
+    toUkisLayers: function (ownValue, any, layersSvc, httpClient, layerMarshaller) {
+        return layerMarshaller.makeWmsLayers(this).pipe(map(layers => {
+            const eqDamage = layers[0];
+            const eqEconomic = { ... eqDamage } as ProductRasterLayer;
+            eqDamage.name = 'eq-exposure';
+            eqDamage.params.STYLES = 'w_damage';
+            eqEconomic.name = 'eq-damage';
 
-export const eqEconomicWmsPeru: WpsData & WmsLayerProduct = {
-    uid: 'eq_deus_economic_peru',
-    description: {
-        id: 'shapefile_summary',
-        title: '',
-        reference: false,
-        type: 'complex',
-        description: '',
-        format: 'application/WMS',
-        name: 'eq-damage',
-        styles: ['style']
+            return [eqDamage, eqEconomic];
+        }));
     },
     value: null
 }
@@ -73,7 +68,7 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
     readonly uid = 'EQ-Deus';
     readonly name = 'Multihazard_damage_estimation/Earthquake';
     readonly requiredProducts = [eqShakemapRefPeru, initialExposurePeruReference].map(p => p.uid);
-    readonly providedProducts = [eqDamageWmsPeru, eqEconomicWmsPeru, eqDamagePeruMRef].map(p => p.uid);
+    readonly providedProducts = [eqDamageWmsPeru, eqDamagePeruMRef].map(p => p.uid);
     readonly description = 'This service returns damage caused by the selected earthquake.';
     readonly wizardProperties = {
         providerName: 'GFZ',

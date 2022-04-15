@@ -7,19 +7,21 @@ import Geometry from 'ol/geom/Geometry';
 import { LegendElement } from '../components/dynamic/vector-legend/vector-legend.component';
 import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import GeometryCollection from 'ol/geom/GeometryCollection';
-import { ProductLayer } from '../components/map/map.types';
+import { ProductLayer } from './map.types';
 import { Observable } from 'rxjs';
 import { MapOlService } from '@dlr-eoc/map-ol';
+import { HttpClient } from '@angular/common/http';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { LayerMarshaller } from './layer_marshaller';
 
 
 
 /**
  * This type allows the user to specify how a riesgos-product should be converted into one or more ukis-layers.
- * This interface should slowly phase out all the other ones in the file `riesgos.datatypes.mappable`
- * as well as the `LayerMarshaller` class.
+ * This interface should slowly phase out all the other ones in the file `riesgos.datatypes.mappable`.
  */
 export interface MappableProduct extends Product {
-    toUkisLayers(mapSvc: MapOlService, ownValue: any): Observable<ProductLayer[]>
+    toUkisLayers(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, layerMarshaller: LayerMarshaller): Observable<ProductLayer[]>
 }
 
 export function isMappableProduct(product: Product): product is MappableProduct  {

@@ -1,7 +1,7 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { selectedEqPeru } from './eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';

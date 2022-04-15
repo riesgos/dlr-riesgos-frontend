@@ -4,7 +4,7 @@ import { WpsData } from '../../../services/wps/wps.datatypes';
 import { selectedEq } from './eqselection';
 import { Observable, concat } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';

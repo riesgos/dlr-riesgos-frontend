@@ -2,13 +2,15 @@ import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } fro
 import { initialExposureRef } from './exposure';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
+import { MappableProduct, WmsLayerProduct } from 'src/app/riesgos/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
 import { switchMap } from 'rxjs/operators';
+import { ProductRasterLayer } from 'src/app/components/map/map.types';
+import { MapOlService } from '@dlr-eoc/map-ol';
 
 
 
@@ -24,32 +26,40 @@ export const loss: WpsData & Product = {
     value: 'testinputs/loss_sara.json'
 };
 
-export const eqDamageWms: WpsData & WmsLayerProduct = {
-    uid: 'eq_deus_damage',
-    description: {
-        id: 'shapefile_summary',
-        title: '',
-        reference: false,
-        type: 'complex',
-        description: '',
-        format: 'application/WMS',
-        name: 'eq-exposure',
-        styles: ['w_damage']
-    },
-    value: null
-}
 
-export const eqEconomicWms: WpsData & WmsLayerProduct = {
+export const eqDamageWms: WpsData & MappableProduct = {
     uid: 'eq_deus_economic',
     description: {
         id: 'shapefile_summary',
-        title: '',
+        title: 'shapefile_summary',
         reference: false,
         type: 'complex',
-        description: '',
         format: 'application/WMS',
-        name: 'eq-damage',
-        styles: ['style']
+    },
+    toUkisLayers: (layerSvc: MapOlService, ownValue: any) => {
+        console.log(`creating eq ukis layers...`)
+        const damageLayer = new ProductRasterLayer({
+            hasFocus: true,
+            id: 'qe_deus_damage',
+            name: 'eq_deus_damage',
+            productId: 'eq_deus_damage',
+            type: 'wms',
+            url: ownValue[0] + '&STYLES=w_damage',
+            filtertype: 'Overlays',
+            visible: true,
+        });
+        const econLayer = new ProductRasterLayer({
+            hasFocus: true,
+            id: 'qe_deus_economic',
+            name: 'eq_deus_economic',
+            productId: 'eq_deus_economic',
+            type: 'wms',
+            url: ownValue[0] + '&STYLES=style',
+            filtertype: 'Overlays',
+            visible: true,
+        });
+        const layers = [damageLayer, econLayer];
+        return of(layers);
     },
     value: null
 }
@@ -74,7 +84,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
     readonly uid = 'EQ-Deus';
     readonly name = 'Multihazard_damage_estimation/Earthquake';
     readonly requiredProducts = [eqShakemapRef, initialExposureRef].map(p => p.uid);
-    readonly providedProducts = [eqDamageWms, eqEconomicWms, eqDamageMRef].map(p => p.uid);
+    readonly providedProducts = [eqDamageWms, eqDamageMRef].map(p => p.uid);
     readonly description = 'This service returns damage caused by the selected earthquake.';
     readonly wizardProperties: WizardProperties = {
         providerName: 'GFZ',

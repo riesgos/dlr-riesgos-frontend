@@ -7,7 +7,24 @@ import Geometry from 'ol/geom/Geometry';
 import { LegendElement } from '../components/dynamic/vector-legend/vector-legend.component';
 import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import GeometryCollection from 'ol/geom/GeometryCollection';
+import { ProductLayer } from '../components/map/map.types';
+import { Observable } from 'rxjs';
+import { MapOlService } from '@dlr-eoc/map-ol';
 
+
+
+/**
+ * This type allows the user to specify how a riesgos-product should be converted into one or more ukis-layers.
+ * This interface should slowly phase out all the other ones in the file `riesgos.datatypes.mappable`
+ * as well as the `LayerMarshaller` class.
+ */
+export interface MappableProduct extends Product {
+    toUkisLayers(mapSvc: MapOlService, ownValue: any): Observable<ProductLayer[]>
+}
+
+export function isMappableProduct(product: Product): product is MappableProduct  {
+    return 'toUkisLayers' in product;
+}
 
 
 export interface BboxLayerDescription extends ProductDescription {

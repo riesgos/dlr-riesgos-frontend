@@ -3,7 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduct,
     VectorLayerProduct, WmsLayerProduct, WmsLayerDescription, isMultiVectorLayerProduct,
-    MultiVectorLayerProduct } from '../../riesgos/riesgos.datatypes.mappable';
+    MultiVectorLayerProduct, 
+    isMappableProduct} from '../../riesgos/riesgos.datatypes.mappable';
 import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { Feature as olFeature } from 'ol';
 import { bboxPolygon } from '@turf/turf';
@@ -82,6 +83,10 @@ export class LayerMarshaller  {
 
 
     toLayers(product: Product): Observable<ProductLayer[]> {
+
+        if (isMappableProduct(product)) {
+            return product.toUkisLayers(this.mapSvc, product.value);
+        }
 
         // First of all, a bunch of special cases. Each one of those layers has some customizations after user-requests
         if (product.uid === laharContoursWms.uid) {

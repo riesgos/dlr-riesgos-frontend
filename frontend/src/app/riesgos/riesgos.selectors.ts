@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { RiesgosState, RiesgosScenarioState } from './riesgos.state';
 import { Product, ProcessId, ImmutableProcess } from './riesgos.datatypes';
-import { isVectorLayerProduct, isBboxLayerProduct, isWmsProduct, isMultiVectorLayerProduct } from './riesgos.datatypes.mappable';
+import { isVectorLayerProduct, isBboxLayerProduct, isWmsProduct, isMultiVectorLayerProduct, isMappableProduct } from './riesgos.datatypes.mappable';
 
 
 const getRiesgosState = (state: State) => {
@@ -82,7 +82,8 @@ export const getMappableProducts = createSelector(
         return getCurrentScenarioState(s).productValues
             .filter(prod => prod.value != null)
             .filter(prod => isVectorLayerProduct(prod) || isBboxLayerProduct(prod)
-                            || isWmsProduct(prod) || isMultiVectorLayerProduct(prod));
+                            || isWmsProduct(prod) || isMultiVectorLayerProduct(prod)
+                            || isMappableProduct(prod) );
     }
 );
 

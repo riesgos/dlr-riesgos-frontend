@@ -42,6 +42,8 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
             eqDamage.name = 'eq-exposure';
             eqDamage.params.STYLES = 'w_damage';
             eqEconomic.name = 'eq-damage';
+            eqEconomic.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
+                
 
             return [eqDamage, eqEconomic];
         }));

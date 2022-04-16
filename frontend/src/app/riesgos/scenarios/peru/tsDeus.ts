@@ -55,6 +55,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
             tsDamage.name = 'ts-exposure';
             tsDamage.params.STYLES = 'w_damage';
             tsEconomic.name = 'ts-damage';
+            tsEconomic.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
             tsTranstion.name = 'ts-transitions';
             tsTranstion.params.STYLES = 'm_trans';
             return [tsDamage, tsEconomic, tsTranstion];

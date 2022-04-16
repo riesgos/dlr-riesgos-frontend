@@ -102,7 +102,7 @@
 
       <!-- show Description -->
       <div *ngIf="activeTabs.description && layer.description">
-        <span [innerHTML]="layer.description | translate"></span>
+        <span [innerHTML]="layer.description | sTranslate"></span>
       </div>
 
       <div *ngIf="activeTabs.dynamicDescription && layer.dynamicDescription">

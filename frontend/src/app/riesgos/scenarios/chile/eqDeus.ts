@@ -46,6 +46,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 const damageLayer: ProductLayer = { ... econLayer } as ProductLayer;
                 econLayer.name = 'eq-damage';
                 econLayer.params.STYLES = 'w_damage';
+                econLayer.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
                 damageLayer.name = 'eq-exposure';
                 return [econLayer, damageLayer];
             })

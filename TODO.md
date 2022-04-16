@@ -1,12 +1,7 @@
-switching updated exposure to wms
- - add sld-style-name
- - translate titles
- - format popups with getFeatureInfo
-allow new exposure models in tsunamis
 
 ts-damage:
   - since its a wms, it does no longer contain the damage caused in the previous steps.
-    - maybe revert ts-damage and use raw data like before?
+    - create custom layer with raster-source, calculating new color from both eq- and ts-damage wms.
 
 
 

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  middlewareUrl: 'http://localhost:8888',
+  middlewareUrl: 'http://localhost:8008',
   proxyUrl: ''
 };
 

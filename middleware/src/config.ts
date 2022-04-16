@@ -1,5 +1,5 @@
 export const config = {
-    port: 8888,
+    port: 8008,
     siteAdmins: [
         'michael.langbein@dlr.de'
     ],

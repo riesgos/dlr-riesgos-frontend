@@ -7,8 +7,8 @@ COPY . /app
 # Every run command creates another layer
 RUN npm install
 RUN npm run build:all
-# Make port 8888 available to the world outside this container
-EXPOSE 8888
+# Make port 8008 available to the world outside this container
+EXPOSE 8008
 # Define environment variable
 # ENV NAME World
 # Cmd is called when the container launches. This command's stout goes directly into the docker logs.

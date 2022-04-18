@@ -3,7 +3,7 @@ services:
   middleware:
     build: ./middleware
     ports:
-      - "127.0.0.1:8002:8888"
+      - "127.0.0.1:8002:8008"
     volumes:
       - ./data:/app/data
   

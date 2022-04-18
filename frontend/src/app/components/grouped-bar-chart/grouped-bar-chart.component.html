@@ -1,0 +1,13 @@
+<div id="container" #container ></div>
+<div class="radioContainer" style="display: flex;">
+    <div *ngFor="let grouping of groupings">
+        <label for="grouping.label">{{ grouping.label }}</label><br>
+        <input 
+        type="radio"
+        id="grouping.label"
+        name="grouping.label"
+        value="grouping.label" 
+        (click)="updateGrouping(grouping.label)"
+        [checked]="grouping.label === selectedGrouping">
+    </div>
+</div>

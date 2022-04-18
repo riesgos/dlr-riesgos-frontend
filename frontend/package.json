@@ -40,6 +40,7 @@
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/helpers": "^6.1.4",
     "@turf/turf": "^5.1.6",
+    "d3": "^7.4.4",
     "d3-color": "^2.0.0",
     "d3-graphviz": "^2.6.1",
     "delaunator": "^4.0.1",

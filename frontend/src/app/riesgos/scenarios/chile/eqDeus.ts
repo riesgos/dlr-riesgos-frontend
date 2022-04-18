@@ -9,10 +9,16 @@ import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
 import { map, switchMap } from 'rxjs/operators';
-import { ProductLayer } from 'src/app/mappable/map.types';
+import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
+import { DamagePopupComponent } from 'src/app/components/dynamic/damage-popup/damage-popup.component';
+import { MapBrowserEvent } from 'ol';
+import { Layer } from 'ol/layer';
+import TileLayer from 'ol/layer/Tile';
+import TileSource from 'ol/source/Tile';
+import { TileWMS } from 'ol/source';
 
 
 
@@ -43,11 +49,27 @@ export const eqDamageWms: WpsData & MappableProduct = {
         const layers$ = layerMarshaller.makeWmsLayers(this).pipe(
             map(layers => {
                 const econLayer: ProductLayer = layers[0];
-                const damageLayer: ProductLayer = { ... econLayer } as ProductLayer;
+                const damageLayer: ProductLayer = { ... econLayer } as ProductRasterLayer;
                 econLayer.name = 'eq-damage';
-                econLayer.params.STYLES = 'w_damage';
                 econLayer.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
                 damageLayer.name = 'eq-exposure';
+                damageLayer.params = { ... econLayer.params };
+                // damageLayer.params.STYLES = 'w_damage';
+                damageLayer.popup = {
+                    dynamicPopup: {
+                        component: DamagePopupComponent,
+                        getAttributes: (args) => {
+                            const event: MapBrowserEvent<any> = args.event;
+                            const layer: TileLayer<TileWMS> = args.layer;
+                            return {
+                                event: event,
+                                layer: layer,
+                                xLabel: 'damage',
+                                yLabel: 'nr buildings'
+                            };
+                        }
+                    }
+                }
                 return [econLayer, damageLayer];
             })
         )

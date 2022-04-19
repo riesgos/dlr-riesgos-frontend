@@ -1,8 +1,9 @@
+import * as path from 'path';
+import hash from 'object-hash';
+import format from 'xml-formatter';
 import { FileCache } from '../storage/fileCache';
 import { AxiosClient } from '../web/httpClient';
 import { WpsClient } from '../wps/public-api';
-import * as path from 'path';
-import hash from 'object-hash';
 import { MailAttachment, MailClient } from '../web/mailClient';
 import { config } from '../config';
 import { writeTextFile } from '../utils/fileApi';
@@ -81,6 +82,7 @@ export class ProcessPool {
             this.managedProcesses[id].result = result;
         }).catch(reason => {
             this.handleError(reason, data);
+            this.managedProcesses[id].result = {error: reason.message};
         });
         
         // Step 3: return id for later reference.
@@ -110,10 +112,14 @@ export class ProcessPool {
         const client = data.version === '1.0.0' ? wpsClient100 : wpsClient200;
         const execBody = client.wpsMarshaller.marshalExecBody(data.processId, data.inputs, data.outputDescriptions, true);
         const xmlExecBody = client.xmlMarshaller.marshalString(execBody);
+        const xmlExecBodyPrettified = format(xmlExecBody);
 
         const text = `
+Target:
+${data.url} --- ${data.processId}
+
 Request:
-${xmlExecBody}
+${xmlExecBodyPrettified}
 
 Error:
 ${error.message}

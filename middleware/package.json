@@ -24,6 +24,7 @@
     "sendmail": "^1.6.1",
     "w3c-schemas": "^1.4.0",
     "ws": "^8.5.0",
+    "xml-formatter": "^2.6.1",
     "xmlserializer": "^0.6.1"
   },
   "devDependencies": {

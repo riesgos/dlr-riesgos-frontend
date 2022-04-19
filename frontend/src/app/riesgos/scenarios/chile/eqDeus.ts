@@ -15,9 +15,7 @@ import { LayersService } from '@dlr-eoc/services-layers';
 import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
 import { DamagePopupComponent } from 'src/app/components/dynamic/damage-popup/damage-popup.component';
 import { MapBrowserEvent } from 'ol';
-import { Layer } from 'ol/layer';
 import TileLayer from 'ol/layer/Tile';
-import TileSource from 'ol/source/Tile';
 import { TileWMS } from 'ol/source';
 
 

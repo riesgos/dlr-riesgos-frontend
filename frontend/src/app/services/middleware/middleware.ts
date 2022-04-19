@@ -25,5 +25,6 @@ export async function execute(data: ExecuteData, httpClient: HttpClient) {
         await sleep(3000);
         results = await httpClient.get(`${environment.middlewareUrl}/execute/${reference.id}`).toPromise();
     }
+    if (results.error) throw new Error(results.error);
     return results;
 }

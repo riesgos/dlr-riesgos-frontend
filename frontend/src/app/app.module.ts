@@ -59,7 +59,6 @@ import { GroupSliderComponent } from './components/dynamic/group-slider/group-sl
 import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
 import { HelperButtonsComponent } from './components/helperButtons/helper-buttons.component';
 
-import { ConfigService } from './services/config/config.service';
 import { RiesgosService } from './riesgos/riesgos.service';
 import { ProgressService } from './components/global-progress/progress.service';
 import { FooterService } from './components/global-footer/footer.service';
@@ -187,16 +186,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     FooterService,
     ProgressService,
     RiesgosService,
-    ConfigService,
-    WMTSLayerFactory,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (cs: ConfigService) => {
-        return () => cs.loadConfig();
-      },
-      multi: true,
-      deps: [ConfigService]
-    }, {
+    WMTSLayerFactory, {
       provide: HTTP_INTERCEPTORS,
       multi: true,
       useClass: ProxyInterceptor

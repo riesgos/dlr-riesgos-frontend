@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Process, Product } from './riesgos.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { RiesgosScenarioMetadata } from './riesgos.state';
-import { ConfigService, Config } from '../services/config/config.service';
 
 // chile
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, availableEqs } from './scenarios/chile/quakeledger';
@@ -52,8 +51,7 @@ import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './
 export class RiesgosService {
 
   constructor(
-      private httpClient: HttpClient,
-      private configSvc: ConfigService
+      private httpClient: HttpClient
     ) {}
 
 

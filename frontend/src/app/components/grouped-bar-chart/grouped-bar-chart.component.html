@@ -1,4 +1,4 @@
-<div id="container" #container ></div>
+<div id="container" #container [style]="{'width': width + 'px', 'height': graphHeight + 'px'}"></div>
 <div class="radioContainer" style="display: flex;">
     <div *ngFor="let grouping of groupings">
         <label for="grouping.label">{{ grouping.label }}</label><br>

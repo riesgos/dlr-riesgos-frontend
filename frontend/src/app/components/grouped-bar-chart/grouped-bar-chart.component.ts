@@ -24,11 +24,13 @@ export class GroupedBarChartComponent implements OnInit, AfterViewInit {
   @ViewChild('container') container!: ElementRef<HTMLDivElement>;
   private chart!: RearrangingGroupedBarChart;
   public selectedGrouping!: string;
+  public graphHeight = 350;
 
   constructor() { }
 
   ngOnInit(): void {
     this.selectedGrouping = this.groupings[0].label;
+    this.graphHeight = this.height - 50;
   }
 
   ngAfterViewInit(): void {

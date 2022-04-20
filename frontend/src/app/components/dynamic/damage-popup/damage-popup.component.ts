@@ -40,32 +40,46 @@ export class DamagePopupComponent implements OnInit {
     );
 
     this.baseData$ = this.http.get(url).pipe(
-      map((data: any) => {
-        const props = data.features[0].properties;
-        const classes = Object.keys(props).filter(k => k[0] === 'c');
-        const states = Object.keys(JSON.parse(props[classes[0]]));
+      map((getFeatureInfoData: any) => {
+        const props = getFeatureInfoData.features[0].properties;
+        console.log(props)
+
         const parsedData: GroupedBarChartData[] = [];
-        for (const state in states) {
-          parsedData.push({
-            groupName: state,
-            subGroups: []
-          })
-        }
-        for (const cls of classes) {
-          const dt = JSON.parse(props[cls]);
-          if (dt) {
-            for (const state in dt) {
-              const count = dt[state];
-              const pd = parsedData.find(pd => pd.groupName === state);
-              if (pd) {
-                pd.subGroups.push({ key: cls, val: count });
+        for (const key in props) {
+          if (key[0] === 'c') {
+            const taxonomy = key;
+            const damageCounts = props[key] === '' ? {} : JSON.parse(props[key]);
+            for (const damageClass in damageCounts) {
+              const count = damageCounts[damageClass];
+
+              let groupData = parsedData.find(p => p.groupName === damageClass);
+              if (!groupData) {
+                groupData = { groupName: damageClass, subGroups: [] };
+                parsedData.push(groupData);
               }
+              let subGroup = groupData.subGroups.find(sg => sg.key === taxonomy);
+              if (!subGroup) {
+                subGroup = { key: taxonomy, val: 0 };
+                groupData.subGroups.push(subGroup);
+              }
+              subGroup.val += count;
             }
           }
         }
+
         return parsedData;
       }
       ));
+  }
+
+  public containsData(parsedData: GroupedBarChartData[]) {
+    let count = 0;
+    for (const groupData of parsedData) {
+      for (const subGroupData of groupData.subGroups) {
+        count += subGroupData.val;
+      }
+    }
+    return count > 0.0;
   }
 
 }

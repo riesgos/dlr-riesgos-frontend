@@ -1,5 +1,5 @@
 //@ts-ignore
-import { select, scaleBand, scaleLinear, scaleOrdinal, axisBottom, axisLeft, easeBounce } from 'd3';
+import { select, scaleBand, scaleLinear, scaleOrdinal, axisBottom, axisLeft, easeBounce, format } from 'd3';
 import { unique } from './helpers';
 
 
@@ -18,7 +18,7 @@ export interface SubGroupColorMap {
 }
 
 function getGroupNames(data: GroupedBarChartData[]) {
-    return data.map((d: any) => d.groupName);
+    return data.map((d: any) => d.groupName).sort();
 }
 
 function getSubGroupNames(data: GroupedBarChartData[]) {
@@ -27,7 +27,7 @@ function getSubGroupNames(data: GroupedBarChartData[]) {
         const dpSgs = dp.subGroups.map(sg => sg.key);
         sgs.push(... dpSgs);
     }
-    return unique(sgs);
+    return unique(sgs).sort();
 }
 
 function getMaxY(data: GroupedBarChartData[]) {
@@ -233,7 +233,7 @@ export class RearrangingGroupedBarChart {
         }
         const subGroupNames = getSubGroupNames(newData);
         const subGroupColors = subGroupNames.map(sgn => coloringFunction(sgn));
-        const maxY = getMaxY(newData);
+        const maxY = Math.max(1, getMaxY(newData));
         const graphHeight = this.selectors.svg.attr('height') - this.margin.top - this.margin.bottom;
 
 
@@ -247,7 +247,9 @@ export class RearrangingGroupedBarChart {
         const yAxis = scaleLinear()
             .domain([0, maxY])
             .range([graphHeight, 0]);
-        const yAxisGenerator = axisLeft(yAxis);
+        const yAxisGenerator = axisLeft(yAxis)
+            .tickFormat(format("d"));
+        if (maxY < 1.1) yAxisGenerator.ticks(2);
         this.selectors.graph.select('.yAxis')
             .call(yAxisGenerator);
             

@@ -5,7 +5,7 @@
   "scripts": {
     "build:all": "tsc",
     "build:watch": "tsc -w",
-    "run:server": "tsc && node build/main.js",
+    "start": "tsc && node build/main.js",
     "test": "jest"
   },
   "keywords": [

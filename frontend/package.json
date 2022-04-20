@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration production",
+    "build:prod": "ng build --configuration production",
+    "build:staging": "ng build --configuration staging --baseHref=/dev/",
     "build:licenses": "npx license-checker --production --json --out ./src/assets/licenses.json",
     "test": "ng test",
     "lint": "ng lint",

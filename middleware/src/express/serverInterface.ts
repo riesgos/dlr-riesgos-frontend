@@ -7,10 +7,10 @@ import { runScheduler } from '../scheduled/scheduler';
 
 export function createExpressApp() {
     const expressApp = express();
+    // parsing json when `content-type: application/json`
+    expressApp.use(parser.json({limit: '150mb'}));  // increasing size-limit to handle even LimaManzanas
     // setting cors headers
     expressApp.use(cors());
-    // parsing json when `content-type: application/json`
-    expressApp.use(parser.json());
     // handling polling for long running execute requests
     const pool = new ProcessPool(10);
     runScheduler();

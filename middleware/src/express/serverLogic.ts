@@ -13,7 +13,7 @@ import { writeTextFile } from '../utils/fileApi';
 
 const http = new AxiosClient();
 const filePath = path.join(__dirname, '../../data');
-const cache = new FileCache(filePath, 3 * 60 * 60);
+const cache = new FileCache(filePath, 24 * 60 * 60);
 const wpsClient100 = new WpsClient('1.0.0', http);
 const wpsClient200 = new WpsClient('2.0.0', http);
 const mailClient = new MailClient();
@@ -77,6 +77,7 @@ export class ProcessPool {
         };
         
         // Step 2: run process.
+        console.log(`now executing: ${data.url} --- ${data.processId}\n`, getExecBody(data));
         const result$ = proxyExecuteRequest(data);
         result$.then((result) => {
             this.managedProcesses[id].result = result;
@@ -108,11 +109,8 @@ export class ProcessPool {
 
     private handleError(error: any, data: ExecuteData) {
         console.log('error', error);
-            
-        const client = data.version === '1.0.0' ? wpsClient100 : wpsClient200;
-        const execBody = client.wpsMarshaller.marshalExecBody(data.processId, data.inputs, data.outputDescriptions, true);
-        const xmlExecBody = client.xmlMarshaller.marshalString(execBody);
-        const xmlExecBodyPrettified = format(xmlExecBody);
+    
+        const xmlExecBodyPrettified = getExecBody(data);
 
         const text = `
 Target:
@@ -144,4 +142,12 @@ ${new Date()}
         };
         mailClient.sendMail(config.siteAdmins, 'Riesgos Middleware: Error on execute-request', 'An error has occurred. See attachment.', [attachment]);
     }
+}
+
+function getExecBody (data: ExecuteData) {
+    const client = data.version === '1.0.0' ? wpsClient100 : wpsClient200;
+    const execBody = client.wpsMarshaller.marshalExecBody(data.processId, data.inputs, data.outputDescriptions, true);
+    const xmlExecBody = client.xmlMarshaller.marshalString(execBody);
+    const xmlExecBodyPrettified = format(xmlExecBody);
+    return xmlExecBodyPrettified;
 }

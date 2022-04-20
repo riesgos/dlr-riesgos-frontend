@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   middlewareUrl: 'http://localhost:8008',
-  proxyUrl: ''
+  proxyUrl: '',
+  gfzUseStaging: true,
 };
 
 /*

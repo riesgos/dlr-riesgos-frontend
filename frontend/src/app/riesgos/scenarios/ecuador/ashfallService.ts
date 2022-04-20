@@ -214,7 +214,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
 
         // service temporarily out of commission
         // const obs1$ = super.execute(newInputProducts, [newOutputProducts], doWhileExecuting);
-        const obs1$ = this.loadAshfallPpolygonFromFile(ashfall, veiV.value, probV.value);
+        const obs1$ = this.loadAshfallPolygonFromFile(ashfall, veiV.value, probV.value);
         const obs2$ = this.loadAshfallPointFromFile(ashfallPoint, veiV.value, probV.value);
         return forkJoin(obs1$, obs2$).pipe(
             map((results: Product[][]) => {
@@ -242,7 +242,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         }));
     }
 
-    private loadAshfallPpolygonFromFile(ashfallPoint: Product, vei: string, prob: string): Observable<Product[]> {
+    private loadAshfallPolygonFromFile(ashfallPoint: Product, vei: string, prob: string): Observable<Product[]> {
         const url = `assets/data/geojson/ashfall/ash_prob${prob}_vei${vei}.geojson`;
         return this.http.get(url).pipe(map((val) => {
             return [{

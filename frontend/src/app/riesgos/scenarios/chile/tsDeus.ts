@@ -2,7 +2,6 @@ import { MappableProduct, WmsLayerProduct } from 'src/app/mappable/riesgos.datat
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { eqDamageWms, eqDamageMRef } from './eqDeus';
 import { tsShakemap } from './tsService';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
@@ -14,6 +13,9 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
 import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
+import { eqDamageMRef } from './eqDeus';
 
 
 
@@ -48,7 +50,7 @@ export const tsDamageWms: WpsData & MappableProduct = {
         description: '',
         format: 'application/WMS',
     },
-    toUkisLayers: function(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, layerMarshaller: LayerMarshaller) {
+    toUkisLayers: function(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
         return layerMarshaller.makeWmsLayers(this).pipe(
             map(layers => {
                 const tsDamage = layers[0];
@@ -88,7 +90,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
-        this.requiredProducts = [eqDamageWms, tsShakemap, eqDamageMRef, schema].map(p => p.uid);
+        this.requiredProducts = [tsShakemap, eqDamageMRef, schema].map(p => p.uid);
         this.providedProducts = [tsDamageWms].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {

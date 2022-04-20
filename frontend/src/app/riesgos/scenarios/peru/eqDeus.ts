@@ -35,7 +35,7 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
         description: '',
         format: 'application/WMS',
     },
-    toUkisLayers: function (ownValue, any, layersSvc, httpClient, layerMarshaller) {
+    toUkisLayers: function (ownValue, any, layersSvc, httpClient, store, layerMarshaller) {
         return layerMarshaller.makeWmsLayers(this).pipe(map(layers => {
             const eqDamage = layers[0];
             const eqEconomic = { ... eqDamage } as ProductRasterLayer;

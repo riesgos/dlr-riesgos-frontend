@@ -13,6 +13,8 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { HttpClient } from '@angular/common/http';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { LayerMarshaller } from './layer_marshaller';
+import { Store } from '@ngrx/store';
+import { State } from '../ngrx_register';
 
 
 
@@ -21,7 +23,7 @@ import { LayerMarshaller } from './layer_marshaller';
  * This interface should slowly phase out all the other ones in the file `riesgos.datatypes.mappable`.
  */
 export interface MappableProduct extends Product {
-    toUkisLayers(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, layerMarshaller: LayerMarshaller): Observable<ProductLayer[]>
+    toUkisLayers(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller): Observable<ProductLayer[]>
 }
 
 export function isMappableProduct(product: Product): product is MappableProduct  {

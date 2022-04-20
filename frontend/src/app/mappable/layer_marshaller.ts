@@ -87,7 +87,7 @@ export class LayerMarshaller  {
     toLayers(product: Product): Observable<ProductLayer[]> {
 
         if (isMappableProduct(product)) {
-            return product.toUkisLayers(product.value, this.mapSvc, this.layersSvc, this.httpClient, this);
+            return product.toUkisLayers(product.value, this.mapSvc, this.layersSvc, this.httpClient, this.store, this);
         }
 
         // First of all, a bunch of special cases. Each one of those layers has some customizations after user-requests

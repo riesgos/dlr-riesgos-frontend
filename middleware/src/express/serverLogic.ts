@@ -92,6 +92,7 @@ export class ProcessPool {
 
     public get(id: number) {
         const state = this.managedProcesses[id];
+        if (!state) return {error: `Server doesn't know about process-id ${id}`}
         const result = state.result;
         if (result !== null) {
             // clean memory once data has been fetched.

@@ -4,11 +4,11 @@ import { WpsData } from '../../../services/wps/wps.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { combineLatest, forkJoin, merge, Observable } from 'rxjs';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { eqShakemapRef } from './shakyground';
 import { Deus } from './deus';
-import { map, switchMap } from 'rxjs/operators';
+import { map, mergeAll, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
@@ -17,6 +17,8 @@ import { DamagePopupComponent } from 'src/app/components/dynamic/damage-popup/da
 import { MapBrowserEvent } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
 
 
 
@@ -42,10 +44,15 @@ export const eqDamageWms: WpsData & MappableProduct = {
         type: 'complex',
         format: 'application/WMS',
     },
-    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, layerMarshaller: LayerMarshaller) {
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
 
-        const layers$ = layerMarshaller.makeWmsLayers(this).pipe(
-            map(layers => {
+        const riesgosState$ = store.select((state) => state.riesgosState).pipe(take(1));
+        const layers$ = layerMarshaller.makeWmsLayers(this);
+
+        return forkJoin([layers$, riesgosState$]).pipe(
+            map(([layers, riesgosState]) => {
+
+                const metaData = riesgosState.scenarioData['c1'].productValues.find(p => p.uid === eqDamageMeta.uid);
 
                 const econLayer: ProductLayer = layers[0];
                 econLayer.id += '_economic';
@@ -67,6 +74,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
                             return {
                                 event: event,
                                 layer: layer,
+                                metaData: metaData.value[0],
                                 xLabel: 'damage',
                                 yLabel: 'nr buildings'
                             };
@@ -75,8 +83,20 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 }
                 return [econLayer, damageLayer];
             })
-        )
-        return layers$;
+        );
+    },
+    value: null
+}
+
+
+export const eqDamageMeta: WpsData & Product = {
+    uid: 'chile_eqdamage_metadata',
+    description: {
+        id: 'meta_summary',
+        reference: false,
+        title: '',
+        type: 'complex',
+        format: 'application/json'
     },
     value: null
 }
@@ -88,8 +108,7 @@ export const eqDamageMRef: WpsData & Product = {
         title: '',
         reference: true,
         type: 'complex',
-        format: 'application/json',
-        description: 'NumberGoodsInDamageState'
+        format: 'application/json'
     },
     value: null
 };
@@ -101,7 +120,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
     readonly uid = 'EQ-Deus';
     readonly name = 'Multihazard_damage_estimation/Earthquake';
     readonly requiredProducts = [eqShakemapRef, initialExposureRef].map(p => p.uid);
-    readonly providedProducts = [eqDamageWms, eqDamageMRef].map(p => p.uid);
+    readonly providedProducts = [eqDamageWms, eqDamageMRef, eqDamageMeta].map(p => p.uid);
     readonly description = 'This service returns damage caused by the selected earthquake.';
     readonly wizardProperties: WizardProperties = {
         providerName: 'GFZ',
@@ -166,8 +185,7 @@ export class EqDeus implements ExecutableProcess, WizardableProcess {
                             ...exposure.description,
                             id: 'exposure'
                         }
-                    }
-                    ];
+                    }];
                     const deusOutputs = outputProducts;
                     return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
                 })

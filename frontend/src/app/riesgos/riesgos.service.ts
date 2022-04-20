@@ -7,7 +7,7 @@ import { RiesgosScenarioMetadata } from './riesgos.state';
 import { QuakeLedger, InputBoundingbox, mmin, mmax, zmin, zmax, p, etype, tlon, tlat, availableEqs } from './scenarios/chile/quakeledger';
 import { EqSelection, userinputSelectedEq, selectedEq } from './scenarios/chile/eqselection';
 import { Shakyground, shakemapPgaOutput, eqShakemapRef, Gmpe, VsGrid, shakemapSa03WmsOutput, shakemapSa10WmsOutput } from './scenarios/chile/shakyground';
-import { EqDeus, loss, eqDamageWms, eqDamageMRef } from './scenarios/chile/eqDeus';
+import { EqDeus, loss, eqDamageWms, eqDamageMRef, eqDamageMeta } from './scenarios/chile/eqDeus';
 import { TsService, tsWms, tsShakemap } from './scenarios/chile/tsService';
 import { TsDeus, schema, tsDamageWms } from './scenarios/chile/tsDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
@@ -97,7 +97,7 @@ export class RiesgosService {
           availableEqs, userinputSelectedEq,
           Gmpe, VsGrid, selectedEq,
           eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput,
-          loss, eqDamageWms, eqDamageMRef,
+          loss, eqDamageWms, eqDamageMRef, eqDamageMeta,
           tsWms, tsShakemap,
           countryChile, hazardEq,
           damageConsumerAreas, schema,

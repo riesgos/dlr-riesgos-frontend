@@ -46,13 +46,18 @@ export const eqDamageWms: WpsData & MappableProduct = {
 
         const layers$ = layerMarshaller.makeWmsLayers(this).pipe(
             map(layers => {
+
                 const econLayer: ProductLayer = layers[0];
-                const damageLayer: ProductLayer = { ... econLayer } as ProductRasterLayer;
+                econLayer.id += '_economic';
                 econLayer.name = 'eq-damage';
+                econLayer.params.STYLES = 'style-loss';
                 econLayer.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
+                
+                const damageLayer: ProductLayer = { ... econLayer } as ProductRasterLayer;
+                damageLayer.id += '_damage';
                 damageLayer.name = 'eq-exposure';
                 damageLayer.params = { ... econLayer.params };
-                // damageLayer.params.STYLES = 'w_damage';
+                damageLayer.params.STYLES = 'style-damagestate';
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

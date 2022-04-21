@@ -20,7 +20,7 @@ import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
   zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru, availableEqsPeru } from './scenarios/peru/quakeledger';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scenarios/peru/eqselection';
 import { ShakygroundPeru, shakemapPgaOutputPeru, eqShakemapRefPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru } from './scenarios/peru/shakyground';
-import { EqDeusPeru, lossPeru, eqDamageWmsPeru, eqDamagePeruMRef } from './scenarios/peru/eqDeus';
+import { EqDeusPeru, lossPeru, eqDamageWmsPeru, eqDamagePeruMRef, eqDamageMetaPeru } from './scenarios/peru/eqDeus';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
 import { TsDeusPeru, tsDamageWmsPeru, schemaPeru } from './scenarios/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './scenarios/peru/reliability';
@@ -119,7 +119,7 @@ export class RiesgosService {
         products = [
           modelChoicePeru, initialExposurePeru, initialExposurePeruReference,
           InputBoundingboxPeru, mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru,
-          lossPeru, eqDamageWmsPeru, Gmpe, VsGrid,
+          lossPeru, eqDamageWmsPeru, eqDamageMetaPeru, Gmpe, VsGrid,
           availableEqsPeru, userinputSelectedEqPeru,
           selectedEqPeru,
           shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru, eqShakemapRefPeru,
@@ -144,9 +144,9 @@ export class RiesgosService {
           new DeusLaharAndAshfall(this.httpClient),
           new LaharReliability(this.httpClient),
 
-          FloodMayRunProcess,
-          geomerFlood,
-          new FloodDamageProcess(this.httpClient)
+          // FloodMayRunProcess,
+          // geomerFlood,
+          // new FloodDamageProcess(this.httpClient)
         ];
         products = [
           schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador, modelEcuador,
@@ -161,8 +161,8 @@ export class RiesgosService {
           laharAshfallDamageM,
           countryEcuador, hazardLahar,
           damageConsumerAreasEcuador,
-          userInputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,
-          damageBuildings, damageManzanasGeojson
+          // userInputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,
+          // damageBuildings, damageManzanasGeojson
         ];
         break;
       default:

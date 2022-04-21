@@ -1,3 +1,4 @@
+import { config } from '../config';
 import sendmail from 'sendmail';
 
 
@@ -36,7 +37,7 @@ export class MailClient {
 
     public sendMail(recipients: string[], subject: string, html: string, attachments?: MailAttachment[]) {
         this.mailClient({
-            from: 'errormessages@riesgos.com',
+            from: config.sourceEmail,
             to: recipients.join(', '),
             subject: subject,
             html: html,

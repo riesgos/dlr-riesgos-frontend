@@ -5,6 +5,7 @@ export const config = {
     siteAdmins: [
         'michael.langbein@dlr.de'
     ],
+    sourceEmail: 'errormessages@riesgos.com',
     storeRequestBody: true,
     cacheDir: path.join(__dirname, '..', 'data'),
     tempDir: path.join(__dirname, '..', 'data/tmp'),

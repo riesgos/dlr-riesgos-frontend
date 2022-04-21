@@ -81,9 +81,9 @@ export class ProcessPool {
         const result$ = proxyExecuteRequest(data);
         result$.then((result) => {
             this.managedProcesses[id].result = result;
-        }).catch(reason => {
-            this.handleError(reason, data);
-            this.managedProcesses[id].result = {error: reason.message};
+        }).catch(err => {
+            this.handleError(err, data);
+            this.managedProcesses[id].result = {error: err.message};
         });
         
         // Step 3: return id for later reference.

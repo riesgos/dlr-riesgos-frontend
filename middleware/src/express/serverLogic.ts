@@ -12,7 +12,7 @@ import { writeTextFile } from '../utils/fileApi';
 
 
 const http = new AxiosClient();
-const filePath = path.join(__dirname, '../../data');
+const filePath = config.cacheDir;
 const cache = new FileCache(filePath, 24 * 60 * 60);
 const wpsClient100 = new WpsClient('1.0.0', http);
 const wpsClient200 = new WpsClient('2.0.0', http);
@@ -77,7 +77,7 @@ export class ProcessPool {
         };
         
         // Step 2: run process.
-        console.log(`now executing: ${data.url} --- ${data.processId}\n`, getExecBody(data));
+        this.logOutgoingRequest(data);
         const result$ = proxyExecuteRequest(data);
         result$.then((result) => {
             this.managedProcesses[id].result = result;
@@ -131,7 +131,7 @@ ${new Date()}
         `;
 
         const key = `error_message_${new Date().getTime()}`;
-        const errorFile = path.join(__dirname, '..', '..', 'data', data.url.replace(/:/g, ''), data.processId.replace(/:/g, ''), key + '.txt');
+        const errorFile = path.join(config.cacheDir, data.url.replace(/:/g, ''), data.processId.replace(/:/g, ''), key + '.txt');
         writeTextFile(errorFile, text).then(() => console.log('error-log written to ', errorFile));
 
 
@@ -142,6 +142,15 @@ ${new Date()}
             filename: 'attachment.txt',
         };
         mailClient.sendMail(config.siteAdmins, 'Riesgos Middleware: Error on execute-request', 'An error has occurred. See attachment.', [attachment]);
+    }
+  
+    private logOutgoingRequest(data: ExecuteData) {
+        const text = `now executing: ${data.url} --- ${data.processId}\n` +  getExecBody(data);
+        console.log(text);
+        if (config.storeRequestBody) {
+            const tempFile = path.join(config.tempDir, data.url.replace(/:/g, ''), data.processId.replace(/:/g, ''), 'tmp.txt');
+            writeTextFile(tempFile, text).then(() => console.log('tmp written to ', tempFile));
+        }
     }
 }
 

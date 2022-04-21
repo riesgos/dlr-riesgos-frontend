@@ -2,6 +2,7 @@ import { ExecuteData } from '../express/serverLogic';
 import { FileCache } from './fileCache';
 import path from 'path';
 import hash from 'object-hash';
+import { config } from '../config';
 
 
 const requestData: ExecuteData = {
@@ -26,7 +27,7 @@ const requestData: ExecuteData = {
 
 test('testing cache', async () => {
     const key = hash(requestData);
-    const cache = new FileCache(path.join(__dirname, '..', 'data'), 10000);
+    const cache = new FileCache(config.cacheDir, 10000);
     const storedSuccessfully = await cache.storeData(requestData.url, requestData.processId, key, requestData);
     expect(storedSuccessfully).toBeTruthy();
     const retrieved = await cache.getData(requestData.url, requestData.processId, key);

@@ -1,7 +1,13 @@
 <ng-container *ngIf="(baseData$ | async) as baseData">
     <ng-container *ngIf="containsData(baseData); else noData">
         <div [style]="{'width': width + 'px', 'height': height + 'px'}">
-            <app-grouped-bar-chart [baseData]="baseData" [width]="width" [height]="height" [xLabel]="xLabel" [yLabel]="yLabel" [groupings]="groupings"></app-grouped-bar-chart>
+            <app-grouped-bar-chart
+            [baseData]="baseData"
+            [width]="width"
+            [height]="height"
+            [xLabel]="xLabel | sTranslate"
+            [yLabel]="yLabel | sTranslate"
+            [groupings]="groupings"></app-grouped-bar-chart>
         </div>
     </ng-container>
 </ng-container>

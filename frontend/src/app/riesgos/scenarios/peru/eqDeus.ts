@@ -78,7 +78,7 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
                                 layer: layer,
                                 metaData: metaData.value[0],
                                 xLabel: 'damage',
-                                yLabel: 'nr buildings'
+                                yLabel: 'Nr_buildings'
                             };
                         }
                     }

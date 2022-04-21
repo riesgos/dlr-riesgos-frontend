@@ -19,6 +19,10 @@ import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
+import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import { createHeaderTableHtml } from 'src/app/helpers/others';
 
 
 
@@ -53,6 +57,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
             map(([layers, riesgosState]) => {
 
                 const metaData = riesgosState.scenarioData['c1'].productValues.find(p => p.uid === eqDamageMeta.uid);
+                const metaDataValue = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];
                 const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
@@ -62,7 +67,17 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 econLayer.params.STYLES = 'style-loss';
                 econLayer.legendImg += '&style=style-loss';
                 econLayer.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
-                
+                const totalDamage = +(metaDataValue.total.loss_value);
+                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' ' + metaDataValue.loss_unit;
+                econLayer.dynamicDescription = {
+                    component: InfoTableComponentComponent,
+                    inputs: {
+                        title: 'Total damage',
+                        data: [[{value: 'Total damage'}, {value: totalDamageFormatted}]]
+                    }
+                }
+
+
                 damageLayer.id += '_damage';
                 damageLayer.name = 'eq-exposure';
                 damageLayer.params = { ... econLayer.params };
@@ -79,11 +94,24 @@ export const eqDamageWms: WpsData & MappableProduct = {
                                 layer: layer,
                                 metaData: metaData.value[0],
                                 xLabel: 'damage',
-                                yLabel: 'nr buildings'
+                                yLabel: 'Nr_buildings'
                             };
                         }
                     }
-                }
+                };
+                const counts = metaDataValue.total.buildings_by_damage_state;
+                const html =
+                    createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
+                    + '{{ BuildingTypesSara }}';
+
+                damageLayer.dynamicDescription = {
+                    component: TranslatableStringComponent,
+                    inputs: {
+                        text: html
+                    }
+                };
+
+                
                 return [econLayer, damageLayer];
             })
         );

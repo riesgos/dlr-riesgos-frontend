@@ -55,7 +55,7 @@ const laharAshfallUpdatedExposureProps = {
             }
 
             const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
-            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ LaharAndAshfall }}: {{ damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
+            return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Lahar_and_ashfall_damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
         },
     },
     name: 'LaharAndAshfallExposure',

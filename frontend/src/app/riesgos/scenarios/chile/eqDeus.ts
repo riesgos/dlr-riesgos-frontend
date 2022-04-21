@@ -55,16 +55,19 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 const metaData = riesgosState.scenarioData['c1'].productValues.find(p => p.uid === eqDamageMeta.uid);
 
                 const econLayer: ProductLayer = layers[0];
+                const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
+
                 econLayer.id += '_economic';
                 econLayer.name = 'eq-damage';
                 econLayer.params.STYLES = 'style-loss';
+                econLayer.legendImg += '&style=style-loss';
                 econLayer.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
                 
-                const damageLayer: ProductLayer = { ... econLayer } as ProductRasterLayer;
                 damageLayer.id += '_damage';
                 damageLayer.name = 'eq-exposure';
                 damageLayer.params = { ... econLayer.params };
                 damageLayer.params.STYLES = 'style-damagestate';
+                damageLayer.legendImg += '&style=style-damagestate';
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

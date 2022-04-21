@@ -145,9 +145,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // add to map
         ).subscribe(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
-            const add: ProductLayer[] = newOverlays.filter(no => !oldOverlays.map(oo => oo.id).includes(no.id));
-            const update: ProductLayer[] = newOverlays.filter(no => oldOverlays.map(oo => oo.id).includes(no.id));
-            const remove: ProductLayer[] = oldOverlays.filter(oo => !newOverlays.map(no => no.id).includes(oo.id));
+            const oldOverlayIds = oldOverlays.map(oo => oo.id);
+            const newOverlayIds = newOverlays.map(no => no.id);
+            const add: ProductLayer[] = newOverlays.filter(no => !oldOverlayIds.includes(no.id));
+            const update: ProductLayer[] = newOverlays.filter(no => oldOverlayIds.includes(no.id));
+            const remove: ProductLayer[] = oldOverlays.filter(oo => !newOverlayIds.includes(oo.id));
             add.map(ol => this.layersSvc.addLayer(ol, ol.filtertype));
             update.map(ol => this.layersSvc.updateLayer(ol, ol.filtertype));
             remove.map(ol => this.layersSvc.removeLayer(ol, ol.filtertype));

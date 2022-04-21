@@ -9,5 +9,6 @@
         "Suppasri",
         "volcanoe",
         "Yepes"
-    ]
+    ],
+    "angular.enable-strict-mode-prompt": false
 }

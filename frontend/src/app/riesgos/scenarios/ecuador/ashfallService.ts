@@ -116,15 +116,15 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                         thicknessText = `> ${toDecimalPlaces(thickness as number, 1)} mm`;
                     }
 
-                    const vol = 1 * 1 * thickness; // [m^3]
-                    const mass = vol * 1000; // [m^3] * [kg/m^3] = [kg]
-                    const weightForce = mass * 9.81; // [kg] * [m/s^2] = [N]
+                    const vol = 1 * 1 * thickness / 1000;   // [m] * [m] * [mm] * [m/mm] = [m^3]
+                    const mass = vol * 1000;                // [m^3] * [kg/m^3] = [kg]
+                    const weightForce = mass * 9.81;        // [kg] * [m/s^2] = [N]
                     const pressure = weightForce / (1 * 1); // [N] / [m^2] = [Pa]
 
                     const selectedProperties = {
                         '{{ Thickness }}': thicknessText,
                         '{{ VEI }}': toDecimalPlaces(properties['vei'] as number, 1),
-                        '{{ Expected_load }}': `${pressure / 1000} kPa`,
+                        '{{ Expected_load }}': `${pressure} Pa`,
                         '{{ Probability }}': properties['prob'] + ' %'
                     };
                     return createKeyValueTableHtml('{{ Ashfall }}', selectedProperties, 'medium');

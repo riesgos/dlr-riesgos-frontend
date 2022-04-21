@@ -143,11 +143,11 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
             [directionV, veiV, { ...parameter, value: 'MaxPressure' }], [laharPressureWms], doWhile);
         const erosionProc$ = this.laharWps.execute(
             [directionV, veiV, { ...parameter, value: 'MaxErosion' }], [laharErosionWms], doWhile);
-        const depositionProc$ = this.laharWps.execute(
-            [directionV, veiV, { ...parameter, value: 'Deposition' }], [laharDepositionWms], doWhile);
+        // const depositionProc$ = this.laharWps.execute(
+        //     [directionV, veiV, { ...parameter, value: 'Deposition' }], [laharDepositionWms], doWhile);
 
         // merge
-        return forkJoin([heightProc$, velProc$, pressureProc$, erosionProc$, depositionProc$]).pipe(
+        return forkJoin([heightProc$, velProc$, pressureProc$, erosionProc$]).pipe(
             map((results: Product[][]) => {
                 const flattened: Product[] = [];
                 for (const result of results) {

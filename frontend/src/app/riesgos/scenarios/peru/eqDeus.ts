@@ -1,15 +1,24 @@
 import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { initialExposurePeruReference } from './exposure';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { MappableProduct, WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
+import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin, Observable } from 'rxjs';
 import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
 import { eqShakemapRefPeru } from './shakyground';
-import { Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
-import { map, switchMap } from 'rxjs/operators';
-import { ProductRasterLayer } from 'src/app/mappable/map.types';
+import { map, switchMap, take } from 'rxjs/operators';
+import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
+import { DamagePopupComponent } from 'src/app/components/dynamic/damage-popup/damage-popup.component';
+import { MapBrowserEvent } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import { TileWMS } from 'ol/source';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
 
 
 
@@ -32,21 +41,64 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
         title: '',
         reference: false,
         type: 'complex',
-        description: '',
         format: 'application/WMS',
     },
-    toUkisLayers: function (ownValue, any, layersSvc, httpClient, store, layerMarshaller) {
-        return layerMarshaller.makeWmsLayers(this).pipe(map(layers => {
-            const eqDamage = layers[0];
-            const eqEconomic = { ... eqDamage } as ProductRasterLayer;
-            eqDamage.name = 'eq-exposure';
-            eqDamage.params.STYLES = 'w_damage';
-            eqEconomic.name = 'eq-damage';
-            eqEconomic.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
-                
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
 
-            return [eqDamage, eqEconomic];
-        }));
+        const riesgosState$ = store.select((state) => state.riesgosState).pipe(take(1));
+        const layers$ = layerMarshaller.makeWmsLayers(this);
+
+        return forkJoin([layers$, riesgosState$]).pipe(
+            map(([layers, riesgosState]) => {
+
+                const metaData = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === eqDamageMetaPeru.uid);
+
+                const econLayer: ProductLayer = layers[0];
+                const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
+
+                econLayer.id += '_economic';
+                econLayer.name = 'eq-damage';
+                econLayer.params.STYLES = 'style-loss';
+                econLayer.legendImg += '&style=style-loss';
+                econLayer.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
+                
+                damageLayer.id += '_damage';
+                damageLayer.name = 'eq-exposure';
+                damageLayer.params = { ... econLayer.params };
+                damageLayer.params.STYLES = 'style-damagestate';
+                damageLayer.legendImg += '&style=style-damagestate';
+                damageLayer.popup = {
+                    dynamicPopup: {
+                        component: DamagePopupComponent,
+                        getAttributes: (args) => {
+                            const event: MapBrowserEvent<any> = args.event;
+                            const layer: TileLayer<TileWMS> = args.layer;
+                            return {
+                                event: event,
+                                layer: layer,
+                                metaData: metaData.value[0],
+                                xLabel: 'damage',
+                                yLabel: 'nr buildings'
+                            };
+                        }
+                    }
+                }
+                return [econLayer, damageLayer];
+            })
+        );
+    },
+    value: null
+}
+
+
+export const eqDamageMetaPeru: WpsData & Product = {
+    uid: 'peru_eqdamage_metadata',
+    description: {
+        id: 'meta_summary',
+        reference: false,
+        title: '',
+        type: 'complex',
+        format: 'application/json'
     },
     value: null
 }
@@ -55,11 +107,10 @@ export const eqDamagePeruMRef: WpsData & Product = {
     uid: 'merged_output_ref_peru',
     description: {
         id: 'merged_output',
-        title: 'Updated exposure',
+        title: '',
         reference: true,
         type: 'complex',
-        format: 'application/json',
-        description: 'NumberGoodsInDamageState'
+        format: 'application/json'
     },
     value: null
 };
@@ -70,7 +121,7 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
     readonly uid = 'EQ-Deus';
     readonly name = 'Multihazard_damage_estimation/Earthquake';
     readonly requiredProducts = [eqShakemapRefPeru, initialExposurePeruReference].map(p => p.uid);
-    readonly providedProducts = [eqDamageWmsPeru, eqDamagePeruMRef].map(p => p.uid);
+    readonly providedProducts = [eqDamageWmsPeru, eqDamageMetaPeru, eqDamagePeruMRef].map(p => p.uid);
     readonly description = 'This service returns damage caused by the selected earthquake.';
     readonly wizardProperties = {
         providerName: 'GFZ',
@@ -98,9 +149,8 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
             description: {
                 id: 'schema',
                 title: 'schema',
-                defaultValue: 'SARA_v1.0',
                 reference: false,
-                type: 'literal'
+                type: 'literal',
             },
             value: 'SARA_v1.0'
         };

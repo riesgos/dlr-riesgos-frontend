@@ -275,11 +275,13 @@ export class LayerMarshaller  {
                           url: l.url,
                           params: l.params,
                           crossOrigin: 'anonymous'
-                        })
+                        }),
+                        visible: false
                     });
                     layer.set('id', l.id);
                     return layer;
                 });
+                olLayers[0].setVisible(true);
 
                 const layerGroup = new olLayerGroup({
                     layers: olLayers

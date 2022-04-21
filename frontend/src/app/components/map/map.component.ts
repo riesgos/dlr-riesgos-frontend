@@ -533,7 +533,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         popup: true
                     })
                 ],
-                description: 'SNIDescription'
+                description: 'SNIDescription',
+                expanded: true
             });
             layers.push(sniLayers);
         }

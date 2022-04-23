@@ -30,10 +30,13 @@ export interface ExecuteData {
 export async function proxyExecuteRequest(parsed: ExecuteData) {
 
     const key = hash(parsed);
-    const cachedData = await cache.getData(parsed.url, parsed.processId, key);
-    if (cachedData) {
-        return cachedData;
+    if (config.useCache) {
+        const cachedData = await cache.getData(parsed.url, parsed.processId, key);
+        if (cachedData) {
+            return cachedData;
+        }
     }
+
     let newData;
     let requestCounter = 0;
     if (parsed.version === '1.0.0') {
@@ -46,11 +49,11 @@ export async function proxyExecuteRequest(parsed: ExecuteData) {
         newData = await wpsClient200.executeAsync(
             parsed.url, parsed.processId, parsed.inputs, parsed.outputDescriptions,
             5000, (data) => {
-                console.log(`requesting. (${requestCounter}) `, data);
                 requestCounter += 1;
             }).toPromise();
     }
-    await cache.storeData(parsed.url, parsed.processId, key, newData);
+
+    if (config.useCache) await cache.storeData(parsed.url, parsed.processId, key, newData);
     return newData;
 }
 
@@ -69,7 +72,7 @@ export class ProcessPool {
 
         // Step 1: get an id under which to find the current process
         const id = this.getNewExecId();
-        if (this.managedProcesses[id]) {
+        if (!id) {
             throw Error(`Cannot execute this request. There are still ${Object.keys(this.managedProcesses).length} requests ongoing.`);
         }
         this.managedProcesses[id] = {
@@ -103,9 +106,15 @@ export class ProcessPool {
         }
     }
 
-    private getNewExecId(): number {
-        this.latestId = (this.latestId + 1) % this.maxConcurrentExecs;
-        return this.latestId;
+    private getNewExecId(): number | null {
+        for (let offset = 1; offset <= this.maxConcurrentExecs; offset += 1) {
+            const candidateId = (this.latestId + offset) % this.maxConcurrentExecs;
+            if (!this.managedProcesses[candidateId]) {
+                this.latestId = candidateId;
+                return this.latestId;
+            }
+        }
+        return null
     }
 
     private handleError(error: any, data: ExecuteData) {

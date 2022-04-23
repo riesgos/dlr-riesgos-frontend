@@ -273,7 +273,7 @@ export class WpsMarshaller200 implements WpsMarshaller {
         return {
           id: i.description.id,
           data: {
-            content: [JSON.stringify(i.value)],
+            content: typeof i.value === 'string' ? [i.value] : [JSON.stringify(i.value)],
             mimeType: i.description.format
           }
         };

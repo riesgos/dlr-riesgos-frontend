@@ -32,10 +32,12 @@ import { ProductLayer } from '../../mappable/map.types';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { SelectEvent } from 'ol/interaction/Select';
 import VectorTileLayer from 'ol/layer/VectorTile';
-import { VectorTile } from 'ol/source';
+import { TileWMS, VectorTile } from 'ol/source';
 import { createTableHtml } from 'src/app/helpers/others';
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import TileLayer from 'ol/layer/Tile';
+import TileSource from 'ol/source/Tile';
 
 const mapProjection = 'EPSG:3857';
 
@@ -343,7 +345,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const powerlineLayer = new CustomLayer({
                 custom_layer: new olVectorLayer({
                     source: new olVectorSource({
-                        url: 'assets/data/geojson/powerlines_chile.geojson',
+                        url: 'assets/data/geojson/chile_power/powerlines_chile.geojson',
                         format: new GeoJSON({
                             dataProjection: 'EPSG:4326',
                             featureProjection: this.mapSvc.map.getView().getProjection().getCode()
@@ -408,7 +410,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             });
             layers.push(civilServiceLayers);
 
-
             const shoaLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'shoaLayers',
@@ -442,11 +443,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (scenario === 'p1') {
 
+
+            // data from https://www.arcgis.com/home/item.html?id=3c3831605626406586799b6b799cbc7c
             const peruDistritos = new VectorLayer({
                 id: 'peru_distritos',
                 name: 'peru_distritos',
                 type: 'geojson',
-                url: 'assets/data/geojson/peru_distritos.geojson',
+                url: 'assets/data/geojson/peru_admin/peru_distritos.geojson',
                 visible: false,
                 popup: {
                     popupFunction: (props) => {
@@ -458,14 +461,14 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '&copy, <a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
-                description: '<a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
+                attribution: '&copy, <a href="http://www.gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="http://www.gadm.org/" target="_blank">GADM</a>',
             });
-            const peruDepartamentos = new VectorLayer({
-                id: 'peru_departamentos',
-                name: 'peru_departamentos',
+            const peruProvincias = new VectorLayer({
+                id: 'peru_provincias',
+                name: 'peru_provincias',
                 type: 'geojson',
-                url: 'assets/data/geojson/peru_departamentos.geojson',
+                url: 'assets/data/geojson/peru_admin/peru_provincias.geojson',
                 visible: false,
                 popup: {
                     popupFunction: (props) => {
@@ -477,20 +480,160 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '&copy, <a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
-                description: '<a href="https://www.gob.pe/idep" target="_blank">IDEP</a> & <a href="https://geoservidor.minam.gob.pe/" target="_blank">Geoservidor MINAM</a>',
+                attribution: '&copy, <a href="http://www.gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="http://www.gadm.org/" target="_blank">GADM</a>',
+            });
+            const peruRegiones = new VectorLayer({
+                id: 'peru_regiones',
+                name: 'peru_regiones',
+                type: 'geojson',
+                url: 'assets/data/geojson/peru_admin/peru_regiones.geojson',
+                visible: false,
+                popup: {
+                    popupFunction: (props) => {
+                        const keys = [ 'NOMBDIST', 'NOMBPROV', 'NOMBDEP', 'NOM_CAP'];
+                        const rows = [];
+                        for (const key of keys) {
+                            rows.push(['{{ ' + key + ' }}', props[key]]);
+                        }
+                        return  this.translator.syncTranslate(createTableHtml(rows));
+                    }
+                },
+                attribution: '&copy, <a href="http://www.gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="http://www.gadm.org/" target="_blank">GADM</a>',
             });
             const peruAdministrative = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'peru_administrative',
-                layers: [peruDepartamentos, peruDistritos],
+                layers: [peruDistritos, peruProvincias, peruRegiones],
                 name: 'peru_administrative',
                 expanded: true,
             });
             layers.push(peruAdministrative);
+
+
+            const distributionLines = new CustomLayer({
+                custom_layer: new TileLayer({
+                    source: new TileWMS({
+                        projection: 'EPSG:4326',
+                        attributions: 'https://gisem.osinergmin.gob.pe/',
+                        attributionsCollapsible: true,
+                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
+                        params: {
+                            layers: '12'
+                        },
+                    })
+                }),
+                id: 'peru_distributionLines',
+                name: 'distribution_lines',
+                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=12&'
+            });
+            const substations = new CustomLayer({
+                custom_layer: new TileLayer({
+                    source: new TileWMS({
+                        projection: 'EPSG:4326',
+                        attributions: 'https://gisem.osinergmin.gob.pe/',
+                        attributionsCollapsible: true,
+                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
+                        params: {
+                            layers: '16'
+                        },
+                    })
+                }),
+                id: 'peru_substations',
+                name: 'substations',
+                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=16&'
+            });
+            const nonConventional = new CustomLayer({
+                custom_layer: new TileLayer({
+                    source: new TileWMS({
+                        projection: 'EPSG:4326',
+                        attributions: 'https://gisem.osinergmin.gob.pe/',
+                        attributionsCollapsible: true,
+                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
+                        params: {
+                            layers: '25'
+                        },
+                    })
+                }),
+                id: 'peru_nonConventional',
+                name: 'generation_nonConventional',
+                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=25&'
+            });
+            const conventional = new CustomLayer({
+                custom_layer: new TileLayer({
+                    source: new TileWMS({
+                        projection: 'EPSG:4326',
+                        attributions: 'https://gisem.osinergmin.gob.pe/',
+                        attributionsCollapsible: true,
+                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
+                        params: {
+                            layers: '33'
+                        },
+                    })
+                }),
+                id: 'peru_conventional',
+                name: 'generation_conventional',
+                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=33&'
+            });
+            const transmission = new CustomLayer({
+                custom_layer: new TileLayer({
+                    source: new TileWMS({
+                        projection: 'EPSG:4326',
+                        attributions: 'https://gisem.osinergmin.gob.pe/',
+                        attributionsCollapsible: true,
+                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
+                        params: {
+                            layers: '19'
+                        },
+                    })
+                }),
+                id: 'peru_transmission',
+                name: 'transmission',
+                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=19&'
+            });
+
+            const energyGroup = new LayerGroup({
+                filtertype: 'Layers',
+                id: 'peru_energy',
+                name: 'peru_energy',
+                layers: [distributionLines, substations, nonConventional, conventional, transmission],
+                expanded: true,
+                visible: false
+            });
+            layers.push(energyGroup);
         }
 
         if (scenario === 'e1') {
+            
+            const adminLayers = new LayerGroup({
+                id: 'ecuador_administrative',
+                layers: [new RasterLayer({
+                    id: 'ecuador_administrative_parroquias',
+                    name: 'ecuador_administrative_parroquias',
+                    type: 'wms',
+                    url: 'https://geoinec.inec.gob.ec/geoinec/inec/wms',
+                    params: {
+                        layers: 'inec:geo_parr2001'
+                    },
+                    opacity: 0.3
+                }), new RasterLayer({
+                    id: 'ecuador_administrative_cantones',
+                    name: 'ecuador_administrative_cantones',
+                    type: 'wms',
+                    url: 'https://geoinec.inec.gob.ec/geoinec/inec/wms',
+                    params: {
+                        layers: 'inec:geo_cant2001',
+                    },
+                    opacity: 0.3
+                })],
+                name: 'ecuador_administrative',
+                expanded: true,
+                visible: false,
+                filtertype: 'Layers'
+            });
+            layers.push(adminLayers);
+
             const sniLayers = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'sniLayers',
@@ -499,7 +642,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     new CustomLayer({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
-                                url: 'assets/data/geojson/linea_transmision_ecuador.geojson',
+                                url: 'assets/data/geojson/ecuador_energy/linea_transmision_ecuador.geojson',
                                 format: new GeoJSON({
                                     dataProjection: 'EPSG:4326',
                                     featureProjection: this.mapSvc.map.getView().getProjection().getCode()
@@ -517,7 +660,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     new CustomLayer({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
-                                url: 'assets/data/geojson/linea_subtransmision_ecuador.geojson',
+                                url: 'assets/data/geojson/ecuador_energy/linea_subtransmision_ecuador.geojson',
                                 format: new GeoJSON({
                                     dataProjection: 'EPSG:4326',
                                     featureProjection: this.mapSvc.map.getView().getProjection().getCode()

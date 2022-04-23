@@ -7,9 +7,11 @@ import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class ProxyInterceptor implements HttpInterceptor {
-    constructor(private router: Router) {}
+    constructor(private router: Router) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (!environment.useProxy) return next.handle(req);
+
         const originalUrl = req.url;
         const ownUrl = this.router.url;
 
@@ -20,7 +22,7 @@ export class ProxyInterceptor implements HttpInterceptor {
         // no action required if websocket
         else if (originalUrl.slice(0, 5) === 'ws://' || originalUrl.slice(0, 6) !== 'wss://') {
             return next.handle(req);
-        } 
+        }
         // all other requests: send over proxy
         else {
             const proxyReq = req.clone({
@@ -28,7 +30,6 @@ export class ProxyInterceptor implements HttpInterceptor {
             });
             return next.handle(proxyReq);
         }
-
     }
 
 }

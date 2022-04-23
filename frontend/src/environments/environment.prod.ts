@@ -3,4 +3,5 @@ export const environment = {
   middlewareUrl: 'http://riesgos.dlr.de/middleware',
   proxyUrl: 'http://riesgos.dlr.de/proxy',
   gfzUseStaging: false,
+  useProxy: false
 };

@@ -1,7 +1,6 @@
 import format from 'xml-formatter';
 import { config } from '../../config';
 import { AxiosClient } from '../../web/httpClient';
-import { decodeEntities } from './wps200/helpers';
 import { WpsClient } from './wpsclient';
 
 const http = new AxiosClient();
@@ -98,7 +97,7 @@ test('testing that literals are passed without quotation marks', () => {
   expect(xmlExecBodyPretty1.includes('"SARA_v1.0"')).toBeFalsy();
 });
 
-test('testing that references are not html-encoded', () => {
+test('testing that references are  html-encoded', () => {
   const data: any = {
     version: "2.0.0",
     inputs: [
@@ -170,8 +169,98 @@ test('testing that references are not html-encoded', () => {
   const execBody2 = wpsClient200.wpsMarshaller.marshalExecBody(data.processId, data.inputs, data.outputDescriptions, true);
   const xmlExecBody2: string = wpsClient200.xmlMarshaller.marshalString(execBody2);
   expect(xmlExecBody2.includes('&amp;')).toBeTruthy();
-  const cleanBody = decodeEntities(xmlExecBody2);
-  expect(cleanBody.includes('&amp;')).toBeFalsy();
 });
 
 
+test('making sure that encoding and schema are present', () => {
+  const incorrect = `
+    <wps:Execute xmlns:wps="http://www.opengis.net/wps/2.0" service="WPS" version="2.0.0" mode="async" response="document">
+      <p0:Identifier xmlns:p0="http://www.opengis.net/ows/2.0">org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess</p0:Identifier>
+      <wps:Input id="intensity">
+          <wps:Reference p1:href="https://rz-vm140.gfz-potsdam.de:443/wps/RetrieveResultServlet?id=64c56a10-a59a-41ab-8b3e-fd9eca202ad1shakeMapFile.1b0d53a0-ccf2-4dda-9b91-ff74ca0c9aa2" xmlns:p1="http://www.w3.org/1999/xlink" mimeType="text/xml"/>
+      </wps:Input>
+      <wps:Input id="country">
+          <wps:Data mimeType="text/plain">chile</wps:Data>
+      </wps:Input>
+      <wps:Input id="hazard">
+          <wps:Data mimeType="text/plain">earthquake</wps:Data>
+      </wps:Input>
+      <wps:Output id="damage_consumer_areas" transmission="value" mimeType="application/vnd.geo+json" />
+    </wps:Execute>
+  `;
+  const correct = `
+    <wps:Execute xmlns:wps="http://www.opengis.net/wps/2.0" service="WPS" version="2.0.0" mode="async" response="document">
+      <p0:Identifier xmlns:p0="http://www.opengis.net/ows/2.0">org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess</p0:Identifier>
+      <wps:Input id="intensity">
+          <wps:Reference p1:href="https://rz-vm140.gfz-potsdam.de:443/wps/RetrieveResultServlet?id=aa622ad8-1c4e-42f3-a870-fdd6b0af0838shakeMapFile.6ee8efc5-bf08-4577-8fa0-77efe9101c7f" xmlns:p1="http://www.w3.org/1999/xlink" mimeType="text/xml" encoding="UTF-8" schema="http://earthquake.usgs.gov/eqcenter/shakemap" />
+      </wps:Input>
+      <wps:Input id="country">
+          <wps:Data mimeType="text/plain">chile</wps:Data>
+      </wps:Input>
+      <wps:Input id="hazard">
+          <wps:Data mimeType="text/plain">earthquake</wps:Data>
+      </wps:Input>
+      <wps:Output id="damage_consumer_areas" transmission="value" mimeType="application/vnd.geo+json" />
+    </wps:Execute>
+  `;
+
+  const requestData = {
+    "version": "2.0.0",
+    "inputs": [
+      {
+        "uid": "Shakyground_shakemap",
+        "description": {
+          "id": "intensity",
+          "title": "shakeMapFile",
+          "type": "complex",
+          "reference": true,
+          "format": "text/xml",
+          "schema": "http://earthquake.usgs.gov/eqcenter/shakemap",
+          "encoding": "UTF-8"
+        },
+        "value": "https://rz-vm140.gfz-potsdam.de:443/wps/RetrieveResultServlet?id=8a70fb1f-3319-4372-b506-341139387229shakeMapFile.6692b1c7-6acf-4d71-93fa-2a1ad7ff4e99"
+      },
+      {
+        "uid": "systemreliability_country_chile",
+        "description": {
+          "id": "country",
+          "title": "country",
+          "defaultValue": "chile",
+          "description": "What country are we working in?",
+          "reference": false,
+          "type": "literal",
+          "format": "text/plain"
+        },
+        "value": "chile"
+      },
+      {
+        "uid": "systemreliability_hazard_eq",
+        "description": {
+          "id": "hazard",
+          "title": "hazard",
+          "defaultValue": "earthquake",
+          "description": "What hazard are we dealing with?",
+          "reference": false,
+          "type": "literal",
+          "format": "text/plain"
+        },
+        "value": "earthquake"
+      }
+    ],
+    "outputDescriptions": [
+      {
+        "id": "damage_consumer_areas",
+        "title": "damage_consumer_areas",
+        "format": "application/vnd.geo+json",
+        "name": "Productname_system_reliability_vector",
+        "icon": "router",
+        "reference": false,
+        "type": "complex",
+      }
+    ],
+    "processId": "org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess",
+    "url": "https://riesgos.52north.org/javaps/service"
+  };
+
+
+})

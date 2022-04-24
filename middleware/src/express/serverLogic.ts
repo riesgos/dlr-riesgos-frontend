@@ -7,7 +7,6 @@ import { WpsClient } from '../wps/public-api';
 import { MailAttachment, MailClient } from '../web/mailClient';
 import { config } from '../config';
 import { writeTextFile } from '../utils/fileApi';
-import { decodeEntities } from '../wps/lib/wps200/helpers';
 
 
 
@@ -173,7 +172,7 @@ ${new Date()}
 function getExecBody (data: ExecuteData) {
     const client = data.version === '1.0.0' ? wpsClient100 : wpsClient200;
     const execBody = client.wpsMarshaller.marshalExecBody(data.processId, data.inputs, data.outputDescriptions, true);
-    const xmlExecBody = decodeEntities(client.xmlMarshaller.marshalString(execBody));
+    const xmlExecBody = client.xmlMarshaller.marshalString(execBody);
     const xmlExecBodyPrettified = format(xmlExecBody);
     return xmlExecBodyPrettified;
 }

@@ -18,7 +18,6 @@ import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; const WPS_2_0 = WPS_
 import * as JsonixFactory from './jsonix/jsonix'; const Jsonix = JsonixFactory.Jsonix as any;
 import { pollUntil, delayedRetry } from './utils/polling';
 import { HttpClient } from '../../web/httpClient';
-import { decodeEntities } from './wps200/helpers';
 
 
 
@@ -145,7 +144,7 @@ export class WpsClient {
                 throw new Error('No job-Id');
             }
             const execbody = this.wpsMarshaller.marshallGetStatusBody(serverUrl, processId, currentState.jobID);
-            const xmlExecbody = decodeEntities(this.xmlMarshaller.marshalString(execbody));
+            const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
 
             request$ = this.postRaw(serverUrl, xmlExecbody);
 
@@ -185,7 +184,7 @@ export class WpsClient {
             }
 
             const execBody = this.wpsMarshaller.marshallGetResultBody(serverUrl, processId, lastState.jobID);
-            const xmlExecBody = decodeEntities(this.xmlMarshaller.marshalString(execBody));
+            const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
             return this.postRaw(serverUrl, xmlExecBody).pipe(
                 map((xmlResponse: string) => {
@@ -207,8 +206,7 @@ export class WpsClient {
 
         const executeUrl = this.wpsMarshaller.executeUrl(url, processId);
         const execBody = this.wpsMarshaller.marshalExecBody(processId, inputs, outputDescriptions, true);
-        let xmlExecBody = decodeEntities(this.xmlMarshaller.marshalString(execBody));
-        xmlExecBody = decodeEntities(xmlExecBody)
+        const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
         return this.postRaw(executeUrl, xmlExecBody).pipe(
             map((xmlResponse: string) => {
@@ -225,7 +223,7 @@ export class WpsClient {
 
         const executeUrl = this.wpsMarshaller.executeUrl(url, processId);
         const execbody = this.wpsMarshaller.marshalExecBody(processId, inputs, outputDescriptions, false);
-        const xmlExecbody = decodeEntities(this.xmlMarshaller.marshalString(execbody));
+        const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
 
         return this.postRaw(executeUrl, xmlExecbody).pipe(
             map((xmlResponse: string) => {
@@ -244,7 +242,7 @@ export class WpsClient {
 
         const dismissUrl = this.wpsMarshaller.dismissUrl(serverUrl, processId, jobId);
         const dismissBody = this.wpsMarshaller.marshalDismissBody(jobId);
-        const xmlDismissBody = decodeEntities(this.xmlMarshaller.marshalString(dismissBody));
+        const xmlDismissBody = this.xmlMarshaller.marshalString(dismissBody);
 
         return this.postRaw(dismissUrl, xmlDismissBody).pipe(
             map((xmlResponse: string) => {

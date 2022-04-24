@@ -16,6 +16,10 @@ export interface WpsDataDescription {
   description?: string;
   defaultValue?: any;
   options?: any[];
+  /** http://earthquake.usgs.gov/eqcenter/shakemap , ... */
+  schema?: string;
+  /** UTF-8, ... */
+  encoding?: string;
 }
 export type WpsInputDescription = WpsDataDescription;
 export type WpsOutputDescription = WpsDataDescription;

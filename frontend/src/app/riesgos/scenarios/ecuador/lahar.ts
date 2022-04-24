@@ -87,7 +87,9 @@ export const laharShakemap: Product & WpsData = {
         title: '',
         format: 'application/xml',
         reference: true,
-        type: 'complex'
+        type: 'complex',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+        encoding: 'UTF-8'
     },
     value: null,
 };

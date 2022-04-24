@@ -1,9 +1,13 @@
-import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability, WpsDataDescription,
-  WpsData, WpsState, WpsProcessDescription, WpsDataFormat } from '../wps_datatypes';
-import { WPSCapabilitiesType, ExecuteRequestType, DataInputType, OutputDefinitionType, IWpsExecuteProcessBody,
+import {
+  WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability, WpsDataDescription,
+  WpsData, WpsState, WpsProcessDescription, WpsDataFormat
+} from '../wps_datatypes';
+import {
+  WPSCapabilitiesType, ExecuteRequestType, DataInputType, OutputDefinitionType, IWpsExecuteProcessBody,
   IWpsExecuteResponse, IGetStatusRequest, Data, IGetResultRequest, IDismissRequest, IDismissResponse, ProcessOfferings,
-  InputDescriptionType, OutputDescriptionType, LiteralDataType } from './wps_2.0';
-import { isStatusInfo, isResult, decodeEntities } from './helpers';
+  InputDescriptionType, OutputDescriptionType, LiteralDataType
+} from './wps_2.0';
+import { isStatusInfo, isResult } from './helpers';
 import * as xmlserializer from 'xmlserializer';
 
 
@@ -21,7 +25,7 @@ export class WpsMarshaller200 implements WpsMarshaller {
 
   unmarshalProcessDescription(processDescriptionJson: ProcessOfferings): WpsProcessDescription {
     const description = processDescriptionJson.processOffering[0];
-  
+
     const inputs: WpsInput[] = [];
     for (const dataInput of description.process.input) {
       inputs.push({
@@ -128,7 +132,7 @@ export class WpsMarshaller200 implements WpsMarshaller {
   }
 
   unmarshalSyncExecuteResponse(responseJson: IWpsExecuteResponse, url: string, processId: string,
-                               inputs: WpsInput[], outputDescriptions: WpsOutputDescription[]): WpsResult[] {
+    inputs: WpsInput[], outputDescriptions: WpsOutputDescription[]): WpsResult[] {
     const out: WpsResult[] = [];
 
     if (isResult(responseJson.value)) {
@@ -218,7 +222,7 @@ export class WpsMarshaller200 implements WpsMarshaller {
   }
 
   unmarshalGetStateResponse(responseJson: any, serverUrl: string, processId: string,
-                            inputs: WpsData[], outputDescriptions: WpsDataDescription[]): WpsState {
+    inputs: WpsData[], outputDescriptions: WpsDataDescription[]): WpsState {
     if (isStatusInfo(responseJson.value)) {
       const state: WpsState = {
         status: responseJson.value.status,
@@ -261,25 +265,39 @@ export class WpsMarshaller200 implements WpsMarshaller {
   }
 
   private marshalInputs(inputs: WpsData[]): DataInputType[] {
+
     return inputs.map(i => {
       if (i.description.reference) {
         return {
           id: i.description.id,
           reference: {
-            href: decodeEntities(i.value),
+            href: i.value,
             mimeType: i.description.format,
+            schema: i.description.schema,
+            encoding: i.description.encoding || "UTF-8"
           }
         };
       } else {
         return {
           id: i.description.id,
           data: {
-            content: typeof i.value === 'string' ? [i.value] : [JSON.stringify(i.value)],
-            mimeType: i.description.format
+            content: this.marshalInput(i),
+            mimeType: i.description.format,
+            // schema: i.description.schema,
+            // encoding: i.description.encoding || "UTF-8"
           }
         };
       }
     });
+  }
+
+
+  private marshalInput(i: WpsData): any {
+    if (i.description.type === 'literal') {
+      return [i.value];
+    } else {
+      return [JSON.stringify(i.value)];
+    }
   }
 
   private marshalOutputs(outputs: WpsDataDescription[]): OutputDefinitionType[] {

@@ -44,7 +44,7 @@ export class MailClient {
             attachments: attachments
           }, function(err, reply) {
             console.error(err && err.stack);
-            console.dir(reply);
+            // console.dir(reply);
         });
     }
 }

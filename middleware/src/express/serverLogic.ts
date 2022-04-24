@@ -7,6 +7,7 @@ import { WpsClient } from '../wps/public-api';
 import { MailAttachment, MailClient } from '../web/mailClient';
 import { config } from '../config';
 import { writeTextFile } from '../utils/fileApi';
+import { decodeEntities } from '../wps/lib/wps200/helpers';
 
 
 
@@ -60,19 +61,23 @@ export async function proxyExecuteRequest(parsed: ExecuteData) {
 
 interface ProcessState {
     result: any
-}
+};
 
 export class ProcessPool {
     private latestId = 0;
     private managedProcesses: {[key: number]: ProcessState} = {};
 
-    constructor(private maxConcurrentExecs = 100) {}
+    constructor(private maxConcurrentExecs = 100) {
+        for (let id = 0; id < this.maxConcurrentExecs; id++) {
+            this.managedProcesses[id] = { result: null };
+        }
+    }
 
     public execute(data: ExecuteData): number {
 
         // Step 1: get an id under which to find the current process
         const id = this.getNewExecId();
-        if (!id) {
+        if (id === null) {
             throw Error(`Cannot execute this request. There are still ${Object.keys(this.managedProcesses).length} requests ongoing.`);
         }
         this.managedProcesses[id] = {
@@ -94,12 +99,13 @@ export class ProcessPool {
     }
 
     public get(id: number) {
-        const state = this.managedProcesses[id];
-        if (!state) return {error: `Server doesn't know about process-id ${id}`}
-        const result = state.result;
+        const processData = this.managedProcesses[id];
+        if (!processData) return {error: `Server doesn't know about process-id ${id}`}
+        const result = processData.result;
         if (result !== null) {
             // clean memory once data has been fetched.
-            delete(this.managedProcesses[id]);
+            this.managedProcesses[id].result = null;
+            console.log(`Cleaned stored entry nr. ${id} to ${JSON.stringify(this.managedProcesses[id])}`)
             return result;
         } else {
             return null;
@@ -109,8 +115,9 @@ export class ProcessPool {
     private getNewExecId(): number | null {
         for (let offset = 1; offset <= this.maxConcurrentExecs; offset += 1) {
             const candidateId = (this.latestId + offset) % this.maxConcurrentExecs;
-            if (!this.managedProcesses[candidateId]) {
+            if (this.managedProcesses[candidateId].result === null) {
                 this.latestId = candidateId;
+                console.log(`new exec id ${this.latestId}`)
                 return this.latestId;
             }
         }
@@ -166,7 +173,7 @@ ${new Date()}
 function getExecBody (data: ExecuteData) {
     const client = data.version === '1.0.0' ? wpsClient100 : wpsClient200;
     const execBody = client.wpsMarshaller.marshalExecBody(data.processId, data.inputs, data.outputDescriptions, true);
-    const xmlExecBody = client.xmlMarshaller.marshalString(execBody);
+    const xmlExecBody = decodeEntities(client.xmlMarshaller.marshalString(execBody));
     const xmlExecBodyPrettified = format(xmlExecBody);
     return xmlExecBodyPrettified;
 }

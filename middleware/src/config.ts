@@ -2,7 +2,7 @@ import path from 'path';
 
 export const config = {
     port: 8008,
-    useCache: true,
+    useCache: false,
     siteAdmins: [
         'michael.langbein@dlr.de'
     ],

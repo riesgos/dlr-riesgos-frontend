@@ -3,7 +3,7 @@ import { WpsMarshaller, WpsInput, WpsOutputDescription, WpsResult, WpsCapability
 import { WPSCapabilitiesType, ExecuteRequestType, DataInputType, OutputDefinitionType, IWpsExecuteProcessBody,
   IWpsExecuteResponse, IGetStatusRequest, Data, IGetResultRequest, IDismissRequest, IDismissResponse, ProcessOfferings,
   InputDescriptionType, OutputDescriptionType, LiteralDataType } from './wps_2.0';
-import { isStatusInfo, isResult } from './helpers';
+import { isStatusInfo, isResult, decodeEntities } from './helpers';
 import * as xmlserializer from 'xmlserializer';
 
 
@@ -113,7 +113,8 @@ export class WpsMarshaller200 implements WpsMarshaller {
   }
 
   executeUrl(baseurl: string, processId: string): string {
-    return `${baseurl}?service=WPS&request=Execute&version=2.0.0&identifier=${processId}`;
+    return baseurl;
+    // return `${baseurl}?service=WPS&request=Execute&version=2.0.0&identifier=${processId}`;
   }
 
   unmarshalCapabilities(capabilities: WPSCapabilitiesType): WpsCapability[] {
@@ -265,7 +266,7 @@ export class WpsMarshaller200 implements WpsMarshaller {
         return {
           id: i.description.id,
           reference: {
-            href: i.value,
+            href: decodeEntities(i.value),
             mimeType: i.description.format,
           }
         };

@@ -21,6 +21,7 @@ export function createExpressApp() {
     
     expressApp.post('/execute', (req: Request, res: Response) => {
         const data = req.body;
+        // const dataDecoded = JSON.parse(decodeURI(JSON.stringify(data)));
         const id = pool.execute(data);
         res.json({id});
     });

@@ -9,7 +9,7 @@ import { EqSelection, userinputSelectedEq, selectedEq } from './scenarios/chile/
 import { Shakyground, shakemapPgaOutput, eqShakemapRef, Gmpe, VsGrid, shakemapSa03WmsOutput, shakemapSa10WmsOutput } from './scenarios/chile/shakyground';
 import { EqDeus, loss, eqDamageWms, eqDamageMRef, eqDamageMeta } from './scenarios/chile/eqDeus';
 import { TsService, tsWms, tsShakemap } from './scenarios/chile/tsService';
-import { TsDeus, schema, tsDamageWms } from './scenarios/chile/tsDeus';
+import { TsDeus, schema, tsDamageWms, tsDamageMeta } from './scenarios/chile/tsDeus';
 import { EqReliability, countryChile, hazardEq, damageConsumerAreas } from './scenarios/chile/reliability';
 import { initialExposure, ExposureModel, modelChoice, initialExposureRef } from './scenarios/chile/exposure';
 import { fragilityRef } from './scenarios/chile/modelProp';
@@ -22,7 +22,7 @@ import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scen
 import { ShakygroundPeru, shakemapPgaOutputPeru, eqShakemapRefPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru } from './scenarios/peru/shakyground';
 import { EqDeusPeru, lossPeru, eqDamageWmsPeru, eqDamagePeruMRef, eqDamageMetaPeru } from './scenarios/peru/eqDeus';
 import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
-import { TsDeusPeru, tsDamageWmsPeru, schemaPeru } from './scenarios/peru/tsDeus';
+import { TsDeusPeru, tsDamageWmsPeru, tsDamageMetaPeru, schemaPeru } from './scenarios/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './scenarios/peru/reliability';
 
 // ecuador
@@ -98,7 +98,7 @@ export class RiesgosService {
           Gmpe, VsGrid, selectedEq,
           eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput,
           loss, eqDamageWms, eqDamageMRef, eqDamageMeta,
-          tsWms, tsShakemap,
+          tsWms, tsShakemap, tsDamageMeta,
           countryChile, hazardEq,
           damageConsumerAreas, schema,
           tsDamageWms,
@@ -124,7 +124,7 @@ export class RiesgosService {
           selectedEqPeru,
           shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru, eqShakemapRefPeru,
           tsWmsPeru, tsShakemapPeru, eqDamagePeruMRef, schemaPeru, 
-          tsDamageWmsPeru,
+          tsDamageWmsPeru, tsDamageMetaPeru,
           countryPeru, hazardEqPeru,
           damageConsumerAreasPeru
         ];

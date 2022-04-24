@@ -48,7 +48,7 @@ export const damageConsumerAreasEcuador: WpsData & Product & VectorLayerProduct 
         title: '',
         icon: 'router',
         format: 'application/vnd.geo+json',
-        name: 'Damage to consumer areas',
+        name: 'Productname_system_reliability_vector',
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
@@ -153,7 +153,7 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             [laharHeightShakemapRef, laharVelocityShakemapRef, countryEcuador, hazardLahar].map(p => p.uid),
             [damageConsumerAreasEcuador].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess',
-            'Process for evaluating the reliability of infrastructure networks',
+            'Description_system_reliability',
             'https://riesgos.52north.org/javaps/service',
             '2.0.0',
             http,

@@ -6,11 +6,19 @@ import { eqDamagePeruMRef } from './eqDeus';
 import { tsShakemapPeru } from './tsService';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { ProductRasterLayer } from 'src/app/mappable/map.types';
+import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';
+import { MapBrowserEvent } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import { TileWMS } from 'ol/source';
+import { DamagePopupComponent } from 'src/app/components/dynamic/damage-popup/damage-popup.component';
+import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
+import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { createHeaderTableHtml } from 'src/app/helpers/others';
 
 
 export const schemaPeru: StringSelectUserConfigurableProduct & WpsData = {
@@ -35,7 +43,17 @@ export const schemaPeru: StringSelectUserConfigurableProduct & WpsData = {
 };
 
 
-
+export const tsDamageMetaPeru: WpsData & Product = {
+    uid: 'peru_tsdamage_metadata',
+    description: {
+        id: 'meta_summary',
+        reference: false,
+        title: '',
+        type: 'complex',
+        format: 'application/json'
+    },
+    value: null
+}
 
 export const tsDamageWmsPeru: WpsData & MappableProduct = {
     uid: 'ts_deus_damage_peru',
@@ -47,19 +65,72 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
         description: '',
         format: 'application/WMS',
     },
-    toUkisLayers: function(ownValue, mapSvc, layerSvc, http, store, layerMarshaller) {
-        return layerMarshaller.makeWmsLayers(this).pipe(map(layers => {
-            const tsDamage = layers[0];
-            const tsEconomic = { ... tsDamage } as ProductRasterLayer;
-            const tsTranstion = { ... tsDamage } as ProductRasterLayer;
-            tsDamage.name = 'ts-exposure';
-            tsDamage.params.STYLES = 'w_damage';
-            tsEconomic.name = 'ts-damage';
-            tsEconomic.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
-            tsTranstion.name = 'ts-transitions';
-            tsTranstion.params.STYLES = 'm_trans';
-            return [tsDamage, tsEconomic, tsTranstion];
-        }));
+    toUkisLayers: function (ownValue, mapSvc, layerSvc, http, store, layerMarshaller) {
+
+        const riesgosState$ = store.select((state) => state.riesgosState).pipe(take(1));
+        const layers$ = layerMarshaller.makeWmsLayers(this);
+
+        return forkJoin([layers$, riesgosState$]).pipe(
+            map(([layers, riesgosState]) => {
+
+                const metaData = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === tsDamageWmsPeru.uid);
+                const metaDataValue = metaData.value[0];
+
+                const econLayer: ProductLayer = layers[0];
+                const damageLayer: ProductLayer = new ProductRasterLayer({ ...econLayer });
+
+                econLayer.id += '_economic_peru';
+                econLayer.name = 'eq-damage';
+                econLayer.params.STYLES = 'style-loss';
+                econLayer.legendImg += '&style=style-loss';
+                const totalDamage = +(metaDataValue.total.loss_value);
+                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' ' + metaDataValue.loss_unit;
+                econLayer.dynamicDescription = {
+                    component: InfoTableComponentComponent,
+                    inputs: {
+                        title: 'Total damage',
+                        data: [[{ value: 'Total damage' }, { value: totalDamageFormatted }]],
+                        bottomText: `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
+                    }
+                }
+
+                damageLayer.id += '_damage_peru';
+                damageLayer.name = 'eq-exposure';
+                damageLayer.params = { ...econLayer.params };
+                damageLayer.params.STYLES = 'style-damagestate';
+                damageLayer.legendImg += '&style=style-damagestate';
+                damageLayer.popup = {
+                    dynamicPopup: {
+                        component: DamagePopupComponent,
+                        getAttributes: (args) => {
+                            const event: MapBrowserEvent<any> = args.event;
+                            const layer: TileLayer<TileWMS> = args.layer;
+                            return {
+                                event: event,
+                                layer: layer,
+                                metaData: metaData.value[0],
+                                xLabel: 'damage',
+                                yLabel: 'Nr_buildings'
+                            };
+                        }
+                    }
+                };
+                const counts = metaDataValue.total.buildings_by_damage_state;
+                const html =
+                    createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
+                    + '{{ BuildingTypesSuppasri }}';
+
+                damageLayer.dynamicDescription = {
+                    component: TranslatableStringComponent,
+                    inputs: {
+                        text: html
+                    }
+                };
+
+
+                return [econLayer, damageLayer];
+            })
+        );
     },
     value: null
 }
@@ -83,7 +154,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
         this.requiredProducts = [schemaPeru, tsShakemapPeru, eqDamagePeruMRef].map(p => p.uid);
-        this.providedProducts = [tsDamageWmsPeru].map(p => p.uid);
+        this.providedProducts = [tsDamageWmsPeru, tsDamageMetaPeru].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
             providerName: 'GFZ',
@@ -116,25 +187,25 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
                     const exposure = inputProducts.find(prd => prd.uid === eqDamagePeruMRef.uid);
 
                     const deusInputs = [{
-                        ... schemaPeru,
+                        ...schemaPeru,
                         value: 'SARA_v1.0' // <-- because last exposure still used SARA!
                     }, {
-                        ... fragility,
+                        ...fragility,
                         description: {
                             ...fragilityRefPeru.description,
                             id: 'fragility'
                         }
                     }, {
-                        ... shakemap,
+                        ...shakemap,
                         description: {
                             ...shakemap.description,
                             format: 'text/xml',
                             id: 'intensity'
                         }
                     }, {
-                        ... exposure,
+                        ...exposure,
                         description: {
-                            ... exposure.description,
+                            ...exposure.description,
                             id: 'exposure'
                         },
                     }

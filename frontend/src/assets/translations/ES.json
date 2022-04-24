@@ -503,6 +503,7 @@
     "mwhLand": "Profundidad máxima de inundación",
     "mwhLand_global": "Profundidad máxima de inundación - 100m",
     "mwhLand_local": "Profundidad máxima de inundación - 10m",
+    "no_data": "Sin datos",
     "nr_buildings": "# edificios",
     "observed": "observado",
     "outburstSite": "Sitio de ruptura",

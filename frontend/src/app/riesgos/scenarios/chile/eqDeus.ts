@@ -23,6 +23,7 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
+import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
 
 
 
@@ -37,7 +38,6 @@ export const loss: WpsData & Product = {
     },
     value: 'testinputs/loss_sara.json'
 };
-
 
 export const eqDamageWms: WpsData & MappableProduct = {
     uid: 'eq_damage',
@@ -66,14 +66,29 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 econLayer.name = 'eq-damage';
                 econLayer.params.STYLES = 'style-loss';
                 econLayer.legendImg += '&style=style-loss';
-                econLayer.description = `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`;
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' ' + metaDataValue.loss_unit;
                 econLayer.dynamicDescription = {
                     component: InfoTableComponentComponent,
                     inputs: {
                         title: 'Total damage',
-                        data: [[{value: 'Total damage'}, {value: totalDamageFormatted}]]
+                        data: [[{value: 'Total damage'}, {value: totalDamageFormatted}]],
+                        bottomText: `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
+                    }
+                }
+                econLayer.popup = {
+                    dynamicPopup: {
+                        component: EconomicDamagePopupComponent,
+                        getAttributes: (args) => {
+                            const event: MapBrowserEvent<any> = args.event;
+                            const layer: TileLayer<TileWMS> = args.layer;
+                            return {
+                                event: event,
+                                layer: layer,
+                                metaData: metaData.value[0],
+                                title: 'eq-damage'
+                            };
+                        }
                     }
                 }
 
@@ -118,7 +133,6 @@ export const eqDamageWms: WpsData & MappableProduct = {
     },
     value: null
 }
-
 
 export const eqDamageMeta: WpsData & Product = {
     uid: 'chile_eqdamage_metadata',

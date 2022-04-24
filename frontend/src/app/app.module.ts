@@ -85,6 +85,7 @@ import { DisclaimerService } from './components/disclaimer/disclaimer.service';
 import { ProxyInterceptor } from './services/interceptors/ProxyInterceptor';
 import { DamagePopupComponent } from './components/dynamic/damage-popup/damage-popup.component';
 import { GroupedBarChartComponent } from './components/grouped-bar-chart/grouped-bar-chart.component';
+import { EconomicDamagePopupComponent } from './components/dynamic/economic-damage-popup/economic-damage-popup.component';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
@@ -147,7 +148,8 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     NavResizeDirectiveDirective,
     DisclaimerTriggerComponent,
     DamagePopupComponent,
-    GroupedBarChartComponent
+    GroupedBarChartComponent,
+    EconomicDamagePopupComponent
   ],
   imports: [
     BrowserModule,

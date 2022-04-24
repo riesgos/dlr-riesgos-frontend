@@ -35,7 +35,7 @@ export const modelChoicePeru: WpsData & StringSelectUserConfigurableProduct = {
       'LimaCVT4_PD40_TI60_5000',
       'LimaCVT5_PD40_TI60_10000',
       'LimaCVT6_PD40_TI60_50000',
-      // 'LimaBlocks',
+      'LimaBlocks',
     ],
     defaultValue: 'LimaCVT1_PD30_TI70_5000',
   },

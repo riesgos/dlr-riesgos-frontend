@@ -231,7 +231,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         if (parseInt(prob) === 1) {
             prob = '01';
         }
-        const url = `assets/data/geojson/VEI_${vei}_${prob}percent.geojson`;
+        const url = `assets/data/geojson/ashfall_points/VEI_${vei}_${prob}percent.geojson`;
         return this.http.get(url).pipe(map((val) => {
             return {
                 ... ashfall,
@@ -241,7 +241,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
     }
 
     private loadAshfallPolygonFromFile(ashfallPoint: Product, vei: string, prob: string): Observable<Product> {
-        const url = `assets/data/geojson/ashfall/ash_prob${prob}_vei${vei}.geojson`;
+        const url = `assets/data/geojson/ashfall_polygons/ash_prob${prob}_vei${vei}.geojson`;
         return this.http.get(url).pipe(map((val) => {
             return {
                 ... ashfallPoint,

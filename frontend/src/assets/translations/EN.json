@@ -367,6 +367,7 @@
     "mwhLand": "Maximum flow depth",
     "mwhLand_global": "Maximum flow depth / 100m",
     "mwhLand_local": "Maximum flow depth / 10m",
+    "no_data": "No data",
     "nr_buildings": "# buildings",
     "outburstSite": "Outburst site",
     "p1": "Peru",

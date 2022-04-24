@@ -77,7 +77,7 @@ export class DamagePopupComponent implements OnInit {
 
     this.baseData$ = this.http.get(url).pipe(
       map((getFeatureInfoData: any) => {
-        const props: DeusGetFeatureInfo = getFeatureInfoData.features[0].properties; console.log(props)
+        const props: DeusGetFeatureInfo = getFeatureInfoData.features[0].properties;
 
         const parsedData: GroupedBarChartData[] = [];
         for (const key in props) {

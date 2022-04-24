@@ -124,7 +124,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                     const selectedProperties = {
                         '{{ Thickness }}': thicknessText,
                         '{{ VEI }}': toDecimalPlaces(properties['vei'] as number, 1),
-                        '{{ Expected_load }}': `${pressure} Pa`,
+                        '{{ Expected_load }}': `${pressure.toFixed(0)} Pa`,
                         '{{ Probability }}': properties['prob'] + ' %'
                     };
                     return createKeyValueTableHtml('{{ Ashfall }}', selectedProperties, 'medium');

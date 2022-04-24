@@ -50,9 +50,14 @@ const laharAshfallUpdatedExposureProps = {
 
             for (const label in data) {
                 if (data[label]) {
+                    // There seems to be never an entry with 'D1'
+                    if (!data[label].find(e => e.label === 'D1')) {
+                        data[label].push({label: "D1", value: 0});
+                    }
                     data[label].sort((dp1, dp2) => dp1.label > dp2.label ? 1 : -1);
                 }
             }
+            console.log(data)
 
             const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
             return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Lahar_and_ashfall_damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;

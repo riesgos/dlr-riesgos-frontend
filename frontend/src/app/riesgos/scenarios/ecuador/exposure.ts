@@ -255,7 +255,13 @@ export const initialExposureLahar = {
         text: `exposureLegend`
       }],
       summary: (value: any) => {
-        return 'BuildingTypesMavrouli';
+        const comp: IDynamicComponent = {
+          component: TranslatableStringComponent,
+          inputs: {
+            text: 'BuildingTypesMavrouli'
+          }
+        };
+        return comp;
       }
     },
     name: 'Exposure_lahar_initial'

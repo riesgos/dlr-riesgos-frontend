@@ -55,11 +55,11 @@ export class DamagePopupComponent implements OnInit {
     coloringFunction: randomColoring,
     groupingFunction: createGrouping(0)
   }, {
-    label: 'other',
+    label: 'subtype',
     coloringFunction: randomColoring,
     groupingFunction: createGrouping(1)
   }, {
-    label: 'yet other',
+    label: 'height',
     coloringFunction: randomColoring,
     groupingFunction: createGrouping(2)
   }];

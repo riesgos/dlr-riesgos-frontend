@@ -2,12 +2,14 @@ import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, Proces
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { selectedEq } from './eqselection';
-import { Observable, concat } from 'rxjs';
+import { Observable, concat, forkJoin, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { delay, map, mergeMap, tap, withLatestFrom } from 'rxjs/operators';
+import { sleep } from '@cds/core/internal';
 
 
 
@@ -161,22 +163,13 @@ export class TsService implements WizardableProcess, ExecutableProcess {
         const inputsShkmp = newInputs;
         const outputsShkmp = outputs.filter(i => this.tsShakemapService.providedProducts.includes(i.uid));
 
-        const proc1$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);
-        const proc2$ = this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting);
-
-        return concat(proc2$, proc1$);
-
-        // return forkJoin(proc1$, proc2$).pipe(
-        //     map((results: Product[][]) => {
-        //         const flattened: Product[] = [];
-        //         for (const result of results) {
-        //             for (const data of result) {
-        //                 flattened.push(data);
-        //             }
-        //         }
-        //         return flattened;
-        //     })
-        // );
+        const getData = async () => {
+            const wmsProds = await this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting).toPromise();
+            sleep(3000);
+            const shakemapProds = await this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting).toPromise();
+            return [... wmsProds, ... shakemapProds];
+        };
+        return from(getData());
     }
 
 }

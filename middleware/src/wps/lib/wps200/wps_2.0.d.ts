@@ -63,11 +63,11 @@ export interface Contents {
 
 export interface DataInputType {
   id: string;
-  /** Raw data. Only use one of the following: data, reference, input. */
+  /** Raw data. Only use one out of the following: data, reference, input. */
   data?: Data;
-  /** Data per reference. Only use one of the following: data, reference, input. */
+  /** Data per reference. Only use one out of the following: data, reference, input. */
   reference?: ReferenceType;
-  /** Nested data. Only use one of the following: data, reference, input. */
+  /** Nested data. Only use one out of the following: data, reference, input. */
   input?: DataInputType;
 }
 
@@ -87,6 +87,7 @@ export interface LiteralDataDomainType {
   anyValue: any;
   valuesReference: any;
   dataType?: DomainMetadataType;
+  /** unit of measurement */
   uom?: any;
   defaultValue?: ValueType;
 }
@@ -106,8 +107,8 @@ export interface StatusInfo {
 
 export interface DataEncodingAttributes {
   mimeType?: string;
-  encoding?: string;
-  schema?: string;
+  encoding?: string; // optional according to http://docs.opengeospatial.org/is/14-065/14-065.html, but required for JavaPS
+  schema?: string;  // optional according to http://docs.opengeospatial.org/is/14-065/14-065.html, but required for JavaPS
 }
 
 export interface OutputDefinitionType extends DataEncodingAttributes {

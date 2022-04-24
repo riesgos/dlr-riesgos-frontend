@@ -171,7 +171,6 @@ test('testing that references are  html-encoded', () => {
   expect(xmlExecBody2.includes('&amp;')).toBeTruthy();
 });
 
-
 test('making sure that encoding and schema are present', () => {
   const incorrect = `
     <wps:Execute xmlns:wps="http://www.opengis.net/wps/2.0" service="WPS" version="2.0.0" mode="async" response="document">
@@ -204,7 +203,7 @@ test('making sure that encoding and schema are present', () => {
     </wps:Execute>
   `;
 
-  const requestData = {
+  const requestData: any = {
     "version": "2.0.0",
     "inputs": [
       {
@@ -263,4 +262,8 @@ test('making sure that encoding and schema are present', () => {
   };
 
 
-})
+  const execBody = wpsClient200.wpsMarshaller.marshalExecBody(requestData.processId, requestData.inputs, requestData.outputDescriptions, true);
+  const xmlExecBody: string = wpsClient200.xmlMarshaller.marshalString(execBody);
+  expect(xmlExecBody.includes(`encoding="UTF-8"`)).toBeTruthy();
+  expect(xmlExecBody.includes(`schema="http://earthquake.usgs.gov/eqcenter/shakemap"`)).toBeTruthy();
+});

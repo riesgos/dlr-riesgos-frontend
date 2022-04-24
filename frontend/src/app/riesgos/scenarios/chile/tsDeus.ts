@@ -24,6 +24,7 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
+import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
 
 
 
@@ -100,9 +101,19 @@ export const tsDamageWms: WpsData & MappableProduct = {
                     }
                 }
                 econLayer.popup = {
-                 asyncPopup: (data, callback) => {
-                     
-                 }   
+                    dynamicPopup: {
+                        component: EconomicDamagePopupComponent,
+                        getAttributes: (args) => {
+                            const event: MapBrowserEvent<any> = args.event;
+                            const layer: TileLayer<TileWMS> = args.layer;
+                            return {
+                                event: event,
+                                layer: layer,
+                                metaData: metaData.value[0],
+                                title: 'eq-damage'
+                            };
+                        }
+                    }
                 }
 
                 damageLayer.id += '_damage';

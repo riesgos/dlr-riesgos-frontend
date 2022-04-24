@@ -32,7 +32,7 @@ export const hazardEqPeru: WpsData & Product = {
     uid: 'systemreliability_hazard_eq_peru',
     description: {
         id: 'hazard',
-        title: '',
+        title: 'hazard',
         defaultValue: 'earthquake',
         description: 'What hazard are we dealing with?',
         reference: false,
@@ -46,7 +46,7 @@ export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
     uid: 'systemreliability_damage_consumerareas_peru',
     description: {
         id: 'damage_consumer_areas',
-        title: '',
+        title: 'damage_consumer_areas',
         format: 'application/vnd.geo+json',
         name: 'Productname_system_reliability_vector',
         icon: 'router',

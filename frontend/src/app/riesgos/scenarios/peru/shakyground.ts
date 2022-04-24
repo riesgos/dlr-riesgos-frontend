@@ -20,7 +20,9 @@ export const eqShakemapRefPeru: WpsData & Product = {
         title: 'shakeMapFile',
         type: 'complex',
         reference: true,
-        format: 'text/xml'
+        format: 'text/xml',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+        encoding: 'UTF-8'
     },
     value: null
 };
@@ -157,6 +159,5 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
             })
         );
     }
-
 
 }

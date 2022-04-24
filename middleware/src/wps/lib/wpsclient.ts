@@ -143,10 +143,10 @@ export class WpsClient {
             if (!currentState.jobID) {
                 throw new Error('No job-Id');
             }
-            const execbody = this.wpsMarshaller.marshallGetStatusBody(serverUrl, processId, currentState.jobID);
-            const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
+            const execBody = this.wpsMarshaller.marshallGetStatusBody(serverUrl, processId, currentState.jobID);
+            const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
-            request$ = this.postRaw(serverUrl, xmlExecbody);
+            request$ = this.postRaw(serverUrl, xmlExecBody);
 
         } else {
             throw new Error(`'GetStatus' has not yet been implemented for this WPS-Version (${this.version}).`);
@@ -263,7 +263,7 @@ export class WpsClient {
         };
         return defer(() => from(this.webClient.post(url, xmlBody, paras))).pipe(
             delayedRetry(2000, 2),
-            tap(r => {this.parseResponseForErrors(url, r)}),
+            tap((r: string) => {this.parseResponseForErrors(url, r)}),
             share()  // turning hot: to make sure that multiple subscribers dont cause multiple requests
         );
     }
@@ -277,7 +277,7 @@ export class WpsClient {
         };
         return defer(() => from(this.webClient.get(url, paras))).pipe(
             delayedRetry(2000, 2),
-            tap(r => {this.parseResponseForErrors(url, r)}),
+            tap((r: string) => {this.parseResponseForErrors(url, r)}),
         );
     }
 

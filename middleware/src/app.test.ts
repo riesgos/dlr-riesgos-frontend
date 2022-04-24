@@ -55,6 +55,7 @@ if (sendLiveRequests) {
 
 
 test('test writing and reading files', async () => {
+    config.useCache = true;   // making sure that data is actually stored on disk
     const filePath = path.join(config.cacheDir, 'test', 'subtest', 'text.json');
     // const filePath = path.join(__dirname, '..', "data/https/rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess");
     const content = {test: 'true'};

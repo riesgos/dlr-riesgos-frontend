@@ -10,7 +10,12 @@ import { forkJoin, Observable } from 'rxjs';
 import { Deus } from '../chile/deus';
 import { map, switchMap, take } from 'rxjs/operators';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
 import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/ngrx_register';
 import { MapBrowserEvent } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
@@ -19,6 +24,7 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
+import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
 
 
 export const schemaPeru: StringSelectUserConfigurableProduct & WpsData = {
@@ -65,7 +71,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
         description: '',
         format: 'application/WMS',
     },
-    toUkisLayers: function (ownValue, mapSvc, layerSvc, http, store, layerMarshaller) {
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
 
         const riesgosState$ = store.select((state) => state.riesgosState).pipe(take(1));
         const layers$ = layerMarshaller.makeWmsLayers(this);
@@ -91,6 +97,21 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                         title: 'Total damage',
                         data: [[{ value: 'Total damage' }, { value: totalDamageFormatted }]],
                         bottomText: `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
+                    }
+                }
+                econLayer.popup = {
+                    dynamicPopup: {
+                        component: EconomicDamagePopupComponent,
+                        getAttributes: (args) => {
+                            const event: MapBrowserEvent<any> = args.event;
+                            const layer: TileLayer<TileWMS> = args.layer;
+                            return {
+                                event: event,
+                                layer: layer,
+                                metaData: metaData.value[0],
+                                title: 'eq-damage'
+                            };
+                        }
                     }
                 }
 

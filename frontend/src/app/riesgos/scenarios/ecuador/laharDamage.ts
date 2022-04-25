@@ -13,9 +13,9 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import olFeature from 'ol/Feature';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { greenRedRange, toDecimalPlaces, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
+import { greenVioletRangeStepwise, toDecimalPlaces, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
 import { FeatureCollection } from '@turf/helpers';
-import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { createTableHtml, zeros, filledMatrix, getMaxFromDict } from 'src/app/helpers/others';
 import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
 import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { maxDamage$ } from '../chile/constants';
@@ -29,7 +29,7 @@ export const laharLossProps: VectorLayerProperties = {
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
+                const [r, g, b] = greenVioletRangeStepwise(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 1],
@@ -270,7 +270,9 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                     total += nrBuildings;
                 }
 
-                const dr = weightedDamage(Object.values(counts)) / 4;
+                // const dr = weightedDamage(Object.values(counts)) / 4;
+                const {maxKey, maxVal} = getMaxFromDict(counts);
+                const dr = +(maxKey[1]) / 4;
 
                 let r: number;
                 let g: number;
@@ -278,7 +280,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                 if (total === 0) {
                     r = b = g = 160;
                 } else {
-                    [r, g, b] = greenRedRange(0, 0.6, dr);
+                    [r, g, b] = greenVioletRangeStepwise(0, 0.8, dr);
                 }
 
                 return new olStyle({
@@ -294,7 +296,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
             legendEntries: [{
                 feature: {
                     "type": "Feature",
-                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [90, 10, 0, 0]}},
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4'], 'Buildings': [10, 0, 0, 0, 0]}},
                     "geometry": {
                       "type": "Polygon",
                       "coordinates": [ [
@@ -304,30 +306,11 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: `
-                <table class="table table-small">
-                    <thead>
-                    <tr>
-                        <th>D0</th>
-                        <th>D1</th>
-                        <th>D2</th>
-                        <th>D3</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>90</td>
-                        <td>10</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    </tbody>
-                </table>
-                `
+                text: `mostly_no_damage`
             }, {
                 feature: {
                     "type": "Feature",
-                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 40, 40, 10]}},
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4'], 'Buildings': [0, 10, 0, 0, 0]}},
                     "geometry": {
                       "type": "Polygon",
                       "coordinates": [ [
@@ -337,30 +320,11 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: `
-                <table class="table table-small">
-                    <thead>
-                    <tr>
-                        <th>D0</th>
-                        <th>D1</th>
-                        <th>D2</th>
-                        <th>D3</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>10</td>
-                        <td>40</td>
-                        <td>40</td>
-                        <td>10</td>
-                    </tr>
-                    </tbody>
-                </table>
-                `
+                text: `mostly_light_damage_nonexistent`
             }, {
                 feature: {
                     "type": "Feature",
-                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 10, 90]}},
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4'], 'Buildings': [0, 0, 10, 0, 0]}},
                     "geometry": {
                       "type": "Polygon",
                       "coordinates": [ [
@@ -370,26 +334,35 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: `
-                <table class="table table-small">
-                    <thead>
-                    <tr>
-                        <th>D0</th>
-                        <th>D1</th>
-                        <th>D2</th>
-                        <th>D3</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>10</td>
-                        <td>90</td>
-                    </tr>
-                    </tbody>
-                </table>
-                `
+                text: `mostly_moderate_damage_structural`
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4'], 'Buildings': [0, 0, 0, 10, 0]}},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: `mostly_extensive_damage_structural`
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3', 'D4'], 'Buildings': [0, 0, 0, 0, 10]}},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: `mostly_collapsed_damage`
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -410,7 +383,11 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                 }
 
                 for (const label in data) {
-                    if (data[label]) {
+                    if (data[label]) {                        
+                        // There seems to be never an entry with 'D1'
+                        if (!data[label].find(e => e.label === 'D1')) {
+                            data[label].push({label: "D1", value: 0});
+                        }
                         data[label].sort((dp1, dp2) => dp1.label > dp2.label ? 1 : -1);
                     }
                 }

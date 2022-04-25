@@ -26,6 +26,17 @@ export function greenYellowRedRange(startVal: number, endVal: number, currentVal
   }
 }
 
+export function greenVioletRangeStepwise(startVal: number, endVal: number, currentVal: number): [number, number, number] {
+  const degree = (currentVal - startVal) / (endVal - startVal);
+  const rgb = scaleInterpolation(violetGreenScale2, 1.0 - degree, false);
+  return rgb;
+}
+
+export function greenRedRangeStepwise(startVal: number, endVal: number, currentVal: number): [number, number, number] {
+  const degree = (currentVal - startVal) / (endVal - startVal);
+  const rgb = scaleInterpolation(redGreenScale2, 1.0 - degree, false);
+  return rgb;
+}
 
 export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
     // let hue = linInterpolateXY(startVal, -30, endVal, 110, currentVal);
@@ -76,6 +87,15 @@ export const redGreenScale2: Scale = {
   0.3: [252, 141, 89],
   0.5: [254, 224, 139],
   0.7: [230, 245, 152],
+  0.9: [153, 213, 148],
+};
+
+export const violetGreenScale2: Scale = {
+  0.1: [184, 53, 131],
+  0.25: [213, 62, 79],
+  0.45: [252, 141, 89],
+  0.65: [254, 224, 139],
+  0.8: [230, 245, 152],
   0.9: [153, 213, 148],
 };
 

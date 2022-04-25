@@ -125,7 +125,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                         '{{ Thickness }}': thicknessText,
                         '{{ VEI }}': toDecimalPlaces(properties['vei'] as number, 1),
                         '{{ Expected_load }}': `${pressure.toFixed(0)} Pa`,
-                        '{{ Probability }}': properties['prob'] + ' %'
+                        '{{ Probability_of_exceedence }}': properties['prob'] + ' %'
                     };
                     return createKeyValueTableHtml('{{ Ashfall }}', selectedProperties, 'medium');
                 }
@@ -159,7 +159,7 @@ export const probability: StringSelectUserConfigurableProduct & WpsData = {
         defaultValue: '50',
         wizardProperties: {
             fieldtype: 'stringselect',
-            name: 'probability',
+            name: 'Probability_of_exceedence',
             description: 'probability of range',
         }
     },
@@ -179,7 +179,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             [ashfall.uid, ashfallPoint.uid],
             'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
             'AshfallServiceDescription',
-            'http://riesgos.dlr.de/wps/WebProcessingService',
+            'https://riesgos.dlr.de/wps/WebProcessingService',
             '1.0.0',
             http,
             new ProcessStateUnavailable()

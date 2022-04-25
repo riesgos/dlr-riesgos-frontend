@@ -12,8 +12,8 @@ import { schemaEcuador, initialExposureAshfallRef } from './exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
 import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
-import { weightedDamage, greenRedRange, toDecimalPlaces, yellowBlueRange } from 'src/app/helpers/colorhelpers';
-import { createTableHtml, zeros, filledMatrix } from 'src/app/helpers/others';
+import { greenVioletRangeStepwise, toDecimalPlaces, yellowBlueRange } from 'src/app/helpers/colorhelpers';
+import { createTableHtml, zeros, filledMatrix, getMaxFromDict } from 'src/app/helpers/others';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
@@ -29,7 +29,7 @@ const ashfallLossProps: VectorLayerProperties = {
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenRedRange(0, 1, props.loss_value / maxDamage$);
+                const [r, g, b] = greenVioletRangeStepwise(0, 1, props.loss_value / maxDamage$);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 1],
@@ -259,7 +259,9 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                     total += nrBuildings;
                 }
 
-                const dr = weightedDamage(Object.values(counts)) / 3;
+                // const dr = weightedDamage(Object.values(counts)) / 3;
+                const {maxKey, maxVal} = getMaxFromDict(counts);
+                const dr = +(maxKey[1]) / 4;
 
                 let r: number;
                 let g: number;
@@ -267,7 +269,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                 if (total === 0) {
                     r = b = g = 160;
                 } else {
-                    [r, g, b] = greenRedRange(0, 0.6, dr);
+                    [r, g, b] = greenVioletRangeStepwise(0, 0.6, dr);
                 }
 
                 return new olStyle({
@@ -283,7 +285,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
             legendEntries: [{
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [90, 10, 0, 0]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [90, 0, 0, 0]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -293,30 +295,11 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: `
-                <table class="table table-small">
-                    <thead>
-                    <tr>
-                        <th>D0</th>
-                        <th>D1</th>
-                        <th>D2</th>
-                        <th>D3</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>90</td>
-                        <td>10</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    </tbody>
-                </table>
-                `
+                text: `mostly_no_damage`
             }, {
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [10, 40, 40, 10]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 60, 0, 0]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -326,30 +309,11 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: `
-                <table class="table table-small">
-                    <thead>
-                    <tr>
-                        <th>D0</th>
-                        <th>D1</th>
-                        <th>D2</th>
-                        <th>D3</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>10</td>
-                        <td>40</td>
-                        <td>40</td>
-                        <td>10</td>
-                    </tr>
-                    </tbody>
-                </table>
-                `
+                text: `mostly_light_damage`
             }, {
                 feature: {
                     'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 10, 90]}},
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 60, 0]}},
                     'geometry': {
                       'type': 'Polygon',
                       'coordinates': [ [
@@ -359,26 +323,21 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: `
-                <table class="table table-small">
-                    <thead>
-                    <tr>
-                        <th>D0</th>
-                        <th>D1</th>
-                        <th>D2</th>
-                        <th>D3</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>10</td>
-                        <td>90</td>
-                    </tr>
-                    </tbody>
-                </table>
-                `
+                text: `mostly_moderate_damage`
+            }, {
+                feature: {
+                    'type': 'Feature',
+                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 0, 90]}},
+                    'geometry': {
+                      'type': 'Polygon',
+                      'coordinates': [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: `mostly_collapsed_damage`
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -404,7 +363,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Ashfall_damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesTorres }}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {

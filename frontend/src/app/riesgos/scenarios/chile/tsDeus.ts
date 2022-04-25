@@ -87,7 +87,7 @@ export const tsDamageWms: WpsData & MappableProduct = {
                 const damageLayer: ProductLayer = new ProductRasterLayer({ ...econLayer });
 
                 econLayer.id += '_economic';
-                econLayer.name = 'eq-damage';
+                econLayer.name = 'ts-damage';
                 econLayer.params.STYLES = 'style-loss';
                 econLayer.legendImg += '&style=style-loss';
                 const totalDamage = +(metaDataValue.total.loss_value);
@@ -110,14 +110,14 @@ export const tsDamageWms: WpsData & MappableProduct = {
                                 event: event,
                                 layer: layer,
                                 metaData: metaData.value[0],
-                                title: 'eq-damage'
+                                title: 'ts-damage'
                             };
                         }
                     }
                 }
 
                 damageLayer.id += '_damage';
-                damageLayer.name = 'eq-exposure';
+                damageLayer.name = 'ts-exposure';
                 damageLayer.params = { ...econLayer.params };
                 damageLayer.params.STYLES = 'style-damagestate';
                 damageLayer.legendImg += '&style=style-damagestate';

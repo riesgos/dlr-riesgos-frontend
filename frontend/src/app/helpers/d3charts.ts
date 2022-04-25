@@ -70,7 +70,7 @@ export function createGroupedBarChart(
           automargin: true,
           title: {
             text: xLabel,
-            standoff: 30 * Math.ceil(groupNames.length / 4)
+            standoff: 20 + 20 * Math.ceil(groupNames.length / 2)
           }
         },
         yaxis: {

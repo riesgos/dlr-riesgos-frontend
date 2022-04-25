@@ -5,13 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BarData, createBarChart } from 'src/app/helpers/d3charts';
 import { VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { weightedDamage, greenRedRangeStepwise } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import Geometry from 'ol/geom/Geometry';
-import { environment } from 'src/environments/environment';
 
 
 export const lonminEcuador: Product & WpsData = {
@@ -151,7 +150,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
           r = b = g = 160;
           a = 0.9;
         } else {
-            // [r, g, b] = greenRedRange(0, 1, dr);
+            // [r, g, b] = greenRedRangeStepwise(0, 1, dr);
             [r, g, b] = [160, 160, 160];
             a = 0.05;
         }

@@ -118,7 +118,7 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
                 const counts = metaDataValue.total.buildings_by_damage_state;
                 const html =
                     createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
-                    + '{{ BuildingTypesSara }}';
+                    + '{{ BuildingTypesSaraExtensive }}';
 
                 damageLayer.dynamicDescription = {
                     component: TranslatableStringComponent,

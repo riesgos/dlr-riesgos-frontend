@@ -106,6 +106,18 @@ export function sum(arr: number[]): number {
     return arr.reduce((a, b) => a + b, 0);
 }
 
+export function getMaxFromDict(dict: object) {
+    let maxKey = null;
+    let maxVal = -99999999;
+    for (const key in dict) {
+        if (dict[key] >= maxVal) {
+            maxVal = dict[key];
+            maxKey = key;
+        }
+    }
+    return { maxKey, maxVal };
+}
+
 
 export function createTableHtml(rows: string[][], type: TableType = 'small'): string {
     const rowsFormatted = rows.map(row => {

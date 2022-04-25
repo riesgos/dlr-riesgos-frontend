@@ -8,12 +8,11 @@ import olFeature from 'ol/Feature';
 import { FeatureCollection, MultiPolygon, Polygon } from '@turf/helpers';
 import proj4 from 'proj4';  // requires "allowSyntheticDefaultImports": true
 import { HttpClient } from '@angular/common/http';
-import { greenRedRange } from 'src/app/helpers/colorhelpers';
+import { greenRedRangeStepwise } from 'src/app/helpers/colorhelpers';
 import { BarData, createBarChart } from 'src/app/helpers/d3charts';
 import Geometry from 'ol/geom/Geometry';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 
 
 proj4.defs('EPSG:32717', '+proj=utm +zone=17 +south +datum=WGS84 +units=m +no_defs');
@@ -63,7 +62,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const inundation = props['inundation'];
-                let [r, g, b] = greenRedRange(0, 50, inundation);
+                let [r, g, b] = greenRedRangeStepwise(0, 50, inundation);
 
                 return new olStyle({
                   fill: new olFill({

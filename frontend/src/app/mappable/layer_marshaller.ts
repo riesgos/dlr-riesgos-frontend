@@ -20,9 +20,6 @@ import { downloadBlob, downloadJson } from 'src/app/helpers/others';
 import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON } from 'ol/format';
-import olTileLayer from 'ol/layer/Tile';
-import olTileWMS from 'ol/source/TileWMS';
-import olLayerGroup from 'ol/layer/Group';
 import Polygon from 'ol/geom/Polygon';
 import { laharContoursWms } from 'src/app/riesgos/scenarios/ecuador/laharWrapper';
 import { GroupSliderComponent, SliderEntry } from '../components/dynamic/group-slider/group-slider.component';
@@ -91,9 +88,6 @@ export class LayerMarshaller  {
         }
 
         // First of all, a bunch of special cases. Each one of those layers has some customizations after user-requests
-        if (product.uid === laharContoursWms.uid) {
-            return this.createLaharContourLayers(product);
-        }
         if ([].includes(product.uid)) {
             return this.createWebglLayers(product as MultiVectorLayerProduct);
         }
@@ -111,18 +105,22 @@ export class LayerMarshaller  {
                         break;
                     case 'Shakyground_sa03_wms':
                         layers[0].name = 'SA(0.3)';
+                        layers[0].visible = false;
                         break;
                     case 'Shakyground_sa10_wms':
                         layers[0].name = 'SA(1.0)';
+                        layers[0].visible = false;
                         break;
                     case 'Shakyground_wmsPeru':
                         layers[0].name = 'PGA';
                         break;
                     case 'Shakyground_sa03_wmsPeru':
                         layers[0].name = 'SA(0.3)';
+                        layers[0].visible = false;
                         break;
                     case 'Shakyground_sa10_wmsPeru':
                         layers[0].name = 'SA(1.0)';
+                        layers[0].visible = false;
                         break;
                 }
                 layers[0].legendImg = 'assets/images/shakemap_pga_legend_labeled.svg';
@@ -263,66 +261,6 @@ export class LayerMarshaller  {
         }
 
         return of(ukisLayer);
-    }
-
-    createLaharContourLayers(laharProduct: Product): Observable<ProductCustomLayer[]> {
-        const basicLayers$ = this.makeWmsLayers(laharProduct as WmsLayerProduct);
-        const laharLayers$ = basicLayers$.pipe(
-            map((layers: ProductRasterLayer[]) => {
-                const olLayers = layers.map(l => {
-                    const layer = new olTileLayer({
-                        source: new olTileWMS({
-                          url: l.url,
-                          params: l.params,
-                          crossOrigin: 'anonymous'
-                        }),
-                        visible: false
-                    });
-                    layer.set('id', l.id);
-                    return layer;
-                });
-                olLayers[0].setVisible(true);
-
-                const layerGroup = new olLayerGroup({
-                    layers: olLayers
-                });
-
-                const entries: SliderEntry[] = layers.map((l: ProductRasterLayer, index: number) => {
-                    return {
-                        id: l.id,
-                        tickValue: index,
-                        displayText: l.name.match(/(\d+)$/)[0] + 'min'
-                    };
-                });
-
-                const laharLayer = new ProductCustomLayer({
-                    hasFocus: false,
-                    filtertype: 'Overlays',
-                    productId: laharProduct.uid,
-                    removable: true,
-                    custom_layer: layerGroup,
-                    id: laharProduct.uid,
-                    name: laharProduct.uid,
-                    action: {
-                        component: GroupSliderComponent,
-                        inputs: {
-                            entries,
-                            selectionHandler: (selectedId: string) => {
-                                layerGroup.getLayers().forEach(l => {
-                                    if (l.get('id') === selectedId) {
-                                        l.setVisible(true);
-                                    } else {
-                                        l.setVisible(false);
-                                    }
-                                });
-                            },
-                        }
-                      }
-                });
-                return [laharLayer];
-            })
-        );
-        return laharLayers$;
     }
 
     makeBboxLayer(product: BboxLayerProduct): Observable<ProductCustomLayer> {

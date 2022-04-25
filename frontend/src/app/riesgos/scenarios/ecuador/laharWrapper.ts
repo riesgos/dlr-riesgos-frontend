@@ -3,12 +3,23 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { WmsLayerProduct, VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
+import { WmsLayerProduct, MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { FeatureCollection } from '@turf/helpers';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { Store } from '@ngrx/store';
+import { SliderEntry, GroupSliderComponent } from 'src/app/components/dynamic/group-slider/group-slider.component';
+import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
+import { ProductRasterLayer, ProductCustomLayer } from 'src/app/mappable/map.types';
+import olTileLayer from 'ol/layer/Tile';
+import olTileWMS from 'ol/source/TileWMS';
+import olLayerGroup from 'ol/layer/Group';
+import { State } from 'src/app/ngrx_register';
+import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 
 
 
@@ -98,13 +109,80 @@ export const laharDepositionWms: WmsLayerProduct & Product = {
 };
 
 
-export const laharContoursWms: WmsLayerProduct & Product = {
+export const laharContoursWms: WmsLayerProduct & MappableProduct = {
     description: {
         id: 'LaharContourLines',
         icon: 'avalanche',
         name: 'Lahar contour lines',
         format: 'application/WMS',
         type: 'complex',
+    },
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+
+        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
+        const laharLayers$ = basicLayers$.pipe(
+            map((layers: ProductRasterLayer[]) => {
+                const olLayers = layers.map(l => {
+                    const layer = new olTileLayer({
+                        source: new olTileWMS({
+                            url: l.url,
+                            params: l.params,
+                            crossOrigin: 'anonymous'
+                        }),
+                        visible: false
+                    });
+                    layer.set('id', l.id);
+                    return layer;
+                });
+                olLayers[0].setVisible(true);
+
+                const layerGroup = new olLayerGroup({
+                    layers: olLayers
+                });
+
+                const entries: SliderEntry[] = layers.map((l: ProductRasterLayer, index: number) => {
+                    return {
+                        id: l.id,
+                        tickValue: index,
+                        displayText: l.name.match(/(\d+)$/)[0] + 'min'
+                    };
+                });
+
+                const laharLayer = new ProductCustomLayer({
+                    hasFocus: false,
+                    filtertype: 'Overlays',
+                    productId: this.uid,
+                    removable: true,
+                    custom_layer: layerGroup,
+                    id: this.uid,
+                    name: this.uid,
+                    action: {
+                        component: GroupSliderComponent,
+                        inputs: {
+                            entries,
+                            selectionHandler: (selectedId: string) => {
+                                layerGroup.getLayers().forEach(l => {
+                                    if (l.get('id') === selectedId) {
+                                        l.setVisible(true);
+                                    } else {
+                                        l.setVisible(false);
+                                    }
+                                });
+                            },
+                        }
+                    },
+                    dynamicDescription: {
+                        component: TranslatableStringComponent,
+                        inputs: {
+                            text: 'Lahar_contourlines_description'
+                        }
+                    }
+                });
+                return [laharLayer];
+            })
+        );
+        return laharLayers$;
+
     },
     value: null,
     uid: 'LaharContourLines'

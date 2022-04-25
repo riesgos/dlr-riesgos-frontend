@@ -314,7 +314,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
     private shouldLayerExpand(layer: ProductLayer) {
-      if (layer.hasFocus) {
+      if (layer.hasFocus && layer.visible) {
         if (layer.legendImg || layer.description || layer.dynamicDescription) {
           layer.expanded = true;
         }
@@ -461,8 +461,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '&copy, <a href="http://www.gadm.org/" target="_blank">GADM</a>',
-                description: '<a href="http://www.gadm.org/" target="_blank">GADM</a>',
+                attribution: '&copy, <a href="http://gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="http://gadm.org/" target="_blank">GADM</a>',
             });
             const peruProvincias = new VectorLayer({
                 id: 'peru_provincias',
@@ -480,8 +480,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '&copy, <a href="http://www.gadm.org/" target="_blank">GADM</a>',
-                description: '<a href="http://www.gadm.org/" target="_blank">GADM</a>',
+                attribution: '&copy, <a href="http://gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="http://gadm.org/" target="_blank">GADM</a>',
             });
             const peruRegiones = new VectorLayer({
                 id: 'peru_regiones',
@@ -499,8 +499,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '&copy, <a href="http://www.gadm.org/" target="_blank">GADM</a>',
-                description: '<a href="http://www.gadm.org/" target="_blank">GADM</a>',
+                attribution: '&copy, <a href="http://gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="http://gadm.org/" target="_blank">GADM</a>',
             });
             const peruAdministrative = new LayerGroup({
                 filtertype: 'Layers',

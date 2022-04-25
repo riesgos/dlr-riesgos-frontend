@@ -203,15 +203,18 @@ export class RiesgosLayerentryComponent implements OnInit {
     if (!group) {
       if (selectedLayer.filtertype === 'Baselayers') {
         selectedLayer.visible = !selectedLayer.visible;
+        selectedLayer.expanded = selectedLayer.visible;
         const filteredLayers = this.layerGroups.filter((l) => l.filtertype === 'Baselayers');
         for (const layer of filteredLayers) {
           if (layer instanceof Layer && layer.id !== selectedLayer.id) {
             layer.visible = !selectedLayer.visible;
+            layer.expanded = layer.visible;
             this.layersSvc.updateLayer(layer, layer.filtertype || 'Baselayers');
           }
         }
       } else {
         selectedLayer.visible = !selectedLayer.visible;
+        selectedLayer.expanded = selectedLayer.visible;
         this.layersSvc.updateLayer(selectedLayer, selectedLayer.filtertype || 'Layers'); // TODO check for baselayers!!!!!!
       }
     } else {
@@ -220,6 +223,7 @@ export class RiesgosLayerentryComponent implements OnInit {
         if (group.filtertype === 'Baselayers') {
           for (const layer of group.layers) {
             layer.visible = layer === selectedLayer;
+            layer.expanded = layer.visible;
           }
           this.update.emit({
             layer: this.layer
@@ -229,6 +233,7 @@ export class RiesgosLayerentryComponent implements OnInit {
           const tempGroupVisible = group.visible;
           /** change visibility of the selected layer */
           selectedLayer.visible = !selectedLayer.visible;
+          selectedLayer.expanded = selectedLayer.visible;
 
           /** check if group visibility has changed */
           if (tempGroupVisible !== group.visible) {

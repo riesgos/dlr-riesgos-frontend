@@ -37,6 +37,9 @@ export async function proxyExecuteRequest(parsed: ExecuteData) {
         }
     }
 
+
+    logOutgoingRequest(parsed);
+
     let newData;
     let requestCounter = 0;
     if (parsed.version === '1.0.0') {
@@ -84,7 +87,6 @@ export class ProcessPool {
         };
         
         // Step 2: run process.
-        this.logOutgoingRequest(data);
         const result$ = proxyExecuteRequest(data);
         result$.then((result) => {
             this.managedProcesses[id].result = result;
@@ -104,7 +106,7 @@ export class ProcessPool {
         if (result !== null) {
             // clean memory once data has been fetched.
             this.managedProcesses[id].result = null;
-            console.log(`Cleaned stored entry nr. ${id} to ${JSON.stringify(this.managedProcesses[id])}`)
+            console.log(`Cleaned stored entry nr. ${id}`)
             return result;
         } else {
             return null;
@@ -116,7 +118,6 @@ export class ProcessPool {
             const candidateId = (this.latestId + offset) % this.maxConcurrentExecs;
             if (this.managedProcesses[candidateId].result === null) {
                 this.latestId = candidateId;
-                console.log(`new exec id ${this.latestId}`)
                 return this.latestId;
             }
         }
@@ -158,14 +159,15 @@ ${new Date()}
         };
         mailClient.sendMail(config.siteAdmins, 'Riesgos Middleware: Error on execute-request', 'An error has occurred. See attachment.', [attachment]);
     }
-  
-    private logOutgoingRequest(data: ExecuteData) {
-        const text = `now executing: ${data.url} --- ${data.processId}\n` +  getExecBody(data);
-        console.log(text);
-        if (config.storeRequestBody) {
-            const tempFile = path.join(config.tempDir, data.url.replace(/:/g, ''), data.processId.replace(/:/g, ''), 'tmp.txt');
-            writeTextFile(tempFile, text).then(() => console.log('tmp written to ', tempFile));
-        }
+
+}
+
+function logOutgoingRequest(data: ExecuteData) {
+    console.log(`now executing: ${data.url} --- ${data.processId}\n`);
+    const text = `now executing: ${data.url} --- ${data.processId}\n` +  getExecBody(data);
+    if (config.storeRequestBody) {
+        const tempFile = path.join(config.tempDir, data.url.replace(/:/g, ''), data.processId.replace(/:/g, ''), 'tmp.txt');
+        writeTextFile(tempFile, text).then(() => console.log('tmp written to ', tempFile));
     }
 }
 

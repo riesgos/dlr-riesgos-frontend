@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  middlewareUrl: 'http://riesgos.dlr.de/middleware',
-  proxyUrl: 'http://riesgos.dlr.de/proxy',
-  useProxy: false,
+  middlewareUrl: 'https://riesgos.dlr.de/middleware',
+  proxyUrl: 'https://riesgos.dlr.de/proxy',
+  useProxy: true,
   gfzUseStaging: true,
 };

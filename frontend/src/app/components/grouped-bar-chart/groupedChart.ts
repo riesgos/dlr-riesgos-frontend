@@ -159,7 +159,7 @@ export class RearrangingGroupedBarChart {
         // x-label
         svg.append('text')    
             .style('text-anchor', 'middle')
-            .attr('x', widthTotal / 2)
+            .attr('x', widthTotal / 4)
             .attr('y', height + 35)
             .text(xLabel);
         
@@ -174,7 +174,7 @@ export class RearrangingGroupedBarChart {
         // legend
         const legend = svg.append('g')
             .attr('class', 'legend')
-            .attr('transform', `translate(${widthTotal / 2}, ${heightTotal - margin.bottom + 30})`);
+            .attr('transform', `translate(${2 * widthTotal / 3}, ${height + 25})`);
         
         const graph = svg
             .append('g')
@@ -265,20 +265,22 @@ export class RearrangingGroupedBarChart {
         const legendEntries = this.selectors.legend
             .selectAll('.legendEntry')
             .data(colorData, (d: any) => d.key);
+        const rectWidth = 14;
+        const rectHeight = 10;
         const newLegendEntriesG = legendEntries
             .enter()
                 .append('g')
                 .attr('class', 'legendEntry')
-                .attr('transform', (d: any, i: number) => `translate(${(i - I / 2) * 10}, 0)`);
+                .attr('transform', (d: any, i: number) => `translate(${(i - I / 2) * rectWidth}, 0)`);
         newLegendEntriesG
             .append('rect')
             .attr('fill', (d: any) => d.val)
-            .attr('width', 10)
-            .attr('height', 10);
+            .attr('width', rectWidth)
+            .attr('height', rectHeight);
         newLegendEntriesG
             .append('text')
             .text((d: any) => d.key)
-            .style('font-size', '.5em')
+            .style('font-size', '.75em')
             .attr('transform', `translate(3, 15), rotate(90)`);
 
         // updating sub-groups

@@ -32,8 +32,13 @@ export class EconomicDamagePopupComponent implements OnInit {
 
     this.loss$ = this.http.get(url).pipe(
       map((getFeatureInfoData: any) => {
-        const props: DeusGetFeatureInfo = getFeatureInfoData.features[0].properties; 
-        return +(props.loss_value).toFixed(0);
+        const data = getFeatureInfoData.features[0];
+        if (data) {
+          const props: DeusGetFeatureInfo = data.properties; 
+          return +(props.cum_loss).toFixed(0);
+        } else {
+          return null;
+        }
       })
     );
   }

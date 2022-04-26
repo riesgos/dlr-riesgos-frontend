@@ -358,8 +358,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 visible: false,
                 popup: true,
                 description: 'PowerlinesDescription',
-                attribution: '&copy, <a href="http://energiamaps.cne.cl">energiamaps.cne.cl/</a>',
-                legendImg: 'http://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?service=wms&request=GetLegendGraphic&LAYER=sic_20181016234835&FORMAT=image/png',
+                attribution: '&copy, <a href="https://energiamaps.cne.cl">energiamaps.cne.cl/</a>',
+                legendImg: 'https://energiamaps.cne.cl/geoserver/cne-sigcra-new/wms?service=wms&request=GetLegendGraphic&LAYER=sic_20181016234835&FORMAT=image/png',
             });
             layers.push(powerlineLayer);
 
@@ -461,8 +461,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '&copy, <a href="http://gadm.org/" target="_blank">GADM</a>',
-                description: '<a href="http://gadm.org/" target="_blank">GADM</a>',
+                attribution: '&copy, <a href="https://gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="https://gadm.org/" target="_blank">GADM</a>',
             });
             const peruProvincias = new VectorLayer({
                 id: 'peru_provincias',
@@ -480,8 +480,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '&copy, <a href="http://gadm.org/" target="_blank">GADM</a>',
-                description: '<a href="http://gadm.org/" target="_blank">GADM</a>',
+                attribution: '&copy, <a href="https://gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="https://gadm.org/" target="_blank">GADM</a>',
             });
             const peruRegiones = new VectorLayer({
                 id: 'peru_regiones',
@@ -499,8 +499,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
-                attribution: '&copy, <a href="http://gadm.org/" target="_blank">GADM</a>',
-                description: '<a href="http://gadm.org/" target="_blank">GADM</a>',
+                attribution: '&copy, <a href="https://gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="https://gadm.org/" target="_blank">GADM</a>',
             });
             const peruAdministrative = new LayerGroup({
                 filtertype: 'Layers',

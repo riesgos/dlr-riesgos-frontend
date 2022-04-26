@@ -96,8 +96,8 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 damageLayer.id += '_damage';
                 damageLayer.name = 'eq-exposure';
                 damageLayer.params = { ... econLayer.params };
-                damageLayer.params.STYLES = 'style-damagestate';
-                damageLayer.legendImg += '&style=style-damagestate';
+                damageLayer.params.STYLES = 'style-damagestate-sara';
+                damageLayer.legendImg += '&style=style-damagestate-sara';
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,
@@ -109,7 +109,8 @@ export const eqDamageWms: WpsData & MappableProduct = {
                                 layer: layer,
                                 metaData: metaData.value[0],
                                 xLabel: 'damage',
-                                yLabel: 'Nr_buildings'
+                                yLabel: 'Nr_buildings',
+                                schema: 'sara'
                             };
                         }
                     }

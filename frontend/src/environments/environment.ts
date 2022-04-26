@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   middlewareUrl: 'http://localhost:8008',
-  useProxy: false,
-  proxyUrl: '',
+  useProxy: true,
+  proxyUrl: 'https://hexaph.one/proxy',
   gfzUseStaging: true,
 };
 

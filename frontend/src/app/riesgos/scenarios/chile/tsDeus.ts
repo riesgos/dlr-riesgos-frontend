@@ -88,8 +88,8 @@ export const tsDamageWms: WpsData & MappableProduct = {
 
                 econLayer.id += '_economic';
                 econLayer.name = 'ts-damage';
-                econLayer.params.STYLES = 'style-loss';
-                econLayer.legendImg += '&style=style-loss';
+                econLayer.params.STYLES = 'style-cum-loss';
+                econLayer.legendImg += '&style=style-cum-loss';
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
                 econLayer.dynamicDescription = {
@@ -119,8 +119,8 @@ export const tsDamageWms: WpsData & MappableProduct = {
                 damageLayer.id += '_damage';
                 damageLayer.name = 'ts-exposure';
                 damageLayer.params = { ...econLayer.params };
-                damageLayer.params.STYLES = 'style-damagestate';
-                damageLayer.legendImg += '&style=style-damagestate';
+                damageLayer.params.STYLES = 'style-damagestate-suppasri';
+                damageLayer.legendImg += '&style=style-damagestate-suppasri';
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,
@@ -132,7 +132,8 @@ export const tsDamageWms: WpsData & MappableProduct = {
                                 layer: layer,
                                 metaData: metaData.value[0],
                                 xLabel: 'damage',
-                                yLabel: 'Nr_buildings'
+                                yLabel: 'Nr_buildings',
+                                schema: 'suppasri'
                             };
                         }
                     }

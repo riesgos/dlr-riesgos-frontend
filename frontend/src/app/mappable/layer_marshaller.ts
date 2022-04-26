@@ -30,6 +30,8 @@ import { SimplifiedTranslationService } from 'src/app/services/simplifiedTransla
 import Geometry from 'ol/geom/Geometry';
 import { Fill, Stroke, Style } from 'ol/style';
 import { LayersService } from '@dlr-eoc/services-layers';
+import { environment } from 'src/environments/environment';
+import { needsProxy } from '../services/interceptors/ProxyInterceptor';
 
 
 
@@ -536,6 +538,11 @@ export class LayerMarshaller  {
             const layers: ProductRasterLayer[] = [];
             if (paras) {
 
+                let wmsUrl = `${paras.origin}${paras.path}`;
+                if (needsProxy(wmsUrl)) {
+                    wmsUrl = `${environment.proxyUrl}/${paras.origin}${paras.path}`;                    
+                }
+
                 for (const layerName of paras.layers) {
                     // @TODO: convert all search-parameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
@@ -548,7 +555,7 @@ export class LayerMarshaller  {
                         type: 'wms',
                         filtertype: 'Overlays',
                         visible: true,
-                        url: `${paras.origin}${paras.path}?`,
+                        url: `${wmsUrl}?`,
                         params: {
                             VERSION: paras.version,
                             LAYERS: layerName,
@@ -560,7 +567,7 @@ export class LayerMarshaller  {
                             TRANSPARENT: true,
                             STYLES: description.styles ? description.styles[0] : '',
                         },
-                        legendImg: description.legendImg ? description.legendImg :  `${paras.origin}${paras.path}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
+                        legendImg: description.legendImg ? description.legendImg :  `${wmsUrl}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
                             `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
                             `&TRANSPARENT=TRUE&LAYER=${layerName}`,
                         popup: {

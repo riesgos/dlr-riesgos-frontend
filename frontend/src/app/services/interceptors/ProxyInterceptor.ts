@@ -10,13 +10,11 @@ export class ProxyInterceptor implements HttpInterceptor {
     constructor(private router: Router) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (!environment.useProxy) return next.handle(req);
 
         const originalUrl = req.url;
         const ownUrl = this.router.url;
 
-        // only redirect requests that would otherwise cause mixed-content-warnings
-        if (originalUrl.slice(0, 7) === 'http://') {
+        if (needsProxy(originalUrl)) {
             const proxyReq = req.clone({
                 url: `${environment.proxyUrl}/${originalUrl}`,
             });
@@ -25,5 +23,21 @@ export class ProxyInterceptor implements HttpInterceptor {
             return next.handle(req);
         }
     }
+    
+}
 
+
+// only redirect requests that would otherwise cause mixed-content-warnings
+export function needsProxy(targetUrl: string): boolean {
+    // if we really want to use a proxy ...
+    if (environment.useProxy) {
+        // ... and if target-url is of type "http://xxxxxxx:12345" ...
+        if (targetUrl.match(/^http:\/\/(\w|-|\.)+:\d+/)) {
+            // ... and if it doesn't go to localhost:
+            if (!targetUrl.includes('localhost')) {
+                return true;
+            }
+        }
+    }
+    return false;
 }

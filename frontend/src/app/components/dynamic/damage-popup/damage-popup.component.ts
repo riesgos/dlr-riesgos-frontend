@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Grouping } from '../../grouped-bar-chart/grouped-bar-chart.component';
 import { GroupedBarChartData } from '../../grouped-bar-chart/groupedChart';
-import { createGrouping, randomColoring } from '../../grouped-bar-chart/helpers';
+import { createGrouping, randomColoring, simpleGrouping } from '../../grouped-bar-chart/helpers';
 
 
 
@@ -56,7 +56,7 @@ export interface DeusGetFeatureInfo {
 
 
 const groupings = {
-  'sara': [{
+  'SARA_v1.0': [{
     label: 'material',
     coloringFunction: randomColoring,
     groupingFunction: createGrouping(0)
@@ -70,13 +70,21 @@ const groupings = {
     groupingFunction: createGrouping(2)
   }],
 
-  'suppasri': [{
+  'SUPPASRI2013_v2.0': [{
     label: 'type',
     coloringFunction: randomColoring,
-    groupingFunction: createGrouping(0)
+    groupingFunction: simpleGrouping
+  }],
+
+  'Medina_2019': [{
+    label: 'type',
+    coloringFunction: randomColoring,
+    groupingFunction: simpleGrouping
   }]
 };
 
+
+export type knownSchemas = 'SARA_v1.0' | 'SUPPASRI2013_v2.0' | 'Medina_2019';
 
 @Component({
   selector: 'app-damage-popup',
@@ -90,7 +98,7 @@ export class DamagePopupComponent implements OnInit {
   @Input() event: MapBrowserEvent<any>;
   @Input() xLabel: string;
   @Input() yLabel: string;
-  @Input() schema: 'sara' | 'suppasri';
+  @Input() schema: knownSchemas;
   public width = 400;
   public height = 400;
   public groupings: Grouping[];

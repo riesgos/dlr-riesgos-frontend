@@ -145,16 +145,18 @@ export const tsDamageWms: WpsData & MappableProduct = {
                                 metaData: metaData.value[0],
                                 xLabel: 'damage',
                                 yLabel: 'Nr_buildings',
-                                schema: 'suppasri'
+                                schema: chosenSchema
                             };
                         }
                     }
                 };
                 const counts = metaDataValue.total.buildings_by_damage_state;
-                const html =
-                    createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
-                    + '{{ BuildingTypesSuppasri }}';
-
+                let html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))]);
+                if (chosenSchema === 'SUPPASRI2013_v2.0') {
+                    html += '{{ BuildingTypesSuppasri }}';
+                } else if (chosenSchema === 'Medina_2019') {
+                    html += '{{ BuildingTypesMedina }}';
+                }
                 damageLayer.dynamicDescription = {
                     component: TranslatableStringComponent,
                     inputs: {

@@ -40,6 +40,11 @@ export function createGrouping(subSection: number) {
 }
 
 
+export function simpleGrouping(subGroups: SubGroupData[]): SubGroupData[] {
+    return subGroups;
+}
+
+
 
 export const randomColoring: ColoringFunction = (key: string) => `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
 

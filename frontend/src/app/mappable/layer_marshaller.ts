@@ -584,12 +584,13 @@ export class LayerMarshaller  {
                             action: (theLayer: any) => {
                                 const url = theLayer.url;
                                 const layers = theLayer.params.LAYERS;
+                                const epsgCode = this.mapSvc.EPSG;
                                 const size = this.mapSvc.map.getSize();
                                 const bbox = this.mapSvc.map.getView().calculateExtent(size);
                                 const width = size[0];
                                 const height = size[1];
-                                let requestUrl = `${url}service=wms&version=1.1.1&request=GetMap&format=image/tiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=EPSG:4326`;
-                                if (theLayer.params.STYLES) {
+                                let requestUrl = `${url}service=wms&version=1.1.1&request=GetMap&format=image/tiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=${epsgCode}`;
+                                if (theLayer.params.STYLES && !theLayer.params.SLD && !theLayer.params.SLD_BODY) {
                                     requestUrl += `&STYLES=${theLayer.params.STYLES}`;
                                 }
                                 this.httpClient.get(requestUrl, { responseType: 'blob' }).subscribe((data) => {

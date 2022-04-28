@@ -29,18 +29,24 @@ export class ProxyInterceptor implements HttpInterceptor {
 
 // only redirect requests that would otherwise cause mixed-content-warnings
 export function needsProxy(targetUrl: string): boolean {
-    if (!environment.useProxy) return false;
-    if (targetUrl.includes('localhost')) return false;
-    if (targetUrl.includes(window.location.hostname)) return false;
-    if (targetUrl.startsWith('https://')) return false;
-    if (targetUrl.startsWith('./')) return false;
-    return true;
+    if (environment.useProxy) {
+        if (targetUrl.includes('localhost')) return false;
+        if (targetUrl.includes(window.location.hostname)) return false;
+        if (targetUrl.startsWith('https://')) return false;
+        if (targetUrl.startsWith('./') || targetUrl.startsWith('/')) return false;
+        if (targetUrl.includes('assets/')) return false;
+        
+        if (targetUrl.startsWith('http://')) return true;
+    };
+    return false;
 }
 
 export function proxify(targetUrl: string): string {
     if (!needsProxy(targetUrl)) return targetUrl;
 
     if (targetUrl.match(/^http:\/\/(\w|-|\.)+:\d+/)) {
+        return `${environment.fallbackProxyUrl}/${targetUrl}`;
+    } else if (targetUrl.includes('91.250.85.221')) {
         return `${environment.fallbackProxyUrl}/${targetUrl}`;
     } else {
         return `${environment.proxyUrl}/${targetUrl}`;

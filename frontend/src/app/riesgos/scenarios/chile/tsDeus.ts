@@ -43,7 +43,7 @@ export const schema: StringSelectUserConfigurableProduct & WpsData = {
         },
         options: [
             'SUPPASRI2013_v2.0',
-            // 'Medina_2019',
+            'Medina_2019',
         ],
     },
     value: 'SUPPASRI2013_v2.0'
@@ -81,6 +81,7 @@ export const tsDamageWms: WpsData & MappableProduct = {
             map(([layers, riesgosState]) => {
 
                 const metaData = riesgosState.scenarioData['c1'].productValues.find(p => p.uid === tsDamageMeta.uid);
+                const chosenSchema = riesgosState.scenarioData['c1'].productValues.find(p => p.uid === schema.uid).value;
                 const metaDataValue = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];
@@ -119,8 +120,19 @@ export const tsDamageWms: WpsData & MappableProduct = {
                 damageLayer.id += '_damage';
                 damageLayer.name = 'ts-exposure';
                 damageLayer.params = { ...econLayer.params };
-                damageLayer.params.STYLES = 'style-damagestate-suppasri';
-                damageLayer.legendImg += '&style=style-damagestate-suppasri';
+                
+                if (chosenSchema === 'SUPPASRI2013_v2.0') {
+                    damageLayer.legendImg += `&style=style-damagestate-suppasri`;
+                    damageLayer.params.STYLES = `style-damagestate-suppasri`;
+                    // damageLayer.params.SLD = 'https://gist.githubusercontent.com/MichaelLangbein/b39693d4c4a08850dee6265a6bef72f7/raw/66a30a580e8090a59ab7c1e88bda0740bdf8e1e1/test_sld_medina.xml';
+                    // damageLayer.params.STYLES = 'custom_style_suppasri';
+                    // damageLayer.params.SLD_BODY = customStyleSuppasri.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
+                } else if (chosenSchema === 'Medina_2019') {
+                    damageLayer.legendImg += `&style=style-damagestate-medina`;
+                    damageLayer.params.STYLES = 'style-damagestate-medina';
+                    // damageLayer.params.SLD_BODY = customStyleMedina.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
+                }
+
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

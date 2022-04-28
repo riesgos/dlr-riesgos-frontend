@@ -64,8 +64,8 @@ export const eqDamageWms: WpsData & MappableProduct = {
 
                 econLayer.id += '_economic';
                 econLayer.name = 'eq-damage';
-                econLayer.params.STYLES = 'style-loss';
-                econLayer.legendImg += '&style=style-loss';
+                econLayer.params.STYLES = 'style-cum-loss';
+                econLayer.legendImg += '&style=style-cum-loss';
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
                 econLayer.dynamicDescription = {

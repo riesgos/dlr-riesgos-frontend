@@ -25,6 +25,7 @@ import { TranslatableStringComponent } from 'src/app/components/dynamic/translat
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
+import { customStyleEconomic, customStyleMedina, customStyleSuppasri } from '../../styles';
 
 
 export const schemaPeru: StringSelectUserConfigurableProduct & WpsData = {
@@ -42,7 +43,7 @@ export const schemaPeru: StringSelectUserConfigurableProduct & WpsData = {
         },
         options: [
             'SUPPASRI2013_v2.0',
-            // 'Medina_2019',
+            'Medina_2019',
         ],
     },
     value: 'SUPPASRI2013_v2.0'
@@ -80,6 +81,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
             map(([layers, riesgosState]) => {
 
                 const metaData = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === tsDamageMetaPeru.uid);
+                const chosenSchema = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === schemaPeru.uid).value;
                 const metaDataValue = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];
@@ -89,6 +91,8 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                 econLayer.name = 'ts-damage';
                 econLayer.params.STYLES = 'style-cum-loss';
                 econLayer.legendImg += '&style=style-cum-loss';
+                // econLayer.params.STYLES = 'custom_style_economic';
+                // econLayer.params.SLD_BODY = customStyleEconomic.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
                 econLayer.dynamicDescription = {
@@ -115,11 +119,24 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                     }
                 }
 
+                
+
                 damageLayer.id += '_damage_peru';
                 damageLayer.name = 'ts-exposure';
                 damageLayer.params = { ...econLayer.params };
-                damageLayer.params.STYLES = 'style-damagestate-suppasri';
-                damageLayer.legendImg += '&style=style-damagestate-suppasri';
+                
+                if (chosenSchema === 'SUPPASRI2013_v2.0') {
+                    damageLayer.legendImg += `&style=style-damagestate-suppasri`;
+                    damageLayer.params.STYLES = `style-damagestate-suppasri`;
+                    // damageLayer.params.SLD = 'https://gist.githubusercontent.com/MichaelLangbein/b39693d4c4a08850dee6265a6bef72f7/raw/66a30a580e8090a59ab7c1e88bda0740bdf8e1e1/test_sld_medina.xml';
+                    // damageLayer.params.STYLES = 'custom_style_suppasri';
+                    // damageLayer.params.SLD_BODY = customStyleSuppasri.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
+                } else if (chosenSchema === 'Medina_2019') {
+                    damageLayer.legendImg += `&style=style-damagestate-medina`;
+                    damageLayer.params.STYLES = 'style-damagestate-medina';
+                    // damageLayer.params.SLD_BODY = customStyleMedina.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
+                }
+
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

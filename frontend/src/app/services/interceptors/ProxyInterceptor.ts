@@ -16,7 +16,7 @@ export class ProxyInterceptor implements HttpInterceptor {
 
         if (needsProxy(originalUrl)) {
             const proxyReq = req.clone({
-                url: `${environment.proxyUrl}/${originalUrl}`,
+                url: proxify(originalUrl),
             });
             return next.handle(proxyReq);            
         } else {
@@ -29,15 +29,21 @@ export class ProxyInterceptor implements HttpInterceptor {
 
 // only redirect requests that would otherwise cause mixed-content-warnings
 export function needsProxy(targetUrl: string): boolean {
-    // if we really want to use a proxy ...
-    if (environment.useProxy) {
-        // ... and if target-url is of type "http://xxxxxxx:12345" ...
-        if (targetUrl.match(/^http:\/\/(\w|-|\.)+:\d+/)) {
-            // ... and if it doesn't go to localhost:
-            if (!targetUrl.includes('localhost')) {
-                return true;
-            }
-        }
+    if (!environment.useProxy) return false;
+    if (targetUrl.includes('localhost')) return false;
+    if (targetUrl.includes(window.location.hostname)) return false;
+    if (targetUrl.startsWith('https://')) return false;
+    if (targetUrl.startsWith('./')) return false;
+    return true;
+}
+
+export function proxify(targetUrl: string): string {
+    if (!needsProxy(targetUrl)) return targetUrl;
+
+    if (targetUrl.match(/^http:\/\/(\w|-|\.)+:\d+/)) {
+        return `${environment.fallbackProxyUrl}/${targetUrl}`;
+    } else {
+        return `${environment.proxyUrl}/${targetUrl}`;
     }
-    return false;
+
 }

@@ -161,6 +161,7 @@ export const laharContoursWms: WmsLayerProduct & MappableProduct = {
                         inputs: {
                             entries,
                             selectionHandler: (selectedId: string) => {
+                                console.log(`Slider: selected id: `, selectedId);
                                 layerGroup.getLayers().forEach(l => {
                                     if (l.get('id') === selectedId) {
                                         l.setVisible(true);

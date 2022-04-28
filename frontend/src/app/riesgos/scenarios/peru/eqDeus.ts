@@ -24,6 +24,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
+import { customStyleEconomic, customStyleSara } from '../../styles';
 
 
 
@@ -65,8 +66,10 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
 
                 econLayer.id += '_economic';
                 econLayer.name = 'eq-damage';
-                econLayer.params.STYLES = 'style-loss';
-                econLayer.legendImg += '&style=style-loss';
+                econLayer.params.STYLES = 'style-cum-loss';
+                econLayer.legendImg += '&style=style-cum-loss';
+                // econLayer.params.STYLES = 'custom_style_economic';
+                // econLayer.params.SLD_BODY = customStyleEconomic.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
                 econLayer.dynamicDescription = {
@@ -99,6 +102,8 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
                 damageLayer.params = { ... econLayer.params };
                 damageLayer.params.STYLES = 'style-damagestate-sara';
                 damageLayer.legendImg += '&style=style-damagestate-sara';
+                // damageLayer.params.STYLES = 'custom_style_sara';
+                // damageLayer.params.SLD_BODY = customStyleSara.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

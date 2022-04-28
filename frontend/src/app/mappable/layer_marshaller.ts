@@ -31,7 +31,7 @@ import Geometry from 'ol/geom/Geometry';
 import { Fill, Stroke, Style } from 'ol/style';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { environment } from 'src/environments/environment';
-import { needsProxy } from '../services/interceptors/ProxyInterceptor';
+import { needsProxy, proxify } from '../services/interceptors/ProxyInterceptor';
 
 
 
@@ -540,7 +540,8 @@ export class LayerMarshaller  {
 
                 let wmsUrl = `${paras.origin}${paras.path}`;
                 if (needsProxy(wmsUrl)) {
-                    wmsUrl = `${environment.proxyUrl}/${paras.origin}${paras.path}`;                    
+                    wmsUrl = `${proxify(paras.origin)}${paras.path}`;   
+                    console.log(`Proxified ${wmsUrl}`);
                 }
 
                 for (const layerName of paras.layers) {

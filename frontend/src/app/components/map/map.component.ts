@@ -453,11 +453,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 visible: false,
                 popup: {
                     popupFunction: (props) => {
-                        const keys = [ 'NOMBDIST', 'NOMBPROV', 'NOMBDEP', 'NOM_CAP'];
-                        const rows = [];
-                        for (const key of keys) {
-                            rows.push(['{{ ' + key + ' }}', props[key]]);
-                        }
+                        const rows = [
+                            ['{{ Department }}', props['NAME_1']],
+                            ['{{ Province }}', props['NAME_2']],
+                            ['{{ District }}', props['NAME_3']]
+                        ];
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
@@ -472,30 +472,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 visible: false,
                 popup: {
                     popupFunction: (props) => {
-                        const keys = ['NOMBDEP'];
-                        const rows = [];
-                        for (const key of keys) {
-                            rows.push(['{{ ' + key + ' }}', props[key]]);
-                        }
-                        return  this.translator.syncTranslate(createTableHtml(rows));
-                    }
-                },
-                attribution: '&copy, <a href="https://gadm.org/" target="_blank">GADM</a>',
-                description: '<a href="https://gadm.org/" target="_blank">GADM</a>',
-            });
-            const peruRegiones = new VectorLayer({
-                id: 'peru_regiones',
-                name: 'peru_regiones',
-                type: 'geojson',
-                url: 'assets/data/geojson/peru_admin/peru_regiones.geojson',
-                visible: false,
-                popup: {
-                    popupFunction: (props) => {
-                        const keys = [ 'NOMBDIST', 'NOMBPROV', 'NOMBDEP', 'NOM_CAP'];
-                        const rows = [];
-                        for (const key of keys) {
-                            rows.push(['{{ ' + key + ' }}', props[key]]);
-                        }
+                    const rows = [
+                        ['{{ Department }}', props['NAME_1']],
+                        ['{{ Province }}', props['NAME_2']]
+                    ];
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
@@ -505,7 +485,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             const peruAdministrative = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'peru_administrative',
-                layers: [peruDistritos, peruProvincias, peruRegiones],
+                layers: [peruDistritos, peruProvincias],
                 name: 'peru_administrative',
                 expanded: true,
             });
@@ -605,28 +585,67 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (scenario === 'e1') {
+
+            const ecuadorParroquias = new VectorLayer({
+                id: 'ecuador_administrative_parroquias',
+                name: 'ecuador_administrative_parroquias',
+                type: 'geojson',
+                url: 'assets/data/geojson/ecuador_admin/ecuador_parroquias.geojson',
+                visible: false,
+                popup: {
+                    popupFunction: (props) => {
+                        const rows = [
+                            ['{{ Province }}', props['NAME_1']],
+                            ['{{ Canton }}', props['NAME_2']],
+                            ['{{ Parish }}', props['NAME_3']]
+                        ];
+                        return  this.translator.syncTranslate(createTableHtml(rows));
+                    }
+                },
+                attribution: '&copy, <a href="https://gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="https://gadm.org/" target="_blank">GADM</a>',
+            });
+            const ecuadorCantones = new VectorLayer({
+                id: 'ecuador_administrative_cantones',
+                name: 'ecuador_administrative_cantones',
+                type: 'geojson',
+                url: 'assets/data/geojson/ecuador_admin/ecuador_cantones.geojson',
+                visible: false,
+                popup: {
+                    popupFunction: (props) => {
+                        const rows = [
+                            ['{{ Province }}', props['NAME_1']],
+                            ['{{ Canton }}', props['NAME_2']],
+                        ];
+                        return  this.translator.syncTranslate(createTableHtml(rows));
+                    }
+                },
+                attribution: '&copy, <a href="https://gadm.org/" target="_blank">GADM</a>',
+                description: '<a href="https://gadm.org/" target="_blank">GADM</a>',
+            });
             
             const adminLayers = new LayerGroup({
                 id: 'ecuador_administrative',
-                layers: [new RasterLayer({
-                    id: 'ecuador_administrative_parroquias',
-                    name: 'ecuador_administrative_parroquias',
-                    type: 'wms',
-                    url: 'https://geoinec.inec.gob.ec/geoinec/inec/wms',
-                    params: {
-                        layers: 'inec:geo_parr2001'
-                    },
-                    opacity: 0.3
-                }), new RasterLayer({
-                    id: 'ecuador_administrative_cantones',
-                    name: 'ecuador_administrative_cantones',
-                    type: 'wms',
-                    url: 'https://geoinec.inec.gob.ec/geoinec/inec/wms',
-                    params: {
-                        layers: 'inec:geo_cant2001',
-                    },
-                    opacity: 0.3
-                })],
+                // layers: [new RasterLayer({
+                //     id: 'ecuador_administrative_parroquias',
+                //     name: 'ecuador_administrative_parroquias',
+                //     type: 'wms',
+                //     url: 'https://geoinec.inec.gob.ec/geoinec/inec/wms',
+                //     params: {
+                //         layers: 'inec:geo_parr2001'
+                //     },
+                //     opacity: 0.3
+                // }), new RasterLayer({
+                //     id: 'ecuador_administrative_cantones',
+                //     name: 'ecuador_administrative_cantones',
+                //     type: 'wms',
+                //     url: 'https://geoinec.inec.gob.ec/geoinec/inec/wms',
+                //     params: {
+                //         layers: 'inec:geo_cant2001',
+                //     },
+                //     opacity: 0.3
+                // })],
+                layers: [ecuadorParroquias, ecuadorCantones],
                 name: 'ecuador_administrative',
                 expanded: true,
                 visible: false,

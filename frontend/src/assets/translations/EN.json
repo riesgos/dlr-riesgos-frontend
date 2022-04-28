@@ -288,7 +288,7 @@
     "Total_loss": "Total loss",
     "Transitions": "Transitions",
     "transmission": "Transmission lines",
-    "TsShortDescription": "Simulates a tsunami based on the earlier selected earthquake parameters.",
+    "TsShortDescription": "This service provides data products obtained by the Alfred Wegener Institute (AWI) from tsunami simulations based on the earthquake scenario that was chosen from the earthquake catalogue. The simulations use the shallow water equations in a triangular mesh to calculate estimates of maximum wave amplitude in the ocean, maximum tsunami flow depth in the inundated coastal regions as well as estimates of wave arrival times. The arrival times refer to an approximation of the peak of the first wave. The maximum flow depth on land is provided in two resolutions, the whole coastal area is given at a resolution of 100m, whereas the inundation in the pilot areas is calculated with high resolution and displayed in a raster of 10m cell size.",
     "TsSimulation": "Tsunami",
     "TsunamiWiki": "Tsunami simulation",
     "USGSSlopeBasedTopographyProxy": "USGS slope-based topography proxy",

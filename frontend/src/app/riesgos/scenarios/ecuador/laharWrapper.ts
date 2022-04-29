@@ -314,14 +314,14 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
 
                 // eomap, unmaintained, but has new data: https://hexaph.one/proxy/http://91.250.85.221/geoserver/riesgos/wms/reflect?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=Lahar_S_VEI3mio_maxpressure_25m&WIDTH=256&HEIGHT=256&BBOX=-8609866.866042253%2C-469629.10178412125%2C-8453323.832114212%2C-313086.06785608025&SRS=EPSG%3A3857&STYLES=
                 // 52N, maintained, but old data: https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=LaharArrival_S_VEI1_time_min10&WIDTH=256&HEIGHT=256&BBOX=-8766409.899970295%2C-156543.03392804042%2C-8609866.866042254%2C5.529727786779404e-10&SRS=EPSG%3A3857&STYLES=&CRS=EPSG%3A3857
-                for (const product of flattened) {
-                    if (typeof product.value === 'string' && product.value.includes('http://91.250.85.221/geoserver/riesgos/wms/reflect')) {
-                        // from: Lahar_S_VEI60mio_maxvelocity_25m  to: Lahar_S_VEI4_maxvelocity_10m             
-                        // @ts-ignore
-                        product.value = product.value.replace('_25m', '_10m').replace('mio', '').replace(/VEI(\d)0_/, "VEI$1_").replace('_VEI6_', '_VEI4_');
-                        console.log(`replaced`, product.value)
-                    }
-                }
+                // for (const product of flattened) {
+                //     if (typeof product.value === 'string' && product.value.includes('http://91.250.85.221/geoserver/riesgos/wms/reflect')) {
+                //         // from: Lahar_S_VEI60mio_maxvelocity_25m  to: Lahar_S_VEI4_maxvelocity_10m             
+                //         // @ts-ignore
+                //         product.value = product.value.replace('_25m', '_10m').replace('mio', '').replace(/VEI(\d)0_/, "VEI$1_").replace('_VEI6_', '_VEI4_');
+                //         console.log(`replaced`, product.value)
+                //     }
+                // }
 
 
                 return flattened;

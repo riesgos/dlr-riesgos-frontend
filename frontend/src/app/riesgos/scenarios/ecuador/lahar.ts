@@ -107,7 +107,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             [laharWms.uid, laharShakemap.uid],
             'gs:LaharModel',
             'Process_description_lahar_simulation',
-            'https://riesgos.52north.org/geoserver/ows',
+            'https://riesgos.52north.org/geoserver/ows',   // formerly http://91.250.85.221/wps/WebProcessingService
             '1.0.0',
             http,
             new ProcessStateUnavailable()

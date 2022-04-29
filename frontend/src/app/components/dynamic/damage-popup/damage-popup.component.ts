@@ -5,8 +5,9 @@ import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { getBuildingClassColor } from 'src/app/helpers/colorhelpers';
 import { Grouping } from '../../grouped-bar-chart/grouped-bar-chart.component';
-import { GroupedBarChartData } from '../../grouped-bar-chart/groupedChart';
+import { GroupedBarChartData, GroupingFunction, SubGroupData } from '../../grouped-bar-chart/groupedChart';
 import { createGrouping, randomColoring, simpleGrouping } from '../../grouped-bar-chart/helpers';
 
 
@@ -55,30 +56,59 @@ export interface DeusGetFeatureInfo {
 }
 
 
+
+function saraGroupingMaterial(inputGroups: SubGroupData[]): SubGroupData[] {
+  return createGrouping(0)(inputGroups);
+}
+
+function createSubstringGrouping(labels: string[]): GroupingFunction {
+  return (oldGroups: SubGroupData[]): SubGroupData[] => {
+    
+    const newGroups: SubGroupData[] = [];
+    for (const newGroupKey of labels) {
+      const newGroup: SubGroupData = {
+        key: newGroupKey,
+        val: 0
+      };
+      for (const oldGroup of oldGroups) {
+        if (oldGroup.key.includes(newGroupKey)) {
+          newGroup.val += oldGroup.val;
+        }
+      }
+      newGroups.push(newGroup);
+    }
+    return newGroups;
+  }
+}
+
+const saraGroupingSubtype = createSubstringGrouping(['UNK', 'LDUAL', 'LFINF', 'LWAL', 'ETR', 'STDRE', 'STRUB', 'WBB', 'WHE', 'WLI', 'WS', 'WWD']);
+
+const saraGroupingHeight = createSubstringGrouping(['UNK', 'H1', 'H1-2', 'H1-3', 'H4-7', 'H8-19']);
+
 const groupings = {
   'SARA_v1.0': [{
     label: 'material',
-    coloringFunction: randomColoring,
-    groupingFunction: createGrouping(0)
+    coloringFunction: getBuildingClassColor,
+    groupingFunction: saraGroupingMaterial
   }, {
     label: 'subtype',
-    coloringFunction: randomColoring,
-    groupingFunction: createGrouping(1)
+    coloringFunction: getBuildingClassColor,
+    groupingFunction: saraGroupingSubtype
   }, {
     label: 'height',
-    coloringFunction: randomColoring,
-    groupingFunction: createGrouping(2)
+    coloringFunction: getBuildingClassColor,
+    groupingFunction: saraGroupingHeight
   }],
 
   'SUPPASRI2013_v2.0': [{
     label: 'type',
-    coloringFunction: randomColoring,
+    coloringFunction: getBuildingClassColor,
     groupingFunction: simpleGrouping
   }],
 
   'Medina_2019': [{
     label: 'type',
-    coloringFunction: randomColoring,
+    coloringFunction: getBuildingClassColor,
     groupingFunction: simpleGrouping
   }]
 };
@@ -99,6 +129,7 @@ export class DamagePopupComponent implements OnInit {
   @Input() xLabel: string;
   @Input() yLabel: string;
   @Input() schema: knownSchemas;
+  @Input() additionalText?: string;
   public width = 400;
   public height = 400;
   public groupings: Grouping[];

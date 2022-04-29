@@ -29,7 +29,7 @@ const ashfallLossProps: VectorLayerProperties = {
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenVioletRangeStepwise(0, 1, props.loss_value / maxDamage$);
+                const [r, g, b] = greenVioletRangeStepwise(0, maxDamage$, props.loss_value);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 1],
@@ -53,7 +53,7 @@ const ashfallLossProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 100000 USD'
+                text: 'Loss < 100.000 USD'
             }, {
                 feature: {
                     'type': 'Feature',
@@ -67,7 +67,7 @@ const ashfallLossProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 500000 USD'
+                text: 'Loss < 500.000 USD'
             }, {
                 feature: {
                     'type': 'Feature',
@@ -81,7 +81,7 @@ const ashfallLossProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 1000000 USD'
+                text: 'Loss < 1.000.000 USD'
             }],
             text: (props: object) => {
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
@@ -90,7 +90,7 @@ const ashfallLossProps: VectorLayerProperties = {
                 const features = value[0].features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
-                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
+                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
 
                 return {
                     component: InfoTableComponentComponent,
@@ -261,7 +261,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
 
                 // const dr = weightedDamage(Object.values(counts)) / 3;
                 const {maxKey, maxVal} = getMaxFromDict(counts);
-                const dr = +(maxKey[1]) / 4;
+                const dr = +(maxKey[1]);
 
                 let r: number;
                 let g: number;
@@ -269,7 +269,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                 if (total === 0) {
                     r = b = g = 160;
                 } else {
-                    [r, g, b] = greenVioletRangeStepwise(0, 0.6, dr);
+                    [r, g, b] = greenVioletRangeStepwise(0, 3, dr);
                 }
 
                 return new olStyle({
@@ -395,7 +395,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                     component: InfoTableComponentComponent,
                     inputs: {
                         data: data,
-                        bottomText: 'DamageStatesTorres'
+                        bottomText: 'BuildingTypesTorres'
                     }
                 };
             }

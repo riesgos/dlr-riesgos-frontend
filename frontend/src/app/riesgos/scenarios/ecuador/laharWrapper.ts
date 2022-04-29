@@ -43,7 +43,7 @@ export const laharHeightShakemapRef: WpsData & Product = {
     uid: 'LaharHeightShakemap'
 };
 
-export const laharVelocityWms: WmsLayerProduct & Product = {
+export const laharVelocityWms: WmsLayerProduct & MappableProduct = {
     ...laharWms,
     description: {
         ...laharWms.description,
@@ -55,6 +55,15 @@ export const laharVelocityWms: WmsLayerProduct & Product = {
             }
         }
     },
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+
+        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
+        return basicLayers$.pipe(map((layers) => {
+            layers.map(l => l.visible = false);
+            return layers;
+        }));
+
+    },
     uid: 'LaharVelocityWms'
 };
 
@@ -63,7 +72,7 @@ export const laharVelocityShakemapRef: WpsData & Product = {
     uid: 'LaharVelocityShakemap'
 };
 
-export const laharPressureWms: WmsLayerProduct & Product = {
+export const laharPressureWms: WmsLayerProduct & MappableProduct = {
     ...laharWms,
     description: {
         ...laharWms.description,
@@ -75,10 +84,19 @@ export const laharPressureWms: WmsLayerProduct & Product = {
             }
         }
     },
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+
+        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
+        return basicLayers$.pipe(map((layers) => {
+            layers.map(l => l.visible = false);
+            return layers;
+        }));
+
+    },
     uid: 'LaharPressureWms'
 };
 
-export const laharErosionWms: WmsLayerProduct & Product = {
+export const laharErosionWms: WmsLayerProduct & MappableProduct = {
     ...laharWms,
     description: {
         ...laharWms.description,
@@ -90,10 +108,19 @@ export const laharErosionWms: WmsLayerProduct & Product = {
             }
         }
     },
+    toUkisLayers:  function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+
+        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
+        return basicLayers$.pipe(map((layers) => {
+            layers.map(l => l.visible = false);
+            return layers;
+        }));
+
+    },
     uid: 'LaharErosionWms'
 };
 
-export const laharDepositionWms: WmsLayerProduct & Product = {
+export const laharDepositionWms: WmsLayerProduct & MappableProduct = {
     ...laharWms,
     description: {
         ...laharWms.description,
@@ -104,6 +131,15 @@ export const laharDepositionWms: WmsLayerProduct & Product = {
                 return '';
             }
         }
+    },
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+
+        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
+        return basicLayers$.pipe(map((layers) => {
+            layers.map(l => l.visible = false);
+            return layers;
+        }));
+
     },
     uid: 'LaharDepositionWms'
 };
@@ -154,6 +190,7 @@ export const laharContoursWms: WmsLayerProduct & MappableProduct = {
                     productId: this.uid,
                     removable: true,
                     custom_layer: layerGroup,
+                    icon: 'avalanche',
                     id: this.uid,
                     name: this.uid,
                     action: {
@@ -161,7 +198,6 @@ export const laharContoursWms: WmsLayerProduct & MappableProduct = {
                         inputs: {
                             entries,
                             selectionHandler: (selectedId: string) => {
-                                console.log(`Slider: selected id: `, selectedId);
                                 const layerIds = entries.map(e => e.id);
                                 for (const id of layerIds) {
                                     const layer = mapSvc.getLayerByKey({key: 'id', value: id});
@@ -274,6 +310,19 @@ export class LaharWrapper implements ExecutableProcess, WizardableProcess {
                     ...laharContoursWms,
                     value: vals
                 });
+
+
+                // eomap, unmaintained, but has new data: https://hexaph.one/proxy/http://91.250.85.221/geoserver/riesgos/wms/reflect?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=Lahar_S_VEI3mio_maxpressure_25m&WIDTH=256&HEIGHT=256&BBOX=-8609866.866042253%2C-469629.10178412125%2C-8453323.832114212%2C-313086.06785608025&SRS=EPSG%3A3857&STYLES=
+                // 52N, maintained, but old data: https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=LaharArrival_S_VEI1_time_min10&WIDTH=256&HEIGHT=256&BBOX=-8766409.899970295%2C-156543.03392804042%2C-8609866.866042254%2C5.529727786779404e-10&SRS=EPSG%3A3857&STYLES=&CRS=EPSG%3A3857
+                for (const product of flattened) {
+                    if (typeof product.value === 'string' && product.value.includes('http://91.250.85.221/geoserver/riesgos/wms/reflect')) {
+                        // from: Lahar_S_VEI60mio_maxvelocity_25m  to: Lahar_S_VEI4_maxvelocity_10m             
+                        // @ts-ignore
+                        product.value = product.value.replace('_25m', '_10m').replace('mio', '').replace(/VEI(\d)0_/, "VEI$1_").replace('_VEI6_', '_VEI4_');
+                        console.log(`replaced`, product.value)
+                    }
+                }
+
 
                 return flattened;
             })

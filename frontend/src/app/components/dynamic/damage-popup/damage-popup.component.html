@@ -10,6 +10,10 @@
             [groupings]="groupings"></app-grouped-bar-chart>
         </div>
     </ng-container>
+
+    <ng-container *ngIf="additionalText">
+        <div [innerHTML]="additionalText | translate"></div>
+    </ng-container>
 </ng-container>
 
 <ng-template #noData><p>{{ no_data | translate }}</p></ng-template>

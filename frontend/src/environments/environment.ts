@@ -8,7 +8,7 @@ export const environment = {
   useProxy: true,
   proxyUrl: 'https://riesgos.dlr.de/proxy',
   fallbackProxyUrl: 'https://hexaph.one/proxy',
-  gfzUseStaging: true,
+  gfzUseStaging: false,
 };
 
 /*

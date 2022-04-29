@@ -1,4 +1,6 @@
 import Plotly from 'plotly.js-dist';
+import { getBuildingClassColor } from './colorhelpers';
+
 
 
 export function createGroupedBarChart(
@@ -54,7 +56,10 @@ export function createGroupedBarChart(
             type: 'bar',
             name: groupName.substr(0, 13),
             x: groupData.map(dp => dp.label),
-            y: groupData.map(dp => dp.value)
+            y: groupData.map(dp => dp.value),
+            marker: {
+                color: getBuildingClassColor(groupName)
+            }
         };
         newData.push(transformedGroupData);
     }
@@ -116,7 +121,10 @@ export function createBarChart(
         const newData = [{
             type: 'bar',
             x: data.map(dp => dp.label),
-            y: data.map(dp => dp.value)
+            y: data.map(dp => dp.value),
+            marker: {
+                color: data.map(dp => getBuildingClassColor(dp.label))
+            }
         }];
 
         const yMax = newData[0].y.reduce((last, curr) => curr > last ? curr : last, 0);
@@ -162,7 +170,10 @@ export function createBigBarChart(
         const newData = [{
             type: 'bar',
             x: data.map(dp => dp.label),
-            y: data.map(dp => dp.value)
+            y: data.map(dp => dp.value),
+            marker: {
+                color: data.map(dp => getBuildingClassColor(dp.label))
+            }
         }];
 
         const yMax = newData[0].y.reduce((last, curr) => curr > last ? curr : last, 0);

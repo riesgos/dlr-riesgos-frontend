@@ -94,7 +94,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                 // econLayer.params.STYLES = 'custom_style_economic';
                 // econLayer.params.SLD_BODY = customStyleEconomic.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
                 const totalDamage = +(metaDataValue.total.loss_value);
-                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
+                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                 econLayer.dynamicDescription = {
                     component: InfoTableComponentComponent,
                     inputs: {
@@ -149,7 +149,8 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                                 metaData: metaData.value[0],
                                 xLabel: 'damage',
                                 yLabel: 'Nr_buildings',
-                                schema: chosenSchema
+                                schema: chosenSchema,
+                                additionalText: chosenSchema === 'Medina_2019' ? 'DamageStatesSara' : 'DamageStatesSuppasri'
                             };
                         }
                     }

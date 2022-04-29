@@ -29,7 +29,7 @@ export const laharLossProps: VectorLayerProperties = {
         vectorLayerAttributes: {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
-                const [r, g, b] = greenVioletRangeStepwise(0, 1, props.loss_value / maxDamage$);
+                const [r, g, b] = greenVioletRangeStepwise(0, maxDamage$, props.loss_value);
                 return new olStyle({
                   fill: new olFill({
                     color: [r, g, b, 1],
@@ -53,7 +53,7 @@ export const laharLossProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 100000 USD'
+                text: 'Loss < 100.000 USD'
             }, {
                 feature: {
                     "type": "Feature",
@@ -67,7 +67,7 @@ export const laharLossProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 500000 USD'
+                text: 'Loss < 500.000 USD'
             }, {
                 feature: {
                     "type": "Feature",
@@ -81,7 +81,7 @@ export const laharLossProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Loss 1000000 USD'
+                text: 'Loss < 1.000.000 USD'
             }],
             text: (props: object) => {
                 return `<h4>{{ Loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
@@ -90,7 +90,7 @@ export const laharLossProps: VectorLayerProperties = {
                 const features = value[0].features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
-                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
+                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
 
                 return {
                     component: InfoTableComponentComponent,
@@ -272,7 +272,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
 
                 // const dr = weightedDamage(Object.values(counts)) / 4;
                 const {maxKey, maxVal} = getMaxFromDict(counts);
-                const dr = +(maxKey[1]) / 4;
+                const dr = +(maxKey[1]);
 
                 let r: number;
                 let g: number;
@@ -280,7 +280,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                 if (total === 0) {
                     r = b = g = 160;
                 } else {
-                    [r, g, b] = greenVioletRangeStepwise(0, 0.8, dr);
+                    [r, g, b] = greenVioletRangeStepwise(0, 4, dr);
                 }
 
                 return new olStyle({
@@ -362,7 +362,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: `mostly_collapsed_damage`
+                text: `mostly_collapsed_damage_lahar`
             }],
             text: (props: object) => {
                 const anchor = document.createElement('div');
@@ -392,7 +392,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                     }
                 }
 
-                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 300, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
+                const anchorUpdated = createGroupedBarChart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Lahar_damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
             },
             summary: (value: [FeatureCollection]) => {
@@ -425,7 +425,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                     component: InfoTableComponentComponent,
                     inputs: {
                         data: data,
-                        bottomText: 'DamageStatesMavrouli'
+                        bottomText: 'BuildingTypesMavrouli'
                     }
                 };
             }

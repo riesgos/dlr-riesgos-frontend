@@ -67,7 +67,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 econLayer.params.STYLES = 'style-cum-loss';
                 econLayer.legendImg += '&style=style-cum-loss';
                 const totalDamage = +(metaDataValue.total.loss_value);
-                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 0) + ' MUSD';
+                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                 econLayer.dynamicDescription = {
                     component: InfoTableComponentComponent,
                     inputs: {
@@ -110,7 +110,8 @@ export const eqDamageWms: WpsData & MappableProduct = {
                                 metaData: metaData.value[0],
                                 xLabel: 'damage',
                                 yLabel: 'Nr_buildings',
-                                schema: 'SARA_v1.0'
+                                schema: 'SARA_v1.0',
+                                additionalText: 'DamageStatesSara'
                             };
                         }
                     }

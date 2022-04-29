@@ -64,7 +64,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
             legendEntries: [{
                 feature: {
                     "type": "Feature",
-                    "properties": {'thickness': 0.05},
+                    "properties": {'thickness': 25},
                     "geometry": {
                       "type": "Polygon",
                       "coordinates": [ [
@@ -74,7 +74,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 5.0 mm'
+                text: 'Thickness25'
             }, {
                 feature: {
                     "type": "Feature",
@@ -88,11 +88,11 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 50.0 mm'
+                text: 'Thickness50'
             }, {
                 feature: {
                     "type": "Feature",
-                    "properties": {'thickness': 90},
+                    "properties": {'thickness': 75},
                     "geometry": {
                       "type": "Polygon",
                       "coordinates": [ [
@@ -102,7 +102,21 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                           [ 5.627918243408203, 50.963075942052164 ] ] ]
                     }
                 },
-                text: 'Thickness: 90.0 mm'
+                text: 'Thickness75'
+            }, {
+                feature: {
+                    "type": "Feature",
+                    "properties": {'thickness': 100},
+                    "geometry": {
+                      "type": "Polygon",
+                      "coordinates": [ [
+                          [ 5.627918243408203, 50.963075942052164 ],
+                          [ 5.627875328063965, 50.958886259879264 ],
+                          [ 5.635471343994141, 50.95634523633128 ],
+                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    }
+                },
+                text: 'Thickness100'
             }],
             text: (properties) => {
                 const thickness = properties['thickness'];

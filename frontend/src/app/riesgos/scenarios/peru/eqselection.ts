@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 import { VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
-import { availableEqsPeru } from './quakeledger';
+import { availableEqsPeru, etypePeru } from './quakeledger';
 import { FeatureCollection, featureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import Geometry from 'ol/geom/Geometry';
@@ -63,6 +63,10 @@ export const selectedEqPeru: WpsData & VectorLayerProduct = {
                     // Longitude: toDecimalPlaces(2, 1),
                     Id: properties['origin.publicID'],
                 };
+                if (properties['origin.time.value']) {
+                    const date = new Date(Date.parse(properties['origin.time.value']));
+                    selectedProperties['{{ Date }}'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                }
                 text += '<table class="table"><tbody>';
                 for (const property in selectedProperties) {
                     if (selectedProperties[property]) {
@@ -80,16 +84,20 @@ export const selectedEqPeru: WpsData & VectorLayerProduct = {
                 const depth = toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km';
                 const id = properties['origin.publicID'];
 
+                const data = [
+                    [{ value: 'Id'}, { value: id }],
+                    [{ value: 'Magnitude'}, { value: magnitude }],
+                    [{ value: 'Depth'}, { value: depth }],
+                ];
+
+                if (properties['origin.time.value']) {
+                    const date = new Date(Date.parse(properties['origin.time.value']));
+                    data.push([{value: 'Date'}, {value: `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`}]);
+                }
+
                 return {
                     component: InfoTableComponentComponent,
-                    inputs: {
-                        title: 'Selected earthquake',
-                        data: [
-                            [{ value: 'Id'}, { value: id }],
-                            [{ value: 'Magnitude'}, { value: magnitude }],
-                            [{ value: 'Depth'}, { value: depth }],
-                        ]
-                    }
+                    inputs: { data: data }
                 };
             }
         },

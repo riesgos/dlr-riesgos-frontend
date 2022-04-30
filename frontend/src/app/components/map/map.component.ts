@@ -35,9 +35,9 @@ import VectorTileLayer from 'ol/layer/VectorTile';
 import { TileWMS, VectorTile } from 'ol/source';
 import { createTableHtml } from 'src/app/helpers/others';
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import TileLayer from 'ol/layer/Tile';
-import TileSource from 'ol/source/Tile';
+import { Fill, Stroke, Style } from 'ol/style';
 
 const mapProjection = 'EPSG:3857';
 
@@ -461,6 +461,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
                 },
+                options: {
+                    style: () => new Style({
+                        stroke: new Stroke({
+                            color: 'rgb(0, 0, 255)'
+                        }),
+                        fill: new Fill({
+                            color: 'rgba(255, 255, 255, 0.01)'
+                        })
+                    })
+                },
                 attribution: '&copy, <a href="https://gadm.org/" target="_blank">GADM</a>',
                 description: '<a href="https://gadm.org/" target="_blank">GADM</a>',
             });
@@ -478,6 +488,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     ];
                         return  this.translator.syncTranslate(createTableHtml(rows));
                     }
+                },
+                options: {
+                    style: () => new Style({
+                        stroke: new Stroke({
+                            color: 'rgb(0, 0, 255)'
+                        }),
+                        fill: new Fill({
+                            color: 'rgba(255, 255, 255, 0.01)'
+                        })
+                    }),
                 },
                 attribution: '&copy, <a href="https://gadm.org/" target="_blank">GADM</a>',
                 description: '<a href="https://gadm.org/" target="_blank">GADM</a>',

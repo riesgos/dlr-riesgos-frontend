@@ -5,13 +5,12 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import { Feature as olFeature } from 'ol';
 import { HttpClient } from '@angular/common/http';
 import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
-import { weightedDamage, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { weightedDamage } from 'src/app/helpers/colorhelpers';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import Geometry from 'ol/geom/Geometry';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
-import { environment } from 'src/environments/environment';
 
 
 export const modelChoice: WpsData & StringSelectUserConfigurableProduct = {

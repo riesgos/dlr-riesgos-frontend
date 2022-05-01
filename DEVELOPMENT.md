@@ -8,45 +8,53 @@ Our RIESGOS business model consists of `processes` and `products`. They form a d
 
 
 ## Getting started
-This project depends on the 'UKIS frontend libraries', which are distributed as packages on github. To use these packages, please follow the instructions on [the UKIS frontend libraries github page](https://github.com/dlr-eoc/ukis-frontend-libraries).
-
-
 Usually, you'll want to use [one of our stable releases](https://github.com/riesgos/dlr-riesgos-frontend/tags).
 ```bash
     git clone https://github.com/riesgos/dlr-riesgos-frontend -b v1.0_peru
     cd dlr-riesgos-frontend
-    npm install
 ```
+
+You will want to adjust the configuration files according to your own needs.
 
 From there, you can ...
- - ... host a development version on your machine: ```npm run start```
- - ... or build a deployable version of the code: ```npm run build```
+ - ... host a development version on your machine
+ - ... or build a deployable version of the code 
 
+### Adjusting configuration
+ - `frontend/src/environments`
+    - `production`: whether this app is meant to run in production or not
+    - `middlewareUrl`: where to reach the middleware
+    - `useProxy`: should non-https-pages be redirected over a proxy?
+    - `proxyUrl`: where can that proxy be reached?
+ - `middleware/src/config.ts`
+     - `port`: where to listen for incoming requests
+     - `useCache`: store WPS results (may only store references to where the actual results are hosted)
+     - `siteAdmins`: who should get emails when errors occur?
+     - `sourceEmail`: address under which to send error-emails
+     - `cacheDir`: where cached WPS results should be kept
+     - `tempDir`: where the last sent request-body should be kept
 
-## Hosting
-Since this is a simple angular-application, not much is required in terms of hosting.
-
-### 1. A webserver
-You should host this app as simple, static files.
- - Deploy the output of the build (that is, the contents of the `dist` folder, created with ```npm run build``` as described above) to your server (commonly `/var/www/<your domain name>`)
- - Configure your webserver to serve your files from that directory.
-
-A common configuration for nginx might look like this:
+### Local development
+For local development, use two terminals. In the first:
+```bash
+cd frontend
+npm install 
+npm run start
 ```
-server {
-    listen 80;
-    listen [::] 80;
-    server_name <your domain name>;
-    root /var/www/<your domain name>;
-    index index.html;
-    location / {
-        try_files $uri$args $uri$args/ /index.html;
-    }
-}
+
+And in the second:
+```bash
+cd middleware
+npm install 
+npm run start
 ```
 
-### 2. A domain
-Finally, your application should be available behind a dedicated address. If your organization does not handle domain-names for you, there are many services where you can [obtain a domain name](https://www.google.com/search?q=get+a+domain+name).
+### Deployable version
+This application has been dockerized. After configuring the app to your needs, you should be able to roll out this app with a simple:
+```bash
+docker-compose up
+```
+
 
 ## Integrating external webservices
 

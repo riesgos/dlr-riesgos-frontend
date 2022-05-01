@@ -89,6 +89,7 @@ export const tsDamageWms: WpsData & MappableProduct = {
 
                 econLayer.id += '_economic';
                 econLayer.name = 'ts-damage';
+                econLayer.icon = 'dot-circle';
                 econLayer.params.STYLES = 'style-cum-loss';
                 econLayer.legendImg += '&style=style-cum-loss';
                 const totalDamage = +(metaDataValue.total.loss_value);
@@ -119,6 +120,7 @@ export const tsDamageWms: WpsData & MappableProduct = {
 
                 damageLayer.id += '_damage';
                 damageLayer.name = 'ts-exposure';
+                damageLayer.icon = 'dot-circle';
                 damageLayer.params = { ...econLayer.params };
                 
                 if (chosenSchema === 'SUPPASRI2013_v2.0') {

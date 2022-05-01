@@ -64,6 +64,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
 
                 econLayer.id += '_economic';
                 econLayer.name = 'eq-damage';
+                econLayer.icon = 'dot-circle';
                 econLayer.params.STYLES = 'style-cum-loss';
                 econLayer.legendImg += '&style=style-cum-loss';
                 const totalDamage = +(metaDataValue.total.loss_value);
@@ -95,6 +96,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
 
                 damageLayer.id += '_damage';
                 damageLayer.name = 'eq-exposure';
+                damageLayer.icon = 'dot-circle';
                 damageLayer.params = { ... econLayer.params };
                 damageLayer.params.STYLES = 'style-damagestate-sara';
                 damageLayer.legendImg += '&style=style-damagestate-sara';

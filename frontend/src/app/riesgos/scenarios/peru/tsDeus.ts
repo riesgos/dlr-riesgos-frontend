@@ -89,6 +89,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
 
                 econLayer.id += '_economic_peru';
                 econLayer.name = 'ts-damage';
+                econLayer.icon = 'dot-circle';
                 econLayer.params.STYLES = 'style-cum-loss';
                 econLayer.legendImg += '&style=style-cum-loss';
                 // econLayer.params.STYLES = 'custom_style_economic';
@@ -123,6 +124,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
 
                 damageLayer.id += '_damage_peru';
                 damageLayer.name = 'ts-exposure';
+                damageLayer.icon = 'dot-circle';
                 damageLayer.params = { ...econLayer.params };
                 
                 if (chosenSchema === 'SUPPASRI2013_v2.0') {

@@ -214,8 +214,8 @@ public loadScenarioData(scenario: string): [Process[], Product[]] {
     switch (scenario) {
       case 'c1':
         processes = [
-          new ExposureSelection(this.httpClient, cache),
-          new QuakeLedger(this.httpClient, cache),
+          new ExposureSelection(this.httpClient),
+          new QuakeLedger(this.httpClient),
           new MyGreeterService(this.httpClient),
           ...
         ];

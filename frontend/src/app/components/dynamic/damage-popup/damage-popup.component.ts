@@ -81,9 +81,9 @@ function createSubstringGrouping(labels: string[]): GroupingFunction {
   }
 }
 
-const saraGroupingSubtype = createSubstringGrouping(['UNK', 'LDUAL', 'LFINF', 'LWAL', 'ETR', 'STDRE', 'STRUB', 'WBB', 'WHE', 'WLI', 'WS', 'WWD']);
+const saraGroupingSubtype = createSubstringGrouping(['LDUAL', 'LFINF', 'LWAL', 'ETR', 'STDRE', 'STRUB', 'WBB', 'WHE', 'WLI', 'WS', 'WWD']);
 
-const saraGroupingHeight = createSubstringGrouping(['UNK', 'H1', 'H1-2', 'H1-3', 'H4-7', 'H8-19']);
+const saraGroupingHeight = createSubstringGrouping(['H1', 'H1-2', 'H1-3', 'H4-7', 'H8-19']);
 
 const groupings = {
   'SARA_v1.0': [{
@@ -130,6 +130,7 @@ export class DamagePopupComponent implements OnInit {
   @Input() yLabel: string;
   @Input() schema: knownSchemas;
   @Input() additionalText?: string;
+  @Input() heading?: string;
   public width = 400;
   public height = 400;
   public groupings: Grouping[];

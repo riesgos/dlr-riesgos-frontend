@@ -111,6 +111,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
                                 xLabel: 'damage',
                                 yLabel: 'Nr_buildings',
                                 schema: 'SARA_v1.0',
+                                heading: 'earthquake_damage_classification',
                                 additionalText: 'DamageStatesSara'
                             };
                         }

@@ -1,3 +1,4 @@
+import { hslToRgb } from '@cds/core/internal';
 import * as d3color from 'd3-color';
 
 /**
@@ -396,9 +397,24 @@ function nameToFloat(name) {
     return normalizeHash(i);
 }
 
-export function getBuildingClassColor(name: string): string {
+export function getBuildingClassColorOld(name: string): string {
     const h = nameToFloat(name);
     const colorIndex = Math.floor(h * rainbowColorsMixed.length) % rainbowColorsMixed.length;
     const color = rainbowColorsMixed[colorIndex];
     return color;
+}
+
+const phi = 0.618;
+const colorMapping = {};
+export function getBuildingClassColor(name: string): string {
+  if (name in colorMapping) {
+    return colorMapping[name];
+  }
+  const n = Object.keys(colorMapping).length;
+  const direction = (360 * phi * n) % 360;
+  const colorHSL = d3color.hsl(direction, 0.7, 0.8);
+  const colorRGB = colorHSL.rgb();
+  const colorString = colorRGB.toString();
+  colorMapping[name] = colorString;
+  return colorString;
 }

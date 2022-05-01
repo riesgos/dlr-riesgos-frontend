@@ -1,3 +1,7 @@
+<ng-container *ngIf="heading">
+    <h3>{{ heading | translate }}</h3>
+</ng-container>
+
 <ng-container *ngIf="(baseData$ | async) as baseData">
     <ng-container *ngIf="containsData(baseData); else noData">
         <div [style]="{'width': width + 'px', 'height': height + 'px'}">

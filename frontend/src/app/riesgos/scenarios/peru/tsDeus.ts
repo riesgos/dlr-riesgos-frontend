@@ -150,6 +150,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                                 xLabel: 'damage',
                                 yLabel: 'Nr_buildings',
                                 schema: chosenSchema,
+                                heading: 'damage_classification_tsunami',
                                 additionalText: chosenSchema === 'Medina_2019' ? 'DamageStatesSara' : 'DamageStatesSuppasri'
                             };
                         }

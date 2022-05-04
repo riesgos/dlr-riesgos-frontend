@@ -21,7 +21,7 @@ import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scenarios/peru/eqselection';
 import { ShakygroundPeru, shakemapPgaOutputPeru, eqShakemapRefPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru } from './scenarios/peru/shakyground';
 import { EqDeusPeru, lossPeru, eqDamageWmsPeru, eqDamagePeruMRef, eqDamageMetaPeru } from './scenarios/peru/eqDeus';
-import { TsServicePeru, tsWmsPeru, tsShakemapPeru } from './scenarios/peru/tsService';
+import { TsServicePeru, tsWmsPeru } from './scenarios/peru/tsService';
 import { TsDeusPeru, tsDamageWmsPeru, tsDamageMetaPeru, schemaPeru } from './scenarios/peru/tsDeus';
 import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru } from './scenarios/peru/reliability';
 
@@ -38,9 +38,7 @@ import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
 import { DeusLahar, laharDamageM, laharDamageMRef } from './scenarios/ecuador/laharDamage';
 import { DeusLaharAndAshfall, laharAshfallDamageM } from './scenarios/ecuador/laharAndAshDamage';
 import { LaharReliability, countryEcuador, hazardLahar, damageConsumerAreasEcuador } from './scenarios/ecuador/reliability';
-import { FloodMayRunProcess, geomerFlood, FloodMayRun, userInputSelectedOutburst,
-  hydrologicalSimulation, durationTiff, velocityTiff, depthTiff } from './scenarios/ecuador/geomerHydrological';
-import { FloodDamageProcess, damageBuildings, damageManzanasGeojson } from './scenarios/ecuador/floodDamage';
+import { FloodMayRun } from './scenarios/ecuador/geomerHydrological';
 import { vei, direction } from './scenarios/ecuador/lahar';
 import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './scenarios/ecuador/vulnerability';
 
@@ -123,7 +121,7 @@ export class RiesgosService {
           availableEqsPeru, userinputSelectedEqPeru,
           selectedEqPeru,
           shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru, eqShakemapRefPeru,
-          tsWmsPeru, tsShakemapPeru, eqDamagePeruMRef, schemaPeru, 
+          tsWmsPeru, eqDamagePeruMRef, schemaPeru, 
           tsDamageWmsPeru, tsDamageMetaPeru,
           countryPeru, hazardEqPeru,
           damageConsumerAreasPeru

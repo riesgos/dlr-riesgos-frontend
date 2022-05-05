@@ -1,4 +1,14 @@
 
+
+ashfall
+  network issues
+    transfer ashfall data via reference, not as body
+    reduce size of files - not worth it
+ecuador & peru
+  replace admin boundaries with wms
+
+
+
 ts-damage:
   - since its a wms, it does no longer contain the damage caused in the previous steps.
     - create custom layer with raster-source, calculating new color from both eq- and ts-damage wms.

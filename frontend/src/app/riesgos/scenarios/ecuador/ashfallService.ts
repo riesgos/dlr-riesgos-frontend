@@ -154,7 +154,7 @@ export const ashfallPoint: WpsData & Product = {
     description: {
         id: 'intensity',
         title: '',
-        reference: false,
+        reference: true,
         format: 'application/vnd.geo+json',
         type: 'complex'
     },
@@ -232,20 +232,35 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         // service temporarily out of commission
         // const obs1$ = super.execute(newInputProducts, [newOutputProducts], doWhileExecuting);
         const ashfallPolygon$ = this.loadAshfallPolygonFromFile(ashfall, veiV.value, probV.value);
-        const ashfallPoints$ = this.loadAshfallPointFromFile(ashfallPoint, veiV.value, probV.value);
-        return forkJoin([ashfallPolygon$, ashfallPoints$]).pipe(
-            map(([ashfallPolygon, ashfallPoints]) => {
-                // ashfallPoints.value[0].features.map(f => f.properties.load = 100 * f.properties.load);
-                return [ashfallPolygon, ashfallPoints];
+        // const ashfallPoints$ = this.loadAshfallPointFromFile(ashfallPoint, veiV.value, probV.value);
+        // return forkJoin([ashfallPolygon$, ashfallPoints$]).pipe(
+        //     map(([ashfallPolygon, ashfallPoints]) => {
+        //         return [ashfallPolygon, ashfallPoints];
+        //     })
+        // );
+        return ashfallPolygon$.pipe(
+            map((ashfallPolygon) => {
+                return [
+                    ashfallPolygon, 
+                    {
+                        ... ashfallPoint,
+                        value: [this.getAshfallPointUrl(veiV.value, probV.value)]
+                    }
+                ];
             })
         );
     }
 
-    private loadAshfallPointFromFile(ashfall: Product, vei: string, prob: string): Observable<Product> {
+    private getAshfallPointUrl(vei: string, prob: string): string {
         if (parseInt(prob) === 1) {
             prob = '01';
         }
-        const url = `assets/data/geojson/ashfall_points/VEI_${vei}_${prob}percent.geojson`;
+        const url = `https://riesgos.dlr.de/data/geojson/ashfall_points/VEI_${vei}_${prob}percent.geojson`;
+        return url;
+    }
+
+    private loadAshfallPointFromFile(ashfall: Product, vei: string, prob: string): Observable<Product> {
+        const url = this.getAshfallPointUrl(vei, prob);
         return this.http.get(url).pipe(map((val) => {
             return {
                 ... ashfall,

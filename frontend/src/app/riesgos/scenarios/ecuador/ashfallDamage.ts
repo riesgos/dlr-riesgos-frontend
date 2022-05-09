@@ -84,7 +84,7 @@ const ashfallLossProps: VectorLayerProperties = {
                 text: 'Loss < 1.000.000 USD'
             }],
             text: (props: object) => {
-                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
+                return `<h4 style="color: var(--clr-p1-color, #666666);">{{ economic_loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
             summary: (value: [FeatureCollection]) => {
                 const features = value[0].features;

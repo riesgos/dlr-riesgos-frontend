@@ -183,7 +183,9 @@ export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
       shape: 'building',
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
-      wikiLink: 'ExposureAndVulnerability'
+      wikiLink: 'ExposureAndVulnerability',
+      dataSources: [{ label: 'Gomez-Zapata, 2021', href: 'https://doi.org/10.5880/riesgos.2021.009' }, { label: 'INEI, 2017', href: 'http://censo2017.inei.gob.pe/' }],
+      
     };
   }
 

@@ -34,7 +34,7 @@ export const schema: StringSelectUserConfigurableProduct & WpsData = {
     description: {
         id: 'schema',
         title: 'schema',
-        defaultValue: 'SUPPASRI2013_v2.0',
+        defaultValue: 'Medina_2019',
         reference: false,
         type: 'literal',
         wizardProperties: {
@@ -47,7 +47,7 @@ export const schema: StringSelectUserConfigurableProduct & WpsData = {
             'Medina_2019',
         ],
     },
-    value: 'SUPPASRI2013_v2.0'
+    value: 'Medina_2019'
 };
 
 
@@ -203,7 +203,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
         this.name = 'Multihazard_damage_estimation/Tsunami';
         this.requiredProducts = [schema, tsWms, eqDamageMRef].map(p => p.uid);
         this.providedProducts = [tsDamageWms, tsDamageMeta].map(p => p.uid);
-        this.description = 'This service returns damage caused by the selected tsunami.';
+        this.description = 'ts_damage_svc_description';
         this.wizardProperties = {
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',

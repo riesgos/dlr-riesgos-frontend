@@ -309,7 +309,7 @@ export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             wikiLink: 'EqCatalogue',
-            dataSources: [{ label: 'this is an example', href: 'https://xkcd.com' }, {label: 'another example without a link behind it'}]
+            dataSources: [{ label: 'GFZ' }, { label: 'SHOA' }, { label: 'Jimenez et al. (2013)', href: 'https://www.dhn.mil.pe/files/cnat/pdf/articulos/Jimenez%20-%20Seismic%20Source%20of%201746%20Callao%20Earthquake.pdf' }]
         };
     }
 

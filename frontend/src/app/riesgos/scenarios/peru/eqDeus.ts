@@ -176,7 +176,7 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
     readonly name = 'Multihazard_damage_estimation/Earthquake';
     readonly requiredProducts = [eqShakemapRefPeru, initialExposurePeruReference].map(p => p.uid);
     readonly providedProducts = [eqDamageWmsPeru, eqDamageMetaPeru, eqDamagePeruMRef].map(p => p.uid);
-    readonly description = 'This service returns damage caused by the selected earthquake.';
+    readonly description = 'eq_damage_svc_description';
     readonly wizardProperties = {
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',

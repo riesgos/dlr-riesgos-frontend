@@ -306,7 +306,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
       wikiLink: 'ExposureAndVulnerabilityEcuador',
-      dataSources: [{label: 'GADPC (Gobierno Autónomo Descentralizado Provincial de Cotopaxi, Latacunga, Ecuador)'}]
+      dataSources: [{label: 'Gobierno Autónomo Descentralizado Provincial de Cotopaxi'}]
     };
   }
 
@@ -350,7 +350,7 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
       wikiLink: 'ExposureAndVulnerabilityEcuador',
-      dataSources: [{label: 'GADPC (Gobierno Autónomo Descentralizado Provincial de Cotopaxi, Latacunga, Ecuador)'}]
+      dataSources: [{label: 'Gobierno Autónomo Descentralizado Provincial de Cotopaxi'}]
     };
   }
 

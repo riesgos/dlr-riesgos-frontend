@@ -121,10 +121,10 @@ export const VsGrid: WpsData & StringSelectUserConfigurableProduct = {
         type: 'literal',
         reference: false,
         options: [
+            'FromSeismogeotechnicsMicrozonation',
             'USGSSlopeBasedTopographyProxy',
-            'FromSeismogeotechnicsMicrozonation'
         ],
-        defaultValue: 'USGSSlopeBasedTopographyProxy',
+        defaultValue: 'FromSeismogeotechnicsMicrozonation',
         wizardProperties: {
             fieldtype: 'stringselect',
             name: 'vsgrid',
@@ -156,7 +156,8 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
             shape: 'earthquake',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'EqSimulation'
+            wikiLink: 'EqSimulation',
+            dataSources: [{ label: 'Openquake Engine', href: 'https://github.com/gem/oq-engine' }]
         };
     }
 

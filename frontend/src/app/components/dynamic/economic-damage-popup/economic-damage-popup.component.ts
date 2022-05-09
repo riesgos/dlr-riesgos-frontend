@@ -5,7 +5,7 @@ import MapBrowserEvent from 'ol/MapBrowserEvent';
 import TileWMS from 'ol/source/TileWMS';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DeusGetFeatureInfo, DeusMetaData } from '../damage-popup/damage-popup.component';
+import { DeusGetFeatureInfo, DeusMetaData } from '../../../riesgos/scenarios/chile/deus';
 
 @Component({
   selector: 'app-economic-damage-popup',

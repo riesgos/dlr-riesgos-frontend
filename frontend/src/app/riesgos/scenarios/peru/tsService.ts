@@ -85,36 +85,6 @@ export class TsWmsServicePeru extends WpsProcess {
 }
 
 
-export const tsShakemapPeru: WpsData & Product = {
-    uid: 'ts_shakemap_peru',
-    description: {
-        id: 'tsunamap',
-        title: 'tsunamap',
-        reference: true,
-        type: 'complex',
-        format: 'application/xml'
-    },
-    value: null
-};
-
-
-export class TsShakemapServicePeru extends WpsProcess {
-    constructor(http: HttpClient) {
-        super(
-            'get_tsunamap_peru',
-            'get_tsunamap',
-            [latPeru, lonPeru, magPeru].map(p => p.uid),
-            [tsShakemapPeru.uid],
-            'get_tsunamap',
-            'Input is earthquake epicenter (lon,lat) with magnitude, output is the nearest Tsunami epicenter and Inundation in shakemap format',
-            'http://tsunami-wps.awi.de/wps',
-            '1.0.0',
-            http,
-            new ProcessStateUnavailable()
-        );
-    }
-}
-
 export class TsServicePeru implements WizardableProcess, ExecutableProcess {
 
     uid = 'ts-service_peru';
@@ -129,7 +99,6 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
         wikiLink: 'TsunamiWiki'
     };
 
-    private tsShakemapService: TsShakemapServicePeru;
     private tsWmsService: TsWmsServicePeru;
     readonly requiredProducts: string[];
     readonly providedProducts: string[];
@@ -137,9 +106,8 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
     constructor(private httpClient: HttpClient) {
         this.state = new ProcessStateUnavailable();
         this.tsWmsService = new TsWmsServicePeru(httpClient);
-        this.tsShakemapService = new TsShakemapServicePeru(httpClient);
         this.requiredProducts = [selectedEqPeru.uid],
-        this.providedProducts = this.tsWmsService.providedProducts.concat(this.tsShakemapService.providedProducts);
+        this.providedProducts = this.tsWmsService.providedProducts;
     }
 
     execute = (inputs: Product[], outputs: Product[], doWhileExecuting): Observable<Product[]> => {
@@ -158,25 +126,11 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
 
         const inputsWms = newInputs;
         const outputsWms = outputs.filter(i => this.tsWmsService.providedProducts.includes(i.uid));
-        const inputsShkmp = newInputs;
-        const outputsShkmp = outputs.filter(i => this.tsShakemapService.providedProducts.includes(i.uid));
 
-        const proc1$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);
-        const proc2$ = this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting);
+        const tsunamiWms$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);
 
-        return concat(proc2$, proc1$);
+        return tsunamiWms$;
 
-        // return forkJoin(proc1$, proc2$).pipe(
-        //     map((results: Product[][]) => {
-        //         const flattened: Product[] = [];
-        //         for (const result of results) {
-        //             for (const data of result) {
-        //                 flattened.push(data);
-        //             }
-        //         }
-        //         return flattened;
-        //     })
-        // );
     }
 
 }

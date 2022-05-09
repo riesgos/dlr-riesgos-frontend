@@ -470,7 +470,7 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] = [initialExposureLaharRef, laharVelocityShakemapRef].map(p => p.uid);
     readonly providedProducts: string[] = [laharDamageM, laharDamageMRef].map(p => p.uid);
-    readonly description?: string = 'Deus Lahar description';
+    readonly description?: string = 'lahar_damage_service_description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
         providerName: 'GFZ',

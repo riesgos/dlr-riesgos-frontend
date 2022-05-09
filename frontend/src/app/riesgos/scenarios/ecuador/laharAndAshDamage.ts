@@ -89,7 +89,7 @@ export class DeusLaharAndAshfall implements ExecutableProcess, WizardableProcess
     readonly state: ProcessState = new ProcessStateUnavailable();
     readonly requiredProducts: string[] = [ashfallDamageM, ashfallDamageMRef, laharDamageMRef, laharVelocityShakemapRef].map(p => p.uid);
     readonly providedProducts: string[] = [laharAshfallDamageM].map(p => p.uid);
-    readonly description?: string = 'Deus Lahar + Ashfall description';
+    readonly description?: string = 'ashfall_and_lahar_damage_service_description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
         providerName: 'GFZ',

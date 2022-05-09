@@ -439,7 +439,7 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
         [initialExposureAshfallRef, ashfallPoint].map(p => p.uid);
     readonly providedProducts: string[] =
         [ashfallDamageM, ashfallDamageMRef].map(p => p.uid);
-    readonly description?: string = 'Deus Ashfall description';
+    readonly description?: string = 'ashfall_damage_service_description';
     readonly wizardProperties: WizardProperties = {
         shape: 'dot-circle',
         providerName: 'GFZ',

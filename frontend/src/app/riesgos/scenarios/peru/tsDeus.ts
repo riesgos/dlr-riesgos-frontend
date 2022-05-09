@@ -1,13 +1,13 @@
-import { MappableProduct, WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
+import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { eqDamagePeruMRef } from './eqDeus';
-import { tsShakemapPeru } from './tsService';
+import { tsWmsPeru } from './tsService';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
 import { forkJoin, Observable } from 'rxjs';
-import { Deus } from '../chile/deus';
+import { DeusMetaData } from '../chile/deus';
 import { map, switchMap, take } from 'rxjs/operators';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { MapOlService } from '@dlr-eoc/map-ol';
@@ -25,7 +25,7 @@ import { TranslatableStringComponent } from 'src/app/components/dynamic/translat
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
-import { customStyleEconomic, customStyleMedina, customStyleSuppasri } from '../../styles';
+import { intensityParameter, intensityUnit, Neptunus, tsunamiGeoTiff } from './neptunus';
 
 
 export const schemaPeru: StringSelectUserConfigurableProduct & WpsData = {
@@ -82,7 +82,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
 
                 const metaData = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === tsDamageMetaPeru.uid);
                 const chosenSchema = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === schemaPeru.uid).value;
-                const metaDataValue = metaData.value[0];
+                const metaDataValue: DeusMetaData = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];
                 const damageLayer: ProductLayer = new ProductRasterLayer({ ...econLayer });
@@ -94,14 +94,19 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                 econLayer.legendImg += '&style=style-cum-loss';
                 // econLayer.params.STYLES = 'custom_style_economic';
                 // econLayer.params.SLD_BODY = customStyleEconomic.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
-                const totalDamage = +(metaDataValue.total.loss_value);
+                const damage = +(metaDataValue.total.loss_value);
+                const damageFormatted = toDecimalPlaces(damage / 1000000, 2) + ' MUSD';
+                const totalDamage = +(metaDataValue.total.cum_loss);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                 econLayer.dynamicDescription = {
                     component: InfoTableComponentComponent,
                     inputs: {
-                        title: 'Total damage',
-                        data: [[{ value: 'Total damage' }, { value: totalDamageFormatted }]],
-                        bottomText: `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
+                        // title: 'Total damage',
+                        data: [
+                            [{ value: 'Loss' },       { value: damageFormatted      }],
+                            [{ value: 'cumulative_loss' }, { value: totalDamageFormatted }]
+                        ],
+                        bottomText: `{{ loss_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                     }
                 }
                 econLayer.popup = {
@@ -192,13 +197,13 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
     readonly wizardProperties: WizardProperties;
 
     private vulnerabilityProcess: VulnerabilityModelPeru;
-    private deusProcess: Deus;
+    private neptunusProcess: Neptunus;
 
     constructor(http: HttpClient) {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
-        this.requiredProducts = [schemaPeru, tsShakemapPeru, eqDamagePeruMRef].map(p => p.uid);
+        this.requiredProducts = [schemaPeru, tsWmsPeru, eqDamagePeruMRef].map(p => p.uid);
         this.providedProducts = [tsDamageWmsPeru, tsDamageMetaPeru].map(p => p.uid);
         this.description = 'This service returns damage caused by the selected tsunami.';
         this.wizardProperties = {
@@ -209,7 +214,7 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
         };
 
         this.vulnerabilityProcess = new VulnerabilityModelPeru(http);
-        this.deusProcess = new Deus(http);
+        this.neptunusProcess = new Neptunus(http);
     }
 
     execute(
@@ -228,10 +233,27 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
 
                     // Step 2.1: preparing deus inputs
                     const fragility = resultProducts.find(prd => prd.uid === fragilityRefPeru.uid);
-                    const shakemap = inputProducts.find(prd => prd.uid === tsShakemapPeru.uid);
                     const exposure = inputProducts.find(prd => prd.uid === eqDamagePeruMRef.uid);
+                    const tsunamiWms = inputProducts.find(prd => prd.uid === tsWmsPeru.uid);
 
-                    const deusInputs = [{
+                    // w = 52819m
+                    // h = 58820m
+                    // m/px = 10
+                    // px_w = w / m/px = 5282
+                    // px_h = 5882
+                    // http://tsunami-wps.awi.de/geoserver/70000011/ows?service=wcs&version=1.0.0&request=GetCoverage&BBOX=-77.39,-12.53,-76.56,-11.69&format=image/geotiff&COVERAGE=70000011_mwhLand_local&CRS=EPSG:4326&WIDTH=2048&HEIGHT=2048
+                    const tsunamiWmsUrl = tsunamiWms.value;
+                    const layerId = tsunamiWmsUrl.match(/geoserver\/(\d+)\/ows/)[1];
+                    const limaBbox = '-77.39,-12.53,-76.56,-11.69';
+                    const w = 2048;
+                    const h = 2048;
+                    const parameter = 'mwhLand_local';
+                    let tsunamiGeoTiffRequest = tsunamiWmsUrl.replace('wms', 'WCS');
+                    tsunamiGeoTiffRequest = tsunamiGeoTiffRequest.replace('1.3.0', '1.0.0');
+                    tsunamiGeoTiffRequest = tsunamiGeoTiffRequest.replace('GetCapabilities', 'GetCoverage');
+                    tsunamiGeoTiffRequest += `&format=image/geotiff&COVERAGE=${layerId}_${parameter}&bbox=${limaBbox}&CRS=EPSG:4326&width=${w}&height=${h}`;
+
+                    const neptunusInputs = [{
                         ...schemaPeru,
                         value: 'SARA_v1.0' // <-- because last exposure still used SARA!
                     }, {
@@ -241,24 +263,22 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
                             id: 'fragility'
                         }
                     }, {
-                        ...shakemap,
-                        description: {
-                            ...shakemap.description,
-                            format: 'text/xml',
-                            id: 'intensity'
-                        }
-                    }, {
                         ...exposure,
                         description: {
                             ...exposure.description,
                             id: 'exposure'
                         },
-                    }
-                    ];
-                    const deusOutputs = outputProducts;
+                    },
+                    intensityParameter,
+                    intensityUnit,
+                    {
+                        ...tsunamiGeoTiff,
+                        value: tsunamiGeoTiffRequest
+                    }];
+                    const neptunusOutputs = outputProducts;
 
                     // Step 2.2: executing deus
-                    return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
+                    return this.neptunusProcess.execute(neptunusInputs, neptunusOutputs, doWhileExecuting);
                 })
             );
     }

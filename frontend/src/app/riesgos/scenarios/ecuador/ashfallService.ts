@@ -255,7 +255,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         if (parseInt(prob) === 1) {
             prob = '01';
         }
-        const url = `https://riesgos.dlr.de/data/geojson/ashfall_points/VEI_${vei}_${prob}percent.geojson`;
+        const url = `/assets/data/geojson/ashfall_points/VEI_${vei}_${prob}percent.geojson`;
         return url;
     }
 

@@ -7,6 +7,7 @@ import { tsWmsPeru } from './tsService';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
 import { forkJoin, Observable } from 'rxjs';
+import { Deus, DeusMetaData } from '../chile/deus';
 import { map, switchMap, take } from 'rxjs/operators';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { MapOlService } from '@dlr-eoc/map-ol';
@@ -81,7 +82,7 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
 
                 const metaData = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === tsDamageMetaPeru.uid);
                 const chosenSchema = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === schemaPeru.uid).value;
-                const metaDataValue = metaData.value[0];
+                const metaDataValue: DeusMetaData = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];
                 const damageLayer: ProductLayer = new ProductRasterLayer({ ...econLayer });
@@ -93,13 +94,18 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                 econLayer.legendImg += '&style=style-cum-loss';
                 // econLayer.params.STYLES = 'custom_style_economic';
                 // econLayer.params.SLD_BODY = customStyleEconomic.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
-                const totalDamage = +(metaDataValue.total.loss_value);
+                const damage = +(metaDataValue.total.loss_value);
+                const damageFormatted = toDecimalPlaces(damage / 1000000, 2) + ' MUSD';
+                const totalDamage = +(metaDataValue.total.cum_loss);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                 econLayer.dynamicDescription = {
                     component: InfoTableComponentComponent,
                     inputs: {
                         title: 'Total damage',
-                        data: [[{ value: 'Total damage' }, { value: totalDamageFormatted }]],
+                        data: [
+                            [{ value: 'damage' },       { value: damageFormatted      }],
+                            [{ value: 'Total damage' }, { value: totalDamageFormatted }]
+                        ],
                         bottomText: `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                     }
                 }

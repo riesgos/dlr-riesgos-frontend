@@ -12,6 +12,20 @@
     </p>
 </ng-container>
 
+<ng-container *ngIf="process.wizardProperties.dataSources">
+    <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
+        {{'DataSources' | translate}}:
+        <ng-container *ngFor="let dataSource of process.wizardProperties.dataSources">
+            <a *ngIf="dataSource.href"
+                [href]="dataSource.href" target="_blank"
+                class="label label-blue clickable" style="white-space: pre-line;">{{dataSource.label | translate}}</a>
+            <a *ngIf="!(dataSource.href)"
+                class="label label-blue" style="white-space: pre-line;">{{dataSource.label | translate}}</a>
+        </ng-container>
+
+    </p>
+</ng-container>
+
 <div class="wizardElement">
     <ng-container [ngSwitch]="process.state.type">
 

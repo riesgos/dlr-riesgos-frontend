@@ -295,7 +295,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       [lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, schemaEcuador, assettypeEcuador, modelEcuador].map(p => p.uid),
       [initialExposureAshfall.uid, initialExposureAshfallRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-      'exposure_process_description',
+      'ashfall_exposure_process_description',
       `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
       '1.0.0',
       http,
@@ -306,6 +306,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
       wikiLink: 'ExposureAndVulnerabilityEcuador',
+      dataSources: [{label: 'GADPC (Gobierno Autónomo Descentralizado Provincial de Cotopaxi, Latacunga, Ecuador)'}]
     };
   }
 
@@ -338,7 +339,7 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
         querymodeEcuador, schemaEcuador, assettypeEcuador, modelEcuador].map(p => p.uid),
       [initialExposureLahar.uid, initialExposureLaharRef.uid],
       'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess',
-      'exposure_process_description',
+      'lahar_exposure_process_description',
       `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
       '1.0.0',
       http,
@@ -348,7 +349,8 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
       shape: 'building',
       providerName: 'GFZ',
       providerUrl: 'https://www.gfz-potsdam.de/en/',
-      wikiLink: 'ExposureAndVulnerabilityEcuador'
+      wikiLink: 'ExposureAndVulnerabilityEcuador',
+      dataSources: [{label: 'GADPC (Gobierno Autónomo Descentralizado Provincial de Cotopaxi, Latacunga, Ecuador)'}]
     };
   }
 

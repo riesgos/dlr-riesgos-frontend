@@ -154,7 +154,7 @@ export const ashfallPoint: WpsData & Product = {
     description: {
         id: 'intensity',
         title: '',
-        reference: true,
+        reference: false,
         format: 'application/vnd.geo+json',
         type: 'complex'
     },
@@ -232,23 +232,23 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
         // service temporarily out of commission
         // const obs1$ = super.execute(newInputProducts, [newOutputProducts], doWhileExecuting);
         const ashfallPolygon$ = this.loadAshfallPolygonFromFile(ashfall, veiV.value, probV.value);
-        // const ashfallPoints$ = this.loadAshfallPointFromFile(ashfallPoint, veiV.value, probV.value);
-        // return forkJoin([ashfallPolygon$, ashfallPoints$]).pipe(
-        //     map(([ashfallPolygon, ashfallPoints]) => {
-        //         return [ashfallPolygon, ashfallPoints];
-        //     })
-        // );
-        return ashfallPolygon$.pipe(
-            map((ashfallPolygon) => {
-                return [
-                    ashfallPolygon, 
-                    {
-                        ... ashfallPoint,
-                        value: [this.getAshfallPointUrl(veiV.value, probV.value)]
-                    }
-                ];
+        const ashfallPoints$ = this.loadAshfallPointFromFile(ashfallPoint, veiV.value, probV.value);
+        return forkJoin([ashfallPolygon$, ashfallPoints$]).pipe(
+            map(([ashfallPolygon, ashfallPoints]) => {
+                return [ashfallPolygon, ashfallPoints];
             })
         );
+        // return ashfallPolygon$.pipe(
+        //     map((ashfallPolygon) => {
+        //         return [
+        //             ashfallPolygon, 
+        //             {
+        //                 ... ashfallPoint,
+        //                 value: [this.getAshfallPointUrl(veiV.value, probV.value)]
+        //             }
+        //         ];
+        //     })
+        // );
     }
 
     private getAshfallPointUrl(vei: string, prob: string): string {

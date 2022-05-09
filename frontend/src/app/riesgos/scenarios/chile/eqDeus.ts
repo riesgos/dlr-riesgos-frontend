@@ -72,9 +72,9 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 econLayer.dynamicDescription = {
                     component: InfoTableComponentComponent,
                     inputs: {
-                        title: 'Total damage',
-                        data: [[{value: 'Total damage'}, {value: totalDamageFormatted}]],
-                        bottomText: `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
+                        // title: 'Total damage',
+                        data: [[{value: 'Loss'}, {value: totalDamageFormatted}]],
+                        bottomText: `{{ loss_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                     }
                 }
                 econLayer.popup = {

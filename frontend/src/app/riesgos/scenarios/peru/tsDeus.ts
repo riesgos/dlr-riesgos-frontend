@@ -7,7 +7,7 @@ import { tsWmsPeru } from './tsService';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRefPeru, VulnerabilityModelPeru } from './modelProp';
 import { forkJoin, Observable } from 'rxjs';
-import { Deus, DeusMetaData } from '../chile/deus';
+import { DeusMetaData } from '../chile/deus';
 import { map, switchMap, take } from 'rxjs/operators';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { MapOlService } from '@dlr-eoc/map-ol';
@@ -101,12 +101,12 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                 econLayer.dynamicDescription = {
                     component: InfoTableComponentComponent,
                     inputs: {
-                        title: 'Total damage',
+                        // title: 'Total damage',
                         data: [
-                            [{ value: 'damage' },       { value: damageFormatted      }],
-                            [{ value: 'Total damage' }, { value: totalDamageFormatted }]
+                            [{ value: 'Loss' },       { value: damageFormatted      }],
+                            [{ value: 'cumulative_loss' }, { value: totalDamageFormatted }]
                         ],
-                        bottomText: `{{ damages_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
+                        bottomText: `{{ loss_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                     }
                 }
                 econLayer.popup = {
@@ -252,7 +252,6 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
                     tsunamiGeoTiffRequest = tsunamiGeoTiffRequest.replace('1.3.0', '1.0.0');
                     tsunamiGeoTiffRequest = tsunamiGeoTiffRequest.replace('GetCapabilities', 'GetCoverage');
                     tsunamiGeoTiffRequest += `&format=image/geotiff&COVERAGE=${layerId}_${parameter}&bbox=${limaBbox}&CRS=EPSG:4326&width=${w}&height=${h}`;
-console.log(tsunamiGeoTiffRequest)
 
                     const neptunusInputs = [{
                         ...schemaPeru,

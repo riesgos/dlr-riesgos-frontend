@@ -16,8 +16,10 @@ import { fragilityRef } from './scenarios/chile/modelProp';
 
 // peru
 import { ExposureModelPeru, initialExposurePeru, initialExposurePeruReference, modelChoicePeru } from './scenarios/peru/exposure';
-import { QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
-  zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru, availableEqsPeru } from './scenarios/peru/quakeledger';
+import {
+  QuakeLedgerPeru, InputBoundingboxPeru, mminPeru, mmaxPeru,
+  zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru, availableEqsPeru
+} from './scenarios/peru/quakeledger';
 import { EqSelectionPeru, userinputSelectedEqPeru, selectedEqPeru } from './scenarios/peru/eqselection';
 import { ShakygroundPeru, shakemapPgaOutputPeru, eqShakemapRefPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru } from './scenarios/peru/shakyground';
 import { EqDeusPeru, lossPeru, eqDamageWmsPeru, eqDamagePeruMRef, eqDamageMetaPeru } from './scenarios/peru/eqDeus';
@@ -28,13 +30,17 @@ import { EqReliabilityPeru, countryPeru, hazardEqPeru, damageConsumerAreasPeru }
 // ecuador
 import { VeiProvider, selectableVei } from './scenarios/ecuador/vei';
 import { AshfallService, probability, ashfall, ashfallPoint } from './scenarios/ecuador/ashfallService';
-import { AshfallExposureModel, LaharExposureModel, schemaEcuador,
+import {
+  AshfallExposureModel, LaharExposureModel, schemaEcuador,
   lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador,
   querymodeEcuador, assettypeEcuador, initialExposureAshfall, initialExposureAshfallRef,
-  initialExposureLahar, initialExposureLaharRef, modelEcuador } from './scenarios/ecuador/exposure';
+  initialExposureLahar, initialExposureLaharRef, modelEcuador
+} from './scenarios/ecuador/exposure';
 import { DeusAshfall, ashfallDamageM, ashfallDamageMRef } from './scenarios/ecuador/ashfallDamage';
-import { LaharWrapper, laharHeightWms, laharHeightShakemapRef,
-  laharVelocityWms, laharVelocityShakemapRef, laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms } from './scenarios/ecuador/laharWrapper';
+import {
+  LaharWrapper, laharHeightWms, laharHeightShakemapRef,
+  laharVelocityWms, laharVelocityShakemapRef, laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms
+} from './scenarios/ecuador/laharWrapper';
 import { DeusLahar, laharDamageM, laharDamageMRef } from './scenarios/ecuador/laharDamage';
 import { DeusLaharAndAshfall, laharAshfallDamageM } from './scenarios/ecuador/laharAndAshDamage';
 import { LaharReliability, countryEcuador, hazardLahar, damageConsumerAreasEcuador } from './scenarios/ecuador/reliability';
@@ -49,27 +55,31 @@ import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './
 export class RiesgosService {
 
   constructor(
-      private httpClient: HttpClient
-    ) {}
+    private httpClient: HttpClient
+  ) { }
 
 
-    public loadScenarioMetadata(): RiesgosScenarioMetadata[] {
-      return [{
-        id: 'c1',
-        title: 'Showcase Chile',
-        preview: `assets/images/tsunami_en.jpg`,
-        description: '',
-      }, {
+  public loadScenarioMetadata(): RiesgosScenarioMetadata[] {
+    return [
+      // {
+      //   id: 'c1',
+      //   title: 'Showcase Chile',
+      //   preview: `assets/images/tsunami_en.jpg`,
+      //   description: '',
+      // },
+      {
         id: 'e1',
         title: 'Showcase Ecuador',
         preview: `assets/images/lahar_en.jpg`,
         description: '',
-      }, {
-        id: 'p1',
-        title: 'Showcase Peru',
-        preview: `assets/images/tsunami_en.jpg`,
-        description: '',
-      }];
+      },
+      // {
+      //   id: 'p1',
+      //   title: 'Showcase Peru',
+      //   preview: `assets/images/tsunami_en.jpg`,
+      //   description: '',
+      // }
+    ];
   }
 
   public loadScenarioData(scenario: string): [Process[], Product[]] {
@@ -121,7 +131,7 @@ export class RiesgosService {
           availableEqsPeru, userinputSelectedEqPeru,
           selectedEqPeru,
           shakemapPgaOutputPeru, shakemapSa03OutputPeru, shakemapSa10OutputPeru, eqShakemapRefPeru,
-          tsWmsPeru, eqDamagePeruMRef, schemaPeru, 
+          tsWmsPeru, eqDamagePeruMRef, schemaPeru,
           tsDamageWmsPeru, tsDamageMetaPeru,
           countryPeru, hazardEqPeru,
           damageConsumerAreasPeru

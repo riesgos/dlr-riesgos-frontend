@@ -60,7 +60,7 @@ export class Deus extends WpsProcess {
             ['updated_exposure', 'transition', 'damage'],
             'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
             'eq_damage_svc_description',
-            `https://rz-vm140.gfz-potsdam.de${environment.gfzUseStaging ? ':8443' : ''}/wps/WebProcessingService`,
+            `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
             '1.0.0',
             http,
             new ProcessStateUnavailable()

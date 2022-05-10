@@ -47,7 +47,7 @@ export class Neptunus extends WpsProcess {
             ['updated_exposure', 'transition', 'damage'],
             'org.n52.gfz.riesgos.algorithm.impl.NeptunusProcess',
             'neptunus_description',
-            `https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService`,
+            `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
             '2.0.0',
             http,
             new ProcessStateUnavailable()

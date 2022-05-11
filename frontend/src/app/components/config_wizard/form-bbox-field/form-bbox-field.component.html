@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="one">
+    <clr-input-container [class.clr-error]="control.invalid && (control.dirty || control.touched)">
+
+      <label>
+        {{parameter.description.wizardProperties.name | translate}}:
+      </label>
+
+      <ukis-bboxfield clrInput [formControl]="control"></ukis-bboxfield>
+
+      <clr-control-helper style="margin-top: 50px; margin-left: 6px;">{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
+      <clr-control-error>Invalid input</clr-control-error>
+
+    </clr-input-container>
+  </div>
+
+  <ng-container *ngIf="(bboxSelectionOngoing$ | async) as ongoing; else activateButton">
+    <div class="two">
+      <clr-icon [attr.shape]="'bbox-select'" [title]="'select on map' | translate"
+        (click)="activateBboxselectInteraction(false)" [style.color]="'#0072a3'"  size='30'></clr-icon>
+    </div>
+  </ng-container>
+  <ng-template #activateButton>
+    <div class="two">
+      <clr-icon [attr.shape]="'bbox-select'" [title]="'select on map' | translate"
+        (click)="activateBboxselectInteraction(true)" [style.color]="'#575757'" size='26'></clr-icon>
+    </div>
+  </ng-template>
+
+</div>

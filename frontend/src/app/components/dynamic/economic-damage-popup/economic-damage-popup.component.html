@@ -1,0 +1,10 @@
+<ng-container *ngIf="(loss$ | async) as lossValue; else noData">
+    <table>
+        <tr><th>{{ title | translate }}</th></tr>
+        <tr><td>{{ lossValue }} MUSD</td></tr>
+    </table>
+</ng-container>
+
+<ng-template #noData>
+    <p>{{ no_data | translate }}</p>
+</ng-template>

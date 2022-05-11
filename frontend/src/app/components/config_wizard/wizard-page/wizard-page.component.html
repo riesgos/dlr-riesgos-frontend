@@ -1,0 +1,73 @@
+<app-read-more [text]="process.description" [threshold]="8"></app-read-more>
+
+<ng-container *ngIf="process.wizardProperties.wikiLink">
+    <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
+        Wiki: <a routerLink="/documentation" fragment="{{process.wizardProperties.wikiLink}}" target="_blank" class="label label-blue clickable" style="white-space: pre-line;">{{process.wizardProperties.wikiLink | translate}}</a>
+    </p>
+</ng-container>
+
+<ng-container *ngIf="process.wizardProperties.providerUrl">
+    <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
+        {{'Provider' | translate}}: <a href="{{process.wizardProperties.providerUrl}}" target="_blank" class="label label-blue clickable" style="white-space: pre-line;">{{process.wizardProperties.providerName | translate}}</a>
+    </p>
+</ng-container>
+
+<ng-container *ngIf="process.wizardProperties.dataSources">
+    <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
+        {{'DataSources' | translate}}:
+        <ng-container *ngFor="let dataSource of process.wizardProperties.dataSources">
+            <a *ngIf="dataSource.href"
+                [href]="dataSource.href" target="_blank"
+                class="label label-blue clickable" style="white-space: pre-line;">{{dataSource.label | translate}}</a>
+            <a *ngIf="!(dataSource.href)"
+                class="label label-blue" style="white-space: pre-line;">{{dataSource.label | translate}}</a>
+        </ng-container>
+
+    </p>
+</ng-container>
+
+<div class="wizardElement">
+    <ng-container [ngSwitch]="process.state.type">
+
+
+        <ng-container *ngSwitchCase="'unavailable'">
+            <p class="p3">
+                <span class="label" >{{'This process can not be configured yet.' | translate}}</span>
+            </p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'available'">
+            <ukis-form [process]="process" [parameters]="parameters$ | async"></ukis-form>
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="'running'">
+            <span class="spinner spinner-inline" >{{'Loading...' | translate}}</span>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'completed'">
+            <ukis-form [parameters]="parameters$ | async" [disabled]="true"> </ukis-form>
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" >{{'Reconfigure' | translate}}</button>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'error'">
+
+            <div class="alert alert-danger">
+                <div class="alert-items">
+                    <div class="alert-item static">
+                        <div class="alert-icon-wrapper">
+                            <clr-icon class="alert-icon" shape="exclamation-circle" style="margin:0px;"></clr-icon>
+                        </div>
+                        <span class="alert-text">
+                            {{process.state.message}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" >{{'Retry' | translate}}</button>
+        </ng-container>
+
+    </ng-container>
+</div>

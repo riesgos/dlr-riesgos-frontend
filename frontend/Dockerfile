@@ -8,7 +8,7 @@ RUN npm config set fetch-retry-mintimeout 60000
 RUN npm config set fetch-retry-maxtimeout 120000
 # building
 RUN npm install
-RUN npm run build
+RUN npm run build:prod
 
 FROM nginx as host
 WORKDIR /app

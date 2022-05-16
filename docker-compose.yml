@@ -8,7 +8,10 @@ services:
       - ./data:/app/data
   
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        LOCAL_ARTIFACTS: "FALSE"  # set true to re-use local versions of node_modules and dist (if already present)
     depends_on:
       - middleware
     ports:

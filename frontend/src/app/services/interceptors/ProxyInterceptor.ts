@@ -44,10 +44,12 @@ export function needsProxy(targetUrl: string): boolean {
 export function proxify(targetUrl: string): string {
     if (!needsProxy(targetUrl)) return targetUrl;
 
+    const proxyUrl = environment.useFallbackProxy ? environment.fallbackProxyUrl : environment.proxyUrl;
+
     if (targetUrl.match(/^http:\/\/(\w|-|\.)+:\d+/)) {
-        return `${environment.fallbackProxyUrl}/${targetUrl}`;
+        return `${proxyUrl}/${targetUrl}`;
     } else if (targetUrl.includes('91.250.85.221')) {
-        return `${environment.fallbackProxyUrl}/${targetUrl}`;
+        return `${proxyUrl}/${targetUrl}`;
     } else {
         return `${environment.proxyUrl}/${targetUrl}`;
     }

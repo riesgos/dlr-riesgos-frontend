@@ -589,7 +589,7 @@ export class LayerMarshaller  {
                                 const bbox = this.mapSvc.map.getView().calculateExtent(size);
                                 const width = size[0];
                                 const height = size[1];
-                                let requestUrl = `${url}service=wms&version=1.1.1&request=GetMap&format=image/tiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=${epsgCode}`;
+                                let requestUrl = `${url}service=wms&version=1.1.1&request=GetMap&format=image/geotiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=${epsgCode}`;
                                 if (theLayer.params.STYLES && !theLayer.params.SLD && !theLayer.params.SLD_BODY) {
                                     requestUrl += `&STYLES=${theLayer.params.STYLES}`;
                                 }

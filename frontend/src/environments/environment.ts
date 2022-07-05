@@ -7,8 +7,6 @@ export const environment = {
   middlewareUrl: 'http://localhost:8008',
   useProxy: false,
   proxyUrl: 'https://riesgos.dlr.de/proxy',
-  useFallbackProxy: false,
-  fallbackProxyUrl: 'https://hexaph.one/proxy',
   gfzUseStaging: false,
 };
 

@@ -22,7 +22,7 @@ export const modelChoicePeru: WpsData & StringSelectUserConfigurableProduct = {
       fieldtype: 'stringselect',
       name: 'model',
       description: 'exposure model',
-      signpost: 'warning_processing_time'
+      // signpost: 'warning_processing_time'
     },
     id: 'model',
     reference: false,

@@ -44,7 +44,7 @@ export function needsProxy(targetUrl: string): boolean {
 export function proxify(targetUrl: string): string {
     if (!needsProxy(targetUrl)) return targetUrl;
 
-    const proxyUrl = environment.useFallbackProxy ? environment.fallbackProxyUrl : environment.proxyUrl;
+    const proxyUrl = environment.proxyUrl;
 
     if (targetUrl.match(/^http:\/\/(\w|-|\.)+:\d+/)) {
         return `${proxyUrl}/${targetUrl}`;

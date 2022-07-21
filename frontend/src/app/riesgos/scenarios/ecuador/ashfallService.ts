@@ -11,7 +11,6 @@ import olFeature from 'ol/Feature';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { Observable, forkJoin } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { FeatureCollection } from '@turf/helpers';
 import Geometry from 'ol/geom/Geometry';
 
 
@@ -152,7 +151,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
 export const ashfallPoint: WpsData & Product = {
     uid: 'ashfallPoint',
     description: {
-        id: 'intensity',
+        id: 'ashfall',
         title: '',
         reference: false,
         format: 'application/vnd.geo+json',
@@ -191,9 +190,9 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             'AshfallService',
             [vei.uid, probability.uid],
             [ashfall.uid, ashfallPoint.uid],
-            'org.n52.dlr.riesgos.algorithm.CotopaxiAshfall',
+            'ashfall-service',
             'AshfallServiceDescription',
-            'https://riesgos.dlr.de/wps/WebProcessingService',
+            'https://riesgos.dlr.de/wps',
             '1.0.0',
             http,
             new ProcessStateUnavailable()
@@ -215,7 +214,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
                         ...prod,
                         description: {
                             ...prod.description,
-                            id: 'vei'
+                            id: 'intensity'
                         },
                         value: (prod.value as string).replace('VEI', '')
                     };
@@ -223,59 +222,34 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
                     return prod;
             }
         });
+        const asPolygonFlag: WpsData & Product = {
+            uid: 'ashfallPolygonFlag',
+            description: {
+                id: 'outputType',
+                reference: false,
+                type: 'literal',
+                title: 'Output'
+            },
+            value: 'polygons'
+        };
+        const asPointsFlag: WpsData & Product = {
+            uid: 'ashfallPointFlag',
+            description: {
+                id: 'outputType',
+                reference: false,
+                type: 'literal',
+                title: 'Output'
+            },
+            value: 'points'
+        };
 
-        const veiV = newInputProducts.find(p => p.uid === vei.uid);
-        const probV = newInputProducts.find(p => p.uid === probability.uid);
-
-        const newOutputProducts = outputProducts.find(p => p.uid === ashfall.uid);
-
-        // service temporarily out of commission
-        // const obs1$ = super.execute(newInputProducts, [newOutputProducts], doWhileExecuting);
-        const ashfallPolygon$ = this.loadAshfallPolygonFromFile(ashfall, veiV.value, probV.value);
-        const ashfallPoints$ = this.loadAshfallPointFromFile(ashfallPoint, veiV.value, probV.value);
-        return forkJoin([ashfallPolygon$, ashfallPoints$]).pipe(
-            map(([ashfallPolygon, ashfallPoints]) => {
-                return [ashfallPolygon, ashfallPoints];
-            })
-        );
-        // return ashfallPolygon$.pipe(
-        //     map((ashfallPolygon) => {
-        //         return [
-        //             ashfallPolygon, 
-        //             {
-        //                 ... ashfallPoint,
-        //                 value: [this.getAshfallPointUrl(veiV.value, probV.value)]
-        //             }
-        //         ];
-        //     })
-        // );
-    }
-
-    private getAshfallPointUrl(vei: string, prob: string): string {
-        if (parseInt(prob) === 1) {
-            prob = '01';
-        }
-        const url = `/assets/data/geojson/ashfall_points/VEI_${vei}_${prob}percent.geojson`;
-        return url;
-    }
-
-    private loadAshfallPointFromFile(ashfall: Product, vei: string, prob: string): Observable<Product> {
-        const url = this.getAshfallPointUrl(vei, prob);
-        return this.http.get(url).pipe(map((val) => {
-            return {
-                ... ashfall,
-                value: [val]
-            };
+        const ashfallPolygon$ = super.execute([...newInputProducts, asPolygonFlag], [outputProducts.find(p => p.uid === ashfall.uid)], doWhileExecuting);
+        const ashfallPoints$ = super.execute([...newInputProducts, asPointsFlag], [outputProducts.find(p => p.uid === ashfallPoint.uid)], doWhileExecuting);
+        return forkJoin([ashfallPolygon$, ashfallPoints$]).pipe(map(
+                ([products1, products2]) => {
+                    console.log('returning: ', [...products1, ...products2])
+                    return [...products1, ...products2];
         }));
     }
 
-    private loadAshfallPolygonFromFile(ashfallPoint: Product, vei: string, prob: string): Observable<Product> {
-        const url = `assets/data/geojson/ashfall_polygons/ash_prob${prob}_vei${vei}.geojson`;
-        return this.http.get(url).pipe(map((val) => {
-            return {
-                ... ashfallPoint,
-                value: [val]
-            };
-        }));
-    }
 }

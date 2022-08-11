@@ -10,7 +10,7 @@ import { Feature as olFeature } from 'ol';
 import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { WMSCapabilities } from 'ol/format';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -21,8 +21,6 @@ import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON } from 'ol/format';
 import Polygon from 'ol/geom/Polygon';
-import { laharContoursWms } from 'src/app/riesgos/scenarios/ecuador/laharWrapper';
-import { GroupSliderComponent, SliderEntry } from '../components/dynamic/group-slider/group-slider.component';
 import { VectorLegendComponent } from '../components/dynamic/vector-legend/vector-legend.component';
 import { WebGlPolygonLayer } from '../helpers/custom_renderers/renderers/polygon.renderer';
 import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
@@ -30,7 +28,6 @@ import { SimplifiedTranslationService } from 'src/app/services/simplifiedTransla
 import Geometry from 'ol/geom/Geometry';
 import { Fill, Stroke, Style } from 'ol/style';
 import { LayersService } from '@dlr-eoc/services-layers';
-import { environment } from 'src/environments/environment';
 import { needsProxy, proxify } from '../services/interceptors/ProxyInterceptor';
 
 
@@ -569,8 +566,8 @@ export class LayerMarshaller  {
                             STYLES: description.styles ? description.styles[0] : '',
                         },
                         legendImg: description.legendImg ? description.legendImg :  `${wmsUrl}?REQUEST=GetLegendGraphic&SERVICE=WMS` +
-                            `&VERSION=${paras.version}&STYLES=default&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
-                            `&TRANSPARENT=TRUE&LAYER=${layerName}`,
+                            `&VERSION=${paras.version}&FORMAT=${paras.format}&BGCOLOR=0xFFFFFF` +
+                            `&TRANSPARENT=TRUE&LAYER=${layerName}&STYLES=${ description.styles ? + description.styles : 'default'}`,
                         popup: {
                             asyncPopup: (obj, callback) => {
                                 this.getFeatureInfoPopup(obj, callback, description.featureInfoRenderer);
@@ -592,6 +589,8 @@ export class LayerMarshaller  {
                                 let requestUrl = `${url}service=wms&version=1.1.1&request=GetMap&format=image/geotiff&transparent=true&layers=${layers}&WIDTH=${width}&HEIGHT=${height}&BBOX=${bbox}&SRS=${epsgCode}`;
                                 if (theLayer.params.STYLES && !theLayer.params.SLD && !theLayer.params.SLD_BODY) {
                                     requestUrl += `&STYLES=${theLayer.params.STYLES}`;
+                                } else if (theLayer.params.SLD && theLayer.params.SLD_BODY) {
+                                    requestUrl += `&STYLES=${theLayer.params.SLD}&SLD_BODY=${theLayer.params.SLD_BODY}`;
                                 }
                                 this.httpClient.get(requestUrl, { responseType: 'blob' }).subscribe((data) => {
                                     downloadBlob(data, `data_${theLayer.name}.tiff`);

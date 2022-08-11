@@ -236,12 +236,6 @@ export class TsDeusPeru implements ExecutableProcess, WizardableProcess {
                     const exposure = inputProducts.find(prd => prd.uid === eqDamagePeruMRef.uid);
                     const tsunamiWms = inputProducts.find(prd => prd.uid === tsWmsPeru.uid);
 
-                    // w = 52819m
-                    // h = 58820m
-                    // m/px = 10
-                    // px_w = w / m/px = 5282
-                    // px_h = 5882
-                    // http://tsunami-wps.awi.de/geoserver/70000011/ows?service=wcs&version=1.0.0&request=GetCoverage&BBOX=-77.39,-12.53,-76.56,-11.69&format=image/geotiff&COVERAGE=70000011_mwhLand_local&CRS=EPSG:4326&WIDTH=2048&HEIGHT=2048
                     const tsunamiWmsUrl = tsunamiWms.value;
                     const layerId = tsunamiWmsUrl.match(/geoserver\/(\d+)\/ows/)[1];
                     const limaBbox = '-77.39,-12.53,-76.56,-11.69';

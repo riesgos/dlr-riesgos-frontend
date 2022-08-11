@@ -26,6 +26,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
 import { intensityParameter, intensityUnit, Neptunus, tsunamiGeoTiff } from '../peru/neptunus';
+import { customStyleEconomicChile } from '../../styles';
 
 
 
@@ -86,13 +87,16 @@ export const tsDamageWms: WpsData & MappableProduct = {
                 const metaDataValue: DeusMetaData = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];
-                const damageLayer: ProductLayer = new ProductRasterLayer({ ...econLayer });
+                const damageLayer: ProductLayer = new ProductRasterLayer({...econLayer });
 
                 econLayer.id += '_economic';
                 econLayer.name = 'ts-damage';
                 econLayer.icon = 'dot-circle';
-                econLayer.params.STYLES = 'style-cum-loss';
-                econLayer.legendImg += '&style=style-cum-loss';
+                // econLayer.params.STYLES = 'style-cum-loss';
+                // econLayer.legendImg += '&style=style-cum-loss';
+                econLayer.params.STYLES = 'custom_style_economic';
+                econLayer.params.SLD_BODY = customStyleEconomicChile.replace('{{{{layername}}}}', econLayer.params.LAYERS  );
+                econLayer.legendImg += '&style=custom_style_economic&sld_body=' + econLayer.params.SLD_BODY;
                 const damage = +(metaDataValue.total.loss_value);
                 const damageFormatted = toDecimalPlaces(damage / 1000000, 2) + ' MUSD';
                 const totalDamage = +(metaDataValue.total.cum_loss);
@@ -128,6 +132,7 @@ export const tsDamageWms: WpsData & MappableProduct = {
                 damageLayer.name = 'ts-exposure';
                 damageLayer.icon = 'dot-circle';
                 damageLayer.params = { ...econLayer.params };
+                delete damageLayer.params.SLD_BODY;
                 
                 if (chosenSchema === 'SUPPASRI2013_v2.0') {
                     damageLayer.legendImg += `&style=style-damagestate-suppasri`;

@@ -29,9 +29,9 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>&lt; 250.000 USD</se:Name>
+          <se:Name>&lt; 1.000.000 USD</se:Name>
           <se:Description>
-            <se:Title>&lt; 250.000 USD</se:Title>
+            <se:Title>&lt; 1.000.000 USD</se:Title>
             <se:Abstract>Light damage</se:Abstract>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
@@ -42,7 +42,7 @@
               </ogc:PropertyIsGreaterThan>
               <ogc:PropertyIsLessThan>
                 <ogc:PropertyName>cum_loss</ogc:PropertyName>
-                <ogc:Literal>250000</ogc:Literal>
+                <ogc:Literal>1000000</ogc:Literal>
               </ogc:PropertyIsLessThan>
             </ogc:And>
           </ogc:Filter>
@@ -58,20 +58,20 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>&lt; 500.000 USD</se:Name>
+          <se:Name>&lt; 10.000.000 USD</se:Name>
           <se:Description>
-            <se:Title>&lt; 500.000 USD</se:Title>
+            <se:Title>&lt; 10.000.000 USD</se:Title>
             <se:Abstract>Moderate damage</se:Abstract>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
               <ogc:PropertyIsLessThanOrEqualTo>
-                <ogc:Literal>250000</ogc:Literal>
+                <ogc:Literal>1000000</ogc:Literal>
                 <ogc:PropertyName>cum_loss</ogc:PropertyName>
               </ogc:PropertyIsLessThanOrEqualTo>
               <ogc:PropertyIsLessThan>
                 <ogc:PropertyName>cum_loss</ogc:PropertyName>
-                <ogc:Literal>500000</ogc:Literal>
+                <ogc:Literal>10000000</ogc:Literal>
               </ogc:PropertyIsLessThan>
             </ogc:And>
           </ogc:Filter>
@@ -87,20 +87,20 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>&lt; 1.000.000 USD</se:Name>
+          <se:Name>&lt; 50.000.000 USD</se:Name>
           <se:Description>
-            <se:Title>&lt; 1.000.000 USD</se:Title>
+            <se:Title>&lt; 50.000.000 USD</se:Title>
             <se:Abstract>Heavy damage</se:Abstract>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
               <ogc:PropertyIsLessThanOrEqualTo>
-                <ogc:Literal>500000</ogc:Literal>
+                <ogc:Literal>10000000</ogc:Literal>
                 <ogc:PropertyName>cum_loss</ogc:PropertyName>
               </ogc:PropertyIsLessThanOrEqualTo>
               <ogc:PropertyIsLessThan>
                 <ogc:PropertyName>cum_loss</ogc:PropertyName>
-                <ogc:Literal>1000000</ogc:Literal>
+                <ogc:Literal>50000000</ogc:Literal>
               </ogc:PropertyIsLessThan>
             </ogc:And>
           </ogc:Filter>
@@ -116,14 +116,14 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>> 1.000.000 USD</se:Name>
+          <se:Name>> 50.000.000 USD</se:Name>
           <se:Description>
-            <se:Title>> 1.000.000 USD</se:Title>
+            <se:Title>> 50.000.000 USD</se:Title>
             <se:Abstract>Severe damage</se:Abstract>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsLessThanOrEqualTo>
-              <ogc:Literal>1000000</ogc:Literal>
+              <ogc:Literal>50000000</ogc:Literal>
               <ogc:PropertyName>cum_loss</ogc:PropertyName>
             </ogc:PropertyIsLessThanOrEqualTo>
           </ogc:Filter>

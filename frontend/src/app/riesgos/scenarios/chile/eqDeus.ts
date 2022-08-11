@@ -24,6 +24,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
+import { customStyleEconomicChile } from '../../styles';
 
 
 
@@ -60,13 +61,16 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 const metaDataValue = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];
-                const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
+                const damageLayer: ProductLayer = new ProductRasterLayer({...econLayer });
 
                 econLayer.id += '_economic';
                 econLayer.name = 'eq-damage';
                 econLayer.icon = 'dot-circle';
-                econLayer.params.STYLES = 'style-cum-loss';
-                econLayer.legendImg += '&style=style-cum-loss';
+                // econLayer.params.STYLES = 'style-cum-loss';
+                // econLayer.legendImg += '&style=style-cum-loss';
+                econLayer.params.STYLES = 'custom_style_economic';
+                econLayer.params.SLD_BODY = customStyleEconomicChile.replace('{{{{layername}}}}', econLayer.params.LAYERS  );
+                econLayer.legendImg += '&style=custom_style_economic&sld_body=' + econLayer.params.SLD_BODY;
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                 econLayer.dynamicDescription = {
@@ -100,6 +104,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 damageLayer.params = { ... econLayer.params };
                 damageLayer.params.STYLES = 'style-damagestate-sara';
                 damageLayer.legendImg += '&style=style-damagestate-sara';
+                delete damageLayer.params.SLD_BODY;
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

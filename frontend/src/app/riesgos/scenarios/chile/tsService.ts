@@ -2,14 +2,13 @@ import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, Proces
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { selectedEq } from './eqselection';
-import { Observable, concat, forkJoin, from } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
-import { delay, map, mergeMap, tap, withLatestFrom } from 'rxjs/operators';
-import { sleep } from '@cds/core/internal';
+
 
 
 
@@ -28,7 +27,7 @@ const lon: WpsData & Product = {
     uid: 'auto_lon',
     description: {
         id: 'lon',
-        title: '',
+        title: 'lon',
         reference: false,
         type: 'literal',
     },
@@ -39,7 +38,7 @@ const mag: WpsData & Product = {
     uid: 'auto_mag',
     description: {
         id: 'mag',
-        title: '',
+        title: 'mag',
         reference: false,
         type: 'literal',
     },
@@ -51,7 +50,7 @@ export const tsWms: WpsData & WmsLayerProduct = {
     uid: 'get_scenario_epiCenter',
     description: {
         id: 'epiCenter',
-        title: '',
+        title: 'epiCenter',
         name: 'ts-wms',
         icon: 'tsunami',
         reference: false,
@@ -86,51 +85,20 @@ export class TsWmsService extends WpsProcess {
 }
 
 
-export const tsShakemap: WpsData & Product = {
-    uid: 'ts_shakemap',
-    description: {
-        id: 'tsunamap',
-        title: '',
-        reference: true,
-        type: 'complex',
-        format: 'application/xml'
-    },
-    value: null
-};
-
-
-export class TsShakemapService extends WpsProcess {
-    constructor(http: HttpClient) {
-        super(
-            'get_tsunamap',
-            'get_tsunamap',
-            [lat, lon, mag].map(p => p.uid),
-            [tsShakemap.uid],
-            'get_tsunamap',
-            'Input is earthquake epicenter (lon,lat) with magnitude, output is the nearest Tsunami epicenter and Inundation in shakemap format',
-            'http://tsunami-wps.awi.de/wps',
-            '1.0.0',
-            http,
-            new ProcessStateUnavailable()
-        );
-    }
-}
-
 export class TsService implements WizardableProcess, ExecutableProcess {
 
     uid = 'ts-service';
     name = 'TS-Service';
-    description = 'TsShortDescription';
     state: ProcessState;
+    description = 'TsShortDescription';
 
     wizardProperties = {
         providerName: 'AWI',
         providerUrl: 'https://www.awi.de/en/',
         shape: 'tsunami' as 'tsunami',
-        wikiLink: 'TsSimulation'
+        wikiLink: 'TsunamiWiki'
     };
 
-    private tsShakemapService: TsShakemapService;
     private tsWmsService: TsWmsService;
     readonly requiredProducts: string[];
     readonly providedProducts: string[];
@@ -138,9 +106,8 @@ export class TsService implements WizardableProcess, ExecutableProcess {
     constructor(private httpClient: HttpClient) {
         this.state = new ProcessStateUnavailable();
         this.tsWmsService = new TsWmsService(httpClient);
-        this.tsShakemapService = new TsShakemapService(httpClient);
         this.requiredProducts = [selectedEq.uid],
-        this.providedProducts = this.tsWmsService.providedProducts.concat(this.tsShakemapService.providedProducts);
+        this.providedProducts = this.tsWmsService.providedProducts;
     }
 
     execute = (inputs: Product[], outputs: Product[], doWhileExecuting): Observable<Product[]> => {
@@ -157,19 +124,13 @@ export class TsService implements WizardableProcess, ExecutableProcess {
             value: theSelectedEq.value[0].features[0].properties['magnitude.mag.value']
         }];
 
-
         const inputsWms = newInputs;
         const outputsWms = outputs.filter(i => this.tsWmsService.providedProducts.includes(i.uid));
-        const inputsShkmp = newInputs;
-        const outputsShkmp = outputs.filter(i => this.tsShakemapService.providedProducts.includes(i.uid));
+        
+        const tsunamiWms$ = this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting);
 
-        const getData = async () => {
-            const wmsProds = await this.tsWmsService.execute(inputsWms, outputsWms, doWhileExecuting).toPromise();
-            sleep(3000);
-            const shakemapProds = await this.tsShakemapService.execute(inputsShkmp, outputsShkmp, doWhileExecuting).toPromise();
-            return [... wmsProds, ... shakemapProds];
-        };
-        return from(getData());
+        return tsunamiWms$;
+
     }
 
 }

@@ -1,7 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
-import {
-    StringSelectUserConfigurableProduct, BboxUserConfigurableProduct, StringUserConfigurableProduct,
-} from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { StringSelectUserConfigurableProduct, BboxUserConfigurableProduct, StringUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerProduct, BboxLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
@@ -10,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
-import { environment } from 'src/environments/environment';
 
 
 export const InputBoundingbox: BboxUserConfigurableProduct & BboxLayerProduct & WpsData = {
@@ -18,9 +15,9 @@ export const InputBoundingbox: BboxUserConfigurableProduct & BboxLayerProduct & 
     description: {
         id: 'input-boundingbox',
         title: '',
+        icon: 'earthquake',
         name: 'eq-selection: boundingbox',
         type: 'bbox',
-        icon: 'earthquake',
         reference: false,
         defaultValue: {
             crs: 'EPSG:4326',
@@ -311,7 +308,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
             shape: 'bullseye',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'EqSimulation',
+            wikiLink: 'EqCatalogue',
             dataSources: [{ label: 'Quakeledger (GFZ) - github', href: 'https://github.com/GFZ-Centre-for-Early-Warning/quakeledger/blob/master/valparaiso_v1.2.csv' }]
         };
     }

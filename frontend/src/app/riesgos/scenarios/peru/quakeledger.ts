@@ -1,14 +1,13 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
-import { BboxUserConfigurableProduct, StringUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { BboxLayerProduct, VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
+import { StringSelectUserConfigurableProduct, BboxUserConfigurableProduct, StringUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { VectorLayerProduct, BboxLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { HttpClient } from '@angular/common/http';
 import { toDecimalPlaces, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
-import { environment } from 'src/environments/environment';
 
 
 
@@ -34,54 +33,6 @@ export const InputBoundingboxPeru: BboxUserConfigurableProduct & BboxLayerProduc
     },
     value: null
 };
-
-
-export const etypePeru = {
-    uid: 'etype',
-    description: {
-        id: 'etype',
-        description: 'etype',
-        defaultValue: 'observed', // 'deaggregation',
-        reference: false,
-        type: 'literal',
-        wizardProperties: {
-            name: 'Catalogue type',
-            fieldtype: 'stringselect'
-        },
-        options: ['observed', 'expert'] // 'stochastic' <-- currently not included due to errors in data
-    },
-    value: null
-};
-
-
-export const tlonPeru: Product & WpsData = {
-    uid: 'tlon_peru',
-    description: {
-        id: 'tlon',
-        title: '',
-        description: 'longitude [decimal degrees]',
-        defaultValue: '-77.00',
-        reference: false,
-        type: 'literal'
-    },
-    value: '-77.00'
-};
-
-
-export const tlatPeru: Product & WpsData = {
-    uid: 'tlat_peru',
-    description: {
-        id: 'tlat',
-        title: '',
-        description: 'latitude [decimal degrees]',
-        defaultValue: '-12.00',
-        reference: false,
-        type: 'literal'
-    },
-    value: '-12.00'
-};
-
-
 
 
 export const mminPeru: StringUserConfigurableProduct & WpsData = {
@@ -169,6 +120,53 @@ export const pPeru: Product & WpsData = {
 };
 
 
+export const etypePeru: StringSelectUserConfigurableProduct & WpsData = {
+    uid: 'etype',
+    description: {
+        id: 'etype',
+        title: '',
+        description: 'etype',
+        defaultValue: 'observed', // 'deaggregation',
+        reference: false,
+        type: 'literal',
+        wizardProperties: {
+            name: 'Catalogue type',
+            fieldtype: 'stringselect'
+        },
+        options: ['observed', 'expert'] // 'stochastic' <-- currently not included due to errors in data
+    },
+    value: null
+};
+
+
+export const tlonPeru: Product & WpsData = {
+    uid: 'tlon_peru',
+    description: {
+        id: 'tlon',
+        title: '',
+        description: 'longitude [decimal degrees]',
+        defaultValue: '-77.00',
+        reference: false,
+        type: 'literal'
+    },
+    value: '-77.00'
+};
+
+
+export const tlatPeru: Product & WpsData = {
+    uid: 'tlat_peru',
+    description: {
+        id: 'tlat',
+        title: '',
+        description: 'latitude [decimal degrees]',
+        defaultValue: '-12.00',
+        reference: false,
+        type: 'literal'
+    },
+    value: '-12.00'
+};
+
+
 
 export const availableEqsPeru: VectorLayerProduct & WpsData = {
     uid: 'QuakeledgerProcess_selectedRowsPeru',
@@ -204,7 +202,7 @@ export const availableEqsPeru: VectorLayerProduct & WpsData = {
                         stroke: new olStroke({
                             color: [r, g, b, 1]
                         })
-                    }),
+                    })
                 });
             },
             text: (properties) => {
@@ -286,6 +284,8 @@ export const availableEqsPeru: VectorLayerProduct & WpsData = {
     value: null
 };
 
+
+
 export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
@@ -305,7 +305,7 @@ export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
         );
 
         this.wizardProperties = {
-            shape: 'earthquake',
+            shape: 'bullseye',
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             wikiLink: 'EqCatalogue',

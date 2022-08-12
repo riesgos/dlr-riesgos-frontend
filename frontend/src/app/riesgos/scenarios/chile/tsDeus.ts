@@ -1,12 +1,12 @@
-import { MappableProduct, WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
+import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { tsShakemap, tsWms } from './tsService';
+import { tsWms } from './tsService';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
 import { forkJoin, Observable } from 'rxjs';
-import { Deus, DeusMetaData } from './deus';
+import { DeusMetaData } from './deus';
 import { map, switchMap, take } from 'rxjs/operators';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { MapOlService } from '@dlr-eoc/map-ol';

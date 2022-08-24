@@ -3,7 +3,7 @@ services:
   middleware:
     build: ./middleware
     ports:
-      - "127.0.0.1:8002:8008"
+      - "8002:8008"
     volumes:
       - ./data:/app/data
   
@@ -15,7 +15,7 @@ services:
     depends_on:
       - middleware
     ports:
-      - "127.0.0.1:8001:80"
+      - "8001:80"
 
   router:
     build: ./router
@@ -23,4 +23,4 @@ services:
       - middleware
       - frontend
     ports:
-      - "127.0.0.1:8000:80"
+      - "8000:80"

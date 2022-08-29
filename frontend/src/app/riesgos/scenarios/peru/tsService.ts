@@ -75,7 +75,7 @@ export class TsWmsServicePeru extends WpsProcess {
             [tsWmsPeru.uid],
             'get_scenario',
             'Relates a tsunami to the selected earthquake',
-            'http://tsunami-wps.awi.de/wps',
+            'https://riesgos.52north.org/wps',
             '1.0.0',
             http,
             new ProcessStateUnavailable()

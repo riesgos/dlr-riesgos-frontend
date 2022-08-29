@@ -297,7 +297,7 @@ export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
             ['input-boundingbox_peru'].concat([mminPeru, mmaxPeru, zminPeru, zmaxPeru, pPeru, etypePeru, tlonPeru, tlatPeru].map(prd => prd.uid)),
             [availableEqsPeru.uid],
             'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess',
-            'Catalogue of earthquakes. Enter here the parameters that determine which earthquakes would be appropriate for your simulation.',
+            'QuakeLedgerDescription',
             `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
             '1.0.0',
             http,

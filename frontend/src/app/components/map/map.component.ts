@@ -521,7 +521,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     })
                 }),
                 id: 'peru_transmission',
-                name: 'transmission',
+                name: 'Powerlines',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=19&'
             });
 
@@ -554,7 +554,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 })
                             })
                         }),
-                        name: 'Transmission',
+                        name: 'Powerlines',
                         id: 'transmision',
                         type: 'custom',
                         visible: false,

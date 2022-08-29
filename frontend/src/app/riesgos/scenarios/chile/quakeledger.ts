@@ -309,7 +309,7 @@ export class QuakeLedger extends WpsProcess implements WizardableProcess {
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             wikiLink: 'EqCatalogue',
-            dataSources: [{ label: 'Quakeledger (GFZ) - github', href: 'https://github.com/GFZ-Centre-for-Early-Warning/quakeledger/blob/master/valparaiso_v1.2.csv' }]
+            dataSources: [{ label: 'Quakeledger (GFZ)', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=bae8fc94-4799-11ec-947f-3811b03e280f' }]
         };
     }
 

@@ -157,7 +157,7 @@ export class Shakyground extends WpsProcess implements WizardableProcess {
             providerName: 'GFZ',
             providerUrl: 'https://www.gfz-potsdam.de/en/',
             wikiLink: 'EqSimulation',
-            dataSources: [{ label: 'Openquake Engine', href: 'https://github.com/gem/oq-engine' }]
+            dataSources: [{ label: 'Shakyground (GFZ)', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=2dd724a7-47a1-11ec-947f-3811b03e280f' }]
         };
     }
 

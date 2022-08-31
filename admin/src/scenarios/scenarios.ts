@@ -26,20 +26,16 @@ export interface Step {
 }
 
 export class Scenario {
-    public steps: Step[] = [];
     public data: Data[] = [];
 
-    constructor(public id: string, public description: string, public imageUrl?: string) {}
+    constructor(
+        public id: string,
+        public description: string,
+        public steps: Step[],
+        public imageUrl?: string) {
 
-    public registerStep(step: Step) {
-        if (this.steps.length !== step.step) throw new Error(`Bad step number`);
-        this.steps.push(step);
-    }
-
-    public init() {
-        this.data = [];
-        this.updateStepsDownstream(-1);
-    }
+            this.updateStepsDownstream(-1);
+        }
 
     public async execute(stepNr: number, userInputs: Data[]) {
         let step = this.steps.find(s => s.step === stepNr);
@@ -110,3 +106,18 @@ export class Scenario {
 
 };
 
+
+export class ScenarioFactory {
+    public steps: Step[] = [];
+
+    constructor(public id: string, public description: string, public imageUrl?: string) {}
+
+    public registerStep(step: Step) {
+        if (this.steps.length !== step.step) throw new Error(`Bad step number`);
+        this.steps.push(step);
+    }
+
+    public create(): Scenario {
+        return new Scenario(this.id, this.description, this.steps, this.imageUrl);
+    }
+}

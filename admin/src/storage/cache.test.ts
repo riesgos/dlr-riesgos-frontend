@@ -6,6 +6,7 @@ import { deleteFile, fileExists } from '../utils/files';
 const cacheDir = "./data/tmp-cache/cache";
 
 beforeAll(() => {
+    deleteFile(cacheDir);
 });
 
 afterAll(() => {

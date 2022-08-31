@@ -15,21 +15,3 @@ export class Queue<T> {
     }
 }
 
-
-export class HashedQueue<T extends {} | null> {
-    private data: {hash: string, entry: T}[] = [];
-
-    constructor() {}
-
-    public enqueue(entry: T) {
-        const hash = objectHash(entry);
-        const existingEntry = this.data.find(e => e.hash === hash);
-        if (existingEntry) return;
-        this.data.push({hash, entry});
-    }
-
-    public dequeue(): {hash: string, entry: T} | undefined {
-        const first = this.data.shift();
-        return first;
-    }
-}

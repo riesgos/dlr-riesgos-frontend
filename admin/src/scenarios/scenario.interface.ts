@@ -1,13 +1,16 @@
 import { Express, NextFunction, Request, Response } from 'express';
 import objectHash from 'object-hash';
 import { FileCache } from '../storage/fileCache';
+import { Store } from './store';
 import { ProcessPool } from './pool';
-import { Scenario, ScenarioState } from './scenarios';
+import { Scenario, ScenarioFactory, ScenarioState } from './scenarios';
 
 
-export function addScenarioApi(app: Express, scenarios: Scenario[], cacheDir: string) {
+export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], cacheDir: string, storeDir: string, storeUrl: string) {
     const pool = new ProcessPool();
     const cache = new FileCache(cacheDir, 1000);
+    const store = new Store(storeDir, storeUrl);
+    const scenarios = scenarioFactories.map(sf => sf.createScenario(store));
     
 
     app.get('/scenarios', async (req, res) => {

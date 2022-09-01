@@ -1,10 +1,10 @@
 import { sleep, toPromise } from '../utils/async';
-import { Data, Scenario } from './scenarios';
+import { Datum, ScenarioFactory } from './scenarios';
 
 
-export const italyScenario = new Scenario('Italy', 'An example scenario');
+export const italyScenarioFactory = new ScenarioFactory('Italy', 'An example scenario');
 
-italyScenario.registerStep({
+italyScenarioFactory.registerStep({
     step: 0,
     title: 'Eq Simulation',
     description: 'Simulate an earthquake',
@@ -15,7 +15,7 @@ italyScenario.registerStep({
     outputs: [{
         id: 'eqSimulation'
     }],
-    function: async function (args: Data[]) {
+    function: async function (args: Datum[]) {
         const eq = args.find(a => a.id === 'selectedEq');
 
         await sleep(100);
@@ -27,7 +27,7 @@ italyScenario.registerStep({
     }
 });
 
-italyScenario.registerStep({
+italyScenarioFactory.registerStep({
     step: 1,
     title: 'Eq-damage',
     description: '',
@@ -37,7 +37,7 @@ italyScenario.registerStep({
     outputs: [{
         id: 'eqDamage'
     }],
-    function: async function (args: Data[]) {
+    function: async function (args: Datum[]) {
         const eqSim = args.find(a => a.id === 'eqSimulation');
 
         await sleep(100);

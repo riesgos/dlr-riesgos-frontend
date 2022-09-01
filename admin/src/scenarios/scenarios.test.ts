@@ -2,8 +2,8 @@ import axios from 'axios';
 import express, { Express } from 'express';
 import session from 'express-session';
 import { addScenarioApi } from './scenario.interface';
-import { Data, ScenarioState } from './scenarios';
-import { italyScenario } from './italyScenario';
+import { ScenarioState } from './scenarios';
+import { italyScenarioFactory } from './italyScenario';
 import { sleep } from '../utils/async';
 import { deleteFile } from '../utils/files';
 
@@ -11,28 +11,22 @@ import { deleteFile } from '../utils/files';
 const http = axios.create();
 const port = 5001;
 const cacheDir = './data/tmp-scenarios/cache';
+const storeDir = './data/tmp-scenarios/store';
 let app: Express;
 let server: Express.Application;
-beforeAll(() => {
-    deleteFile(cacheDir);
+beforeAll(async () => {
+    await deleteFile(cacheDir);
+    await deleteFile(storeDir);
     app = express();
     app.use(express.json());
-    app.use(session({
-        secret: 'someSecret',
-        name: 'scenarios',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            maxAge: 24 * 60 * 60 * 1000
-        }
-    }));
-    const scenarios = [italyScenario];
-    addScenarioApi(app, scenarios, cacheDir);
+    const scenarioFactories = [italyScenarioFactory];
+    addScenarioApi(app, scenarioFactories, cacheDir, storeDir, `http://localhost:${port}/store/`);
     server = app.listen(port, () => {});
 });
 
-afterAll(() => {
-    deleteFile(cacheDir);
+afterAll(async () => {
+    await deleteFile(cacheDir);
+    await deleteFile(storeDir);
 });
 
 
@@ -117,10 +111,11 @@ describe('scenarios', () => {
         expect(newTicket).toBeTruthy();
         await sleep(1000);
         const response6 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.step}/execute/poll/${newTicket}`);
-        const { results: finalState } = response6.data; console.log('final response', response6.data)
+        const { results: finalState } = response6.data;
         expect(finalState).toBeTruthy();
         expect(finalState.data.length > 1).toBe(true);
         expect(finalState.data[1].id).toBeTruthy();
+        console.log(finalState)
     });
 
 });

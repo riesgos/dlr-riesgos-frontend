@@ -5,12 +5,12 @@ import { deleteFile, fileExists } from '../utils/files';
 
 const cacheDir = "./data/tmp-cache/cache";
 
-beforeAll(() => {
-    deleteFile(cacheDir);
+beforeAll(async () => {
+    await deleteFile(cacheDir);
 });
 
-afterAll(() => {
-    deleteFile(cacheDir);
+afterAll(async () => {
+    await deleteFile(cacheDir);
 });
 
 

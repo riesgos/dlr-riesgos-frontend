@@ -1,5 +1,4 @@
-import objectHash from 'object-hash';
-import { deleteFile, getFileAge, pathJoin, readJsonFile, readTextFile, writeJsonFile, writeTextFile } from '../utils/files';
+import { deleteFile, getFileAge, pathJoin, readTextFile, writeTextFile } from '../utils/files';
 
 
 export class FileCache {

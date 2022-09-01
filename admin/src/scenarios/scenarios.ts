@@ -17,7 +17,6 @@ export type StepFunction = (args: Data[]) => Promise<Data[]>;
 
 export interface Step {
     step: number,
-    state?: 'incomplete' | 'ready' | 'running' | 'completed',
     function: StepFunction,
     inputs: (DataDescription | UserSelection)[],
     outputs: DataDescription[],
@@ -25,99 +24,79 @@ export interface Step {
     description: string
 }
 
+export interface ScenarioState {
+    data: Data[]
+}
+
 export class Scenario {
-    public data: Data[] = [];
+    private steps: Step[] = [];
 
-    constructor(
-        public id: string,
-        public description: string,
-        public steps: Step[],
-        public imageUrl?: string) {
+    constructor(public id: string, public description: string, public imageUrl?: string) {}
 
-            this.updateStepsDownstream(-1);
+    public getSummary() {
+        const stepSummaries: any[] = [];
+        for (const step of this.steps) {
+            stepSummaries.push({
+                step: step.step,
+                title: step.title,
+                description: step.description,
+                inputs: step.inputs,
+                outputs: step.outputs
+            })
         }
+        return {
+            id: this.id,
+            description: this.description,
+            imageUrl: this.imageUrl,
+            steps: stepSummaries
+        };
+    }
 
-    public async execute(stepNr: number, userInputs: Data[]) {
+    public registerStep(step: Step) {
+        if (this.steps.length !== step.step) throw new Error(`Bad step number ${step.step}. Should be ${this.steps.length}.`);
+        this.steps.push(step);
+    }
+
+    public async execute(stepNr: number, state: ScenarioState): Promise<ScenarioState> {
         let step = this.steps.find(s => s.step === stepNr);
         if (!step) throw new Error(`No such step: "${stepNr}" in scenario "${this.id}"`);
 
-        this.addData(userInputs);
-        step = this.updateStepState(step);
-        if (step.state !== 'ready') throw new Error(`Step "${step.title}" is currently in state ${step.state}`);
-
-        const inputValues = this.getData(step.inputs.map(i => i.id));
-        step.state = 'running';
+        const inputValues = this.getData(step.inputs.map(i => i.id), state);
         const results = await step.function(inputValues as Data[]);
-        step.state = 'completed';
+        const stateWithOutputs = this.addData(results, state);
 
-        this.addData(results);
-        this.updateStepsDownstream(step.step);
-
-        return results;
+        return stateWithOutputs;
     }
 
-    private updateStepState(step: Step) {
-        if (!step.state || step.state === 'incomplete') {
-            const inputValues = this.getData(step.inputs.map(s => s.id));
-            if (inputValues.includes(undefined)) {
-                step.state = 'incomplete';
-            } else {
-                step.state = 'ready';
-            }
-        }
-        return step;
-    }
-
-    private updateStepsDownstream(fromStepNr: number) {
-        const downStreamSteps = this.steps.filter(s => s.step > fromStepNr);
-        for (const step of downStreamSteps) {
-            this.updateStepState(step);
-        }
-    }
-
-    private getData(ids: string[]) {
+    private getData(ids: string[], state: ScenarioState) {
         const data: (Data | undefined)[] = [];
         for (const id of ids) {
-            data.push(this.getDatum(id));
+            data.push(this.getDatum(id, state));
         }
         return data;
     }
 
-    private getDatum(id: string) {
-        const datum = this.data.find(d => d.id === id);
+    private getDatum(id: string, state: ScenarioState) {
+        const datum = state.data.find(d => d.id === id);
         return datum;
     }
 
-    private addData(newData: Data[]) {
+    private addData(newData: Data[], state: ScenarioState) {
         for (const newDatum of newData) {
-            this.addDatum(newDatum);
+            this.addDatum(newDatum, state);
         }
+        return state;
     }
 
-    private addDatum(newDatum: Data) {
-        for (const datum of this.data) {
+    private addDatum(newDatum: Data, state: ScenarioState) {
+        for (const datum of state.data) {
             if (datum.id === newDatum.id) {
                 datum.value = newDatum.value;
-                return;
+                return state;
             }
         }
-        this.data.push(newDatum);
+        state.data.push(newDatum);
+        return state;
     }
 
 };
-
-
-export class ScenarioFactory {
-    public steps: Step[] = [];
-
-    constructor(public id: string, public description: string, public imageUrl?: string) {}
-
-    public registerStep(step: Step) {
-        if (this.steps.length !== step.step) throw new Error(`Bad step number`);
-        this.steps.push(step);
-    }
-
-    public create(): Scenario {
-        return new Scenario(this.id, this.description, this.steps, this.imageUrl);
-    }
-}

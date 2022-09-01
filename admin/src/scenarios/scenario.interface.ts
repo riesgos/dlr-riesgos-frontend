@@ -1,60 +1,48 @@
 import { Express, NextFunction, Request, Response } from 'express';
 import objectHash from 'object-hash';
 import { FileCache } from '../storage/fileCache';
-import { deepCopy } from '../utils/general';
 import { ProcessPool } from './pool';
-import { Scenario, ScenarioFactory } from './scenarios';
+import { Scenario, ScenarioState } from './scenarios';
 
 
-export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], cacheDir: string) {
+export function addScenarioApi(app: Express, scenarios: Scenario[], cacheDir: string) {
     const pool = new ProcessPool();
     const cache = new FileCache(cacheDir, 1000);
     
-    const ensureScenarios = (req: Request, res: Response, next: NextFunction) => {
-        if (!req.session.scenarios) {
-            req.session.scenarios = scenarioFactories.map(sf => sf.create());
-        }
-        next();
-    };
 
-    app.get('/scenarios', ensureScenarios, async (req, res) => {
-        const scenarios = req.session.scenarios!;
-        const data = scenarios.map(s => ({id: s.id, description: s.description, imageUrl: s.imageUrl, nrSteps: s.steps.length}));
+    app.get('/scenarios', async (req, res) => {
+        const data = scenarios.map(s => ({id: s.id, description: s.description, imageUrl: s.imageUrl}));
         res.send(data);
     });
 
-    app.get('/scenarios/:scenarioId/steps', ensureScenarios, async (req, res) => {
-        const scenarios = req.session.scenarios!;
+    app.get('/scenarios/:scenarioId', async (req, res) => {
         const scenarioId = req.params.scenarioId;
         const scenario: Scenario | undefined = scenarios.find(s => s.id === scenarioId);
         if (!scenario) return [];
-        const steps = scenario.steps.map(s => ({step: s.step, title: s.title, description: s.description, inputs: s.inputs, state: s.state}));
-        res.send(steps);
+        const summary = scenario.getSummary();
+        res.send(summary);
     });
 
-    app.post('/scenarios/:scenarioId/steps/:stepNumber/execute', ensureScenarios, async (req, res) => {
-        const scenarios = req.session.scenarios!;
+    app.post('/scenarios/:scenarioId/steps/:stepNumber/execute', async (req, res) => {
         const scenarioId = req.params.scenarioId;
         const scenario = scenarios.find(s => s.id === scenarioId);
         if (!scenario) return [];
         const stepNumber = +req.params.stepNumber;
-        const inputs = req.body;
-        
-        const key = objectHash({scenarioId, stepNumber, inputs});
+        const state: ScenarioState = req.body;
+        const key = objectHash({scenarioId, stepNumber, state});
         // try to get from cache
         const cachedData = await cache.getData(key);
         if (cachedData) {
             res.send({ results: JSON.parse(cachedData) });
         } else {
             // otherwise calculate
-            pool.scheduleTask(key, async () => await scenario.execute(stepNumber, inputs));
+            pool.scheduleTask(key, async () => await scenario.execute(stepNumber, state));
             // send user a ticket for polling
             res.send({ ticket: key });
         }
     });
 
-    app.get('/scenarios/:scenarioId/steps/:stepNumber/execute/poll/:ticket', ensureScenarios, async (req, res) => {
-        const scenarios = req.session.scenarios!;
+    app.get('/scenarios/:scenarioId/steps/:stepNumber/execute/poll/:ticket', async (req, res) => {
         const key = req.params.ticket;
         // try to get from cache
         const cachedData = await cache.getData(key);

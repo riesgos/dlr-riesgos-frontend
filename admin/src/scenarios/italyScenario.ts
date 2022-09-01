@@ -1,10 +1,10 @@
 import { sleep, toPromise } from '../utils/async';
-import { Data, ScenarioFactory } from './scenarios';
+import { Data, Scenario } from './scenarios';
 
 
-export const italyScenarioFactory = new ScenarioFactory('Italy', 'An example scenario');
+export const italyScenario = new Scenario('Italy', 'An example scenario');
 
-italyScenarioFactory.registerStep({
+italyScenario.registerStep({
     step: 0,
     title: 'Eq Simulation',
     description: 'Simulate an earthquake',
@@ -27,7 +27,7 @@ italyScenarioFactory.registerStep({
     }
 });
 
-italyScenarioFactory.registerStep({
+italyScenario.registerStep({
     step: 1,
     title: 'Eq-damage',
     description: '',

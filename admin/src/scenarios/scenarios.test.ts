@@ -1,6 +1,5 @@
 import axios from 'axios';
 import express, { Express } from 'express';
-import session from 'express-session';
 import { addScenarioApi } from './scenario.interface';
 import { ScenarioState } from './scenarios';
 import { italyScenarioFactory } from './italyScenario';

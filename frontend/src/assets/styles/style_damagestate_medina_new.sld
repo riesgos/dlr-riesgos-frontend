@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:se="http://www.opengis.net/se" version="1.1.0" xmlns:ogc="http://www.opengis.net/ogc" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink">
+<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:se="http://www.opengis.net/se" version="1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <NamedLayer>
-    <se:Name>{{{{layername}}}}</se:Name>
+    <se:Name>custom_style_medina_plasma</se:Name>
     <UserStyle>
-      <se:Name>custom_style_economic_peru_new</se:Name>
+      <se:Name>custom_style_medina_plasma</se:Name>
       <se:FeatureTypeStyle>
         <se:Rule>
           <se:Name>Sin datos</se:Name>
@@ -29,9 +29,9 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>&lt; 500.000 USD</se:Name>
+          <se:Name>Daño leve</se:Name>
           <se:Description>
-            <se:Title>&lt; 500.000 USD</se:Title>
+            <se:Title>Daño leve</se:Title>
             <se:Abstract>Light damage</se:Abstract>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
@@ -41,8 +41,8 @@
                 <ogc:Literal>0</ogc:Literal>
               </ogc:PropertyIsGreaterThan>
               <ogc:PropertyIsLessThan>
-                <ogc:PropertyName>cum_loss</ogc:PropertyName>
-                <ogc:Literal>500000</ogc:Literal>
+                <ogc:PropertyName>w_damage</ogc:PropertyName>
+                <ogc:Literal>1</ogc:Literal>
               </ogc:PropertyIsLessThan>
             </ogc:And>
           </ogc:Filter>
@@ -58,20 +58,26 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>&lt; 1.000.000 USD</se:Name>
+          <se:Name>Daño moderado</se:Name>
           <se:Description>
-            <se:Title>&lt; 1.000.000 USD</se:Title>
+            <se:Title>Daño moderado</se:Title>
             <se:Abstract>Moderate damage</se:Abstract>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
-              <ogc:PropertyIsLessThanOrEqualTo>
-                <ogc:Literal>500000</ogc:Literal>
-                <ogc:PropertyName>cum_loss</ogc:PropertyName>
-              </ogc:PropertyIsLessThanOrEqualTo>
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>buildings</ogc:PropertyName>
+                  <ogc:Literal>0</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThanOrEqualTo>
+                  <ogc:Literal>1</ogc:Literal>
+                  <ogc:PropertyName>w_damage</ogc:PropertyName>
+                </ogc:PropertyIsLessThanOrEqualTo>
+              </ogc:And>
               <ogc:PropertyIsLessThan>
-                <ogc:PropertyName>cum_loss</ogc:PropertyName>
-                <ogc:Literal>1000000</ogc:Literal>
+                <ogc:PropertyName>w_damage</ogc:PropertyName>
+                <ogc:Literal>2</ogc:Literal>
               </ogc:PropertyIsLessThan>
             </ogc:And>
           </ogc:Filter>
@@ -87,20 +93,26 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>&lt; 100.000.000 USD</se:Name>
+          <se:Name>Daño fuerte</se:Name>
           <se:Description>
-            <se:Title>&lt; 100.000.000 USD</se:Title>
+            <se:Title>Daño fuerte</se:Title>
             <se:Abstract>Heavy damage</se:Abstract>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
-              <ogc:PropertyIsLessThanOrEqualTo>
-                <ogc:Literal>1000000</ogc:Literal>
-                <ogc:PropertyName>cum_loss</ogc:PropertyName>
-              </ogc:PropertyIsLessThanOrEqualTo>
+              <ogc:And>
+                <ogc:PropertyIsGreaterThan>
+                  <ogc:PropertyName>buildings</ogc:PropertyName>
+                  <ogc:Literal>0</ogc:Literal>
+                </ogc:PropertyIsGreaterThan>
+                <ogc:PropertyIsLessThanOrEqualTo>
+                  <ogc:Literal>2</ogc:Literal>
+                  <ogc:PropertyName>w_damage</ogc:PropertyName>
+                </ogc:PropertyIsLessThanOrEqualTo>
+              </ogc:And>
               <ogc:PropertyIsLessThan>
-                <ogc:PropertyName>cum_loss</ogc:PropertyName>
-                <ogc:Literal>100000000</ogc:Literal>
+                <ogc:PropertyName>w_damage</ogc:PropertyName>
+                <ogc:Literal>3</ogc:Literal>
               </ogc:PropertyIsLessThan>
             </ogc:And>
           </ogc:Filter>
@@ -116,16 +128,22 @@
           </se:PolygonSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>> 100.000.000 USD</se:Name>
+          <se:Name>Daño severo</se:Name>
           <se:Description>
-            <se:Title>> 100.000.000 USD</se:Title>
+            <se:Title>Daño severo</se:Title>
             <se:Abstract>Severe damage</se:Abstract>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-            <ogc:PropertyIsLessThanOrEqualTo>
-              <ogc:Literal>100000000</ogc:Literal>
-              <ogc:PropertyName>cum_loss</ogc:PropertyName>
-            </ogc:PropertyIsLessThanOrEqualTo>
+            <ogc:And>
+              <ogc:PropertyIsGreaterThan>
+                <ogc:PropertyName>buildings</ogc:PropertyName>
+                <ogc:Literal>0</ogc:Literal>
+              </ogc:PropertyIsGreaterThan>
+              <ogc:PropertyIsLessThanOrEqualTo>
+                <ogc:Literal>3</ogc:Literal>
+                <ogc:PropertyName>w_damage</ogc:PropertyName>
+              </ogc:PropertyIsLessThanOrEqualTo>
+            </ogc:And>
           </ogc:Filter>
           <se:PolygonSymbolizer>
             <se:Fill>

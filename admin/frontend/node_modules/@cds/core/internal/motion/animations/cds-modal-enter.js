@@ -1,2 +1,0 @@
-import{fadeInKeyframes as a}from"./keyframes/fade-in.js";import{fadeAndSlideInKeyframes as i}from"./keyframes/fade-in-and-slide-down.js";const n="cds-modal-enter",o=[{target:".overlay-backdrop",onlyIf:"isLayered:false",animation:a,options:{duration:"--backdrop-animation-duration",easing:"--animation-easing",fill:"forwards"}},{target:".private-host",animation:i,options:{duration:"--animation-duration",easing:"--animation-easing",fill:"forwards",endDelay:50}}];export{o as AnimationModalEnterConfig,n as AnimationModalEnterName};
-//# sourceMappingURL=cds-modal-enter.js.map

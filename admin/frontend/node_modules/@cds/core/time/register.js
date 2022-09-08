@@ -1,2 +1,0 @@
-import{registerElementSafely as o}from"@cds/core/internal";import{CdsTime as r}from"./time.element.js";import"@cds/core/forms/register.js";import"@cds/core/button-action/register.js";import"@cds/core/icon/register.js";import{ClarityIcons as c}from"@cds/core/icon/icon.service.js";import{clockIcon as e}from"@cds/core/icon/shapes/clock.js";c.addIcons(e),o("cds-time",r);
-//# sourceMappingURL=register.js.map

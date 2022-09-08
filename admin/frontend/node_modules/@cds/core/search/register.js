@@ -1,2 +1,0 @@
-import{registerElementSafely as r}from"@cds/core/internal";import{CdsSearch as o}from"./search.element.js";import{ClarityIcons as s}from"@cds/core/icon/icon.service.js";import{searchIcon as c}from"@cds/core/icon/shapes/search.js";import"@cds/core/button-action/register.js";import"@cds/core/icon/register.js";import"@cds/core/forms/register.js";r("cds-search",o),s.addIcons(c);
-//# sourceMappingURL=register.js.map

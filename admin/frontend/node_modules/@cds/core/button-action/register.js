@@ -1,2 +1,0 @@
-import{registerElementSafely as o}from"@cds/core/internal";import{ClarityIcons as s}from"@cds/core/icon/icon.service.js";import{ellipsisVerticalIcon as c}from"@cds/core/icon/shapes/ellipsis-vertical.js";import{timesIcon as i}from"@cds/core/icon/shapes/times.js";import{CdsButtonAction as e}from"./button-action.element.js";import"@cds/core/icon/register.js";s.addIcons(c,i),s.addAliases(["times",["close"]]),o("cds-button-action",e);
-//# sourceMappingURL=register.js.map

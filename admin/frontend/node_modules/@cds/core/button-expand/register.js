@@ -1,2 +1,0 @@
-import{registerElementSafely as o}from"@cds/core/internal";import{ClarityIcons as e}from"@cds/core/icon/icon.service.js";import{angleIcon as r}from"@cds/core/icon/shapes/angle.js";import{detailExpandIcon as s}from"@cds/core/icon/shapes/detail-expand.js";import{detailCollapseIcon as c}from"@cds/core/icon/shapes/detail-collapse.js";import{CdsButtonExpand as i}from"./button-expand.element.js";import"@cds/core/icon/register.js";e.addIcons(r,s,c),o("cds-button-expand",i);
-//# sourceMappingURL=register.js.map

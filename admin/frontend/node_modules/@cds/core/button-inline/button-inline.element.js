@@ -1,2 +1,0 @@
-import{__decorate as t}from"tslib";import{CdsBaseButton as s,addClassnames as e,baseStyles as o,querySlot as n}from"@cds/core/internal";import{html as r}from"lit";import c from"./button-inline.element.scss.js";class i extends s{connectedCallback(){super.connectedCallback(),this.icon&&e(this.icon,"anchored-icon")}render(){return r`<span class="private-host"><slot></slot></span>`}static get styles(){return[o,c]}}t([n("cds-icon")],i.prototype,"icon",void 0);class l extends i{}export{i as CdsButtonInline,l as CdsInlineButton};
-//# sourceMappingURL=button-inline.element.js.map

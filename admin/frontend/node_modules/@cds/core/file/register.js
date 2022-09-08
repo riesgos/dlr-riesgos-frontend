@@ -1,2 +1,0 @@
-import{registerElementSafely as r}from"@cds/core/internal";import{CdsFile as o}from"./file.element.js";import"@cds/core/forms/register.js";import"@cds/core/button/register.js";import"@cds/core/button-action/register.js";import"@cds/core/icon/register.js";import{ClarityIcons as s}from"@cds/core/icon/icon.service.js";import{folderIcon as e}from"@cds/core/icon/shapes/folder.js";import{timesIcon as c}from"@cds/core/icon/shapes/times.js";s.addIcons(e,c),r("cds-file",o);
-//# sourceMappingURL=register.js.map

@@ -1,2 +1,0 @@
-import"@cds/core/icon/register.js";import"@cds/core/internal-components/visual-checkbox/register.js";import"@cds/core/progress-circle/register.js";import"@cds/core/button-expand/register.js";import{registerElementSafely as e,ClarityMotion as r,AnimationTreeItemExpandName as t,AnimationTreeItemExpandConfig as o}from"@cds/core/internal";import{CdsTree as s}from"./tree.element.js";import{CdsTreeItem as c}from"./tree-item.element.js";e("cds-tree",s),e("cds-tree-item",c),r.add(t,o);
-//# sourceMappingURL=register.js.map

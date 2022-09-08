@@ -1,2 +1,0 @@
-import"@cds/core/icon/register.js";import"@cds/core/progress-circle/register.js";import{registerElementSafely as o}from"@cds/core/internal";import{CdsButton as r}from"./button.element.js";import{CdsIconButton as c}from"./icon-button.element.js";import{ClarityIcons as s}from"@cds/core/icon/icon.service.js";import{errorStandardIcon as e}from"@cds/core/icon/shapes/error-standard.js";import{checkIcon as t}from"@cds/core/icon/shapes/check.js";s.addIcons(e,t),o("cds-button",r),o("cds-icon-button",c);
-//# sourceMappingURL=register.js.map

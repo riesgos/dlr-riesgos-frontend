@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:se="http://www.opengis.net/se" version="1.1.0" xmlns:ogc="http://www.opengis.net/ogc" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink">
   <NamedLayer>
-    <se:Name>riesgos:Shape_eb43add3-b2e8-43c2-bbbe-eb2628b7bfac564022114296046469</se:Name>
+    <se:Name>custom_style_economic_chile_plasma</se:Name>
     <UserStyle>
       <se:Name>custom_style_economic_chile_plasma</se:Name>
       <se:FeatureTypeStyle>
@@ -19,12 +19,12 @@
           </ogc:Filter>
           <se:PolygonSymbolizer>
             <se:Fill>
-              <se:SvgParameter name="fill">#e0e0e0</se:SvgParameter>
+              <se:CssParameter name="fill">#e0e0e0</se:CssParameter>
             </se:Fill>
             <se:Stroke>
-              <se:SvgParameter name="stroke">#6f6f6f</se:SvgParameter>
-              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
-              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+              <se:CssParameter name="stroke">#6f6f6f</se:CssParameter>
+              <se:CssParameter name="stroke-width">1</se:CssParameter>
+              <se:CssParameter name="stroke-linejoin">bevel</se:CssParameter>
             </se:Stroke>
           </se:PolygonSymbolizer>
         </se:Rule>
@@ -48,12 +48,12 @@
           </ogc:Filter>
           <se:PolygonSymbolizer>
             <se:Fill>
-              <se:SvgParameter name="fill">#eceac5</se:SvgParameter>
+              <se:CssParameter name="fill">#eceac5</se:CssParameter>
             </se:Fill>
             <se:Stroke>
-              <se:SvgParameter name="stroke">#93916e</se:SvgParameter>
-              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
-              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+              <se:CssParameter name="stroke">#93916e</se:CssParameter>
+              <se:CssParameter name="stroke-width">1</se:CssParameter>
+              <se:CssParameter name="stroke-linejoin">bevel</se:CssParameter>
             </se:Stroke>
           </se:PolygonSymbolizer>
         </se:Rule>
@@ -77,12 +77,12 @@
           </ogc:Filter>
           <se:PolygonSymbolizer>
             <se:Fill>
-              <se:SvgParameter name="fill">#dab39b</se:SvgParameter>
+              <se:CssParameter name="fill">#dab39b</se:CssParameter>
             </se:Fill>
             <se:Stroke>
-              <se:SvgParameter name="stroke">#a28574</se:SvgParameter>
-              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
-              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+              <se:CssParameter name="stroke">#a28574</se:CssParameter>
+              <se:CssParameter name="stroke-width">1</se:CssParameter>
+              <se:CssParameter name="stroke-linejoin">bevel</se:CssParameter>
             </se:Stroke>
           </se:PolygonSymbolizer>
         </se:Rule>
@@ -106,12 +106,12 @@
           </ogc:Filter>
           <se:PolygonSymbolizer>
             <se:Fill>
-              <se:SvgParameter name="fill">#c38b88</se:SvgParameter>
+              <se:CssParameter name="fill">#c38b88</se:CssParameter>
             </se:Fill>
             <se:Stroke>
-              <se:SvgParameter name="stroke">#8f383b</se:SvgParameter>
-              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
-              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+              <se:CssParameter name="stroke">#8f383b</se:CssParameter>
+              <se:CssParameter name="stroke-width">1</se:CssParameter>
+              <se:CssParameter name="stroke-linejoin">bevel</se:CssParameter>
             </se:Stroke>
           </se:PolygonSymbolizer>
         </se:Rule>
@@ -129,12 +129,12 @@
           </ogc:Filter>
           <se:PolygonSymbolizer>
             <se:Fill>
-              <se:SvgParameter name="fill">#a37d89</se:SvgParameter>
+              <se:CssParameter name="fill">#a37d89</se:CssParameter>
             </se:Fill>
             <se:Stroke>
-              <se:SvgParameter name="stroke">#69245f</se:SvgParameter>
-              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
-              <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+              <se:CssParameter name="stroke">#69245f</se:CssParameter>
+              <se:CssParameter name="stroke-width">1</se:CssParameter>
+              <se:CssParameter name="stroke-linejoin">bevel</se:CssParameter>
             </se:Stroke>
           </se:PolygonSymbolizer>
         </se:Rule>

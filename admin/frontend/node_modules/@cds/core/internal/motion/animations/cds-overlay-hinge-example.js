@@ -1,0 +1,2 @@
+import{hingeKeyframes as a}from"./keyframes/hinge.js";const o="cds-modal-hinge-exit",e=[{target:".overlay-backdrop",onlyIf:"isLayered:false",animation:[{opacity:1,offset:.8},{opacity:0}],options:{duration:1200,easing:"ease-in-out",fill:"forwards"}},{target:".private-host",animation:a,options:{duration:1200,easing:"ease-in-out",fill:"forwards",endDelay:50}}];export{e as AnimationHingeConfig,o as AnimationHingeName};
+//# sourceMappingURL=cds-overlay-hinge-example.js.map

@@ -1,0 +1,12 @@
+import { Directions } from '@cds/core/internal';
+import { CdsNavigationItem, CdsNavigationStart } from '../index.js';
+export declare const NAVIGATION_TEXT_WRAPPER = "cds-navigation-sr-text";
+export declare const DEFAULT_NAVIGATION_LAYOUT = "vertical";
+export declare type FocusableElement = CdsNavigationItem | CdsNavigationStart;
+export declare function getNextFocusElement(current: FocusableElement, elements: FocusableElement[]): FocusableElement;
+export declare function getPreviousFocusElement(current: FocusableElement, elements: FocusableElement[]): FocusableElement;
+export declare function getToggleIconDirection(element: CdsNavigationStart): Directions;
+export declare function manageScreenReaderElements(element: HTMLElement, expandedRoot: boolean): void;
+export declare function removeFocus(element: FocusableElement): void;
+export declare function setFocus(element: FocusableElement): void;
+export declare function visibleElement(element: FocusableElement): boolean;

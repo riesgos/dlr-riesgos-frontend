@@ -1,0 +1,2 @@
+import{renderIcon as c}from"../icon.renderer.js";const r="drag-handle-corner",e=["drag-handle-corner",c({outline:'<circle cx="12" cy="24" r="1.5"/><circle cx="18" cy="24" r="1.5"/><circle cx="18" cy="18" r="1.5"/><circle cx="24" cy="12" r="1.5"/><circle cx="24" cy="24" r="1.5"/><circle cx="24" cy="18" r="1.5"/>'})];export{e as dragHandleCornerIcon,r as dragHandleCornerIconName};
+//# sourceMappingURL=drag-handle-corner.js.map

@@ -1,0 +1,2 @@
+import{renderIcon as e}from"../icon.renderer.js";const o="mobile",t=["mobile",e({outline:'<path d="M25,4H11A2,2,0,0,0,9,6V30a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V6A2,2,0,0,0,25,4ZM11,6H25V24H11Zm0,24V26H25v4Z"/><rect x="17" y="27" width="2" height="2"/>',solid:'<path d="M25,4H11A2,2,0,0,0,9,6V30a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V6A2,2,0,0,0,25,4ZM19,30H17V28h2Zm-8-4V6H25V26Z"/>'})];export{t as mobileIcon,o as mobileIconName};
+//# sourceMappingURL=mobile.js.map

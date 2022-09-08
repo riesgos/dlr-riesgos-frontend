@@ -1,0 +1,2 @@
+function t(){return(t,e)=>{const n=t.connectedCallback;t.connectedCallback=function(){this[`__${e}StyleTag`]=document.createElement("style"),this.prepend(this[`__${e}StyleTag`]),this[`__${e}StyleTag`].innerText=this[`__${e}GlobalStyle`].toString(),n&&n.apply(this)};const o={set:function(t){this[`__${e}GlobalStyle`]=t},enumerable:!0,configurable:!0};return void 0!==e?function(t,e,n){Object.defineProperty(e,n,t)}(o,t,e):function(t,e){return{kind:"method",placement:"prototype",key:e.key,descriptor:t}}(o,t)}}export{t as globalStyle};
+//# sourceMappingURL=global-style.js.map

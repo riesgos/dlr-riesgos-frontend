@@ -1,0 +1,2 @@
+import"@cds/core/icon/register.js";import{registerElementSafely as o}from"@cds/core/internal";import{ClarityIcons as s}from"@cds/core/icon/icon.service.js";import{timesIcon as e}from"@cds/core/icon/shapes/times.js";import{CdsCloseButtonTagName as r,CdsInternalCloseButton as c}from"./close-button.element.js";o(r,c),s.addIcons(e),s.addAliases(["times",["close"]]);
+//# sourceMappingURL=register.js.map

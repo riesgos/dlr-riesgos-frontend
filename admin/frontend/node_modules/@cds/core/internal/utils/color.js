@@ -1,0 +1,2 @@
+function t(t,n,r){const o=(n/=100)*Math.min(r/=100,1-r),h=(n,h=(n+t/30)%12)=>r-o*Math.max(Math.min(h-3,9-h,1),-1);return[Math.round(255*h(0)),Math.round(255*h(8)),Math.round(255*h(4))]}function n(t,n,r){let o=t.toString(16),h=n.toString(16),a=r.toString(16);return 1===o.length&&(o="0"+o),1===h.length&&(h="0"+h),1===a.length&&(a="0"+a),`#${o}${h}${a}`}export{t as hslToRgb,n as rgbToHex};
+//# sourceMappingURL=color.js.map

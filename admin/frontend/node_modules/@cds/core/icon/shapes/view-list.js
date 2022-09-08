@@ -1,0 +1,2 @@
+import{renderIcon as t}from"../icon.renderer.js";const h="view-list",e=["view-list",t({outline:'<rect x="2" y="8" width="2" height="2"/><path d="M7,10H31a1,1,0,0,0,0-2H7a1,1,0,0,0,0,2Z"/><rect x="2" y="14" width="2" height="2"/><path d="M31,14H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"/><rect x="2" y="20" width="2" height="2"/><path d="M31,20H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"/><rect x="2" y="26" width="2" height="2"/><path d="M31,26H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"/>'})];export{e as viewListIcon,h as viewListIconName};
+//# sourceMappingURL=view-list.js.map

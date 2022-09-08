@@ -24,7 +24,7 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
-import { customStyleEconomicChile } from '../../styles';
+import { customStyleEconomicChileNew, customStyleSaraNew } from '../../styles';
 
 
 
@@ -64,13 +64,12 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 const damageLayer: ProductLayer = new ProductRasterLayer({...econLayer });
 
                 econLayer.id += '_economic';
-                econLayer.name = 'eq-damage';
+                econLayer.name = 'eq-economic-loss-title';
                 econLayer.icon = 'dot-circle';
-                // econLayer.params.STYLES = 'style-cum-loss';
-                // econLayer.legendImg += '&style=style-cum-loss';
-                econLayer.params.STYLES = 'custom_style_economic';
-                econLayer.params.SLD_BODY = customStyleEconomicChile.replace('{{{{layername}}}}', econLayer.params.LAYERS  );
-                econLayer.legendImg += '&style=custom_style_economic&sld_body=' + econLayer.params.SLD_BODY;
+                econLayer.params.STYLES = 'style-cum-loss-chile-plasma';
+                econLayer.legendImg += '&style=style-cum-loss-chile-plasma';
+                // econLayer.params.SLD = 'https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_cum_loss_chile_plasma.sld';
+                // econLayer.params.SLD_BODY = customStyleEconomicChileNew.replace('{{{{layername}}}}', econLayer.params.LAYERS  );
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                 econLayer.dynamicDescription = {
@@ -91,7 +90,7 @@ export const eqDamageWms: WpsData & MappableProduct = {
                                 event: event,
                                 layer: layer,
                                 metaData: metaData.value[0],
-                                title: 'eq-damage'
+                                title: 'eq-economic-loss-title'
                             };
                         }
                     }
@@ -102,9 +101,11 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 damageLayer.name = 'eq-exposure';
                 damageLayer.icon = 'dot-circle';
                 damageLayer.params = { ... econLayer.params };
-                damageLayer.params.STYLES = 'style-damagestate-sara';
-                damageLayer.legendImg += '&style=style-damagestate-sara';
+                damageLayer.params.STYLES = 'style-damagestate-sara-plasma';
+                damageLayer.legendImg += '&style=style-damagestate-sara-plasma';
                 delete damageLayer.params.SLD_BODY;
+                // damageLayer.params.SLD = 'https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_damagestate_sara_plasma.sld';
+                // damageLayer.params.SLD_BODY = customStyleSaraNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

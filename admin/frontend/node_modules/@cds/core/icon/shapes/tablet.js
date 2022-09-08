@@ -1,0 +1,2 @@
+import{renderIcon as t}from"../icon.renderer.js";const V="tablet",e=["tablet",t({outline:'<rect x="17" y="29" width="2" height="2"/><path d="M30,2H6A2,2,0,0,0,4,4V32a2,2,0,0,0,2,2H30a2,2,0,0,0,2-2V4A2,2,0,0,0,30,2Zm0,2V26.38H6V4ZM6,32V28H30v4Z"/>',solid:'<path d="M30,2H6A2,2,0,0,0,4,4V32a2,2,0,0,0,2,2H30a2,2,0,0,0,2-2V4A2,2,0,0,0,30,2ZM19,32H17V30h2ZM6,28V4H30V28Z"/>'})];export{e as tabletIcon,V as tabletIconName};
+//# sourceMappingURL=tablet.js.map

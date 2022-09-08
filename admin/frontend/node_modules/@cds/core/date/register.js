@@ -1,0 +1,2 @@
+import{registerElementSafely as r}from"@cds/core/internal";import{CdsDate as o}from"./date.element.js";import"@cds/core/forms/register.js";import"@cds/core/button-action/register.js";import"@cds/core/icon/register.js";import{ClarityIcons as e}from"@cds/core/icon/icon.service.js";import{calendarIcon as c}from"@cds/core/icon/shapes/calendar.js";e.addIcons(c),r("cds-date",o);
+//# sourceMappingURL=register.js.map

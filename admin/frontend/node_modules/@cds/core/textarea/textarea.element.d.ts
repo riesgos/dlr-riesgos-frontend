@@ -1,0 +1,28 @@
+import { CdsControl } from '@cds/core/forms';
+/**
+ * Form
+ *
+ * ```typescript
+ * import '@cds/core/textarea/register.js';
+ * ```
+ *
+ * ```html
+ * <cds-textarea>
+ *   <label>textarea</label>
+ *   <textarea></textarea>
+ *   <cds-control-message>message text</cds-control-message>
+ * </cds-textarea>
+ * ```
+ * @element cds-textarea
+ * @slot - For projecting cds-inputs
+ * @cssprop --background
+ * @cssprop --border
+ * @cssprop --padding
+ * @cssprop --font-size
+ * @cssprop --color
+ * @cssprop --border-radius
+ */
+export declare class CdsTextarea extends CdsControl {
+    protected supportsPrefixSuffixActions: boolean;
+    static get styles(): import("lit").CSSResultGroup[];
+}

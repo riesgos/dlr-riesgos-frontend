@@ -1,0 +1,2 @@
+import{renderIcon as i}from"../icon.renderer.js";const t="info-circle-mini",e=["info-circle-mini",i({outline:'<path d="M18,4A14,14,0,1,0,32,18,14,14,0,0,0,18,4Zm0,24A10,10,0,1,1,28,18,10,10,0,0,1,18,28Z"/><rect x="16" y="18" width="4" height="6"/><rect x="16" y="12" width="4" height="3.2"/>',solid:'<path d="M18,4A14,14,0,1,0,32,18,14,14,0,0,0,18,4Zm2,22H16V16h4Zm0-14H16V8h4Z"/>'})];export{e as infoCircleMiniIcon,t as infoCircleMiniIconName};
+//# sourceMappingURL=info-circle-mini.js.map

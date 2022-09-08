@@ -1,0 +1,2 @@
+class s{constructor(s,i){this.fn=s,this.subscriptions=i}unsubscribe(){const s=this.subscriptions.indexOf(this);-1!==s&&this.subscriptions.splice(s,1)}}class i{constructor(){this.subscriptions=[]}subscribe(i){const t=new s(i,this.subscriptions);return this.subscriptions.push(t),t}emit(s){this.subscriptions.forEach((i=>i.fn(s)))}toEventObservable(){return this}}export{i as EventSubject};
+//# sourceMappingURL=event-subject.js.map

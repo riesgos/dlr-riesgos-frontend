@@ -1,0 +1,2 @@
+import"@cds/core/internal-components/close-button/register.js";import{ClarityMotion as e,AnimationResponsivePopupEnterName as o,AnimationResponsivePopupEnterConfig as r,registerElementSafely as t}from"@cds/core/internal";import{CdsInternalPopup as n}from"./popup.element.js";import{CdsInternalPointer as p}from"./pointer.element.js";e.add(o,r),t("cds-internal-popup",n),t("cds-internal-pointer",p);
+//# sourceMappingURL=register.js.map

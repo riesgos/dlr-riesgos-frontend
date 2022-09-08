@@ -1,0 +1,2 @@
+const t=[{transformOrigin:"top left",transform:"rotate3d(0, 0, 1, 80deg)",offset:.2},{transformOrigin:"top left",transform:"rotate3d(0, 0, 1, 60deg)",offset:.4},{transformOrigin:"top left",transform:"rotate3d(0, 0, 1, 80deg)",offset:.6},{transformOrigin:"top left",transform:"rotate3d(0, 0, 1, 60deg)",opacity:1,offset:.8},{transformOrigin:"top left",opacity:0,transform:"translate3d(0, 700px, 0)"}];export{t as hingeKeyframes};
+//# sourceMappingURL=hinge.js.map

@@ -1,0 +1,2 @@
+import{baseStyles as t}from"@cds/core/internal";import{LitElement as s,html as e}from"lit";class o extends s{connectedCallback(){super.connectedCallback(),this.setAttribute("slot","modal-actions")}render(){return this.hasAttribute("cds-layout")?e`<slot></slot>`:e`<div cds-layout="horizontal gap:xs align:right"><slot></slot></div>`}static get styles(){return[t]}}export{o as CdsModalActions};
+//# sourceMappingURL=modal-actions.element.js.map

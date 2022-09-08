@@ -1,0 +1,2 @@
+import{renderIcon as i}from"../icon.renderer.js";const r="filter-grid-circle-mini",e=["filter-grid-circle-mini",i({outline:'<path d="M18,4A14,14,0,1,0,32,18,14,14,0,0,0,18,4Zm2,23.8V23l5.29-5.76A1.9,1.9,0,0,0,23.92,14H11.7a1.9,1.9,0,0,0-1.37,3.21L16,23.08V27.8a10,10,0,1,1,4,0Z"/>',solid:'<path d="M18,4A14,14,0,1,0,32,18,14,14,0,0,0,18,4Zm8.76,10.68L20,20.8v5.08H16V20.8L9.24,14.68A1.56,1.56,0,0,1,10.52,12h15A1.56,1.56,0,0,1,26.76,14.68Z"/>'})];export{e as filterGridCircleMiniIcon,r as filterGridCircleMiniIconName};
+//# sourceMappingURL=filter-grid-circle-mini.js.map

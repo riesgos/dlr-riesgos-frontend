@@ -1,0 +1,2 @@
+import{renderIcon as V}from"../icon.renderer.js";const a="calendar-mini",H=["calendar-mini",V({outline:'<path d="M29,8H27.6V4a1.6,1.6,0,0,0-3.2,0V8H11.6V4A1.6,1.6,0,0,0,8.4,4V8H7a3,3,0,0,0-3,3V29a3,3,0,0,0,3,3H29a3,3,0,0,0,3-3V11A3,3,0,0,0,29,8Zm-1,4v4.4H8V12ZM8,28V19.6H28V28Z"/>',solid:'<path d="M29,8H27.6V4a1.6,1.6,0,0,0-3.2,0V8H11.6V4A1.6,1.6,0,0,0,8.4,4V8H7a3,3,0,0,0-3,3V29a3,3,0,0,0,3,3H29a3,3,0,0,0,3-3V11A3,3,0,0,0,29,8ZM8,28V16H28V28Z"/>'})];export{H as calendarMiniIcon,a as calendarMiniIconName};
+//# sourceMappingURL=calendar-mini.js.map

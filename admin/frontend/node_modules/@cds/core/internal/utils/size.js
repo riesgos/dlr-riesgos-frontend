@@ -1,0 +1,2 @@
+import{isString as t,isNilOrEmpty as i,isNumericString as s}from"./identity.js";import{updateElementStyles as e,pxToRem as n}from"./css.js";function o(t){return["xxs","xs","sm","md","lg","xl","xxl"].indexOf(t)>-1}function r(r,x){if(!t(x)||i(x)||o(x))e(r,["width",""],["height",""]);else if(s(x)){const t=n(parseInt(x));e(r,["width",t],["height",t])}}export{o as isTshirtSize,r as updateEquilateralSizeStyles};
+//# sourceMappingURL=size.js.map

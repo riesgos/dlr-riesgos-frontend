@@ -1,0 +1,2 @@
+import{deepClone as t}from"../utils/identity.js";const r=new Map([["arrow-left","ArrowLeft"],["arrow-right","ArrowRight"],["arrow-up","ArrowUp"],["arrow-down","ArrowDown"],["tab","Tab"],["enter","Enter"],["escape","Escape"],["space"," "],["home","Home"],["end","End"]]);class e{static get keycodes(){return t(r)}static add(t,e){r.set(t,e)}static has(t){return r.has(t)}static getCode(t,r=this.keycodes){return o(t,r)}}function o(t,r){return r.get(t)||""}export{e as KeyCodeService,o as getKeycodeFromRegistry};
+//# sourceMappingURL=keycodes.service.js.map

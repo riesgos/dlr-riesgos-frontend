@@ -1,0 +1,2 @@
+import{renderIcon as i}from"../icon.renderer.js";const e="times-mini",t=["times-mini",i({outline:'<path d="M29.37,6.35a2,2,0,0,0-2.83,0L18,14.94,9.37,6.35A2,2,0,0,0,6.54,9.18l8.59,8.59L6.54,26.35a2,2,0,1,0,2.83,2.83L18,20.6l8.58,8.58a2,2,0,0,0,2.83-2.83l-8.59-8.58,8.59-8.59A2,2,0,0,0,29.37,6.35Z"/>'})];export{t as timesMiniIcon,e as timesMiniIconName};
+//# sourceMappingURL=times-mini.js.map

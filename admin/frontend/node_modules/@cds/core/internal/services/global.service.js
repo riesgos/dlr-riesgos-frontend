@@ -1,0 +1,2 @@
+import{EventSubject as t}from"../utils/event-subject.js";import{setupCDSGlobal as e}from"../utils/global.js";import{LogService as s}from"./log.service.js";const a=new t;a.listener=document.addEventListener("CDS_STATE_UPDATE",(t=>a.emit(t.detail)));class i{static get state(){return e(),window.CDS._state}static getValue(t){return i.state[t]}static setValue(t,e){i.state[t]=e}static log(){s.log(JSON.stringify(i.state,null,2))}}i.stateUpdates=a.toEventObservable();export{i as GlobalStateService};
+//# sourceMappingURL=global.service.js.map

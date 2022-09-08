@@ -1,0 +1,2 @@
+import{renderIcon as a}from"../icon.renderer.js";const t="align-right",r=["align-right",a({outline:'<path d="M31,1a1,1,0,0,0-1,1V34a1,1,0,0,0,2,0V2A1,1,0,0,0,31,1Z"/><path d="M4,21v8a1,1,0,0,0,1,1H28V20H5A1,1,0,0,0,4,21Zm2,1H26v6H6Z"/><path d="M12,7v8a1,1,0,0,0,1,1H28V6H13A1,1,0,0,0,12,7Zm2,1H26v6H14Z"/>'})];export{r as alignRightIcon,t as alignRightIconName};
+//# sourceMappingURL=align-right.js.map

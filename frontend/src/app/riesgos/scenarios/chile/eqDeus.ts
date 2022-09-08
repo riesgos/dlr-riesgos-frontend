@@ -66,10 +66,9 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 econLayer.id += '_economic';
                 econLayer.name = 'eq-economic-loss-title';
                 econLayer.icon = 'dot-circle';
-                econLayer.params.STYLES = 'custom_style_economic_chile_plasma';
-                econLayer.params.SLD = 'https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_cum_loss_chile_plasma.sld';
-                econLayer.legendImg += '&style=custom_style_economic_chile_plasma&sld=https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_cum_loss_chile_plasma.sld';
-                // econLayer.params.STYLES = 'custom_style_economic_chile_new';
+                econLayer.params.STYLES = 'style-cum-loss-chile-plasma';
+                econLayer.legendImg += '&style=style-cum-loss-chile-plasma';
+                // econLayer.params.SLD = 'https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_cum_loss_chile_plasma.sld';
                 // econLayer.params.SLD_BODY = customStyleEconomicChileNew.replace('{{{{layername}}}}', econLayer.params.LAYERS  );
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
@@ -102,11 +101,10 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 damageLayer.name = 'eq-exposure';
                 damageLayer.icon = 'dot-circle';
                 damageLayer.params = { ... econLayer.params };
-                damageLayer.params.STYLES = 'custom_style_sara_plasma';
-                damageLayer.params.SLD = 'https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_damagestate_sara_plasma.sld';
-                damageLayer.legendImg += '&style=custom_style_sara_plasma&sld=https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_damagestate_sara_plasma.sld';
+                damageLayer.params.STYLES = 'style-damagestate-sara-plasma';
+                damageLayer.legendImg += '&style=style-damagestate-sara-plasma';
                 delete damageLayer.params.SLD_BODY;
-                // damageLayer.params.STYLES = 'custom_style_sara_new';
+                // damageLayer.params.SLD = 'https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_damagestate_sara_plasma.sld';
                 // damageLayer.params.SLD_BODY = customStyleSaraNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
                 damageLayer.popup = {
                     dynamicPopup: {

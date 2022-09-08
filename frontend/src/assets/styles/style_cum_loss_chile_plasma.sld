@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:se="http://www.opengis.net/se" version="1.1.0" xmlns:ogc="http://www.opengis.net/ogc" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink">
   <NamedLayer>
-    <se:Name>custom_style_economic_chile_plasma</se:Name>
+    <se:Name>riesgos:Shape_eb43add3-b2e8-43c2-bbbe-eb2628b7bfac564022114296046469</se:Name>
     <UserStyle>
       <se:Name>custom_style_economic_chile_plasma</se:Name>
       <se:FeatureTypeStyle>

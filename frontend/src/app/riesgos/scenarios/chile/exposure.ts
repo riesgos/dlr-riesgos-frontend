@@ -100,7 +100,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
 
         const data: BarData[] = [];
         for (let i = 0; i < Object.values(expo.Taxonomy).length; i++) {
-            const tax = expo['Taxonomy'][i].match(/^[a-zA-Z]*/)[0];
+            const tax = expo['Taxonomy'][i]; // .match(/^[a-zA-Z]*/)[0];
             const bld = expo['Buildings'][i];
             if (!data.map(dp => dp.label).includes(tax)) {
                 data.push({
@@ -114,7 +114,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
 
         const anchor = document.createElement('div');
         const anchorUpdated = createBigBarChart(anchor, data, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
-        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}  {{ BuildingTypesSara }}`;
+        return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}`;
       },
       legendEntries: [{
         feature: {
@@ -136,7 +136,7 @@ export const initialExposure: VectorLayerProduct & WpsData & Product = {
         return {
           component: TranslatableStringComponent,
           inputs: {
-            text: 'BuildingTypesSara'
+            text: 'BuildingTypesSaraExtensive'
           }
         };
       }

@@ -36,7 +36,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~13.3.8",
+    "@angular-devkit/build-angular": "~13.3.9",
     "@angular/cli": "~13.3.8",
     "@angular/compiler-cli": "~13.3.0",
     "@types/chroma-js": "^2.1.4",

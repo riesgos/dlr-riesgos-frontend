@@ -158,6 +158,9 @@ export function createBarChart(
 export function createBigBarChart(
     anchorSelector: any, data: BarData[], width: number, height: number, xLabel: string, yLabel: string) {
 
+
+        const maxLabelLength = Math.max(...data.map(d => d.label.length));
+
         let dataLength = 0;
         for (const dp of data) {
             dataLength += dp.value;
@@ -196,7 +199,7 @@ export function createBigBarChart(
             margin: {
                 l: 50,
                 r: 30,
-                b: 50,
+                b: 20 + maxLabelLength * 7,
                 t: 15,
                 pad: 5
             },

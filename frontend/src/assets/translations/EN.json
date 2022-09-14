@@ -413,7 +413,7 @@
     "Probability_of_exceedence": "Probability of exceedence",
     "quakeledger": "Earthquake catalogue",
     "replacement_costs": "replacement costs",
-    "select_eq_description": "Select an earthquake location by choosing one from the dropdown or by clicking on the 'select on map' button.",
+    "select_eq_description": "Select an earthquake location by choosing one from the dropdown.",
     "shakemap": "Maximum ground acceleration",
     "show_info": "Show info",
     "taxonomy_DX": "Taxonomy/damage class",

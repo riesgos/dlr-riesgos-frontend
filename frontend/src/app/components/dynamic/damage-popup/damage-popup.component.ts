@@ -118,7 +118,7 @@ export class DamagePopupComponent implements OnInit {
       'SUPPASRI2013_v2.0': [{
         id: 'suppasri_base',
         label: () => this.translateSvc.syncTranslate('type'),
-        xLabel: () => this.translateSvc.syncTranslate('category'),
+        xLabel: () => this.translateSvc.syncTranslate('damage-class'),
         yLabel: () => this.translateSvc.syncTranslate('quantity'),
         coloringFunction: getBuildingClassColor,
         groupingFunction: simpleGrouping
@@ -127,7 +127,7 @@ export class DamagePopupComponent implements OnInit {
       'Medina_2019': [{
         id: 'medina_base',
         label: () => this.translateSvc.syncTranslate('type'),
-        xLabel: () => this.translateSvc.syncTranslate('category'),
+        xLabel: () => this.translateSvc.syncTranslate('damage-class'),
         yLabel: () => this.translateSvc.syncTranslate('quantity'),
         coloringFunction: getBuildingClassColor,
         groupingFunction: simpleGrouping

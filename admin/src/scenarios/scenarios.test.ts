@@ -9,8 +9,8 @@ import { deleteFile } from '../utils/files';
 
 const http = axios.create();
 const port = 5001;
-const cacheDir = './data/tmp-scenarios/cache';
-const storeDir = './data/tmp-scenarios/store';
+const cacheDir = './test-data/scenarios/cache';
+const storeDir = './test-data/scenarios/store';
 let app: Express;
 let server: Express.Application;
 beforeAll(async () => {
@@ -114,7 +114,6 @@ describe('scenarios', () => {
         expect(finalState).toBeTruthy();
         expect(finalState.data.length > 1).toBe(true);
         expect(finalState.data[1].id).toBeTruthy();
-        console.log(finalState)
     });
 
 });

@@ -3,7 +3,7 @@ import objectHash from 'object-hash';
 import { deleteFile, fileExists } from '../utils/files';
 
 
-const cacheDir = "./data/tmp-cache/cache";
+const cacheDir = "./test-data/cache/cache";
 
 beforeAll(async () => {
     await deleteFile(cacheDir);

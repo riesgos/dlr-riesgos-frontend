@@ -4,7 +4,9 @@ import { pathGetLast, getPathTo, listDirsInDir, matchFileRecursive, readTextFile
 
 
 
-export async function parseCode(baseDir: string) {
+export async function parseCode(baseDirString: string) {
+    // resolving potentially relative path to absolute
+    const baseDir = getPathTo(baseDirString); 
 
     const factories: ScenarioFactory[] = [];
     
@@ -18,11 +20,19 @@ export async function parseCode(baseDir: string) {
 
         const stepPaths = await listDirsInDir(scenarioPath);
         for (const stepPath of stepPaths) {
+            const stepName = pathGetLast(stepPath);
             const logicFile = await matchFileRecursive(stepPath, /\.logic\.(js|ts)$/);
             if (logicFile) {
+                console.log('Importing script ', logicFile);
                 const logic = await import(logicFile);
                 const step: Step = logic.step;
-                factory.registerStep(step);
+                try {
+                    factory.registerStep(step);
+                } catch (e: any) {
+                    const message = `Scenario ${scenarioName}, step ${stepName}: Error when matching to a step: ${step}`;
+                    e.message = message + `\n` + e.message;
+                    throw e;
+                }
             }
         }
 

@@ -21,7 +21,7 @@ export async function parseCode(baseDirString: string) {
         const stepPaths = await listDirsInDir(scenarioPath);
         for (const stepPath of stepPaths) {
             const stepName = pathGetLast(stepPath);
-            const logicFile = await matchFileRecursive(stepPath, /\.logic\.(js|ts)$/);
+            const logicFile = await matchFileRecursive(stepPath, /\.logic\.js$/);
             if (logicFile) {
                 console.log('Importing script ', logicFile);
                 const logic = await import(logicFile);

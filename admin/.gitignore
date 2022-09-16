@@ -2,5 +2,4 @@
 node_modules
 build
 data
-data.bak
-data.sicherung
+dist

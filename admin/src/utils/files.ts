@@ -18,6 +18,15 @@ export function getPathTo(filePath: string) {
     }
 }
 
+export function splitPath(p: string) {
+    return p.split(path.sep);
+}
+
+export function pathGetLast(path: string) {
+    const parts = splitPath(path);
+    return parts[parts.length - 1];
+}
+
 export function isDir(path: string) {
     return statSync(path).isDirectory();
 }
@@ -106,16 +115,31 @@ export async function readJsonFile(filePath: string) {
     return JSON.parse(content);
 }
 
-export async function listFilesInDir(path: string): Promise<string[]> {
+export async function listEntriesInDir(path: string): Promise<string[]> {
     const contents = await readdir(path);
-    return contents;
+    return contents.map((f: string) => pathJoin([path, f]));
+}
+
+
+export async function listEntriesInDirRecursive(path: string): Promise<string[]> {
+    const out: string[] = [];
+    const contents = await readdir(path);
+    for (const entry of contents) {
+        const entryPath = pathJoin([path, entry]);
+        if (isDir(entryPath)) {
+            const subEntries = await listFilesInDirRecursive(entryPath);
+            out.push(...subEntries);
+        }
+        out.push(entryPath);
+    }
+    return out;
 }
 
 export async function listFilesInDirRecursive(path: string): Promise<string[]> {
     const out: string[] = [];
     const contents = await readdir(path);
     for (const entry of contents) {
-        const entryPath = path + "/" + entry;
+        const entryPath = pathJoin([path, entry]);
         if (isDir(entryPath)) {
             const subEntries = await listFilesInDirRecursive(entryPath);
             out.push(...subEntries);
@@ -126,3 +150,38 @@ export async function listFilesInDirRecursive(path: string): Promise<string[]> {
     return out;
 }
 
+export async function listDirsInDir(path: string): Promise<string[]> {
+    const contents = await readdir(path);
+    const out: string[] = [];
+    for (const entry of contents) {
+        const entryPath = pathJoin([path, entry]);
+        if (isDir(entryPath)) out.push(entryPath);
+    }
+    return out;
+}
+
+export async function listFilesInDir(path: string): Promise<string[]> {
+    const contents = await readdir(path);
+    const out: string[] = [];
+    for (const entry of contents) {
+        const entryPath = pathJoin([path, entry]);
+        if (!isDir(entryPath)) out.push(entryPath);
+    }
+    return out;
+}
+
+export async function matchFilesRecursive(dir: string, rex: RegExp) {
+    const files = await listFilesInDirRecursive(dir);
+    const out: string[] = [];
+    for (const file of files) {
+        if (rex.test(file)) out.push(file);
+    }
+    return out;
+};
+
+export async function matchFileRecursive(dir: string, rex: RegExp) {
+    const files = await listFilesInDirRecursive(dir);
+    for (const file of files) {
+        if (rex.test(file)) return file;
+    }
+};

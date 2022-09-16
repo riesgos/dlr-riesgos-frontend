@@ -5,7 +5,7 @@
   "scripts": {
     "build:all": "tsc",
     "build:watch": "tsc -w",
-    "start": "ts-node src/main.ts",
+    "start": "ts-node-dev --respawn src/main.ts",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -34,6 +34,7 @@
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.6.2"
   }
 }

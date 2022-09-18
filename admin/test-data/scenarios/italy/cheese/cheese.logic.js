@@ -9,7 +9,7 @@ async function func() {
 
 
 
-export const step = {
+module.exports.step = {
     step: 0,
     title: 'Cheese',
     description: '',

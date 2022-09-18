@@ -9,6 +9,10 @@ export interface UserSelection extends DataDescription {
     options: string[]
 }
 
+export function isUserSelection(a: DataDescription): a is UserSelection {
+    return a.hasOwnProperty('options');
+}
+
 export interface Datum {
     id: string,
     value: any
@@ -38,6 +42,14 @@ export interface Step {
     description: string
 }
 
+export interface StepDescription {
+    step: number,
+    inputs: (DataDescription | UserSelection)[],
+    outputs: DataDescription[],
+    title: string,
+    description: string
+}
+
 export interface ScenarioState {
     data: (Datum | DatumReference)[]
 }
@@ -52,7 +64,7 @@ export class Scenario {
         public imageUrl?: string) {}
 
     public getSummary() {
-        const stepSummaries: any[] = [];
+        const stepSummaries: StepDescription[] = [];
         for (const step of this.steps) {
             stepSummaries.push({
                 step: step.step,

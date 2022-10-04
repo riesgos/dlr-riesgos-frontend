@@ -1,4 +1,4 @@
-import { Express, NextFunction, Request, Response } from 'express';
+import { Express } from 'express';
 import objectHash from 'object-hash';
 import { FileCache } from '../storage/fileCache';
 import { Store } from './store';

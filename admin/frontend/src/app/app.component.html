@@ -1,7 +1,14 @@
-<clr-main-container [ngClass]="{'floating': true}">
-  <ukis-global-alert [(alert)]="alert"></ukis-global-alert>
-  <ukis-header [ukis-title]="title">
-    ...
-  </ukis-header>
-  <router-outlet></router-outlet>
-</clr-main-container>
+<div class="app">
+  <header>
+    RIESGOS 2.0
+  </header>
+  <nav>
+    <ul>
+      <li><a routerLink="/scenarioSelection" routerLinkActive="active" ariaCurrentWhenActive="page">Scenarios</a></li>
+      <li><a routerLink="/map" routerLinkActive="active" ariaCurrentWhenActive="page">Map</a></li>
+    </ul>
+  </nav>
+  <div class="body">
+    <router-outlet></router-outlet>
+  </div>
+</div>

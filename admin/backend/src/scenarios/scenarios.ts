@@ -34,18 +34,18 @@ export function isDatumReference(o: any): o is DatumReference {
 export type StepFunction = (args: Datum[]) => Promise<Datum[]>;
 
 export interface Step {
-    step: number,
     function: StepFunction,
     inputs: (DataDescription | UserSelection)[],
     outputs: DataDescription[],
+    id: string,
     title: string,
     description: string
 }
 
 export interface StepDescription {
-    step: number,
     inputs: (DataDescription | UserSelection)[],
     outputs: DataDescription[],
+    id: string,
     title: string,
     description: string
 }
@@ -67,7 +67,7 @@ export class Scenario {
         const stepSummaries: StepDescription[] = [];
         for (const step of this.steps) {
             stepSummaries.push({
-                step: step.step,
+                id: step.id,
                 title: step.title,
                 description: step.description,
                 inputs: step.inputs,
@@ -82,9 +82,9 @@ export class Scenario {
         };
     }
 
-    public async execute(stepNr: number, state: ScenarioState): Promise<ScenarioState> {
-        let step = this.steps.find(s => s.step === stepNr);
-        if (!step) throw new Error(`No such step: "${stepNr}" in scenario "${this.id}"`);
+    public async execute(stepId: string, state: ScenarioState): Promise<ScenarioState> {
+        let step = this.steps.find(s => s.id === stepId);
+        if (!step) throw new Error(`No such step: "${stepId}" in scenario "${this.id}"`);
 
         const inputValues = await this.getData(step.inputs.map(i => i.id), state);
         const results = await step.function(inputValues);
@@ -142,7 +142,6 @@ export class ScenarioFactory {
     constructor(public id: string, public description: string, public imageUrl?: string) {}
 
     public registerStep(step: Step) {
-        if (this.steps.length !== step.step) throw new Error(`Bad step number ${step.step}. Should be ${this.steps.length}.`);
         const inputIds = this.steps.reduce((prev: string[], curr) => [... prev, ... curr.inputs.map(i => i.id)], []);
         for (const input of step.inputs) {
             if (inputIds.includes(input.id)) throw new Error(`This input-id is already taken: ${input.id}`);

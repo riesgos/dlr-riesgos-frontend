@@ -77,19 +77,19 @@ async function loadEqs() {
 
     return [{
         id: 'availableEqs',
-        value: results[0]
+        value: results[0].value
     }];
 }
 
 
 
 export const step: Step = {
-    step: 1,
+    id: 'Eqs',
     title: 'Eqs',
     description: 'Fetch eq data from database',
     inputs: [],
     outputs: [{
-        id: 'tomatoes'
+        id: 'availableEqs'
     }],
     function: loadEqs
 };

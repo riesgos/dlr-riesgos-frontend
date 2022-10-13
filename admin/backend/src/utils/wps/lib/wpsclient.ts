@@ -15,6 +15,7 @@ import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; const WPS_2_0 = WPS_
 //@ts-ignore
 import * as JsonixFactory from './jsonix/jsonix'; const Jsonix = JsonixFactory.Jsonix as any;
 import axios from 'axios';
+import { toPromise } from '../../async';
 
 
 
@@ -76,49 +77,35 @@ export class WpsClient {
         unmarshalFunction?: (jsonResponse: any) => WpsData[]
         ): Promise<WpsResult[]> {
 
-        const currentState = await this.executeAsyncBasic(url, processId, inputs, outputs);
         // poll until succeeded
-        const nextState$ = await this.getNextState(currentState, url, processId, inputs, outputs);
+        let currentState = await this.executeAsyncBasic(url, processId, inputs, outputs);
+        let noResultsYet = currentState.status !== 'Succeeded';
+        while (noResultsYet) {
+            currentState = await this.getNextState(currentState, url, processId, inputs, outputs);
+            if (currentState.status === 'Failed') {
+                throw new Error(`Error during execution of process ${processId}: ` + currentState.statusLocation);
+            }
+            if (tapFunction) {
+                tapFunction(currentState);
+            }
+            noResultsYet = currentState.status !== 'Succeeded';
+        }
 
-        const query$ = executeRequest$.pipe(
+        // fetch results
+        const response = await this.fetchResults(currentState, url, processId, inputs, outputs, unmarshalFunction);
 
-            mergeMap((currentState: WpsState) => {
+        // In case of errors:
+        for (const result of response) {
+            if (result.description.type === 'error') {
+                console.log('server responded with 200, but body contained an error-result: ', result);
+                throw new Error(result.value);
+            }
+        }
 
-                const poll$: Promise<WpsState> = pollUntil<WpsState>(
-                    nextState$,
-                    (response: WpsState) => {
-                        if (response.status === 'Failed') {
-                            throw new Error(`Error during execution of process ${processId}: ` + response.statusLocation);
-                        }
-                        return response.status === 'Succeeded';
-                    },
-                    tapFunction,
-                    pollingRate
-                );
-
-                return poll$;
-            }),
-
-            // fetch results
-            mergeMap((lastState: WpsState) => {
-                return this.fetchResults(lastState, url, processId, inputs, outputs, unmarshalFunction);
-            }),
-
-            // In case of errors:
-            tap((response: WpsData[]) => {
-                for (const result of response) {
-                    if (result.description.type === 'error') {
-                        console.log('server responded with 200, but body contained an error-result: ', result);
-                        throw new Error(result.value);
-                    }
-                }
-            })
-        );
-
-        return query$;
+        return response;
     }
 
-    getNextState(currentState: WpsState, serverUrl: string, processId: string, inputs: WpsInput[],
+    async getNextState(currentState: WpsState, serverUrl: string, processId: string, inputs: WpsInput[],
         outputDescriptions: WpsOutputDescription[]): Promise<WpsState> {
 
         let request$: Promise<string>;
@@ -143,20 +130,14 @@ export class WpsClient {
             throw new Error(`'GetStatus' has not yet been implemented for this WPS-Version (${this.version}).`);
         }
 
-        const request1$: Promise<WpsState> = request$.pipe(
-            delayedRetry(2000, 2),
-            map((xmlResponse: string) => {
-                const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
-                const output: WpsState =
-                    this.wpsMarshaller.unmarshalGetStateResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
-                return output;
-            })
-        );
-
-        return request1$;
+        const xmlResponse = await request$;
+        const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
+        const output: WpsState =
+            this.wpsMarshaller.unmarshalGetStateResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
+        return output;
     }
 
-    fetchResults(lastState: WpsState, serverUrl: string, processId: string, inputs: WpsInput[],
+    async fetchResults(lastState: WpsState, serverUrl: string, processId: string, inputs: WpsInput[],
         outputDescriptions: WpsOutputDescription[], unmarshalFunction?: (jsonResponse: any) => WpsData[]): Promise<WpsData[]> {
 
         if (lastState.results) { // WPS 1.0: results should already be in last state
@@ -166,7 +147,7 @@ export class WpsClient {
             } else {
                 output = this.wpsMarshaller.unmarshalSyncExecuteResponse(lastState.results, serverUrl, processId, inputs, outputDescriptions);
             }
-            return of(output);
+            return toPromise(output);
 
 
         } else { // WPS 2.0: get results with post request
@@ -177,18 +158,15 @@ export class WpsClient {
             const execBody = this.wpsMarshaller.marshallGetResultBody(serverUrl, processId, lastState.jobID);
             const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
-            return this.postRaw(serverUrl, xmlExecBody).pipe(
-                map((xmlResponse: string) => {
-                    const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
-                    let output: WpsData[];
-                    if (unmarshalFunction) {
-                        output = unmarshalFunction(jsonResponse);
-                    } else {
-                        output = this.wpsMarshaller.unmarshalSyncExecuteResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
-                    }
-                    return output;
-                }),
-            );
+            const xmlResponse = await this.postRaw(serverUrl, xmlExecBody);
+            const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
+            let output: WpsData[];
+            if (unmarshalFunction) {
+                output = unmarshalFunction(jsonResponse);
+            } else {
+                output = this.wpsMarshaller.unmarshalSyncExecuteResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
+            }
+            return output;
         }
     }
 

@@ -1,0 +1,2 @@
+Note: this folder has been copied from https://github.com/dlr-eoc/ukis-frontend-libraries/tree/master/projects/utils-ogc 
+The idea is to develop the library here towards our specific requirements, and then merge the changes back into ukis-frontend-libraries.

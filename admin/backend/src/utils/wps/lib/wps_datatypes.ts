@@ -9,7 +9,7 @@ export type ProductId = string;
 
 export interface WpsDataDescription {
   id: ProductId;
-  title: string;
+  title?: string;
   type: 'literal' | 'complex' | 'bbox' | 'status' | 'error';
   reference: boolean;
   format?: WpsDataFormat;

@@ -2,8 +2,6 @@ import { WpsMarshaller, WpsInput, WpsVersion, WpsResult, WpsOutputDescription, W
     WpsCapability, WpsProcessDescription } from './wps_datatypes';
 import { WpsMarshaller100 } from './wps100/wps_marshaller_1.0.0';
 import { WpsMarshaller200 } from './wps200/wps_marshaller_2.0.0';
-import { defer, from, Observable, of, throwError } from 'rxjs';
-import { map, switchMap, tap, share, mergeMap } from 'rxjs/operators';
 //@ts-ignore
 import * as XLink_1_0_Factory from 'w3c-schemas/lib/XLink_1_0'; const XLink_1_0 = XLink_1_0_Factory.XLink_1_0;
 //@ts-ignore
@@ -16,8 +14,7 @@ import * as WPS_1_0_0_Factory from 'ogc-schemas/lib/WPS_1_0_0'; const WPS_1_0_0 
 import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; const WPS_2_0 = WPS_2_0_Factory.WPS_2_0;
 //@ts-ignore
 import * as JsonixFactory from './jsonix/jsonix'; const Jsonix = JsonixFactory.Jsonix as any;
-import { pollUntil, delayedRetry } from './utils/polling';
-import { HttpClient } from '../../web/httpClient';
+import axios from 'axios';
 
 
 
@@ -36,10 +33,10 @@ export class WpsClient {
     readonly xmlMarshaller: any;
     readonly xmlUnmarshaller: any;
     readonly wpsMarshaller: WpsMarshaller;
+    private webClient = axios;
 
     constructor(
-        version: WpsVersion = '1.0.0',
-        private webClient: HttpClient
+        version: WpsVersion = '1.0.0'
     ) {
         this.version = version;
         let context;
@@ -57,43 +54,37 @@ export class WpsClient {
     }
 
 
-    getCapabilities(url: string): Observable<WpsCapability[]> {
+    async getCapabilities(url: string): Promise<WpsCapability[]> {
         const getCapabilitiesUrl = this.wpsMarshaller.getCapabilitiesUrl(url);
-        return this.getRaw(getCapabilitiesUrl).pipe(
-            map((response: any) => {
-                const responseJson = this.xmlUnmarshaller.unmarshalString(response);
-                return this.wpsMarshaller.unmarshalCapabilities(responseJson.value);
-            }) // @TODO: handle case when instead of WpsCapabilities an ExceptionReport is returned
-        );
+        const response = await this.getRaw(getCapabilitiesUrl);
+        const responseJson = this.xmlUnmarshaller.unmarshalString(response);
+        return this.wpsMarshaller.unmarshalCapabilities(responseJson.value);
     }
 
-    describeProcess(url: string, processId: string): Observable<WpsProcessDescription> {
+    async describeProcess(url: string, processId: string): Promise<WpsProcessDescription> {
         const describeProcessUrl = this.wpsMarshaller.getDescribeProcessUrl(url, processId);
-        return this.getRaw(describeProcessUrl).pipe(
-            map((response: string) => {
-                const responseJson = this.xmlUnmarshaller.unmarshalString(response);
-                return this.wpsMarshaller.unmarshalProcessDescription(responseJson.value);
-            })
-        );
+        const response = await this.getRaw(describeProcessUrl);
+        const responseJson = this.xmlUnmarshaller.unmarshalString(response);
+        return this.wpsMarshaller.unmarshalProcessDescription(responseJson.value);
     }
 
-    executeAsync(
+    async executeAsync(
         url: string, processId: string,
         inputs: WpsInput[], outputs: WpsOutputDescription[],
         pollingRate: number = 1000,
         tapFunction?: (response: WpsState | null) => any,
         unmarshalFunction?: (jsonResponse: any) => WpsData[]
-        ): Observable<WpsResult[]> {
+        ): Promise<WpsResult[]> {
 
-        const executeRequest$: Observable<WpsState> = this.executeAsyncBasic(url, processId, inputs, outputs);
+        const currentState = await this.executeAsyncBasic(url, processId, inputs, outputs);
+        // poll until succeeded
+        const nextState$ = await this.getNextState(currentState, url, processId, inputs, outputs);
 
         const query$ = executeRequest$.pipe(
 
-            // poll until succeeded
             mergeMap((currentState: WpsState) => {
-                const nextState$: Observable<WpsState> = this.getNextState(currentState, url, processId, inputs, outputs);
 
-                const poll$: Observable<WpsState> = pollUntil<WpsState>(
+                const poll$: Promise<WpsState> = pollUntil<WpsState>(
                     nextState$,
                     (response: WpsState) => {
                         if (response.status === 'Failed') {
@@ -128,9 +119,9 @@ export class WpsClient {
     }
 
     getNextState(currentState: WpsState, serverUrl: string, processId: string, inputs: WpsInput[],
-        outputDescriptions: WpsOutputDescription[]): Observable<WpsState> {
+        outputDescriptions: WpsOutputDescription[]): Promise<WpsState> {
 
-        let request$: Observable<string>;
+        let request$: Promise<string>;
         if (this.version === '1.0.0') {
 
             if (!currentState.statusLocation) {
@@ -152,7 +143,7 @@ export class WpsClient {
             throw new Error(`'GetStatus' has not yet been implemented for this WPS-Version (${this.version}).`);
         }
 
-        const request1$: Observable<WpsState> = request$.pipe(
+        const request1$: Promise<WpsState> = request$.pipe(
             delayedRetry(2000, 2),
             map((xmlResponse: string) => {
                 const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
@@ -166,7 +157,7 @@ export class WpsClient {
     }
 
     fetchResults(lastState: WpsState, serverUrl: string, processId: string, inputs: WpsInput[],
-        outputDescriptions: WpsOutputDescription[], unmarshalFunction?: (jsonResponse: any) => WpsData[]): Observable<WpsData[]> {
+        outputDescriptions: WpsOutputDescription[], unmarshalFunction?: (jsonResponse: any) => WpsData[]): Promise<WpsData[]> {
 
         if (lastState.results) { // WPS 1.0: results should already be in last state
             let output: WpsData[];
@@ -201,84 +192,69 @@ export class WpsClient {
         }
     }
 
-    executeAsyncBasic(url: string, processId: string, inputs: WpsInput[],
-        outputDescriptions: WpsOutputDescription[]): Observable<WpsState> {
+    async executeAsyncBasic(url: string, processId: string, inputs: WpsInput[],
+        outputDescriptions: WpsOutputDescription[]): Promise<WpsState> {
 
         const executeUrl = this.wpsMarshaller.executeUrl(url, processId);
         const execBody = this.wpsMarshaller.marshalExecBody(processId, inputs, outputDescriptions, true);
         const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
-        return this.postRaw(executeUrl, xmlExecBody).pipe(
-            map((xmlResponse: string) => {
-                const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
-                const output: WpsState =
-                    this.wpsMarshaller.unmarshalAsyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
-                return output;
-            })
-        );
+        const xmlResponse = await this.postRaw(executeUrl, xmlExecBody);
+        const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
+        const output: WpsState =
+            this.wpsMarshaller.unmarshalAsyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
+        return output;
     }
 
-    execute(url: string, processId: string, inputs: WpsInput[],
-        outputDescriptions: WpsOutputDescription[], unmarshalFunction?: (jsonResponse: any) => WpsData[]): Observable<WpsResult[]> {
+    async execute(url: string, processId: string, inputs: WpsInput[],
+        outputDescriptions: WpsOutputDescription[], unmarshalFunction?: (jsonResponse: any) => WpsData[]): Promise<WpsResult[]> {
 
         const executeUrl = this.wpsMarshaller.executeUrl(url, processId);
         const execbody = this.wpsMarshaller.marshalExecBody(processId, inputs, outputDescriptions, false);
         const xmlExecbody = this.xmlMarshaller.marshalString(execbody);
 
-        return this.postRaw(executeUrl, xmlExecbody).pipe(
-            map((xmlResponse: string) => {
-                const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
-                if (unmarshalFunction) {
-                    return unmarshalFunction(jsonResponse);
-                }
-                const output: WpsData[] =
-                    this.wpsMarshaller.unmarshalSyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
-                return output;
-            })
-        );
+        const xmlResponse = await this.postRaw(executeUrl, xmlExecbody);
+        const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
+        if (unmarshalFunction) {
+            return unmarshalFunction(jsonResponse);
+        }
+        const output: WpsData[] =
+            this.wpsMarshaller.unmarshalSyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
+        return output;
     }
 
-    dismiss(serverUrl: string, processId: string, jobId: string): Observable<any> {
-
+    async dismiss(serverUrl: string, processId: string, jobId: string): Promise<any> {
         const dismissUrl = this.wpsMarshaller.dismissUrl(serverUrl, processId, jobId);
         const dismissBody = this.wpsMarshaller.marshalDismissBody(jobId);
         const xmlDismissBody = this.xmlMarshaller.marshalString(dismissBody);
 
-        return this.postRaw(dismissUrl, xmlDismissBody).pipe(
-            map((xmlResponse: string) => {
-                const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
-                const output = this.wpsMarshaller.unmarshalDismissResponse(jsonResponse, serverUrl, processId);
-                return output;
-            })
-        );
+        const xmlResponse = await this.postRaw(dismissUrl, xmlDismissBody);
+        const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
+        const output = this.wpsMarshaller.unmarshalDismissResponse(jsonResponse, serverUrl, processId);
+        return output;
     }
 
-    postRaw(url: string, xmlBody: string): Observable<string> {
-        const paras = {
+    async postRaw(url: string, xmlBody: string): Promise<string> {
+        const result = await this.webClient.post<any, string>(url, xmlBody, {
             headers: {
                 'Content-Type': 'text/xml',
                 'Accept': 'text/xml, application/xml'
             },
             responseType: 'text'
-        };
-        return defer(() => from(this.webClient.post(url, xmlBody, paras))).pipe(
-            delayedRetry(2000, 2),
-            tap((r: string) => {this.parseResponseForErrors(url, r)}),
-            share()  // turning hot: to make sure that multiple subscribers dont cause multiple requests
-        );
+        });
+        this.parseResponseForErrors(url, result);
+        return result;
     }
 
-    getRaw(url: string): Observable<string> {
-        const paras = {
+    async getRaw(url: string): Promise<string> {
+        const result = await this.webClient.get<any, string>(url, {
             headers: {
                 'Accept': 'text/xml, application/xml'
             },
             responseType: 'text'
-        };
-        return defer(() => from(this.webClient.get(url, paras))).pipe(
-            delayedRetry(2000, 2),
-            tap((r: string) => {this.parseResponseForErrors(url, r)}),
-        );
+        });
+        this.parseResponseForErrors(url, result);
+        return result;
     }
 
     private parseResponseForErrors(url: string, response: string): void {

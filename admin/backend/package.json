@@ -22,8 +22,11 @@
     "express": "^4.17.3",
     "express-session": "^1.17.3",
     "object-hash": "^3.0.0",
+    "ogc-schemas": "^2.6.1",
     "sendmail": "^1.6.1",
-    "xml-formatter": "^2.6.1"
+    "w3c-schemas": "^1.4.0",
+    "xml-formatter": "^2.6.1",
+    "xmlserializer": "^0.6.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
@@ -32,6 +35,7 @@
     "@types/jest": "^27.4.1",
     "@types/object-hash": "^2.2.1",
     "@types/sendmail": "^1.4.4",
+    "@types/xmlserializer": "^0.6.3",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",

@@ -26,26 +26,26 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
         res.send(summary);
     });
 
-    app.post('/scenarios/:scenarioId/steps/:stepNumber/execute', async (req, res) => {
+    app.post('/scenarios/:scenarioId/steps/:stepId/execute', async (req, res) => {
         const scenarioId = req.params.scenarioId;
         const scenario = scenarios.find(s => s.id === scenarioId);
         if (!scenario) return [];
-        const stepNumber = +req.params.stepNumber;
+        const stepId = req.params.stepId;
         const state: ScenarioState = req.body;
-        const key = objectHash({scenarioId, stepNumber, state});
+        const key = objectHash({scenarioId, stepId, state});
         // try to get from cache
         const cachedData = await cache.getData(key);
         if (cachedData) {
             res.send({ results: JSON.parse(cachedData) });
         } else {
             // otherwise calculate
-            pool.scheduleTask(key, async () => await scenario.execute(stepNumber, state));
+            pool.scheduleTask(key, async () => await scenario.execute(stepId, state));
             // send user a ticket for polling
             res.send({ ticket: key });
         }
     });
 
-    app.get('/scenarios/:scenarioId/steps/:stepNumber/execute/poll/:ticket', async (req, res) => {
+    app.get('/scenarios/:scenarioId/steps/:stepId/execute/poll/:ticket', async (req, res) => {
         const key = req.params.ticket;
         // try to get from cache
         const cachedData = await cache.getData(key);

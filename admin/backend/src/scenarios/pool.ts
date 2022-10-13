@@ -3,6 +3,12 @@ import objectHash from "object-hash";
 
 export type Task = () => Promise<any>;
 
+
+/**
+ * Serves for keeping track of ongoing tasks.
+ * Stores ticket-numbers only until they're polled.
+ * No caching.
+ */
 export class ProcessPool {
 
     private ongoing: string[] = [];

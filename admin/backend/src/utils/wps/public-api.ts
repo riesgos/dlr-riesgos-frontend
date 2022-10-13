@@ -3,5 +3,3 @@
  */
 export * from './lib/wpsclient';
 export * from './lib/wps_datatypes';
-export * from './lib/cache';
-export * from './lib/utils/polling';

@@ -1,12 +1,10 @@
 import format from 'xml-formatter';
-import { config } from '../../config';
-import { AxiosClient } from '../../web/httpClient';
 import { WpsClient } from './wpsclient';
 
-const http = new AxiosClient();
-const filePath = config.cacheDir;
-const wpsClient100 = new WpsClient('1.0.0', http);
-const wpsClient200 = new WpsClient('2.0.0', http);
+
+
+const wpsClient100 = new WpsClient('1.0.0');
+const wpsClient200 = new WpsClient('2.0.0');
 
 test('testing that literals are passed without quotation marks', () => {
   const data: any = {

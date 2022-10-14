@@ -9,6 +9,7 @@ import { deleteFile } from '../utils/files';
 
 const http = axios.create();
 const port = 5001;
+const logDir = './test-data/scenarios/logs';
 const cacheDir = './test-data/scenarios/cache';
 const storeDir = './test-data/scenarios/store';
 let app: Express;
@@ -19,7 +20,7 @@ beforeAll(async () => {
     app = express();
     app.use(express.json());
     const scenarioFactories = [italyScenarioFactory];
-    addScenarioApi(app, scenarioFactories, cacheDir, storeDir, `http://localhost:${port}/store/`);
+    addScenarioApi(app, scenarioFactories, cacheDir, storeDir, `http://localhost:${port}/store/`, logDir);
     server = app.listen(port, () => {});
 });
 
@@ -67,15 +68,15 @@ describe('scenarios', () => {
             }]
         };
         // request 1: start execution
-        const response3 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.step}/execute`, state);
+        const response3 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute`, state);
         const { ticket } = response3.data;
         expect(ticket).toBeTruthy();
         // request 2: first poll ...
-        const response4 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.step}/execute/poll/${ticket}`);
+        const response4 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute/poll/${ticket}`);
         expect(response4.data.ticket).toBeTruthy();
         await sleep(1000);
         // request 3: second poll.
-        const response5 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.step}/execute/poll/${ticket}`);
+        const response5 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute/poll/${ticket}`);
         const { results: newState } = response5.data;
         expect(newState).toBeTruthy();
         expect(newState.data.length > 0).toBe(true);
@@ -100,16 +101,16 @@ describe('scenarios', () => {
                 value: input.options[1]
             }]
         };
-        const response3 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.step}/execute`, state);
+        const response3 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute`, state);
         const { ticket } = response3.data;
         await sleep(1000);
-        const response4 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.step}/execute/poll/${ticket}`);
+        const response4 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute/poll/${ticket}`);
         const { results: newState } = response4.data;
-        const response5 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.step}/execute`, newState);
+        const response5 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.id}/execute`, newState);
         const { ticket: newTicket } = response5.data;
         expect(newTicket).toBeTruthy();
         await sleep(1000);
-        const response6 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.step}/execute/poll/${newTicket}`);
+        const response6 = await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.id}/execute/poll/${newTicket}`);
         const { results: finalState } = response6.data;
         expect(finalState).toBeTruthy();
         expect(finalState.data.length > 1).toBe(true);

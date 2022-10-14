@@ -2,7 +2,7 @@ import { Step } from "../../../scenarios/scenarios";
 import { WpsClient, WpsData, WpsDataDescription } from "../../../utils/wps/public-api";
 
 
-const wpsClient = new WpsClient('2.0.0');
+const wpsClient = new WpsClient('1.0.0');
 
 async function loadEqs() {
 
@@ -10,6 +10,18 @@ async function loadEqs() {
     const processId = 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess';
 
     const inputs: WpsData[] = [{
+        description: {
+            id: 'input-boundingbox',
+            type: 'bbox',
+            reference: false
+        },
+        value: {
+            crs: 'EPSG:4326',
+            lllon: -86.5, lllat: -20.5,
+            urlon: -68.5, urlat: -0.6
+        }
+        // value: [-86.5,-20.5,-68.5,-0.6]
+    }, {
         description: {
             id: 'mmin',
             type: 'literal',

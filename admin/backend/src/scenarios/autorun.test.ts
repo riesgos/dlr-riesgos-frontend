@@ -41,7 +41,7 @@ test('autorun', async () => {
             }
 
             // 2. executing the step
-            state = await scenario.execute(step.step, state);
+            state = await scenario.execute(step.id, state);
 
             // 3. verifying that outputs for every step are present
             for (const output of step.outputs) {

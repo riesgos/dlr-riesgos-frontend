@@ -15,7 +15,7 @@ import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; const WPS_2_0 = WPS_
 //@ts-ignore
 import * as JsonixFactory from './jsonix/jsonix'; const Jsonix = JsonixFactory.Jsonix as any;
 import axios from 'axios';
-import { toPromise } from '../../async';
+import { sleep, toPromise } from '../../async';
 
 
 
@@ -70,23 +70,28 @@ export class WpsClient {
     }
 
     async executeAsync(
-        url: string, processId: string,
-        inputs: WpsInput[], outputs: WpsOutputDescription[],
-        pollingRate: number = 1000,
-        tapFunction?: (response: WpsState | null) => any,
-        unmarshalFunction?: (jsonResponse: any) => WpsData[]
+            url: string,
+            processId: string,
+            inputs: WpsInput[],
+            outputs: WpsOutputDescription[],
+            pollingRate: number = 1000,
+            tapFunction?: (response: WpsState | null, paperTrail: string[]) => void,
+            unmarshalFunction?: (jsonResponse: any) => WpsData[]
         ): Promise<WpsResult[]> {
 
+        const paperTrail: string[] = [];
+
         // poll until succeeded
-        let currentState = await this.executeAsyncBasic(url, processId, inputs, outputs);
+        let currentState = await this.executeAsyncBasic(url, processId, inputs, outputs, paperTrail);
         let noResultsYet = currentState.status !== 'Succeeded';
         while (noResultsYet) {
-            currentState = await this.getNextState(currentState, url, processId, inputs, outputs);
+            await sleep(pollingRate);
+            currentState = await this.getNextState(currentState, url, processId, inputs, outputs, paperTrail);
             if (currentState.status === 'Failed') {
-                throw new Error(`Error during execution of process ${processId}: ` + currentState.statusLocation);
+                throw new Error(`Error during execution of process ${processId}: \n ${currentState.statusLocation || currentState.jobID} \n ${paperTrail.join('\n')}`);
             }
             if (tapFunction) {
-                tapFunction(currentState);
+                tapFunction(currentState, paperTrail);
             }
             noResultsYet = currentState.status !== 'Succeeded';
         }
@@ -106,31 +111,32 @@ export class WpsClient {
     }
 
     async getNextState(currentState: WpsState, serverUrl: string, processId: string, inputs: WpsInput[],
-        outputDescriptions: WpsOutputDescription[]): Promise<WpsState> {
+        outputDescriptions: WpsOutputDescription[], paperTrail?: string[]): Promise<WpsState> {
 
         let request$: Promise<string>;
         if (this.version === '1.0.0') {
 
             if (!currentState.statusLocation) {
-                throw new Error('No status location');
+                throw new Error(`GetNextState: No status location: ${currentState}`);
             }
-            request$ = this.getRaw(currentState.statusLocation);
+            request$ = this.getRaw(currentState.statusLocation, paperTrail);
 
         } else if (this.version === '2.0.0') {
 
             if (!currentState.jobID) {
-                throw new Error('No job-Id');
+                throw new Error(`GetNextState: No job-Id: ${currentState}`);
             }
             const execBody = this.wpsMarshaller.marshallGetStatusBody(serverUrl, processId, currentState.jobID);
             const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
-            request$ = this.postRaw(serverUrl, xmlExecBody);
+            request$ = this.postRaw(serverUrl, xmlExecBody, paperTrail);
 
         } else {
             throw new Error(`'GetStatus' has not yet been implemented for this WPS-Version (${this.version}).`);
         }
 
         const xmlResponse = await request$;
+
         const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
         const output: WpsState =
             this.wpsMarshaller.unmarshalGetStateResponse(jsonResponse, serverUrl, processId, inputs, outputDescriptions);
@@ -152,7 +158,7 @@ export class WpsClient {
 
         } else { // WPS 2.0: get results with post request
             if (!lastState.jobID) {
-                throw new Error(`You want me to get a result, but I can't find a jobId. I don't know what to do now!`);
+                throw new Error(`FetchResults: You want me to get a result, but I can't find a jobId. I don't know what to do now!`);
             }
 
             const execBody = this.wpsMarshaller.marshallGetResultBody(serverUrl, processId, lastState.jobID);
@@ -171,13 +177,14 @@ export class WpsClient {
     }
 
     async executeAsyncBasic(url: string, processId: string, inputs: WpsInput[],
-        outputDescriptions: WpsOutputDescription[]): Promise<WpsState> {
+        outputDescriptions: WpsOutputDescription[], paperTrail?: string[]): Promise<WpsState> {
 
         const executeUrl = this.wpsMarshaller.executeUrl(url, processId);
         const execBody = this.wpsMarshaller.marshalExecBody(processId, inputs, outputDescriptions, true);
         const xmlExecBody = this.xmlMarshaller.marshalString(execBody);
 
-        const xmlResponse = await this.postRaw(executeUrl, xmlExecBody);
+        const xmlResponse = await this.postRaw(executeUrl, xmlExecBody, paperTrail);
+
         const jsonResponse = this.xmlUnmarshaller.unmarshalString(xmlResponse);
         const output: WpsState =
             this.wpsMarshaller.unmarshalAsyncExecuteResponse(jsonResponse, url, processId, inputs, outputDescriptions);
@@ -212,32 +219,46 @@ export class WpsClient {
         return output;
     }
 
-    async postRaw(url: string, xmlBody: string): Promise<string> {
-        const result = await this.webClient.post<any, string>(url, xmlBody, {
+    async postRaw(url: string, xmlBody: string, paperTrail: string[] = []): Promise<string> {
+        // Side-effect to keep track of raw xml
+        paperTrail.push(JSON.stringify({ type: 'POST', url, xmlBody }));
+
+        const result = await this.webClient.post(url, xmlBody, {
             headers: {
                 'Content-Type': 'text/xml',
                 'Accept': 'text/xml, application/xml'
             },
             responseType: 'text'
         });
-        this.parseResponseForErrors(url, result);
-        return result;
+
+        // Side-effect to keep track of raw xml
+        paperTrail.push(JSON.stringify({ type: 'POST-response', url, result: result.data }));
+
+        this.parseResponseForErrors(url, result.data, paperTrail);
+        return result.data;
     }
 
-    async getRaw(url: string): Promise<string> {
-        const result = await this.webClient.get<any, string>(url, {
+    async getRaw(url: string, paperTrail: string[] = []): Promise<string> {
+        // Side-effect to keep track of raw xml
+        paperTrail.push(JSON.stringify({ type: 'GET', url }));
+
+        const result = await this.webClient.get(url, {
             headers: {
                 'Accept': 'text/xml, application/xml'
             },
             responseType: 'text'
         });
-        this.parseResponseForErrors(url, result);
-        return result;
+
+        // Side-effect to keep track of raw xml
+        paperTrail.push(JSON.stringify({ type: 'GET-response', url, result: result.data }));
+
+        this.parseResponseForErrors(url, result.data, paperTrail);
+        return result.data;
     }
 
-    private parseResponseForErrors(url: string, response: string): void {
+    private parseResponseForErrors(url: string, response: string, paperTrail: string[]): void {
         if (response.match('<title>404 Not Found</title>') || response.match('ows:ExceptionReport')) {
-            throw new Error(`From ${url}:  ` + response);
+            throw new Error(`Error from remote server: From ${url}:  ` + response + `\n\n ${paperTrail.join('\n')}`);
         }
     }
 

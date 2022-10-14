@@ -5,7 +5,7 @@ import { Datum, ScenarioFactory } from './scenarios';
 export const italyScenarioFactory = new ScenarioFactory('Italy', 'An example scenario');
 
 italyScenarioFactory.registerStep({
-    step: 0,
+    id: 'EqSim',
     title: 'Eq Simulation',
     description: 'Simulate an earthquake',
     inputs: [{
@@ -28,7 +28,7 @@ italyScenarioFactory.registerStep({
 });
 
 italyScenarioFactory.registerStep({
-    step: 1,
+    id: 'EqDmg',
     title: 'Eq-damage',
     description: '',
     inputs: [{

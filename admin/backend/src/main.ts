@@ -5,6 +5,7 @@ import { peruFactory } from './usr/peru/peru';
 
 
 const port = 1411;
+const logDir = `./data/logs/`;   // server-logs
 const cacheDir = `./data/cache/`;  // previously calculated results
 const storeDir = `./data/store/`;  // files that must be available to outside
 const scriptDir = './data/scenarios';  // user-defined logic
@@ -17,7 +18,7 @@ async function main() {
     // const scenarioFactories = await parseCode(scriptDir);
     const scenarioFactories = [peruFactory];
     
-    addScenarioApi(app, scenarioFactories, cacheDir, storeDir, `http://localhost:${port}/store/`);
+    addScenarioApi(app, scenarioFactories, cacheDir, storeDir, `http://localhost:${port}/store/`, logDir);
     const server = app.listen(port, () => console.log(`app now listening on port ${port}`));
 }
 

@@ -4,14 +4,15 @@ import { FileCache } from '../storage/fileCache';
 import { Store } from './store';
 import { ProcessPool } from './pool';
 import { Scenario, ScenarioFactory, ScenarioState } from './scenarios';
+import { Logger } from '../logging/logger';
 
 
-export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], cacheDir: string, storeDir: string, storeUrl: string) {
+export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], cacheDir: string, publicFileDir: string, publicFileUrl: string, loggingDir: string) {
     const pool = new ProcessPool();
     const cache = new FileCache(cacheDir, 1000);
-    const store = new Store(storeDir, storeUrl);
-    const scenarios = scenarioFactories.map(sf => sf.createScenario(store));
-    
+    const publicFiles = new Store(publicFileDir, publicFileUrl);
+    const scenarios = scenarioFactories.map(sf => sf.createScenario(publicFiles));
+    const logger = new Logger(loggingDir);
 
     app.get('/scenarios', async (req, res) => {
         const data = scenarios.map(s => ({id: s.id, description: s.description, imageUrl: s.imageUrl}));

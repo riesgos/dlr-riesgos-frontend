@@ -15,7 +15,7 @@
                 "-r",
                 "ts-node/register"
             ],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/backend",
             "protocol": "inspector",
             "internalConsoleOptions": "openOnSessionStart"
         },
@@ -24,7 +24,7 @@
             "name": "Jest file",
             "type": "pwa-node",
             "request": "launch",
-            "runtimeExecutable": "${workspaceRoot}\\node_modules\\.bin\\jest",
+            "runtimeExecutable": "${workspaceRoot}/backend/node_modules/.bin/jest",
             "args": [
                 "${fileBasenameNoExtension}",
                 "--runInBand",
@@ -32,12 +32,12 @@
                 "--coverage=false",
                 "--no-cache"
             ],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/backend",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "sourceMaps": true,
             "windows": {
-                "program": "${workspaceFolder}\\node_modules\\jest\\bin\\jest"
+                "program": "${workspaceFolder}/backend/node_modules/jest/bin/jest"
             }
         },
     ]

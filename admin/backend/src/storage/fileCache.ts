@@ -6,7 +6,7 @@ export class FileCache {
     constructor(private dataDir: string, private maxCacheAge: number, private verbose = false) {}
 
     public async getData(key: string) {
-        const filePath = pathJoin([this.dataDir, key + '.txt']);
+        const filePath = pathJoin([this.dataDir, key]);
         const fileAge = await getFileAge(filePath);
         if (fileAge < 0) {
             if (this.verbose) console.log(`No cache hit for file ${filePath}`);
@@ -22,8 +22,9 @@ export class FileCache {
 
     public async storeTextData(key: string, data: string) {
         // const key = objectHash(data); <-- better to let user decide on key
-        const filePath = pathJoin([this.dataDir, key + '.txt']);
+        const filePath = pathJoin([this.dataDir, key]);
         return await writeTextFile(filePath, data);
     }
+
 
 }

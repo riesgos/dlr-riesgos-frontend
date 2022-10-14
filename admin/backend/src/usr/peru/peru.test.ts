@@ -26,7 +26,7 @@ beforeAll(async () => {
     // const scenarioFactories = await parseCode(scriptDir);
     const scenarioFactories = [peruFactory];
     
-    addScenarioApi(app, scenarioFactories, cacheDir, storeDir, `http://localhost:${port}/store/`, storeDir);
+    addScenarioApi(`http://localhost:${port}/`, app, scenarioFactories, cacheDir, storeDir, storeDir);
     const server = app.listen(port, () => console.log(`app now listening on port ${port}`));
 })
 

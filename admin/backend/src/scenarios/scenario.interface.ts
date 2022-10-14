@@ -7,11 +7,11 @@ import { Scenario, ScenarioFactory, ScenarioState } from './scenarios';
 import { Logger } from '../logging/logger';
 
 
-export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], cacheDir: string, publicFileDir: string, publicFileUrl: string, loggingDir: string) {
+export function addScenarioApi(baseUrl: string, app: Express, scenarioFactories: ScenarioFactory[], cacheDir: string, storeDir: string, loggingDir: string) {
     const pool = new ProcessPool();
     const cache = new FileCache(cacheDir, 1000);
-    const publicFiles = new Store(publicFileDir, publicFileUrl);
-    const scenarios = scenarioFactories.map(sf => sf.createScenario(publicFiles));
+    const store = new Store(storeDir, `${baseUrl}/files/`);
+    const scenarios = scenarioFactories.map(sf => sf.createScenario(store));
     const logger = new Logger(loggingDir);
 
     app.get('/scenarios', async (req, res) => {
@@ -62,6 +62,13 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
             }
             res.send(response);
         }
+    });
+
+    app.get('/files/:id/:hash', async (req, res) => {
+        const id = req.params.id;
+        const hash = req.params.hash;
+        const cachedData = await store.getDatum({ id, reference: `${baseUrl}/files/${id}/${hash}` });
+        res.send(cachedData);
     });
 
 }

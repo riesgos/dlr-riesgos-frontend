@@ -30,11 +30,11 @@ export interface DatumLinage {
 }
 
 export function isDatum(o: any): o is Datum {
-    return o.id && o.value;
+    return 'id' in o && 'value' in o;
 }
 
 export function isDatumReference(o: any): o is DatumReference {
-    return o.id && o.reference;
+    return 'id' in o && 'reference' in o;
 }
 
 export type StepFunction = (args: Datum[]) => Promise<Datum[]>;

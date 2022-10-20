@@ -3,14 +3,14 @@ import objectHash from 'object-hash';
 import { deleteFile, fileExists } from '../utils/files';
 
 
-const cacheDir = "./test-data/cache/cache";
+const storeDir = "./test-data/store/store";
 
 beforeAll(async () => {
-    await deleteFile(cacheDir);
+    await deleteFile(storeDir);
 });
 
 afterAll(async () => {
-    await deleteFile(cacheDir);
+    await deleteFile(storeDir);
 });
 
 
@@ -30,7 +30,7 @@ const requestProps: Props = {
 }
 
 test('testing cache', async () => {
-    const cache = new FileStorage<Props>(cacheDir);
+    const cache = new FileStorage<Props>(storeDir);
     
     const key = await cache.addData(requestData, requestProps);
     expect(key).toBeTruthy();

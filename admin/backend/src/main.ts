@@ -6,7 +6,6 @@ import { peruFactory } from './usr/peru/peru';
 
 const port = 1411;
 const logDir = `./data/logs/`;   // server-logs
-const cacheDir = `./data/cache/`;  // previously calculated results
 const storeDir = `./data/store/`;  // files that must be available to outside
 const scriptDir = './data/scenarios';  // user-defined logic
 

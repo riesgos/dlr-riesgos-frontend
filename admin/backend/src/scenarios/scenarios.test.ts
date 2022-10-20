@@ -11,12 +11,10 @@ import { deleteFile } from '../utils/files';
 const http = axios.create();
 const port = 5001;
 const logDir = './test-data/scenarios/logs';
-const cacheDir = './test-data/scenarios/cache';
 const storeDir = './test-data/scenarios/store';
 let app: Express;
 let server: Server;
 beforeAll(async () => {
-    await deleteFile(cacheDir);
     await deleteFile(storeDir);
     app = express();
     app.use(express.json());
@@ -26,7 +24,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-    await deleteFile(cacheDir);
     await deleteFile(storeDir);
     server.close();
 });

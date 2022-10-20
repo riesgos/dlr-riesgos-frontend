@@ -3,7 +3,7 @@ import { deleteFile, getFileAge, pathJoin, readTextFile, writeTextFile } from '.
 
 export class FileCache {
 
-    constructor(private dataDir: string, private maxCacheAge: number, private verbose = false) {}
+    constructor(private dataDir: string, private maxCacheAge: number = Infinity, private verbose = false) {}
 
     public async getData(key: string) {
         const filePath = pathJoin([this.dataDir, key]);

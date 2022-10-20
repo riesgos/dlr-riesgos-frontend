@@ -1,17 +1,15 @@
 import { Express } from 'express';
 import objectHash from 'object-hash';
-import { FileCache } from '../storage/fileCache';
-import { Store } from './store';
 import { ProcessPool } from './pool';
-import { Scenario, ScenarioFactory, ScenarioState } from './scenarios';
+import { DatumLinage, Scenario, ScenarioFactory, ScenarioState } from './scenarios';
 import { Logger } from '../logging/logger';
+import { FileStorage } from '../storage/fileStorage';
 
 
-export function addScenarioApi(baseUrl: string, app: Express, scenarioFactories: ScenarioFactory[], cacheDir: string, storeDir: string, loggingDir: string) {
+export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], storeDir: string, loggingDir: string) {
     const pool = new ProcessPool();
-    const cache = new FileCache(cacheDir, 1000);
-    const store = new Store(storeDir, `${baseUrl}/files/`);
-    const scenarios = scenarioFactories.map(sf => sf.createScenario(store));
+    const fs = new FileStorage<DatumLinage>(storeDir);
+    const scenarios = scenarioFactories.map(sf => sf.createScenario(fs));
     const logger = new Logger(loggingDir);
 
     app.get('/scenarios', async (req, res) => {
@@ -34,40 +32,20 @@ export function addScenarioApi(baseUrl: string, app: Express, scenarioFactories:
         const stepId = req.params.stepId;
         const state: ScenarioState = req.body;
         const key = objectHash({scenarioId, stepId, state});
-        // try to get from cache
-        const cachedData = await cache.getData(key);
-        if (cachedData) {
-            res.send({ results: JSON.parse(cachedData) });
-        } else {
-            // otherwise calculate
-            pool.scheduleTask(key, async () => await scenario.execute(stepId, state));
-            // send user a ticket for polling
-            res.send({ ticket: key });
-        }
+        pool.scheduleTask(key, async () => await scenario.execute(stepId, state));
+        // send user a ticket for polling
+        res.send({ ticket: key });
     });
 
     app.get('/scenarios/:scenarioId/steps/:stepId/execute/poll/:ticket', async (req, res) => {
         const key = req.params.ticket;
-        // try to get from cache
-        const cachedData = await cache.getData(key);
-        if (cachedData) {
-            res.send(JSON.parse(cachedData));
-        } else {
-            // otherwise query existing processes
-            const response = pool.poll(key);
-            // if completed by now, store result in cache.
-            if ('results' in response) {
-                const textData = JSON.stringify(response.results);
-                cache.storeTextData(key, textData);
-            }
-            res.send(response);
-        }
+        const response = pool.poll(key);
+        res.send(response);
     });
 
-    app.get('/files/:id/:hash', async (req, res) => {
-        const id = req.params.id;
+    app.get('/files/:hash', async (req, res) => {
         const hash = req.params.hash;
-        const cachedData = await store.getDatum({ id, reference: `${baseUrl}/files/${id}/${hash}` });
+        const cachedData = await fs.getDataByKey(hash);
         res.send(cachedData);
     });
 

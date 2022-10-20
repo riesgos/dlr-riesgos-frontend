@@ -3,12 +3,12 @@ import objectHash from 'object-hash';
 import { DatumReference, Datum } from './scenarios';
 import { createDirIfNotExists, pathJoin, readJsonFile, writeJsonFile, writeTextFile } from '../utils/files';
 
-export class Store {
+export class ScenarioToFileStorageConnector {
 
     constructor(private localPath: string, private fileAccessUrl: string) {
         if (!fileAccessUrl.endsWith('/')) this.fileAccessUrl += '/';
     }
-    
+
     public async getDatum(datumReference: DatumReference): Promise<Datum> {
         const url = datumReference.reference;
         const fileName = url.substring(url.lastIndexOf('/'));

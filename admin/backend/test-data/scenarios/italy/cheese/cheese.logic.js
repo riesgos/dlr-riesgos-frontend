@@ -10,7 +10,7 @@ async function func() {
 
 
 module.exports.step = {
-    step: 0,
+    id: 'cheeseStep',
     title: 'Cheese',
     description: '',
     inputs: [],

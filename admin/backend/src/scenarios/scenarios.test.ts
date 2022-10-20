@@ -20,7 +20,7 @@ beforeAll(async () => {
     app = express();
     app.use(express.json());
     const scenarioFactories = [italyScenarioFactory];
-    addScenarioApi(`http://localhost:${port}/`, app, scenarioFactories, cacheDir, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir);
     server = app.listen(port, () => {});
 });
 

@@ -1,7 +1,7 @@
 import { parseCode } from '../parser/scenarioParser';
 import { deleteFile } from '../utils/files';
-import { isDatumReference, isUserSelection, ScenarioState } from './scenarios';
-import { Store } from './store';
+import { FileStorage } from '../storage/fileStorage';
+import { DatumLinage, isDatumReference, isUserSelection, ScenarioState } from './scenarios';
 
 
 
@@ -19,7 +19,7 @@ afterAll(async () => {
 
 test('autorun', async () => {
     const factories = await parseCode(codeDir);
-    const store = new Store(storeDir, 'http:localhost:8000/store');
+    const store = new FileStorage<DatumLinage>(storeDir);
 
     for (const factory of factories) {
 

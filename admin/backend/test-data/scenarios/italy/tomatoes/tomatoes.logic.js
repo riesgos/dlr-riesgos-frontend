@@ -1,18 +1,21 @@
 const helpers = require('./helper');
 
 
-async function func() {
-    await helpers.sleep(1000);
+async function func(inputs) {
+    
+    const cheese = inputs.find(i => i.id == 'cheese');
+    await helpers.sleep(100);
+
     return [{
-        id: 'cheese',
-        value: 'some good cheese'
+        id: 'tomatoes',
+        value: cheese.value + ' with tomatoes'
     }];
 }
 
 
 
 module.exports.step = {
-    step: 1,
+    id: 'tomatoesStep',
     title: 'Tomatoes',
     description: '',
     inputs: [{ id: 'cheese' }],

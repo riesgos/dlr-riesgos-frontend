@@ -18,7 +18,7 @@ async function main() {
     // const scenarioFactories = await parseCode(scriptDir);
     const scenarioFactories = [peruFactory];
     
-    addScenarioApi(`http://localhost:${port}/`, app, scenarioFactories, cacheDir, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir);
     const server = app.listen(port, () => console.log(`app now listening on port ${port}`));
 }
 

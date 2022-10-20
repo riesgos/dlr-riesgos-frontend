@@ -1,5 +1,5 @@
 import { toPromise } from '../utils/async';
-import { Store } from './store';
+import { FileStorage } from '../storage/fileStorage';
 
 export interface DataDescription {
     id: string
@@ -21,6 +21,12 @@ export interface Datum {
 export interface DatumReference {
     id: string,
     reference: string
+}
+
+export interface DatumLinage {
+    datumId: string,
+    stepId: string,
+    inputReferences: DatumReference[]
 }
 
 export function isDatum(o: any): o is Datum {
@@ -60,7 +66,7 @@ export class Scenario {
         public id: string,
         public description: string,
         private steps: Step[],
-        private store: Store,
+        private store: FileStorage<DatumLinage>,
         public imageUrl?: string) {}
 
     public getSummary() {
@@ -86,26 +92,33 @@ export class Scenario {
         let step = this.steps.find(s => s.id === stepId);
         if (!step) throw new Error(`No such step: "${stepId}" in scenario "${this.id}"`);
 
-        const inputValues = await this.getData(step.inputs.map(i => i.id), state);
+        const alreadyCalculated = await this.loadFromCache(step, state);
+        if (alreadyCalculated) {
+            const stateWithOutputs = this.addData(alreadyCalculated, state);
+            return stateWithOutputs;
+        }
+
+        const inputValues = await this.resolveData(step.inputs.map(i => i.id), state);
         const results = await step.function(inputValues);
         const stateWithOutputs = this.addData(results, state);
 
         return stateWithOutputs;
     }
 
-    private async getData(ids: string[], state: ScenarioState): Promise<Datum[]> {
+    private async resolveData(ids: string[], state: ScenarioState): Promise<Datum[]> {
         const data$: (Promise<Datum>)[] = [];
         for (const id of ids) {
-            data$.push(this.getDatum(id, state));
+            data$.push(this.resolveDatum(id, state));
         }
         return Promise.all(data$);
     }
 
-    private async getDatum(id: string, state: ScenarioState): Promise<Datum> {
+    private async resolveDatum(id: string, state: ScenarioState): Promise<Datum> {
         const entry = state.data.find(d => d.id === id);
         if (!entry) return toPromise({ id, value: undefined });
         if (isDatum(entry)) return entry;
-        const datum = await this.store.getDatum(entry);
+        const value = await this.store.getDataByKey(entry.reference);
+        const datum: Datum = { id, value };
         return datum;
     }
 
@@ -119,7 +132,13 @@ export class Scenario {
     }
 
     private async addDatum(newDatum: Datum, state: ScenarioState): Promise<ScenarioState> {
-        const newDatumReference: DatumReference = await this.store.addDatum(newDatum);
+        const linage = this.getLinage(newDatum.id, state);
+        const key = await this.store.addData(newDatum.value, linage);
+
+        const newDatumReference: DatumReference = {
+            id: newDatum.id,
+            reference: key
+        };
         for (const entry of state.data) {
             if (entry.id === newDatumReference.id) {
                 if (!isDatumReference(entry)) throw new Error(`Trying to replace a datum with a datum-reference: ${entry.id}`);
@@ -131,6 +150,32 @@ export class Scenario {
         return state;
     }
 
+    private getLinage(id: string, state: ScenarioState): DatumLinage {
+        const step = this.steps.find(s => s.outputs.map(o => o.id).includes(id));
+        if (!step) throw new Error(`The datum ${id} has no parent-step.`);
+        const inputIds = step.inputs.map(i => i.id);
+        const inputs = inputIds.map(id => state.data.find(d => d.id === id)!);
+        const inputRefs = inputs.filter(i => isDatumReference(i)) as DatumReference[];
+        return {
+            datumId: id,
+            stepId: step.id,
+            inputReferences: inputRefs
+        }
+    }
+
+    private async loadFromCache(step: Step, state: ScenarioState): Promise<Datum[] | undefined> {
+        const outputs: Datum[] = [];
+        for (const outputDescription of step.outputs) {
+            const lineage = this.getLinage(outputDescription.id, state);
+            const outputData = await this.store.getDataByProperties(lineage);
+            if (!outputData) return undefined;
+            outputs.push({
+                id: outputDescription.id,
+                value: outputData
+            });
+        }
+        return outputs;
+    }
 };
 
 
@@ -153,7 +198,7 @@ export class ScenarioFactory {
         this.steps.push(step);
     }
 
-    public createScenario(store: Store) {
+    public createScenario(store: FileStorage<DatumLinage>) {
         return new Scenario(this.id, this.description, this.steps, store, this.imageUrl);
     }
 }

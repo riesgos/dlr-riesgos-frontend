@@ -15,8 +15,9 @@ import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; const WPS_2_0 = WPS_
 //@ts-ignore
 import * as JsonixFactory from './jsonix/jsonix'; const Jsonix = JsonixFactory.Jsonix as any;
 import axios from 'axios';
+import axiosBetterStacktrace from 'axios-better-stacktrace';
+axiosBetterStacktrace(axios);
 import { sleep, toPromise } from '../../async';
-
 
 
 

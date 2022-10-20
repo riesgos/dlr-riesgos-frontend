@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Server } from 'http';
 import express, { Express } from 'express';
 import { addScenarioApi } from './scenario.interface';
 import { ScenarioState } from './scenarios';
@@ -13,7 +14,7 @@ const logDir = './test-data/scenarios/logs';
 const cacheDir = './test-data/scenarios/cache';
 const storeDir = './test-data/scenarios/store';
 let app: Express;
-let server: Express.Application;
+let server: Server;
 beforeAll(async () => {
     await deleteFile(cacheDir);
     await deleteFile(storeDir);
@@ -27,6 +28,7 @@ beforeAll(async () => {
 afterAll(async () => {
     await deleteFile(cacheDir);
     await deleteFile(storeDir);
+    server.close();
 });
 
 

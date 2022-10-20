@@ -37,7 +37,7 @@ test("express sessions", async () => {
         res.send({ counter: req.session.counter });
     });
 
-    app.listen(5002);
+    const server = app.listen(5002);
 
     const http = axios.create();
 
@@ -52,4 +52,6 @@ test("express sessions", async () => {
     expect(response13.data.counter).toBe(3);
     expect(response14.data.counter).toBe(4);
     expect(response21.data.counter).toBe(1);
+
+    server.close();
 });

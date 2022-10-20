@@ -23,7 +23,7 @@ export async function parseCode(baseDirString: string) {
             const stepName = pathGetLast(stepPath);
             const logicFile = await matchFileRecursive(stepPath, /\.logic\.js$/);
             if (logicFile) {
-                console.log('Importing script ', logicFile);
+                // console.log('Importing script ', logicFile);
                 const logic = await import(logicFile);
                 const step: Step = logic.step;
                 try {

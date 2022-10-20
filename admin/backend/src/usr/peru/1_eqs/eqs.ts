@@ -20,7 +20,6 @@ async function loadEqs() {
             lllon: -86.5, lllat: -20.5,
             urlon: -68.5, urlat: -0.6
         }
-        // value: [-86.5,-20.5,-68.5,-0.6]
     }, {
         description: {
             id: 'mmin',
@@ -82,14 +81,15 @@ async function loadEqs() {
     const outputs: WpsDataDescription[] = [{
         id: 'selectedRows',
         reference: false,
-        type: 'complex'
+        type: 'complex',
+        format: 'application/vnd.geo+json'
     }];
 
     const results = await wpsClient.executeAsync(url, processId, inputs, outputs);
 
     return [{
         id: 'availableEqs',
-        value: results[0].value
+        value: results[0].value[0]
     }];
 }
 

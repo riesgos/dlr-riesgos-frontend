@@ -8,18 +8,15 @@ import { sleep } from '../../utils/async';
 import { createDirIfNotExists, deleteFile } from '../../utils/files';
 
 
-const port = 1412;
+const port = 1415;
 const logDir = `./test-data/peru/logs/`; // server-logs
-const cacheDir = `./test-data/peru/cache/`;  // previously calculated results
-const storeDir = `./test-data/peru/store/`;  // files that must be available to outside
+const storeDir = `./test-data/peru/store/`;
 
 let server: Server;
 beforeAll(async () => {
     await deleteFile(logDir);
-    await deleteFile(cacheDir);
     await deleteFile(storeDir);
     await createDirIfNotExists(logDir);
-    await createDirIfNotExists(cacheDir);
     await createDirIfNotExists(storeDir);
 
     const app = express();
@@ -32,7 +29,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
     // await deleteFile(logDir);
-    // await deleteFile(cacheDir);
     // await deleteFile(storeDir);
     server.close();
 });
@@ -55,31 +51,4 @@ describe('Testing peru-scenario', () => {
 
     });
 
-    test('Testing eq-catalog', async ( ) => {
-        const stepId = 'Eqs';
-
-        const state: ScenarioState = {
-            data: []
-        };
-
-        const response = await axios.post(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute`, state);
-        const ticket = response.data.ticket;
-
-        let poll: any;
-        do {
-            await sleep(100);
-            poll = await axios.get(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute/poll/${ticket}`);
-        } while (poll.data.ticket);
-        const results = poll.data.results;
-
-        expect(results).toBeTruthy();
-        expect(results.data).toBeTruthy();
-        expect(results.data.length > 0);
-        expect(results.data[0].id).toBe('availableEqs');
-        expect(results.data[0].reference);
-        
-        const fileResponse = await axios.get(`http://localhost:${port}/files/${results.data[0].reference}`);
-        const data = fileResponse.data;
-        expect(data).toBeTruthy();
-    });
 });

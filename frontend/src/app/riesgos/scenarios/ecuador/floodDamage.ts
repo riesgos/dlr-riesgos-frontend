@@ -59,7 +59,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
         description: 'floodDamageDescription',
         name: 'Flood damage',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const inundation = props['inundation'];
                 let [r, g, b] = greenRedRangeStepwise(0, 50, inundation);
@@ -74,7 +74,7 @@ export const damageManzanasGeojson: VectorLayerProduct & WpsData & Product = {
                   })
                 });
               },
-              text: (props: object) => {
+              detailPopupHtml: (props: object) => {
                 const anchor = document.createElement('div');
 
                 const counts = {

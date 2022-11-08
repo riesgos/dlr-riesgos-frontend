@@ -122,7 +122,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
     format: 'application/json',
     name: 'Exposure_ashfall_initial',
     vectorLayerAttributes: {
-      style: (feature: olFeature<Geometry>, resolution: number) => {
+      featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
         const props = feature.getProperties();
 
         const expo = props.expo;
@@ -166,7 +166,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
           })
         });
       },
-      text: (props: object) => {
+      detailPopupHtml: (props: object) => {
 
         const taxonomies = props['expo']['Taxonomy'];
         const buildings = props['expo']['Buildings'];
@@ -183,7 +183,7 @@ export const initialExposureAshfall: VectorLayerProduct & WpsData & Product = {
         const anchorUpdated = createBarChart(anchor, barchartData, 400, 300, '{{ Taxonomy }}', '{{ Buildings }}');
         return `<h4>{{ Exposure }}</h4>${anchor.innerHTML} {{ BuildingTypesTorres }}`;
       },
-      summary: (value: any) => {
+      globalSummary: (value: any) => {
         const comp: IDynamicComponent = {
           component: TranslatableStringComponent,
           inputs: {

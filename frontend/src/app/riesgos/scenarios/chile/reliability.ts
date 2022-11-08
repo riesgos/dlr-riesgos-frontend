@@ -53,7 +53,7 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerProduct = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 let probDisr = 0;
                 if (props['Prob_Disruption']) {
@@ -72,7 +72,7 @@ export const damageConsumerAreas: WpsData & Product & VectorLayerProduct = {
                   })
                 });
             },
-            text: (props: object) => {
+            detailPopupHtml: (props: object) => {
                 const selectedProps = {
                     '{{ Name }}': props['Name'],
                     '{{ Population }}': props['population'],

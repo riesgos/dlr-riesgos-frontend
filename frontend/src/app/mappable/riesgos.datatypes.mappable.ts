@@ -56,9 +56,9 @@ export const isBboxLayerProduct = (data: Product): data is BboxLayerProduct => {
 
 export interface VectorLayerProperties {
     vectorLayerAttributes: {
-        style?: (feature: Feature<Geometry | GeometryCollection>, resolution: number, selected: boolean) => any;
-        text?: any;
-        summary?: (value: any) => IDynamicComponent,
+        featureStyle?: (feature: Feature<Geometry | GeometryCollection>, resolution: number, selected: boolean) => any;
+        detailPopupHtml?: any;
+        globalSummary?: (value: any) => IDynamicComponent,
         sldFile?: string,
         legendEntries?: LegendElement[]
     };

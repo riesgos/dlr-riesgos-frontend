@@ -180,7 +180,7 @@ export const availableEqs: VectorLayerProduct & WpsData = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number, selected: boolean) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number, selected: boolean) => {
 
                 const props = feature.getProperties();
                 const magnitude = props['magnitude.mag.value'];
@@ -205,7 +205,7 @@ export const availableEqs: VectorLayerProduct & WpsData = {
                     })
                 });
             },
-            text: (properties) => {
+            detailPopupHtml: (properties) => {
                 let text = `<h3>{{ Available_earthquakes }}</h3>`;
                 const selectedProperties = {
                     '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),

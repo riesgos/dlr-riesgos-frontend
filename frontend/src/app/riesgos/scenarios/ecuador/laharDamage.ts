@@ -27,7 +27,7 @@ export const laharLossProps: VectorLayerProperties = {
         name: 'laharLoss',
         icon: 'avalanche',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenVioletRangeStepwise(0, maxDamage$, props.loss_value);
                 return new olStyle({
@@ -83,10 +83,10 @@ export const laharLossProps: VectorLayerProperties = {
                 },
                 text: 'Loss < 1.000.000 USD'
             }],
-            text: (props: object) => {
+            detailPopupHtml: (props: object) => {
                 return `<h4>{{ economic_loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
-            summary: (value: [FeatureCollection]) => {
+            globalSummary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
@@ -108,7 +108,7 @@ export const laharTransitionProps: VectorLayerProperties = {
         name: 'laharTransition',
         icon: 'avalanche',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -177,7 +177,7 @@ export const laharTransitionProps: VectorLayerProperties = {
                 },
                 text: 'LargeDamageChange'
             }],
-            text: (props: object) => {
+            detailPopupHtml: (props: object) => {
 
                 const matrix = zeros(5, 5);
                 const fromDamageState = props['transitions']['from_damage_state'];
@@ -207,7 +207,7 @@ export const laharTransitionProps: VectorLayerProperties = {
 
                 return `<h4>{{ Transitions }}</h4>${createTableHtml(labeledMatrix)}`;
             },
-            summary: (value: [FeatureCollection]) => {
+            globalSummary: (value: [FeatureCollection]) => {
                 const matrix = zeros(5, 5);
                 for (const feature of value[0].features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
@@ -251,7 +251,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
         name: 'laharExposure',
         icon: 'avalanche',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -364,7 +364,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                 },
                 text: `mostly_collapsed_damage_lahar`
             }],
-            text: (props: object) => {
+            detailPopupHtml: (props: object) => {
                 const anchor = document.createElement('div');
                 const expo = props['expo'];
 
@@ -395,7 +395,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                 const anchorUpdated = createGroupedBarChart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Lahar_damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
             },
-            summary: (value: [FeatureCollection]) => {
+            globalSummary: (value: [FeatureCollection]) => {
                 const counts = {
                     'D0': 0,
                     'D1': 0,

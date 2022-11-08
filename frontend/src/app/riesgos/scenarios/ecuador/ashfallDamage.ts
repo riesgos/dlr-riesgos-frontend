@@ -27,7 +27,7 @@ const ashfallLossProps: VectorLayerProperties = {
         name: 'ashfallLoss',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const [r, g, b] = greenVioletRangeStepwise(0, maxDamage$, props.loss_value);
                 return new olStyle({
@@ -83,10 +83,10 @@ const ashfallLossProps: VectorLayerProperties = {
                 },
                 text: 'Loss < 1.000.000 USD'
             }],
-            text: (props: object) => {
+            detailPopupHtml: (props: object) => {
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ economic_loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
-            summary: (value: [FeatureCollection]) => {
+            globalSummary: (value: [FeatureCollection]) => {
                 const features = value[0].features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
@@ -111,7 +111,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
         name: 'ashfallTransition',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const I = props['transitions']['n_buildings'].length;
@@ -166,7 +166,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
                 },
                 text: 'Transitions'
             }],
-            text: (props: object) => {
+            detailPopupHtml: (props: object) => {
 
                 const matrix = zeros(4, 4);
                 const fromDamageState = props['transitions']['from_damage_state'];
@@ -196,7 +196,7 @@ const ashfallTransitionProps: VectorLayerProperties = {
 
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Transitions }}</h4>${createTableHtml(labeledMatrix)}`;
             },
-            summary: (value: [FeatureCollection]) => {
+            globalSummary: (value: [FeatureCollection]) => {
                 const matrix = zeros(4, 4);
                 for (const feature of value[0].features) {
                     const fromDamageState = feature.properties['transitions']['from_damage_state'];
@@ -241,7 +241,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
         name: 'ashfallExposure',
         icon: 'volcanoe',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
 
                 const expo = props.expo;
@@ -339,7 +339,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                 },
                 text: `mostly_collapsed_damage`
             }],
-            text: (props: object) => {
+            detailPopupHtml: (props: object) => {
                 const anchor = document.createElement('div');
                 const expo = props['expo'];
 
@@ -366,7 +366,7 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                 const anchorUpdated = createGroupedBarChart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Ashfall_damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesTorres }}{{StatesNotComparable}}`;
             },
-            summary: (value: [FeatureCollection]) => {
+            globalSummary: (value: [FeatureCollection]) => {
                 const counts = {
                     'D0': 0,
                     'D1': 0,

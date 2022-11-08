@@ -52,7 +52,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
     format: 'application/json',
     name: 'Exposure',
     vectorLayerAttributes: {
-      style: (feature: olFeature<Geometry>, resolution: number) => {
+      featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
         const props = feature.getProperties();
 
         const expo = props.expo;
@@ -97,7 +97,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
           })
         });
       },
-      text: (props: object) => {
+      detailPopupHtml: (props: object) => {
 
         const expo = props['expo'];
 
@@ -135,7 +135,7 @@ export const initialExposurePeru: VectorLayerProduct & WpsData & Product = {
         },
         text: `exposureLegend`
       }],
-      summary: (value) => {
+      globalSummary: (value) => {
         return {
           component: TranslatableStringComponent,
           inputs: {

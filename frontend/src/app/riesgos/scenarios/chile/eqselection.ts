@@ -40,7 +40,7 @@ export const selectedEq: WpsData & VectorLayerProduct = {
         reference: false,
         type: 'complex',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 return new olStyle({
                     image: new olCircle({
                         radius: 20,
@@ -54,7 +54,7 @@ export const selectedEq: WpsData & VectorLayerProduct = {
                     })
                 });
             },
-            text: (properties: object) => {
+            detailPopupHtml: (properties: object) => {
                 let text = `<h3>{{ Selected_earthquake }}</h3>`;
                 const selectedProperties = {
                     '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
@@ -77,7 +77,7 @@ export const selectedEq: WpsData & VectorLayerProduct = {
                 text += '</tbody></table>';
                 return text;
               },
-              summary: (value) => {
+              globalSummary: (value) => {
                 const feature = value.features[0];
                 const properties = feature.properties;
                 const magnitude = toDecimalPlaces(properties['magnitude.mag.value'] as number, 1);

@@ -190,7 +190,7 @@ export class LayerMarshaller  {
         const vl = new WebGlPolygonLayer({
             source,
             webGlColorFunction: (f: olFeature<Polygon>) => {
-                const style = product.description.vectorLayerAttributes.style(f, null, false);
+                const style = product.description.vectorLayerAttributes.featureStyle(f, null, false);
                 const fillColor = style.fill_.color_;
                 return [fillColor[0] / 255, fillColor[1] / 255, fillColor[2] / 255, fillColor[3]];
             }
@@ -210,7 +210,7 @@ export class LayerMarshaller  {
             filtertype: 'Overlays',
             popup: {
                 popupFunction: (obj) => {
-                    let html = product.description.vectorLayerAttributes.text(obj);
+                    let html = product.description.vectorLayerAttributes.detailPopupHtml(obj);
                     html = this.translator.syncTranslate(html);
                     return html;
                 }
@@ -233,8 +233,8 @@ export class LayerMarshaller  {
                 }
             }],
             dynamicDescription:
-                product.description.vectorLayerAttributes.summary
-                    ? product.description.vectorLayerAttributes.summary(product.value)
+                product.description.vectorLayerAttributes.globalSummary
+                    ? product.description.vectorLayerAttributes.globalSummary(product.value)
                     : undefined
         });
 
@@ -244,7 +244,7 @@ export class LayerMarshaller  {
         ukisLayer['options'] = {
             style: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
-                return product.description.vectorLayerAttributes.style(feature, resolution, props.selected);
+                return product.description.vectorLayerAttributes.featureStyle(feature, resolution, props.selected);
             }
         };
 
@@ -254,7 +254,7 @@ export class LayerMarshaller  {
                 inputs: {
                     legendTitle: product.description.description,
                     resolution: 0.00005,
-                    styleFunction: product.description.vectorLayerAttributes.style,
+                    styleFunction: product.description.vectorLayerAttributes.featureStyle,
                     elementList: product.description.vectorLayerAttributes.legendEntries}
             };
         }
@@ -327,7 +327,7 @@ export class LayerMarshaller  {
                 source: source,
                 style: (feature: olFeature<Geometry>, resolution: number) => {
                     const props = feature.getProperties();
-                    return vectorLayerProps.vectorLayerAttributes.style(feature, resolution, props.selected);
+                    return vectorLayerProps.vectorLayerAttributes.featureStyle(feature, resolution, props.selected);
                 }
             });
 
@@ -346,7 +346,7 @@ export class LayerMarshaller  {
                 filtertype: 'Overlays',
                 popup: {
                     popupFunction: (obj) => {
-                        let html = vectorLayerProps.vectorLayerAttributes.text(obj);
+                        let html = vectorLayerProps.vectorLayerAttributes.detailPopupHtml(obj);
                         html = this.translator.syncTranslate(html);
                         return html;
                     }
@@ -368,7 +368,7 @@ export class LayerMarshaller  {
                         }
                     }
                 }],
-                dynamicDescription: vectorLayerProps.vectorLayerAttributes.summary(product.value)
+                dynamicDescription: vectorLayerProps.vectorLayerAttributes.globalSummary(product.value)
             });
             productLayer.productId = product.uid;
 
@@ -377,7 +377,7 @@ export class LayerMarshaller  {
             productLayer['options'] = {
                 style: (feature: olFeature<Geometry>, resolution: number) => {
                     const props = feature.getProperties();
-                    return vectorLayerProps.vectorLayerAttributes.style(feature, resolution, props.selected);
+                    return vectorLayerProps.vectorLayerAttributes.featureStyle(feature, resolution, props.selected);
                 }
             };
 
@@ -387,7 +387,7 @@ export class LayerMarshaller  {
                     inputs: {
                         legendTitle: vectorLayerProps.description,
                         resolution: 0.00005,
-                        styleFunction: vectorLayerProps.vectorLayerAttributes.style,
+                        styleFunction: vectorLayerProps.vectorLayerAttributes.featureStyle,
                         elementList: vectorLayerProps.vectorLayerAttributes.legendEntries}
                 };
             }
@@ -429,7 +429,7 @@ export class LayerMarshaller  {
                     popup: {
                         single: true,
                         popupFunction: (obj) => {
-                            let html = product.description.vectorLayerAttributes.text(obj);
+                            let html = product.description.vectorLayerAttributes.detailPopupHtml(obj);
                             html = this.translator.syncTranslate(html);
                             return html;
                         }
@@ -447,8 +447,8 @@ export class LayerMarshaller  {
                         }
                     }],
                     dynamicDescription:
-                        product.description.vectorLayerAttributes.summary
-                        ? product.description.vectorLayerAttributes.summary(data)
+                        product.description.vectorLayerAttributes.globalSummary
+                        ? product.description.vectorLayerAttributes.globalSummary(data)
                         : undefined,
                 });
                 layer.productId = product.uid;
@@ -459,7 +459,7 @@ export class LayerMarshaller  {
                         inputs: {
                             legendTitle: product.description.description,
                             resolution: 0.00005,
-                            styleFunction: product.description.vectorLayerAttributes.style,
+                            styleFunction: product.description.vectorLayerAttributes.featureStyle,
                             elementList: product.description.vectorLayerAttributes.legendEntries}
                     };
                 }
@@ -483,8 +483,8 @@ export class LayerMarshaller  {
     }
 
     private getStyle(product: VectorLayerProduct): Observable<CallableFunction | null> {
-        if (product.description.vectorLayerAttributes.style) {
-            return of(product.description.vectorLayerAttributes.style);
+        if (product.description.vectorLayerAttributes.featureStyle) {
+            return of(product.description.vectorLayerAttributes.featureStyle);
         } else if (product.description.vectorLayerAttributes.sldFile) {
             // return this.sldParser.readStyleForLayer(product.description.vectorLayerAttributes.sldFile, product.description.id);
             console.error('niewlandgeo/sldreader is currently not compatible with ol6')

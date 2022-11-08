@@ -28,7 +28,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
         format: 'application/vnd.geo+json',
         name: 'ashfall-depth',
         vectorLayerAttributes: {
-            style: (feature: olFeature<Geometry>, resolution: number) => {
+            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
                 const props = feature.getProperties();
                 const thickness = props.thickness;
                 allDepths.push(thickness);
@@ -117,7 +117,7 @@ export const ashfall: WpsData & Product & VectorLayerProduct = {
                 },
                 text: 'Thickness100'
             }],
-            text: (properties) => {
+            detailPopupHtml: (properties) => {
                 const thickness = properties['thickness'];
                 if (thickness) {
                     allDepths.sort();

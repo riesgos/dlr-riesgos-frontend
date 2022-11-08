@@ -67,10 +67,10 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
                 econLayer.id += '_economic';
                 econLayer.name = 'eq-economic-loss-title';
                 econLayer.icon = 'dot-circle';
-                // econLayer.params.STYLES = 'style-cum-loss';
-                econLayer.legendImg += '&style=style-cum-loss';
-                econLayer.params.STYLES = 'custom_style_economic_peru_new';
-                econLayer.params.SLD_BODY = customStyleEconomicPeruNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
+                econLayer.params.STYLES = 'style-cum-loss-peru-plasma';
+                econLayer.legendImg += '&style=style-cum-loss-peru-plasma';
+                // econLayer.params.STYLES = 'custom_style_economic_peru_new';
+                // econLayer.params.SLD_BODY = customStyleEconomicPeruNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                 econLayer.dynamicDescription = {
@@ -102,10 +102,11 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
                 damageLayer.name = 'eq-exposure';
                 damageLayer.icon = 'dot-circle';
                 damageLayer.params = { ... econLayer.params };
-                damageLayer.params.STYLES = 'style-damagestate-sara';
-                damageLayer.legendImg += '&style=style-damagestate-sara';
-                damageLayer.params.STYLES = 'custom_style_sara_new';
-                damageLayer.params.SLD_BODY = customStyleSaraNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
+                damageLayer.params.STYLES = 'style-damagestate-sara-plasma';
+                damageLayer.legendImg += '&style=style-damagestate-sara-plasma';
+                delete damageLayer.params.SLD_BODY;
+                // damageLayer.params.STYLES = 'custom_style_sara_new';
+                // damageLayer.params.SLD_BODY = customStyleSaraNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS);
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

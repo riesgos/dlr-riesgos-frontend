@@ -91,10 +91,9 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                 econLayer.id += '_economic_peru';
                 econLayer.name = 'ts-economic-loss-title';
                 econLayer.icon = 'dot-circle';
-                // econLayer.params.STYLES = 'style-cum-loss';
-                // econLayer.legendImg += '&style=style-cum-loss';
-                econLayer.params.STYLES = 'custom_style_economic_peru_new';
-                econLayer.params.SLD_BODY = customStyleEconomicPeruNew.replace('{{{{layername}}}}', econLayer.params.LAYERS);
+                econLayer.params.STYLES = 'style-cum-loss-peru-plasma';
+                econLayer.legendImg += '&style=style-cum-loss-peru-plasma';
+                // econLayer.params.SLD_BODY = customStyleEconomicPeruNew.replace('{{{{layername}}}}', econLayer.params.LAYERS);
                 const damage = +(metaDataValue.total.loss_value);
                 const damageFormatted = toDecimalPlaces(damage / 1000000, 2) + ' MUSD';
                 const totalDamage = +(metaDataValue.total.cum_loss);
@@ -135,15 +134,15 @@ export const tsDamageWmsPeru: WpsData & MappableProduct = {
                 delete damageLayer.params.SLD_BODY;
                 
                 if (chosenSchema === 'SUPPASRI2013_v2.0') {
-                    // damageLayer.legendImg += `&style=style-damagestate-suppasri`;
-                    // damageLayer.params.STYLES = `style-damagestate-suppasri`;
-                    damageLayer.params.STYLES = 'custom_style_suppasri_new';
-                    damageLayer.params.SLD_BODY = customStyleSuppasriNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
+                    damageLayer.legendImg += `&style=style-damagestate-suppasri-plasma`;
+                    damageLayer.params.STYLES = `style-damagestate-suppasri-plasma`;
+                    // damageLayer.params.STYLES = 'custom_style_suppasri_new';
+                    // damageLayer.params.SLD_BODY = customStyleSuppasriNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
                 } else if (chosenSchema === 'Medina_2019') {
-                    // damageLayer.legendImg += `&style=style-damagestate-medina`;
-                    // damageLayer.params.STYLES = 'style-damagestate-medina';
-                    damageLayer.params.STYLES = 'custom_style_medina_new';
-                    damageLayer.params.SLD_BODY = customStyleMedinaNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
+                    damageLayer.legendImg += `&style=style-damagestate-medina-plasma`;
+                    damageLayer.params.STYLES = 'style-damagestate-medina-plasma';
+                    // damageLayer.params.STYLES = 'custom_style_medina_new';
+                    // damageLayer.params.SLD_BODY = customStyleMedinaNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
                 }
 
                 damageLayer.popup = {

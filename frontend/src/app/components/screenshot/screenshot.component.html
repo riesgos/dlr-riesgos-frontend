@@ -4,15 +4,20 @@
 </button>
 
 
-<clr-modal [(clrModalOpen)]="showScreenshotModal" [clrModalStaticBackdrop]="false">
-  <h3 class="modal-title" i18n>Screenshot</h3>
-  <div class="modal-body">
-
-      <img src="image"/>
-
+<div *ngIf="showScreenshotModal" class="modal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+      <div class="modal-content">
+        <h3 class="modal-title" i18n>Screenshot</h3>
+        <div class="modal-body">
+            <img src="image"/>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" (click)="showScreenshotModal = false" i18n>Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="download()" i18n>Download</button>
+        </div>
+      </div>
   </div>
-  <div class="modal-footer">
-      <button type="button" class="btn btn-outline" (click)="showScreenshotModal = false" i18n>Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="download()" i18n>Download</button>
-  </div>
-</clr-modal>
+</div>
+<div *ngIf="showScreenshotModal" class="modal-backdrop" aria-hidden="true"></div>
+
+

@@ -91,6 +91,7 @@ export class Scenario {
     public async execute(stepId: string, state: ScenarioState): Promise<ScenarioState> {
         let step = this.steps.find(s => s.id === stepId);
         if (!step) throw new Error(`No such step: "${stepId}" in scenario "${this.id}"`);
+        console.log(`Server: now executing ${stepId}`);
 
         const alreadyCalculated = await this.loadFromCache(step, state);
         if (alreadyCalculated) {
@@ -154,8 +155,12 @@ export class Scenario {
         const step = this.steps.find(s => s.outputs.map(o => o.id).includes(id));
         if (!step) throw new Error(`The datum ${id} has no parent-step.`);
         const inputIds = step.inputs.map(i => i.id);
-        const inputs = inputIds.map(id => state.data.find(d => d.id === id)!);
-        const inputRefs = inputs.filter(i => isDatumReference(i)) as DatumReference[];
+        const inputRefs: DatumReference[] = [];
+        for (const id of inputIds) {
+            const input = state.data.find(d => d.id === id);
+            if (!input) throw new Error(`Could not find data-point with id ${id}`);
+            if (isDatumReference(input)) inputRefs.push(input);
+        }
         return {
             datumId: id,
             stepId: step.id,

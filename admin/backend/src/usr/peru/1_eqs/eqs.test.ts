@@ -23,7 +23,7 @@ beforeAll(async () => {
     app.use(express.json());
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, storeDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir);
     server = app.listen(port);
 })
 

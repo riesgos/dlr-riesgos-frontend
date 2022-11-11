@@ -1,5 +1,5 @@
 import objectHash from 'object-hash';
-import { pathJoin, readJsonFile, readTextFile, writeJsonFile, writeTextFile } from '../utils/files';
+import { pathJoin, readJsonFile, writeJsonFile } from '../utils/files';
 
 
 

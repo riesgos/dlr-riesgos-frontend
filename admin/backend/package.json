@@ -6,7 +6,7 @@
     "build:all": "tsc",
     "build:watch": "tsc -w",
     "start": "ts-node-dev --respawn src/main.ts",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "run": "node dist/main.js"
   },

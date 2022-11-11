@@ -38,7 +38,8 @@ export class WpsClient {
     private webClient = axios;
 
     constructor(
-        version: WpsVersion = '1.0.0'
+        version: WpsVersion = '1.0.0',
+        private verbose = true
     ) {
         this.version = version;
         let context;
@@ -222,7 +223,9 @@ export class WpsClient {
 
     async postRaw(url: string, xmlBody: string, paperTrail: string[] = []): Promise<string> {
         // Side-effect to keep track of raw xml
-        paperTrail.push(JSON.stringify({ type: 'POST', url, xmlBody }));
+        const message = JSON.stringify({ type: 'POST', url, xmlBody });
+        if (this.verbose) console.log(message);
+        paperTrail.push(message);
 
         const result = await this.webClient.post(url, xmlBody, {
             headers: {
@@ -233,7 +236,9 @@ export class WpsClient {
         });
 
         // Side-effect to keep track of raw xml
-        paperTrail.push(JSON.stringify({ type: 'POST-response', url, result: result.data }));
+        const message2 = JSON.stringify({ type: 'POST-response', url, result: result.data });
+        if (this.verbose) console.log(message2);
+        paperTrail.push(message2);
 
         this.parseResponseForErrors(url, result.data, paperTrail);
         return result.data;
@@ -241,7 +246,9 @@ export class WpsClient {
 
     async getRaw(url: string, paperTrail: string[] = []): Promise<string> {
         // Side-effect to keep track of raw xml
-        paperTrail.push(JSON.stringify({ type: 'GET', url }));
+        const message = JSON.stringify({ type: 'GET', url });
+        if (this.verbose) console.log(message);
+        paperTrail.push(message);
 
         const result = await this.webClient.get(url, {
             headers: {
@@ -251,7 +258,9 @@ export class WpsClient {
         });
 
         // Side-effect to keep track of raw xml
-        paperTrail.push(JSON.stringify({ type: 'GET-response', url, result: result.data }));
+        const message2 = JSON.stringify({ type: 'GET', url });
+        if (this.verbose) console.log(message2);
+        paperTrail.push(message2);
 
         this.parseResponseForErrors(url, result.data, paperTrail);
         return result.data;
@@ -259,7 +268,9 @@ export class WpsClient {
 
     private parseResponseForErrors(url: string, response: string, paperTrail: string[]): void {
         if (response.match('<title>404 Not Found</title>') || response.match('ows:ExceptionReport')) {
-            throw new Error(`Error from remote server: From ${url}:  ` + response + `\n\n ${paperTrail.join('\n')}`);
+            const message = `Error from remote server: From ${url}:  ` + response + `\n\n ${paperTrail.join('\n')}`;
+            console.error(message);
+            throw new Error(message);
         }
     }
 

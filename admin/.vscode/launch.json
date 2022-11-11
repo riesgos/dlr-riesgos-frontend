@@ -16,13 +16,12 @@
                 "ts-node/register"
             ],
             "cwd": "${workspaceRoot}/backend",
-            "protocol": "inspector",
             "internalConsoleOptions": "openOnSessionStart"
         },
         
         {
             "name": "Jest file",
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
             "runtimeExecutable": "${workspaceRoot}/backend/node_modules/.bin/jest",
             "args": [

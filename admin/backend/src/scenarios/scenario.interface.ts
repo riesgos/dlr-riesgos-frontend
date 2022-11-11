@@ -11,6 +11,8 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
     const fs = new FileStorage<DatumLinage>(storeDir);
     const scenarios = scenarioFactories.map(sf => sf.createScenario(fs));
     const logger = new Logger(loggingDir);
+    logger.monkeyPatch();
+
 
     app.get('/scenarios', async (req, res) => {
         const data = scenarios.map(s => ({id: s.id, description: s.description, imageUrl: s.imageUrl}));

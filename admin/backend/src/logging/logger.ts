@@ -28,16 +28,31 @@ export class Logger {
         }
     }
 
-    log(message: string, ...optionalParas: any[]) {
+    log(message: any, ...optionalParas: any[]) {
         const time = new Date();
+        const messageString = this.messageToString(message);
         const additionalText = JSON.stringify(optionalParas);
-        appendFileSync(`${this.loggingDir}/log.txt`, time.toISOString() + "---" + message + "\n" + additionalText + "\n");
+        appendFileSync(`${this.loggingDir}/log.txt`, time.toISOString() + "---" + messageString + "\n" + additionalText + "\n");
     }
 
-    error(message: string, ...optionalParas: any[]) {
+    error(message: any, ...optionalParas: any[]) {
         const time = new Date();
+        const messageString = this.messageToString(message);
         const additionalText = JSON.stringify(optionalParas);
-        appendFileSync(`${this.loggingDir}/errors.txt`, time.toISOString() + "---" + message + "\n" + additionalText + "\n");
+        appendFileSync(`${this.loggingDir}/errors.txt`, time.toISOString() + "---" + messageString + "\n" + additionalText + "\n");
+    }
+
+    private messageToString(message: any) {
+        let messageString: String;
+        if (typeof message === 'string' || message instanceof String) { // if already a string ...
+            messageString = message;
+        }
+        else if (message instanceof Error || (message.stack && message.message) ) { // if an Error object ...
+            messageString = JSON.stringify(message, Object.getOwnPropertyNames(message));
+        } else { // if any other object ...
+            messageString = JSON.stringify(message);
+        }
+        return messageString;
     }
 }
 

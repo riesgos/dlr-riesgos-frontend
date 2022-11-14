@@ -8,11 +8,14 @@ async function calculateDamage(inputs: Datum[]) {
     const exposureModel = inputs.find(i => i.id === 'exposure')!;
 
     const fragility = await getFragility('SARA_v1.0');
-    const damage = await getDamage('SARA_v1.0', fragility, eqSimXml.value, exposureModel.value);
+    const { wms, summary } = await getDamage('SARA_v1.0', fragility, eqSimXml.value, exposureModel.value);
   
     return [{
-        id: 'eqDamage',
-        value: damage
+        id: 'eqDamageWms',
+        value: wms
+    }, {
+        id: 'eqDamageSummary',
+        value: summary
     }];
 }
 
@@ -28,7 +31,9 @@ export const step: Step = {
         id: 'exposure',
     }],
     outputs: [{
-        id: 'eqDamage'
+        id: 'eqDamageWms'
+    }, {
+        id: 'eqDamageSummary'
     }],
     function: calculateDamage
 };

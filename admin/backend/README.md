@@ -8,6 +8,11 @@
 - independent of wps => users commonly don't want to be bound to a specific API
 
 
+## Minor design decisions
+- JS dependencies are fragile. Where there's no good reason to use a 3rd party library, write your own.
+- Transferring large data-objects as part of the state is not feasible when state needs to be exchanged between backend and frontend frequently. Instead data is kept in a store, while the state contains references to the entries in that store.
+- In geo-informatics in general and in riesgos in particular people make heavy use of webservices that only output parts of the whole data-set. We assume that all non-literal data is a web-reference per default. 
+
 # TODO's
 
 - Are Scenario and Store too tightly coupled?

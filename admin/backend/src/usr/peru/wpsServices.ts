@@ -234,7 +234,7 @@ export async function getDamage(schemaName: Schema, fragility: any, intensityXML
             type: 'complex',
             format: 'application/json'
         },
-        value: [exposureJson]
+        value: exposureJson
     }, {
         description: {
             id: 'fragility',
@@ -242,7 +242,7 @@ export async function getDamage(schemaName: Schema, fragility: any, intensityXML
             type: 'complex',
             format: 'application/json'
         },
-        value: [fragility]
+        value: fragility
     }, {
         description: {
             id: 'schema',
@@ -266,5 +266,8 @@ export async function getDamage(schemaName: Schema, fragility: any, intensityXML
 
     const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
 
-    return results[0].value[0];
+    return {
+        wms: results.find(r => r.description.id === 'shapefile_summary')?.value[0],
+        summary: results.find(r => r.description.id === 'meta_summary')?.value[0]
+    };
 }

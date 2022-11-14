@@ -388,7 +388,16 @@ export class WpsMarshaller100 implements WpsMarshaller {
           case 'text/xml':
             data = {
               complexData: {
-                content: [input.value],  // @TODO: we assume here that text/xml-data is already stringified
+                // content: [
+                //   "<![CDATA[" + 
+                //   input.value
+                //     .replace(/(\r\n|\n|\r)/gm, "")
+                //     .replace('\"', '"')
+                //     .replace("&lt;", "<")
+                //     .replace("&gt;", ">")
+                //   + "]]>"
+                // ],
+                content: [input.value],
                 mimeType: input.description.format
               }
             };
@@ -396,6 +405,11 @@ export class WpsMarshaller100 implements WpsMarshaller {
           default:
             data = {
               complexData: {
+                // content: [
+                //   "<![CDATA[" + 
+                //     JSON.stringify(input.value)
+                //   + "]]>"
+                // ],
                 content: [JSON.stringify(input.value)],
                 mimeType: input.description.format
               }

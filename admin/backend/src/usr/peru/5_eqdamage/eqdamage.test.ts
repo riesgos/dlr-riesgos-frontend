@@ -39,7 +39,8 @@ test('Testing eq-damage', async () => {
     const state: ScenarioState = {
         data: [{
             id: 'exposure',
-            value: exposureTestData
+            // only wants the `value` part of modelprop's output
+            value: exposureTestData.value[0]  
         }, {
             id: 'eqSimXml',
             value: eqSimXmlTestData
@@ -60,12 +61,22 @@ test('Testing eq-damage', async () => {
     expect(results).toBeTruthy();
     expect(results.data).toBeTruthy();
 
-    const result = results.data.find((r: DatumReference) => r.id === 'eqDamage')
-    expect(result.id).toBe('eqDamage');
-    expect(result.reference);
+    const wmsResult = results.data.find((r: DatumReference) => r.id === 'eqDamageWms');
+    expect(wmsResult.reference);
     
-    const fileResponse = await axios.get(`http://localhost:${port}/files/${result.reference}`);
-    const data = fileResponse.data;
-    expect(data.features[0].properties);
+    const wmsFile = await axios.get(`http://localhost:${port}/files/${wmsResult.reference}`);
+    const wmsData: string = wmsFile.data;
+    expect(wmsData.includes("wms"));
+
+
+    const summaryResult = results.data.find((r: DatumReference) => r.id === 'eqDamageSummary');
+    expect(summaryResult.reference);
+    
+    const summaryFile = await axios.get(`http://localhost:${port}/files/${summaryResult.reference}`);
+    const summaryData = summaryFile.data;
+    expect(summaryData.custom_columns);
+    expect(summaryData.cum_loss_unit);
+    expect(summaryData.loss_unit);
+    expect(summaryData.total);
 }, 60000);
 

@@ -6,10 +6,11 @@ import { peruFactory } from '../peru';
 import { DatumReference, ScenarioState } from '../../../scenarios/scenarios';
 import { sleep } from '../../../utils/async';
 import { createDirIfNotExists, deleteFile } from '../../../utils/files';
+import { selectedEqTestData } from '../testdata/selectedEq';
 
 
 const port = 1415;
-const logDir = `./test-data/peru-eqsim/logs/`; // server-logs
+const logDir = `./test-data/peru-eqsim/logs/`;
 const storeDir = `./test-data/peru-eqsim/store/`;  
 
 let server: Server;
@@ -20,7 +21,6 @@ beforeAll(async () => {
     await createDirIfNotExists(storeDir);
 
     const app = express();
-    app.use(express.json());
     const scenarioFactories = [peruFactory];
 
     addScenarioApi(app, scenarioFactories, storeDir, logDir);
@@ -38,37 +38,7 @@ test('Testing eq-simulation', async () => {
     const state: ScenarioState = {
         data: [{
             id: 'selectedEq',
-            value: {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        -77.9318,
-                        -12.1908
-                    ]
-                },
-                "properties": {
-                    "publicID": "quakeml:quakeledger/peru_70000011",
-                    "preferredOriginID": "quakeml:quakeledger/peru_70000011",
-                    "preferredMagnitudeID": "quakeml:quakeledger/peru_70000011",
-                    "type": "earthquake",
-                    "description.text": "observed",
-                    "origin.publicID": "quakeml:quakeledger/peru_70000011",
-                    "origin.time.value": "1746-10-28T00:00:00.000000Z",
-                    "origin.depth.value": "8.0",
-                    "origin.creationInfo.value": "GFZ",
-                    "magnitude.publicID": "quakeml:quakeledger/peru_70000011",
-                    "magnitude.mag.value": "9.0",
-                    "magnitude.type": "MW",
-                    "magnitude.creationInfo.value": "GFZ",
-                    "focalMechanism.publicID": "quakeml:quakeledger/peru_70000011",
-                    "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "329.0",
-                    "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "20.0",
-                    "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-                    "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-                },
-                "id": "quakeml:quakeledger/peru_70000011"
-            }
+            value: selectedEqTestData
         }, {
             id: 'gmpe',
             value: 'MontalvaEtAl2016SInter'
@@ -90,20 +60,21 @@ test('Testing eq-simulation', async () => {
 
     expect(results).toBeTruthy();
     expect(results.data).toBeTruthy();
-    expect(results.data.length === 4);
+    expect(results.data.length > 0);
 
-    const result = results.data.find((r: DatumReference) => r.id === 'eqSim')
-    expect(result.id).toBe('eqSim');
-    expect(result.reference);
+    const wmsResult = results.data.find((r: DatumReference) => r.id === 'eqSimWms')
+    expect(wmsResult.reference);
     
-    const fileResponse = await axios.get(`http://localhost:${port}/files/${result.reference}`);
-    const data = fileResponse.data;
-    expect(data).toBeTruthy();
-    expect(data.type).toBe('FeatureCollection');
-    expect(data.features[0]);
-    expect(data.features[0].id);
-    expect(data.features[0].type).toBe('Feature');
-    expect(data.features[0].geometry);
-    expect(data.features[0].properties);
-}, 30000);
+    const wmsFile = await axios.get(`http://localhost:${port}/files/${wmsResult.reference}`);
+    const wmsData = wmsFile.data;
+    expect(wmsData).toBeTruthy();
+
+    const xmlResult = results.data.find((r: DatumReference) => r.id === 'eqSimXml');
+    expect(xmlResult.reference);
+    
+    const xmlFile = await axios.get(`http://localhost:${port}/files/${xmlResult.reference}`);
+    const xmlData = xmlFile.data;
+    expect(xmlData).toBeTruthy();
+
+}, 300000);
 

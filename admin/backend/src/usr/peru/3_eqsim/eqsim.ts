@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getEqSim } from "../utils";
+import { getEqSim } from "../wpsServices";
 
 
 
@@ -9,11 +9,14 @@ async function simulateEq(inputs: Datum[]) {
     const gmpe = inputs.find(i => i.id === 'gmpe')!.value;
     const vsgrid = inputs.find(i => i.id === 'vsgrid')!.value;
 
-    const result = await getEqSim(gmpe, vsgrid, selectedEq);
+    const { wms, xml } = await getEqSim(gmpe, vsgrid, selectedEq);
 
     return [{
-        id: 'eqSim',
-        value: result
+        id: 'eqSimWms',
+        value: wms,
+    }, {
+        id: 'eqSimXml',
+        value: xml
     }];
 }
 
@@ -33,7 +36,9 @@ export const step: Step = {
         options: ['USGSSlopeBasedTopographyProxy', 'FromSeismogeotechnicsMicrozonation']
     }],
     outputs: [{
-        id: 'eqSim'
+        id: 'eqSimWms'
+    }, {
+        id: 'eqSimXml'
     }],
     function: simulateEq
 };

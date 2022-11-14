@@ -20,7 +20,6 @@ beforeAll(async () => {
     await createDirIfNotExists(storeDir);
 
     const app = express();
-    app.use(express.json());
     const scenarioFactories = [peruFactory];
 
     addScenarioApi(app, scenarioFactories, storeDir, logDir);

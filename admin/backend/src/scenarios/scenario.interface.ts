@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import express, { Express } from 'express';
 import objectHash from 'object-hash';
 import { ProcessPool } from './pool';
 import { DatumLinage, Scenario, ScenarioFactory, ScenarioState } from './scenarios';
@@ -7,6 +7,10 @@ import { FileStorage } from '../storage/fileStorage';
 
 
 export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], storeDir: string, loggingDir: string) {
+    app.use(express.json({
+        limit: '50mb'  // required because exposure objects can become pretty big
+    }));
+
     const pool = new ProcessPool();
     const fs = new FileStorage<DatumLinage>(storeDir);
     const scenarios = scenarioFactories.map(sf => sf.createScenario(fs));

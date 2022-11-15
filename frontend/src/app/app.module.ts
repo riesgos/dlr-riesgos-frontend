@@ -52,9 +52,6 @@ import { ChangedetectorComponent } from './components/changedetector/changedetec
 import { BlinkerComponent } from './components/changedetector/blinker/blinker.component';
 import { FpserComponent } from './components/changedetector/fpser/fpser.component';
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
-import { PrintComponent } from './components/print/print.component';
-import { PrintMapComponent } from './components/print/print-map/print-map.component';
-import { ScalerComponent } from './components/scaler/scaler.component';
 import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
 import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
 import { HelperButtonsComponent } from './components/helperButtons/helper-buttons.component';
@@ -138,9 +135,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     BlinkerComponent,
     FpserComponent,
     ThemePickerComponent,
-    PrintComponent,
-    PrintMapComponent,
-    ScalerComponent,
     GroupSliderComponent,
     InfoTableComponentComponent,
     TranslatableStringComponent,

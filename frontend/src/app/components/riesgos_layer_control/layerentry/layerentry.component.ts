@@ -88,7 +88,7 @@ export class RiesgosLayerentryComponent implements OnInit {
   }
   get expanded() {
     if (this.layer) {
-      return this.layer.expanded;
+      return !!(this.layer.expanded);
     } else {
       return false;
     }

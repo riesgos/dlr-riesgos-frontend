@@ -3,8 +3,6 @@ import Legend from 'ol-ext/legend/Legend';
 import olFeature from 'ol/Feature';
 import { Feature } from '@turf/helpers';
 import Style from 'ol/style/Style';
-import 'ol/ol.css';
-import 'ol-ext/control/Legend.css';
 import { SimplifiedTranslationService } from '../../../services/simplifiedTranslation/simplified-translation.service';
 
 

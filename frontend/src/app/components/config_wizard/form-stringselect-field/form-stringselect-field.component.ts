@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import {  StringSelectUserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     selector: 'ukis-form-stringselect-field',
@@ -12,7 +12,7 @@ import { FormControl } from '@angular/forms';
 })
 export class FormStringselectFieldComponent implements OnInit {
 
-    @Input() control: FormControl;
+    @Input() control: UntypedFormControl;
     @Input() parameter: StringSelectUserConfigurableProduct;
     public options: string[];
 

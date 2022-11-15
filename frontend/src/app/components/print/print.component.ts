@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService, Layer } from '@dlr-eoc/services-layers';
 import { PrintService, DeclarativeMapParameters, PrintLegendImage } from './print-service/print.service';
@@ -36,7 +36,7 @@ export class PrintComponent {
   public previewHeight: number = screen.height * 0.4;
 
   public modalVisible = false;
-  public pdfParametersForm: FormGroup;
+  public pdfParametersForm: UntypedFormGroup;
   public formatOptions = ['A4', 'A3'];
   public orientationOptions = ['landscape', 'portrait'];
   public resolutionOptions = [72, 150, 300];
@@ -51,13 +51,13 @@ export class PrintComponent {
     private layerSvc: LayersService,
     private printSvc: PrintService
   ) {
-    this.pdfParametersForm = new FormGroup({
-      title: new FormControl('DLR MARISS'),
-      description: new FormControl('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', [Validators.maxLength(this.maxDescriptionLength)]),
-      format: new FormControl(this.formatOptions[0]),
-      orientation: new FormControl(this.orientationOptions[0]),
-      resolution: new FormControl(this.resolutionOptions[1]),
-      output: new FormControl(this.outputOptions[0])
+    this.pdfParametersForm = new UntypedFormGroup({
+      title: new UntypedFormControl('DLR MARISS'),
+      description: new UntypedFormControl('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', [Validators.maxLength(this.maxDescriptionLength)]),
+      format: new UntypedFormControl(this.formatOptions[0]),
+      orientation: new UntypedFormControl(this.orientationOptions[0]),
+      resolution: new UntypedFormControl(this.resolutionOptions[1]),
+      output: new UntypedFormControl(this.outputOptions[0])
     });
 
     const layers$ = this.layerSvc.getLayers();

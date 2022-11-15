@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl, RequiredValidator, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, RequiredValidator, Validators } from '@angular/forms';
 import { UserConfigurableProductDescription, UserConfigurableProduct, isBboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { WizardableProcess } from '../wizardable_processes';
 import { Store } from '@ngrx/store';
@@ -20,7 +20,7 @@ export class FormComponent implements OnInit, OnDestroy {
   @Input() process: WizardableProcess;
   @Input() parameters: UserConfigurableProduct[];
   @Input() disabled = false;  // <------------ @TODO: can we infer this from formgroup?
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -33,10 +33,10 @@ export class FormComponent implements OnInit, OnDestroy {
     for (const parameter of this.parameters) {
       const key = parameter.uid;
       const startValue = parameter.value || parameter.description.defaultValue || null;
-      controls[key] = new FormControl(startValue, [Validators.required]);
+      controls[key] = new UntypedFormControl(startValue, [Validators.required]);
     }
 
-    this.formGroup = new FormGroup(controls);
+    this.formGroup = new UntypedFormGroup(controls);
 
     for (const parameter of this.parameters) {
       if (isBboxUserConfigurableProduct(parameter)) {

@@ -1,6 +1,6 @@
 import { Component, OnInit, forwardRef, ViewEncapsulation } from '@angular/core';
 import {
-  ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, FormControl,
+  ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormGroup, UntypedFormControl,
   Validators, AbstractControl, ValidationErrors, Validator, NG_VALIDATORS
 } from '@angular/forms';
 
@@ -65,17 +65,17 @@ export class BboxfieldComponent implements OnInit, ControlValueAccessor, Validat
 
   onChangeCallback: any;
   onTouchedCallback: any;
-  bboxFormGroup: FormGroup;
+  bboxFormGroup: UntypedFormGroup;
   validatorFunction: () => void;
 
   constructor() { }
 
   ngOnInit() {
-    const lllon = new FormControl(0.0, [Validators.required, validateNumeric]);
-    const lllat = new FormControl(0.0, [Validators.required, validateNumeric]);
-    const urlon = new FormControl(1.0, [Validators.required, validateNumeric]);
-    const urlat = new FormControl(1.0, [Validators.required, validateNumeric]);
-    this.bboxFormGroup = new FormGroup({ lllon, lllat, urlon, urlat }, [properlyFormattedBbox]);
+    const lllon = new UntypedFormControl(0.0, [Validators.required, validateNumeric]);
+    const lllat = new UntypedFormControl(0.0, [Validators.required, validateNumeric]);
+    const urlon = new UntypedFormControl(1.0, [Validators.required, validateNumeric]);
+    const urlat = new UntypedFormControl(1.0, [Validators.required, validateNumeric]);
+    this.bboxFormGroup = new UntypedFormGroup({ lllon, lllat, urlon, urlat }, [properlyFormattedBbox]);
 
     this.bboxFormGroup.valueChanges.subscribe(newVals => {
       if (this.onChangeCallback) {

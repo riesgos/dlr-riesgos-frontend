@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
@@ -22,7 +22,7 @@ export class HelperButtonsComponent implements OnInit {
     showResetModal = false;
     showRestoreModal = false;
     showStoreModal = false;
-    nameControl: FormControl;
+    nameControl: UntypedFormControl;
     dropFieldText$: BehaviorSubject<string>;
     stateToBeRestored$: BehaviorSubject<RiesgosScenarioState>;
     private currentState: RiesgosScenarioState;
@@ -30,7 +30,7 @@ export class HelperButtonsComponent implements OnInit {
     constructor(
         private store: Store<State>
     ) {
-        this.nameControl = new FormControl('Save state', [Validators.required, noSpecialChars]);
+        this.nameControl = new UntypedFormControl('Save state', [Validators.required, noSpecialChars]);
     }
 
     ngOnInit() {
@@ -111,7 +111,7 @@ export class HelperButtonsComponent implements OnInit {
 }
 
 
-function noSpecialChars(control: FormControl): { [key: string]: boolean } {
+function noSpecialChars(control: UntypedFormControl): { [key: string]: boolean } {
     const nameRegexp: RegExp = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     if (control.value && nameRegexp.test(control.value)) {
        return { invalidName: true };

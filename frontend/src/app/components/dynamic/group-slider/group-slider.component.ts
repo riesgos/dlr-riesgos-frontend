@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, FormGroup } from '@angular/forms';
 import { LabelType, Options } from 'ng5-slider';
 
 export interface SliderEntry {
@@ -18,13 +18,13 @@ export class GroupSliderComponent implements OnInit {
 
   @Input() entries: SliderEntry[];
   @Input() selectionHandler: (newId: string) => void;
-  public sliderForm: FormControl;
+  public sliderForm: UntypedFormControl;
   public options: Options;
 
   constructor() {}
 
   ngOnInit(): void {
-    this.sliderForm = new FormControl(this.entries[0].tickValue);
+    this.sliderForm = new UntypedFormControl(this.entries[0].tickValue);
     this.sliderForm.valueChanges.subscribe(newVal => {
       const id = this.entries.find(e => e.tickValue === newVal).id;
       this.selectionHandler(id);

@@ -214,7 +214,7 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
 /**
  * Calls Deus
  */
-export async function getDamage(schemaName: Schema, fragility: any, intensityXMLString: any, exposureJson: any) {
+export async function getDamage(schemaName: Schema, fragility: any, intensityXMLString: String, exposureJson: any) {
 
     const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
     const processId = "org.n52.gfz.riesgos.algorithm.impl.DeusProcess";

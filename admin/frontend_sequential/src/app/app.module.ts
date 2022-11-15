@@ -9,6 +9,12 @@ import { ScenarioSelectionComponent } from './pages/scenario-selection/scenario-
 import { MapComponent } from './pages/map/map.component';
 import { AppStateService } from './services/app-state.service';
 import { BackendService } from './services/backend.service';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
+import * as fromRiesgos from './riesgos/riesgos.reducer';
+import { RiesgosEffects } from './riesgos/riesgos.effects';
 
 
 
@@ -29,7 +35,12 @@ export interface AppConfig {
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot(),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    StoreModule.forFeature(fromRiesgos.riesgosFeatureKey, fromRiesgos.reducer),
+    EffectsModule.forFeature([RiesgosEffects]),
   ],
   providers: [
     AppStateService,

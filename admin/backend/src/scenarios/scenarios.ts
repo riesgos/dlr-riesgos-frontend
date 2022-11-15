@@ -133,6 +133,8 @@ export class Scenario {
     }
 
     private async addDatum(newDatum: Datum, state: ScenarioState): Promise<ScenarioState> {
+
+        // Data is stored in cache hashed by the inputs that led to it.
         const linage = this.getLinage(newDatum.id, state);
         const key = await this.store.addData(newDatum.value, linage);
 
@@ -153,7 +155,7 @@ export class Scenario {
 
     private getLinage(id: string, state: ScenarioState): DatumLinage {
         const step = this.steps.find(s => s.outputs.map(o => o.id).includes(id));
-        if (!step) throw new Error(`The datum ${id} has no parent-step.`);
+        if (!step) throw new Error(`Cannot get linage of datum ${id}: it has no parent-step. Maybe this is user-provided data?`);
         const inputIds = step.inputs.map(i => i.id);
         const inputRefs: DatumReference[] = [];
         for (const id of inputIds) {

@@ -1,5 +1,8 @@
+import { environment } from '../environments/environment';
+
+
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, InjectionToken } from '@angular/core';
 import { UkisRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
@@ -58,7 +61,6 @@ import { FooterService } from './components/global-footer/footer.service';
 import { AlertService } from './components/global-alert/alert.service';
 
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import { VarDirective } from './ng-var.directive';
 import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
 import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-translate.pipe';
 import { SimpleTranslatePipe } from './services/simplifiedTranslation/simple-translate.pipe';
@@ -66,7 +68,6 @@ import { ReversePipe } from './components/riesgos_layer_control/utils/array-reve
 import { WMTSLayerFactory } from './mappable/wmts';
 import { reducers, effects } from './ngrx_register';
 
-import { environment } from '../environments/environment';
 import { TranslatableStringComponent } from './components/dynamic/translatable-string/translatable-string.component';
 import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
 import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
@@ -81,6 +82,19 @@ import { GroupedBarChartComponent } from './components/grouped-bar-chart/grouped
 import { EconomicDamagePopupComponent } from './components/dynamic/economic-damage-popup/economic-damage-popup.component';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
+
+
+
+export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');
+
+export interface AppConfig {
+  "production": boolean,
+  "middlewareUrl": string,
+  "useProxy": false,
+  "proxyUrl": string,
+  "gfzUseStaging": false
+}
+
 
 
 
@@ -102,7 +116,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     MapComponent,
     LayercontrolComponent,
     FormBboxFieldComponent,
-    VarDirective,
     FormStringselectFieldComponent,
     LanguageSwitcherComponent,
     GraphvizcompComponent,
@@ -167,16 +180,28 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     })
   ],
   providers: [
+    {
+      multi: true,
+      provide: APP_CONFIG,
+      deps: [HttpClient],
+      useFactory: (http: HttpClient) => {
+        return () => {
+          return http.get<AppConfig>(`assets/config/config.${environment.type}.json`);
+        }
+      }
+
+    }, {
+      multi: true,
+      provide: HTTP_INTERCEPTORS,
+      useClass: ProxyInterceptor
+    },
+    ProxyInterceptor,  // provided here *another* time explicitly, so that it can be specifically injected in other components, too
     AlertService,
     DisclaimerService,
     FooterService,
     ProgressService,
     RiesgosService,
-    WMTSLayerFactory, {
-      provide: HTTP_INTERCEPTORS,
-      multi: true,
-      useClass: ProxyInterceptor
-    }
+    WMTSLayerFactory
   ],
   bootstrap: [AppComponent]
 })

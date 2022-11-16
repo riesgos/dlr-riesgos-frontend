@@ -129,7 +129,7 @@ export class WpsProcess implements ExecutableProcess {
                 processId: this.id,
                 url: this.url
             };
-            const results$ = from(execute(data, this.httpClient));
+            const results$ = from(execute("", data, this.httpClient));
 
             const products$ = results$.pipe(
 

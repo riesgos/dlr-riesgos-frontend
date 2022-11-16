@@ -10,7 +10,7 @@ import { Process, Product } from './riesgos.datatypes';
 import { getScenarioRiesgosState } from './riesgos.selectors';
 import { RiesgosScenarioState } from './riesgos.state';
 import { Observable } from 'rxjs';
-import { ErrorParserService } from '../error-parser.service';
+import { ErrorParserService } from '../services/errorParser/error-parser.service';
 import { RiesgosService } from './riesgos.service';
 
 

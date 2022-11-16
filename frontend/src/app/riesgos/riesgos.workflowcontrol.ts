@@ -5,7 +5,7 @@ import { Graph, alg } from 'graphlib';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { isWizardableProcess } from '../components/config_wizard/wizardable_processes';
-import { ErrorParserService } from '../error-parser.service';
+import { ErrorParserService } from '../services/errorParser/error-parser.service';
 
 
 export function createGraph(processes: Process[]): Graph {

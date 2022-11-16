@@ -6,7 +6,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { effects, reducers } from '../ngrx_register';
 import { RiesgosService } from './riesgos.service';
 import { WorkflowControl } from './riesgos.workflowcontrol';
-import { ErrorParserService } from '../error-parser.service';
+import { ErrorParserService } from '../services/errorParser/error-parser.service';
 
 
 class MyXhrFactory extends XhrFactory {

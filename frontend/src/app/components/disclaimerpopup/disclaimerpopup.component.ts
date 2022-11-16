@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { AppConfig, APP_CONFIG } from 'src/app/app.module';
 import { StoreService } from 'src/app/services/localStorage/store.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-disclaimerpopup',
@@ -12,8 +12,11 @@ export class DisclaimerpopupComponent implements OnInit {
   showModal: boolean = true;
   showModalKey = 'RIESGOS_SHOW_DISCLAIMER';
 
-  constructor(private storageService: StoreService) {
-    this.showModal = environment.production ? true : false;
+  constructor(
+    private storageService: StoreService,
+    @Inject(APP_CONFIG) private appConfig: AppConfig
+  ) {
+    this.showModal = this.appConfig.production ? true : false;
   }
 
   ngOnInit() {

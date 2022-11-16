@@ -28,7 +28,7 @@ import { SimplifiedTranslationService } from 'src/app/services/simplifiedTransla
 import Geometry from 'ol/geom/Geometry';
 import { Fill, Stroke, Style } from 'ol/style';
 import { LayersService } from '@dlr-eoc/services-layers';
-import { needsProxy, proxify } from '../services/interceptors/ProxyInterceptor';
+import { ProxyInterceptor } from '../services/interceptors/ProxyInterceptor';
 
 
 
@@ -54,7 +54,8 @@ export class LayerMarshaller  {
         public mapStateSvc: MapStateService,
         public layersSvc: LayersService,
         private store: Store<State>,
-        private translator: SimplifiedTranslationService
+        private translator: SimplifiedTranslationService,
+        private proxyInterceptor: ProxyInterceptor
         ) {}
 
     productsToLayers(products: Product[]): Observable<ProductLayer[]> {
@@ -536,8 +537,8 @@ export class LayerMarshaller  {
             if (paras) {
 
                 let wmsUrl = `${paras.origin}${paras.path}`;
-                if (needsProxy(wmsUrl)) {
-                    wmsUrl = `${proxify(paras.origin)}${paras.path}`;   
+                if (this.proxyInterceptor.needsProxy(wmsUrl)) {
+                    wmsUrl = `${this.proxyInterceptor.proxify(paras.origin)}${paras.path}`;   
                     console.log(`Proxified ${wmsUrl}`);
                 }
 

@@ -1,21 +1,13 @@
 # Cleanup
 
-1. Remove data from state. Keep data in a data-service instead. Reason: this way redux can do much faster updates
-3. Update redux to newest version
-4. Separate logic from display
-    4.1. Backend: steps
-    4.2. Frontend: 
-        4.2.1. Rename files to <step-name>.renderer.ts
-        4.2.2. Remove wps-call-logic from renderers
-        4.2.3. Have redux call backend-api
-        4.2.4. Map backend-api-results to renderers
-
-
-
+- load configuration dynamically
+- remove assets/styles?
 - create new legend component (with gradients)
-- switch to backend
-- rename actions
-- update effects
+- switch
+    - update effects to call new backend
+    - re-write /scenarios dir to only contain rendering logic
+- remove data from state. Keep data in a data-service instead. Reason: this way redux can do much faster updates
+
 
 
 # Ukis - ongoing errors

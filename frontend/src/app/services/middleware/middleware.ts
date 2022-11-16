@@ -18,12 +18,12 @@ export interface ExecuteData {
     url: string
 }
 
-export async function execute(data: ExecuteData, httpClient: HttpClient) {
-    const reference: any = await httpClient.post(`${environment.middlewareUrl}/execute`, data, {headers: {'Content-Type': 'application/json'}}).toPromise();
+export async function execute(middlewareUrl: string, data: ExecuteData, httpClient: HttpClient) {
+    const reference: any = await httpClient.post(`${middlewareUrl}/execute`, data, {headers: {'Content-Type': 'application/json'}}).toPromise();
     let results = null;
     while(!results) {
         await sleep(3000);
-        results = await httpClient.get(`${environment.middlewareUrl}/execute/${reference.id}`).toPromise();
+        results = await httpClient.get(`${middlewareUrl}/execute/${reference.id}`).toPromise();
     }
     if (results.error) throw new Error(results.error);
     return results;

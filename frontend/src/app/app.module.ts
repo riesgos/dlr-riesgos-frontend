@@ -164,9 +164,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
         useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/translations/', '.json'),
         deps: [HttpClient]
       }
-    }),
-    // !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 3 }) : []
-    []
+    })
   ],
   providers: [
     AlertService,

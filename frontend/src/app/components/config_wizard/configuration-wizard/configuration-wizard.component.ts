@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { NewProcessClicked } from 'src/app/focus/focus.actions';
+import * as FocusActions from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 import { Process } from 'src/app/riesgos/riesgos.datatypes';
@@ -30,7 +30,7 @@ export class ConfigurationWizardComponent {
     }
 
     onBlockClicked(event, processDescr: Process) {
-        this.store.dispatch(new NewProcessClicked({ processId: processDescr.uid }));
+        this.store.dispatch(FocusActions.newProcessClicked({ processId: processDescr.uid }));
     }
 
     hasFocus(processDescr: Process): Observable<boolean> {

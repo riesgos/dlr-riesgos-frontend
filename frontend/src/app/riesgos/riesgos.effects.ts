@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, Effect, createEffect } from '@ngrx/effects';
-import { RiesgosActions, ERiesgosActionTypes, ProductsProvided, ScenarioChosen,
-        ClickRunProcess, RiesgosDataUpdate, RestartingFromProcess, RestartingScenario, MetadataProvided } from './riesgos.actions';
+import * as RiesgosActions from './riesgos.actions';
+import * as FocusActions from '../focus/focus.actions';
 import { map, switchMap, withLatestFrom, mergeMap } from 'rxjs/operators';
 import { Store, Action } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -11,7 +11,6 @@ import { getScenarioRiesgosState } from './riesgos.selectors';
 import { RiesgosScenarioState } from './riesgos.state';
 import { Observable } from 'rxjs';
 import { ErrorParserService } from '../error-parser.service';
-import { NewProcessClicked, AppInit, FocusAction, EFocusActionTypes } from '../focus/focus.actions';
 import { RiesgosService } from './riesgos.service';
 
 
@@ -22,20 +21,20 @@ export class RiesgosEffects {
 
     appInit$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType<FocusAction>(EFocusActionTypes.appInit),
-            map((action: AppInit) => {
+            ofType(FocusActions.appInit),
+            map(action => {
                 const metadata = this.scenarioService.loadScenarioMetadata();
-                return new MetadataProvided({metadata});
+                return RiesgosActions.metadataProvided({metadata});
             })
         );
     });
 
     restartingScenario$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType<RiesgosActions>(ERiesgosActionTypes.restartingScenario),
-            switchMap((action: RestartingScenario) => {
+            ofType(RiesgosActions.restartingScenario),
+            switchMap(action => {
 
-                const [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
+                const [procs, prods] = this.loadScenarioDataFresh(action.scenario);
 
                 this.wfc = new WorkflowControl(procs, prods, this.errorParser);
                 const processes = this.wfc.getImmutableProcesses();
@@ -43,8 +42,8 @@ export class RiesgosEffects {
                 const graph = this.wfc.getGraph();
 
                 const actions: Action[] = [
-                    new RiesgosDataUpdate({processes, products, graph}),
-                    new NewProcessClicked({processId: null})
+                    RiesgosActions.riesgosDataUpdate({processes, products, graph}),
+                    FocusActions.newProcessClicked({processId: null})
                 ];
                 return actions;
             })
@@ -55,10 +54,10 @@ export class RiesgosEffects {
 
     scenarioChosen$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType<RiesgosActions>(ERiesgosActionTypes.scenarioChosen),
+            ofType(RiesgosActions.scenarioChosen),
             withLatestFrom(this.store$),
-            switchMap(([action, state]: [ScenarioChosen, State]) => {
-                const newScenario = action.payload.scenario;
+            switchMap(([action, state]) => {
+                const newScenario = action.scenario;
 
                 let procs: Process[];
                 let prods: Product[];
@@ -67,9 +66,9 @@ export class RiesgosEffects {
                     const scenarioData = state.riesgosState.scenarioData[newScenario];
                     // because processes are more than the ImmutableProcesses stored in the state-store:
                     prods = scenarioData.productValues; // getting products from state-store ...
-                    [procs, _] = this.loadScenarioDataFresh(action.payload.scenario); // ... but processes from registry.
+                    [procs, _] = this.loadScenarioDataFresh(action.scenario); // ... but processes from registry.
                 } else {
-                    [procs, prods] = this.loadScenarioDataFresh(action.payload.scenario);
+                    [procs, prods] = this.loadScenarioDataFresh(action.scenario);
                 }
 
                 this.wfc = new WorkflowControl(procs, prods, this.errorParser);
@@ -77,7 +76,7 @@ export class RiesgosEffects {
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
 
-                const actions: Action[] = [new RiesgosDataUpdate({processes, products, graph})];
+                const actions: Action[] = [RiesgosActions.riesgosDataUpdate({processes, products, graph})];
                 return actions;
             })
         );
@@ -86,16 +85,16 @@ export class RiesgosEffects {
 
     productsProvided$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType<RiesgosActions>(ERiesgosActionTypes.productsProvided),
-            map((action: ProductsProvided) => {
+            ofType(RiesgosActions.productsProvided),
+            map(action => {
 
-                for (const product of action.payload.products) {
+                for (const product of action.products) {
                     this.wfc.provideProduct(product.uid, product.value);
                 }
                 const processes = this.wfc.getImmutableProcesses();
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
-                return new RiesgosDataUpdate({processes, products, graph});
+                return RiesgosActions.riesgosDataUpdate({processes, products, graph});
 
             })
         );
@@ -105,18 +104,18 @@ export class RiesgosEffects {
 
     runProcessClicked$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType<RiesgosActions>(ERiesgosActionTypes.clickRunProduct),
-            mergeMap((action: ClickRunProcess) =>  {
+            ofType(RiesgosActions.clickRunProcess),
+            mergeMap(action =>  {
 
-                const newProducts = action.payload.productsProvided;
-                const process = action.payload.process;
+                const newProducts = action.productsProvided;
+                const process = action.process;
                 for (const prod of newProducts) {
                     this.wfc.provideProduct(prod.uid, prod.value);
                 }
                 return this.wfc.execute(process.uid,
                     (response, counter) => {
                         if (counter < 1) {
-                            this.store$.dispatch(new RiesgosDataUpdate({
+                            this.store$.dispatch(RiesgosActions.riesgosDataUpdate({
                                 processes: this.wfc.getImmutableProcesses(),
                                 products: this.wfc.getProducts(),
                                 graph: this.wfc.getGraph()
@@ -132,7 +131,7 @@ export class RiesgosEffects {
                 const processes = this.wfc.getImmutableProcesses();
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
-                const wpsUpdate = new RiesgosDataUpdate({processes, products, graph});
+                const wpsUpdate = RiesgosActions.riesgosDataUpdate({processes, products, graph});
                 actions.push(wpsUpdate);
 
                 // We abstain from moving on to the next process for now, until we have a nice way of finding the next one in line.
@@ -155,14 +154,14 @@ export class RiesgosEffects {
 
     restartingFromProcess$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType<RiesgosActions>(ERiesgosActionTypes.restartingFromProcess),
-            map((action: RestartingFromProcess) => {
+            ofType(RiesgosActions.restartingFromProcess),
+            map(action => {
 
-                this.wfc.invalidateProcess(action.payload.process.uid);
+                this.wfc.invalidateProcess(action.process.uid);
                 const processes = this.wfc.getImmutableProcesses();
                 const products = this.wfc.getProducts();
                 const graph = this.wfc.getGraph();
-                return new RiesgosDataUpdate({processes, products, graph});
+                return RiesgosActions.riesgosDataUpdate({processes, products, graph});
 
             })
         );

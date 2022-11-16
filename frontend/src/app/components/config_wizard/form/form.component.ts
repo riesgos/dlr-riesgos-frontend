@@ -4,7 +4,7 @@ import { UserConfigurableProductDescription, UserConfigurableProduct, isBboxUser
 import { WizardableProcess } from '../wizardable_processes';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ClickRunProcess, ProductsProvided } from 'src/app/riesgos/riesgos.actions';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { isBbox } from '../../../services/wps/wps.datatypes';
 import { debounceTime } from 'rxjs/operators';
@@ -43,7 +43,7 @@ export class FormComponent implements OnInit, OnDestroy {
         const control = this.formGroup.get(parameter.uid);
         const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
           if (control.valid) {
-            this.store.dispatch(new ProductsProvided({products: [{
+            this.store.dispatch(RiesgosActions.productsProvided({products: [{
               ...parameter,
               value: newVal
             }]}));
@@ -63,7 +63,7 @@ export class FormComponent implements OnInit, OnDestroy {
       const formControl = this.formGroup.get(parameter.uid);
       parameter.value = formControl.value;
     }
-    this.store.dispatch(new ClickRunProcess({productsProvided: this.parameters, process: this.process }));
+    this.store.dispatch(RiesgosActions.clickRunProcess({productsProvided: this.parameters, process: this.process }));
   }
 
 }

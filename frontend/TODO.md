@@ -13,7 +13,9 @@
 
 
 - create new legend component (with gradients)
-
+- switch to backend
+- rename actions
+- update effects
 
 
 # Ukis - ongoing errors

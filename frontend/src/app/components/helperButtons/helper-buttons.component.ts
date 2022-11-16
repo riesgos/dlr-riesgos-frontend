@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
 import { RiesgosScenarioState, isRiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
-import { RestartingScenario, ProductsProvided } from 'src/app/riesgos/riesgos.actions';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { downloadJson, parseFile } from 'src/app/helpers/others';
 import { map, tap } from 'rxjs/operators';
@@ -50,7 +50,7 @@ export class HelperButtonsComponent implements OnInit {
 
     onResetClicked(): void {
         const currentScenario = this.currentState.scenario;
-        this.store.dispatch(new RestartingScenario({scenario: currentScenario}));
+        this.store.dispatch(RiesgosActions.restartingScenario({scenario: currentScenario}));
         this.showResetModal = false;
     }
 
@@ -58,7 +58,7 @@ export class HelperButtonsComponent implements OnInit {
         const stateToRestore: RiesgosScenarioState = this.stateToBeRestored$.value;
         // @TODO: instead of just a ProductsProvided action,
         // create a new action that validates that all data is still there on the remote servers.
-        this.store.dispatch(new ProductsProvided({
+        this.store.dispatch(RiesgosActions.productsProvided({
             products: stateToRestore.productValues.filter(pv => pv.value !== null)
         }));
 

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import {  StringSelectUserConfigurableProduct } from '../userconfigurable_wpsdata';
-import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { UntypedFormControl } from '@angular/forms';
 
 @Component({
@@ -28,7 +28,7 @@ export class FormStringselectFieldComponent implements OnInit {
 
 
     onChange(newValString) {
-        this.store.dispatch(new ProductsProvided({
+        this.store.dispatch(RiesgosActions.productsProvided({
             products: [{
                 ...this.parameter,
                 value: newValString

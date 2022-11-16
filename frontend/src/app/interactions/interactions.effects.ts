@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { InteractionAction, InteractionActionTypes, InteractionCompleted } from './interactions.actions';
-import { ProductsProvided } from '../riesgos/riesgos.actions';
+import * as RiesgosActions from '../riesgos/riesgos.actions';
 import { map } from 'rxjs/operators';
 
 
@@ -13,7 +13,7 @@ export class InteractionEffects {
         return this.actions$.pipe(
             ofType<InteractionAction>(InteractionActionTypes.completed),
             map((action: InteractionCompleted) => {
-                return new ProductsProvided({products: [action.payload.product]});
+                return RiesgosActions.productsProvided({products: [action.payload.product]});
             })
         );
     });

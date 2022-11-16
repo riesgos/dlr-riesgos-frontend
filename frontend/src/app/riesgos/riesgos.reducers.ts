@@ -1,40 +1,46 @@
-import { RiesgosActions, ERiesgosActionTypes, ProductsProvided, ScenarioChosen, RestartingFromProcess, RiesgosDataUpdate, MetadataProvided } from './riesgos.actions';
-import { RiesgosState, initialRiesgosState } from './riesgos.state';
+import { createReducer, on } from '@ngrx/store';
+import { initialRiesgosState } from './riesgos.state';
+import * as RiesgosActions from './riesgos.actions';
 
 
 
-export function riesgosReducer(state: RiesgosState = initialRiesgosState, action: RiesgosActions): RiesgosState  {
-    switch (action.type) {
+export const reducer = createReducer(
+    initialRiesgosState,
 
-        case ERiesgosActionTypes.metadataProvided:
-            const newMetadata = (action as MetadataProvided).payload.metadata;
-            return {
-                ... state,
-                metaData: newMetadata
-            };
+    on(RiesgosActions.metadataProvided, (state, action) => {
+        const newMetadata = action.metadata;
+        return {
+            ... state,
+            metaData: newMetadata
+        };
+    }),
 
-        case ERiesgosActionTypes.wpsDataUpdate:
-            const newScenario = state.currentScenario;
-            const newProcesses = (action as RiesgosDataUpdate).payload.processes;
-            const newProducts = (action as RiesgosDataUpdate).payload.products;
-            const newGraph = (action as RiesgosDataUpdate).payload.graph;
-            const newState = {...state};
-            newState.scenarioData[state.currentScenario] = {
-                scenario: newScenario,
-                processStates: newProcesses,
-                productValues: newProducts,
-                graph: newGraph
-            };
-            return newState;
+    on(RiesgosActions.riesgosDataUpdate, (state, action) => {
+        const newScenario = state.currentScenario;
+        const newProcesses = action.processes;
+        const newProducts = action.products;
+        const newGraph = action.graph;
+        const newState = {...state};
+        newState.scenarioData[state.currentScenario] = {
+            scenario: newScenario,
+            processStates: newProcesses,
+            productValues: newProducts,
+            graph: newGraph
+        };
+        return newState;
+    }),
 
-        case ERiesgosActionTypes.scenarioChosen:
-        case ERiesgosActionTypes.restartingScenario:
-            return {
-                ... state,
-                currentScenario: (action as ScenarioChosen).payload.scenario,
-            };
+    on(RiesgosActions.scenarioChosen, (state, action) => {
+        return {
+            ... state,
+            currentScenario: action.scenario,
+        };
+    }),
 
-        default:
-            return state;
-    }
-}
+    on(RiesgosActions.restartingScenario, (state, action) => {
+        return {
+            ... state,
+            currentScenario: action.scenario,
+        };
+    })
+);

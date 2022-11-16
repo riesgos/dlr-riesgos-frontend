@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { RestartingFromProcess } from 'src/app/riesgos/riesgos.actions';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { UserConfigurableProduct, isUserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { Product, WpsProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { getInputsForProcess } from 'src/app/riesgos/riesgos.selectors';
@@ -34,7 +34,7 @@ export class WizardPageComponent implements OnInit {
   }
 
   onReconfigureClicked() {
-    this.store.dispatch(new RestartingFromProcess({process: this.process}));
+    this.store.dispatch(RiesgosActions.restartingFromProcess({process: this.process}));
   }
 
 

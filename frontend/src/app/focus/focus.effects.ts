@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { FocusAction, EFocusActionTypes, NewProcessClicked } from './focus.actions';
+import * as FocusActions from './focus.actions';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { State } from '../ngrx_register';
 import { Store } from '@ngrx/store';
@@ -16,7 +16,7 @@ export class FocusEffects {
 
     goingToNext$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType<FocusAction>(EFocusActionTypes.goToNextProcess),
+            ofType(FocusActions.goToNextProcess),
             withLatestFrom(this.store$),
             map(([action, state]) => {
                 const currentScenario = state.riesgosState.currentScenario;
@@ -24,7 +24,7 @@ export class FocusEffects {
                     return p.state.type === ProcessStateTypes.available;
                 });
                 if (activeProcess) {
-                    return new NewProcessClicked({processId: activeProcess.uid});
+                    return FocusActions.newProcessClicked({processId: activeProcess.uid});
                 }
             })
         );

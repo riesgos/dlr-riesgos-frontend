@@ -1,54 +1,42 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { Product, ImmutableProcess } from './riesgos.datatypes';
 import { Scenario, RiesgosScenarioMetadata } from './riesgos.state';
 import { Graph } from 'graphlib';
 
 
-export enum ERiesgosActionTypes {
-    metadataProvided = '[Riesgos] Metadata provided',
-    scenarioChosen = '[Riesgos] Scenario chosen',
-    productsProvided = '[Riesgos] Products provided',
-    clickRunProduct = '[Riesgos] Click on \'run process\' button',
-    restartingFromProcess = '[Riesgos] Restarting from process',
-    restartingScenario = '[Riesgos] Restarting scenario',
-    wpsDataUpdate = '[Riesgos] Data update',
-}
 
 
-export class MetadataProvided implements Action {
-    type: string = ERiesgosActionTypes.metadataProvided;
-    constructor(public payload: {metadata: RiesgosScenarioMetadata[]}) {}
-}
+export const metadataProvided = createAction(
+    '[Riesgos] Metadata provided',
+    props<{
+        metadata: RiesgosScenarioMetadata[]
+    }>()
+);
 
+export const scenarioChosen = createAction(
+    '[Riesgos] Scenario chosen',
+    props<{scenario: Scenario}>()
+);
 
-export class ScenarioChosen implements Action {
-    type: string = ERiesgosActionTypes.scenarioChosen;
-    constructor(public payload: {scenario: Scenario}) {}
-}
+export const productsProvided = createAction(
+    '[Riesgos] Products provided',
+    props<{products: Product[]}>()
+);
 
+export const clickRunProcess = createAction(
+    '[Riesgos] Click on \'run process\' button',
+    props<{productsProvided: Product[], process: ImmutableProcess}>()
+);
 
-export class ProductsProvided implements Action {
-    type: string = ERiesgosActionTypes.productsProvided;
-    constructor(public payload: {products: Product[]}) {}
-}
+export const restartingFromProcess = createAction(
+    '[Riesgos] Restarting from process',
+    props<{process: ImmutableProcess}>()
+);
 
-
-export class ClickRunProcess implements Action {
-    type: string = ERiesgosActionTypes.clickRunProduct;
-    constructor(public payload: {productsProvided: Product[], process: ImmutableProcess}) {}
-}
-
-
-
-export class RestartingFromProcess implements Action {
-    type: string = ERiesgosActionTypes.restartingFromProcess;
-    constructor(public payload: {process: ImmutableProcess}) {}
-}
-
-export class RestartingScenario implements Action {
-    type: string = ERiesgosActionTypes.restartingScenario;
-    constructor(public payload: {scenario: Scenario}) {}
-}
+export const restartingScenario = createAction(
+    '[Riesgos] Restarting scenario',
+    props<{scenario: Scenario}>()
+);
 
 
 /**
@@ -57,14 +45,9 @@ export class RestartingScenario implements Action {
  * Bypassing riesgos-effects will mean that WFC does not get updated.
  * If you want to add new data from a component, use ProductsProvided instead.
  */
-export class RiesgosDataUpdate implements Action {
-    type: string = ERiesgosActionTypes.wpsDataUpdate;
-    constructor(public payload: {processes: ImmutableProcess[], products: Product[], graph: Graph}) {}
-}
+export const riesgosDataUpdate = createAction(
+    '[Riesgos] Data update',
+    props<{processes: ImmutableProcess[], products: Product[], graph: Graph}>()
+);
 
 
-
-
-export type RiesgosActions = MetadataProvided | ProductsProvided
-            | ClickRunProcess | RestartingFromProcess
-            | ScenarioChosen | RiesgosDataUpdate;

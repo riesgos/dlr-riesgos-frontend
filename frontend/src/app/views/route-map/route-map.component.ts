@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ActivatedRoute } from '@angular/router';
-import { ScenarioChosen } from 'src/app/riesgos/riesgos.actions';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
@@ -73,7 +73,7 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const scenario = this.activeRoute.snapshot.queryParams['id'] || 'c1';
     this.olSvc.setProjection('EPSG:4326');
-    this.store.dispatch(new ScenarioChosen({ scenario }));
+    this.store.dispatch(RiesgosActions.scenarioChosen({ scenario }));
     // get processes after store was dispatched
     this.getProcesses();
   }

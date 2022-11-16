@@ -1,9 +1,9 @@
 import { ActionReducerMap } from '@ngrx/store';
 import { RiesgosState } from './riesgos/riesgos.state';
-import { riesgosReducer } from './riesgos/riesgos.reducers';
+import { reducer as riesgosReducer } from './riesgos/riesgos.reducers';
 import { RiesgosEffects } from './riesgos/riesgos.effects';
 import { FocusState } from './focus/focus.state';
-import { focusReducer } from './focus/focus.reducers';
+import { reducer as focusReducer } from './focus/focus.reducers';
 import { InteractionState } from './interactions/interactions.state';
 import { interactionReducer } from './interactions/interactions.reducer';
 import { InteractionEffects } from './interactions/interactions.effects';

@@ -4,7 +4,6 @@ import earcut from 'earcut';
 
 import { Feature } from 'ol';
 import { Vector as VectorLayer } from 'ol/layer';
-import 'ol/ol.css';
 import LayerRenderer from 'ol/renderer/Layer';
 import { FrameState } from 'ol/PluggableMap';
 import Polygon from 'ol/geom/Polygon';
@@ -286,7 +285,7 @@ export class WebGlPolygonLayer extends VectorLayer<VectorSource<Polygon>> {
         this.webGlColorFunction = opt_options.webGlColorFunction;
     }
 
-    createRenderer(): LayerRenderer<VectorLayer<VectorSource<Polygon>>> {
+    createRenderer() {
         const renderer = new WebGlPolygonRenderer(this, this.webGlColorFunction);
         return renderer;
     }

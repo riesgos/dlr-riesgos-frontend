@@ -6,6 +6,7 @@ import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { Store, select } from '@ngrx/store';
 
 import { DragBox, Select } from 'ol/interaction';
+import olLayer from 'ol/layer/Layer';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
 import { GeoJSON, KML, MVT } from 'ol/format';
@@ -18,7 +19,7 @@ import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@dlr-eoc/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
 import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 
 import { State } from 'src/app/ngrx_register';
@@ -32,12 +33,12 @@ import { ProductLayer } from '../../mappable/map.types';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { SelectEvent } from 'ol/interaction/Select';
 import VectorTileLayer from 'ol/layer/VectorTile';
-import { TileWMS, VectorTile } from 'ol/source';
-import { createTableHtml } from 'src/app/helpers/others';
+import { OSM, TileWMS, VectorTile } from 'ol/source';
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
 import { NavigationStart, Router } from '@angular/router';
 import TileLayer from 'ol/layer/Tile';
-import { Fill, Stroke, Style } from 'ol/style';
+import Geometry from 'ol/geom/Geometry';
+
 
 const mapProjection = 'EPSG:3857';
 
@@ -416,7 +417,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'Tsunami Flood Layers (CITSU)',
                 description: 'CITSU_description',
                 layers: [
-                    new CustomLayer({
+                    new CustomLayer<olVectorLayer<olVectorSource<any>>>({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/kml/citsu_valparaiso_vinna.kml',
@@ -444,7 +445,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         if (scenario === 'p1') {
 
 
-            const distributionLines = new CustomLayer({
+            const distributionLines = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -460,7 +461,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'distribution_lines',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=12&'
             });
-            const substations = new CustomLayer({
+            const substations = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -476,7 +477,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'substations',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=16&'
             });
-            const nonConventional = new CustomLayer({
+            const nonConventional = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -492,7 +493,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'generation_nonConventional',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=25&'
             });
-            const conventional = new CustomLayer({
+            const conventional = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -508,7 +509,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'generation_conventional',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=33&'
             });
-            const transmission = new CustomLayer({
+            const transmission = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -544,7 +545,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: 'sniLayers',
                 name: 'SNI',
                 layers: [
-                    new CustomLayer({
+                    new CustomLayer<olVectorLayer<olVectorSource<Geometry>>>({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/ecuador_energy/linea_transmision_ecuador.geojson',
@@ -562,7 +563,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         // legendImg: 'assets/layer-preview/citsu-96px.jpg',
                         popup: true
                     }),
-                    new CustomLayer({
+                    new CustomLayer<olVectorLayer<olVectorSource<Geometry>>>({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/ecuador_energy/linea_subtransmision_ecuador.geojson',
@@ -611,7 +612,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         applyStyle(vectorTile, greyScale, 'planet0-12');
 
-        const geoserviceVTiles = new CustomLayer({
+        const geoserviceVTiles = new CustomLayer<VectorTileLayer>({
             name: 'OpenMapStyles',
             id: 'planet_eoc_vector_tiles',
             attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,

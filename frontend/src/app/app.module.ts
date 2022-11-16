@@ -28,7 +28,6 @@ import { RouteMapComponent } from './views/route-map/route-map.component';
 import { MapComponent } from './components/map/map.component';
 import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
 import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
-import { ScreenshotComponent } from './components/screenshot/screenshot.component';
 import { FormStringselectFieldComponent } from './components/config_wizard/form-stringselect-field/form-stringselect-field.component';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 import { GraphvizcompComponent } from './components/graphvizcomp/graphvizcomp.component';
@@ -48,9 +47,6 @@ import { RiesgosLayerentryComponent } from './components/riesgos_layer_control/l
 import { LayerentryGroupComponent } from './components/riesgos_layer_control/layerentry-group/layerentry-group.component';
 import { VectorLegendComponent } from './components/dynamic/vector-legend/vector-legend.component';
 import { CanvasComponent } from './components/dynamic/vector-legend/canvas/canvas.component';
-import { ChangedetectorComponent } from './components/changedetector/changedetector.component';
-import { BlinkerComponent } from './components/changedetector/blinker/blinker.component';
-import { FpserComponent } from './components/changedetector/fpser/fpser.component';
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
 import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
@@ -107,7 +103,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     LayercontrolComponent,
     FormBboxFieldComponent,
     VarDirective,
-    ScreenshotComponent,
     FormStringselectFieldComponent,
     LanguageSwitcherComponent,
     GraphvizcompComponent,
@@ -131,9 +126,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     ReversePipe,
     RegexTranslatePipe,
     SimpleTranslatePipe,
-    ChangedetectorComponent,
-    BlinkerComponent,
-    FpserComponent,
     ThemePickerComponent,
     GroupSliderComponent,
     InfoTableComponentComponent,

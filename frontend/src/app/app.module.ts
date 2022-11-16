@@ -11,7 +11,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { MapOlModule } from '@dlr-eoc/map-ol';
 import { CoreUiModule } from '@dlr-eoc/core-ui';
 import { LayersModule } from '@dlr-eoc/services-layers';
@@ -60,7 +60,7 @@ import { ProgressService } from './components/global-progress/progress.service';
 import { FooterService } from './components/global-footer/footer.service';
 import { AlertService } from './components/global-alert/alert.service';
 
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
 import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-translate.pipe';
 import { SimpleTranslatePipe } from './services/simplifiedTranslation/simple-translate.pipe';
@@ -80,20 +80,12 @@ import { ProxyInterceptor } from './services/interceptors/ProxyInterceptor';
 import { DamagePopupComponent } from './components/dynamic/damage-popup/damage-popup.component';
 import { GroupedBarChartComponent } from './components/grouped-bar-chart/grouped-bar-chart.component';
 import { EconomicDamagePopupComponent } from './components/dynamic/economic-damage-popup/economic-damage-popup.component';
+import { ConfigService } from './services/configService/configService';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
 
 
-export const APP_CONFIG = new InjectionToken<AppConfig>('app.config');
-
-export interface AppConfig {
-  "production": boolean,
-  "middlewareUrl": string,
-  "useProxy": false,
-  "proxyUrl": string,
-  "gfzUseStaging": false
-}
 
 
 
@@ -182,20 +174,16 @@ export interface AppConfig {
   providers: [
     {
       multi: true,
-      provide: APP_CONFIG,
-      deps: [HttpClient],
-      useFactory: (http: HttpClient) => {
-        return () => {
-          return http.get<AppConfig>(`assets/config/config.${environment.type}.json`);
-        }
+      provide: APP_INITIALIZER,
+      deps: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return () => configService.loadConfig();
       }
-
     }, {
       multi: true,
       provide: HTTP_INTERCEPTORS,
       useClass: ProxyInterceptor
     },
-    ProxyInterceptor,  // provided here *another* time explicitly, so that it can be specifically injected in other components, too
     AlertService,
     DisclaimerService,
     FooterService,

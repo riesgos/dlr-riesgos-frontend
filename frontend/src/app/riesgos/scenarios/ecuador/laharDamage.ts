@@ -481,9 +481,9 @@ export class DeusLahar implements ExecutableProcess, WizardableProcess {
     private deus: Deus;
     private vulnerability: VulnerabilityModelEcuador;
 
-    constructor(http: HttpClient) {
-        this.deus = new Deus(http);
-        this.vulnerability = new VulnerabilityModelEcuador(http);
+    constructor(http: HttpClient, middleWareUrl: string) {
+        this.deus = new Deus(http, middleWareUrl);
+        this.vulnerability = new VulnerabilityModelEcuador(http, middleWareUrl);
     }
 
     execute(

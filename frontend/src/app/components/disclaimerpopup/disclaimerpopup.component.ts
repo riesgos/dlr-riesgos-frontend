@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { AppConfig, APP_CONFIG } from 'src/app/app.module';
+import { APP_INITIALIZER, Component, Inject, OnInit } from '@angular/core';
+import { ConfigService } from 'src/app/services/configService/configService';
 import { StoreService } from 'src/app/services/localStorage/store.service';
 
 @Component({
@@ -14,9 +14,9 @@ export class DisclaimerpopupComponent implements OnInit {
 
   constructor(
     private storageService: StoreService,
-    @Inject(APP_CONFIG) private appConfig: AppConfig
+    private configService: ConfigService
   ) {
-    this.showModal = this.appConfig.production ? true : false;
+    this.showModal = this.configService.getConfig().production ? true : false;
   }
 
   ngOnInit() {

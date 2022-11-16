@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { APP_INITIALIZER, Inject, Injectable } from '@angular/core';
 import { Process, Product } from './riesgos.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { RiesgosScenarioMetadata } from './riesgos.state';
@@ -41,6 +41,7 @@ import { LaharReliability, countryEcuador, hazardLahar, damageConsumerAreasEcuad
 import { FloodMayRun } from './scenarios/ecuador/geomerHydrological';
 import { vei, direction } from './scenarios/ecuador/lahar';
 import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './scenarios/ecuador/vulnerability';
+import { ConfigService } from '../services/configService/configService';
 
 
 
@@ -49,7 +50,8 @@ import { assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './
 export class RiesgosService {
 
   constructor(
-      private httpClient: HttpClient
+      private httpClient: HttpClient,
+      private configService: ConfigService
     ) {}
 
 
@@ -79,14 +81,14 @@ export class RiesgosService {
     switch (scenario) {
       case 'c1':
         processes = [
-          new QuakeLedger(this.httpClient),
+          new QuakeLedger(this.httpClient, this.configService.getConfig().middlewareUrl),
           EqSelection,
-          new Shakyground(this.httpClient),
-          new ExposureModel(this.httpClient),
-          new EqDeus(this.httpClient),
-          new TsService(this.httpClient),
-          new TsDeus(this.httpClient),
-          new EqReliability(this.httpClient)
+          new Shakyground(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new ExposureModel(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new EqDeus(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new TsService(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new TsDeus(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new EqReliability(this.httpClient, this.configService.getConfig().middlewareUrl)
         ];
         products = [
           modelChoice,
@@ -100,19 +102,18 @@ export class RiesgosService {
           countryChile, hazardEq,
           damageConsumerAreas, schema,
           tsDamageWms,
-          // physicalImpact
         ];
         break;
       case 'p1':
         processes = [
-          new QuakeLedgerPeru(this.httpClient),
+          new QuakeLedgerPeru(this.httpClient, this.configService.getConfig().middlewareUrl),
           EqSelectionPeru,
-          new ShakygroundPeru(this.httpClient),
-          new ExposureModelPeru(this.httpClient),
-          new EqDeusPeru(this.httpClient),
-          new TsServicePeru(this.httpClient),
-          new TsDeusPeru(this.httpClient),
-          new EqReliabilityPeru(this.httpClient)
+          new ShakygroundPeru(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new ExposureModelPeru(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new EqDeusPeru(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new TsServicePeru(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new TsDeusPeru(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new EqReliabilityPeru(this.httpClient, this.configService.getConfig().middlewareUrl)
         ];
         products = [
           modelChoicePeru, initialExposurePeru, initialExposurePeruReference,
@@ -130,21 +131,14 @@ export class RiesgosService {
       case 'e1':
         processes = [
           VeiProvider,
-
-          new AshfallService(this.httpClient),
-          new AshfallExposureModel(this.httpClient),
-          new DeusAshfall(this.httpClient),
-
-          new LaharWrapper(this.httpClient),
-          new LaharExposureModel(this.httpClient),
-          new DeusLahar(this.httpClient),
-
-          new DeusLaharAndAshfall(this.httpClient),
-          new LaharReliability(this.httpClient),
-
-          // FloodMayRunProcess,
-          // geomerFlood,
-          // new FloodDamageProcess(this.httpClient)
+          new AshfallService(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new AshfallExposureModel(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new DeusAshfall(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new LaharWrapper(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new LaharExposureModel(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new DeusLahar(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new DeusLaharAndAshfall(this.httpClient, this.configService.getConfig().middlewareUrl),
+          new LaharReliability(this.httpClient, this.configService.getConfig().middlewareUrl),
         ];
         products = [
           schemaEcuador, lonminEcuador, lonmaxEcuador, latminEcuador, latmaxEcuador, querymodeEcuador, assettypeEcuador, modelEcuador,
@@ -158,9 +152,7 @@ export class RiesgosService {
           laharDamageM, laharDamageMRef,
           laharAshfallDamageM,
           countryEcuador, hazardLahar,
-          damageConsumerAreasEcuador,
-          // userInputSelectedOutburst, hydrologicalSimulation, durationTiff, velocityTiff, depthTiff,
-          // damageBuildings, damageManzanasGeojson
+          damageConsumerAreasEcuador
         ];
         break;
       default:

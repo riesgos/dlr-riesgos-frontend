@@ -39,7 +39,7 @@ export const intensityUnit: WpsData & Product = {
 
 // https://rz-vm140.gfz-potsdam.de:8443/wps/WebProcessingService?service=WPS&request=DescribeProcess&version=2.0.0&identifier=org.n52.gfz.riesgos.algorithm.impl.NeptunusProcess
 export class Neptunus extends WpsProcess {
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         super(
             'neptunus',
             'Neptunus',
@@ -50,7 +50,8 @@ export class Neptunus extends WpsProcess {
             `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
             '2.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
     }
 }

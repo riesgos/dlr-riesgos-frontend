@@ -67,7 +67,7 @@ export const tsWmsPeru: WpsData & WmsLayerProduct = {
 
 export class TsWmsServicePeru extends WpsProcess {
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         super(
             'get_scenario_peru',
             'Earthquake/tsunami interaction',
@@ -78,7 +78,8 @@ export class TsWmsServicePeru extends WpsProcess {
             'https://riesgos.52north.org/wps',
             '1.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
     }
 }
@@ -102,9 +103,9 @@ export class TsServicePeru implements WizardableProcess, ExecutableProcess {
     readonly requiredProducts: string[];
     readonly providedProducts: string[];
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpClient: HttpClient, middleWareUrl: string) {
         this.state = new ProcessStateUnavailable();
-        this.tsWmsService = new TsWmsServicePeru(httpClient);
+        this.tsWmsService = new TsWmsServicePeru(httpClient, middleWareUrl);
         this.requiredProducts = [selectedEqPeru.uid],
         this.providedProducts = this.tsWmsService.providedProducts;
     }

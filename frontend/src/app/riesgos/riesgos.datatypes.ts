@@ -111,7 +111,8 @@ export class WpsProcess implements ExecutableProcess {
         readonly url: string,
         readonly wpsVersion: WpsVersion,
         private httpClient: HttpClient,
-        public state = new ProcessStateUnavailable()
+        public state = new ProcessStateUnavailable(),
+        private middlewareUrl: string
         ) {}
 
     public execute(
@@ -129,7 +130,7 @@ export class WpsProcess implements ExecutableProcess {
                 processId: this.id,
                 url: this.url
             };
-            const results$ = from(execute("", data, this.httpClient));
+            const results$ = from(execute(this.middlewareUrl, data, this.httpClient));
 
             const products$ = results$.pipe(
 

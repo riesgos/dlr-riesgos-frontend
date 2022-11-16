@@ -184,7 +184,7 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
 
     wizardProperties: WizardProperties;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, middleWareUrl: string) {
         super(
             'ashfall-service',
             'AshfallService',
@@ -196,7 +196,8 @@ export class AshfallService extends WpsProcess implements WizardableProcess {
             'http://localhost:5000/wps',
             '1.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
         this.wizardProperties = {
             providerName: 'IGN',

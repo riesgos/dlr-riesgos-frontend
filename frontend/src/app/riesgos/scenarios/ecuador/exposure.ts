@@ -288,7 +288,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
 
   wizardProperties: WizardProperties;
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, middleWareUrl: string) {
     super(
       'AshfallExposure',
       'Ashfall exposure model',
@@ -299,7 +299,8 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
       `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
       '1.0.0',
       http,
-      new ProcessStateUnavailable()
+      new ProcessStateUnavailable(),
+      middleWareUrl
     );
     this.wizardProperties = {
       shape: 'building',
@@ -331,7 +332,7 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
 
   wizardProperties: WizardProperties;
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, middleWareUrl: string) {
     super(
       'LaharExposure',
       'Lahar exposure model',
@@ -343,7 +344,8 @@ export class LaharExposureModel extends WpsProcess implements WizardableProcess 
       `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
       '1.0.0',
       http,
-      new ProcessStateUnavailable()
+      new ProcessStateUnavailable(),
+      middleWareUrl
     );
     this.wizardProperties = {
       shape: 'building',

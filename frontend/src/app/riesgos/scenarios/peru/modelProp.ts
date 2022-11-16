@@ -23,7 +23,7 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         super(
             'Vulnerability',
             'EQ Vulnerability Model',
@@ -34,7 +34,8 @@ export class VulnerabilityModelPeru extends WpsProcess implements WizardableProc
             `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
             '1.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
 
         this.wizardProperties = {

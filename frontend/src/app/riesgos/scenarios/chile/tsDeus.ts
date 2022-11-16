@@ -200,7 +200,7 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
     private vulnerabilityProcess: VulnerabilityModel;
     private neptunusProcess: Neptunus;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         this.state = new ProcessStateUnavailable();
         this.uid = 'TS-Deus';
         this.name = 'Multihazard_damage_estimation/Tsunami';
@@ -214,8 +214,8 @@ export class TsDeus implements ExecutableProcess, WizardableProcess {
             wikiLink: 'ExposureAndVulnerability'
         };
 
-        this.vulnerabilityProcess = new VulnerabilityModel(http);
-        this.neptunusProcess = new Neptunus(http);
+        this.vulnerabilityProcess = new VulnerabilityModel(http, middleWareUrl);
+        this.neptunusProcess = new Neptunus(http, middleWareUrl);
     }
 
     execute(

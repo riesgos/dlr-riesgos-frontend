@@ -161,7 +161,7 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
 
   public wizardProperties: WizardProperties;
 
-  constructor(httpClient: HttpClient) {
+  constructor(httpClient: HttpClient, middleWareUrl: string) {
     super(
       'Exposure',
       'EQ Exposure Model',
@@ -172,7 +172,8 @@ export class ExposureModel extends WpsProcess implements WizardableProcess {
       `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
       '1.0.0',
       httpClient,
-      new ProcessStateUnavailable()
+      new ProcessStateUnavailable(),
+      middleWareUrl
     );
 
     this.wizardProperties = {

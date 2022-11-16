@@ -146,7 +146,7 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         super(
             'Reliability',
             'System reliability after Lahar',
@@ -157,7 +157,8 @@ export class LaharReliability extends WpsProcess implements WizardableProcess {
             'https://riesgos.52north.org/javaps/service',
             '2.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
         this.wizardProperties = {
             providerName: 'TUM',

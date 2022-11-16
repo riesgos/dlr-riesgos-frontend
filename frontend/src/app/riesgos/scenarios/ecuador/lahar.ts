@@ -99,7 +99,7 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         super(
             'LaharModel',
             'Lahar',
@@ -107,10 +107,11 @@ export class LaharWps extends WpsProcess implements WizardableProcess {
             [laharWms.uid, laharShakemap.uid],
             'gs:LaharModel',
             'Process_description_lahar_simulation',
-            'https://riesgos.52north.org/geoserver/ows',   // formerly http://91.250.85.221/wps/WebProcessingService
+            'https://riesgos.52north.org/geoserver/ows',
             '1.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
         this.wizardProperties = {
             providerName: 'TUM',

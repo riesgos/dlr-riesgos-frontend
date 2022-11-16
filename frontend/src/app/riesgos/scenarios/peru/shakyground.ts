@@ -95,7 +95,7 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         super(
             'ShakygroundPeru',
             'GroundmotionService',
@@ -106,7 +106,8 @@ export class ShakygroundPeru extends WpsProcess implements WizardableProcess {
             `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
             '1.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
         this.wizardProperties = {
             shape: 'earthquake',

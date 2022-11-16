@@ -68,7 +68,7 @@ export const tsWms: WpsData & WmsLayerProduct = {
 
 export class TsWmsService extends WpsProcess {
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         super(
             'get_scenario',
             'Earthquake/tsunami interaction',
@@ -79,7 +79,8 @@ export class TsWmsService extends WpsProcess {
             'https://riesgos.52north.org/wps',
             '1.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
     }
 }
@@ -103,9 +104,9 @@ export class TsService implements WizardableProcess, ExecutableProcess {
     readonly requiredProducts: string[];
     readonly providedProducts: string[];
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpClient: HttpClient, middleWareUrl: string) {
         this.state = new ProcessStateUnavailable();
-        this.tsWmsService = new TsWmsService(httpClient);
+        this.tsWmsService = new TsWmsService(httpClient, middleWareUrl);
         this.requiredProducts = [selectedEq.uid],
         this.providedProducts = this.tsWmsService.providedProducts;
     }

@@ -189,10 +189,10 @@ export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
     private vulnerabilityProcess: VulnerabilityModelPeru;
     private deusProcess: Deus;
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         this.state = new ProcessStateUnavailable();
-        this.vulnerabilityProcess = new VulnerabilityModelPeru(http);
-        this.deusProcess = new Deus(http);
+        this.vulnerabilityProcess = new VulnerabilityModelPeru(http, middleWareUrl);
+        this.deusProcess = new Deus(http, middleWareUrl);
     }
 
     execute(

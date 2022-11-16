@@ -5,9 +5,7 @@ import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduc
     VectorLayerProduct, WmsLayerProduct, WmsLayerDescription, isMultiVectorLayerProduct,
     MultiVectorLayerProduct, 
     isMappableProduct} from './riesgos.datatypes.mappable';
-import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { Feature as olFeature } from 'ol';
-import { bboxPolygon } from '@turf/turf';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { WMSCapabilities } from 'ol/format';
 import { map } from 'rxjs/operators';
@@ -23,12 +21,15 @@ import { GeoJSON } from 'ol/format';
 import Polygon from 'ol/geom/Polygon';
 import { VectorLegendComponent } from '../components/dynamic/vector-legend/vector-legend.component';
 import { WebGlPolygonLayer } from '../helpers/custom_renderers/renderers/polygon.renderer';
-import { bbox as tBbox, buffer as tBuffer } from '@turf/turf';
+import tBbox from '@turf/bbox';
+import tBuffer from '@turf/buffer';
+import bboxPolygon from '@turf/bbox-polygon';
+import { featureCollection, FeatureCollection } from '@turf/helpers';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import Geometry from 'ol/geom/Geometry';
 import { Fill, Stroke, Style } from 'ol/style';
 import { LayersService } from '@dlr-eoc/services-layers';
-import { ProxyInterceptor } from '../services/interceptors/ProxyInterceptor';
+import { ConfigService } from '../services/configService/configService';
 
 
 
@@ -55,7 +56,7 @@ export class LayerMarshaller  {
         public layersSvc: LayersService,
         private store: Store<State>,
         private translator: SimplifiedTranslationService,
-        private proxyInterceptor: ProxyInterceptor
+        private configService: ConfigService
         ) {}
 
     productsToLayers(products: Product[]): Observable<ProductLayer[]> {
@@ -537,8 +538,8 @@ export class LayerMarshaller  {
             if (paras) {
 
                 let wmsUrl = `${paras.origin}${paras.path}`;
-                if (this.proxyInterceptor.needsProxy(wmsUrl)) {
-                    wmsUrl = `${this.proxyInterceptor.proxify(paras.origin)}${paras.path}`;   
+                if (this.configService.needsProxy(wmsUrl)) {
+                    wmsUrl = `${this.configService.proxify(paras.origin)}${paras.path}`;   
                     console.log(`Proxified ${wmsUrl}`);
                 }
 

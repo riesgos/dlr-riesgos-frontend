@@ -52,7 +52,7 @@ export interface DeusGetFeatureInfo {
 
 
 export class Deus extends WpsProcess {
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, middleWareUrl: string) {
         super(
             'deus',
             'DEUS',
@@ -63,7 +63,8 @@ export class Deus extends WpsProcess {
             `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
             '1.0.0',
             http,
-            new ProcessStateUnavailable()
+            new ProcessStateUnavailable(),
+            middleWareUrl
         );
     }
 }

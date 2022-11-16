@@ -450,9 +450,9 @@ export class DeusAshfall implements ExecutableProcess, WizardableProcess {
     private volcanus: Volcanus;
     private vulnerability: VulnerabilityModelEcuador;
 
-    constructor(http: HttpClient) {
-        this.volcanus = new Volcanus(http);
-        this.vulnerability = new VulnerabilityModelEcuador(http);
+    constructor(http: HttpClient, middleWareUrl: string) {
+        this.volcanus = new Volcanus(http,middleWareUrl);
+        this.vulnerability = new VulnerabilityModelEcuador(http, middleWareUrl);
     }
 
     execute(

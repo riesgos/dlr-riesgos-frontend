@@ -26,7 +26,6 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
 import { intensityParameter, intensityUnit, Neptunus, tsunamiGeoTiff } from '../peru/neptunus';
-import { customStyleEconomicChileNew, customStyleMedinaNew, customStyleSuppasriNew } from '../../styles';
 
 
 
@@ -94,7 +93,6 @@ export const tsDamageWms: WpsData & MappableProduct = {
                 econLayer.icon = 'dot-circle';
                 econLayer.params.STYLES = 'style-cum-loss-chile-plasma';
                 econLayer.legendImg += '&style=style-cum-loss-chile-plasma';
-                // econLayer.params.SLD_BODY = customStyleEconomicChileNew.replace('{{{{layername}}}}', econLayer.params.LAYERS  );
                 const damage = +(metaDataValue.total.loss_value);
                 const damageFormatted = toDecimalPlaces(damage / 1000000, 2) + ' MUSD';
                 const totalDamage = +(metaDataValue.total.cum_loss);
@@ -135,13 +133,9 @@ export const tsDamageWms: WpsData & MappableProduct = {
                 if (chosenSchema === 'SUPPASRI2013_v2.0') {
                     damageLayer.legendImg += `&style=style-damagestate-suppasri-plasma`;
                     damageLayer.params.STYLES = `style-damagestate-suppasri-plasma`;
-                    // damageLayer.params.STYLES = 'custom_style_suppasri_new';
-                    // damageLayer.params.SLD_BODY = customStyleSuppasriNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
                 } else if (chosenSchema === 'Medina_2019') {
                     damageLayer.legendImg += `&style=style-damagestate-medina-plasma`;
                     damageLayer.params.STYLES = 'style-damagestate-medina-plasma';
-                    // damageLayer.params.STYLES = 'custom_style_medina_new';
-                    // damageLayer.params.SLD_BODY = customStyleMedinaNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
                 }
 
                 damageLayer.popup = {

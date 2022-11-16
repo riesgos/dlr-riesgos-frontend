@@ -1,7 +1,6 @@
 # Cleanup
 
 - include english legend in deus
-- remove assets/styles?
 - create new legend component (with gradients)
 - auto-create license-file
 - switch

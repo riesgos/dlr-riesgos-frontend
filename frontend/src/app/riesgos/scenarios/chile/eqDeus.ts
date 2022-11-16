@@ -68,8 +68,6 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 econLayer.icon = 'dot-circle';
                 econLayer.params.STYLES = 'style-cum-loss-chile-plasma';
                 econLayer.legendImg += '&style=style-cum-loss-chile-plasma';
-                // econLayer.params.SLD = 'https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_cum_loss_chile_plasma.sld';
-                // econLayer.params.SLD_BODY = customStyleEconomicChileNew.replace('{{{{layername}}}}', econLayer.params.LAYERS  );
                 const totalDamage = +(metaDataValue.total.loss_value);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                 econLayer.dynamicDescription = {
@@ -104,8 +102,6 @@ export const eqDamageWms: WpsData & MappableProduct = {
                 damageLayer.params.STYLES = 'style-damagestate-sara-plasma';
                 damageLayer.legendImg += '&style=style-damagestate-sara-plasma';
                 delete damageLayer.params.SLD_BODY;
-                // damageLayer.params.SLD = 'https://raw.githubusercontent.com/riesgos/dlr-riesgos-frontend/plasma-styling/frontend/src/assets/styles/style_damagestate_sara_plasma.sld';
-                // damageLayer.params.SLD_BODY = customStyleSaraNew.replace('{{{{layername}}}}', damageLayer.params.LAYERS  );
                 damageLayer.popup = {
                     dynamicPopup: {
                         component: DamagePopupComponent,

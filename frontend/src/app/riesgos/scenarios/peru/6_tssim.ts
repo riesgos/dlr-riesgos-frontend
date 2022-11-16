@@ -3,7 +3,7 @@ import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_p
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { selectedEqPeru } from './eqselection';
+import { selectedEqPeru } from './2_eqselection';
 import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { FeatureCollection } from '@turf/helpers';

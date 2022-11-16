@@ -6,7 +6,7 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { Observable } from 'rxjs';
-import { laharVelocityShakemapRef, laharHeightShakemapRef } from './laharWrapper';
+import { laharVelocityShakemapRef, laharHeightShakemapRef } from './5_lahar';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import Geometry from 'ol/geom/Geometry';
 

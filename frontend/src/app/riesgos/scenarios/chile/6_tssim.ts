@@ -1,7 +1,7 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
 import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { selectedEq } from './eqselection';
+import { selectedEq } from './2_eqselection';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';

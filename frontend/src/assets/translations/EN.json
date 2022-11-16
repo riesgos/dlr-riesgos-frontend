@@ -364,7 +364,6 @@
     "flood_depth": "Flood depth",
     "from_to": "from\\to",
     "geomer": "geomer",
-    "geomerFloodDescription": "This service provides the option to simulate a break of a lake created by a lahar. <b>Note</b>: Only works with lahars moving north of Cotopaxi.",
     "gmpe": "Ground motion prediction equation",
     "hide_info": "Hide info",
     "instructions bbox": "You can now draw a  bounding box on the map.",

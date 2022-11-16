@@ -6,30 +6,30 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import { HttpClient } from '@angular/common/http';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
-import { eqShakemapRefPeru } from './shakyground';
+import { eqShakemapRef } from './3_eqsim';
 import { Observable } from 'rxjs';
 import { greenYellowRedRange } from 'src/app/helpers/colorhelpers';
 import Geometry from 'ol/geom/Geometry';
 
 
 
-export const countryPeru: WpsData & Product = {
-    uid: 'systemreliability_country_peru',
+export const countryChile: WpsData & Product = {
+    uid: 'systemreliability_country_chile',
     description: {
         id: 'country',
-        title: '',
+        title: 'country',
         defaultValue: 'chile',
         description: 'What country are we working in?',
         reference: false,
         type: 'literal',
         format: 'text/plain'
     },
-    value: 'peru'
+    value: 'chile'
 };
 
 
-export const hazardEqPeru: WpsData & Product = {
-    uid: 'systemreliability_hazard_eq_peru',
+export const hazardEq: WpsData & Product = {
+    uid: 'systemreliability_hazard_eq',
     description: {
         id: 'hazard',
         title: 'hazard',
@@ -42,8 +42,8 @@ export const hazardEqPeru: WpsData & Product = {
     value: 'earthquake'
 };
 
-export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
-    uid: 'systemreliability_damage_consumerareas_peru',
+export const damageConsumerAreas: WpsData & Product & VectorLayerProduct = {
+    uid: 'systemreliability_damage_consumerareas',
     description: {
         id: 'damage_consumer_areas',
         title: 'damage_consumer_areas',
@@ -74,7 +74,8 @@ export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
             },
             detailPopupHtml: (props: object) => {
                 const selectedProps = {
-                    'Area': props['Area'],
+                    '{{ Name }}': props['Name'],
+                    '{{ Population }}': props['population'],
                     '{{ Prob_Interuption }}': props['Prob_Disruption'],
                 };
                 return createKeyValueTableHtml('{{ PowerGrid }}', selectedProps, 'medium');
@@ -116,7 +117,7 @@ export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
 };
 
 
-export class EqReliabilityPeru extends WpsProcess implements WizardableProcess {
+export class EqReliability extends WpsProcess implements WizardableProcess {
 
     readonly wizardProperties: WizardProperties;
 
@@ -124,8 +125,8 @@ export class EqReliabilityPeru extends WpsProcess implements WizardableProcess {
         super(
             'Reliability',
             'System reliability after EQ',
-            [eqShakemapRefPeru, countryPeru, hazardEqPeru].map(p => p.uid),
-            [damageConsumerAreasPeru].map(p => p.uid),
+            [eqShakemapRef, countryChile, hazardEq].map(p => p.uid),
+            [damageConsumerAreas].map(p => p.uid),
             'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess',
             'Description_system_reliability',
             'https://riesgos.52north.org/javaps/service',
@@ -148,7 +149,7 @@ export class EqReliabilityPeru extends WpsProcess implements WizardableProcess {
         doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
 
         const newInputs = inputProducts.map(p => {
-            if (p.uid === eqShakemapRefPeru.uid) {
+            if (p.uid === eqShakemapRef.uid) {
                 return {
                     ... p,
                     description: {

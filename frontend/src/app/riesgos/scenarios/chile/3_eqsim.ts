@@ -2,7 +2,7 @@ import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.data
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { selectedEq } from './eqselection';
+import { selectedEq } from './2_eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';

@@ -493,7 +493,6 @@
     "flood_depth": "Produndidad de inundación",
     "from_to": "desde\\a",
     "geomer": "geomer",
-    "geomerFloodDescription": "Este servicio ofrece la opción de simular la ruptura de un lago creado por un lahar. <b> Nota</b>: Solo funciona con lahares que se mueven al norte de Cotopaxi.",
     "generation_conventional": "Generación / Centrales Convencionales",
     "generation_nonConventional": "Generación / Centrales No Convencionales",
     "gmpe": "Ecuación de predicción de aceleración sísmica",

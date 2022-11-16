@@ -1,12 +1,12 @@
 import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { initialExposureRef } from './exposure';
+import { initialExposureRef } from './4_exposure';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, Observable } from 'rxjs';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
-import { eqShakemapRef } from './shakyground';
+import { eqShakemapRef } from './3_eqsim';
 import { Deus } from './deus';
 import { map, switchMap, take } from 'rxjs/operators';
 import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';

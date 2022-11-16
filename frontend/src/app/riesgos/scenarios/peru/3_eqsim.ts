@@ -2,11 +2,11 @@ import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.data
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { selectedEqPeru } from './eqselection';
+import { selectedEqPeru } from './2_eqselection';
 import { HttpClient } from '@angular/common/http';
 import { FeatureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
-import { Gmpe, VsGrid } from '../chile/shakyground';
+import { Gmpe, VsGrid } from '../chile/3_eqsim';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';

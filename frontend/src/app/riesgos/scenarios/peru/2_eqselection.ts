@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 import { VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
-import { availableEqs } from './quakeledger';
+import { availableEqsPeru, etypePeru } from './1_catalog';
 import { FeatureCollection, featureCollection } from '@turf/helpers';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import Geometry from 'ol/geom/Geometry';
@@ -14,8 +14,8 @@ import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-tab
 
 
 
-export const userinputSelectedEq: FeatureSelectUconfProduct = {
-    uid: 'eq_selectedRow',
+export const userinputSelectedEqPeru: FeatureSelectUconfProduct = {
+    uid: 'selectedRowPeru',
     description: {
         featureSelectionOptions: {},
         defaultValue: null,
@@ -29,8 +29,8 @@ export const userinputSelectedEq: FeatureSelectUconfProduct = {
 };
 
 
-export const selectedEq: WpsData & VectorLayerProduct = {
-    uid: 'EqSelection_quakeMLFile',
+export const selectedEqPeru: WpsData & VectorLayerProduct = {
+    uid: 'EqSelection_quakeMLFilePeru',
     description: {
         id: 'quakeMLFile',
         title: '',
@@ -107,13 +107,13 @@ export const selectedEq: WpsData & VectorLayerProduct = {
 
 
 
-export const EqSelection: WizardableProcess & ExecutableProcess & ProductTransformingProcess = {
-    uid: 'EqSelection',
+export const EqSelectionPeru: WizardableProcess & ExecutableProcess & ProductTransformingProcess = {
+    uid: 'EqSelectionPeru',
     name: 'Select earthquake',
     description: 'select_eq_description',
     state: { type: ProcessStateTypes.unavailable },
-    requiredProducts: [availableEqs, userinputSelectedEq].map(p => p.uid),
-    providedProducts: [selectedEq.uid],
+    requiredProducts: [availableEqsPeru, userinputSelectedEqPeru].map(p => p.uid),
+    providedProducts: [selectedEqPeru.uid],
     wizardProperties: {
         providerName: '',
         providerUrl: '',
@@ -125,36 +125,35 @@ export const EqSelection: WizardableProcess & ExecutableProcess & ProductTransfo
      * We use this selection as the value for `selectedEq`.
      */
     execute: (inputs: Product[]): Observable<Product[]> => {
-        const eqVal = inputs.find(i => i.uid === userinputSelectedEq.uid).value;
+        const eqVal = inputs.find(i => i.uid === userinputSelectedEqPeru.uid).value;
         return of([{
-            ...selectedEq,
+            ...selectedEqPeru,
             value: eqVal
         }]);
     },
-
 
     onProductAdded: (newProduct: Product, allProducts: Product[]): Product[] => {
         switch (newProduct.uid) {
 
             // Wait for eq-catalogue to return its data (`selectedEqs`)
             // Once they are available, use those values as selectable options for `userinputSelectedEq`
-            case availableEqs.uid:
+            case availableEqsPeru.uid:
                 const options: {[key: string]: FeatureCollection} = {};
                 for (const feature of newProduct.value[0].features) {
                     const key = getEqKey(feature);
                     options[key] = featureCollection([feature]);
                 }
 
-                userinputSelectedEq.description.featureSelectionOptions = options;
-                userinputSelectedEq.description.defaultValue = [Object.values(options)[0]];
+                userinputSelectedEqPeru.description.featureSelectionOptions = options;
+                userinputSelectedEqPeru.description.defaultValue = [Object.values(options)[0]];
 
-                return [userinputSelectedEq];
+                return [userinputSelectedEqPeru];
 
             // wait for user to have selected an eq.
             // when selection is made, update the styling of the available eqs
-            case userinputSelectedEq.uid:
+            case userinputSelectedEqPeru.uid:
                 const selectedEqId = newProduct.value[0].features[0].id;
-                const eqsData = allProducts.find(p => p.uid === availableEqs.uid);
+                const eqsData = allProducts.find(p => p.uid === availableEqsPeru.uid);
                 const allFeatures = eqsData.value[0].features;
                 for (const feature of allFeatures) {
                     if (feature.id === selectedEqId) {

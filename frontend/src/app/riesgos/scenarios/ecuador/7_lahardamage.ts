@@ -1,11 +1,11 @@
 import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { ashfallDamageMRef } from './ashfallDamage';
-import { laharVelocityShakemapRef } from './laharWrapper';
+import { ashfallDamageMRef } from './4_ashfalldamage';
+import { laharVelocityShakemapRef } from './5_lahar';
 import { Deus } from '../chile/deus';
 import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
 import { Observable } from 'rxjs';
-import { schemaEcuador, initialExposureLaharRef } from './exposure';
+import { schemaEcuador, initialExposureLaharRef } from './3_exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';

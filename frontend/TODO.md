@@ -12,7 +12,7 @@
 
 
 # Ukis - ongoing errors
-- frontend must never have an own version of ol installed ... otherwise, `instanceof`checks in @eoc-dlr/maps-ol no longer work.
+- frontend must never have an own version of ol installed ... otherwise, `instanceof`-checks in @eoc-dlr/maps-ol won't work.
 - **ol.css**: 
     - Ukis 10.1.0 has made changes to its import of ol.css
     - It attempts to load ol.css per http - but since 10.1.0 this request errors out

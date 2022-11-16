@@ -3,15 +3,15 @@ import { WizardableProcess, WizardProperties } from 'src/app/components/config_w
 import { Observable } from 'rxjs';
 import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
 import { map, switchMap } from 'rxjs/operators';
-import { laharVelocityShakemapRef } from './laharWrapper';
+import { laharVelocityShakemapRef } from './5_lahar';
 import { HttpClient } from '@angular/common/http';
 import { MultiVectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { schemaEcuador } from './exposure';
+import { schemaEcuador } from './3_exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
-import { ashfallDamageM, ashfallDamageMRef } from './ashfallDamage';
-import { laharLossProps, laharTransitionProps, laharUpdatedExposureProps, laharDamageMRef } from './laharDamage';
+import { ashfallDamageM, ashfallDamageMRef } from './4_ashfalldamage';
+import { laharLossProps, laharTransitionProps, laharUpdatedExposureProps, laharDamageMRef } from './7_lahardamage';
 import { createGroupedBarChart, BarData } from 'src/app/helpers/d3charts';
 
 

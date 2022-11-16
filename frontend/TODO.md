@@ -1,7 +1,6 @@
 # Cleanup
 
-1. More fitting names for interfaces and methods
-2. Remove data from state. Keep data in a data-service instead. Reason: this way redux can do much faster updates
+1. Remove data from state. Keep data in a data-service instead. Reason: this way redux can do much faster updates
 3. Update redux to newest version
 4. Separate logic from display
     4.1. Backend: steps
@@ -13,8 +12,11 @@
 
 
 
+- create new legend component (with gradients)
+
+
+
 # Ukis - ongoing errors
-- remove google fonts
 - frontend must never have an own version of ol installed ... otherwise, `instanceof`checks in @eoc-dlr/maps-ol no longer work.
 - **ol.css**: 
     - Ukis 10.1.0 has made changes to its import of ol.css

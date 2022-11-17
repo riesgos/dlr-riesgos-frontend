@@ -5,7 +5,7 @@ import { RiesgosEffects } from './riesgos/riesgos.effects';
 import { FocusState } from './focus/focus.state';
 import { reducer as focusReducer } from './focus/focus.reducers';
 import { InteractionState } from './interactions/interactions.state';
-import { interactionReducer } from './interactions/interactions.reducer';
+import { reducer as interactionReducer } from './interactions/interactions.reducer';
 import { InteractionEffects } from './interactions/interactions.effects';
 
 export interface State {

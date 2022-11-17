@@ -21,7 +21,7 @@
       "runtimeExecutable": "~/Desktop/Google-Chrome.AppImage"
     },
     {
-      "name": "ts-node",
+      "name": "Backend: ts-node",
       "type": "node",
       "request": "launch",
       "args": [
@@ -35,7 +35,7 @@
       "internalConsoleOptions": "openOnSessionStart"
   },
   {
-      "name": "Jest file",
+      "name": "Backend: Jest file",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceRoot}/backend/node_modules/.bin/jest",

@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import { addScenarioApi } from './scenarios/scenario.interface';
 // import { parseCode } from './parser/scenarioParser';
@@ -13,7 +14,7 @@ const scriptDir = './data/scenarios';  // user-defined logic
 
 async function main() {
     const app = express();
-    app.use(express.json());
+    app.use(cors());
     // const scenarioFactories = await parseCode(scriptDir);
     const scenarioFactories = [peruFactory];
     

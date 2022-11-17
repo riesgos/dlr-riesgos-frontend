@@ -8,9 +8,9 @@ import { environment } from "src/environments/environment";
 export interface AppConfig {
     "production": boolean,
     "middlewareUrl": string,
-    "useProxy": false,
+    "useProxy": boolean,
     "proxyUrl": string,
-    "gfzUseStaging": false
+    "gfzUseStaging": boolean
   }
   
 
@@ -19,7 +19,7 @@ export interface AppConfig {
 })
 export class ConfigService {
 
-    private config: AppConfig;
+    protected config: AppConfig;
 
     constructor() {}
 

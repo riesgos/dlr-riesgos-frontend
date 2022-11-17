@@ -29,8 +29,16 @@
             "styles": [
               "node_modules/ol/ol.css",
               "node_modules/@clr/icons/clr-icons.min.css",
-              { "input": "src/styles.dark.scss",  "bundleName": "styles-theme-dark",  "inject": false },
-              { "input": "src/styles.light.scss", "bundleName": "styles-theme-light", "inject": true }
+              {
+                "input": "src/styles.dark.scss",
+                "bundleName": "styles-theme-dark",
+                "inject": false
+              },
+              {
+                "input": "src/styles.light.scss",
+                "bundleName": "styles-theme-light",
+                "inject": true
+              }
             ],
             "scripts": [
               "node_modules/@clr/icons/clr-icons.min.js"
@@ -134,8 +142,16 @@
             ],
             "styles": [
               "node_modules/@clr/icons/clr-icons.min.css",
-              { "input": "src/styles.dark.scss", "bundleName": "styles-theme-dark", "inject": false },
-              { "input": "src/styles.light.scss", "bundleName": "styles-theme-light", "inject": true}
+              {
+                "input": "src/styles.dark.scss",
+                "bundleName": "styles-theme-dark",
+                "inject": false
+              },
+              {
+                "input": "src/styles.light.scss",
+                "bundleName": "styles-theme-light",
+                "inject": true
+              }
             ],
             "scripts": []
           }
@@ -151,11 +167,23 @@
               "devServerTarget": "riesgos:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

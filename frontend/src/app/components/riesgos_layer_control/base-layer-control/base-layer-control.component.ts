@@ -11,8 +11,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./base-layer-control.component.scss']
 })
 export class BaseLayerControlComponent implements OnInit, OnDestroy {
-  @Input('layersSvc') layersSvc: LayersService;
-  @Input('mapStateSvc') mapStateSvc?: MapStateService;
+  @Input() layersSvc: LayersService;
+  @Input() mapStateSvc?: MapStateService;
 
   layerGroupsSubscription: Subscription;
   layersSubscription: Subscription;

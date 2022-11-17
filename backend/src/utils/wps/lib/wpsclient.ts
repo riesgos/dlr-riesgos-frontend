@@ -7,7 +7,7 @@ import { OWS_1_1_0 } from './jsonix/OWS_1_1_0';
 import { OWS_2_0 } from './jsonix/OWS_2_0';
 import { WPS_1_0_0 } from './jsonix/WPS_1_0_0';
 import { WPS_2_0 } from './jsonix/WPS_2_0';
-import * as JsonixFactory from './jsonix/jsonix'; const Jsonix = JsonixFactory.Jsonix as any;
+import { Jsonix } from './jsonix/jsonix';
 import axios from 'axios';
 import axiosBetterStacktrace from 'axios-better-stacktrace';
 axiosBetterStacktrace(axios);

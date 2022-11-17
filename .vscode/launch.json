@@ -19,6 +19,40 @@
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}",
       "runtimeExecutable": "~/Desktop/Google-Chrome.AppImage"
-    }
+    },
+    {
+      "name": "ts-node",
+      "type": "node",
+      "request": "launch",
+      "args": [
+          "${relativeFile}"
+      ],
+      "runtimeArgs": [
+          "-r",
+          "ts-node/register"
+      ],
+      "cwd": "${workspaceRoot}/backend",
+      "internalConsoleOptions": "openOnSessionStart"
+  },
+  {
+      "name": "Jest file",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/backend/node_modules/.bin/jest",
+      "args": [
+          "${fileBasenameNoExtension}",
+          "--runInBand",
+          "--watch",
+          "--coverage=false",
+          "--no-cache"
+      ],
+      "cwd": "${workspaceRoot}/backend",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "windows": {
+          "program": "${workspaceFolder}/backend/node_modules/jest/bin/jest"
+      }
+  },
   ]
 }

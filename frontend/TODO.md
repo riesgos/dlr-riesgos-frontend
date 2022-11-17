@@ -2,7 +2,6 @@
 
 - include english legend in deus
 - create new legend component (with gradients)
-- auto-create license-file
 - switch
     - update effects to call new backend
     - re-write /scenarios dir to only contain rendering logic
@@ -26,7 +25,7 @@
         - turf ... update didn't help
         - ol ... cannot update
             - geotiff
-            - ol_mapbox_style -> webfont-matcher
+            - ol_mapbox_style -> webfont-matchera a
             - ol_mapbox_style -> mapbox-to-css-font
             - MVT -> pbf
             - BaseVector -> rbush

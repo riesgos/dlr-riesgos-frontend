@@ -36,7 +36,7 @@
               "node_modules/@clr/icons/clr-icons.min.js"
             ],
             "vendorChunk": true,
-            "extractLicenses": false,
+            "extractLicenses": true,
             "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,

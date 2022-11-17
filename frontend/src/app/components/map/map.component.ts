@@ -25,7 +25,7 @@ import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 import { State } from 'src/app/ngrx_register';
 import { getMappableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
+import { interactionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { LayerMarshaller } from '../../mappable/layer_marshaller';
@@ -185,7 +185,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     ...this.interactionState$.getValue().product,
                     value: box
                 };
-                this.store.dispatch(new InteractionCompleted({ product }));
+                this.store.dispatch(interactionCompleted({ product }));
             }
         });
         this.mapSvc.map.addInteraction(dragBox as any);
@@ -212,7 +212,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         ...this.interactionState$.getValue().product,
                         value: [newFeatureCollection]
                     };
-                    this.store.dispatch(new InteractionCompleted({ product }));
+                    this.store.dispatch(interactionCompleted({ product }));
                 }
             }
         });

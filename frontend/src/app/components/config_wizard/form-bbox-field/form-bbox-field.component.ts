@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { BboxUserConfigurableProductDescription, BboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormControl, Validators } from '@angular/forms';
+import { Component, OnInit, Input } from '@angular/core';
+import { BboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
+import { UntypedFormControl } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
-import { debounceTime, map } from 'rxjs/operators';
+import * as InteractionActions from 'src/app/interactions/interactions.actions';
+import { map } from 'rxjs/operators';
 import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
 import { Observable } from 'rxjs';
 import { InteractionState } from 'src/app/interactions/interactions.state';
@@ -47,7 +47,7 @@ export class FormBboxFieldComponent implements OnInit {
 
     activateBboxselectInteraction(startInteraction: boolean): void {
         if (startInteraction) {
-            this.store.dispatch(new InteractionStarted({
+            this.store.dispatch(InteractionActions.interactionStarted({
                 mode: 'bbox',
                 product: {
                     ...this.parameter,
@@ -55,7 +55,7 @@ export class FormBboxFieldComponent implements OnInit {
                 }
             }));
         } else {
-          this.store.dispatch(new InteractionCompleted(
+          this.store.dispatch(InteractionActions.interactionCompleted(
             { product: { ...this.parameter }}
           ));
         }

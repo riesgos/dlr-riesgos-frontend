@@ -4,7 +4,7 @@ import { FeatureSelectUconfProduct } from '../userconfigurable_wpsdata';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { FeatureCollection } from '@turf/helpers';
-import { InteractionCompleted, InteractionStarted } from 'src/app/interactions/interactions.actions';
+import * as InteractionActions from 'src/app/interactions/interactions.actions';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InteractionState } from 'src/app/interactions/interactions.state';
@@ -39,7 +39,7 @@ export class FormFeatureSelectFieldComponent implements OnInit {
     this.stringControl.valueChanges.subscribe(newStringVal => {
       const newVal = [this.findValForString(newStringVal)];
       this.control.setValue(newVal);
-      this.store.dispatch(new InteractionCompleted({product: {
+      this.store.dispatch(InteractionActions.interactionCompleted({product: {
         ... this.parameter,
         value: newVal
       }}));
@@ -70,12 +70,12 @@ export class FormFeatureSelectFieldComponent implements OnInit {
 
   activateFeatureselectInteraction(startInteraction: boolean): void {
     if (startInteraction) {
-      this.store.dispatch(new InteractionStarted({
+      this.store.dispatch(InteractionActions.interactionStarted({
         mode: 'featureselection',
         product: { ... this.parameter }
       }));
     } else {
-      this.store.dispatch(new InteractionCompleted(
+      this.store.dispatch(InteractionActions.interactionCompleted(
         { product: { ...this.parameter }}
       ));
     }

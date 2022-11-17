@@ -8,39 +8,30 @@ export const reducer = createReducer(
     initialRiesgosState,
 
     on(RiesgosActions.metadataProvided, (state, action) => {
-        const newMetadata = action.metadata;
-        return {
-            ... state,
-            metaData: newMetadata
-        };
-    }),
-
-    on(RiesgosActions.riesgosDataUpdate, (state, action) => {
-        const newScenario = state.currentScenario;
-        const newProcesses = action.processes;
-        const newProducts = action.products;
-        const newGraph = action.graph;
-        const newState = {...state};
-        newState.scenarioData[state.currentScenario] = {
-            scenario: newScenario,
-            processStates: newProcesses,
-            productValues: newProducts,
-            graph: newGraph
-        };
-        return newState;
+        return state
     }),
 
     on(RiesgosActions.scenarioChosen, (state, action) => {
-        return {
-            ... state,
-            currentScenario: action.scenario,
-        };
+        return state
     }),
 
     on(RiesgosActions.restartingScenario, (state, action) => {
-        return {
-            ... state,
-            currentScenario: action.scenario,
-        };
+        return state
+    }),
+
+    on(RiesgosActions.executeStart, (state, action) => {
+        return state
+    }),
+
+    on(RiesgosActions.executeSuccess, (state, action) => {
+        return state
+    }),
+
+    on(RiesgosActions.executeError, (state, action) => {
+        return state
+    }),
+
+    on(RiesgosActions.userdataProvided, (state, action) => {
+        return state
     })
 );

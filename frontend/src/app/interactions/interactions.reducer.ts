@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as InteractionActions from './interactions.actions';
-import { initialInteractionState, InteractionState } from './interactions.state';
+import { initialInteractionState } from './interactions.state';
 
 
 export const reducer = createReducer(

@@ -55,7 +55,6 @@ import { GroupSliderComponent } from './components/dynamic/group-slider/group-sl
 import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
 import { HelperButtonsComponent } from './components/helperButtons/helper-buttons.component';
 
-import { RiesgosService } from './riesgos/riesgos.service';
 import { ProgressService } from './components/global-progress/progress.service';
 import { FooterService } from './components/global-footer/footer.service';
 import { AlertService } from './components/global-alert/alert.service';
@@ -81,6 +80,7 @@ import { DamagePopupComponent } from './components/dynamic/damage-popup/damage-p
 import { GroupedBarChartComponent } from './components/grouped-bar-chart/grouped-bar-chart.component';
 import { EconomicDamagePopupComponent } from './components/dynamic/economic-damage-popup/economic-damage-popup.component';
 import { ConfigService } from './services/configService/configService';
+import { BackendService } from './services/backend/backend.service';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
@@ -188,8 +188,8 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     DisclaimerService,
     FooterService,
     ProgressService,
-    RiesgosService,
-    WMTSLayerFactory
+    WMTSLayerFactory,
+    BackendService
   ],
   bootstrap: [AppComponent]
 })

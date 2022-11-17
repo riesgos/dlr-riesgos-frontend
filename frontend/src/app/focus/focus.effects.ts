@@ -19,8 +19,8 @@ export class FocusEffects {
             ofType(FocusActions.goToNextProcess),
             withLatestFrom(this.store$),
             map(([action, state]) => {
-                const currentScenario = state.riesgosState.currentScenario;
-                const activeProcess = state.riesgosState.scenarioData[currentScenario].processStates.find((p) => {
+                const currentScenario = state.riesgosState.scenario;
+                const activeProcess = state.riesgosState[currentScenario].processStates.find((p) => {
                     return p.state.type === ProcessStateTypes.available;
                 });
                 if (activeProcess) {
@@ -31,6 +31,9 @@ export class FocusEffects {
     });
 
 
-    constructor(private actions$: Actions, private store$: Store<State>) {}
+    constructor(
+        private actions$: Actions,
+        private store$: Store<State>
+    ) {}
 
 }

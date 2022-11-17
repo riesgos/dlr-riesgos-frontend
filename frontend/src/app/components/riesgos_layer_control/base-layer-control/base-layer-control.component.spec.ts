@@ -98,14 +98,14 @@ describe('BaseLayerControlComponent', () => {
   template: ''
 })
 class MockLayerentryComponent{
-  @Input('layersSvc') layersSvc: LayersService;
-  @Input('mapState') mapState?: MapStateService;
-  @Input('layer') layer;
+  @Input() layersSvc: LayersService;
+  @Input() mapState?: MapStateService;
+  @Input() layer;
 
-  @Input('group') group?;
-  @Input('layerGroups') layerGroups?;
+  @Input() group?;
+  @Input() layerGroups?;
   @Input('expanded') openProperties?: boolean = false;
-  @Input('expandable') expandable?: boolean = true;
+  @Input() expandable?: boolean = true;
 }
 
 
@@ -119,8 +119,8 @@ class MockLayerentryComponent{
 })
 class MockLayerentryGroupComponent{
 
-  @Input('layersSvc') layersSvc: LayersService;
-  @Input('mapState') mapState?: MapStateService;
-  @Input('group') group;
-  @Input('layerGroups') layerGroups;
+  @Input() layersSvc: LayersService;
+  @Input() mapState?: MapStateService;
+  @Input() group;
+  @Input() layerGroups;
 }

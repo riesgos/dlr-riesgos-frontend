@@ -24,7 +24,6 @@ import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
-import { customStyleEconomicChileNew, customStyleSaraNew } from '../../styles';
 
 
 

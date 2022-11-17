@@ -43,7 +43,7 @@ export class FormComponent implements OnInit, OnDestroy {
         const control = this.formGroup.get(parameter.uid);
         const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
           if (control.valid) {
-            this.store.dispatch(RiesgosActions.productsProvided({products: [{
+            this.store.dispatch(RiesgosActions.executeSuccess({products: [{
               ...parameter,
               value: newVal
             }]}));
@@ -63,7 +63,7 @@ export class FormComponent implements OnInit, OnDestroy {
       const formControl = this.formGroup.get(parameter.uid);
       parameter.value = formControl.value;
     }
-    this.store.dispatch(RiesgosActions.clickRunProcess({productsProvided: this.parameters, process: this.process }));
+    this.store.dispatch(RiesgosActions.executeStart({productsProvided: this.parameters, process: this.process }));
   }
 
 }

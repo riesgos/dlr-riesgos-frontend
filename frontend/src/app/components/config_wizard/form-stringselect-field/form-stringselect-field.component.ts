@@ -28,7 +28,7 @@ export class FormStringselectFieldComponent implements OnInit {
 
 
     onChange(newValString) {
-        this.store.dispatch(RiesgosActions.productsProvided({
+        this.store.dispatch(RiesgosActions.executeSuccess({
             products: [{
                 ...this.parameter,
                 value: newValString

@@ -39,10 +39,10 @@ export class WpsClient {
         let context;
         if (this.version === '1.0.0') {
             this.wpsMarshaller = new WpsMarshaller100();
-            context = new Jsonix.Context([XLink_1_0, OWS_1_1_0, WPS_1_0_0]);
+            context = new (Jsonix as any).Context([XLink_1_0, OWS_1_1_0, WPS_1_0_0]);
         } else if (this.version === '2.0.0') {
             this.wpsMarshaller = new WpsMarshaller200();
-            context = new Jsonix.Context([XLink_1_0, OWS_2_0, WPS_2_0]);
+            context = new (Jsonix as any).Context([XLink_1_0, OWS_2_0, WPS_2_0]);
         } else {
             throw new Error('You entered a WPS version other than 1.0.0 or 2.0.0.');
         }

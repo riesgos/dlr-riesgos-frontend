@@ -44,12 +44,12 @@ describe('Testing backend service', () => {
 
     it('should get meta-data', (done) => {
         backendService.loadScenarios().subscribe(scenarios => {
-            expect(scenarios);
-            expect(scenarios.length);
-            expect(scenarios[0].id);
-            expect(scenarios[0].description);
-            expect(scenarios[0].steps.length);
-            expect(scenarios[0].steps[0].id);
+            expect(scenarios).toBeTruthy();
+            expect(scenarios.length).toBeTruthy();
+            expect(scenarios[0].id).toBeTruthy();
+            expect(scenarios[0].description).toBeTruthy();
+            expect(scenarios[0].steps.length).toBeTruthy();
+            expect(scenarios[0].steps[0].id).toBeTruthy();
             done();
         });
     });
@@ -57,11 +57,28 @@ describe('Testing backend service', () => {
     it('should run steps', (done) => {
         const data: ScenarioState = { data: [] };
         backendService.execute('Peru', 'Eqs', data).subscribe(newState => {
-            expect(newState);
-            expect(newState.data);
-            expect(newState.data[0].id);
+            expect(newState).toBeTruthy();
+            expect(newState.data).toBeTruthy();
+            expect(newState.data[0].id).toBeTruthy();
             done();
         })
     });
 
+    it('should get meta-data -- async', async () => {
+        const scenarios = await backendService.asyncLoadScenarios();
+        expect(scenarios).toBeTruthy();
+        expect(scenarios.length).toBeTruthy();
+        expect(scenarios[0].id).toBeTruthy();
+        expect(scenarios[0].description).toBeTruthy();
+        expect(scenarios[0].steps.length).toBeTruthy();
+        expect(scenarios[0].steps[0].id).toBeTruthy();
+    });
+
+    it('should run steps -- async', async () => {
+        const data: ScenarioState = { data: [] };
+        const newState = await backendService.asyncExecute('Peru', 'Eqs', data);
+        expect(newState).toBeTruthy();
+        expect(newState.data).toBeTruthy();
+        expect(newState.data[0].id).toBeTruthy();
+    });
 });

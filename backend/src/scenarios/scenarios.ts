@@ -124,6 +124,7 @@ export class Scenario {
     }
 
     private async addData(newData: Datum[], state: ScenarioState): Promise<ScenarioState> {
+        if (newData.length === 0) return state;
         const tasks$: Promise<any>[] = [];
         for (const newDatum of newData) {
             tasks$.push(this.addDatum(newDatum, state));

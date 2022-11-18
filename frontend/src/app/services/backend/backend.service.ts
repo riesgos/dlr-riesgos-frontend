@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { combineLatest, from, Observable, pipe } from "rxjs";
-import { delay, filter, map, repeat, repeatWhen, switchMap, take } from "rxjs/operators";
+import { combineLatest, Observable } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 import { ConfigService } from "../configService/configService";
 import { pollUntil } from "./polling";
 
@@ -70,14 +70,21 @@ export class BackendService {
     execute(scenarioId: string, stepId: string, state: ScenarioState): Observable<ScenarioState> {
 
         const url = this.configService.getConfig().middlewareUrl;
-        const post$ = this.http.post<{ ticket: string }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute`, state);
+        const post$ = this.http.post<{ ticket: string }>(
+            `${url}/scenarios/${scenarioId}/steps/${stepId}/execute`,
+            state,
+            { headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }}
+        );
 
         return post$.pipe(
             switchMap(responseData => {
-                const task$ = this.http.get<{ ticket?: string, result?: ScenarioState }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
-                return pollUntil(task$, r => r.result);
+                const task$ = this.http.get<{ ticket?: string, results?: ScenarioState }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
+                return pollUntil(task$, r => r.results);
             }),
-            map(response => response.result)
+            map(response => response.results)
         )
     }
 
@@ -104,6 +111,10 @@ export class BackendService {
 
         const response = await fetch(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute`, {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
             body: JSON.stringify(state)
         });
         let responseData = await response.json();
@@ -113,7 +124,7 @@ export class BackendService {
             responseData = await pollResponse.json();
         }
         
-        return responseData.result;
+        return responseData.results;
     }
     
 }

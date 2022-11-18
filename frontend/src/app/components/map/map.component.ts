@@ -92,7 +92,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.store.pipe(select(getCurrentScenarioRiesgosState)),
             ),
         ).subscribe(([focussedStepId, currentOverlays, state]: [string, ProductLayer[], RiesgosScenarioState]) => {
-            if (focussedStepId !== 'some initial focus') {
+            if (focussedStepId && focussedStepId !== 'some initial focus') {
                 const focussedStep = state.steps.find(s => s.step.id === focussedStepId).step;
                 const inEdges = focussedStep.inputs.map(i => i.id);
                 const outEdges = focussedStep.outputs.map(i => i.id);
@@ -338,12 +338,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private getCenter(scenario: string): [number, number] {
         switch (scenario) {
-            case 'c1':
-            case 'c2':
+            case 'Chile':
                 return [-70.799, -33.990];
-            case 'e1':
+            case 'Ecuador':
                 return [-78.4386, -0.6830];
-            case 'p1':
+            case 'Peru':
                 return [-75.902, -11.490];
             default:
                 throw new Error(`Unknown scenario: ${scenario}`);

@@ -6,7 +6,7 @@ import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
 import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import { of } from 'rxjs';
-import { RiesgosScenarioMetadata, RiesgosScenarioState } from './riesgos.state';
+import { RiesgosScenarioMetadata, RiesgosScenarioState, RiesgosStep, ScenarioName } from './riesgos.state';
 import { Store } from '@ngrx/store';
 import { getCurrentScenarioRiesgosState, getScenario, getScenarioRiesgosState } from './riesgos.selectors';
 
@@ -50,14 +50,31 @@ export class RiesgosEffects {
 
 
 function convertApiScenariosToFrontendScenarios(apiScenarios: API_ScenarioInfo[]): RiesgosScenarioMetadata[] {   
-    throw new Error('Function not implemented.');
+    const frontendScenarios: RiesgosScenarioMetadata[] = [];
+    for (const apiScenario of apiScenarios) {
+        frontendScenarios.push({
+            id: apiScenario.id,
+            description: apiScenario.description,
+            preview: '',
+            title: apiScenario.id
+        })
+    }
+    return frontendScenarios;
 }
 
 function convertFrontendStateToApiState(state: RiesgosScenarioState): API_ScenarioState {
-    throw new Error('Function not implemented.');
+    const apiState: API_ScenarioState = {
+        data: state.products
+    };
+    return apiState;
 }
 
-function convertApiStateToFrontendState(newApiState: API_ScenarioState): RiesgosScenarioState {
-    throw new Error('Function not implemented.');
+function convertApiStateToFrontendState(newApiState: API_ScenarioState, scenario: ScenarioName, steps: RiesgosStep[]): RiesgosScenarioState {
+    const riesgosState: RiesgosScenarioState = {
+        steps: steps,
+        products: newApiState.data,
+        scenario: scenario
+    };
+    return riesgosState;
 }
 

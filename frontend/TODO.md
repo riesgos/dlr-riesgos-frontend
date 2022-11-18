@@ -1,19 +1,20 @@
 # Cleanup
 
 - switch
-    - Frontpage
     - ngrx: now immutable state. remove exceptions for mutable data.
     - cd frontend && npx ts-unused-exports tsconfig.json
     - re-create graph-modal
     - include jsonix license somewhere
 - include english legend in deus
 - create new legend component (with gradients)
+- remove layer-marshaller; just have every product define its toUkisLayers
 - remove allowedCommonJsDependencies
 
 # Breaking up layout-configuration into registries
 - `{id: UserConfigurableProduct}` in components/wizard-page
 - `{id: WizardProperties}` in components/wizard-page
 - `{id: MappableProduct}` in riesgos/riesgos.datatypes
+- `{id: ScenarioImage}` in views/scenarios
 
 
 # Ongoing problems

@@ -2,7 +2,6 @@ import { WpsDataDescription, WpsVersion, ProductId, WpsData } from '../services/
 import { from, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 import { execute, ExecuteData } from '../services/middleware/middleware';
 
 

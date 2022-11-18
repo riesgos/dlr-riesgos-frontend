@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import * as RiesgosActions from './riesgos.actions';
 import * as FocusActions from '../focus/focus.actions';
-import * as InteractionActions from '../interactions/interactions.actions';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
-import { BackendService } from '../services/backend/backend.service';
+import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import { of } from 'rxjs';
+import { RiesgosScenarioMetadata, RiesgosScenarioState } from './riesgos.state';
 
 
 
@@ -18,15 +18,18 @@ export class RiesgosEffects {
         return this.actions$.pipe(
             ofType(FocusActions.appInit),
             switchMap(_ => this.backendSvc.loadScenarios()),
-            map(results => RiesgosActions.metadataProvided(results))
+            map(apiScenarios => convertApiScenariosToFrontendScenarios(apiScenarios)),
+            map(scenarios => RiesgosActions.scenariosLoaded({scenarios}))
         );
     });
 
     runProcess$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(RiesgosActions.executeStart),
-            switchMap(action => this.backendSvc.execute(action.scenario, action.step, action.state)),
-            map(results => RiesgosActions.executeSuccess(results)),
+            map(action => ({ scenario: action.scenario, step: action.step, state: convertFrontendStateToApiState(action.state)})),
+            switchMap(d => this.backendSvc.execute(d.scenario, d.step, d.state)),
+            map(newApiState => convertApiStateToFrontendState(newApiState)),
+            map(newState => RiesgosActions.executeSuccess({newState})),
             catchError(e => of(RiesgosActions.executeError(e)))
         );
     });
@@ -37,3 +40,17 @@ export class RiesgosEffects {
     ) {}
 
 }
+
+
+function convertApiScenariosToFrontendScenarios(apiScenarios: API_ScenarioInfo[]): RiesgosScenarioMetadata[] {
+    throw new Error('Function not implemented.');
+}
+
+function convertFrontendStateToApiState(state: RiesgosScenarioState): API_ScenarioState {
+    throw new Error('Function not implemented.');
+}
+
+function convertApiStateToFrontendState(newApiState: API_ScenarioState): RiesgosScenarioState {
+    throw new Error('Function not implemented.');
+}
+

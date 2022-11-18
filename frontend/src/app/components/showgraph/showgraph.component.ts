@@ -42,7 +42,7 @@ export class ShowgraphComponent implements OnInit {
     this.store.select(getCurrentScenarioRiesgosState).subscribe((currentState: RiesgosScenarioState) => {
       if (currentState) {
         this.currentState = currentState;
-        const processes = currentState.processStates;
+        const processes = currentState.stepStates;
         const products = currentState.productValues;
         const graph = currentState.graph;
         const dotStringFull = this.toGraphvizFull(processes, products, graph);
@@ -53,7 +53,7 @@ export class ShowgraphComponent implements OnInit {
     });
 
     this.translator.getCurrentLang().subscribe(() => {
-      const processes = this.currentState.processStates;
+      const processes = this.currentState.stepStates;
       const products = this.currentState.productValues;
       const graph = this.currentState.graph;
       const dotStringFull = this.toGraphvizFull(processes, products, graph);

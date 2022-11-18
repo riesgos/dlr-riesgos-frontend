@@ -1,26 +1,26 @@
 import { createAction, props } from '@ngrx/store';
-import { RiesgosState } from './riesgos.state';
+import { RiesgosScenarioMetadata, RiesgosScenarioState, ScenarioName } from './riesgos.state';
 
 
 
-export const metadataProvided = createAction(
-    '[Riesgos] Metadata provided',
-    props<{ metadata: any }>()
+export const scenariosLoaded = createAction(
+    '[Riesgos] Scenarios loaded',
+    props<{ scenarios: RiesgosScenarioMetadata[] }>()
 );
 
 export const scenarioChosen = createAction(
     '[Riesgos] Scenario chosen',
-    props<{scenario: string}>()
+    props<{scenario: ScenarioName}>()
 );
 
 export const executeStart = createAction(
     '[Riesgos] execute start',
-    props<{scenario: string, step: string}>()
+    props<{scenario: ScenarioName, step: string, state: RiesgosScenarioState}>()
 );
 
 export const executeSuccess = createAction(
     '[Riesgos] execute success',
-    props<{newState: RiesgosState}>()
+    props<{newState: RiesgosScenarioState}>()
 );
 
 export const executeError = createAction(
@@ -35,11 +35,11 @@ export const userdataProvided = createAction(
 
 export const restartingFromProcess = createAction(
     '[Riesgos] Restarting from process',
-    props<{scenario: string, step: string}>()
+    props<{scenario: ScenarioName, step: string}>()
 );
 
 export const restartingScenario = createAction(
     '[Riesgos] Restarting scenario',
-    props<{scenario: string}>()
+    props<{scenario: ScenarioName}>()
 );
 

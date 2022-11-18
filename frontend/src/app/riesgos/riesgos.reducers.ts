@@ -7,16 +7,26 @@ import * as RiesgosActions from './riesgos.actions';
 export const reducer = createReducer(
     initialRiesgosState,
 
-    on(RiesgosActions.metadataProvided, (state, action) => {
-        return state
+    on(RiesgosActions.scenariosLoaded, (state, action) => {
+        return {
+            ... state,
+            metaData: action.scenarios
+        }
     }),
 
     on(RiesgosActions.scenarioChosen, (state, action) => {
-        return state
+        return {
+            ... state,
+            activeScenario: action.scenario
+        }
     }),
 
     on(RiesgosActions.restartingScenario, (state, action) => {
-        return state
+        // @TODO: remove scenario's data
+        return {
+            ...state,
+            currentScenario: action.scenario
+        }
     }),
 
     on(RiesgosActions.executeStart, (state, action) => {

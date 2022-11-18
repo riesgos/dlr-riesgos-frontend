@@ -37,7 +37,7 @@ export const getCurrentScenarioRiesgosState = createSelector(
 
 export const getProcessStates = createSelector(
     getRiesgosState,
-    (s: RiesgosState) => getCurrentScenarioState(s).processStates
+    (s: RiesgosState) => getCurrentScenarioState(s).stepStates
 );
 
 
@@ -61,16 +61,12 @@ export const getProduct = (productId: string) => createSelector(
 );
 
 
-export const getGraph = createSelector(
-    getRiesgosState,
-    (s: RiesgosState) => getCurrentScenarioState(s).graph
-);
 
 
 export const getInputsForProcess = (processId: string) => createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
-        const process = getProcessById(processId, getCurrentScenarioState(s).processStates);
+        const process = getProcessById(processId, getCurrentScenarioState(s).stepStates);
         return filterInputsForProcess(process, getCurrentScenarioState(s).productValues);
     }
 );

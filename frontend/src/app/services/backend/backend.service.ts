@@ -5,41 +5,41 @@ import { map, switchMap } from "rxjs/operators";
 import { ConfigService } from "../configService/configService";
 import { pollUntil } from "./polling";
 
-export interface DatumDescription {
+export interface API_DatumDescription {
     id: string
 };
 
-export interface UserSelection extends DatumDescription {
+export interface API_UserSelection extends API_DatumDescription {
     options: string[]
 }
 
 
-export interface Datum {
+export interface API_Datum {
     id: string,
     value: any
 };
 
-export interface DatumReference {
+export interface API_DatumReference {
     id: string,
     reference: string
 }
 
-export interface Step {
+export interface API_Step {
     id: string,
     title: string,
     description: string, 
-    inputs: DatumDescription[],
-    outputs: DatumDescription[]
+    inputs: API_DatumDescription[],
+    outputs: API_DatumDescription[]
 }
 
-export interface Scenario {
+export interface API_ScenarioInfo {
     id: string,
     description: string,
-    steps: Step[]
+    steps: API_Step[]
 }
 
-export interface ScenarioState {
-    data: (Datum | DatumReference)[]
+export interface API_ScenarioState {
+    data: (API_Datum | API_DatumReference)[]
 }
 
 @Injectable()
@@ -50,16 +50,16 @@ export class BackendService {
         private http: HttpClient
     ) {}
 
-    loadScenarios(): Observable<Scenario[]> {
+    loadScenarios(): Observable<API_ScenarioInfo[]> {
         
         const url = this.configService.getConfig().middlewareUrl;
         const get$ = this.http.get<{id: string, description: string}[]>(`${url}/scenarios`);
 
         return get$.pipe(
             switchMap(scenarioInfos => {
-                const followUpRequests$: Observable<Scenario>[] = [];
+                const followUpRequests$: Observable<API_ScenarioInfo>[] = [];
                 for (const scenarioInfo of scenarioInfos) {
-                    const request$ = this.http.get<Scenario>(`${url}/scenarios/${scenarioInfo.id}`);
+                    const request$ = this.http.get<API_ScenarioInfo>(`${url}/scenarios/${scenarioInfo.id}`);
                     followUpRequests$.push(request$);
                 }
                 return combineLatest(followUpRequests$);
@@ -67,7 +67,7 @@ export class BackendService {
         );
     }
 
-    execute(scenarioId: string, stepId: string, state: ScenarioState): Observable<ScenarioState> {
+    execute(scenarioId: string, stepId: string, state: API_ScenarioState): Observable<API_ScenarioState> {
 
         const url = this.configService.getConfig().middlewareUrl;
         const post$ = this.http.post<{ ticket: string }>(
@@ -81,14 +81,14 @@ export class BackendService {
 
         return post$.pipe(
             switchMap(responseData => {
-                const task$ = this.http.get<{ ticket?: string, results?: ScenarioState }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
+                const task$ = this.http.get<{ ticket?: string, results?: API_ScenarioState }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
                 return pollUntil(task$, r => r.results);
             }),
             map(response => response.results)
         )
     }
 
-    async asyncLoadScenarios(): Promise<Scenario[]> {
+    async asyncLoadScenarios(): Promise<API_ScenarioInfo[]> {
         const url = this.configService.getConfig().middlewareUrl;
 
         const response = await fetch(`${url}/scenarios`);
@@ -106,7 +106,7 @@ export class BackendService {
         return resultData;
     }
 
-    async asyncExecute(scenarioId: string, stepId: string, state: ScenarioState): Promise<ScenarioState> {
+    async asyncExecute(scenarioId: string, stepId: string, state: API_ScenarioState): Promise<API_ScenarioState> {
         const url = this.configService.getConfig().middlewareUrl;
 
         const response = await fetch(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute`, {

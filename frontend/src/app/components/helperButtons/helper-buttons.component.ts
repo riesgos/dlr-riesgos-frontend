@@ -96,7 +96,7 @@ export class HelperButtonsComponent implements OnInit {
                     ... state,
                     // the graph can only be saved as a flat structure without functions
                     // this is to restore its full capabilities
-                    graph: createGraph(state.processStates)
+                    graph: createGraph(state.stepStates)
                 };
             }),
             tap((result: RiesgosScenarioState) => {

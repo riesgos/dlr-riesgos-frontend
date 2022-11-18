@@ -1,7 +1,7 @@
 import { XhrFactory } from "@angular/common";
 import { HttpClient, HttpXhrBackend } from "@angular/common/http";
 import { ConfigService } from "../configService/configService";
-import { BackendService, ScenarioState } from "./backend.service";
+import { BackendService, API_ScenarioState } from "./backend.service";
 
 
 
@@ -55,7 +55,7 @@ describe('Testing backend service', () => {
     });
 
     it('should run steps', (done) => {
-        const data: ScenarioState = { data: [] };
+        const data: API_ScenarioState = { data: [] };
         backendService.execute('Peru', 'Eqs', data).subscribe(newState => {
             expect(newState).toBeTruthy();
             expect(newState.data).toBeTruthy();
@@ -75,7 +75,7 @@ describe('Testing backend service', () => {
     });
 
     it('should run steps -- async', async () => {
-        const data: ScenarioState = { data: [] };
+        const data: API_ScenarioState = { data: [] };
         const newState = await backendService.asyncExecute('Peru', 'Eqs', data);
         expect(newState).toBeTruthy();
         expect(newState.data).toBeTruthy();

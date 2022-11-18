@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import * as RiesgosActions from './riesgos.actions';
 import * as FocusActions from '../focus/focus.actions';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import { of } from 'rxjs';
 import { RiesgosScenarioMetadata, RiesgosScenarioState } from './riesgos.state';
+import { Store } from '@ngrx/store';
+import { getCurrentScenarioRiesgosState, getScenario, getScenarioRiesgosState } from './riesgos.selectors';
 
 
 
@@ -26,7 +28,11 @@ export class RiesgosEffects {
     runProcess$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(RiesgosActions.executeStart),
-            map(action => ({ scenario: action.scenario, step: action.step, state: convertFrontendStateToApiState(action.state)})),
+            withLatestFrom(
+                this.store.select(getScenario),
+                this.store.select(getCurrentScenarioRiesgosState)
+            ),
+            map(([action, scenario, state]) => ({ scenario: scenario, step: action.step, state: convertFrontendStateToApiState(state)})),
             switchMap(d => this.backendSvc.execute(d.scenario, d.step, d.state)),
             map(newApiState => convertApiStateToFrontendState(newApiState)),
             map(newState => RiesgosActions.executeSuccess({newState})),
@@ -35,6 +41,7 @@ export class RiesgosEffects {
     });
 
     constructor(
+        private store: Store,
         private actions$: Actions,
         private backendSvc: BackendService
     ) {}

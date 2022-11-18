@@ -57,7 +57,7 @@ export class HelperButtonsComponent implements OnInit {
         const stateToRestore: RiesgosScenarioState = this.stateToBeRestored$.value;
         // @TODO: instead of just a ProductsProvided action,
         // create a new action that validates that all data is still there on the remote servers.
-        this.store.dispatch(RiesgosActions.userdataProvided({
+        this.store.dispatch(RiesgosActions.userDataProvided({
             products: stateToRestore.products
         }));
 

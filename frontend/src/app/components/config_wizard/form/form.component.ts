@@ -41,7 +41,7 @@ export class FormComponent implements OnInit, OnDestroy {
         const control = this.formGroup.get(parameter.uid);
         const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
           if (control.valid) {
-            this.store.dispatch(RiesgosActions.userdataProvided({products: [{
+            this.store.dispatch(RiesgosActions.userDataProvided({products: [{
               ...parameter,
               value: newVal
             }]}));
@@ -62,12 +62,7 @@ export class FormComponent implements OnInit, OnDestroy {
       parameter.value = formControl.value;
     }
 
-    this.store.select().subscribe(a => {
-      const step = this.step.step.id;
-      const scenario = 
-      const state = 
-      this.store.dispatch(RiesgosActions.executeStart({ scenario, step, state }));
-    });
+    this.store.dispatch(RiesgosActions.executeStart({ step: this.step.step.id }));
   }
 
 }

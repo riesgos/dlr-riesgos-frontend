@@ -41,7 +41,7 @@ export const reducer = createReducer(
         return state
     }),
 
-    on(RiesgosActions.userdataProvided, (state, action) => {
+    on(RiesgosActions.userDataProvided, (state, action) => {
         return state
     })
 );

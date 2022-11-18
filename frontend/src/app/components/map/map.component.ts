@@ -23,7 +23,7 @@ import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr
 import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 
 import { State } from 'src/app/ngrx_register';
-import { getScenario, getGraph, getProducts } from 'src/app/riesgos/riesgos.selectors';
+import { getScenario, getProducts, getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { interactionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
@@ -40,6 +40,7 @@ import TileLayer from 'ol/layer/Tile';
 import Geometry from 'ol/geom/Geometry';
 import { isMappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { DataService } from 'src/app/services/data/data.service';
+import { RiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
 
 
 const mapProjection = 'EPSG:3857';
@@ -89,18 +90,17 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub2 = this.store.pipe(
             select(getFocussedProcessId),
             withLatestFrom(
-                this.store.pipe(select(getGraph)),
-                this.layersSvc.getOverlays()
+                this.layersSvc.getOverlays(),
+                this.store.pipe(select(getCurrentScenarioRiesgosState)),
             ),
-        ).subscribe(([focussedProcessId, graph, currentOverlays]: [string, Graph, ProductLayer[]]) => {
-            if (graph && focussedProcessId !== 'some initial focus') {
-                const inEdges = graph.inEdges(focussedProcessId);
-                const outEdges = graph.outEdges(focussedProcessId);
+        ).subscribe(([focussedStepId, currentOverlays, state]: [string, ProductLayer[], RiesgosScenarioState]) => {
+            if (focussedStepId !== 'some initial focus') {
+                const focussedStep = state.steps.find(s => s.step.id === focussedStepId).step;
+                const inEdges = focussedStep.inputs.map(i => i.id);
+                const outEdges = focussedStep.outputs.map(i => i.id);
                 if (inEdges && outEdges) {
-                    const inputs = inEdges.map(edge => edge.v);
-                    const outputs = outEdges.map(edge => edge.w);
                     for (const layer of currentOverlays) {
-                        if (outputs.includes((layer as ProductLayer).productId)) {
+                        if (outEdges.includes((layer as ProductLayer).productId)) {
                             layer.hasFocus = true;
                         } else {
                             layer.hasFocus = false;
@@ -115,7 +115,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // listening for products that can be displayed on the map
         const sub3 = this.store.pipe(
-            
+
             select(getProducts),
             switchMap(products => this.dataService.resolveReferences(products)),
             map(resolvedProducts => resolvedProducts.filter(p => isMappableProduct(p))),

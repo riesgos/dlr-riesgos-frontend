@@ -8,7 +8,6 @@ import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { downloadJson, parseFile } from 'src/app/helpers/others';
 import { map, tap } from 'rxjs/operators';
-import { createGraph } from 'src/app/riesgos/riesgos.workflowcontrol';
 
 
 
@@ -58,8 +57,8 @@ export class HelperButtonsComponent implements OnInit {
         const stateToRestore: RiesgosScenarioState = this.stateToBeRestored$.value;
         // @TODO: instead of just a ProductsProvided action,
         // create a new action that validates that all data is still there on the remote servers.
-        this.store.dispatch(RiesgosActions.executeSuccess({
-            products: stateToRestore.products.filter(pv => pv.value !== null)
+        this.store.dispatch(RiesgosActions.userdataProvided({
+            products: stateToRestore.products
         }));
 
         // Don't do a RiesgosDataUpdate here!
@@ -91,14 +90,6 @@ export class HelperButtonsComponent implements OnInit {
     private extractSaveState(file: File): Observable<RiesgosScenarioState> {
         const state$ = parseFile(file).pipe(
             map((content: string) => JSON.parse(content)),
-            map((state: RiesgosScenarioState) => {
-                return {
-                    ... state,
-                    // the graph can only be saved as a flat structure without functions
-                    // this is to restore its full capabilities
-                    graph: createGraph(state.steps)
-                };
-            }),
             tap((result: RiesgosScenarioState) => {
                 if (!isRiesgosScenarioState(result)) {
                     throw Error(`The file ${file.name} did not contain a valid RiesgosScenarioState`);

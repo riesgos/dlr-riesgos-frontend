@@ -1,10 +1,10 @@
 # Cleanup
 
 - switch
+    - getInEdges
     - getMapableProducts
-    - data is now only stored per reference
-        - provide a data-service that fetches the data on demand
-        - ... and deletes it again when required
+        - data is now only stored per reference
+            - provide a data-service that fetches the data on demand
     - data is expected to have a toUkisLayers property
         - create a register of data-ids that map to those functions
 - include english legend in deus

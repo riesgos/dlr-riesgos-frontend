@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ConfigService } from 'src/app/services/configService/configService';
 import { StoreService } from 'src/app/services/localStorage/store.service';
 

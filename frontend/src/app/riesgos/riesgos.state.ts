@@ -1,10 +1,37 @@
-import { API_Datum, API_DatumReference, API_ScenarioInfo, API_ScenarioState, API_Step } from "../services/backend/backend.service";
+import { API_Datum, API_DatumReference, API_Step } from "../services/backend/backend.service";
 
 
 
 export type ScenarioName = 'none' | 'Chile' | 'Peru' | 'Ecuador';
 
-export type StepState = 'unavailable' | 'ready' | 'running' | 'compete' | 'error';
+
+export enum StepStateTypes {
+    unavailable = 'unavailable',
+    available = 'available',
+    running = 'running',
+    completed = 'completed',
+    error = 'error',
+}
+export class StepStateUnavailable {
+    type: string = StepStateTypes.unavailable;
+}
+export class StepStateAvailable {
+    type: string = StepStateTypes.available;
+}
+export class StepStateRunning {
+    type: string = StepStateTypes.running;
+}
+
+export class StepStateCompleted {
+    type: string = StepStateTypes.completed;
+}
+export class StepStateError {
+    type: string = StepStateTypes.error;
+    constructor(public message: string) {}
+}
+export type StepState = StepStateUnavailable | StepStateAvailable |
+                        StepStateRunning | StepStateCompleted | StepStateError;
+
 
 export interface RiesgosStep {
     step: API_Step,

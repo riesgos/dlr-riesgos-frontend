@@ -59,14 +59,11 @@ export const getProduct = (productId: string) => createSelector(
     }
 );
 
-
-
-
-export const getInputsForProcess = (processId: string) => createSelector(
+export const getInputsForStep = (processId: string) => createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
         const step = getStepById(processId, getCurrentScenarioState(s).steps);
-        return filterInputsForProcess(step, getCurrentScenarioState(s).products);
+        return filterInputsForStep(step, getCurrentScenarioState(s).products);
     }
 );
 
@@ -87,7 +84,7 @@ export const getProductById = (id: string, products: RiesgosProduct[]): RiesgosP
 };
 
 
-export const filterInputsForProcess = (step: RiesgosStep, products: RiesgosProduct[]): RiesgosProduct[] => {
+export const filterInputsForStep = (step: RiesgosStep, products: RiesgosProduct[]): RiesgosProduct[] => {
     const filteredProducts = step.step.inputs.map(input => getProductById(input.id, products));
     return filteredProducts;
 };

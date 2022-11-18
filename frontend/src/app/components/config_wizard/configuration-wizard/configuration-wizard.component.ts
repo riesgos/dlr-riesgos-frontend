@@ -6,7 +6,7 @@ import * as FocusActions from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 import { Process } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableStep } from '../wizardable_processes';
+import { WizardableStep } from '../wizardable_steps';
 
 
 

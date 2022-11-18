@@ -1,14 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, RequiredValidator, Validators } from '@angular/forms';
-import { UserConfigurableProductDescription, UserConfigurableProduct, isBboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
-import { WizardableStep } from '../wizardable_processes';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { UserConfigurableProduct, isBboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
+import { WizardableStep } from '../wizardable_steps';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
-import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { isBbox } from '../../../services/wps/wps.datatypes';
 import { debounceTime } from 'rxjs/operators';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ukis-form',
@@ -17,7 +15,7 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class FormComponent implements OnInit, OnDestroy {
 
-  @Input() process: WizardableStep;
+  @Input() step: WizardableStep;
   @Input() parameters: UserConfigurableProduct[];
   @Input() disabled = false;  // <------------ @TODO: can we infer this from formgroup?
   public formGroup: UntypedFormGroup;
@@ -43,7 +41,7 @@ export class FormComponent implements OnInit, OnDestroy {
         const control = this.formGroup.get(parameter.uid);
         const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
           if (control.valid) {
-            this.store.dispatch(RiesgosActions.executeSuccess({products: [{
+            this.store.dispatch(RiesgosActions.userdataProvided({products: [{
               ...parameter,
               value: newVal
             }]}));
@@ -63,7 +61,13 @@ export class FormComponent implements OnInit, OnDestroy {
       const formControl = this.formGroup.get(parameter.uid);
       parameter.value = formControl.value;
     }
-    this.store.dispatch(RiesgosActions.executeStart({productsProvided: this.parameters, process: this.process }));
+
+    this.store.select().subscribe(a => {
+      const step = this.step.step.id;
+      const scenario = 
+      const state = 
+      this.store.dispatch(RiesgosActions.executeStart({ scenario, step, state }));
+    });
   }
 
 }

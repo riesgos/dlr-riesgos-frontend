@@ -1,6 +1,6 @@
 import { environment } from '../environments/environment';
 
-
+// modules
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
@@ -12,11 +12,12 @@ import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common
 import { LayersModule } from '@dlr-eoc/services-layers';
 import { MapOlModule } from '@dlr-eoc/map-ol';
 import { Ng5SliderModule } from 'ng5-slider';
-import { NgModule, APP_INITIALIZER, InjectionToken } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { UkisRoutingModule } from './app-routing.module';
 
+// components
 import { BaseLayerControlComponent } from './components/riesgos_layer_control/base-layer-control/base-layer-control.component';
 import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 import { BlogentryComponent } from './components/blogentry/blogentry.component';
@@ -59,6 +60,7 @@ import { VectorLegendComponent } from './components/dynamic/vector-legend/vector
 import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 
+// services
 import { AlertService } from './components/global-alert/alert.service';
 import { BackendService } from './services/backend/backend.service';
 import { ConfigService } from './services/configService/configService';
@@ -66,6 +68,7 @@ import { FooterService } from './components/global-footer/footer.service';
 import { ProgressService } from './components/global-progress/progress.service';
 import { DisclaimerService } from './components/disclaimer/disclaimer.service';
 
+// other
 import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
 import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
 import { ProxyInterceptor } from './services/interceptors/ProxyInterceptor';

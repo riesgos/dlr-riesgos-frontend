@@ -1,5 +1,6 @@
 import { FeatureCollection } from '@turf/helpers';
 import { Product, ProductDescription } from 'src/app/riesgos/riesgos.datatypes';
+import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
 import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 
 
@@ -55,26 +56,30 @@ export type UserConfigurableProductDescription = StringUserConfigurableProductDe
 
 
 
-export interface StringUserConfigurableProduct extends Product {
+export interface StringUserConfigurableProduct {
+    uid: string,
     description: StringUserConfigurableProductDescription;
     value: string;
 }
 
-export interface StringSelectUserConfigurableProduct extends Product {
+export interface StringSelectUserConfigurableProduct {
+    uid: string,
     description: StringSelectUserConfigurableProductDescription;
     value: string;
 }
 
-export interface BboxUserConfigurableProduct extends Product {
+export interface BboxUserConfigurableProduct {
+    uid: string,
     description: BboxUserConfigurableProductDescription;
     value: WpsBboxValue | null;
 }
 
-export const isBboxUserConfigurableProduct = (prod: Product): prod is BboxUserConfigurableProduct => {
+export const isBboxUserConfigurableProduct = (prod: any): prod is BboxUserConfigurableProduct => {
     return isBboxUserConfigurableProductDescription(prod.description);
 };
 
 export interface FeatureSelectUconfProduct extends Product {
+    uid: string,
     description: FeatureSelectUconfPD;
     value: [FeatureCollection];
 }
@@ -86,7 +91,7 @@ export type UserConfigurableProduct =
     FeatureSelectUconfProduct;
 
 
-export const isStringSelectableProduct = (obj: Product): obj is StringSelectUserConfigurableProduct => {
+export const isStringSelectableProduct = (obj: any): obj is StringSelectUserConfigurableProduct => {
     return obj.description.hasOwnProperty('options');
 };
 
@@ -94,6 +99,18 @@ export const isUserConfigurableProductDescription = (obj: ProductDescription): o
     return obj.hasOwnProperty('wizardProperties');
 };
 
-export const isUserConfigurableProduct = (obj: Product): obj is UserConfigurableProduct => {
-    return isUserConfigurableProductDescription(obj.description);
+export const isUserConfigurableProduct = (obj: any): obj is UserConfigurableProduct => {
+    return isUserConfigurableProductDescription(obj.id);
+};
+
+
+export const loadUserconfigProduct = (product: RiesgosProduct): UserConfigurableProduct | undefined => {
+    const userConfigProd = userConfigRegistry[product.id];
+    if (!userConfigProd) return undefined;
+    return userConfigProd
+}
+
+
+const userConfigRegistry: {[id: string]: UserConfigurableProduct} = {
+    
 };

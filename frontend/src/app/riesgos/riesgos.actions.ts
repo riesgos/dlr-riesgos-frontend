@@ -33,9 +33,9 @@ export const userdataProvided = createAction(
     props<{ products: any }>()
 );
 
-export const restartingFromProcess = createAction(
-    '[Riesgos] Restarting from process',
-    props<{scenario: ScenarioName, step: string}>()
+export const restartingFromStep = createAction(
+    '[Riesgos] Restarting from step',
+    props<{step: string}>()
 );
 
 export const restartingScenario = createAction(

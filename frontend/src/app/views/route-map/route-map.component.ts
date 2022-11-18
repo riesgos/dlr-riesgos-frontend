@@ -9,7 +9,7 @@ import { MapStateService } from '@dlr-eoc/services-map-state';
 import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
 
 import { Subscription } from 'rxjs';
-import { loadWizardProps, WizardableStep } from 'src/app/components/config_wizard/wizardable_processes';
+import { loadWizardProps, WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { map } from 'rxjs/operators';
 import { getSteps } from 'src/app/riesgos/riesgos.selectors';
 

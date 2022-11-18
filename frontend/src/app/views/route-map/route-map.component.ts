@@ -11,7 +11,7 @@ import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
 import { Subscription } from 'rxjs';
 import { isWizardableProcess, WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
 import { map } from 'rxjs/operators';
-import { getProcessStates } from 'src/app/riesgos/riesgos.selectors';
+import { getStepStates } from 'src/app/riesgos/riesgos.selectors';
 
 @Component({
   selector: 'ukis-route-map',
@@ -74,20 +74,20 @@ export class RouteMapComponent implements OnInit, OnDestroy {
     const scenario = this.activeRoute.snapshot.queryParams['id'] || 'c1';
     this.olSvc.setProjection('EPSG:4326');
     this.store.dispatch(RiesgosActions.scenarioChosen({ scenario }));
-    // get processes after store was dispatched
-    this.getProcesses();
+    // get steps after store was dispatched
+    this.getSteps();
   }
 
-  getProcesses() {
-    const processSub = this.store.pipe(
-      select(getProcessStates),
-      map(processes => {
-        return processes.filter(process => isWizardableProcess(process)) as WizardableProcess[];
+  getSteps() {
+    const stepSub = this.store.pipe(
+      select(getStepStates),
+      map(steps => {
+        return steps.filter(step => isWizardableProcess(step)) as WizardableProcess[];
       })
     ).subscribe(processes => {
       this.processes = processes;
     });
-    this.subs.push(processSub);
+    this.subs.push(stepSub);
   }
 
   ngOnDestroy(): void {

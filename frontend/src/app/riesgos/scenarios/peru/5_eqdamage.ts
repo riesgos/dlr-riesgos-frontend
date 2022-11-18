@@ -57,7 +57,7 @@ export const eqDamageWmsPeru: WpsData & MappableProduct = {
         return forkJoin([layers$, riesgosState$]).pipe(
             map(([layers, riesgosState]) => {
 
-                const metaData = riesgosState.scenarioData['p1'].productValues.find(p => p.uid === eqDamageMetaPeru.uid);
+                const metaData = riesgosState.scenarioData['p1'].products.find(p => p.uid === eqDamageMetaPeru.uid);
                 const metaDataValue = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];

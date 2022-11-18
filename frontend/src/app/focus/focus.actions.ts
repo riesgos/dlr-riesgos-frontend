@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { ProcessId } from '../riesgos/riesgos.datatypes';
+import { StepId } from '../riesgos/riesgos.datatypes';
 
 
 
@@ -9,7 +9,7 @@ export const appInit = createAction(
 
 export const newProcessClicked = createAction(
     '[Focus] new process clicked',
-    props<{processId: ProcessId}>()
+    props<{processId: StepId}>()
 );
 
 export const goToNextProcess = createAction(

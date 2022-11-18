@@ -1,7 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { RiesgosState, RiesgosScenarioState } from './riesgos.state';
-import { Product, ProcessId, ImmutableProcess } from './riesgos.datatypes';
+import { RiesgosState, RiesgosScenarioState, RiesgosStep, RiesgosProduct } from './riesgos.state';
 import { isVectorLayerProduct, isBboxLayerProduct, isWmsProduct, isMultiVectorLayerProduct, isMappableProduct } from '../mappable/riesgos.datatypes.mappable';
 
 
@@ -35,9 +34,9 @@ export const getCurrentScenarioRiesgosState = createSelector(
 );
 
 
-export const getProcessStates = createSelector(
+export const getStepStates = createSelector(
     getRiesgosState,
-    (s: RiesgosState) => getCurrentScenarioState(s).stepStates
+    (s: RiesgosState) => getCurrentScenarioState(s).steps
 );
 
 
@@ -49,14 +48,14 @@ export const getScenario = createSelector(
 
 export const getProducts = createSelector(
     getRiesgosState,
-    (s: RiesgosState) => getCurrentScenarioState(s).productValues
+    (s: RiesgosState) => getCurrentScenarioState(s).products
 );
 
 export const getProduct = (productId: string) => createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
-        const products = getCurrentScenarioState(s).productValues;
-        return products.find(p => p.uid === productId);
+        const products = getCurrentScenarioState(s).products;
+        return products.find(p => p.id === productId);
     }
 );
 
@@ -66,8 +65,8 @@ export const getProduct = (productId: string) => createSelector(
 export const getInputsForProcess = (processId: string) => createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
-        const process = getProcessById(processId, getCurrentScenarioState(s).stepStates);
-        return filterInputsForProcess(process, getCurrentScenarioState(s).productValues);
+        const step = getStepById(processId, getCurrentScenarioState(s).steps);
+        return filterInputsForProcess(step, getCurrentScenarioState(s).products);
     }
 );
 
@@ -75,7 +74,7 @@ export const getInputsForProcess = (processId: string) => createSelector(
 export const getMappableProducts = createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
-        return getCurrentScenarioState(s).productValues
+        return getCurrentScenarioState(s).products
             .filter(prod => prod.value != null)
             .filter(prod => isVectorLayerProduct(prod) || isBboxLayerProduct(prod)
                             || isWmsProduct(prod) || isMultiVectorLayerProduct(prod)
@@ -88,16 +87,16 @@ export const getMappableProducts = createSelector(
 
 
 
-export const getProcessById = (id: ProcessId, processes: ImmutableProcess[]): ImmutableProcess => {
-    const process = processes.find(p => p.uid === id);
-    if (process === undefined) {
-        throw new Error(`Could not find process ${id}`);
+export const getStepById = (id: string, steps: RiesgosStep[]): RiesgosStep => {
+    const step = steps.find(p => p.step.id === id);
+    if (step === undefined) {
+        throw new Error(`Could not find step ${id}`);
     }
-    return process;
+    return step;
 };
 
-export const getProductById = (id: string, products: Product[]): Product => {
-    const product = products.find(p => p.uid === id);
+export const getProductById = (id: string, products: RiesgosProduct[]): RiesgosProduct => {
+    const product = products.find(p => p.id === id);
     if (product === undefined) {
         throw new Error(`Could not find product ${id}`);
     }
@@ -105,7 +104,7 @@ export const getProductById = (id: string, products: Product[]): Product => {
 };
 
 
-export const filterInputsForProcess = (process: ImmutableProcess, products: Product[]): Product[] => {
-    const filteredProducts = process.requiredProducts.map(pid => getProductById(pid, products));
+export const filterInputsForProcess = (step: RiesgosStep, products: RiesgosProduct[]): RiesgosProduct[] => {
+    const filteredProducts = step.step.inputs.map(input => getProductById(input.id, products));
     return filteredProducts;
 };

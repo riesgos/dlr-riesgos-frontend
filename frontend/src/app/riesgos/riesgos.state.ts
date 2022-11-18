@@ -6,14 +6,17 @@ export type ScenarioName = 'none' | 'Chile' | 'Peru' | 'Ecuador';
 
 export type StepState = 'unavailable' | 'ready' | 'running' | 'compete' | 'error';
 
+export interface RiesgosStep {
+    step: API_Step,
+    state: StepState
+}
+
+export type RiesgosProduct = API_Datum | API_DatumReference;
 
 export interface RiesgosScenarioState {
     scenario: ScenarioName;
-    stepStates: {
-        step: API_Step,
-        state: StepState
-    }[];
-    productValues: (API_Datum | API_DatumReference)[];
+    steps: RiesgosStep[];
+    products: RiesgosProduct[];
 }
 
 
@@ -47,8 +50,8 @@ export const initialRiesgosState: RiesgosState = {
     scenarioData: {
         'none': {
             scenario: 'none',
-            stepStates: [],
-            productValues: []
+            steps: [],
+            products: []
         }
     },
     metaData: []

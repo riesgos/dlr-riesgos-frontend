@@ -59,7 +59,7 @@ export class HelperButtonsComponent implements OnInit {
         // @TODO: instead of just a ProductsProvided action,
         // create a new action that validates that all data is still there on the remote servers.
         this.store.dispatch(RiesgosActions.executeSuccess({
-            products: stateToRestore.productValues.filter(pv => pv.value !== null)
+            products: stateToRestore.products.filter(pv => pv.value !== null)
         }));
 
         // Don't do a RiesgosDataUpdate here!
@@ -96,7 +96,7 @@ export class HelperButtonsComponent implements OnInit {
                     ... state,
                     // the graph can only be saved as a flat structure without functions
                     // this is to restore its full capabilities
-                    graph: createGraph(state.stepStates)
+                    graph: createGraph(state.steps)
                 };
             }),
             tap((result: RiesgosScenarioState) => {

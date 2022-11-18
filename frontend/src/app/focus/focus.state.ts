@@ -1,4 +1,4 @@
-import { ProcessId } from '../riesgos/riesgos.datatypes';
+import { StepId } from '../riesgos/riesgos.datatypes';
 
 
 
@@ -6,7 +6,7 @@ import { ProcessId } from '../riesgos/riesgos.datatypes';
 
 
 export interface FocusState {
-    focussedProcessId: ProcessId | null;
+    focussedProcessId: StepId | null;
 }
 
 

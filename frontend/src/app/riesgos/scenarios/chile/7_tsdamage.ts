@@ -81,8 +81,8 @@ export const tsDamageWms: WpsData & MappableProduct = {
         return forkJoin([layers$, riesgosState$]).pipe(
             map(([layers, riesgosState]) => {
 
-                const metaData = riesgosState.scenarioData['c1'].productValues.find(p => p.uid === tsDamageMeta.uid);
-                const chosenSchema = riesgosState.scenarioData['c1'].productValues.find(p => p.uid === schema.uid).value;
+                const metaData = riesgosState.scenarioData['c1'].products.find(p => p.uid === tsDamageMeta.uid);
+                const chosenSchema = riesgosState.scenarioData['c1'].products.find(p => p.uid === schema.uid).value;
                 const metaDataValue: DeusMetaData = metaData.value[0];
 
                 const econLayer: ProductLayer = layers[0];

@@ -14,7 +14,7 @@ export interface Product {
 }
 
 
-export type ProcessId = string;
+export type StepId = string;
 
 
 export enum ProcessStateTypes {
@@ -55,7 +55,7 @@ ProcessStateRunning | ProcessStateCompleted | ProcessStateError;
 
 
 export interface ImmutableProcess {
-    readonly uid: ProcessId;
+    readonly uid: StepId;
     readonly name: string;
     readonly requiredProducts: ProductId[];
     readonly providedProducts: ProductId[];

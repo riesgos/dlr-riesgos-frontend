@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import * as RiesgosActions from './riesgos.actions';
 import * as FocusActions from '../focus/focus.actions';
-import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import { of } from 'rxjs';
@@ -49,7 +49,7 @@ export class RiesgosEffects {
 }
 
 
-function convertApiScenariosToFrontendScenarios(apiScenarios: API_ScenarioInfo[]): RiesgosScenarioMetadata[] {
+function convertApiScenariosToFrontendScenarios(apiScenarios: API_ScenarioInfo[]): RiesgosScenarioMetadata[] {   
     throw new Error('Function not implemented.');
 }
 

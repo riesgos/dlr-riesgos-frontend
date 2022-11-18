@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
-import { UserConfigurableProduct, isUserConfigurableProduct, loadUserconfigProduct } from '../userconfigurable_wpsdata';
+import { UserConfigurableProduct, loadUserconfigProduct } from '../userconfigurable_wpsdata';
 import { getInputsForStep } from 'src/app/riesgos/riesgos.selectors';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';

@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { combineLatest, from, Observable, pipe } from "rxjs";
 import { delay, filter, map, repeat, repeatWhen, switchMap, take } from "rxjs/operators";
 import { ConfigService } from "../configService/configService";
+import { pollUntil } from "./polling";
 
 export interface DatumDescription {
     id: string
@@ -50,11 +51,34 @@ export class BackendService {
     ) {}
 
     loadScenarios(): Observable<Scenario[]> {
-        return from(this.asyncLoadScenarios());
+        
+        const url = this.configService.getConfig().middlewareUrl;
+        const get$ = this.http.get<{id: string, description: string}[]>(`${url}/scenarios`);
+
+        return get$.pipe(
+            switchMap(scenarioInfos => {
+                const followUpRequests$: Observable<Scenario>[] = [];
+                for (const scenarioInfo of scenarioInfos) {
+                    const request$ = this.http.get<Scenario>(`${url}/scenarios/${scenarioInfo.id}`);
+                    followUpRequests$.push(request$);
+                }
+                return combineLatest(followUpRequests$);
+            })
+        );
     }
 
     execute(scenarioId: string, stepId: string, state: ScenarioState): Observable<ScenarioState> {
-        return from(this.asyncExecute(scenarioId, stepId, state));
+
+        const url = this.configService.getConfig().middlewareUrl;
+        const post$ = this.http.post<{ ticket: string }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute`, state);
+
+        return post$.pipe(
+            switchMap(responseData => {
+                const task$ = this.http.get<{ ticket?: string, result?: ScenarioState }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
+                return pollUntil(task$, r => r.result);
+            }),
+            map(response => response.result)
+        )
     }
 
     async asyncLoadScenarios(): Promise<Scenario[]> {
@@ -78,7 +102,10 @@ export class BackendService {
     async asyncExecute(scenarioId: string, stepId: string, state: ScenarioState): Promise<ScenarioState> {
         const url = this.configService.getConfig().middlewareUrl;
 
-        const response = await fetch(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute`, {method: 'POST', body: JSON.stringify(state)});
+        const response = await fetch(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute`, {
+            method: 'POST',
+            body: JSON.stringify(state)
+        });
         let responseData = await response.json();
 
         while (responseData.ticket) {

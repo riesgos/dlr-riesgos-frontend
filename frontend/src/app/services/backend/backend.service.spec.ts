@@ -1,8 +1,7 @@
 import { XhrFactory } from "@angular/common";
 import { HttpClient, HttpXhrBackend } from "@angular/common/http";
-import { switchMap } from "rxjs/operators";
 import { ConfigService } from "../configService/configService";
-import { BackendService, Datum, DatumReference, ScenarioState } from "./backend.service";
+import { BackendService, ScenarioState } from "./backend.service";
 
 
 

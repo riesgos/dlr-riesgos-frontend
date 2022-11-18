@@ -17,7 +17,7 @@ export class RiesgosEffects {
     appInit$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(FocusActions.appInit),
-            switchMap(_ => this.backendSvc.loadMetadata()),
+            switchMap(_ => this.backendSvc.loadScenarios()),
             map(results => RiesgosActions.metadataProvided(results))
         );
     });
@@ -25,7 +25,7 @@ export class RiesgosEffects {
     runProcess$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(RiesgosActions.executeStart),
-            switchMap(_ => this.backendSvc.execute()),
+            switchMap(action => this.backendSvc.execute(action.scenario, action.step, action.state)),
             map(results => RiesgosActions.executeSuccess(results)),
             catchError(e => of(RiesgosActions.executeError(e)))
         );

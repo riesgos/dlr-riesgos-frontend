@@ -2,18 +2,12 @@ import { WpsMarshaller, WpsInput, WpsVersion, WpsResult, WpsOutputDescription, W
     WpsCapability, WpsProcessDescription } from './wps_datatypes';
 import { WpsMarshaller100 } from './wps100/wps_marshaller_1.0.0';
 import { WpsMarshaller200 } from './wps200/wps_marshaller_2.0.0';
-//@ts-ignore
-import * as XLink_1_0_Factory from 'w3c-schemas/lib/XLink_1_0'; const XLink_1_0 = XLink_1_0_Factory.XLink_1_0;
-//@ts-ignore
-import * as OWS_1_1_0_Factory from 'ogc-schemas/lib/OWS_1_1_0'; const OWS_1_1_0 = OWS_1_1_0_Factory.OWS_1_1_0;
-//@ts-ignore
-import * as OWS_2_0_Factory from 'ogc-schemas/lib/OWS_2_0'; const OWS_2_0 = OWS_2_0_Factory.OWS_2_0;
-//@ts-ignore
-import * as WPS_1_0_0_Factory from 'ogc-schemas/lib/WPS_1_0_0'; const WPS_1_0_0 = WPS_1_0_0_Factory.WPS_1_0_0;
-//@ts-ignore
-import * as WPS_2_0_Factory from 'ogc-schemas/lib/WPS_2_0'; const WPS_2_0 = WPS_2_0_Factory.WPS_2_0;
-//@ts-ignore
-import * as JsonixFactory from './jsonix/jsonix'; const Jsonix = JsonixFactory.Jsonix as any;
+import { XLink_1_0 } from './jsonix/XLink_1_0';
+import { OWS_1_1_0 } from './jsonix/OWS_1_1_0';
+import { OWS_2_0 } from './jsonix/OWS_2_0';
+import { WPS_1_0_0 } from './jsonix/WPS_1_0_0';
+import { WPS_2_0 } from './jsonix/WPS_2_0';
+import { Jsonix } from './jsonix/jsonix';
 import axios from 'axios';
 import axiosBetterStacktrace from 'axios-better-stacktrace';
 axiosBetterStacktrace(axios);

@@ -21,9 +21,7 @@
     "express": "^4.17.3",
     "express-session": "^1.17.3",
     "object-hash": "^3.0.0",
-    "ogc-schemas": "^2.6.1",
     "sendmail": "^1.6.1",
-    "w3c-schemas": "^1.4.0",
     "xml-formatter": "^2.6.1",
     "xmlserializer": "^0.6.1"
   },

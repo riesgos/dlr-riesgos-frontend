@@ -1,5 +1,5 @@
 import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable, forkJoin } from 'rxjs';
 import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
 import { WpsData } from '../../../services/wps/wps.datatypes';
@@ -227,7 +227,7 @@ export const laharContoursWms: WmsLayerProduct & MappableProduct = {
     uid: 'LaharContourLines'
 };
 
-export class LaharWrapper implements ExecutableProcess, WizardableProcess {
+export class LaharWrapper implements ExecutableProcess, WizardableStep {
 
     state: ProcessState;
     uid = 'LaharWrapper';

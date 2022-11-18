@@ -9,9 +9,9 @@ import { MapStateService } from '@dlr-eoc/services-map-state';
 import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
 
 import { Subscription } from 'rxjs';
-import { isWizardableProcess, WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { loadWizardProps, WizardableStep } from 'src/app/components/config_wizard/wizardable_processes';
 import { map } from 'rxjs/operators';
-import { getStepStates } from 'src/app/riesgos/riesgos.selectors';
+import { getSteps } from 'src/app/riesgos/riesgos.selectors';
 
 @Component({
   selector: 'ukis-route-map',
@@ -44,7 +44,7 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   };
 
   // we need the processes here to create nav groups frot them;
-  public processes: WizardableProcess[] = null;
+  public steps: WizardableStep[] = null;
   private subs: Subscription[] = [];
 
   constructor(
@@ -80,12 +80,19 @@ export class RouteMapComponent implements OnInit, OnDestroy {
 
   getSteps() {
     const stepSub = this.store.pipe(
-      select(getStepStates),
+      select(getSteps),
       map(steps => {
-        return steps.filter(step => isWizardableProcess(step)) as WizardableProcess[];
+        const wizardableSteps: WizardableStep[] = [];
+        for (const step of steps) {
+          const wizardableStep = loadWizardProps(step);
+          if (wizardableStep) {
+            wizardableSteps.push(wizardableStep)
+          }
+        }
+        return wizardableSteps;
       })
-    ).subscribe(processes => {
-      this.processes = processes;
+    ).subscribe(wizardableSteps => {
+      this.steps = wizardableSteps;
     });
     this.subs.push(stepSub);
   }

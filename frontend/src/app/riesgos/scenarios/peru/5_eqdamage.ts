@@ -1,7 +1,7 @@
 import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
 import { initialExposurePeruReference } from './4_exposure';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_processes';
 import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, Observable } from 'rxjs';
@@ -166,7 +166,7 @@ export const eqDamagePeruMRef: WpsData & Product = {
     value: null
 };
 
-export class EqDeusPeru implements ExecutableProcess, WizardableProcess {
+export class EqDeusPeru implements ExecutableProcess, WizardableStep {
 
     readonly state: ProcessState;
     readonly uid = 'EQ-Deus';

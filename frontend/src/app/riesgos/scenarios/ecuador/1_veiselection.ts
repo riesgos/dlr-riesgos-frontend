@@ -1,4 +1,4 @@
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_processes';
 import { vei } from './lahar';
 import { ProcessStateUnavailable, ExecutableProcess, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { Observable, of } from 'rxjs';
@@ -26,7 +26,7 @@ export const selectableVei: StringSelectUserConfigurableProduct & WpsData = {
 
 
 
-export const VeiProvider: WizardableProcess & ExecutableProcess = {
+export const VeiProvider: WizardableStep & ExecutableProcess = {
     uid: 'vei_provider',
     name: 'VEI Selection',
     description: 'VEI_description',

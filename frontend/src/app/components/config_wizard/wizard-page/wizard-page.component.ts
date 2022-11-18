@@ -7,7 +7,7 @@ import { Product, WpsProcess } from 'src/app/riesgos/riesgos.datatypes';
 import { getInputsForProcess } from 'src/app/riesgos/riesgos.selectors';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { WizardableProcess } from '../wizardable_processes';
+import { WizardableStep } from '../wizardable_processes';
 
 
 
@@ -18,7 +18,7 @@ import { WizardableProcess } from '../wizardable_processes';
 })
 export class WizardPageComponent implements OnInit {
 
-  @Input() process: WpsProcess & WizardableProcess;
+  @Input() process: WpsProcess & WizardableStep;
   parameters$: Observable<UserConfigurableProduct[]>;
 
 

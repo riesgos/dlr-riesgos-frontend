@@ -1,4 +1,4 @@
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { vei } from './lahar';
 import { WpsData } from '../../../services/wps/wps.datatypes';
@@ -180,7 +180,7 @@ export const probability: StringSelectUserConfigurableProduct & WpsData = {
 };
 
 
-export class AshfallService extends WpsProcess implements WizardableProcess {
+export class AshfallService extends WpsProcess implements WizardableStep {
 
     wizardProperties: WizardProperties;
 

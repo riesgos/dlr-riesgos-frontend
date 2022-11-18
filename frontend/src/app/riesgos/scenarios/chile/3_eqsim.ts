@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { selectedEq } from './2_eqselection';
@@ -135,7 +135,7 @@ export const VsGrid: WpsData & StringSelectUserConfigurableProduct = {
 };
 
 
-export class Shakyground extends WpsProcess implements WizardableProcess {
+export class Shakyground extends WpsProcess implements WizardableStep {
 
     readonly wizardProperties: WizardProperties;
 

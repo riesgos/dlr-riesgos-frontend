@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from '../../riesgos.datatypes';
-import { WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -85,7 +85,7 @@ export class TsWmsServicePeru extends WpsProcess {
 }
 
 
-export class TsServicePeru implements WizardableProcess, ExecutableProcess {
+export class TsServicePeru implements WizardableStep, ExecutableProcess {
 
     uid = 'ts-service_peru';
     name = 'TS-Service';

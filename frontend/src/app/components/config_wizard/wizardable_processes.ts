@@ -1,4 +1,4 @@
-import { Process } from 'src/app/riesgos/riesgos.datatypes';
+import { RiesgosStep } from 'src/app/riesgos/riesgos.state';
 
 
 
@@ -14,11 +14,21 @@ export interface WizardProperties {
 }
 
 
-export interface WizardableProcess extends Process {
+export interface WizardableStep extends RiesgosStep {
     readonly wizardProperties: WizardProperties;
 }
 
 
-export const isWizardableProcess = (process: Process): process is WizardableProcess => {
-    return process['wizardProperties'] !== undefined && process['wizardProperties']['shape'] !== undefined;
+export const loadWizardProps = (step: RiesgosStep): WizardableStep | undefined => {
+    const wizardProps = wizardRegistry[step.step.id];
+    if (!wizardProps) return undefined;
+    return {
+        ...step,
+        wizardProperties: wizardProps
+    };
 }
+
+
+const wizardRegistry: {[id: string]: WizardProperties} = {
+    
+};

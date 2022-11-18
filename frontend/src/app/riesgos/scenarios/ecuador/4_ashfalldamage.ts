@@ -1,5 +1,5 @@
 import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
@@ -430,7 +430,7 @@ export const ashfallDamageMRef: WpsData & Product = {
 };
 
 
-export class DeusAshfall implements ExecutableProcess, WizardableProcess {
+export class DeusAshfall implements ExecutableProcess, WizardableStep {
 
     readonly uid: string = 'DeusAshfall';
     readonly name: string = 'Ashfall Damage';

@@ -1,7 +1,7 @@
 import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { Product, ProcessStateUnavailable, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { tsWms } from './6_tssim';
 import { HttpClient } from '@angular/common/http';
 import { fragilityRef, VulnerabilityModel } from './modelProp';
@@ -181,7 +181,7 @@ export const tsDamageWms: WpsData & MappableProduct = {
 
 
 
-export class TsDeus implements ExecutableProcess, WizardableProcess {
+export class TsDeus implements ExecutableProcess, WizardableStep {
 
     readonly state: ProcessState;
     readonly uid: string;

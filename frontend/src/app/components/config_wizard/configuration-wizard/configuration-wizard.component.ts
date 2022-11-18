@@ -6,7 +6,7 @@ import * as FocusActions from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 import { Process } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableProcess} from '../wizardable_processes';
+import { WizardableStep } from '../wizardable_processes';
 
 
 
@@ -19,7 +19,7 @@ export class ConfigurationWizardComponent {
 
     @Input() navExpanded = true;
     private focussedPageId$: Observable<string>;
-    @Input() public processes: WizardableProcess[];
+    @Input() public steps: WizardableStep[];
 
     constructor(
         private store: Store<State>

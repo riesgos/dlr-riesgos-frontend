@@ -1,4 +1,4 @@
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
@@ -161,7 +161,7 @@ export const initialExposurePeruReference: WpsData & Product = {
 };
 
 
-export class ExposureModelPeru extends WpsProcess implements WizardableProcess {
+export class ExposureModelPeru extends WpsProcess implements WizardableStep {
 
   public wizardProperties: WizardProperties;
 

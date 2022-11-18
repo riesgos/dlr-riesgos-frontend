@@ -1,4 +1,4 @@
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, Product, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { HttpClient } from '@angular/common/http';
@@ -284,7 +284,7 @@ export const modelEcuador: WpsData & Product = {
 };
 
 
-export class AshfallExposureModel extends WpsProcess implements WizardableProcess {
+export class AshfallExposureModel extends WpsProcess implements WizardableStep {
 
   wizardProperties: WizardProperties;
 
@@ -328,7 +328,7 @@ export class AshfallExposureModel extends WpsProcess implements WizardableProces
 }
 
 
-export class LaharExposureModel extends WpsProcess implements WizardableProcess {
+export class LaharExposureModel extends WpsProcess implements WizardableStep {
 
   wizardProperties: WizardProperties;
 

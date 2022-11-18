@@ -1,7 +1,7 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
 import { StringSelectUserConfigurableProduct, BboxUserConfigurableProduct, StringUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { VectorLayerProduct, BboxLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { toDecimalPlaces, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
 import { HttpClient } from '@angular/common/http';
@@ -286,7 +286,7 @@ export const availableEqsPeru: VectorLayerProduct & WpsData = {
 
 
 
-export class QuakeLedgerPeru extends WpsProcess implements WizardableProcess {
+export class QuakeLedgerPeru extends WpsProcess implements WizardableStep {
 
     readonly wizardProperties: WizardProperties;
 

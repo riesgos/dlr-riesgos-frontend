@@ -1,10 +1,6 @@
 # Cleanup
 
 - switch
-    - steps are expected to be potentially wizardable. 
-        - That means adding descriptions, logos, ...
-        - Used to be hardcoded onto process
-        - Now: have a register of id's that are wizardable and map them to wizardable-info
     - getMapableProducts
     - data is now only stored per reference
         - provide a data-service that fetches the data on demand

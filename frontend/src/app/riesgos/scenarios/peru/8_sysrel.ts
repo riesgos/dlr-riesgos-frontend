@@ -1,5 +1,5 @@
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsData } from '../../../services/wps/wps.datatypes';
 import { VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
@@ -116,7 +116,7 @@ export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
 };
 
 
-export class EqReliabilityPeru extends WpsProcess implements WizardableProcess {
+export class EqReliabilityPeru extends WpsProcess implements WizardableStep {
 
     readonly wizardProperties: WizardProperties;
 

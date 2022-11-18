@@ -1,5 +1,5 @@
 import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { ashfallDamageMRef } from './4_ashfalldamage';
 import { laharVelocityShakemapRef } from './5_lahar';
 import { Deus } from '../chile/deus';
@@ -463,7 +463,7 @@ export const laharDamageMRef: WpsData & Product = {
 
 
 
-export class DeusLahar implements ExecutableProcess, WizardableProcess {
+export class DeusLahar implements ExecutableProcess, WizardableStep {
 
     readonly uid: string = 'DeusLahar';
     readonly name: string = 'Lahar Damage';

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, RequiredValidator, Validators } from '@angular/forms';
 import { UserConfigurableProductDescription, UserConfigurableProduct, isBboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
-import { WizardableProcess } from '../wizardable_processes';
+import { WizardableStep } from '../wizardable_processes';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
@@ -17,7 +17,7 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class FormComponent implements OnInit, OnDestroy {
 
-  @Input() process: WizardableProcess;
+  @Input() process: WizardableStep;
   @Input() parameters: UserConfigurableProduct[];
   @Input() disabled = false;  // <------------ @TODO: can we infer this from formgroup?
   public formGroup: UntypedFormGroup;

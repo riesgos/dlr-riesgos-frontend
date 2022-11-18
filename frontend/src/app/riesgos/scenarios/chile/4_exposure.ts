@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
 import { weightedDamage } from 'src/app/helpers/colorhelpers';
 import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { Observable } from 'rxjs';
 import Geometry from 'ol/geom/Geometry';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
@@ -157,7 +157,7 @@ export const initialExposureRef: WpsData & Product = {
 };
 
 
-export class ExposureModel extends WpsProcess implements WizardableProcess {
+export class ExposureModel extends WpsProcess implements WizardableStep {
 
   public wizardProperties: WizardProperties;
 

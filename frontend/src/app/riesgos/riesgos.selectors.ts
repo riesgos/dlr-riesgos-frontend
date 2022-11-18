@@ -34,7 +34,7 @@ export const getCurrentScenarioRiesgosState = createSelector(
 );
 
 
-export const getStepStates = createSelector(
+export const getSteps = createSelector(
     getRiesgosState,
     (s: RiesgosState) => getCurrentScenarioState(s).steps
 );

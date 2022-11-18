@@ -1,4 +1,4 @@
-import { WizardableProcess, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
+import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
 import { WpsProcess, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WmsLayerProduct, VectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import {  StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
@@ -95,7 +95,7 @@ export const laharShakemap: Product & WpsData = {
 };
 
 
-export class LaharWps extends WpsProcess implements WizardableProcess {
+export class LaharWps extends WpsProcess implements WizardableStep {
 
     readonly wizardProperties: WizardProperties;
 

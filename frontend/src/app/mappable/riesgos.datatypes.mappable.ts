@@ -27,7 +27,9 @@ export interface MappableProduct extends Product {
 }
 
 export function isMappableProduct(product: Product): product is MappableProduct  {
-    return 'toUkisLayers' in product;
+    return isVectorLayerProduct(product) || isBboxLayerProduct(product)
+            || isWmsProduct(product) || isMultiVectorLayerProduct(product)
+            || 'toUkisLayers' in product;
 }
 
 

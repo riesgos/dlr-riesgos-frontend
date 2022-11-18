@@ -70,23 +70,6 @@ export const getInputsForProcess = (processId: string) => createSelector(
     }
 );
 
-
-export const getMappableProducts = createSelector(
-    getRiesgosState,
-    (s: RiesgosState) => {
-        return getCurrentScenarioState(s).products
-            .filter(prod => prod.value != null)
-            .filter(prod => isVectorLayerProduct(prod) || isBboxLayerProduct(prod)
-                            || isWmsProduct(prod) || isMultiVectorLayerProduct(prod)
-                            || isMappableProduct(prod) );
-    }
-);
-
-
-
-
-
-
 export const getStepById = (id: string, steps: RiesgosStep[]): RiesgosStep => {
     const step = steps.find(p => p.step.id === id);
     if (step === undefined) {

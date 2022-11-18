@@ -23,7 +23,7 @@ import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr
 import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 
 import { State } from 'src/app/ngrx_register';
-import { getMappableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
+import { getScenario, getGraph, getProducts } from 'src/app/riesgos/riesgos.selectors';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { interactionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
@@ -38,6 +38,8 @@ import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/a
 import { NavigationStart, Router } from '@angular/router';
 import TileLayer from 'ol/layer/Tile';
 import Geometry from 'ol/geom/Geometry';
+import { isMappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
+import { DataService } from 'src/app/services/data/data.service';
 
 
 const mapProjection = 'EPSG:3857';
@@ -66,7 +68,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         private layerMarshaller: LayerMarshaller,
         public layersSvc: LayersService,
         private translator: SimplifiedTranslationService,
-        private router: Router
+        private router: Router,
+        private dataService: DataService
     ) {
         this.controls = { attribution: true, scaleLine: true };
     }
@@ -112,7 +115,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // listening for products that can be displayed on the map
         const sub3 = this.store.pipe(
-            select(getMappableProducts),
+            
+            select(getProducts),
+            switchMap(products => this.dataService.resolveReferences(products)),
+            map(resolvedProducts => resolvedProducts.filter(p => isMappableProduct(p))),
 
             // translate to layers
             switchMap((products: Product[]) => {
@@ -271,6 +277,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
     }
+    
 
     ngAfterViewInit(): void {
         // These functions can only be called after view init, because map-service is not yet ready before that.

@@ -30,7 +30,7 @@ export const executeError = createAction(
 
 export const userdataProvided = createAction(
     '[Riesgos] userdata provided',
-    props<{ data: any }>()
+    props<{ products: any }>()
 );
 
 export const restartingFromProcess = createAction(

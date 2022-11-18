@@ -1,6 +1,6 @@
 import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsBboxValue } from '../services/wps/wps.datatypes';
-import { shape } from '../components/config_wizard/wizardable_processes';
+import { shape } from '../components/config_wizard/wizardable_steps';
 import { FeatureCollection } from '@turf/helpers';
 import Feature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';

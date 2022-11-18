@@ -15,6 +15,7 @@ import { LayersService } from '@dlr-eoc/services-layers';
 import { LayerMarshaller } from './layer_marshaller';
 import { Store } from '@ngrx/store';
 import { State } from '../ngrx_register';
+import { API_Datum } from '../services/backend/backend.service';
 
 
 
@@ -26,10 +27,10 @@ export interface MappableProduct extends Product {
     toUkisLayers(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller): Observable<ProductLayer[]>
 }
 
-export function isMappableProduct(product: Product): product is MappableProduct  {
-    return isVectorLayerProduct(product) || isBboxLayerProduct(product)
-            || isWmsProduct(product) || isMultiVectorLayerProduct(product)
-            || 'toUkisLayers' in product;
+export function isMappableProduct(obj: any): obj is MappableProduct  {
+    return isVectorLayerProduct(obj) || isBboxLayerProduct(obj)
+            || isWmsProduct(obj) || isMultiVectorLayerProduct(obj)
+            || 'toUkisLayers' in obj;
 }
 
 
@@ -47,8 +48,8 @@ export interface BboxLayerProduct extends Product {
 }
 
 
-export const isBboxLayerDescription = (descr: ProductDescription): descr is BboxLayerDescription => {
-    return descr.hasOwnProperty('type') && descr['type'] === 'bbox';
+export const isBboxLayerDescription = (description: ProductDescription): description is BboxLayerDescription => {
+    return description.hasOwnProperty('type') && description['type'] === 'bbox';
 };
 
 export const isBboxLayerProduct = (data: Product): data is BboxLayerProduct => {
@@ -148,4 +149,17 @@ export const isWmsProduct = (data: Product): data is WmsLayerProduct => {
         || data.description['format'] === 'application/WMS'
         || ((typeof data.value === 'string') && matchesWms(data.value as string))
         || ((Array.isArray(data.value)) && (typeof data.value[0] === 'string') && matchesWms(data.value[0] as string));
+};
+
+
+
+export const loadMappableProduct = (product: API_Datum): MappableProduct | undefined => {
+    const mappableProduct = wizardRegistry[product.id];
+    if (!mappableProduct) return undefined;
+    return mappableProduct;
+}
+
+
+const wizardRegistry: {[id: string]: MappableProduct} = {
+    
 };

@@ -24,6 +24,14 @@ export interface API_DatumReference {
     reference: string
 }
 
+export function isApiDatum(x: (API_Datum | API_DatumReference)):  x is API_Datum {
+    return 'value' in x;
+}
+
+export function isApiDatumReference(x: (API_Datum | API_DatumReference)):  x is API_DatumReference {
+    return 'reference' in x;
+}
+
 export interface API_Step {
     id: string,
     title: string,

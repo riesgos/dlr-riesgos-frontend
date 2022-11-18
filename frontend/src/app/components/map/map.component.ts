@@ -1,46 +1,44 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { map, withLatestFrom, switchMap, filter } from 'rxjs/operators';
-import { Graph } from 'graphlib';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { Store, select } from '@ngrx/store';
-
-import { DragBox, Select } from 'ol/interaction';
-import olLayer from 'ol/layer/Layer';
-import olVectorLayer from 'ol/layer/Vector';
-import olVectorSource from 'ol/source/Vector';
-import { GeoJSON, KML, MVT } from 'ol/format';
-import { get as getProjection } from 'ol/proj';
-import { click, noModifierKeys } from 'ol/events/condition';
-import { applyStyle } from 'ol-mapbox-style';
-import { createXYZ } from 'ol/tilegrid';
-import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
 
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
-import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 
-import { State } from 'src/app/ngrx_register';
+import { applyStyle } from 'ol-mapbox-style';
+import { click, noModifierKeys } from 'ol/events/condition';
+import { createXYZ } from 'ol/tilegrid';
+import { DragBox, Select } from 'ol/interaction';
+import { GeoJSON, KML, MVT } from 'ol/format';
+import { get as getProjection } from 'ol/proj';
+import { SelectEvent } from 'ol/interaction/Select';
+import { TileWMS, VectorTile } from 'ol/source';
+import { WpsBboxValue } from '../../services/wps/wps.datatypes';
+import Geometry from 'ol/geom/Geometry';
+import olVectorLayer from 'ol/layer/Vector';
+import olVectorSource from 'ol/source/Vector';
+import TileLayer from 'ol/layer/Tile';
+import VectorTileLayer from 'ol/layer/VectorTile';
+
+import { DataService } from 'src/app/services/data/data.service';
+import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { getScenario, getProducts, getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
-import { Product } from 'src/app/riesgos/riesgos.datatypes';
+import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
 import { interactionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
-import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
+import { loadMappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { LayerMarshaller } from '../../mappable/layer_marshaller';
+import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { ProductLayer } from '../../mappable/map.types';
-import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
-import { SelectEvent } from 'ol/interaction/Select';
-import VectorTileLayer from 'ol/layer/VectorTile';
-import { OSM, TileWMS, VectorTile } from 'ol/source';
-import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
-import { NavigationStart, Router } from '@angular/router';
-import TileLayer from 'ol/layer/Tile';
-import Geometry from 'ol/geom/Geometry';
-import { isMappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { DataService } from 'src/app/services/data/data.service';
 import { RiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+import { State } from 'src/app/ngrx_register';
+import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
 
 
 const mapProjection = 'EPSG:3857';
@@ -118,7 +116,14 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
             select(getProducts),
             switchMap(products => this.dataService.resolveReferences(products)),
-            map(resolvedProducts => resolvedProducts.filter(p => isMappableProduct(p))),
+            map(resolvedProducts => {
+                const mappableProducts: Product[] = [];
+                for (const product of resolvedProducts) {
+                    const mappableProduct = loadMappableProduct(product);
+                    if (mappableProduct) mappableProducts.push(mappableProduct);
+                }
+                return mappableProducts;
+            }),
 
             // translate to layers
             switchMap((products: Product[]) => {

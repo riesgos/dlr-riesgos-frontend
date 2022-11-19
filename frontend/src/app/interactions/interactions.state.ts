@@ -1,11 +1,12 @@
 import { RiesgosProduct } from '../riesgos/riesgos.state';
+import { API_Datum } from '../services/backend/backend.service';
 
 export type InteractionMode = 'normal' | 'featureselection' | 'bbox';
 
 
 export interface InteractionState {
     mode: InteractionMode;
-    product: RiesgosProduct;
+    product: API_Datum;
 }
 
 

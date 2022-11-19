@@ -1,7 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { RiesgosState, RiesgosScenarioState, RiesgosStep, RiesgosProduct } from './riesgos.state';
-import { isVectorLayerProduct, isBboxLayerProduct, isWmsProduct, isMultiVectorLayerProduct, isMappableProduct } from '../mappable/riesgos.datatypes.mappable';
 
 
 const getRiesgosState = (state: State) => {
@@ -40,7 +39,7 @@ export const getSteps = createSelector(
 );
 
 
-export const getScenario = createSelector(
+export const getCurrentScenarioName = createSelector(
     getRiesgosState,
     (s: RiesgosState) => s.currentScenario
 );

@@ -27,7 +27,7 @@ import VectorTileLayer from 'ol/layer/VectorTile';
 
 import { DataService } from 'src/app/services/data/data.service';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { getScenario, getProducts, getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
+import { getCurrentScenarioName, getProducts, getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
 import { interactionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
@@ -35,7 +35,7 @@ import { loadMappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable
 import { LayerMarshaller } from '../../mappable/layer_marshaller';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { ProductLayer } from '../../mappable/map.types';
-import { RiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
+import { initialRiesgosState, RiesgosProduct, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { State } from 'src/app/ngrx_register';
 import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
@@ -58,6 +58,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         featureProjection: this.mapSvc.map.getView().getProjection().getCode()
     });
     private interactionState$ = new BehaviorSubject<InteractionState>(initialInteractionState);
+    private currentScenario$ = new BehaviorSubject<ScenarioName>(initialRiesgosState.currentScenario);
     private subs: Subscription[] = [];
 
     constructor(
@@ -83,6 +84,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.interactionState$.next(currentInteractionState);
         });
         this.subs.push(sub1);
+        // listening for current scenario
+        const sub6 = this.store.select(getCurrentScenarioName).subscribe(name => {
+            this.currentScenario$.next(name);
+        });
+        this.subs.push(sub6);
 
         // listening for focus-change
         const sub2 = this.store.pipe(
@@ -192,11 +198,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     urlat: maxLat.toFixed(1) as unknown as number,
                     urlon: maxLon.toFixed(1) as unknown as number
                 };
-                const product: Product = {
+                const product: RiesgosProduct = {
                     ...this.interactionState$.getValue().product,
                     value: box
                 };
-                this.store.dispatch(interactionCompleted({ product }));
+                this.store.dispatch(interactionCompleted({ scenario: this.currentScenario$.getValue(), product }));
             }
         });
         this.mapSvc.map.addInteraction(dragBox as any);
@@ -219,11 +225,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (this.interactionState$.getValue().mode === 'featureselection') {
                     const feature = features[0];
                     const newFeatureCollection = tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))]);
-                    const product = {
+                    const product: RiesgosProduct = {
                         ...this.interactionState$.getValue().product,
                         value: [newFeatureCollection]
                     };
-                    this.store.dispatch(interactionCompleted({ product }));
+                    this.store.dispatch(interactionCompleted({ scenario: this.currentScenario$.getValue(), product }));
                 }
             }
         });
@@ -238,7 +244,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         // listening for change in scenario - onInit
-        const sub5 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
+        const sub5 = this.store.pipe(select(getCurrentScenarioName)).subscribe((scenario: string) => {
             this.layersSvc.removeLayers();
             const baseLayers$ = this.getBaseLayers(scenario);
             const infoLayers$ = this.getInfoLayers(scenario);

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { RiesgosScenarioMetadata, RiesgosScenarioState, ScenarioName } from './riesgos.state';
+import { RiesgosProduct, RiesgosScenarioMetadata, ScenarioName } from './riesgos.state';
 
 
 
@@ -15,22 +15,22 @@ export const scenarioChosen = createAction(
 
 export const executeStart = createAction(
     '[Riesgos] execute start',
-    props<{step: string}>()
+    props<{scenario: ScenarioName, step: string, data: RiesgosProduct[]}>()
 );
 
 export const executeSuccess = createAction(
     '[Riesgos] execute success',
-    props<{newState: RiesgosScenarioState}>()
+    props<{scenario: ScenarioName, step: string, newData: RiesgosProduct[]}>()
 );
 
 export const executeError = createAction(
     '[Riesgos] execute error',
-    props<{error: Error}>()
+    props<{scenario: ScenarioName, step: string, error: Error}>()
 );
 
 export const userDataProvided = createAction(
-    '[Riesgos] userdata provided',
-    props<{ products: any }>()
+    '[Riesgos] user-data provided',
+    props<{scenario: ScenarioName, products: any}>()
 );
 
 export const restartingFromStep = createAction(

@@ -1,7 +1,6 @@
 # Cleanup
 
 - switch
-    - ngrx: now immutable state. remove exceptions for mutable data.
     - cd frontend && npx ts-unused-exports tsconfig.json
     - re-create graph-modal
     - include jsonix license somewhere

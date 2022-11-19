@@ -13,7 +13,7 @@ export class InteractionEffects {
         return this.actions$.pipe(
             ofType(InteractionActions.interactionCompleted),
             map(action => {
-                return RiesgosActions.userDataProvided({ products: [action.product] });
+                return RiesgosActions.userDataProvided({ scenario: action.scenario, products: [action.product] });
             })
         );
     });

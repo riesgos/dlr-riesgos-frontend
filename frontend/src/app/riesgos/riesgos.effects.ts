@@ -2,14 +2,11 @@ import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import * as RiesgosActions from './riesgos.actions';
 import * as FocusActions from '../focus/focus.actions';
-import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import { of } from 'rxjs';
-import { RiesgosScenarioMetadata, RiesgosScenarioState, RiesgosStep, ScenarioName } from './riesgos.state';
-import { Store } from '@ngrx/store';
-import { getCurrentScenarioRiesgosState, getScenario, getScenarioRiesgosState } from './riesgos.selectors';
-
+import { RiesgosProduct, RiesgosScenarioMetadata, ScenarioName } from './riesgos.state';
 
 
 
@@ -26,22 +23,27 @@ export class RiesgosEffects {
     });
 
     runProcess$ = createEffect(() => {
+        let memScenario: ScenarioName;
+        let memStep: string;
+
         return this.actions$.pipe(
             ofType(RiesgosActions.executeStart),
-            withLatestFrom(
-                this.store.select(getScenario),
-                this.store.select(getCurrentScenarioRiesgosState)
-            ),
-            map(([action, scenario, state]) => ({ scenario: scenario, step: action.step, state: convertFrontendStateToApiState(state)})),
+
+            // remember initial state for later
+            tap(action => { memScenario = action.scenario; memStep = action.step }),
+
+            // convert, execute, and convert back
+            map(action => ({ scenario: action.scenario, step: action.step, state: convertFrontendDataToApiState(action.data)})),
             switchMap(d => this.backendSvc.execute(d.scenario, d.step, d.state)),
-            map(newApiState => convertApiStateToFrontendState(newApiState)),
-            map(newState => RiesgosActions.executeSuccess({newState})),
-            catchError(e => of(RiesgosActions.executeError(e)))
+            map(newApiState => newApiState.data),
+            
+            // notify app of new data
+            map(newData => RiesgosActions.executeSuccess({ scenario: memScenario, step: memStep, newData })),
+            catchError(e => of(RiesgosActions.executeError({ scenario: memScenario, step: memStep, error: e })))
         );
     });
 
     constructor(
-        private store: Store,
         private actions$: Actions,
         private backendSvc: BackendService
     ) {}
@@ -62,19 +64,11 @@ function convertApiScenariosToFrontendScenarios(apiScenarios: API_ScenarioInfo[]
     return frontendScenarios;
 }
 
-function convertFrontendStateToApiState(state: RiesgosScenarioState): API_ScenarioState {
+function convertFrontendDataToApiState(products: RiesgosProduct[]): API_ScenarioState {
     const apiState: API_ScenarioState = {
-        data: state.products
+        data: products
     };
     return apiState;
 }
 
-function convertApiStateToFrontendState(newApiState: API_ScenarioState, scenario: ScenarioName, steps: RiesgosStep[]): RiesgosScenarioState {
-    const riesgosState: RiesgosScenarioState = {
-        steps: steps,
-        products: newApiState.data,
-        scenario: scenario
-    };
-    return riesgosState;
-}
 

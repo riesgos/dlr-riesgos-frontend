@@ -152,14 +152,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     Ng5SliderModule,
     ReactiveFormsModule,
     UkisRoutingModule,
-    StoreModule.forRoot(reducers, {
-      runtimeChecks: {
-        strictStateImmutability: false,
-        strictActionImmutability: false,
-        strictStateSerializability: false,
-        strictActionSerializability: false,
-      },
-    }),
+    StoreModule.forRoot(reducers),
     EffectsModule.forRoot(effects),
     TranslateModule.forRoot({
       loader: {

@@ -32,6 +32,7 @@
     "@dlr-eoc/services-layers": "^10.0.0",
     "@ngrx/effects": "^14.0.0",
     "@ngrx/store": "^14.0.0",
+    "@ngrx/store-devtools": "^14.3.2",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "@turf/bbox": "^6.5.0",

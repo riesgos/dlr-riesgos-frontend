@@ -58,6 +58,7 @@ export class HelperButtonsComponent implements OnInit {
         // @TODO: instead of just a ProductsProvided action,
         // create a new action that validates that all data is still there on the remote servers.
         this.store.dispatch(RiesgosActions.userDataProvided({
+            scenario: this.currentState.scenario,
             products: stateToRestore.products
         }));
 

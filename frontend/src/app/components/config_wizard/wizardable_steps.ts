@@ -1,4 +1,4 @@
-import { RiesgosStep } from 'src/app/riesgos/riesgos.state';
+import { RiesgosStep, ScenarioName } from 'src/app/riesgos/riesgos.state';
 
 
 
@@ -15,16 +15,18 @@ export interface WizardProperties {
 
 
 export interface WizardableStep extends RiesgosStep {
+    readonly scenario: ScenarioName;
     readonly wizardProperties: WizardProperties;
 }
 
 
-export const loadWizardProps = (step: RiesgosStep): WizardableStep | undefined => {
+export const loadWizardProps = (scenario: ScenarioName, step: RiesgosStep): WizardableStep | undefined => {
     const wizardProps = wizardRegistry[step.step.id];
     if (!wizardProps) return undefined;
     return {
         ...step,
-        wizardProperties: wizardProps
+        wizardProperties: wizardProps,
+        scenario: scenario
     };
 }
 

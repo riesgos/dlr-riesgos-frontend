@@ -15,7 +15,7 @@ export const scenarioChosen = createAction(
 
 export const executeStart = createAction(
     '[Riesgos] execute start',
-    props<{scenario: ScenarioName, step: string, data: RiesgosProduct[]}>()
+    props<{scenario: ScenarioName, step: string}>()
 );
 
 export const executeSuccess = createAction(

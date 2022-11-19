@@ -14,6 +14,7 @@ import { MapOlModule } from '@dlr-eoc/map-ol';
 import { Ng5SliderModule } from 'ng5-slider';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { UkisRoutingModule } from './app-routing.module';
 
@@ -154,6 +155,9 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     UkisRoutingModule,
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot(effects),
+    !environment.production ? StoreDevtoolsModule.instrument({
+      maxAge: 5,
+    }) : [],
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

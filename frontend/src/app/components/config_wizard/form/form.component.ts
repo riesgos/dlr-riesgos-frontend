@@ -39,12 +39,15 @@ export class FormComponent implements OnInit, OnDestroy {
     for (const parameter of this.parameters) {
       if (isBboxUserConfigurableProduct(parameter)) {
         const control = this.formGroup.get(parameter.uid);
-        const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
+        const sub$ = control.valueChanges.subscribe(newVal => {
           if (control.valid) {
-            this.store.dispatch(RiesgosActions.userDataProvided({products: [{
-              ...parameter,
-              value: newVal
-            }]}));
+            this.store.dispatch(RiesgosActions.userDataProvided({
+              scenario: this.step.scenario,
+              products: [{
+                ...parameter,
+                value: newVal
+              }]
+            }));
           }
         });
         this.subscriptions.push(sub$);
@@ -57,12 +60,10 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   onSubmitClicked() {
-    for (const parameter of this.parameters) {
-      const formControl = this.formGroup.get(parameter.uid);
-      parameter.value = formControl.value;
-    }
-
-    this.store.dispatch(RiesgosActions.executeStart({ step: this.step.step.id }));
+    this.store.dispatch(RiesgosActions.executeStart({
+      scenario: this.step.scenario,
+      step: this.step.step.id
+    }));
   }
 
 }

@@ -1,9 +1,18 @@
 # Cleanup
 
 - switch
-    - cd frontend && npx ts-unused-exports tsconfig.json
-    - re-create graph-modal
-    - include jsonix license somewhere
+    - Wizard
+        requires: scenario, wizardProps
+        translation through:
+        form-field: immediate userDataProvided
+        submit: execute without userDataProvided
+    - Map
+        requires:
+        translation through:
+
+- cd frontend && npx ts-unused-exports tsconfig.json
+- re-create graph-modal
+- include jsonix license somewhere
 - include english legend in deus
 - create new legend component (with gradients)
 - remove layer-marshaller; just have every product define its toUkisLayers

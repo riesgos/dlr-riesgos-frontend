@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { RiesgosState, RiesgosScenarioState, RiesgosStep, RiesgosProduct } from './riesgos.state';
+import { RiesgosState, RiesgosScenarioState, RiesgosStep, RiesgosProduct, ScenarioName } from './riesgos.state';
 
 
 const getRiesgosState = (state: State) => {
@@ -56,6 +56,11 @@ export const getProduct = (productId: string) => createSelector(
         const products = getCurrentScenarioState(s).products;
         return products.find(p => p.id === productId);
     }
+);
+
+export const getProductsForScenario = (scenario: ScenarioName) => createSelector(
+    getRiesgosState,
+    s => s[scenario].products
 );
 
 export const getInputsForStep = (processId: string) => createSelector(

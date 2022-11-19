@@ -7,6 +7,8 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import { of } from 'rxjs';
 import { RiesgosProduct, RiesgosScenarioMetadata, ScenarioName } from './riesgos.state';
+import { Store } from '@ngrx/store';
+import { getProducts, getProductsForScenario } from './riesgos.selectors';
 
 
 
@@ -32,9 +34,10 @@ export class RiesgosEffects {
             // remember initial state for later
             tap(action => { memScenario = action.scenario; memStep = action.step }),
 
-            // convert, execute, and convert back
-            map(action => ({ scenario: action.scenario, step: action.step, state: convertFrontendDataToApiState(action.data)})),
-            switchMap(d => this.backendSvc.execute(d.scenario, d.step, d.state)),
+            // fetch current data, convert, execute, and convert back
+            switchMap(_ => this.store$.select(getProductsForScenario(memScenario))),
+            map(products => convertFrontendDataToApiState(products)),
+            switchMap(apiState => this.backendSvc.execute(memScenario, memStep, apiState)),
             map(newApiState => newApiState.data),
             
             // notify app of new data
@@ -44,6 +47,7 @@ export class RiesgosEffects {
     });
 
     constructor(
+        private store$: Store,
         private actions$: Actions,
         private backendSvc: BackendService
     ) {}

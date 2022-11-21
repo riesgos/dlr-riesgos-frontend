@@ -1,10 +1,9 @@
-import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
 import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
-import { shape } from '../../../components/config_wizard/wizardable_steps';
+import { shape } from '../../config_wizard/wizardable_steps';
 import { FeatureCollection } from '@turf/helpers';
 import Feature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
-import { LegendElement } from '../../../components/dynamic/vector-legend/vector-legend.component';
+import { LegendElement } from '../../dynamic/vector-legend/vector-legend.component';
 import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import GeometryCollection from 'ol/geom/GeometryCollection';
 import { ProductLayer } from './map.types';
@@ -18,11 +17,13 @@ import { State } from '../../../ngrx_register';
 
 
 
+export type MappableProduct = UkisMapProduct | BboxLayerProduct | VectorLayerProduct | MultiVectorLayerProduct | WmsLayerProduct;
+
 /**
  * This type allows the user to specify how a riesgos-product should be converted into one or more ukis-layers.
  * This interface should slowly phase out all the other ones in the file `riesgos.datatypes.mappable`.
  */
-export interface MappableProduct extends Product {
+export interface UkisMapProduct {
     toUkisLayers(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller): Observable<ProductLayer[]>
 }
 
@@ -33,7 +34,7 @@ export function isMappableProduct(obj: any): obj is MappableProduct  {
 }
 
 
-export interface BboxLayerDescription extends ProductDescription {
+export interface BboxLayerDescription {
     type: 'bbox';
     name: string;
     id: string;
@@ -41,17 +42,17 @@ export interface BboxLayerDescription extends ProductDescription {
 }
 
 
-export interface BboxLayerProduct extends Product {
+export interface BboxLayerProduct {
     description: BboxLayerDescription;
     value: WpsBboxValue | null;
 }
 
 
-export const isBboxLayerDescription = (description: ProductDescription): description is BboxLayerDescription => {
+export const isBboxLayerDescription = (description: any): description is BboxLayerDescription => {
     return description.hasOwnProperty('type') && description['type'] === 'bbox';
 };
 
-export const isBboxLayerProduct = (data: Product): data is BboxLayerProduct => {
+export const isBboxLayerProduct = (data: any): data is BboxLayerProduct => {
     return isBboxLayerDescription(data.description);
 };
 
@@ -70,26 +71,26 @@ export interface VectorLayerProperties {
 }
 
 
-export interface VectorLayerDescription extends ProductDescription, VectorLayerProperties {
+export interface VectorLayerDescription extends VectorLayerProperties {
     format: 'application/vnd.geo+json' | 'application/json';
     type: 'complex';
     id: string;
 }
 
-export interface VectorLayerProduct extends Product {
+export interface VectorLayerProduct {
     description: VectorLayerDescription;
 }
 
-export const isVectorLayerDescription = (description: ProductDescription): description is VectorLayerDescription => {
+export const isVectorLayerDescription = (description: any): description is VectorLayerDescription => {
     return description.hasOwnProperty('vectorLayerAttributes');
 };
 
 
-export const isVectorLayerProduct = (data: Product): data is VectorLayerProduct => {
+export const isVectorLayerProduct = (data: any): data is VectorLayerProduct => {
     return isVectorLayerDescription(data.description);
 };
 
-export interface MultiVectorLayerDescription extends ProductDescription {
+export interface MultiVectorLayerDescription {
     format: 'application/vnd.geo+json' | 'application/json';
     type: 'complex';
     vectorLayers: VectorLayerProperties[];
@@ -99,21 +100,21 @@ export interface MultiVectorLayerDescription extends ProductDescription {
  * Sometimes we want to display on vector-dataset in more than one way.
  * A *MultiVectorLayerProduct* uses one VectorSource with multiple layers.
  */
-export interface MultiVectorLayerProduct extends Product {
+export interface MultiVectorLayerProduct {
     description: MultiVectorLayerDescription;
 }
 
-export const isMultiVectorLayerDescription = (description: ProductDescription): description is MultiVectorLayerDescription => {
+export const isMultiVectorLayerDescription = (description: any): description is MultiVectorLayerDescription => {
     return description.hasOwnProperty('vectorLayers');
 };
 
-export const isMultiVectorLayerProduct = (product: Product): product is MultiVectorLayerProduct => {
+export const isMultiVectorLayerProduct = (product: any): product is MultiVectorLayerProduct => {
     return isMultiVectorLayerDescription(product.description);
 };
 
 
 
-export interface WmsLayerDescription extends ProductDescription {
+export interface WmsLayerDescription {
     legendImg?: string | IDynamicComponent;
     name: string;
     type: 'complex' | 'literal';
@@ -125,12 +126,12 @@ export interface WmsLayerDescription extends ProductDescription {
     featureInfoRenderer?: (featureInfo: FeatureCollection) => string;
 }
 
-export interface WmsLayerProduct extends Product {
+export interface WmsLayerProduct {
     description: WmsLayerDescription;
 }
 
 
-export const isWmsLayerDescription = (description: ProductDescription): description is WmsLayerDescription => {
+export const isWmsLayerDescription = (description: any): description is WmsLayerDescription => {
     if (description['type'] === 'complex') {
         return description['format'] === 'application/WMS';
     } else if (description['type'] === 'literal') {
@@ -139,7 +140,7 @@ export const isWmsLayerDescription = (description: ProductDescription): descript
     return false;
 };
 
-export const isWmsProduct = (data: Product): data is WmsLayerProduct => {
+export const isWmsProduct = (data: any): data is WmsLayerProduct => {
     const matchesWms = (str: string) => {
         return str.includes('service=wms') || str.includes('Service=Wms') || str.includes('SERVICE=WMS');
     };

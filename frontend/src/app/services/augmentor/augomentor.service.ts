@@ -1,71 +1,61 @@
 import { Injectable } from '@angular/core';
 import { EqCatalog } from 'src/app/augmentors/peru/1_eqcatalog';
-import { UserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
+import { WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
-import { MappableProduct } from 'src/app/components/map/mappable/riesgos.datatypes.mappable';
+import { MappableProduct } from 'src/app/components/map/mappable/mappable_products';
 import { RiesgosProduct, RiesgosScenarioMetadata, RiesgosStep, ScenarioName } from 'src/app/riesgos/riesgos.state';
 
 
-export interface Augmentor {
-  scenarios: ScenarioName[];
-  steps: string[];
-  products: string[];
-  previewProperties?: (scenario: ScenarioName, metadata: RiesgosScenarioMetadata, existingData: any) => any;
-  stepWizardProperties?: (scenario: ScenarioName, step: RiesgosStep, existingData: WizardableStep) => WizardableStep;
-  productWizardProperties?: (scenario: ScenarioName, product: RiesgosProduct, existingData: UserConfigurableProduct) => UserConfigurableProduct;
-  productMapProperties?: (scenario: ScenarioName, product: RiesgosProduct, existingData: MappableProduct) => MappableProduct;
+
+export interface WizardableStepAugmentor {
+  appliesTo(step: RiesgosStep): boolean;
+  makeWizardable(step: RiesgosStep): WizardableStep;
 }
+
+export interface WizardableProductAugmentor {
+  appliesTo(product: RiesgosProduct): boolean;
+  makeWizardable(product: RiesgosProduct): WizardableProduct;
+}
+
+export interface MapableProductAugmentor {
+  appliesTo(product: RiesgosProduct): boolean;
+  makeMappable(product: RiesgosProduct): MappableProduct;
+}
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AugomentorService {
 
-  private augmentors: Augmentor[] = [
-    this.eqCatalog
-  ];
-
-  constructor(
-    private eqCatalog: EqCatalog
-  ) { }
-
-  public loadPreviewPropertiesForScenario(scenario: RiesgosScenarioMetadata) {
-    let output;
-    for (const augmentor of this.augmentors) {
-      if (augmentor.scenarios.includes(scenario.id as ScenarioName) && augmentor.previewProperties) {
-        output = augmentor.previewProperties(scenario.id as ScenarioName, scenario, output);
-      }
+  public loadWizardPropertiesForProduct(scenarioName: ScenarioName, product: RiesgosProduct): WizardableProduct {
+    for (const wizPropAug of this.getWizardProductAugmentors()) {
+      if (wizPropAug.appliesTo(product)) return wizPropAug.makeWizardable(product);
     }
-    return output;
-  }
-
-  public loadWizardPropertiesForProduct(scenarioName: ScenarioName, product: RiesgosProduct): UserConfigurableProduct {
-    let output: UserConfigurableProduct;
-    for (const augmentor of this.augmentors) {
-      if (augmentor.scenarios.includes(scenarioName) && augmentor.products.includes(product.id) && augmentor.productWizardProperties) {
-        output = augmentor.productWizardProperties(scenarioName, product, output);
-      }
-    }
-    return output;
   }
 
   public loadWizardPropertiesForStep(scenarioName: ScenarioName, step: RiesgosStep): WizardableStep {
-    let output: WizardableStep;
-    for (const augmentor of this.augmentors) {
-      if (augmentor.scenarios.includes(scenarioName) && augmentor.steps.includes(step.step.id) && augmentor.stepWizardProperties) {
-        output = augmentor.stepWizardProperties(scenarioName, step, output);
-      }
+    for (const wizStepAug of this.getWizardStepAugmentors()) {
+      if (wizStepAug.appliesTo(step)) return wizStepAug.makeWizardable(step);
     }
-    return output;
   }
 
   public loadMapPropertiesForProduct(scenarioName: ScenarioName, product: RiesgosProduct): MappableProduct {
-    let output: MappableProduct;
-    for (const augmentor of this.augmentors) {
-      if (augmentor.scenarios.includes(scenarioName) && augmentor.productMapProperties) {
-        output = augmentor.productMapProperties(scenarioName, product, output);
-      }
+    for (const mapPropAug of this.getMapProductAugmentors()) {
+      if (mapPropAug.appliesTo(product)) return mapPropAug.makeMappable(product);
     }
-    return output;
+  }
+
+  private getWizardProductAugmentors(): WizardableProductAugmentor[] {
+
+  }
+
+  private getWizardStepAugmentors(): WizardableStepAugmentor[] {
+
+  }
+
+  private getMapProductAugmentors(): MapableProductAugmentor[] {
+
   }
 }

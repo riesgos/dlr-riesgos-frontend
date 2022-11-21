@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { StringUserConfigurableProduct } from '../userconfigurable_wpsdata';
+import { StringUserConfigurableProduct } from '../wizardable_products';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 

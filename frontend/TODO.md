@@ -1,6 +1,8 @@
 # Switch
 translate configuration into augmentors
     Find a way that is strongly compatible with the existing configuration
+        each Process -> WizardableStepAugmentor
+        each Product -> MapableProductAugmentor, WizardableProductAugmentor
 calculate step-state for every action
 resolver: forget old data
 

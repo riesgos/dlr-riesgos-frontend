@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { UserConfigurableProduct, isBboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
+import { WizardableProduct, isBboxUserConfigurableProduct } from '../wizardable_products';
 import { WizardableStep } from '../wizardable_steps';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 export class FormComponent implements OnInit, OnDestroy {
 
   @Input() step: WizardableStep;
-  @Input() parameters: UserConfigurableProduct[];
+  @Input() parameters: WizardableProduct[];
   @Input() disabled = false;  // <------------ @TODO: can we infer this from formgroup?
   public formGroup: UntypedFormGroup;
   private subscriptions: Subscription[] = [];

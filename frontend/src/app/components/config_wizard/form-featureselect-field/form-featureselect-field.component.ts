@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { FeatureSelectUconfProduct } from '../userconfigurable_wpsdata';
+import { FeatureSelectUconfProduct } from '../wizardable_products';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { FeatureCollection } from '@turf/helpers';

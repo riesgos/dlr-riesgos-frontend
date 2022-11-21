@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import {  StringSelectUserConfigurableProduct } from '../userconfigurable_wpsdata';
+import {  StringSelectUserConfigurableProduct } from '../wizardable_products';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { UntypedFormControl } from '@angular/forms';
 import { ScenarioName } from 'src/app/riesgos/riesgos.state';

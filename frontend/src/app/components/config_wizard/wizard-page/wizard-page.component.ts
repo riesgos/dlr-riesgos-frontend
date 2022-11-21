@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
-import { UserConfigurableProduct } from '../userconfigurable_wpsdata';
+import { WizardableProduct } from '../wizardable_products';
 import { getInputsForStep } from 'src/app/riesgos/riesgos.selectors';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -20,7 +20,7 @@ import { AugomentorService } from 'src/app/services/augmentor/augomentor.service
 export class WizardPageComponent implements OnInit {
 
   @Input() step: WizardableStep;
-  parameters$: Observable<UserConfigurableProduct[]>;
+  parameters$: Observable<WizardableProduct[]>;
 
 
   constructor(

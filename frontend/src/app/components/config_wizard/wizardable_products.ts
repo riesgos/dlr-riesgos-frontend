@@ -1,10 +1,9 @@
 import { FeatureCollection } from '@turf/helpers';
-import { ProductDescription } from 'src/app/riesgos/riesgos.datatypes';
 import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
 import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 
 
-
+interface ProductDescription {}
 
 export interface StringUserConfigurableProductDescription extends ProductDescription {
     wizardProperties: {
@@ -84,7 +83,7 @@ export interface FeatureSelectUconfProduct {
     value: [FeatureCollection];
 }
 
-export type UserConfigurableProduct =
+export type WizardableProduct =
     StringUserConfigurableProduct |
     StringSelectUserConfigurableProduct |
     BboxUserConfigurableProduct |
@@ -95,10 +94,10 @@ export const isStringSelectableProduct = (obj: any): obj is StringSelectUserConf
     return obj.description.hasOwnProperty('options');
 };
 
-export const isUserConfigurableProductDescription = (obj: ProductDescription): obj is UserConfigurableProductDescription => {
+export const isWizardableProductDescription = (obj: ProductDescription): obj is UserConfigurableProductDescription => {
     return obj.hasOwnProperty('wizardProperties');
 };
 
-export const isUserConfigurableProduct = (obj: any): obj is UserConfigurableProduct => {
-    return isUserConfigurableProductDescription(obj.id);
+export const isWizardableProduct = (obj: any): obj is WizardableProduct => {
+    return isWizardableProductDescription(obj.id);
 };

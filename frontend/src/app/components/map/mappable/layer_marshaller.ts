@@ -4,7 +4,7 @@ import { Product } from 'src/app/riesgos/riesgos.datatypes';
 import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduct,
     VectorLayerProduct, WmsLayerProduct, WmsLayerDescription, isMultiVectorLayerProduct,
     MultiVectorLayerProduct, 
-    isMappableProduct} from './riesgos.datatypes.mappable';
+    isMappableProduct} from './mappable_products';
 import { Feature as olFeature } from 'ol';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { WMSCapabilities } from 'ol/format';

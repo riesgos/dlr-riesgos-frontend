@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { BboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
+import { BboxUserConfigurableProduct } from '../wizardable_products';
 import { UntypedFormControl } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';

@@ -1,5 +1,5 @@
 import { FeatureCollection } from '@turf/helpers';
-import { Product, ProductDescription } from 'src/app/riesgos/riesgos.datatypes';
+import { ProductDescription } from 'src/app/riesgos/riesgos.datatypes';
 import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
 import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 
@@ -57,19 +57,19 @@ export type UserConfigurableProductDescription = StringUserConfigurableProductDe
 
 
 export interface StringUserConfigurableProduct {
-    uid: string,
+    id: string,
     description: StringUserConfigurableProductDescription;
     value: string;
 }
 
 export interface StringSelectUserConfigurableProduct {
-    uid: string,
+    id: string,
     description: StringSelectUserConfigurableProductDescription;
     value: string;
 }
 
 export interface BboxUserConfigurableProduct {
-    uid: string,
+    id: string,
     description: BboxUserConfigurableProductDescription;
     value: WpsBboxValue | null;
 }
@@ -78,8 +78,8 @@ export const isBboxUserConfigurableProduct = (prod: any): prod is BboxUserConfig
     return isBboxUserConfigurableProductDescription(prod.description);
 };
 
-export interface FeatureSelectUconfProduct extends Product {
-    uid: string,
+export interface FeatureSelectUconfProduct {
+    id: string,
     description: FeatureSelectUconfPD;
     value: [FeatureCollection];
 }
@@ -101,16 +101,4 @@ export const isUserConfigurableProductDescription = (obj: ProductDescription): o
 
 export const isUserConfigurableProduct = (obj: any): obj is UserConfigurableProduct => {
     return isUserConfigurableProductDescription(obj.id);
-};
-
-
-export const loadUserconfigProduct = (product: RiesgosProduct): UserConfigurableProduct | undefined => {
-    const userConfigProd = userConfigRegistry[product.id];
-    if (!userConfigProd) return undefined;
-    return userConfigProd
-}
-
-
-const userConfigRegistry: {[id: string]: UserConfigurableProduct} = {
-    
 };

@@ -2,12 +2,13 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
-import { UserConfigurableProduct, loadUserconfigProduct } from '../userconfigurable_wpsdata';
+import { UserConfigurableProduct } from '../userconfigurable_wpsdata';
 import { getInputsForStep } from 'src/app/riesgos/riesgos.selectors';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { WizardableStep } from '../wizardable_steps';
 import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
+import { AugomentorService } from 'src/app/services/augmentor/augomentor.service';
 
 
 
@@ -23,13 +24,14 @@ export class WizardPageComponent implements OnInit {
 
 
   constructor(
-    private store: Store<State>
+    private store: Store<State>,
+    private augmentor: AugomentorService
   ) { }
 
   ngOnInit() {
     this.parameters$ = this.store.pipe(
       select(getInputsForStep(this.step.step.id)),
-      map((inputs: RiesgosProduct[]) => inputs.map(i => loadUserconfigProduct(i)) )
+      map((inputs: RiesgosProduct[]) => inputs.map(i => this.augmentor.loadWizardPropertiesForProduct(this.step.scenario, i)))
     );
   }
 

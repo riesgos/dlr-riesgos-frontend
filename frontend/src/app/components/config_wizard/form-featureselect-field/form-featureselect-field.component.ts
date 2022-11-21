@@ -8,6 +8,7 @@ import * as InteractionActions from 'src/app/interactions/interactions.actions';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InteractionState } from 'src/app/interactions/interactions.state';
+import { ScenarioName } from 'src/app/riesgos/riesgos.state';
 
 @Component({
   selector: 'ukis-form-featureselect-field',
@@ -19,6 +20,7 @@ export class FormFeatureSelectFieldComponent implements OnInit {
   public featureSelectionOngoing$: Observable<boolean>;
 
   @Input() control: UntypedFormControl;
+  @Input() scenario: ScenarioName;
   @Input() parameter: FeatureSelectUconfProduct;
   public options: { [k: string]: FeatureCollection };
 
@@ -39,10 +41,13 @@ export class FormFeatureSelectFieldComponent implements OnInit {
     this.stringControl.valueChanges.subscribe(newStringVal => {
       const newVal = [this.findValForString(newStringVal)];
       this.control.setValue(newVal);
-      this.store.dispatch(InteractionActions.interactionCompleted({product: {
-        ... this.parameter,
-        value: newVal
-      }}));
+      this.store.dispatch(InteractionActions.interactionCompleted({
+        product: {
+          ... this.parameter,
+          value: newVal
+        },
+        scenario: this.scenario,
+      }));
     });
 
     this.featureSelectionOngoing$ = this.store.pipe(
@@ -72,12 +77,14 @@ export class FormFeatureSelectFieldComponent implements OnInit {
     if (startInteraction) {
       this.store.dispatch(InteractionActions.interactionStarted({
         mode: 'featureselection',
+        scenario: this.scenario,
         product: { ... this.parameter }
       }));
     } else {
-      this.store.dispatch(InteractionActions.interactionCompleted(
-        { product: { ...this.parameter }}
-      ));
+      this.store.dispatch(InteractionActions.interactionCompleted({ 
+        product: { ...this.parameter },
+        scenario: this.scenario,
+      }));
     }
   }
 

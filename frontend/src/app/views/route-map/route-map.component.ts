@@ -6,12 +6,13 @@ import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
-import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
+import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
 
 import { Subscription } from 'rxjs';
-import { loadWizardProps, WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { map } from 'rxjs/operators';
 import { getSteps } from 'src/app/riesgos/riesgos.selectors';
+import { AugomentorService } from 'src/app/services/augmentor/augomentor.service';
 
 @Component({
   selector: 'ukis-route-map',
@@ -50,7 +51,8 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   constructor(
     private activeRoute: ActivatedRoute,
     private store: Store<State>,
-    private olSvc: MapOlService
+    private olSvc: MapOlService,
+    private augmentor: AugomentorService
   ) { }
 
   private _collapsedLayerControl = false;
@@ -71,7 +73,7 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const scenario = this.activeRoute.snapshot.queryParams['id'] || 'c1';
+    const scenario = this.activeRoute.snapshot.queryParams['id'];
     this.olSvc.setProjection('EPSG:4326');
     this.store.dispatch(RiesgosActions.scenarioChosen({ scenario }));
     // get steps after store was dispatched
@@ -83,8 +85,9 @@ export class RouteMapComponent implements OnInit, OnDestroy {
       select(getSteps),
       map(steps => {
         const wizardableSteps: WizardableStep[] = [];
+        const scenario = this.activeRoute.snapshot.queryParams['id'];
         for (const step of steps) {
-          const wizardableStep = loadWizardProps(step);
+          const wizardableStep = this.augmentor.loadWizardPropertiesForStep(scenario, step);
           if (wizardableStep) {
             wizardableSteps.push(wizardableStep)
           }

@@ -9,13 +9,17 @@ export const reducer = createReducer(
     initialRiesgosState,
 
     on(RiesgosActions.scenariosLoaded, (state, action) => {
-        state.metaData = action.scenarios;
-        return state;
+        return {
+            ... state,
+            metaData: action.scenarios
+        }
     }),
 
     on(RiesgosActions.scenarioChosen, (state, action) => {
-        state.currentScenario = action.scenario;
-        return state;
+        return {
+            ... state,
+            currentScenario: action.scenario
+        };
     }),
 
     on(RiesgosActions.restartingScenario, (state, action) => {

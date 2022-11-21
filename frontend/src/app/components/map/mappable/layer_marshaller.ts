@@ -19,8 +19,8 @@ import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
 import { GeoJSON } from 'ol/format';
 import Polygon from 'ol/geom/Polygon';
-import { VectorLegendComponent } from '../components/dynamic/vector-legend/vector-legend.component';
-import { WebGlPolygonLayer } from '../helpers/custom_renderers/renderers/polygon.renderer';
+import { VectorLegendComponent } from '../../../components/dynamic/vector-legend/vector-legend.component';
+import { WebGlPolygonLayer } from '../../../helpers/custom_renderers/renderers/polygon.renderer';
 import tBbox from '@turf/bbox';
 import tBuffer from '@turf/buffer';
 import bboxPolygon from '@turf/bbox-polygon';
@@ -29,7 +29,7 @@ import { SimplifiedTranslationService } from 'src/app/services/simplifiedTransla
 import Geometry from 'ol/geom/Geometry';
 import { Fill, Stroke, Style } from 'ol/style';
 import { LayersService } from '@dlr-eoc/services-layers';
-import { ConfigService } from '../services/configService/configService';
+import { ConfigService } from '../../../services/configService/configService';
 
 
 

@@ -19,7 +19,7 @@
       <div *ngSwitchCase="'stringselect'">
         <div class="clr-row">
           <div class="clr-col">
-            <ukis-form-stringselect-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter"
+            <ukis-form-stringselect-field [control]="formGroup.get(parameter.uid)" [scenario]="step.scenario" [parameter]="parameter"
               class="form-input">
             </ukis-form-stringselect-field>
           </div>
@@ -35,7 +35,7 @@
       <div *ngSwitchCase="'select'">
         <div class="clr-row">
           <div class="clr-col">
-            <ukis-form-featureselect-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter"
+            <ukis-form-featureselect-field [control]="formGroup.get(parameter.uid)" [scenario]="step.scenario" [parameter]="parameter"
               class="form-input">
             </ukis-form-featureselect-field>
           </div>
@@ -51,7 +51,7 @@
       <div *ngSwitchCase="'bbox'">
         <div class="clr-row">
           <div class="clr-col">
-            <ukis-form-bbox-field [control]="formGroup.get(parameter.uid)" [parameter]="parameter" class="form-input">
+            <ukis-form-bbox-field [control]="formGroup.get(parameter.uid)" [scenario]="step.scenario" [parameter]="parameter" class="form-input">
             </ukis-form-bbox-field>
           </div>
           <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">

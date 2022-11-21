@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
 import { Observable } from 'rxjs';
 import { InteractionState } from 'src/app/interactions/interactions.state';
+import { ScenarioName } from 'src/app/riesgos/riesgos.state';
 
 @Component({
     selector: 'ukis-form-bbox-field',
@@ -19,6 +20,7 @@ export class FormBboxFieldComponent implements OnInit {
 
     public bboxSelectionOngoing$: Observable<boolean>;
 
+    @Input() scenario: ScenarioName;
     @Input() parameter: BboxUserConfigurableProduct;
     @Input() control: UntypedFormControl;
     public disabled = false;
@@ -49,15 +51,17 @@ export class FormBboxFieldComponent implements OnInit {
         if (startInteraction) {
             this.store.dispatch(InteractionActions.interactionStarted({
                 mode: 'bbox',
+                scenario: this.scenario,
                 product: {
                     ...this.parameter,
                     value: this.control.value
                 }
             }));
         } else {
-          this.store.dispatch(InteractionActions.interactionCompleted(
-            { product: { ...this.parameter }}
-          ));
+          this.store.dispatch(InteractionActions.interactionCompleted({
+            product: { ...this.parameter },
+            scenario: this.scenario
+          }));
         }
       }
 

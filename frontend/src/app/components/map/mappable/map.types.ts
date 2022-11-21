@@ -1,6 +1,6 @@
 import { IVectorLayerOptions, IRasterLayerOptions, ICustomLayerOptions,
     VectorLayer, RasterLayer, Layer, CustomLayer } from '@dlr-eoc/services-layers';
-import { LegendElement } from '../components/dynamic/vector-legend/vector-legend.component';
+import { LegendElement } from '../../../components/dynamic/vector-legend/vector-legend.component';
 import { IDynamicComponent } from '@dlr-eoc/core-ui';
 
 

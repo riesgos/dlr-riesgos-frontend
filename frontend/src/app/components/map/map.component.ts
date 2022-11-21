@@ -31,14 +31,14 @@ import { getCurrentScenarioName, getProducts, getCurrentScenarioRiesgosState } f
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
 import { interactionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
-import { loadMappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { LayerMarshaller } from '../../mappable/layer_marshaller';
+import { LayerMarshaller } from './mappable/layer_marshaller';
+import { ProductLayer } from './mappable/map.types';
 import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { ProductLayer } from '../../mappable/map.types';
 import { initialRiesgosState, RiesgosProduct, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { State } from 'src/app/ngrx_register';
 import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
+import { AugomentorService } from 'src/app/services/augmentor/augomentor.service';
 
 
 const mapProjection = 'EPSG:3857';
@@ -69,7 +69,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         public layersSvc: LayersService,
         private translator: SimplifiedTranslationService,
         private router: Router,
-        private dataService: DataService
+        private dataService: DataService,
+        private augmentor: AugomentorService
     ) {
         this.controls = { attribution: true, scaleLine: true };
     }
@@ -125,7 +126,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             map(resolvedProducts => {
                 const mappableProducts: Product[] = [];
                 for (const product of resolvedProducts) {
-                    const mappableProduct = loadMappableProduct(product);
+                    const mappableProduct = this.augmentor.loadMapPropertiesForProduct(this.currentScenario$.getValue(), product);
                     if (mappableProduct) mappableProducts.push(mappableProduct);
                 }
                 return mappableProducts;

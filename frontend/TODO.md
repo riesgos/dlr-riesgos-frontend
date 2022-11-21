@@ -1,22 +1,15 @@
 # Cleanup
 
 - switch
-    - Wizard
-        requires: scenario, wizardProps
-        translation through:
-        form-field: immediate userDataProvided
-        submit: execute without userDataProvided
-    - Map
-        requires:
-        translation through:
+    translate configuration into augmentors
 
 - cd frontend && npx ts-unused-exports tsconfig.json
 - re-create graph-modal
 - include jsonix license somewhere
 - include english legend in deus
 - create new legend component (with gradients)
-- remove layer-marshaller; just have every product define its toUkisLayers
 - remove allowedCommonJsDependencies
+- remove layerMarshaller, have all map-products simply implement toUkisLayers
 
 # Breaking up layout-configuration into registries
 - `{id: UserConfigurableProduct}` in components/wizard-page

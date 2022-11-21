@@ -5,7 +5,6 @@ import { WizardableStep } from '../wizardable_steps';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
-import { debounceTime } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -29,7 +28,7 @@ export class FormComponent implements OnInit, OnDestroy {
     const controls = {};
 
     for (const parameter of this.parameters) {
-      const key = parameter.uid;
+      const key = parameter.id;
       const startValue = parameter.value || parameter.description.defaultValue || null;
       controls[key] = new UntypedFormControl(startValue, [Validators.required]);
     }
@@ -38,7 +37,7 @@ export class FormComponent implements OnInit, OnDestroy {
 
     for (const parameter of this.parameters) {
       if (isBboxUserConfigurableProduct(parameter)) {
-        const control = this.formGroup.get(parameter.uid);
+        const control = this.formGroup.get(parameter.id);
         const sub$ = control.valueChanges.subscribe(newVal => {
           if (control.valid) {
             this.store.dispatch(RiesgosActions.userDataProvided({

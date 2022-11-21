@@ -78,7 +78,7 @@ import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-trans
 import { ReversePipe } from './components/riesgos_layer_control/utils/array-reverse.pipe';
 import { SimpleTranslatePipe } from './services/simplifiedTranslation/simple-translate.pipe';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { WMTSLayerFactory } from './mappable/wmts';
+import { WMTSLayerFactory } from './components/map/mappable/wmts';
 
 // import all used icons
 import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from '@cds/core/icon';

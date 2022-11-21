@@ -1,10 +1,10 @@
 import { ProductDescription, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WpsBboxValue } from '../services/wps/wps.datatypes';
-import { shape } from '../components/config_wizard/wizardable_steps';
+import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
+import { shape } from '../../../components/config_wizard/wizardable_steps';
 import { FeatureCollection } from '@turf/helpers';
 import Feature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
-import { LegendElement } from '../components/dynamic/vector-legend/vector-legend.component';
+import { LegendElement } from '../../../components/dynamic/vector-legend/vector-legend.component';
 import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import GeometryCollection from 'ol/geom/GeometryCollection';
 import { ProductLayer } from './map.types';
@@ -14,8 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { LayerMarshaller } from './layer_marshaller';
 import { Store } from '@ngrx/store';
-import { State } from '../ngrx_register';
-import { API_Datum } from '../services/backend/backend.service';
+import { State } from '../../../ngrx_register';
 
 
 
@@ -149,17 +148,4 @@ export const isWmsProduct = (data: Product): data is WmsLayerProduct => {
         || data.description['format'] === 'application/WMS'
         || ((typeof data.value === 'string') && matchesWms(data.value as string))
         || ((Array.isArray(data.value)) && (typeof data.value[0] === 'string') && matchesWms(data.value[0] as string));
-};
-
-
-
-export const loadMappableProduct = (product: API_Datum): MappableProduct | undefined => {
-    const mappableProduct = wizardRegistry[product.id];
-    if (!mappableProduct) return undefined;
-    return mappableProduct;
-}
-
-
-const wizardRegistry: {[id: string]: MappableProduct} = {
-    
 };

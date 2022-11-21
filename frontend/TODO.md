@@ -1,21 +1,21 @@
-# Cleanup
-
-- switch
+# Switch
+    scenario-selection:
+        define required properties
+        create augmentor
     translate configuration into augmentors
+    resolver: forget old data
 
+# Cleanup
+- Include english legend in deus
+- Create new legend component (with gradients)
+- Re-create graph-modal
 - cd frontend && npx ts-unused-exports tsconfig.json
-- re-create graph-modal
-- include jsonix license somewhere
-- include english legend in deus
-- create new legend component (with gradients)
-- remove allowedCommonJsDependencies
-- remove layerMarshaller, have all map-products simply implement toUkisLayers
-
-# Breaking up layout-configuration into registries
-- `{id: UserConfigurableProduct}` in components/wizard-page
-- `{id: WizardProperties}` in components/wizard-page
-- `{id: MappableProduct}` in riesgos/riesgos.datatypes
-- `{id: ScenarioImage}` in views/scenarios
+- Save and restore:
+    Store current state *and* relevant data from resolver
+- Include jsonix license somewhere
+- RiesgosState contains API_Step and API_Datum. Give RiesgosState its own names for those data-structures ... even though their content is mostly identical.
+- Remove layerMarshaller, have all map-products simply implement toUkisLayers.
+- Remove allowedCommonJsDependencies
 
 
 # Ongoing problems
@@ -29,7 +29,6 @@
     - The following libs need updates:
         - helpers/d3charts -> plotly.js
         - renderers/polygon.renderer.ts -> earcut
-        - ng5-slider
         - turf ... update didn't help
         - ol ... cannot update
             - geotiff

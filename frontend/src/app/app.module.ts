@@ -11,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LayersModule } from '@dlr-eoc/services-layers';
 import { MapOlModule } from '@dlr-eoc/map-ol';
-import { Ng5SliderModule } from 'ng5-slider';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -35,10 +34,8 @@ import { FormFeatureSelectFieldComponent } from './components/config_wizard/form
 import { FormStringFieldComponent } from './components/config_wizard/form-string-field/form-string-field.component';
 import { FormStringselectFieldComponent } from './components/config_wizard/form-stringselect-field/form-stringselect-field.component';
 import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
-import { GlobalFooterComponent } from './components/global-footer/global-footer.component';
 import { GlobalProgressComponent } from './components/global-progress/global-progress.component';
 import { GroupedBarChartComponent } from './components/grouped-bar-chart/grouped-bar-chart.component';
-import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HelperButtonsComponent } from './components/helperButtons/helper-buttons.component';
 import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
@@ -65,7 +62,6 @@ import { WizardPageComponent } from './components/config_wizard/wizard-page/wiza
 import { AlertService } from './components/global-alert/alert.service';
 import { BackendService } from './services/backend/backend.service';
 import { ConfigService } from './services/configService/configService';
-import { FooterService } from './components/global-footer/footer.service';
 import { ProgressService } from './components/global-progress/progress.service';
 import { DisclaimerService } from './components/disclaimer/disclaimer.service';
 
@@ -111,10 +107,8 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     FormStringFieldComponent,
     FormStringselectFieldComponent,
     GlobalAlertComponent,
-    GlobalFooterComponent,
     GlobalProgressComponent,
     GroupedBarChartComponent,
-    GroupSliderComponent,
     HeaderComponent,
     HelperButtonsComponent,
     InfoTableComponentComponent,
@@ -150,7 +144,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     HttpClientModule,
     LayersModule,
     MapOlModule,
-    Ng5SliderModule,
     ReactiveFormsModule,
     UkisRoutingModule,
     StoreModule.forRoot(reducers),
@@ -181,7 +174,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     },
     AlertService,
     DisclaimerService,
-    FooterService,
     ProgressService,
     WMTSLayerFactory,
     BackendService

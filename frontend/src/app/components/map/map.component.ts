@@ -616,31 +616,31 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });
 
-        const vectorTile = new VectorTileLayer({
-            declutter: true,
-            source: new VectorTile({
-                format: new MVT(),
-                tileGrid: createXYZ({
-                    minZoom: 0,
-                    maxZoom: 12
-                }),
-                url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
-            }),
-            renderMode: 'hybrid'
-        });
-        applyStyle(vectorTile, greyScale, 'planet0-12');
+        // const vectorTile = new VectorTileLayer({
+        //     declutter: true,
+        //     source: new VectorTile({
+        //         format: new MVT(),
+        //         tileGrid: createXYZ({
+        //             minZoom: 0,
+        //             maxZoom: 12
+        //         }),
+        //         url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
+        //     }),
+        //     renderMode: 'hybrid'
+        // });
+        // applyStyle(vectorTile, greyScale, 'planet0-12');
 
-        const geoserviceVTiles = new CustomLayer<VectorTileLayer>({
-            name: 'OpenMapStyles',
-            id: 'planet_eoc_vector_tiles',
-            attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
-            description: `vtiles_description`,
-            type: 'custom',
-            visible: true,
-            custom_layer: vectorTile
-        });
+        // const geoserviceVTiles = new CustomLayer<VectorTileLayer>({
+        //     name: 'OpenMapStyles',
+        //     id: 'planet_eoc_vector_tiles',
+        //     attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
+        //     description: `vtiles_description`,
+        //     type: 'custom',
+        //     visible: true,
+        //     custom_layer: vectorTile
+        // });
 
-        return of([osmLayer, geoserviceVTiles]);
+        return of([osmLayer]);
     }
 
 }

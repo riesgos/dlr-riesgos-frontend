@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EqCatalog } from 'src/app/augmentors/peru/1_eqcatalog';
 import { UserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { MappableProduct } from 'src/app/components/map/mappable/riesgos.datatypes.mappable';
@@ -10,8 +11,8 @@ export interface Augmentor {
   steps: string[];
   products: string[];
   previewProperties?: (scenario: ScenarioName, metadata: RiesgosScenarioMetadata, existingData: any) => any;
-  productWizardProperties?: (scenario: ScenarioName, product: RiesgosProduct, existingData: UserConfigurableProduct) => UserConfigurableProduct;
   stepWizardProperties?: (scenario: ScenarioName, step: RiesgosStep, existingData: WizardableStep) => WizardableStep;
+  productWizardProperties?: (scenario: ScenarioName, product: RiesgosProduct, existingData: UserConfigurableProduct) => UserConfigurableProduct;
   productMapProperties?: (scenario: ScenarioName, product: RiesgosProduct, existingData: MappableProduct) => MappableProduct;
 }
 
@@ -21,10 +22,12 @@ export interface Augmentor {
 export class AugomentorService {
 
   private augmentors: Augmentor[] = [
-
+    this.eqCatalog
   ];
 
-  constructor() { }
+  constructor(
+    private eqCatalog: EqCatalog
+  ) { }
 
   public loadPreviewPropertiesForScenario(scenario: RiesgosScenarioMetadata) {
     let output;

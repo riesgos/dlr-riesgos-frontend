@@ -1,9 +1,9 @@
 # Switch
-    scenario-selection:
-        define required properties
-        create augmentor
-    translate configuration into augmentors
-    resolver: forget old data
+translate configuration into augmentors
+    Find a way that is strongly compatible with the existing configuration
+calculate step-state for every action
+resolver: forget old data
+
 
 # Cleanup
 - Include english legend in deus
@@ -17,6 +17,8 @@
 - Remove layerMarshaller, have all map-products simply implement toUkisLayers.
 - Remove allowedCommonJsDependencies
 
+# New features
+- Docker-compose file for all services and frontend
 
 # Ongoing problems
 - frontend must never have an own version of ol installed ... otherwise, `instanceof`-checks in @eoc-dlr/maps-ol won't work.

@@ -1,11 +1,12 @@
 import { createAction, props } from '@ngrx/store';
-import { RiesgosProduct, RiesgosScenarioMetadata, ScenarioName } from './riesgos.state';
+import { API_ScenarioInfo } from '../services/backend/backend.service';
+import { RiesgosProduct, ScenarioName } from './riesgos.state';
 
 
 
 export const scenariosLoaded = createAction(
     '[Riesgos] Scenarios loaded',
-    props<{ scenarios: RiesgosScenarioMetadata[] }>()
+    props<{ scenarios: API_ScenarioInfo[] }>()
 );
 
 export const scenarioChosen = createAction(

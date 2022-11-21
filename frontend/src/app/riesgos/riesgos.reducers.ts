@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { initialRiesgosState, RiesgosProduct, RiesgosScenarioState, StepStateCompleted, StepStateError, StepStateRunning } from './riesgos.state';
+import { initialRiesgosState, RiesgosProduct, RiesgosScenarioState, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateError, StepStateRunning } from './riesgos.state';
 import * as RiesgosActions from './riesgos.actions';
 import { isApiDatum, isApiDatumReference } from '../services/backend/backend.service';
 
@@ -9,9 +9,29 @@ export const reducer = createReducer(
     initialRiesgosState,
 
     on(RiesgosActions.scenariosLoaded, (state, action) => {
+        
+        const scenarioData: { [key: string]: RiesgosScenarioState } = {};
+        for (const scenario of action.scenarios) {
+            const steps = scenario.steps.map(s => ({ step: s, state: new StepStateAvailable() }));
+            scenarioData[scenario.id] = {
+                scenario: scenario.id as ScenarioName,
+                products: state.scenarioData[scenario.id].products || [],
+                steps: steps
+            }
+        }
+
+        // @TODO: get products out of step-definitions
+        // @TODO: calculate state based on available products
+
         return {
             ... state,
-            metaData: action.scenarios
+            metaData: action.scenarios.map(s => ({
+                id: s.id,
+                description: s.description,
+                title: s.id,
+                preview: ''
+            })),
+            scenarioData
         }
     }),
 

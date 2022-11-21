@@ -612,7 +612,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getBaseLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
 
         const osmLayer = new OsmTileLayer({
-            visible: false,
+            visible: true,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });
 

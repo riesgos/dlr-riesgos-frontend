@@ -64,7 +64,7 @@ export interface RiesgosScenarioMetadata {
 
 
 export interface RiesgosState {
-    currentScenario: ScenarioName;
+    currentScenario: undefined | ScenarioName;
     scenarioData: {
         [key: string]: RiesgosScenarioState
     };
@@ -73,12 +73,22 @@ export interface RiesgosState {
 
 
 export const initialRiesgosState: RiesgosState = {
-    currentScenario: 'none',
+    currentScenario: undefined,
     scenarioData: {
-        'none': {
-            scenario: 'none',
-            steps: [],
-            products: []
+        Chile: {
+            scenario: 'Chile',
+            products: [],
+            steps: []
+        },
+        Ecuador: {
+            scenario: 'Ecuador',
+            products: [],
+            steps: []
+        },
+        Peru: {
+            scenario: 'Peru',
+            products: [],
+            steps: []
         }
     },
     metaData: []

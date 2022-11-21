@@ -6,7 +6,7 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import { of } from 'rxjs';
-import { RiesgosProduct, RiesgosScenarioMetadata, ScenarioName } from './riesgos.state';
+import { RiesgosProduct, RiesgosScenarioMetadata, RiesgosStep, ScenarioName } from './riesgos.state';
 import { Store } from '@ngrx/store';
 import { getProducts, getProductsForScenario } from './riesgos.selectors';
 
@@ -19,7 +19,6 @@ export class RiesgosEffects {
         return this.actions$.pipe(
             ofType(FocusActions.appInit),
             switchMap(_ => this.backendSvc.loadScenarios()),
-            map(apiScenarios => convertApiScenariosToFrontendScenarios(apiScenarios)),
             map(scenarios => RiesgosActions.scenariosLoaded({scenarios}))
         );
     });
@@ -55,18 +54,7 @@ export class RiesgosEffects {
 }
 
 
-function convertApiScenariosToFrontendScenarios(apiScenarios: API_ScenarioInfo[]): RiesgosScenarioMetadata[] {   
-    const frontendScenarios: RiesgosScenarioMetadata[] = [];
-    for (const apiScenario of apiScenarios) {
-        frontendScenarios.push({
-            id: apiScenario.id,
-            description: apiScenario.description,
-            preview: '',
-            title: apiScenario.id
-        })
-    }
-    return frontendScenarios;
-}
+
 
 function convertFrontendDataToApiState(products: RiesgosProduct[]): API_ScenarioState {
     const apiState: API_ScenarioState = {

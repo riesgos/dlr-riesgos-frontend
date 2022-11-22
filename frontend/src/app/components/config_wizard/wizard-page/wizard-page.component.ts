@@ -4,11 +4,11 @@ import { State } from 'src/app/ngrx_register';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { WizardableProduct } from '../wizardable_products';
 import { getInputsForStep } from 'src/app/riesgos/riesgos.selectors';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
 import { WizardableStep } from '../wizardable_steps';
 import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
-import { AugmentorService } from 'src/app/services/augmentor/augomentor.service';
+import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
 
 
 
@@ -25,13 +25,16 @@ export class WizardPageComponent implements OnInit {
 
   constructor(
     private store: Store<State>,
-    private augmentor: AugmentorService
+    private augmenter: AugmenterService
   ) { }
 
   ngOnInit() {
     this.parameters$ = this.store.pipe(
       select(getInputsForStep(this.step.step.id)),
-      map((inputs: RiesgosProduct[]) => inputs.map(i => this.augmentor.loadWizardPropertiesForProduct(this.step.scenario, i)))
+      switchMap((inputs: RiesgosProduct[]) => {
+        const tasks$ = inputs.map(i => this.augmenter.loadWizardPropertiesForProduct(this.step.scenario, i));
+        return forkJoin(tasks$);
+      })
     );
   }
 

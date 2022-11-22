@@ -21,7 +21,6 @@ import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';
 
-import { DataService } from 'src/app/services/data/data.service';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { getCurrentScenarioName, getProducts, getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
@@ -29,10 +28,10 @@ import { interactionCompleted } from 'src/app/interactions/interactions.actions'
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './mappable/layer_marshaller';
 import { ProductLayer } from './mappable/map.types';
-import { initialRiesgosState, RiesgosProduct, RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
+import { initialRiesgosState, RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { State } from 'src/app/ngrx_register';
-import { AugmentorService } from 'src/app/services/augmentor/augomentor.service';
+import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
 import { MappableProduct } from './mappable/mappable_products';
 import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 
@@ -65,8 +64,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         public layersSvc: LayersService,
         private translator: SimplifiedTranslationService,
         private router: Router,
-        private dataService: DataService,
-        private augmentor: AugmentorService
+        private augmenter: AugmenterService
     ) {
         this.controls = { attribution: true, scaleLine: true };
     }
@@ -118,16 +116,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub3 = this.store.pipe(
 
             select(getProducts),
-            switchMap(products => this.dataService.resolveReferences(products)),
-            map(resolvedProducts => {
-                const mappableProducts: MappableProduct[] = [];
-                for (const product of resolvedProducts) {
-                    const mappableProduct = this.augmentor.loadMapPropertiesForProduct(this.currentScenario$.getValue(), product);
-                    if (mappableProduct) mappableProducts.push(mappableProduct);
-                }
-                return mappableProducts;
+            switchMap(products => {
+                const scenario = this.currentScenario$.getValue();
+                const tasks$ = products.map(p => this.augmenter.loadMapPropertiesForProduct(scenario, p));
+                return forkJoin(tasks$);
             }),
-
             // translate to layers
             switchMap((products: MappableProduct[]) => {
                 return this.layerMarshaller.productsToLayers(products);

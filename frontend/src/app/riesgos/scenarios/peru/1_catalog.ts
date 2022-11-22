@@ -3,7 +3,7 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircl
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
-import { MapableProductAugmentor, WizardableProductAugmentor, WizardableStepAugmentor } from 'src/app/services/augmentor/augomentor.service';
+import { MappableProductAugmenter, WizardableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
 import { StringSelectUserConfigurableProduct, StringUserConfigurableProduct, WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
 import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
@@ -14,7 +14,7 @@ import { WizardableStep } from 'src/app/components/config_wizard/wizardable_step
 
 
 // Input: Catalog type
-export class EtypePeru implements WizardableProductAugmentor {
+export class EtypePeru implements WizardableProductAugmenter {
     appliesTo(product: RiesgosProduct): boolean {
         return product.id === 'eqCatalogType';
     }
@@ -37,7 +37,7 @@ export class EtypePeru implements WizardableProductAugmentor {
 
 
 // Output: Available EQs
-export class AvailableEqsPeru implements MapableProductAugmentor {
+export class AvailableEqsPeru implements MappableProductAugmenter {
     appliesTo(product: RiesgosProduct) {
         return product.id === 'availableEqs';
     }
@@ -161,7 +161,7 @@ export class AvailableEqsPeru implements MapableProductAugmentor {
 
 
 // Step: EQ-Catalog
-export class QuakeLedgerPeru implements WizardableStepAugmentor {
+export class QuakeLedgerPeru implements WizardableStepAugmenter {
     appliesTo(step: RiesgosStep) {
         return step.step.id === 'Eqs'
     }

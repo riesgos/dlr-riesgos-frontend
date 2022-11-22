@@ -82,6 +82,11 @@ export class AugmenterService {
     return forkJoin(tasks$);
   }
 
+  public loadWizardPropertiesForSteps(steps: RiesgosStep[]): WizardableStep[] {
+    const wizardSteps = steps.map(s => this.loadWizardPropertiesForStep(s)).filter(ws => !!ws);
+    return wizardSteps;
+  }
+
   public loadWizardPropertiesForProduct(product: RiesgosProduct): Observable<WizardableProduct | undefined> {
     const augmenter = this.getWizardProductAugmenters().find(a => a.appliesTo(product));
     if (!augmenter) { 
@@ -94,9 +99,12 @@ export class AugmenterService {
   }
 
   public loadWizardPropertiesForStep(step: RiesgosStep): WizardableStep {
-    for (const wizStepAug of this.getWizardStepAugmenters()) {
-      if (wizStepAug.appliesTo(step)) return wizStepAug.makeStepWizardable(step);
+    const augmenter = this.getWizardStepAugmenters().find(a => a.appliesTo(step));
+    if (!augmenter) { 
+      console.warn(`No wizard-step-augmenter found for step ${step.step.id}`);
+      return undefined;
     }
+    return augmenter.makeStepWizardable(step);
   }
 
   public loadMapPropertiesForProduct(product: RiesgosProduct): Observable<MappableProduct | undefined> {

@@ -52,7 +52,7 @@ export class RouteMapComponent implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private store: Store<State>,
     private olSvc: MapOlService,
-    private augmentor: AugmenterService
+    private augmenter: AugmenterService
   ) { }
 
   private _collapsedLayerControl = false;
@@ -85,9 +85,8 @@ export class RouteMapComponent implements OnInit, OnDestroy {
       select(getSteps),
       map(steps => {
         const wizardableSteps: WizardableStep[] = [];
-        const scenario = this.activeRoute.snapshot.queryParams['id'];
         for (const step of steps) {
-          const wizardableStep = this.augmentor.loadWizardPropertiesForStep(scenario, step);
+          const wizardableStep = this.augmenter.loadWizardPropertiesForStep(step);
           if (wizardableStep) {
             wizardableSteps.push(wizardableStep)
           }

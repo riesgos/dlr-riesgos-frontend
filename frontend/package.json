@@ -41,9 +41,7 @@
     "@turf/helpers": "^6.5.0",
     "d3": "^7.4.4",
     "d3-color": "^3.1.0",
-    "d3-graphviz": "^4.4.0",
     "earcut": "^2.2.4",
-    "graphlib": "^2.1.8",
     "plotly.js-dist": "^2.9.0",
     "rxjs": "^6.6.0",
     "zone.js": "~0.11.4"
@@ -55,7 +53,6 @@
     "@angular-eslint/schematics": "^14.3.0",
     "@angular/cli": "^14.2.9",
     "@angular/compiler-cli": "^14.2.10",
-    "@types/d3-graphviz": "^2.6.1",
     "@types/jasmine": "^4.3.0",
     "codelyzer": "^6.0.0",
     "eslint": "^8.27.0",

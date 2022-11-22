@@ -5,10 +5,10 @@ import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import * as InteractionActions from 'src/app/interactions/interactions.actions';
 import { map } from 'rxjs/operators';
-import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
 import { Observable } from 'rxjs';
 import { InteractionState } from 'src/app/interactions/interactions.state';
 import { ScenarioName } from 'src/app/riesgos/riesgos.state';
+import { BboxValue } from './bboxfield/bboxfield.component';
 
 @Component({
     selector: 'ukis-form-bbox-field',
@@ -31,7 +31,7 @@ export class FormBboxFieldComponent implements OnInit {
     }
 
     ngOnInit() {
-        const initialBbox: WpsBboxValue = this.parameter.value || this.parameter.description.defaultValue;
+        const initialBbox: BboxValue = this.parameter.value || this.parameter.description.defaultValue;
         // this.control.setValue(initialBbox);
 
         this.bboxSelectionOngoing$ = this.store.pipe(

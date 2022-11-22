@@ -12,7 +12,6 @@ import { Store } from '@ngrx/store';
 import { FeatureCollection } from '@turf/helpers';
 
 import { State } from '../../../ngrx_register';
-import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
 import { shape } from '../../config_wizard/wizardable_steps';
 import { LegendElement } from '../../dynamic/vector-legend/vector-legend.component';
 import { LayerMarshaller } from './layer_marshaller';
@@ -47,10 +46,17 @@ export interface BboxLayerDescription {
     icon?: shape;
 }
 
+export interface BboxValue {
+    crs: 'EPSG:4326',
+    lllon: number,
+    lllat: number,
+    urlon: number,
+    urlat: number,
+}
 
 export interface BboxLayerProduct extends RiesgosProductResolved {
     description: BboxLayerDescription;
-    value: WpsBboxValue | null;
+    value: BboxValue | null;
 }
 
 

@@ -5,7 +5,7 @@ import {
 } from '@angular/forms';
 
 
-export interface WpsBboxValue {
+export interface BboxValue {
   lllon: number;
   lllat: number;
   urlon: number;
@@ -23,7 +23,7 @@ function validateNumeric(control: AbstractControl): ValidationErrors | null {
 }
 
 function properlyFormattedBbox(control: AbstractControl): ValidationErrors | null {
-  const val: WpsBboxValue = control.value;
+  const val: BboxValue = control.value;
   if (+val.lllon >= +val.urlon) {
     return {'not a bbox': val};
   } else if (+val.lllat >= +val.urlat) {
@@ -89,7 +89,7 @@ export class BboxfieldComponent implements OnInit, ControlValueAccessor, Validat
     });
   }
 
-  writeValue(bbx: WpsBboxValue): void {
+  writeValue(bbx: BboxValue): void {
     this.bboxFormGroup.get('lllon').setValue(bbx.lllon);
     this.bboxFormGroup.get('lllat').setValue(bbx.lllat);
     this.bboxFormGroup.get('urlon').setValue(bbx.urlon);
@@ -117,7 +117,7 @@ export class BboxfieldComponent implements OnInit, ControlValueAccessor, Validat
   }
 
   validate(control: AbstractControl): ValidationErrors {
-    const val: WpsBboxValue = control.value;
+    const val: BboxValue = control.value;
     if (isNaN(val.lllat) || isNaN(val.lllon) || isNaN(val.urlat) || isNaN(val.urlon)) {
       return {'not numeric': val};
     } else if (+val.lllon >= +val.urlon) {

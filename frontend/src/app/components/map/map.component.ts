@@ -16,7 +16,6 @@ import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import { SelectEvent } from 'ol/interaction/Select';
 import { TileWMS } from 'ol/source';
-import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 import Geometry from 'ol/geom/Geometry';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
@@ -35,6 +34,7 @@ import { SimplifiedTranslationService } from 'src/app/services/simplifiedTransla
 import { State } from 'src/app/ngrx_register';
 import { AugomentorService } from 'src/app/services/augmentor/augomentor.service';
 import { MappableProduct } from './mappable/mappable_products';
+import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 
 
 const mapProjection = 'EPSG:3857';
@@ -188,8 +188,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 const maxLon = Math.max(...lons);
                 const minLat = Math.min(...lats);
                 const maxLat = Math.max(...lats);
-                const box: WpsBboxValue = {
-                    crs: originalProjection,
+                const box: BboxValue = {
                     lllat: minLat.toFixed(1) as unknown as number,
                     lllon: minLon.toFixed(1) as unknown as number,
                     urlat: maxLat.toFixed(1) as unknown as number,

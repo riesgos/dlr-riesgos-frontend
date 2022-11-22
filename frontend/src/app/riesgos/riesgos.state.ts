@@ -38,7 +38,25 @@ export interface RiesgosStep {
     state: StepState
 }
 
-export type RiesgosProduct = API_Datum | API_DatumReference;
+export interface RiesgosProduct {
+    id: string,
+};
+
+export interface RiesgosProductRef extends RiesgosProduct {
+    reference: string
+}
+
+export interface RiesgosProductResolved extends RiesgosProduct {
+    value: any
+}
+
+export function isRiesgosProductResolved(prod: RiesgosProduct): prod is RiesgosProductResolved {
+    return 'value' in prod;
+}
+
+export function isRiesgosProductRef(prod: RiesgosProduct): prod is RiesgosProductRef {
+    return 'reference' in prod;
+}
 
 export interface RiesgosScenarioState {
     scenario: ScenarioName;

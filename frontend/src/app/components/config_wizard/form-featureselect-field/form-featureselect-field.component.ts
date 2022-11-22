@@ -41,11 +41,12 @@ export class FormFeatureSelectFieldComponent implements OnInit {
     this.stringControl.valueChanges.subscribe(newStringVal => {
       const newVal = [this.findValForString(newStringVal)];
       this.control.setValue(newVal);
+      const newProductVal: FeatureSelectUconfProduct = {
+        ... this.parameter,
+        value: newVal
+      };
       this.store.dispatch(InteractionActions.interactionCompleted({
-        product: {
-          ... this.parameter,
-          value: newVal
-        },
+        product: newProductVal,
         scenario: this.scenario,
       }));
     });

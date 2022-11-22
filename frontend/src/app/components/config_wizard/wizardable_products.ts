@@ -1,6 +1,5 @@
 import { FeatureCollection } from '@turf/helpers';
-import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
-import { WpsBboxValue } from '../../services/wps/wps.datatypes';
+import { RiesgosProductResolved } from 'src/app/riesgos/riesgos.state';
 
 
 interface ProductDescription {}
@@ -55,32 +54,24 @@ export type UserConfigurableProductDescription = StringUserConfigurableProductDe
 
 
 
-export interface StringUserConfigurableProduct {
-    id: string,
+export interface StringUserConfigurableProduct extends RiesgosProductResolved {
     description: StringUserConfigurableProductDescription;
-    value: string;
 }
 
-export interface StringSelectUserConfigurableProduct {
-    id: string,
+export interface StringSelectUserConfigurableProduct extends RiesgosProductResolved {
     description: StringSelectUserConfigurableProductDescription;
-    value: string;
 }
 
-export interface BboxUserConfigurableProduct {
-    id: string,
+export interface BboxUserConfigurableProduct extends RiesgosProductResolved {
     description: BboxUserConfigurableProductDescription;
-    value: WpsBboxValue | null;
 }
 
 export const isBboxUserConfigurableProduct = (prod: any): prod is BboxUserConfigurableProduct => {
     return isBboxUserConfigurableProductDescription(prod.description);
 };
 
-export interface FeatureSelectUconfProduct {
-    id: string,
+export interface FeatureSelectUconfProduct extends RiesgosProductResolved {
     description: FeatureSelectUconfPD;
-    value: [FeatureCollection];
 }
 
 export type WizardableProduct =

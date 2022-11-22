@@ -10,20 +10,17 @@ import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
 import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
 
-import { applyStyle } from 'ol-mapbox-style';
 import { click, noModifierKeys } from 'ol/events/condition';
-import { createXYZ } from 'ol/tilegrid';
 import { DragBox, Select } from 'ol/interaction';
-import { GeoJSON, KML, MVT } from 'ol/format';
+import { GeoJSON, KML } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import { SelectEvent } from 'ol/interaction/Select';
-import { TileWMS, VectorTile } from 'ol/source';
+import { TileWMS } from 'ol/source';
 import { WpsBboxValue } from '../../services/wps/wps.datatypes';
 import Geometry from 'ol/geom/Geometry';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';
-import VectorTileLayer from 'ol/layer/VectorTile';
 
 import { DataService } from 'src/app/services/data/data.service';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
@@ -33,12 +30,11 @@ import { interactionCompleted } from 'src/app/interactions/interactions.actions'
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './mappable/layer_marshaller';
 import { ProductLayer } from './mappable/map.types';
-import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { initialRiesgosState, RiesgosProduct, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
+import { initialRiesgosState, RiesgosProduct, RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { State } from 'src/app/ngrx_register';
-import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
 import { AugomentorService } from 'src/app/services/augmentor/augomentor.service';
+import { MappableProduct } from './mappable/mappable_products';
 
 
 const mapProjection = 'EPSG:3857';
@@ -124,7 +120,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             select(getProducts),
             switchMap(products => this.dataService.resolveReferences(products)),
             map(resolvedProducts => {
-                const mappableProducts: Product[] = [];
+                const mappableProducts: MappableProduct[] = [];
                 for (const product of resolvedProducts) {
                     const mappableProduct = this.augmentor.loadMapPropertiesForProduct(this.currentScenario$.getValue(), product);
                     if (mappableProduct) mappableProducts.push(mappableProduct);
@@ -133,7 +129,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             }),
 
             // translate to layers
-            switchMap((products: Product[]) => {
+            switchMap((products: MappableProduct[]) => {
                 return this.layerMarshaller.productsToLayers(products);
             }),
 
@@ -184,7 +180,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 return this.interactionState$.getValue().mode === 'bbox';
             },
             onBoxEnd: () => {
-                const originalProjection = this.interactionState$.getValue().product.value.crs;
+                const originalProjection = (this.interactionState$.getValue().product as RiesgosProductResolved).value.crs;
                 dragBox.getGeometry().transform(mapProjection, originalProjection);
                 const lons = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[0]);
                 const lats = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[1]);
@@ -199,7 +195,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     urlat: maxLat.toFixed(1) as unknown as number,
                     urlon: maxLon.toFixed(1) as unknown as number
                 };
-                const product: RiesgosProduct = {
+                const product: RiesgosProductResolved = {
                     ...this.interactionState$.getValue().product,
                     value: box
                 };
@@ -226,7 +222,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (this.interactionState$.getValue().mode === 'featureselection') {
                     const feature = features[0];
                     const newFeatureCollection = tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))]);
-                    const product: RiesgosProduct = {
+                    const product: RiesgosProductResolved = {
                         ...this.interactionState$.getValue().product,
                         value: [newFeatureCollection]
                     };

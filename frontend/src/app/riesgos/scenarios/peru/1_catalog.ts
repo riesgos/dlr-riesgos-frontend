@@ -1,180 +1,49 @@
-import { StringSelectUserConfigurableProduct, BboxUserConfigurableProduct, StringUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { VectorLayerProduct, BboxLayerProduct } from 'src/app/components/map/mappable/riesgos.datatypes.mappable';
-import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from '../../../services/wps/wps.datatypes';
 import { toDecimalPlaces, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
-import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
-import { RiesgosProduct, RiesgosStep } from '../../riesgos.state';
-import { MapableProductAugmentor, WizardableStepAugmentor } from 'src/app/services/augmentor/augomentor.service';
+import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
+import { MapableProductAugmentor, WizardableProductAugmentor, WizardableStepAugmentor } from 'src/app/services/augmentor/augomentor.service';
+import { WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
+import { API_Datum } from 'src/app/services/backend/backend.service';
+import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 
 
 
-export const InputBoundingboxPeru: BboxUserConfigurableProduct & BboxLayerProduct & WpsData = {
-    uid: 'input-boundingbox_peru',
-    description: {
-        id: 'input-boundingbox',
-        title: '',
-        icon: 'earthquake',
-        name: 'eq-selection: boundingbox',
-        type: 'bbox',
-        reference: false,
-        defaultValue: {
-            crs: 'EPSG:4326',
-            lllon: -86.5, lllat: -20.5,
-            urlon: -68.5, urlat: -0.6
-        },
-        wizardProperties: {
-            name: 'AOI',
-            fieldtype: 'bbox',
-            description: 'AOI_selection',
-        },
-    },
-    value: null
-};
-
-
-export const mminPeru: StringUserConfigurableProduct & WpsData = {
-    uid: 'mmin_peru',
-    description: {
-        id: 'mmin',
-        title: '',
-        type: 'literal',
-        wizardProperties: {
-            name: 'mmin',
-            fieldtype: 'string',
-            description: 'minimum magnitude',
-        },
-        reference: false,
-        defaultValue: '6.0',
-    },
-    value: null
-};
-
-
-export const mmaxPeru: StringUserConfigurableProduct & WpsData = {
-    uid: 'mmax_peru',
-    description: {
-        id: 'mmax',
-        title: '',
-        type: 'literal',
-        wizardProperties: {
-            name: 'mmax',
-            fieldtype: 'string',
-            description: 'maximum magnitude',
-        },
-        reference: false,
-        defaultValue: '9.0',
-    },
-    value: null
-};
-
-
-export const zminPeru: StringUserConfigurableProduct & WpsData = {
-    uid: 'zmin_peru',
-    description: {
-        id: 'zmin',
-        title: '',
-        defaultValue: '0',
-        type: 'literal',
-        wizardProperties: {
-            name: 'zmin',
-            fieldtype: 'string',
-            description: 'minimum depth',
-        },
-        reference: false
-    },
-    value: null
-};
-
-export const zmaxPeru: StringUserConfigurableProduct & WpsData = {
-    uid: 'zmax_peru',
-    description: {
-        id: 'zmax',
-        title: '',
-        defaultValue: '100',
-        type: 'literal',
-        wizardProperties: {
-            name: 'zmax',
-            description: 'maximum depth',
-            fieldtype: 'string',
-        },
-        reference: false
-    },
-    value: null
-};
-
-
-export const pPeru: Product & WpsData = {
-    uid: 'p_peru',
-    description: {
-        id: 'p',
-        title: '',
-        description: 'p',
-        type: 'literal',
-        reference: false,
-        defaultValue: '0.0',
-    },
-    value: '0.0'
-};
-
-
-export const etypePeru: StringSelectUserConfigurableProduct & WpsData = {
-    uid: 'etype',
-    description: {
-        id: 'etype',
-        title: '',
-        description: 'etype',
-        defaultValue: 'observed', // 'deaggregation',
-        reference: false,
-        type: 'literal',
-        wizardProperties: {
-            name: 'Catalogue type',
-            fieldtype: 'stringselect'
-        },
-        options: ['observed', 'expert'] // 'stochastic' <-- currently not included due to errors in data
-    },
-    value: null
-};
-
-
-export const tlonPeru: Product & WpsData = {
-    uid: 'tlon_peru',
-    description: {
-        id: 'tlon',
-        title: '',
-        description: 'longitude [decimal degrees]',
-        defaultValue: '-77.00',
-        reference: false,
-        type: 'literal'
-    },
-    value: '-77.00'
-};
-
-
-export const tlatPeru: Product & WpsData = {
-    uid: 'tlat_peru',
-    description: {
-        id: 'tlat',
-        title: '',
-        description: 'latitude [decimal degrees]',
-        defaultValue: '-12.00',
-        reference: false,
-        type: 'literal'
-    },
-    value: '-12.00'
-};
 
 
 
-export class AvailableEqsPeru implements MapableProductAugmentor {
-    appliesTo(product: RiesgosProduct) {
-
+// Input: Catalog type
+export class EtypePeru implements WizardableProductAugmentor {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqCatalogType';
     }
 
-    makeMapable(product: RiesgosProduct): VectorLayerProduct {
+    makeProductWizardable(product: API_Datum): WizardableProduct {
+        return {
+            ... product,
+            description: {
+                wizardProperties: {
+                    name: 'Catalogue type',
+                    fieldtype: 'stringselect'
+                },
+                options: ['observed', 'expert'],
+                defaultValue: 'observed'
+            },
+        }
+    }
+};
+
+
+
+// Output: Available EQs
+export class AvailableEqsPeru implements MapableProductAugmentor {
+    appliesTo(product: RiesgosProduct) {
+        return product.id === 'availableEqs';
+    }
+
+    makeProductMappable(product: RiesgosProductResolved): VectorLayerProduct {
         return {
             ... product,
             description: {
@@ -217,7 +86,7 @@ export class AvailableEqsPeru implements MapableProductAugmentor {
                             '{{ Depth }}': toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                             Id: properties['origin.publicID'],
                         };
-                        if (properties['origin.time.value'] && etypePeru.value === 'observed') {
+                        if (properties['origin.time.value']) {
                             const date = new Date(Date.parse(properties['origin.time.value']));
                             selectedProperties['{{ Date }}'] = `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
                         }
@@ -292,21 +161,25 @@ export class AvailableEqsPeru implements MapableProductAugmentor {
 
 
 
-
+// Step: EQ-Catalog
 export class QuakeLedgerPeru implements WizardableStepAugmentor {
     appliesTo(step: RiesgosStep) {
         return step.step.id === 'Eqs'
     }
 
-    makeWizardable(step: RiesgosStep): WizardableStep  {
+    makeStepWizardable(step: RiesgosStep): WizardableStep  {
         return {
             ... step,
+            scenario: 'Peru',
             wizardProperties: {
                 shape: 'bullseye',
                 providerName: 'GFZ',
                 providerUrl: 'https://www.gfz-potsdam.de/en/',
                 wikiLink: 'EqCatalogue',
-                dataSources: [{ label: 'Quakeledger (GFZ)', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=bae8fc94-4799-11ec-947f-3811b03e280f' }]
+                dataSources: [{
+                    label: 'Quakeledger (GFZ)',
+                    href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=bae8fc94-4799-11ec-947f-3811b03e280f'
+                }]
             }
         }
     }

@@ -5,7 +5,6 @@ import { State } from 'src/app/ngrx_register';
 import * as FocusActions from 'src/app/focus/focus.actions';
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { map, distinctUntilChanged } from 'rxjs/operators';
-import { Process } from 'src/app/riesgos/riesgos.datatypes';
 import { WizardableStep } from '../wizardable_steps';
 
 
@@ -29,13 +28,13 @@ export class ConfigurationWizardComponent {
         );
     }
 
-    onBlockClicked(event, processDescr: Process) {
-        this.store.dispatch(FocusActions.newProcessClicked({ processId: processDescr.uid }));
+    onBlockClicked(event, step: WizardableStep) {
+        this.store.dispatch(FocusActions.newProcessClicked({ processId: step.step.id }));
     }
 
-    hasFocus(processDescr: Process): Observable<boolean> {
+    hasFocus(step: WizardableStep): Observable<boolean> {
         return this.focussedPageId$.pipe(distinctUntilChanged()).pipe(
-            map(id => id === processDescr.uid)
+            map(id => id === step.step.id)
         );
     }
 

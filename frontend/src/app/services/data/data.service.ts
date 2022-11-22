@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
-import { API_Datum, isApiDatum } from '../backend/backend.service';
+import { isRiesgosProductRef, isRiesgosProductResolved, RiesgosProduct, RiesgosProductResolved } from 'src/app/riesgos/riesgos.state';
 import { ConfigService } from '../configService/configService';
 
 @Injectable({
@@ -18,24 +17,27 @@ export class DataService {
     private config: ConfigService
   ) { }
 
-  resolveReferences(products: RiesgosProduct[]): Observable<API_Datum[]> {
+  resolveReferences(products: RiesgosProduct[]): Observable<RiesgosProductResolved[]> {
     const pendingRequests$ = products.map(p => this.resolveReference(p));
     return forkJoin(pendingRequests$);
   }
 
-  resolveReference(product: RiesgosProduct): Observable<API_Datum> {
-    if (isApiDatum(product)) return of(product);
-    const link = product.reference;
-    const value$ = this.fetchFromLink(link);
-    return value$.pipe(
-      map(v => {
-        const resolvedProduct: API_Datum = {
-          id: product.id,
-          value: v
-        };
-        return resolvedProduct;
-      })
-    );
+  resolveReference(product: RiesgosProduct): Observable<RiesgosProductResolved> {
+    if (isRiesgosProductResolved(product)) {
+      return of(product);
+    } else if (isRiesgosProductRef(product)) {
+      const link = product.reference;
+      const value$ = this.fetchFromLink(link);
+      return value$.pipe(
+        map(v => {
+          const resolvedProduct: RiesgosProductResolved = {
+            id: product.id,
+            value: v
+          };
+          return resolvedProduct;
+        })
+      );
+    }
   }
 
   private fetchFromLink(link: string): Observable<any> {

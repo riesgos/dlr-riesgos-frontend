@@ -5,6 +5,99 @@ const wpsClient1 = new WpsClient('1.0.0');
 const wpsClient2 = new WpsClient('2.0.0');
 
 
+export type CatalogType =  'observed' | 'deaggregation' | 'stochastic' | 'expert';
+
+export interface Bbox {
+    crs: 'EPSG:4326',
+    lllon: number,
+    lllat: number,
+    urlon: number,
+    urlat: number,
+}
+
+export async function getAvailableEqs(catalogType: CatalogType, bbox: Bbox) {
+
+    const url = `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`;
+    const processId = 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess';
+
+    const inputs: WpsInput[] = [{
+        description: {
+            id: 'input-boundingbox',
+            type: 'bbox',
+            reference: false
+        },
+        value: bbox
+    }, {
+        description: {
+            id: 'mmin',
+            type: 'literal',
+            reference: false
+        },
+        value: '6.0'
+    }, {
+        description: {
+            id: 'mmax',
+            type: 'literal',
+            reference: false
+        },
+        value: '9.5'
+    }, {
+        description: {
+            id: 'zmin',
+            type: 'literal',
+            reference: false
+        },
+        value: '0'
+    }, {
+        description: {
+            id: 'zmax',
+            type: 'literal',
+            reference: false
+        },
+        value: '100'
+    }, {
+        description: {
+            id: 'p',
+            type: 'literal',
+            reference: false
+        },
+        value: '0.0'
+    }, {
+        description: {
+            id: 'etype',
+            reference: false,
+            type: 'literal',
+        },
+        value: catalogType
+    }, {
+        description: {
+            id: 'tlon',
+            reference: false,
+            type: 'literal'
+        },
+        value: '-77.00'
+    }, {
+        description: {
+            id: 'tlat',
+            reference: false,
+            type: 'literal'
+        },
+        value: '-12.00'
+    }];
+
+    const outputs: WpsOutputDescription[] = [{
+        id: 'selectedRows',
+        reference: false,
+        type: 'complex',
+        format: 'application/vnd.geo+json'
+    }];
+
+    const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
+
+    return results[0].value[0];
+}
+
+
 export type Vsgrid = 'USGSSlopeBasedTopographyProxy' | 'FromSeismogeotechnicsMicrozonation';
 export type Gmpe = 'MontalvaEtAl2016SInter' | 'GhofraniAtkinson2014' | 'AbrahamsonEtAl2015SInter' | 'YoungsEtAl1997SInterNSHMP2008';
 

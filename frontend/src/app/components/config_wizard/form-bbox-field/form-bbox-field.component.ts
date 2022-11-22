@@ -49,13 +49,14 @@ export class FormBboxFieldComponent implements OnInit {
 
     activateBboxselectInteraction(startInteraction: boolean): void {
         if (startInteraction) {
+          const newProductVal = {
+            ...this.parameter,
+            value: this.control.value
+          };
             this.store.dispatch(InteractionActions.interactionStarted({
                 mode: 'bbox',
                 scenario: this.scenario,
-                product: {
-                    ...this.parameter,
-                    value: this.control.value
-                }
+                product: newProductVal
             }));
         } else {
           this.store.dispatch(InteractionActions.interactionCompleted({

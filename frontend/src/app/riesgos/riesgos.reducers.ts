@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { initialRiesgosState, RiesgosProduct, RiesgosScenarioState, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateError, StepStateRunning } from './riesgos.state';
+import { initialRiesgosState, isRiesgosProductRef, isRiesgosProductResolved, RiesgosProduct, RiesgosScenarioState, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateError, StepStateRunning } from './riesgos.state';
 import * as RiesgosActions from './riesgos.actions';
 import { isApiDatum, isApiDatumReference } from '../services/backend/backend.service';
 
@@ -45,8 +45,8 @@ export const reducer = createReducer(
     on(RiesgosActions.restartingScenario, (state, action) => {
         state.currentScenario = action.scenario;
         state[action.scenario].products.map((p: RiesgosProduct) => {
-            if (isApiDatum(p)) p.value = undefined;
-            if (isApiDatumReference(p)) p.reference = undefined;
+            if (isRiesgosProductResolved(p)) p.value = undefined;
+            if (isRiesgosProductRef(p)) p.reference = undefined;
         });
         return state;
     }),

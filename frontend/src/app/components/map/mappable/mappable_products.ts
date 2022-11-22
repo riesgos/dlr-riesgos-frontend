@@ -1,20 +1,22 @@
-import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
-import { shape } from '../../config_wizard/wizardable_steps';
-import { FeatureCollection } from '@turf/helpers';
 import Feature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
-import { LegendElement } from '../../dynamic/vector-legend/vector-legend.component';
-import { IDynamicComponent } from '@dlr-eoc/core-ui';
 import GeometryCollection from 'ol/geom/GeometryCollection';
-import { ProductLayer } from './map.types';
 import { Observable } from 'rxjs';
-import { MapOlService } from '@dlr-eoc/map-ol';
-import { HttpClient } from '@angular/common/http';
-import { LayersService } from '@dlr-eoc/services-layers';
-import { LayerMarshaller } from './layer_marshaller';
-import { Store } from '@ngrx/store';
-import { State } from '../../../ngrx_register';
+import { RiesgosProductResolved } from 'src/app/riesgos/riesgos.state';
 
+import { HttpClient } from '@angular/common/http';
+import { IDynamicComponent } from '@dlr-eoc/core-ui';
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { Store } from '@ngrx/store';
+import { FeatureCollection } from '@turf/helpers';
+
+import { State } from '../../../ngrx_register';
+import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
+import { shape } from '../../config_wizard/wizardable_steps';
+import { LegendElement } from '../../dynamic/vector-legend/vector-legend.component';
+import { LayerMarshaller } from './layer_marshaller';
+import { ProductLayer } from './map.types';
 
 
 export type MappableProduct = UkisMapProduct | BboxLayerProduct | VectorLayerProduct | MultiVectorLayerProduct | WmsLayerProduct;
@@ -23,14 +25,18 @@ export type MappableProduct = UkisMapProduct | BboxLayerProduct | VectorLayerPro
  * This type allows the user to specify how a riesgos-product should be converted into one or more ukis-layers.
  * This interface should slowly phase out all the other ones in the file `riesgos.datatypes.mappable`.
  */
-export interface UkisMapProduct {
+export interface UkisMapProduct extends RiesgosProductResolved {
     toUkisLayers(ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller): Observable<ProductLayer[]>
+}
+
+export function isUkisMappableProduct(obj: any): obj is UkisMapProduct {
+    return 'toUkisLayers' in obj;
 }
 
 export function isMappableProduct(obj: any): obj is MappableProduct  {
     return isVectorLayerProduct(obj) || isBboxLayerProduct(obj)
             || isWmsProduct(obj) || isMultiVectorLayerProduct(obj)
-            || 'toUkisLayers' in obj;
+            || isUkisMappableProduct(obj);
 }
 
 
@@ -42,7 +48,7 @@ export interface BboxLayerDescription {
 }
 
 
-export interface BboxLayerProduct {
+export interface BboxLayerProduct extends RiesgosProductResolved {
     description: BboxLayerDescription;
     value: WpsBboxValue | null;
 }
@@ -77,7 +83,7 @@ export interface VectorLayerDescription extends VectorLayerProperties {
     id: string;
 }
 
-export interface VectorLayerProduct {
+export interface VectorLayerProduct extends RiesgosProductResolved {
     description: VectorLayerDescription;
 }
 
@@ -100,7 +106,7 @@ export interface MultiVectorLayerDescription {
  * Sometimes we want to display on vector-dataset in more than one way.
  * A *MultiVectorLayerProduct* uses one VectorSource with multiple layers.
  */
-export interface MultiVectorLayerProduct {
+export interface MultiVectorLayerProduct extends RiesgosProductResolved {
     description: MultiVectorLayerDescription;
 }
 
@@ -126,7 +132,7 @@ export interface WmsLayerDescription {
     featureInfoRenderer?: (featureInfo: FeatureCollection) => string;
 }
 
-export interface WmsLayerProduct {
+export interface WmsLayerProduct extends RiesgosProductResolved {
     description: WmsLayerDescription;
 }
 

@@ -1,35 +1,43 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { isWmsProduct, isVectorLayerProduct, isBboxLayerProduct, BboxLayerProduct,
-    VectorLayerProduct, WmsLayerProduct, WmsLayerDescription, isMultiVectorLayerProduct,
-    MultiVectorLayerProduct, 
-    isMappableProduct} from './mappable_products';
 import { Feature as olFeature } from 'ol';
-import { MapOlService } from '@dlr-eoc/map-ol';
-import { WMSCapabilities } from 'ol/format';
-import { map } from 'rxjs/operators';
-import { Observable, of, forkJoin } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { State } from 'src/app/ngrx_register';
-import { MapStateService } from '@dlr-eoc/services-map-state';
-import { ProductVectorLayer, ProductRasterLayer, ProductLayer, ProductCustomLayer } from './map.types';
-import { downloadBlob, downloadJson } from 'src/app/helpers/others';
+import { GeoJSON, WMSCapabilities } from 'ol/format';
+import Geometry from 'ol/geom/Geometry';
+import Polygon from 'ol/geom/Polygon';
 import { Vector as olVectorLayer } from 'ol/layer';
 import { Vector as olVectorSource } from 'ol/source';
-import { GeoJSON } from 'ol/format';
-import Polygon from 'ol/geom/Polygon';
-import { VectorLegendComponent } from '../../../components/dynamic/vector-legend/vector-legend.component';
-import { WebGlPolygonLayer } from '../../../helpers/custom_renderers/renderers/polygon.renderer';
-import tBbox from '@turf/bbox';
-import tBuffer from '@turf/buffer';
-import bboxPolygon from '@turf/bbox-polygon';
-import { featureCollection, FeatureCollection } from '@turf/helpers';
-import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
-import Geometry from 'ol/geom/Geometry';
 import { Fill, Stroke, Style } from 'ol/style';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { downloadBlob, downloadJson } from 'src/app/helpers/others';
+import { State } from 'src/app/ngrx_register';
+import { RiesgosProductResolved } from 'src/app/riesgos/riesgos.state';
+import {
+    SimplifiedTranslationService
+} from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
+import { MapStateService } from '@dlr-eoc/services-map-state';
+import { Store } from '@ngrx/store';
+import tBbox from '@turf/bbox';
+import bboxPolygon from '@turf/bbox-polygon';
+import tBuffer from '@turf/buffer';
+import { featureCollection, FeatureCollection } from '@turf/helpers';
+
+import {
+    VectorLegendComponent
+} from '../../../components/dynamic/vector-legend/vector-legend.component';
+import { WebGlPolygonLayer } from '../../../helpers/custom_renderers/renderers/polygon.renderer';
 import { ConfigService } from '../../../services/configService/configService';
+import {
+    ProductCustomLayer, ProductLayer, ProductRasterLayer, ProductVectorLayer
+} from './map.types';
+import {
+    BboxLayerProduct, isBboxLayerProduct, isMultiVectorLayerProduct, isUkisMappableProduct,
+    isVectorLayerProduct, isWmsProduct, MultiVectorLayerProduct, VectorLayerProduct,
+    WmsLayerDescription, WmsLayerProduct
+} from './mappable_products';
 
 
 
@@ -59,7 +67,7 @@ export class LayerMarshaller  {
         private configService: ConfigService
         ) {}
 
-    productsToLayers(products: Product[]): Observable<ProductLayer[]> {
+    productsToLayers(products: RiesgosProductResolved[]): Observable<ProductLayer[]> {
         if (products.length === 0) {
             return of([]);
         }
@@ -82,25 +90,25 @@ export class LayerMarshaller  {
     }
 
 
-    toLayers(product: Product): Observable<ProductLayer[]> {
+    toLayers(product: RiesgosProductResolved): Observable<ProductLayer[]> {
 
-        if (isMappableProduct(product)) {
+        if (isUkisMappableProduct(product)) {
             return product.toUkisLayers(product.value, this.mapSvc, this.layersSvc, this.httpClient, this.store, this);
         }
 
         // First of all, a bunch of special cases. Each one of those layers has some customizations after user-requests
-        if ([].includes(product.uid)) {
+        if ([].includes(product.id)) {
             return this.createWebglLayers(product as MultiVectorLayerProduct);
         }
         if (['initial_Exposure', 'initial_Exposure_Lahar',
-            'AssetmasterProcess_Exposure_Peru'].includes(product.uid)) {
+            'AssetmasterProcess_Exposure_Peru'].includes(product.id)) {
             return this.createWebglLayer(product as VectorLayerProduct).pipe(map(layer => [layer]));
         }
         if (['Shakyground_wms', 'Shakyground_sa03_wms', 'Shakyground_sa10_wms',
             'Shakyground_wmsPeru', 'Shakyground_sa03_wmsPeru', 'Shakyground_sa10_wmsPeru'
-            ].includes(product.uid)) {
+            ].includes(product.id)) {
             return this.makeWmsLayers(product as WmsLayerProduct).pipe(map(layers => {
-                switch (product.uid) {
+                switch (product.id) {
                     case 'Shakyground_wms':
                         layers[0].name = 'PGA';
                         break;
@@ -130,7 +138,7 @@ export class LayerMarshaller  {
             }));
         }
 
-        if (['QuakeledgerProcess_selectedRows', 'QuakeledgerProcess_selectedRowsPeru'].includes(product.uid)) {
+        if (['QuakeledgerProcess_selectedRows', 'QuakeledgerProcess_selectedRowsPeru'].includes(product.id)) {
             return this.makeGeojsonLayer(product as VectorLayerProduct).pipe(
                 map(p => {
                     // @ts-ignore
@@ -167,7 +175,7 @@ export class LayerMarshaller  {
             const vectorLayerProduct: VectorLayerProduct = {
                 ... product,
                 description: {
-                    id: product.uid + '_' + vectorLayerProps.name,
+                    id: product.id + '_' + vectorLayerProps.name,
                     ... vectorLayerProps,
                     format: 'application/vnd.geo+json',
                     type: 'complex'
@@ -199,8 +207,8 @@ export class LayerMarshaller  {
         });
         const ukisLayer = new ProductCustomLayer({
             custom_layer: vl,
-            productId: product.uid,
-            id: product.uid + '_' + product.description.name,
+            productId: product.id,
+            id: product.id + '_' + product.description.name,
             name: product.description.name,
             opacity: 1.0,
             visible: true,
@@ -292,8 +300,8 @@ export class LayerMarshaller  {
 
         const riesgosLayer: ProductCustomLayer = new ProductCustomLayer({
             custom_layer: olLayer,
-            productId: product.uid,
-            id: `${product.uid}_${product.description.id}_result_layer`,
+            productId: product.id,
+            id: `${product.id}_${product.description.id}_result_layer`,
             name: `${product.description.name}`,
             opacity: 1.0,
             visible: true,
@@ -335,8 +343,8 @@ export class LayerMarshaller  {
 
             const productLayer: ProductCustomLayer = new ProductCustomLayer({
                 custom_layer: layer,
-                productId: product.uid,
-                id: product.uid + '_' + vectorLayerProps.name,
+                productId: product.id,
+                id: product.id + '_' + vectorLayerProps.name,
                 name: vectorLayerProps.name,
                 opacity: 1.0,
                 visible: true,
@@ -372,7 +380,7 @@ export class LayerMarshaller  {
                 }],
                 dynamicDescription: vectorLayerProps.vectorLayerAttributes.globalSummary(product.value)
             });
-            productLayer.productId = product.uid;
+            productLayer.productId = product.id;
 
             // Ugly hack: a custom layer is not supposed to have an 'options' property.
             // We set it here anyway, because we need options.style to be able to create a custom legend.
@@ -415,8 +423,8 @@ export class LayerMarshaller  {
                 }
 
                 const layer: ProductVectorLayer = new ProductVectorLayer({
-                    productId: product.uid,
-                    id: `${product.uid}_${product.description.id}_result_layer`,
+                    productId: product.id,
+                    id: `${product.id}_${product.description.id}_result_layer`,
                     name: `${product.description.name}`,
                     attribution: '',
                     opacity: 1.0,
@@ -453,7 +461,7 @@ export class LayerMarshaller  {
                         ? product.description.vectorLayerAttributes.globalSummary(data)
                         : undefined,
                 });
-                layer.productId = product.uid;
+                layer.productId = product.id;
 
                 if (product.description.vectorLayerAttributes.legendEntries) {
                     layer.legendImg = {
@@ -500,7 +508,7 @@ export class LayerMarshaller  {
         if (product.description.type === 'complex') {
             const parseProcesses$: Observable<ProductRasterLayer[]>[] = [];
             for (const val of product.value) {
-                parseProcesses$.push(this.makeWmsLayersFromValue(val, product.uid, product.description));
+                parseProcesses$.push(this.makeWmsLayersFromValue(val, product.id, product.description));
             }
             return forkJoin(parseProcesses$).pipe(map((results: ProductRasterLayer[][]) => {
                 const newLayers: ProductRasterLayer[] = [];
@@ -513,7 +521,7 @@ export class LayerMarshaller  {
             }));
         } else if (product.description.type === 'literal') {
             const val = product.value;
-            return this.makeWmsLayersFromValue(val, product.uid, product.description);
+            return this.makeWmsLayersFromValue(val, product.id, product.description);
         } else {
             throw new Error(`Could not find a value in product ${product}`);
         }

@@ -1,4 +1,3 @@
-import { WpsProcess, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
@@ -47,24 +46,4 @@ export interface DeusGetFeatureInfo {
     // c15: ""
     // c16: ""
     // [key: string]: string;
-}
-
-
-
-export class Deus extends WpsProcess {
-    constructor(http: HttpClient, middleWareUrl: string) {
-        super(
-            'deus',
-            'DEUS',
-            ['intensity', 'exposure', 'schema', 'fragility'],
-            ['updated_exposure', 'transition', 'damage'],
-            'org.n52.gfz.riesgos.algorithm.impl.DeusProcess',
-            'eq_damage_svc_description',
-            `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
-            '1.0.0',
-            http,
-            new ProcessStateUnavailable(),
-            middleWareUrl
-        );
-    }
 }

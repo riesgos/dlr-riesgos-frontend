@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Actions, ofType, createEffect } from '@ngrx/effects';
-import * as RiesgosActions from './riesgos.actions';
-import * as FocusActions from '../focus/focus.actions';
+import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
-import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
-import { of } from 'rxjs';
-import { RiesgosProduct, RiesgosScenarioMetadata, RiesgosStep, ScenarioName } from './riesgos.state';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { getProducts, getProductsForScenario } from './riesgos.selectors';
 
+import * as FocusActions from '../focus/focus.actions';
+import { API_ScenarioState, BackendService } from '../services/backend/backend.service';
+import * as RiesgosActions from './riesgos.actions';
+import { getProductsForScenario } from './riesgos.selectors';
+import { RiesgosProduct, ScenarioName } from './riesgos.state';
 
 
 @Injectable()
@@ -58,6 +58,7 @@ export class RiesgosEffects {
 
 function convertFrontendDataToApiState(products: RiesgosProduct[]): API_ScenarioState {
     const apiState: API_ScenarioState = {
+        // @ts-ignore
         data: products
     };
     return apiState;

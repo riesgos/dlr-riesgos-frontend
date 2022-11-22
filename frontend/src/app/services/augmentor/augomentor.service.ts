@@ -6,6 +6,7 @@ import { WizardableProduct } from 'src/app/components/config_wizard/wizardable_p
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 
 import { QuakeLedgerPeru, EtypePeru, AvailableEqsPeru } from 'src/app/riesgos/scenarios/peru/1_catalog';
+import { DataService } from '../data/data.service';
 
 
 
@@ -58,13 +59,16 @@ export type Augmentor = WizardableStepAugmentor | WizardableProductAugmentor | M
 @Injectable({
   providedIn: 'root'
 })
-export class AugomentorService {
+export class AugmentorService {
 
   private augmentors: Augmentor[] = [
     new QuakeLedgerPeru(), new EtypePeru(), new AvailableEqsPeru()
   ];
 
-  constructor(private store: Store) {}
+  constructor(
+    private store: Store,
+    private resolver: DataService // looks more and more like all my components need resolved data ...
+  ) {}
 
   public loadWizardPropertiesForProduct(scenarioName: ScenarioName, product: RiesgosProduct): WizardableProduct {
     for (const wizPropAug of this.getWizardProductAugmentors()) {

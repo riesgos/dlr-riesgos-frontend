@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { map } from 'rxjs/operators';
 import { getSteps } from 'src/app/riesgos/riesgos.selectors';
-import { AugomentorService } from 'src/app/services/augmentor/augomentor.service';
+import { AugmentorService } from 'src/app/services/augmentor/augomentor.service';
 
 @Component({
   selector: 'ukis-route-map',
@@ -52,7 +52,7 @@ export class RouteMapComponent implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private store: Store<State>,
     private olSvc: MapOlService,
-    private augmentor: AugomentorService
+    private augmentor: AugmentorService
   ) { }
 
   private _collapsedLayerControl = false;

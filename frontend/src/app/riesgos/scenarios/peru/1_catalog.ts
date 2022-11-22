@@ -4,8 +4,7 @@ import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
 import { MapableProductAugmentor, WizardableProductAugmentor, WizardableStepAugmentor } from 'src/app/services/augmentor/augomentor.service';
-import { WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
-import { API_Datum } from 'src/app/services/backend/backend.service';
+import { StringSelectUserConfigurableProduct, StringUserConfigurableProduct, WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
 import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 
@@ -20,7 +19,7 @@ export class EtypePeru implements WizardableProductAugmentor {
         return product.id === 'eqCatalogType';
     }
 
-    makeProductWizardable(product: API_Datum): WizardableProduct {
+    makeProductWizardable(product: RiesgosProductResolved): StringSelectUserConfigurableProduct {
         return {
             ... product,
             description: {

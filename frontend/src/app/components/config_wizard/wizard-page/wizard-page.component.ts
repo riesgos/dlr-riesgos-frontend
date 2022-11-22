@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { WizardableStep } from '../wizardable_steps';
 import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
-import { AugomentorService } from 'src/app/services/augmentor/augomentor.service';
+import { AugmentorService } from 'src/app/services/augmentor/augomentor.service';
 
 
 
@@ -25,7 +25,7 @@ export class WizardPageComponent implements OnInit {
 
   constructor(
     private store: Store<State>,
-    private augmentor: AugomentorService
+    private augmentor: AugmentorService
   ) { }
 
   ngOnInit() {

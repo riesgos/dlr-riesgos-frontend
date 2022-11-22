@@ -32,7 +32,7 @@ import { ProductLayer } from './mappable/map.types';
 import { initialRiesgosState, RiesgosProduct, RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { State } from 'src/app/ngrx_register';
-import { AugomentorService } from 'src/app/services/augmentor/augomentor.service';
+import { AugmentorService } from 'src/app/services/augmentor/augomentor.service';
 import { MappableProduct } from './mappable/mappable_products';
 import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 
@@ -66,7 +66,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         private translator: SimplifiedTranslationService,
         private router: Router,
         private dataService: DataService,
-        private augmentor: AugomentorService
+        private augmentor: AugmentorService
     ) {
         this.controls = { attribution: true, scaleLine: true };
     }

@@ -47,7 +47,6 @@ export interface BboxLayerDescription {
 }
 
 export interface BboxValue {
-    crs: 'EPSG:4326',
     lllon: number,
     lllat: number,
     urlon: number,

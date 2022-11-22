@@ -116,11 +116,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         const sub3 = this.store.pipe(
 
             select(getProducts),
-            switchMap(products => {
-                const scenario = this.currentScenario$.getValue();
-                const tasks$ = products.map(p => this.augmenter.loadMapPropertiesForProduct(scenario, p));
-                return forkJoin(tasks$);
-            }),
+            switchMap(products => this.augmenter.loadMapPropertiesForProducts(products)),
             // translate to layers
             switchMap((products: MappableProduct[]) => {
                 return this.layerMarshaller.productsToLayers(products);

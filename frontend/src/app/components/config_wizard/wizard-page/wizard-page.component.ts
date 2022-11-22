@@ -31,10 +31,7 @@ export class WizardPageComponent implements OnInit {
   ngOnInit() {
     this.parameters$ = this.store.pipe(
       select(getInputsForStep(this.step.step.id)),
-      switchMap((inputs: RiesgosProduct[]) => {
-        const tasks$ = inputs.map(i => this.augmenter.loadWizardPropertiesForProduct(this.step.scenario, i));
-        return forkJoin(tasks$);
-      })
+      switchMap(inputs => this.augmenter.loadWizardPropertiesForProducts(inputs))
     );
   }
 

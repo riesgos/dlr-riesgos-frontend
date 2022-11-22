@@ -47,6 +47,7 @@ export interface RiesgosProductRef extends RiesgosProduct {
 }
 
 export interface RiesgosProductResolved extends RiesgosProduct {
+    reference?: string,
     value: any
 }
 
@@ -55,7 +56,7 @@ export function isRiesgosProductResolved(prod: RiesgosProduct): prod is RiesgosP
 }
 
 export function isRiesgosProductRef(prod: RiesgosProduct): prod is RiesgosProductRef {
-    return 'reference' in prod;
+    return ('reference' in prod) && !('value' in prod);
 }
 
 export interface RiesgosScenarioState {

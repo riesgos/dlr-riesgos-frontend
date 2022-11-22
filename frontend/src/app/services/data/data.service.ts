@@ -32,6 +32,7 @@ export class DataService {
         map(v => {
           const resolvedProduct: RiesgosProductResolved = {
             id: product.id,
+            reference: link, // resolved products maintain their reference, so that they can be sent back to the backend easily
             value: v
           };
           return resolvedProduct;

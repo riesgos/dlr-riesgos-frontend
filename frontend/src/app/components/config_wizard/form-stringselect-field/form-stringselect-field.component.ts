@@ -22,9 +22,11 @@ export class FormStringselectFieldComponent implements OnInit {
     constructor(private store: Store<State>) { }
 
     ngOnInit() {
+        this.control.valueChanges.subscribe(newVal => this.onChange(newVal));
         this.options = this.parameter.description.options;
         if (this.control.value === null) {
             this.control.setValue(this.options[0]);
+            this.onChange(this.control.value);
         }
     }
 

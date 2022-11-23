@@ -28,8 +28,6 @@ export const step: Step = {
     title: 'Eqs',
     description: 'Fetch eq data from database',
     inputs: [{
-        id: 'eqCatalogBbox'
-    }, {
         id: 'eqCatalogType',
         options: ['observed', 'expert']
     }],

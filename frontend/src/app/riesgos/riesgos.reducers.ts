@@ -42,6 +42,14 @@ export const reducer = createReducer(
         const scenario = state.scenarioData[action.scenario];
         const step = scenario.steps.find(s => s.step.id === action.step);
         step.state = new StepStateCompleted();
+        for (const newProduct of action.newData) {
+            for (let i = 0; i < scenario.products.length; i++) {
+                if (newProduct.id === scenario.products[i].id) {
+                    scenario.products[i] = newProduct;
+                    break;
+                }
+            }
+        }
         // @TODO: update state of downstream steps
         return state;
     }),

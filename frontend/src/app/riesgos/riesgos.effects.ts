@@ -6,7 +6,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
 import * as FocusActions from '../focus/focus.actions';
-import { API_Datum, API_DatumReference, API_ScenarioState, BackendService } from '../services/backend/backend.service';
+import { API_Datum, API_DatumReference, API_ScenarioState, BackendService, isApiDatum } from '../services/backend/backend.service';
 import * as RiesgosActions from './riesgos.actions';
 import { getProductsForScenario } from './riesgos.selectors';
 import { isRiesgosValueProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosProduct, ScenarioName } from './riesgos.state';
@@ -37,7 +37,7 @@ export class RiesgosEffects {
             switchMap(_ => this.store$.select(getProductsForScenario(memScenario))),
             map(products => convertFrontendDataToApiState(products)),
             switchMap(apiState => this.backendSvc.execute(memScenario, memStep, apiState)),
-            map(newApiState => newApiState.data),
+            map(newApiState => convertApiDataToRiesgosData(newApiState.data)),
             
             // notify app of new data
             map(newData => RiesgosActions.executeSuccess({ scenario: memScenario, step: memStep, newData })),
@@ -77,4 +77,20 @@ function convertFrontendDataToApiState(products: RiesgosProduct[]): API_Scenario
     return apiState;
 }
 
-
+function convertApiDataToRiesgosData(apiData: (API_Datum | API_DatumReference)[]): RiesgosProduct[] {
+    const riesgosData: RiesgosProduct[] = [];
+    for (const apiProduct of apiData) {
+        if (isApiDatum(apiProduct)) {
+            riesgosData.push({
+                id: apiProduct.id,
+                value: apiProduct.value
+            });
+        } else {
+            riesgosData.push({
+                id: apiProduct.id,
+                reference: apiProduct.reference
+            });
+        }
+    }
+    return riesgosData;
+}

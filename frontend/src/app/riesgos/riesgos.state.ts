@@ -40,8 +40,9 @@ export interface RiesgosStep {
 
 export interface RiesgosProduct {
     id: string,
-    options?: string[]
-    value?: any
+    options?: string[],
+    value?: any,
+    reference?: string,
 };
 
 export interface RiesgosProductRef extends RiesgosProduct {

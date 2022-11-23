@@ -412,9 +412,9 @@ export class LayerMarshaller  {
         return this.getSelectionAwareStyle(product).pipe(
             map(styleFunction => {
 
-                const data = product.value[0];
+                const data = product.value;
                 let bx = null;
-                if (data.length > 1) { // don't want a buffer around single-entry layers
+                if (data.features.length > 1) { // don't want a buffer around single-entry layers
                     try {
                         bx = tBbox(tBuffer(data, 70, {units: 'kilometers'}));
                     } catch (error) {

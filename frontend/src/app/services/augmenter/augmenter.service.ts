@@ -7,8 +7,8 @@ import { WizardableStep } from 'src/app/components/config_wizard/wizardable_step
 
 import { QuakeLedgerPeru, EtypePeru, AvailableEqsPeru } from 'src/app/riesgos/scenarios/peru/1_catalog';
 import { DataService } from '../data/data.service';
-import { forkJoin, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { defaultIfEmpty, map } from 'rxjs/operators';
 
 
 
@@ -69,17 +69,17 @@ export class AugmenterService {
 
   constructor(
     private store: Store,
-    private resolver: DataService
+    private dataSvc: DataService
   ) {}
 
   public loadWizardPropertiesForProducts(products: RiesgosProduct[]): Observable<WizardableProduct[]> {
     const tasks$ = products.map(p => this.loadWizardPropertiesForProduct(p)).filter(p => !!p);
-    return forkJoin(tasks$);
+    return forkJoin(tasks$).pipe(defaultIfEmpty([]));
   }
 
   public loadMapPropertiesForProducts(products: RiesgosProduct[]): Observable<MappableProduct[]> {
     const tasks$ = products.map(p => this.loadMapPropertiesForProduct(p)).filter(p => !!p);
-    return forkJoin(tasks$);
+    return forkJoin(tasks$).pipe(defaultIfEmpty([]));
   }
 
   public loadWizardPropertiesForSteps(steps: RiesgosStep[]): WizardableStep[] {
@@ -87,13 +87,17 @@ export class AugmenterService {
     return wizardSteps;
   }
 
-  public loadWizardPropertiesForProduct(product: RiesgosProduct): Observable<WizardableProduct | undefined> {
+  public loadWizardPropertiesForProduct(product: RiesgosProduct): Observable<WizardableProduct> | undefined {
+    const resolved$ = this.dataSvc.resolveReference(product);
+    if (!resolved$) return undefined;
+
     const augmenter = this.getWizardProductAugmenters().find(a => a.appliesTo(product));
     if (!augmenter) { 
       console.warn(`No wizard-product-augmenter found for product ${product.id}`);
-      return of(undefined);
+      return undefined;
     }
-    return this.resolver.resolveReference(product).pipe(
+
+    return resolved$.pipe(
       map(resolvedProduct => augmenter.makeProductWizardable(resolvedProduct))
     );
   }
@@ -107,13 +111,17 @@ export class AugmenterService {
     return augmenter.makeStepWizardable(step);
   }
 
-  public loadMapPropertiesForProduct(product: RiesgosProduct): Observable<MappableProduct | undefined> {
+  public loadMapPropertiesForProduct(product: RiesgosProduct): Observable<MappableProduct> | undefined {
+    const resolved$ = this.dataSvc.resolveReference(product);
+    if (!resolved$) return undefined;
+
     const augmenter = this.getMapProductAugmenters().find(a => a.appliesTo(product));
     if (!augmenter) { 
       console.warn(`No map-product-augmenter found for product ${product.id}`);
-      return of(undefined);
+      return undefined;
     }
-    return this.resolver.resolveReference(product).pipe(
+
+    return resolved$.pipe(
       map(resolvedProduct => augmenter.makeProductMappable(resolvedProduct))
     );
   }

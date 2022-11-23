@@ -22,6 +22,8 @@ export class ProcessPool {
             this.ongoing = this.ongoing.filter(h => h !== key);
             this.completed[key] = results;
         }).catch(error => {
+            console.error(`An error occured while trying to execute task ${key}: `);
+            console.error(error);
             this.ongoing = this.ongoing.filter(h => h !== key);
             this.failed[key] = error;
         });

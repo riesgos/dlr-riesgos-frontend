@@ -1,4 +1,4 @@
-import { API_Datum, API_DatumReference, API_Step } from "../services/backend/backend.service";
+import { API_Step } from "../services/backend/backend.service";
 
 
 
@@ -40,6 +40,7 @@ export interface RiesgosStep {
 
 export interface RiesgosProduct {
     id: string,
+    options?: string[]
 };
 
 export interface RiesgosProductRef extends RiesgosProduct {
@@ -51,11 +52,15 @@ export interface RiesgosProductResolved extends RiesgosProduct {
     value: any
 }
 
-export function isRiesgosProductResolved(prod: RiesgosProduct): prod is RiesgosProductResolved {
-    return 'value' in prod;
+export function isRiesgosValueProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
+    return 'value' in prod && !('reference' in prod);
 }
 
-export function isRiesgosProductRef(prod: RiesgosProduct): prod is RiesgosProductRef {
+export function isRiesgosResolvedRefProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
+    return 'value' in prod && 'reference' in prod;
+}
+
+export function isRiesgosUnresolvedRefProduct(prod: RiesgosProduct): prod is RiesgosProductRef {
     return ('reference' in prod) && !('value' in prod);
 }
 

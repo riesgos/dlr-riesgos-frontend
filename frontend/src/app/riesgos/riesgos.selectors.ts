@@ -60,7 +60,7 @@ export const getProduct = (productId: string) => createSelector(
 
 export const getProductsForScenario = (scenario: ScenarioName) => createSelector(
     getRiesgosState,
-    s => s[scenario].products
+    s => s.scenarioData[scenario].products
 );
 
 export const getInputsForStep = (processId: string) => createSelector(

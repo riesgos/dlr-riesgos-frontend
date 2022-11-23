@@ -8,9 +8,9 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
 
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { getSteps } from 'src/app/riesgos/riesgos.selectors';
 import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
 
@@ -45,7 +45,7 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   };
 
   // we need the processes here to create nav groups frot them;
-  public steps: WizardableStep[] = null;
+  public steps$: Observable<WizardableStep[]>;
   private subs: Subscription[] = [];
 
   constructor(
@@ -81,22 +81,10 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   }
 
   getSteps() {
-    const stepSub = this.store.pipe(
+    this.steps$ = this.store.pipe(
       select(getSteps),
-      map(steps => {
-        const wizardableSteps: WizardableStep[] = [];
-        for (const step of steps) {
-          const wizardableStep = this.augmenter.loadWizardPropertiesForStep(step);
-          if (wizardableStep) {
-            wizardableSteps.push(wizardableStep)
-          }
-        }
-        return wizardableSteps;
-      })
-    ).subscribe(wizardableSteps => {
-      this.steps = wizardableSteps;
-    });
-    this.subs.push(stepSub);
+      map(steps => this.augmenter.loadWizardPropertiesForSteps(steps))
+    );
   }
 
   ngOnDestroy(): void {

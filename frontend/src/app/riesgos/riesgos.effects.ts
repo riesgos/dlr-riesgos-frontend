@@ -6,10 +6,10 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
 import * as FocusActions from '../focus/focus.actions';
-import { API_ScenarioState, BackendService } from '../services/backend/backend.service';
+import { API_Datum, API_DatumReference, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import * as RiesgosActions from './riesgos.actions';
 import { getProductsForScenario } from './riesgos.selectors';
-import { RiesgosProduct, ScenarioName } from './riesgos.state';
+import { isRiesgosValueProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosProduct, ScenarioName } from './riesgos.state';
 
 
 @Injectable()
@@ -57,9 +57,22 @@ export class RiesgosEffects {
 
 
 function convertFrontendDataToApiState(products: RiesgosProduct[]): API_ScenarioState {
+    const data: (API_Datum | API_DatumReference)[] = [];
+    for (const product of products) {
+        if (isRiesgosUnresolvedRefProduct(product) || isRiesgosResolvedRefProduct(product)) {
+            data.push({
+                id: product.id,
+                reference: product.reference
+            });
+        } else if (isRiesgosValueProduct(product)) {
+            data.push({
+                id: product.id,
+                value: product.value
+            })
+        }
+    }
     const apiState: API_ScenarioState = {
-        // @ts-ignore
-        data: products
+        data
     };
     return apiState;
 }

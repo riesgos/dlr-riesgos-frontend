@@ -78,6 +78,7 @@ import { WMTSLayerFactory } from './components/map/mappable/wmts';
 
 // import all used icons
 import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from '@cds/core/icon';
+import { DataService } from './services/data/data.service';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 

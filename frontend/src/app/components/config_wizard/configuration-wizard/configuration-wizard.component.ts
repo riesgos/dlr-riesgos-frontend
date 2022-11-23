@@ -16,9 +16,9 @@ import { WizardableStep } from '../wizardable_steps';
 })
 export class ConfigurationWizardComponent {
 
-    @Input() navExpanded = true;
     private focussedPageId$: Observable<string>;
-    @Input() public steps: WizardableStep[];
+    @Input() navExpanded = true;
+    @Input() steps: WizardableStep[];
 
     constructor(
         private store: Store<State>

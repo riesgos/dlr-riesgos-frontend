@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { isRiesgosProductRef, isRiesgosProductResolved, RiesgosProduct, RiesgosProductResolved } from 'src/app/riesgos/riesgos.state';
+import { isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosProduct, RiesgosProductResolved, isRiesgosValueProduct } from 'src/app/riesgos/riesgos.state';
 import { ConfigService } from '../configService/configService';
 
 @Injectable({
@@ -23,9 +23,11 @@ export class DataService {
   }
 
   resolveReference(product: RiesgosProduct): Observable<RiesgosProductResolved> {
-    if (isRiesgosProductResolved(product)) {
+    if (isRiesgosValueProduct(product)) {
       return of(product);
-    } else if (isRiesgosProductRef(product)) {
+    } else if (isRiesgosResolvedRefProduct(product)) {
+      return of(product);
+    } else if (isRiesgosUnresolvedRefProduct(product)) {
       const link = product.reference;
       const value$ = this.fetchFromLink(link);
       return value$.pipe(

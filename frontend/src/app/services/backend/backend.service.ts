@@ -7,12 +7,8 @@ import { pollUntil } from "./polling";
 
 export interface API_DatumDescription {
     id: string
+    options?: string[]
 };
-
-export interface API_UserSelection extends API_DatumDescription {
-    options: string[]
-}
-
 
 export interface API_Datum {
     id: string,
@@ -89,10 +85,13 @@ export class BackendService {
 
         return post$.pipe(
             switchMap(responseData => {
-                const task$ = this.http.get<{ ticket?: string, results?: API_ScenarioState }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
-                return pollUntil(task$, r => r.results);
+                const task$ = this.http.get<{ ticket?: string, results?: API_ScenarioState, error?: any }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
+                return pollUntil(task$, r => r.results || r.error);
             }),
-            map(response => response.results)
+            map(response => {
+                if (response.error) throw response.error;
+                return response.results;
+            })
         )
     }
 

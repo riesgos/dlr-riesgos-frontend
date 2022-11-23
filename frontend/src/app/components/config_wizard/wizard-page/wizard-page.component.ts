@@ -7,7 +7,6 @@ import { getInputsForStep } from 'src/app/riesgos/riesgos.selectors';
 import { map, switchMap } from 'rxjs/operators';
 import { forkJoin, Observable } from 'rxjs';
 import { WizardableStep } from '../wizardable_steps';
-import { RiesgosProduct } from 'src/app/riesgos/riesgos.state';
 import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
 
 

@@ -1,5 +1,8 @@
 # Switch
 connect backend to frontend
+    how to set default values?
+        should probably be set on the augmenters?
+        or better in the backend? <- but we dont want to send values ...
     quakeledger
         backend:
             require data
@@ -16,6 +19,9 @@ resolver: forget old data
 
 
 # Cleanup
+- google fonts austauschen in open-map-styles
+    - https://github.com/openlayers/ol-mapbox-style/blob/HEAD/src/text.js#L185-L186
+    - https://gitlab.dlr.de/ukis-frontend/project-fire/-/commit/ea091e8d87550613c1f8d7faecd200007480132b
 - Include english legend in deus
 - Create new legend component (with gradients)
 - Re-create graph-modal

@@ -54,8 +54,6 @@
     "md5": "^2.3.0",
     "ng5-slider": "^1.2.4",
     "ogc-schemas": "^2.6.1",
-    "ol": "~6.8.1",
-    "ol-ext": "^3.2.21",
     "plotly.js-dist": "^2.9.0",
     "proj4": "^2.6.2",
     "rxjs": "^6.6.0",
@@ -65,7 +63,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~15.0.0",
+    "@angular-devkit/build-angular": "~12.2.16",
     "@angular/cli": "~12.2.16",
     "@angular/compiler-cli": "~12.2.16",
     "@ngrx/store-devtools": "^12.5.1",

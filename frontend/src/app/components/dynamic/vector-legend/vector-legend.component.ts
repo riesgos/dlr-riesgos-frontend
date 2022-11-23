@@ -1,10 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import Legend from 'ol-ext/legend/Legend';
 import olFeature from 'ol/Feature';
 import { Feature } from '@turf/helpers';
 import Style from 'ol/style/Style';
 import 'ol/ol.css';
-import 'ol-ext/control/Legend.css';
 import { SimplifiedTranslationService } from '../../../services/simplifiedTranslation/simplified-translation.service';
 
 
@@ -38,35 +36,35 @@ export class VectorLegendComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const legend = new Legend({
-      title: this.legendTitle,
-      style: (feature: olFeature<any>) => {
-        const style = this.styleFunction(feature, this.resolution);
-        // @ts-ignore
-        if (style.text_) {
-          // @ts-ignore
-          delete (style.text_);
-        }
-        return style;
-      },
-      collapsible: false,
-      margin: 0,
-      size: [7, 7],
-    });
+    // const legend = new Legend({
+    //   title: this.legendTitle,
+    //   style: (feature: olFeature<any>) => {
+    //     const style = this.styleFunction(feature, this.resolution);
+    //     // @ts-ignore
+    //     if (style.text_) {
+    //       // @ts-ignore
+    //       delete (style.text_);
+    //     }
+    //     return style;
+    //   },
+    //   collapsible: false,
+    //   margin: 0,
+    //   size: [7, 7],
+    // });
 
-    for (const element of this.elementList) {
-      const canvas: HTMLCanvasElement = legend.getLegendImage({
-        properties: element.feature.properties,
-        typeGeom: element.feature.geometry.type
-      }, null, null);
+    // for (const element of this.elementList) {
+    //   const canvas: HTMLCanvasElement = legend.getLegendImage({
+    //     properties: element.feature.properties,
+    //     typeGeom: element.feature.geometry.type
+    //   }, null, null);
 
-      // const html = this.translator.syncTranslate(element.text);
+    //   // const html = this.translator.syncTranslate(element.text);
 
-      this.entries.push({
-        canvas: canvas,
-        text: element.text
-      });
-    }
+    //   this.entries.push({
+    //     canvas: canvas,
+    //     text: element.text
+    //   });
+    // }
 
   }
 

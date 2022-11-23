@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import 'ol/ol.css';
-import 'ol-ext/control/Legend.css';
 
 
 

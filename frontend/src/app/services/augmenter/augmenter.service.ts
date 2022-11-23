@@ -7,7 +7,7 @@ import { WizardableStep } from 'src/app/components/config_wizard/wizardable_step
 
 import { QuakeLedgerPeru, EtypePeru, AvailableEqsPeru } from 'src/app/riesgos/scenarios/peru/1_catalog';
 import { DataService } from '../data/data.service';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { defaultIfEmpty, map } from 'rxjs/operators';
 
 
@@ -20,7 +20,7 @@ export interface WizardableStepAugmenter {
 
 export interface WizardableProductAugmenter {
   appliesTo(product: RiesgosProduct): boolean;
-  makeProductWizardable(product: RiesgosProductResolved): WizardableProduct;
+  makeProductWizardable(product: RiesgosProduct): WizardableProduct;
 }
 
 export interface MappableProductAugmenter {
@@ -88,8 +88,8 @@ export class AugmenterService {
   }
 
   public loadWizardPropertiesForProduct(product: RiesgosProduct): Observable<WizardableProduct> | undefined {
-    const resolved$ = this.dataSvc.resolveReference(product);
-    if (!resolved$) return undefined;
+    let resolved$: Observable<RiesgosProduct> = this.dataSvc.resolveReference(product);
+    if (!resolved$) resolved$ = of(product);
 
     const augmenter = this.getWizardProductAugmenters().find(a => a.appliesTo(product));
     if (!augmenter) { 

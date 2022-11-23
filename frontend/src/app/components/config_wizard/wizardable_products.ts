@@ -1,5 +1,5 @@
 import { FeatureCollection } from '@turf/helpers';
-import { RiesgosProductResolved } from 'src/app/riesgos/riesgos.state';
+import { RiesgosProduct, RiesgosProductResolved } from 'src/app/riesgos/riesgos.state';
 
 
 interface ProductDescription {}
@@ -54,15 +54,15 @@ export type UserConfigurableProductDescription = StringUserConfigurableProductDe
 
 
 
-export interface StringUserConfigurableProduct extends RiesgosProductResolved {
+export interface StringUserConfigurableProduct extends RiesgosProduct {
     description: StringUserConfigurableProductDescription;
 }
 
-export interface StringSelectUserConfigurableProduct extends RiesgosProductResolved {
+export interface StringSelectUserConfigurableProduct extends RiesgosProduct {
     description: StringSelectUserConfigurableProductDescription;
 }
 
-export interface BboxUserConfigurableProduct extends RiesgosProductResolved {
+export interface BboxUserConfigurableProduct extends RiesgosProduct {
     description: BboxUserConfigurableProductDescription;
 }
 
@@ -70,7 +70,7 @@ export const isBboxUserConfigurableProduct = (prod: any): prod is BboxUserConfig
     return isBboxUserConfigurableProductDescription(prod.description);
 };
 
-export interface FeatureSelectUconfProduct extends RiesgosProductResolved {
+export interface FeatureSelectUconfProduct extends RiesgosProduct {
     description: FeatureSelectUconfPD;
 }
 

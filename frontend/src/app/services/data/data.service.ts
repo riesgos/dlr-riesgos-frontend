@@ -23,9 +23,7 @@ export class DataService {
   }
 
   resolveReference(product: RiesgosProduct): Observable<RiesgosProductResolved> {
-    if (isRiesgosValueProduct(product)) {
-      return of(product);
-    } else if (isRiesgosResolvedRefProduct(product)) {
+    if (isRiesgosValueProduct(product) || isRiesgosResolvedRefProduct(product)) {
       return of(product);
     } else if (isRiesgosUnresolvedRefProduct(product)) {
       const link = product.reference;

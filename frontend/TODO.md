@@ -1,19 +1,7 @@
 # Switch
 connect backend to frontend
-    how to set default values?
-        should probably be set on the augmenters?
-        or better in the backend? <- but we dont want to send values ...
-    quakeledger
-        backend:
-            require data
-            parse data
-        frontend
-            require data
-            augment data
-            send bbox
-    eqselect
-    shakyground
-    deus
+    not sending out any data
+
 calculate step-state for every action
 resolver: forget old data
 

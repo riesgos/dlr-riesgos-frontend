@@ -28,7 +28,7 @@ import { interactionCompleted } from 'src/app/interactions/interactions.actions'
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
 import { LayerMarshaller } from './mappable/layer_marshaller';
 import { ProductLayer } from './mappable/map.types';
-import { initialRiesgosState, RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
+import { initialRiesgosState, RiesgosProduct, RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { State } from 'src/app/ngrx_register';
 import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
@@ -183,7 +183,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     urlat: maxLat.toFixed(1) as unknown as number,
                     urlon: maxLon.toFixed(1) as unknown as number
                 };
-                const product: RiesgosProductResolved = {
+                const product: RiesgosProduct = {
                     ...this.interactionState$.getValue().product,
                     value: box
                 };
@@ -210,7 +210,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (this.interactionState$.getValue().mode === 'featureselection') {
                     const feature = features[0];
                     const newFeatureCollection = tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))]);
-                    const product: RiesgosProductResolved = {
+                    const product: RiesgosProduct = {
                         ...this.interactionState$.getValue().product,
                         value: [newFeatureCollection]
                     };

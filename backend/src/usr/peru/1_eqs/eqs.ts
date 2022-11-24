@@ -25,8 +25,8 @@ async function loadEqs(inputs: Datum[]) {
 
 export const step: Step = {
     id: 'Eqs',
-    title: 'Eqs',
-    description: 'Fetch eq data from database',
+    title: 'quakeledger',
+    description: 'QuakeLedgerDescription',
     inputs: [{
         id: 'eqCatalogType',
         options: ['observed', 'expert']

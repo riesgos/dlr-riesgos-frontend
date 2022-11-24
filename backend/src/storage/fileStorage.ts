@@ -22,6 +22,7 @@ export class FileStorage<Properties extends {}> {
         const fullFilePath = pathJoin([this.filePath, key]);
         try {
             const contents = await readJsonFile(fullFilePath);
+            console.log(`Store: fetched data from cache: ${key}`);
             return contents;
         } catch (error) {
             return undefined;

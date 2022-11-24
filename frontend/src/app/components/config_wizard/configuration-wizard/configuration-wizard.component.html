@@ -5,7 +5,7 @@
 
   <div class="clr-row">
       <div class="clr-col-8" style="overflow: hidden;">
-              {{step.name | translate}}
+              {{step.step.title | translate }}
       </div>
       <div class="clr-col-4">
           <clr-signpost (click)="$event.stopPropagation();">

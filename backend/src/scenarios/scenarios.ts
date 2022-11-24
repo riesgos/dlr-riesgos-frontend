@@ -91,7 +91,7 @@ export class Scenario {
     public async execute(stepId: string, state: ScenarioState): Promise<ScenarioState> {
         let step = this.steps.find(s => s.id === stepId);
         if (!step) throw new Error(`No such step: "${stepId}" in scenario "${this.id}"`);
-        console.log(`Server: now executing ${stepId}`);
+        console.log(`Scenarios: Now executing ${stepId}`);
 
         const alreadyCalculated = await this.loadFromCache(step, state);
         if (alreadyCalculated) {
@@ -103,6 +103,7 @@ export class Scenario {
         const results = await step.function(inputValues);
         const stateWithOutputs = this.addData(results, state);
 
+        console.log(`Scenarios: Completed computation of ${step.id}`);
         return stateWithOutputs;
     }
 

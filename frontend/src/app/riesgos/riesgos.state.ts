@@ -99,7 +99,7 @@ export interface RiesgosState {
 
 
 export const initialRiesgosState: RiesgosState = {
-    currentScenario: undefined,
+    currentScenario: 'Peru',
     scenarioData: {
         Chile: {
             scenario: 'Chile',

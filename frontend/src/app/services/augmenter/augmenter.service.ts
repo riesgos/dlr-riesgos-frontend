@@ -9,6 +9,7 @@ import { QuakeLedgerPeru, EtypePeru, AvailableEqsPeru } from 'src/app/riesgos/sc
 import { DataService } from '../data/data.service';
 import { forkJoin, Observable, of } from 'rxjs';
 import { defaultIfEmpty, map } from 'rxjs/operators';
+import { EqSelectionPeru, SelectedEqPeru, UserinputSelectedEqPeru } from 'src/app/riesgos/scenarios/peru/2_eqselection';
 
 
 
@@ -63,14 +64,18 @@ export type Augmenter = WizardableStepAugmenter | WizardableProductAugmenter | M
 })
 export class AugmenterService {
 
-  private augmenters: Augmenter[] = [
-    new QuakeLedgerPeru(), new EtypePeru(), new AvailableEqsPeru()
-  ];
+  private augmenters: Augmenter[] = [];
 
   constructor(
     private store: Store,
     private dataSvc: DataService
-  ) {}
+  ) {
+    this.augmenters = [
+      // inputs                                               // steps                // outputs
+      new EtypePeru(),                                        new QuakeLedgerPeru(),  new AvailableEqsPeru(),
+      new UserinputSelectedEqPeru(this.store, this.dataSvc),  new EqSelectionPeru(),  new SelectedEqPeru(),
+    ];
+  }
 
   public loadWizardPropertiesForProducts(products: RiesgosProduct[]): Observable<WizardableProduct[]> {
     const tasks$ = products.map(p => this.loadWizardPropertiesForProduct(p)).filter(p => !!p);

@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -29,12 +29,12 @@ export class RiesgosEffects {
 
         return this.actions$.pipe(
             ofType(RiesgosActions.executeStart),
-
+            
             // remember initial state for later
             tap(action => { memScenario = action.scenario; memStep = action.step }),
 
             // fetch current data, convert, execute, and convert back
-            switchMap(_ => this.store$.select(getProductsForScenario(memScenario))),
+            mergeMap(_ => this.store$.select(getProductsForScenario(memScenario)).pipe(take(1))),
             map(products => convertFrontendDataToApiState(products)),
             switchMap(apiState => this.backendSvc.execute(memScenario, memStep, apiState)),
             map(newApiState => convertApiDataToRiesgosData(newApiState.data)),

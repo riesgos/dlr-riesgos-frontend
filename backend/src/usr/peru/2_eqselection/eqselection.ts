@@ -20,8 +20,8 @@ async function selectEq(inputs: Datum[]) {
 
 export const step: Step = {
     id: 'selectEq',
-    title: 'Eq selection',
-    description: 'Select one of the possible earthquakes',
+    title: 'Select earthquake',
+    description: 'select_eq_description',
     inputs: [{
         id: 'availableEqs'
     }, {

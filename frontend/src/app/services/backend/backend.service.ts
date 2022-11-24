@@ -72,7 +72,6 @@ export class BackendService {
     }
 
     execute(scenarioId: string, stepId: string, state: API_ScenarioState): Observable<API_ScenarioState> {
-
         const url = this.configService.getConfig().middlewareUrl;
         const post$ = this.http.post<{ ticket: string }>(
             `${url}/scenarios/${scenarioId}/steps/${stepId}/execute`,
@@ -85,8 +84,12 @@ export class BackendService {
 
         return post$.pipe(
             switchMap(responseData => {
-                const task$ = this.http.get<{ ticket?: string, results?: API_ScenarioState, error?: any }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
-                return pollUntil(task$, r => r.results || r.error);
+                const task$ = this.http.get<{
+                    ticket?: string,
+                    results?: API_ScenarioState,
+                    error?: any
+                }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
+                return pollUntil(task$, r => !!r.results || !!r.error);
             }),
             map(response => {
                 if (response.error) throw response.error;

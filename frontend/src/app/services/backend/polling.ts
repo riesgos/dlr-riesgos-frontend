@@ -31,7 +31,6 @@ export function pollUntil<T>(
   );
 
   const polledRequest$: Observable<T> = requestTakesAtLeast$.pipe(
-    // delay(1000),
     mergeMap((response: any) => {
       if (predicate(response)) {
         return of(response);

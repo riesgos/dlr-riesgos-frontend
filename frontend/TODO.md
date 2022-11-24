@@ -1,7 +1,8 @@
 # Switch
 connect backend to frontend
-    not sending out any data
-
+    form: upon selecting a default parameter, notify backend
+    eq-selection
+    eq-catalog: add missing parameters
 calculate step-state for every action
 resolver: forget old data
 
@@ -30,11 +31,6 @@ resolver: forget old data
 
 # Ongoing problems
 - frontend must never have an own version of ol installed ... otherwise, `instanceof`-checks in @eoc-dlr/maps-ol won't work.
-- **ol.css**: 
-    - Ukis 10.1.0 has made changes to its import of ol.css
-    - It attempts to load ol.css per http - but since 10.1.0 this request errors out
-    - You can load ol.css in angular.json/styles. 
-        - This does apply the ol-styles, but the http error will persist until 10.2.0
 - **CommonJS / AMD optimization bailouts**:
     - The following libs need updates:
         - helpers/d3charts -> plotly.js

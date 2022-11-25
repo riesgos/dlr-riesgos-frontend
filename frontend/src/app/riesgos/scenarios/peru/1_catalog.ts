@@ -19,8 +19,8 @@ export class EtypePeru implements WizardableProductAugmenter {
         return product.id === 'eqCatalogType';
     }
 
-    makeProductWizardable(product: RiesgosProductResolved): StringSelectUserConfigurableProduct {
-        return {
+    makeProductWizardable(product: RiesgosProductResolved): StringSelectUserConfigurableProduct[] {
+        return [{
             ... product,
             description: {
                 wizardProperties: {
@@ -30,7 +30,7 @@ export class EtypePeru implements WizardableProductAugmenter {
                 options: ['observed', 'expert'],
                 defaultValue: 'observed'
             },
-        }
+        }];
     }
 };
 
@@ -42,8 +42,8 @@ export class AvailableEqsPeru implements MappableProductAugmenter {
         return product.id === 'availableEqs';
     }
 
-    makeProductMappable(product: RiesgosProductResolved): VectorLayerProduct {
-        return {
+    makeProductMappable(product: RiesgosProductResolved): VectorLayerProduct[] {
+        return [{
             ... product,
             description: {
                 id: 'selectedRows',
@@ -154,7 +154,7 @@ export class AvailableEqsPeru implements MappableProductAugmenter {
                     }]
                 }
             }
-        }
+        }];
     }
 }
 

@@ -33,8 +33,9 @@ export class FormFeatureSelectFieldComponent implements OnInit {
   ngOnInit() {
     this.options = this.parameter.description.featureSelectionOptions;
     const startValue = this.control.value || this.parameter.description.defaultValue;
+    
     this.stringOptions = Object.keys(this.options);
-    const stringStartValue = this.stringOptions.find(s => this.options[s].features[0].id === startValue[0].features[0].id);
+    const stringStartValue = this.stringOptions.find(s => this.options[s]?.features[0]?.id === startValue[0]?.features[0]?.id);
 
     this.stringControl = new UntypedFormControl(stringStartValue, [Validators.required]);
 

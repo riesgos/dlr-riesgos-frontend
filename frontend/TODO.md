@@ -1,11 +1,11 @@
 # Switch
 connect backend to frontend
-    eq-selection: new feature not logged in
+    eq-selection: always selects same feature
     form: upon selecting a default parameter, notify backend
     eq-catalog: add missing parameters
 calculate step-state for every action
 resolver: forget old data
-
+Backend: cache-life-time. WMS'es expire after a while
 
 # Cleanup
 - google fonts austauschen in open-map-styles
@@ -26,8 +26,11 @@ resolver: forget old data
 - Remove layerMarshaller, have all map-products simply implement toUkisLayers.
 - Remove allowedCommonJsDependencies
 
-# New features
+# Improvements for future
 - Docker-compose file for all services and frontend
+- Eq-Selection: do we really need to have that selection step in the backend?
+    - At least it should be simplified. It's silly that the frontend has the selected eq in it's memory already anyway.
+- Backend: move away from WMS'es. Serve data yourself.
 
 # Ongoing problems
 - frontend must never have an own version of ol installed ... otherwise, `instanceof`-checks in @eoc-dlr/maps-ol won't work.

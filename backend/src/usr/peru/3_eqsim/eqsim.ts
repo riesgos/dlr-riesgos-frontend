@@ -23,9 +23,9 @@ async function simulateEq(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'EqSim',
+    id: 'EqSimulation',
     title: 'Earthquake Simulation',
-    description: 'Simulates ground-motion',
+    description: 'EqSimulationShortText',
     inputs: [{
         id: 'selectedEq'
     }, {

@@ -66,7 +66,7 @@
     "earthquake_damage_classification": "Damage through the impact of earthquake",
     "QuakeLedgerDescription": "Enter here the parameters to narrow down your selection of earthquakes from the catalogue.",
     "EqCatalogue": "Catalogue",
-    "EqSimulation": "Ground motion",
+    "Earthquake Simulation": "Ground motion",
     "EqSimulationShortText": "Simulates the expected accelerations for the selected earthquake. These values are the product of the implementation of some of the attenuation equations or GMPE(s) (Ground Motion Prediction Equations). These are empirical mathematical relationships developed by experts for specific tectonic regions using real data sets. Four alternative GMPEs are provided. Once the user selects the GMPE, he/she must also select a shear wave velocity model. For the latter, 2 alternatives are provided, either by topography (USGS regional model) or by seismic microzonation (models local to the study area). These calculations are performed using the Shakyground program that uses several Openquake Engine scripts. Acceleration fields are obtained for 3 spectral periods (PGA, 0.3 s and 1.0 s).",
     "ErrorStateDescription": "An error has occurred. There is more information in the red info-box.",
     "Expected_load": "Expected load",

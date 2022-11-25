@@ -24,32 +24,51 @@ export class UserinputSelectedEqPeru implements WizardableProductAugmenter {
         this.store.select(getProduct('availableEqs'))
             .pipe(
                 switchMap(p => {
-                    if (p && p.value) return this.resolver.resolveReference(p.value);
+                    if (p) {
+                        if (p.reference) return this.resolver.resolveReference(p);
+                        return of(p);
+                    }
                     return of(undefined);
                 }),
             )
-            .subscribe(aeqs => this.availableEqs$.next(aeqs));
+            .subscribe(aeqs => {
+                this.availableEqs$.next(aeqs);
+            });
     }
 
     appliesTo(product: RiesgosProduct): boolean {
         return product.id === 'userChoice';
     }
 
-    makeProductWizardable(product: RiesgosProduct): FeatureSelectUconfProduct {
-        console.log(`making wizardable`)
-        const features = this.availableEqs$.value.value.features;
-        return {
+    makeProductWizardable(product: RiesgosProduct): FeatureSelectUconfProduct[] {
+        
+        const currentValue = this.availableEqs$.value;
+        
+        let options = {};
+        let dflt = undefined;
+        if (currentValue) {
+            for (const feature of currentValue.value.features) {
+                options[feature.id] = {
+                    type: 'FeatureCollection',
+                    features: [feature]
+                };
+            }
+            dflt = options[Object.keys(options)[0]];
+        }
+
+
+        return [{
             ... product,
             description: {
-                featureSelectionOptions: features,
-                defaultValue: features[0],
+                featureSelectionOptions: options,
+                defaultValue: [dflt],
                 wizardProperties: {
                     fieldtype: 'select',
                     name: 'SelectedEQ',
                     description: 'SelectEQ'
                 }
-            },
-        }
+            }
+        }];
     }
 
 }
@@ -60,11 +79,11 @@ export class SelectedEqPeru implements MappableProductAugmenter {
         return product.id === 'selectedEq'
     }
 
-    makeProductMappable(product: RiesgosProductResolved): VectorLayerProduct {
-        return {
+    makeProductMappable(product: RiesgosProductResolved): VectorLayerProduct[] {
+        return [{
             ...product,
             description: {
-                id: 'quakeMLFile',
+                id: 'selectedEq',
                 name: 'Selected_earthquake',
                 icon: 'earthquake',
                 type: 'complex',
@@ -132,7 +151,7 @@ export class SelectedEqPeru implements MappableProductAugmenter {
                     }
                 },
             },
-        };
+        }];
     }
 
 }
@@ -156,15 +175,3 @@ export class EqSelectionPeru implements WizardableStepAugmenter {
     }
 
 }
-
-
-// export const EqSelectionPeru: WizardableStep & ExecutableProcess & ProductTransformingProcess = {
-//     uid: 'EqSelectionPeru',
-//     name: 'Select earthquake',
-//     description: 'select_eq_description',
-//     state: { type: ProcessStateTypes.unavailable },
-//     requiredProducts: [availableEqsPeru, userinputSelectedEqPeru].map(p => p.uid),
-//     providedProducts: [selectedEqPeru.uid],
-
-// };
-

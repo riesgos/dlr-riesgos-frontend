@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MappableProduct } from 'src/app/components/map/mappable/mappable_products';
-import { RiesgosProduct, RiesgosProductResolved, RiesgosStep, ScenarioName } from 'src/app/riesgos/riesgos.state';
+import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from 'src/app/riesgos/riesgos.state';
 import { Store } from '@ngrx/store';
 import { WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
@@ -10,6 +10,7 @@ import { DataService } from '../data/data.service';
 import { forkJoin, Observable, of } from 'rxjs';
 import { defaultIfEmpty, map } from 'rxjs/operators';
 import { EqSelectionPeru, SelectedEqPeru, UserinputSelectedEqPeru } from 'src/app/riesgos/scenarios/peru/2_eqselection';
+import { GmpePeru, ShakemapWmsPeru, ShakygroundPeru, VsgridPeru } from 'src/app/riesgos/scenarios/peru/3_eqsim';
 
 
 
@@ -21,12 +22,12 @@ export interface WizardableStepAugmenter {
 
 export interface WizardableProductAugmenter {
   appliesTo(product: RiesgosProduct): boolean;
-  makeProductWizardable(product: RiesgosProduct): WizardableProduct;
+  makeProductWizardable(product: RiesgosProduct): WizardableProduct[];
 }
 
 export interface MappableProductAugmenter {
   appliesTo(product: RiesgosProduct): boolean;
-  makeProductMappable(product: RiesgosProductResolved): MappableProduct;
+  makeProductMappable(product: RiesgosProductResolved): MappableProduct[];
 }
 
 function isWizardableStepAugmenter(a: Augmenter): a is WizardableStepAugmenter {
@@ -74,17 +75,24 @@ export class AugmenterService {
       // inputs                                               // steps                // outputs
       new EtypePeru(),                                        new QuakeLedgerPeru(),  new AvailableEqsPeru(),
       new UserinputSelectedEqPeru(this.store, this.dataSvc),  new EqSelectionPeru(),  new SelectedEqPeru(),
+      new VsgridPeru(), new GmpePeru(),                       new ShakygroundPeru(),  new ShakemapWmsPeru(),
     ];
   }
 
   public loadWizardPropertiesForProducts(products: RiesgosProduct[]): Observable<WizardableProduct[]> {
     const tasks$ = products.map(p => this.loadWizardPropertiesForProduct(p)).filter(p => !!p);
-    return forkJoin(tasks$).pipe(defaultIfEmpty([]));
+    return forkJoin(tasks$).pipe(
+      map(d => d.flat()),
+      defaultIfEmpty([])
+    );
   }
 
   public loadMapPropertiesForProducts(products: RiesgosProduct[]): Observable<MappableProduct[]> {
     const tasks$ = products.map(p => this.loadMapPropertiesForProduct(p)).filter(p => !!p);
-    return forkJoin(tasks$).pipe(defaultIfEmpty([]));
+    return forkJoin(tasks$).pipe(
+      map(d => d.flat()),
+      defaultIfEmpty([]),
+    );
   }
 
   public loadWizardPropertiesForSteps(steps: RiesgosStep[]): WizardableStep[] {
@@ -92,7 +100,7 @@ export class AugmenterService {
     return wizardSteps;
   }
 
-  public loadWizardPropertiesForProduct(product: RiesgosProduct): Observable<WizardableProduct> | undefined {
+  public loadWizardPropertiesForProduct(product: RiesgosProduct): Observable<WizardableProduct[]> | undefined {
     let resolved$: Observable<RiesgosProduct> = this.dataSvc.resolveReference(product);
     if (!resolved$) resolved$ = of(product);
 
@@ -116,7 +124,7 @@ export class AugmenterService {
     return augmenter.makeStepWizardable(step);
   }
 
-  public loadMapPropertiesForProduct(product: RiesgosProduct): Observable<MappableProduct> | undefined {
+  public loadMapPropertiesForProduct(product: RiesgosProduct): Observable<MappableProduct[]> | undefined {
     const resolved$ = this.dataSvc.resolveReference(product);
     if (!resolved$) return undefined;
 

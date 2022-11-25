@@ -16,6 +16,7 @@
   "author": "",
   "license": "Apache2",
   "dependencies": {
+    "@xmldom/xmldom": "^0.8.6",
     "axios": "^0.26.1",
     "cors": "^2.8.5",
     "express": "^4.17.3",

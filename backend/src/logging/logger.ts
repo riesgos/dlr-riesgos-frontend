@@ -5,7 +5,7 @@ import { appendFileSync } from "fs"
 // maybe even delete very old logs.
 
 export class Logger {
-    constructor(private loggingDir: string) {
+    constructor(private loggingDir: string, private verbosity: 'verbose' | 'silent' = 'verbose') {
         this.loggingDir = loggingDir.replace(/\/+$/, '');
     }
 
@@ -19,7 +19,7 @@ export class Logger {
         const consoleLog = console.log;
         console.log = (message, ...optionalParas) => {
             this.log(message, ...optionalParas);
-            consoleLog(message, ...optionalParas);
+            if (this.verbosity === 'verbose') consoleLog(message, ...optionalParas);
         }
         const consoleError = console.error;
         console.error = (message, ...optionalParas) => {

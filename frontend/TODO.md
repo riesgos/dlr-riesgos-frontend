@@ -1,7 +1,7 @@
 # Switch
 connect backend to frontend
+    eq-selection: new feature not logged in
     form: upon selecting a default parameter, notify backend
-    eq-selection
     eq-catalog: add missing parameters
 calculate step-state for every action
 resolver: forget old data

@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 import fs from 'fs';
+import xmldom from '@xmldom/xmldom';
 
 
 
@@ -6012,4 +6013,4 @@ const _jsonix_factory = function (_jsonix_xmldom, _jsonix_xmlhttprequest, _jsoni
 	return Jsonix;
 };
 
-export const Jsonix = _jsonix_factory(undefined, undefined, fs);
+export const Jsonix = _jsonix_factory(xmldom, undefined, fs);

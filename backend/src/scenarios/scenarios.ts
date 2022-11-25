@@ -29,12 +29,12 @@ export interface DatumLinage {
     inputReferences: DatumReference[]
 }
 
-export function isDatum(o: any): o is Datum {
-    return 'id' in o && 'value' in o;
+export function isResolvedDatum(o: any): o is Datum {
+    return 'id' in o && 'value' in o && o.value !== undefined;
 }
 
 export function isDatumReference(o: any): o is DatumReference {
-    return 'id' in o && 'reference' in o;
+    return 'id' in o && 'reference' in o && o.reference !== undefined;
 }
 
 export type StepFunction = (args: Datum[]) => Promise<Datum[]>;
@@ -118,10 +118,13 @@ export class Scenario {
     private async resolveDatum(id: string, state: ScenarioState): Promise<Datum> {
         const entry = state.data.find(d => d.id === id);
         if (!entry) return toPromise({ id, value: undefined });
-        if (isDatum(entry)) return entry;
-        const value = await this.store.getDataByKey(entry.reference);
-        const datum: Datum = { id, value };
-        return datum;
+        if (isResolvedDatum(entry)) return entry;
+        if (isDatumReference(entry)) {
+            const value = await this.store.getDataByKey(entry.reference);
+            const datum: Datum = { id, value };
+            return datum;
+        }
+        return toPromise({ id, value: undefined });
     }
 
     private async addData(newData: Datum[], state: ScenarioState): Promise<ScenarioState> {
@@ -146,7 +149,7 @@ export class Scenario {
         };
         for (const entry of state.data) {
             if (entry.id === newDatumReference.id) {
-                if (!isDatumReference(entry)) throw new Error(`Trying to replace a datum with a datum-reference: ${entry.id}`);
+                if (isResolvedDatum(entry)) throw new Error(`Updating state: Trying to replace a datum with a datum-reference: ${entry.id}`);
                 entry.reference = newDatumReference.reference;
                 return state;
             }

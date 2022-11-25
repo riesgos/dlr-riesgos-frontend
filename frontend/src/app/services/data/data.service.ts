@@ -44,7 +44,18 @@ export class DataService {
   private fetchFromLink(link: string): Observable<any> {
     if (link in this.cache) return of(this.cache[link]);
     const url = this.config.getConfig().middlewareUrl;
-    return this.http.get(`${url}/files/${link}`).pipe(
+    return this.http.get(`${url}/files/${link}`, {
+      responseType: 'text'
+    }).pipe(
+      map(data => {
+        let parsedData;
+        try {
+          parsedData = JSON.parse(data);
+        } catch {
+          parsedData = data;
+        }
+        return parsedData;
+      }),
       tap(data => this.cache[link] = data)
     );
   }

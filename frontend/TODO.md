@@ -1,8 +1,10 @@
 # Switch
-connect backend to frontend
-    eq-selection: always selects same feature
-    form: upon selecting a default parameter, notify backend
-    eq-catalog: add missing parameters
+string-select field: update state upon selection.
+
+augmenter: only those products need to be resolved where a augmenter applies.
+eq-selection: always selects same feature
+form: upon selecting a default parameter, notify backend
+eq-catalog: add missing parameters
 calculate step-state for every action
 resolver: forget old data
 Backend: cache-life-time. WMS'es expire after a while

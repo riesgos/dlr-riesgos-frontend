@@ -54,16 +54,21 @@ export interface RiesgosProductResolved extends RiesgosProduct {
     value: any
 }
 
-export function isRiesgosValueProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
+export function isRiesgosValueOnlyProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
     return 'value' in prod && !('reference' in prod);
 }
 
+export function isRiesgosValueProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
+    return 'value' in prod;
+}
+
 export function isRiesgosResolvedRefProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
-    return 'value' in prod && 'reference' in prod;
+    return 'value' in prod && 'reference' in prod && 
+        prod.value !== undefined && prod.reference !== undefined;
 }
 
 export function isRiesgosUnresolvedRefProduct(prod: RiesgosProduct): prod is RiesgosProductRef {
-    return ('reference' in prod) && !('value' in prod);
+    return ('reference' in prod) && !('value' in prod) && prod.reference !== undefined;
 }
 
 export interface RiesgosScenarioState {

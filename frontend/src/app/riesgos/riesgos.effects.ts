@@ -59,17 +59,24 @@ export class RiesgosEffects {
 function convertFrontendDataToApiState(products: RiesgosProduct[]): API_ScenarioState {
     const data: (API_Datum | API_DatumReference)[] = [];
     for (const product of products) {
-        if (isRiesgosUnresolvedRefProduct(product) || isRiesgosResolvedRefProduct(product)) {
-            data.push({
-                id: product.id,
-                reference: product.reference
-            });
-        } else if (isRiesgosValueProduct(product)) {
-            data.push({
-                id: product.id,
-                value: product.value
-            })
+
+        const datum: any = {
+            id: product.id
+        };
+
+        if (product.options) {
+            datum.options = product.options;
         }
+
+        if (isRiesgosUnresolvedRefProduct(product) || isRiesgosResolvedRefProduct(product)) {
+            datum.reference = product.reference;
+        } 
+        
+        else if (product.value) {
+            datum.value = product.value;
+        }
+
+        data.push(datum);
     }
     const apiState: API_ScenarioState = {
         data
@@ -78,19 +85,28 @@ function convertFrontendDataToApiState(products: RiesgosProduct[]): API_Scenario
 }
 
 function convertApiDataToRiesgosData(apiData: (API_Datum | API_DatumReference)[]): RiesgosProduct[] {
+    
     const riesgosData: RiesgosProduct[] = [];
+
     for (const apiProduct of apiData) {
-        if (isApiDatum(apiProduct)) {
-            riesgosData.push({
-                id: apiProduct.id,
-                value: apiProduct.value
-            });
-        } else {
-            riesgosData.push({
-                id: apiProduct.id,
-                reference: apiProduct.reference
-            });
+        
+        const prod: RiesgosProduct = {
+            id: apiProduct.id
+        };
+
+        if ((apiProduct as any).options) {
+            prod.options = (apiProduct as any).options;
         }
+
+        if (isApiDatum(apiProduct)) {
+            prod.value = apiProduct.value;
+        } 
+        
+        else {
+            prod.reference = apiProduct.reference;
+        }
+
+        riesgosData.push(prod);
     }
     return riesgosData;
 }

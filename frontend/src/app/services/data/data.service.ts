@@ -5,12 +5,22 @@ import { map, tap } from 'rxjs/operators';
 import { isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosProduct, RiesgosProductResolved, isRiesgosValueProduct } from 'src/app/riesgos/riesgos.state';
 import { ConfigService } from '../configService/configService';
 
+
+
+interface CacheEntry {
+  key: string,
+  data: any,
+  added: number
+};
+
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  private cache: {[key: string]: any} = {};
+  private cache: CacheEntry[] = [];
 
   constructor(
     private http: HttpClient,
@@ -42,7 +52,9 @@ export class DataService {
   }
 
   private fetchFromLink(link: string): Observable<any> {
-    if (link in this.cache) return of(this.cache[link]);
+    const cachedData = this.getFromCache(link);
+    if (cachedData) return cachedData;
+
     const url = this.config.getConfig().middlewareUrl;
     return this.http.get(`${url}/files/${link}`, {
       responseType: 'text'
@@ -56,7 +68,23 @@ export class DataService {
         }
         return parsedData;
       }),
-      tap(data => this.cache[link] = data)
+      tap(data => this.setOnCache(link, data))
     );
+  }
+
+
+  private getFromCache(key) {
+    const entry = this.cache.find(e => e.key === key);
+    if (entry) return entry.data;
+  }
+
+  private setOnCache(key, data) {
+    this.cache.push({
+      key, data, added: new Date().getTime()
+    });
+    // Forget older cache-entries to save on memory
+    if (this.cache.length > 30) {
+      this.cache.shift();
+    }
   }
 }

@@ -1,9 +1,5 @@
 # Switch
 
-
-calculate step-state for every action
-reconfig and restart buttons
-resolver: forget old data
 form: upon selecting a default parameter, notify backend
     string-select field: update state upon appearing.
 Backend: cache-life-time. WMS'es expire after a while
@@ -11,7 +7,7 @@ augmenter: only those products need to be resolved where a augmenter applies.
 
 # Cleanup
 - eq-catalog: add missing parameters
-- save- and reload-buttons
+- restart, save- and reload-buttons
 - google fonts austauschen in open-map-styles
     - https://github.com/openlayers/ol-mapbox-style/blob/HEAD/src/text.js#L185-L186
     - https://gitlab.dlr.de/ukis-frontend/project-fire/-/commit/ea091e8d87550613c1f8d7faecd200007480132b

@@ -1,8 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
-import { initialRiesgosState, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosProduct, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateError, StepStateRunning, StepStateUnavailable, isRiesgosValueProduct } from './riesgos.state';
+import { initialRiesgosState, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosProduct, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateError, StepStateRunning, StepStateUnavailable, isRiesgosValueProduct, StepStateTypes } from './riesgos.state';
 import * as RiesgosActions from './riesgos.actions';
 import { API_ScenarioInfo } from '../services/backend/backend.service';
 import { immerOn } from 'ngrx-immer/store';
+import { WritableDraft } from 'immer/dist/internal';
 
 
 
@@ -31,6 +32,13 @@ export const reducer = createReducer(
         return state;
     }),
 
+    immerOn(RiesgosActions.restartingFromStep,  (state, action) => {
+        const stepId = action.step;
+        const stateWithoutData = removeDownstreamData(stepId, state);
+        const newState = deriveState(stateWithoutData);
+        return newState;
+    }),
+
     immerOn(RiesgosActions.executeStart, (state, action) => {
         const scenario = state.scenarioData[action.scenario];
         const step = scenario.steps.find(s => s.step.id === action.step);
@@ -50,7 +58,7 @@ export const reducer = createReducer(
                 }
             }
         }
-        // @TODO: update state of downstream steps
+        state = deriveState(state);
         return state;
     }),
 
@@ -128,18 +136,72 @@ function parseAPIScenariosIntoState(currentScenario: ScenarioName, scenarios: AP
         metaData, scenarioData, currentScenario
     };
 
-    const state = updateState(initialState);
+    const state = deriveState(initialState);
 
     return state;
 }
 
-function updateState(state: RiesgosState): RiesgosState {
+function deriveState(state: WritableDraft<RiesgosState>) {
     for (const scenarioName in state.scenarioData) {
         const scenario = state.scenarioData[scenarioName];
         for (const step of scenario.steps) {
-            step.state = new StepStateAvailable();
+            
+            // doesn't mess with manually-set states (Running, Error)
+            if (step.state.type === StepStateTypes.running || step.state.type === StepStateTypes.error) continue;
+
+            const inputIds = step.step.inputs.map(i => i.id);
+            const inputs = inputIds.map(i => scenario.products.find(p => p.id === i));
+            const hasMissingInputs = !!inputs.find(i => !(i.value) && !(i.reference) && !(i.options) );
+
+            const outputIds = step.step.outputs.map(o => o.id);
+            const outputs = outputIds.map(o => scenario.products.find(p => p.id === o));
+            const hasMissingOutputs = !!outputs.find(o => !(o.value) && !(o.reference) );
+
+            if (!hasMissingOutputs) step.state = new StepStateCompleted();
+            else if (hasMissingInputs) step.state = new StepStateUnavailable();
+            else if (!hasMissingInputs) step.state = new StepStateAvailable();
         }
     }
     return state;
 }
 
+function removeDownstreamData(stepId: string, state: WritableDraft<RiesgosState>) {
+    const scenario = state.scenarioData[state.currentScenario];
+    const step = scenario.steps.find(s => s.step.id === stepId);
+    const outputIds = step.step.outputs.map(o => o.id);
+
+    const queue = new NonRepeatingQueue();
+    outputIds.map(datumId => queue.enqueue(datumId));
+
+    while (queue.data.length > 0) {
+        const datumId = queue.dequeue();
+        const datum = scenario.products.find(p => p.id === datumId);
+        if (datum.value) datum.value = undefined;
+        if (datum.reference) datum.reference = undefined;
+
+        const consumerSteps = scenario.steps.filter(s => s.step.inputs.map(i => i.id).includes(datumId));
+        for (const consumerStep of consumerSteps) {
+            const outputIds = consumerStep.step.outputs.map(o => o.id);
+            outputIds.map(datumId => queue.enqueue(datumId));
+        }
+    }
+
+    return state;
+}
+
+class NonRepeatingQueue {
+    alreadySeen = [];
+    data = [];
+
+    constructor () {}
+
+    enqueue(datum: string) {
+        if (this.alreadySeen.includes(datum)) return;
+        this.alreadySeen.push(datum);
+        this.data.push(datum);
+    }
+
+    dequeue() {
+        return this.data.shift();
+    }
+}

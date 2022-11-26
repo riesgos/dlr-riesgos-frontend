@@ -85,7 +85,7 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                 id: 'Shakyground_wmsPeru',
                 icon: 'earthquake',
                 name: 'shakemap',
-                type: 'complex',
+                type: 'literal',
                 format: 'application/WMS',
                 styles: ['shakemap-pga'],
                 featureInfoRenderer: (fi: FeatureCollection) => {
@@ -101,7 +101,7 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                 id: 'SA03_shakeMapFile',
                 icon: 'earthquake',
                 name: 'SA03_shakemap',
-                type: 'complex',
+                type: 'literal',
                 format: 'application/WMS',
                 styles: ['shakemap-pga'],
                 featureInfoRenderer: (fi: FeatureCollection) => {
@@ -117,7 +117,7 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                 id: 'SA10_shakeMapFile',
                 icon: 'earthquake',
                 name: 'SA10_shakemap',
-                type: 'complex',
+                type: 'literal',
                 format: 'application/WMS',
                 styles: ['shakemap-pga'],
                 featureInfoRenderer: (fi: FeatureCollection) => {

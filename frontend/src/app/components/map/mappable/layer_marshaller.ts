@@ -35,7 +35,7 @@ import {
 } from './map.types';
 import {
     BboxLayerProduct, isBboxLayerProduct, isMultiVectorLayerProduct, isUkisMappableProduct,
-    isVectorLayerProduct, isWmsProduct, MultiVectorLayerProduct, VectorLayerProduct,
+    isVectorLayerProduct, isWmsProduct, MappableProduct, MultiVectorLayerProduct, VectorLayerProduct,
     WmsLayerDescription, WmsLayerProduct
 } from './mappable_products';
 
@@ -67,7 +67,7 @@ export class LayerMarshaller  {
         private configService: ConfigService
         ) {}
 
-    productsToLayers(products: RiesgosProductResolved[]): Observable<ProductLayer[]> {
+    productsToLayers(products: MappableProduct[]): Observable<ProductLayer[]> {
         if (products.length === 0) {
             return of([]);
         }
@@ -90,23 +90,17 @@ export class LayerMarshaller  {
     }
 
 
-    toLayers(product: RiesgosProductResolved): Observable<ProductLayer[]> {
+    toLayers(product: MappableProduct): Observable<ProductLayer[]> {
 
         if (isUkisMappableProduct(product)) {
             return product.toUkisLayers(product.value, this.mapSvc, this.layersSvc, this.httpClient, this.store, this);
         }
 
         // First of all, a bunch of special cases. Each one of those layers has some customizations after user-requests
-        if ([].includes(product.id)) {
-            return this.createWebglLayers(product as MultiVectorLayerProduct);
+        if (isVectorLayerProduct(product) && ['initial_Exposure', 'initial_Exposure_Lahar', 'AssetmasterProcess_Exposure_Peru'].includes(product.description.id)) {
+            return this.createWebglLayer(product).pipe(map(layer => [layer]));
         }
-        if (['initial_Exposure', 'initial_Exposure_Lahar',
-            'AssetmasterProcess_Exposure_Peru'].includes(product.id)) {
-            return this.createWebglLayer(product as VectorLayerProduct).pipe(map(layer => [layer]));
-        }
-        if (['Shakyground_wms', 'Shakyground_sa03_wms', 'Shakyground_sa10_wms',
-            'Shakyground_wmsPeru', 'Shakyground_sa03_wmsPeru', 'Shakyground_sa10_wmsPeru'
-            ].includes(product.id)) {
+        if (isWmsProduct(product) && ['Shakyground_wms', 'Shakyground_sa03_wms', 'Shakyground_sa10_wms','Shakyground_wmsPeru', 'Shakyground_sa03_wmsPeru', 'Shakyground_sa10_wmsPeru' ].includes(product.description.id)) {
             return this.makeWmsLayers(product as WmsLayerProduct).pipe(map(layers => {
                 switch (product.id) {
                     case 'Shakyground_wms':
@@ -138,8 +132,8 @@ export class LayerMarshaller  {
             }));
         }
 
-        if (['QuakeledgerProcess_selectedRows', 'QuakeledgerProcess_selectedRowsPeru'].includes(product.id)) {
-            return this.makeGeojsonLayer(product as VectorLayerProduct).pipe(
+        if (isVectorLayerProduct(product) && ['QuakeledgerProcess_selectedRows', 'QuakeledgerProcess_selectedRowsPeru'].includes(product.description.id)) {
+            return this.makeGeojsonLayer(product).pipe(
                 map(p => {
                     // @ts-ignore
                     p.popup.event = 'move';  // eq-selection shall show popups on hover, not on click.

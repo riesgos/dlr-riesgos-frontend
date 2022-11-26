@@ -1,15 +1,19 @@
 # Switch
-string-select field: update state upon selection.
 
-augmenter: only those products need to be resolved where a augmenter applies.
-eq-selection: always selects same feature
+display wms data
+    should backend deliver json only, or should frontend be able to parse pure-string-bodies?
+
 form: upon selecting a default parameter, notify backend
+    string-select field: update state upon appearing.
 eq-catalog: add missing parameters
 calculate step-state for every action
+reconfig and restart buttons
 resolver: forget old data
+augmenter: only those products need to be resolved where a augmenter applies.
 Backend: cache-life-time. WMS'es expire after a while
 
 # Cleanup
+- save- and reload-buttons
 - google fonts austauschen in open-map-styles
     - https://github.com/openlayers/ol-mapbox-style/blob/HEAD/src/text.js#L185-L186
     - https://gitlab.dlr.de/ukis-frontend/project-fire/-/commit/ea091e8d87550613c1f8d7faecd200007480132b
@@ -24,7 +28,6 @@ Backend: cache-life-time. WMS'es expire after a while
     - https://www.youtube.com/watch?v=oqZ4-ULwfbc
     - BUT: how do I then use the Augmentor? We'd need one augmentor for each module. 
 - Include jsonix license somewhere
-- RiesgosState contains API_Step and API_Datum. Give RiesgosState its own names for those data-structures ... even though their content is mostly identical.
 - Remove layerMarshaller, have all map-products simply implement toUkisLayers.
 - Remove allowedCommonJsDependencies
 

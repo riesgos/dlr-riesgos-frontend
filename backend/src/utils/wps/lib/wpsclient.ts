@@ -226,7 +226,9 @@ export class WpsClient {
                 'Content-Type': 'text/xml',
                 'Accept': 'text/xml, application/xml'
             },
-            responseType: 'text'
+            responseType: 'text',
+            // maxContentLength: Infinity,   // exposure is often very large 
+            // maxBodyLength: Infinity       // exposure is often very large
         });
 
         // Side-effect to keep track of raw xml

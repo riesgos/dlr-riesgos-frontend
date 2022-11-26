@@ -23,8 +23,8 @@ async function calculateDamage(inputs: Datum[]) {
 
 export const step: Step = {
     id: 'EqDamage',
-    title: 'Earthquake Damage',
-    description: 'Simulates damages to residential buildings',
+    title: 'Multihazard_damage_estimation/Earthquake',
+    description: 'eq_damage_svc_description',
     inputs: [{
         id: 'eqSimXml'
     }, {

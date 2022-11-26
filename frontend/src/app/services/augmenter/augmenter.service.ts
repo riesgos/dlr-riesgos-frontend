@@ -11,6 +11,8 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { defaultIfEmpty, map } from 'rxjs/operators';
 import { EqSelectionPeru, SelectedEqPeru, UserinputSelectedEqPeru } from 'src/app/riesgos/scenarios/peru/2_eqselection';
 import { GmpePeru, ShakemapWmsPeru, ShakygroundPeru, VsgridPeru } from 'src/app/riesgos/scenarios/peru/3_eqsim';
+import { ExposureModelPeru, InitialExposurePeru, ModelChoicePeru } from 'src/app/riesgos/scenarios/peru/4_exposure';
+import { EqDamageWmsPeru, EqDeusPeru } from 'src/app/riesgos/scenarios/peru/5_eqdamage';
 
 
 
@@ -72,10 +74,12 @@ export class AugmenterService {
     private dataSvc: DataService
   ) {
     this.augmenters = [
-      // inputs                                               // steps                // outputs
-      new EtypePeru(),                                        new QuakeLedgerPeru(),  new AvailableEqsPeru(),
-      new UserinputSelectedEqPeru(this.store, this.dataSvc),  new EqSelectionPeru(),  new SelectedEqPeru(),
-      new VsgridPeru(), new GmpePeru(),                       new ShakygroundPeru(),  new ShakemapWmsPeru(),
+      // inputs                                               // steps                  // outputs
+      new EtypePeru(),                                        new QuakeLedgerPeru(),    new AvailableEqsPeru(),
+      new UserinputSelectedEqPeru(this.store, this.dataSvc),  new EqSelectionPeru(),    new SelectedEqPeru(),
+      new VsgridPeru(), new GmpePeru(),                       new ShakygroundPeru(),    new ShakemapWmsPeru(),
+      new ModelChoicePeru(),                                  new ExposureModelPeru(),  new InitialExposurePeru(),  
+                                                              new EqDeusPeru(),         new EqDamageWmsPeru(),                
     ];
   }
 

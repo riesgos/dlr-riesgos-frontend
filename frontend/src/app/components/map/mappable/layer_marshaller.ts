@@ -101,8 +101,8 @@ export class LayerMarshaller  {
             return this.createWebglLayer(product).pipe(map(layer => [layer]));
         }
         if (isWmsProduct(product) && ['Shakyground_wms', 'Shakyground_sa03_wms', 'Shakyground_sa10_wms','Shakyground_wmsPeru', 'Shakyground_sa03_wmsPeru', 'Shakyground_sa10_wmsPeru' ].includes(product.description.id)) {
-            return this.makeWmsLayers(product as WmsLayerProduct).pipe(map(layers => {
-                switch (product.id) {
+            return this.makeWmsLayers(product).pipe(map(layers => {
+                switch (product.description.id) {
                     case 'Shakyground_wms':
                         layers[0].name = 'PGA';
                         break;
@@ -502,7 +502,7 @@ export class LayerMarshaller  {
         if (product.description.type === 'complex') {
             const parseProcesses$: Observable<ProductRasterLayer[]>[] = [];
             for (const val of product.value) {
-                parseProcesses$.push(this.makeWmsLayersFromValue(val, product.id, product.description));
+                parseProcesses$.push(this.makeWmsLayersFromValue(val, product.description.id, product.description));
             }
             return forkJoin(parseProcesses$).pipe(map((results: ProductRasterLayer[][]) => {
                 const newLayers: ProductRasterLayer[] = [];
@@ -515,7 +515,7 @@ export class LayerMarshaller  {
             }));
         } else if (product.description.type === 'literal') {
             const val = product.value;
-            return this.makeWmsLayersFromValue(val, product.id, product.description);
+            return this.makeWmsLayersFromValue(val, product.description.id, product.description);
         } else {
             throw new Error(`Could not find a value in product ${product}`);
         }

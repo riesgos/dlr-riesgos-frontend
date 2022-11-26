@@ -1,18 +1,16 @@
 # Switch
 
-display wms data
-    should backend deliver json only, or should frontend be able to parse pure-string-bodies?
 
-form: upon selecting a default parameter, notify backend
-    string-select field: update state upon appearing.
-eq-catalog: add missing parameters
 calculate step-state for every action
 reconfig and restart buttons
 resolver: forget old data
-augmenter: only those products need to be resolved where a augmenter applies.
+form: upon selecting a default parameter, notify backend
+    string-select field: update state upon appearing.
 Backend: cache-life-time. WMS'es expire after a while
+augmenter: only those products need to be resolved where a augmenter applies.
 
 # Cleanup
+- eq-catalog: add missing parameters
 - save- and reload-buttons
 - google fonts austauschen in open-map-styles
     - https://github.com/openlayers/ol-mapbox-style/blob/HEAD/src/text.js#L185-L186

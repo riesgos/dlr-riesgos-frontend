@@ -98,7 +98,7 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
         }, {
             ... product,
             description: {
-                id: 'SA03_shakeMapFile',
+                id: 'Shakyground_sa03_wmsPeru',
                 icon: 'earthquake',
                 name: 'SA03_shakemap',
                 type: 'literal',
@@ -114,7 +114,7 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
         }, {
             ...product,
             description: {
-                id: 'SA10_shakeMapFile',
+                id: 'Shakyground_sa10_wmsPeru',
                 icon: 'earthquake',
                 name: 'SA10_shakemap',
                 type: 'literal',

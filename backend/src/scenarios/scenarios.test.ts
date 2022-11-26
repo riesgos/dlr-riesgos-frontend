@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Server } from 'http';
 import express, { Express } from 'express';
 import { addScenarioApi } from './scenario.interface';
-import { ScenarioState } from './scenarios';
+import { Scenario, ScenarioDescription, ScenarioState } from './scenarios';
 import { italyScenarioFactory } from './italyScenario';
 import { sleep } from '../utils/async';
 import { deleteFile } from '../utils/files';
@@ -19,7 +19,7 @@ beforeAll(async () => {
     app = express();
     app.use(express.json());
     const scenarioFactories = [italyScenarioFactory];
-    addScenarioApi(app, scenarioFactories, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
     server = app.listen(port, () => {});
 });
 
@@ -116,4 +116,81 @@ describe('scenarios', () => {
         expect(finalState.data[1].id).toBeTruthy();
     });
 
+});
+
+
+describe('scenarios - cache', () => {
+
+    let scenario: ScenarioDescription;
+    let state: ScenarioState;
+    let firstExecuteResult: any;
+    beforeAll(async () => {
+        await deleteFile(storeDir);
+
+        scenario = (await http.get(`http://localhost:${port}/scenarios/Italy`)).data;
+        const step = scenario.steps[0];
+        const inputs = step.inputs;
+        const input = inputs[0];
+        state = {
+            data: [{
+                id: input.id,
+                value: input.options![0]
+            }]
+        };
+
+        // request 1: start execution
+        const { ticket } = (await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute`, state)).data;
+        await sleep(1000);
+        // request 2: polling
+        const { results } = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute/poll/${ticket}`)).data;
+        firstExecuteResult = results;
+    })
+
+
+    test('cache works', async () => {
+        // request 3: repeating same request
+        const firstStep = scenario.steps[0];
+        const { ticket } = (await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${firstStep.id}/execute`, state)).data;
+        await sleep(3);
+        const cachedResponse = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${firstStep.id}/execute/poll/${ticket}`)).data;
+        expect(cachedResponse.results).toBeTruthy();
+        expect(cachedResponse.results).toEqual(firstExecuteResult);
+    });
+
+
+    test('cache doesnt give false positives', async () => {
+        const firstStep = scenario.steps[0];
+        const firstInput = firstStep.inputs[0];
+        const newState: ScenarioState = {
+            data: [{
+                id: firstInput.id,
+                value: firstInput.options![1]  // another value than on first request
+            }]
+        };
+
+        const { ticket } = (await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${firstStep.id}/execute`, newState)).data;
+        await sleep(3);
+        const response = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${firstStep.id}/execute/poll/${ticket}`)).data;
+
+        // This was a new request, so there cannot be a result yet.
+        expect(response.ticket).toBeTruthy();
+        expect(response.results).toBeFalsy();
+
+        await sleep(1000);
+        const { results } = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${firstStep.id}/execute/poll/${ticket}`)).data;
+        expect(results).toBeTruthy();
+        expect(results !== firstExecuteResult);
+    });
+
+    test('cache expires', async () => {
+
+    });
+});
+
+
+describe('scenarios - in/out', () => {
+
+    test('value-product in becomes value-product out', async () => {});
+
+    test('reference-product in becomes reference-product out', async () => {});
 });

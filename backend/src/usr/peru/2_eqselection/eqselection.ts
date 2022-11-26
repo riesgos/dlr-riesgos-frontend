@@ -10,8 +10,16 @@ async function selectEq(inputs: Datum[]) {
     
     // @TODO: currently, we're expecting the user-choice to already be a feature-collection.
     // This is really silly. A simple id would do.
-    const eqId = userChoice[0].features[0].id;
-    const selectedEq = availableEqs.features.find((f: any) => f.id === eqId);
+    let selectedEq;
+    if (typeof userChoice === 'number') {
+        selectedEq = availableEqs.features[userChoice];
+    } else if (typeof userChoice === 'string') {
+        selectedEq = availableEqs.features.find((f: any) => f.id === userChoice);
+    } else {
+        const eqId = userChoice[0].features[0].id;
+        selectedEq = availableEqs.features.find((f: any) => f.id === eqId);
+    }
+
     const wrappedSelectedEq = {
         type: 'FeatureCollection',
         features: [selectedEq]

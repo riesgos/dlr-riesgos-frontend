@@ -22,7 +22,7 @@ beforeAll(async () => {
     const app = express();
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
     server = app.listen(port);
 })
 
@@ -35,7 +35,10 @@ test('Testing eq-catalog', async () => {
     const stepId = 'Eqs';
 
     const state: ScenarioState = {
-        data: []
+        data: [{
+            id: 'eqCatalogType',
+            value: 'observed'
+        }]
     };
 
     const response = await axios.post(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute`, state);
@@ -51,10 +54,10 @@ test('Testing eq-catalog', async () => {
     expect(results).toBeTruthy();
     expect(results.data).toBeTruthy();
     expect(results.data.length > 0);
-    expect(results.data[0].id).toBe('availableEqs');
-    expect(results.data[0].reference);
+    const avEqs = results.data.find((d: any) => d.id === 'availableEqs');
+    expect(avEqs.reference);
 
-    const fileResponse = await axios.get(`http://localhost:${port}/files/${results.data[0].reference}`);
+    const fileResponse = await axios.get(`http://localhost:${port}/files/${avEqs.reference}`);
     const data = fileResponse.data;
     expect(data).toBeTruthy();
 });

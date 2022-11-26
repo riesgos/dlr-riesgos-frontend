@@ -24,7 +24,7 @@ beforeAll(async () => {
     const app = express();
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
     server = app.listen(port, () => console.log(`app listening on port ${port}`));
 })
 

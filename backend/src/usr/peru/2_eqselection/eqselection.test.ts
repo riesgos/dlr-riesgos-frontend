@@ -22,7 +22,7 @@ beforeAll(async () => {
     const app = express();
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
     server = app.listen(port);
 })
 
@@ -100,6 +100,6 @@ test('Testing eq-selection', async () => {
     const fileResponse = await axios.get(`http://localhost:${port}/files/${result.reference}`);
     const data = fileResponse.data;
     expect(data).toBeTruthy();
-    expect(data.type).toBe('Feature');
+    expect(data.type).toBe('FeatureCollection');
 });
 

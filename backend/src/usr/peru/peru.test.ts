@@ -3,12 +3,10 @@ import axios from 'axios';
 import { Server } from 'http';
 import { addScenarioApi } from '../../scenarios/scenario.interface';
 import { peruFactory } from './peru';
-import { ScenarioState } from '../../scenarios/scenarios';
-import { sleep } from '../../utils/async';
 import { createDirIfNotExists, deleteFile } from '../../utils/files';
 
 
-const port = 1415;
+const port = 1413;
 const logDir = `./test-data/peru/logs/`; // server-logs
 const storeDir = `./test-data/peru/store/`;
 

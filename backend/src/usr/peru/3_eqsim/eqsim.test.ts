@@ -23,7 +23,7 @@ beforeAll(async () => {
     const app = express();
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
     server = app.listen(port);
 })
 
@@ -33,7 +33,7 @@ afterAll(async () => {
 
 
 test('Testing eq-simulation', async () => {
-    const stepId = 'EqSim';
+    const stepId = 'EqSimulation';
 
     const state: ScenarioState = {
         data: [{
@@ -77,4 +77,3 @@ test('Testing eq-simulation', async () => {
     expect(xmlData).toBeTruthy();
 
 }, 300000);
-

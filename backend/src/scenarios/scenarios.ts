@@ -2,7 +2,8 @@ import { toPromise } from '../utils/async';
 import { FileStorage } from '../storage/fileStorage';
 
 export interface DataDescription {
-    id: string
+    id: string,
+    options?: string[]
 };
 
 export interface UserSelection extends DataDescription {
@@ -26,7 +27,7 @@ export interface DatumReference {
 export interface DatumLinage {
     datumId: string,
     stepId: string,
-    inputReferences: DatumReference[]
+    inputs: (DatumReference | Datum)[]
 }
 
 export function isResolvedDatum(o: any): o is Datum {
@@ -56,6 +57,13 @@ export interface StepDescription {
     description: string
 }
 
+export interface ScenarioDescription {
+    id: string,
+    description: string,
+    imageUrl?: string,
+    steps: StepDescription[]
+}
+
 export interface ScenarioState {
     data: (Datum | DatumReference)[]
 }
@@ -69,7 +77,7 @@ export class Scenario {
         private store: FileStorage<DatumLinage>,
         public imageUrl?: string) {}
 
-    public getSummary() {
+    public getSummary(): ScenarioDescription {
         const stepSummaries: StepDescription[] = [];
         for (const step of this.steps) {
             stepSummaries.push({
@@ -95,6 +103,7 @@ export class Scenario {
 
         const alreadyCalculated = await this.loadFromCache(step, state);
         if (alreadyCalculated) {
+            console.log(`Scenarios: using a cached version of output for ${stepId}`);
             const stateWithOutputs = this.addData(alreadyCalculated, state);
             return stateWithOutputs;
         }
@@ -162,16 +171,16 @@ export class Scenario {
         const step = this.steps.find(s => s.outputs.map(o => o.id).includes(id));
         if (!step) throw new Error(`Cannot get linage of datum ${id}: it has no parent-step. Maybe this is user-provided data?`);
         const inputIds = step.inputs.map(i => i.id);
-        const inputRefs: DatumReference[] = [];
+        const inputs: (Datum | DatumReference)[] = [];
         for (const id of inputIds) {
             const input = state.data.find(d => d.id === id);
             if (!input) throw new Error(`Could not find data-point with id ${id}`);
-            if (isDatumReference(input)) inputRefs.push(input);
+            inputs.push(input);
         }
         return {
             datumId: id,
             stepId: step.id,
-            inputReferences: inputRefs
+            inputs: inputs
         }
     }
 

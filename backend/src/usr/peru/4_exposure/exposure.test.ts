@@ -6,7 +6,6 @@ import { peruFactory } from '../peru';
 import { DatumReference, ScenarioState } from '../../../scenarios/scenarios';
 import { sleep } from '../../../utils/async';
 import { createDirIfNotExists, deleteFile } from '../../../utils/files';
-import { selectedEqTestData } from '../testdata/exposure';
 
 
 const port = 1416;
@@ -23,7 +22,7 @@ beforeAll(async () => {
     const app = express();
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
     server = app.listen(port);
 })
 

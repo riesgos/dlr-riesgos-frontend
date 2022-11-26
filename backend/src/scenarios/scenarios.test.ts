@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Server } from 'http';
 import express, { Express } from 'express';
 import { addScenarioApi } from './scenario.interface';
-import { Scenario, ScenarioDescription, ScenarioState } from './scenarios';
 import { italyScenarioFactory } from './italyScenario';
+import { Scenario, ScenarioDescription, ScenarioState } from './scenarios';
 import { sleep } from '../utils/async';
 import { deleteFile } from '../utils/files';
 
@@ -190,9 +190,59 @@ describe('scenarios - cache', () => {
 
 describe('scenarios - in/out', () => {
 
+    beforeAll(async () => {
+        await deleteFile(storeDir);
+    })
+
+
     test('value-product in becomes value-product out', async () => {});
 
     test('reference-product in becomes reference-product out', async () => {});
 
-    test('executing two jobs side-by-side.', async () => {});
+    test('executing two jobs side-by-side.', async () => {
+
+        const scenario: ScenarioDescription = (await http.get(`http://localhost:${port}/scenarios/Italy`)).data;
+        const step = scenario.steps.find(s => s.id === 'EqSim')!;
+        const inputs = step.inputs;
+        const input = inputs[0];
+        const state = {
+            data: [{
+                id: input.id,
+                value: input.options![0]
+            }]
+        };
+
+        const { ticket } = (await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute`, state)).data;
+        await sleep(1000);
+        const { results } = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute/poll/${ticket}`)).data;
+        const newState = results;
+        expect(newState).toBeTruthy();
+
+        const step2 = scenario.steps.find(s => s.id === 'EqDmg')!;
+        const step3 = scenario.steps.find(s => s.id === 'EqStats')!;
+
+        // const post2$ = http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.id}/execute`, newState);
+        // const post3$ = http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step3.id}/execute`, newState);  
+        // const [result2, result3] = await Promise.all([post2$, post3$]);
+        const result2 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.id}/execute`, newState);
+        const result3 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step3.id}/execute`, newState);
+
+        console.log(result2.data);
+        console.log(result3.data);
+        expect(result2.data.ticket).toBeTruthy();
+        expect(result3.data.ticket).toBeTruthy();
+        
+        const ticket2 = result2.data.ticket;
+        const ticket3 = result3.data.ticket;
+        expect(ticket2 !== ticket3).toBeTruthy();
+
+
+        await sleep(500);
+
+        const response2 = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.id}/execute/poll/${ticket2}`)).data;
+        const response3 = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step3.id}/execute/poll/${ticket3}`)).data;
+
+        expect(response2.results).toBeTruthy();
+        expect(response3.results).toBeTruthy();
+    });
 });

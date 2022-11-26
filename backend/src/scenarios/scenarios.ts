@@ -208,10 +208,6 @@ export class ScenarioFactory {
     constructor(public id: string, public description: string, public imageUrl?: string) {}
 
     public registerStep(step: Step) {
-        const inputIds = this.steps.reduce((prev: string[], curr) => [... prev, ... curr.inputs.map(i => i.id)], []);
-        for (const input of step.inputs) {
-            if (inputIds.includes(input.id)) throw new Error(`This input-id is already taken: ${input.id}`);
-        }
         const outputIds = this.steps.reduce((prev: string[], curr) => [... prev, ... curr.outputs.map(i => i.id)], []);
         for (const output of step.outputs) {
             if (outputIds.includes(output.id)) throw new Error(`This output-id is already taken: ${output.id}`);

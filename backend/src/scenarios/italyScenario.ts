@@ -48,3 +48,25 @@ italyScenarioFactory.registerStep({
         }]);
     }
 });
+
+italyScenarioFactory.registerStep({
+    id: 'EqStats',
+    title: 'Eq-statistics',
+    description: '',
+    inputs: [{
+        id: 'eqSimulation'
+    }],
+    outputs: [{
+        id: 'eqStats'
+    }],
+    function: async function (args: Datum[]) {
+        const eqSim = args.find(a => a.id === 'eqSimulation');
+
+        await sleep(100);
+        
+        return toPromise([{
+            id: 'eqStats',
+            value: `eqStats based on ${eqSim!.value}`
+        }]);
+    }
+});

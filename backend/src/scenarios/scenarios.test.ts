@@ -193,4 +193,6 @@ describe('scenarios - in/out', () => {
     test('value-product in becomes value-product out', async () => {});
 
     test('reference-product in becomes reference-product out', async () => {});
+
+    test('executing two jobs side-by-side.', async () => {});
 });

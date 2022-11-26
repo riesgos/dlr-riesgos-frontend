@@ -6,11 +6,14 @@ async function getExposure(inputs: Datum[]) {
 
     const exposureSelection = inputs.find(i => i.id === 'exposureModelName')!;
 
-    const exposureModel = await getExposureModel(exposureSelection.value, 'SARA_v1.0');
+    const { exposureModel, exposureRef } = await getExposureModel(exposureSelection.value, 'SARA_v1.0');
   
     return [{
         id: 'exposure',
         value: exposureModel
+    }, {
+        id: 'exposureRef',
+        value: exposureRef
     }];
 }
 
@@ -34,6 +37,8 @@ export const step: Step = {
     }],
     outputs: [{
         id: 'exposure'
+    }, {
+        id: 'exposureRef'
     }],
     function: getExposure
 };

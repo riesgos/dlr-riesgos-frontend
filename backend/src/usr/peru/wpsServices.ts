@@ -141,7 +141,7 @@ export async function getEqSim( gmpe: Gmpe, vsgrid: Vsgrid, selectedEq: any) {
         format: 'application/WMS'
     }, {
         id: 'shakeMapFile',
-        reference: false,
+        reference: true,
         type: 'complex',
         format: 'text/xml'
     }];
@@ -201,13 +201,13 @@ export async function getFragility(schemaName: Schema) {
     const outputs: WpsOutputDescription[] = [{
         id: 'selectedRows',
         type: 'complex',
-        reference: false,
+        reference: true,
         format: 'application/json'
     }];
 
     const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
 
-    return results[0].value[0];
+    return results[0].value;
 }
 
 
@@ -296,18 +296,26 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
         type: 'complex',
         reference: false,
         format: 'application/json'
+    }, {
+        id: 'selectedRowsGeoJson',
+        type: 'complex',
+        reference: true,
+        format: 'application/json'
     }];
 
     const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
 
-    return results[0].value[0];
+    return {
+        exposureModel: results.find(r => r.description.reference === false)!.value[0],
+        exposureRef: results.find(r => r.description.reference === true)!.value,
+    };
 }
 
 
 /**
  * Calls Deus
  */
-export async function getDamage(schemaName: Schema, fragility: any, intensityXMLString: String, exposureJson: any) {
+export async function getDamage(schemaName: Schema, fragilityRef: string, intensityXMLRef: string, exposureRef: string) {
 
     const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
     const processId = "org.n52.gfz.riesgos.algorithm.impl.DeusProcess";
@@ -315,27 +323,27 @@ export async function getDamage(schemaName: Schema, fragility: any, intensityXML
     const inputs: WpsInput[] = [{
         description: {
             id: 'intensity',
-            reference: false,
+            reference: true,
             type: 'complex',
             format: 'text/xml'
         },
-        value: intensityXMLString
+        value: intensityXMLRef
     }, {
         description: {
             id: 'exposure',
-            reference: false,
+            reference: true,
             type: 'complex',
             format: 'application/json'
         },
-        value: exposureJson
+        value: exposureRef
     }, {
         description: {
             id: 'fragility',
-            reference: false,
+            reference: true,
             type: 'complex',
             format: 'application/json'
         },
-        value: fragility
+        value: fragilityRef
     }, {
         description: {
             id: 'schema',

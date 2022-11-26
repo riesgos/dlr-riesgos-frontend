@@ -1,9 +1,7 @@
 # Switch
 
 - Include english legend in deus
-    - Deus
-        413 payload too large
-            send to deus only reference to exposure
+- Running two processes in parallel has one end up stuck
 
 # Cleanup
 - google fonts austauschen in open-map-styles

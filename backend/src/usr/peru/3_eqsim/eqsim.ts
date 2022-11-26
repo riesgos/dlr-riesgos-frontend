@@ -15,7 +15,7 @@ async function simulateEq(inputs: Datum[]) {
         id: 'eqSimWms',
         value: wms,
     }, {
-        id: 'eqSimXml',
+        id: 'eqSimXmlRef',
         value: xml
     }];
 }
@@ -38,7 +38,7 @@ export const step: Step = {
     outputs: [{
         id: 'eqSimWms'
     }, {
-        id: 'eqSimXml'
+        id: 'eqSimXmlRef'
     }],
     function: simulateEq
 };

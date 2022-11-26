@@ -75,7 +75,7 @@ export const reducer = createReducer(
         for (const product of action.products) {
             for (let i = 0; i < scenario.products.length; i++) {
                 if (scenario.products[i].id === product.id) {
-                    scenario.products[i] = product;
+                    scenario.products.splice(i, 1, product);
                     break;
                 }
             }

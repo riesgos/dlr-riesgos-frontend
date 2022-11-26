@@ -39,6 +39,7 @@ export class FormComponent implements OnInit, OnDestroy {
       if (isBboxUserConfigurableProduct(parameter)) {
         const control = this.formGroup.get(parameter.id);
         const sub$ = control.valueChanges.subscribe(newVal => {
+          console.log(`Global form: value changed`);
           if (control.valid) {
             this.store.dispatch(RiesgosActions.userDataProvided({
               scenario: this.step.scenario,

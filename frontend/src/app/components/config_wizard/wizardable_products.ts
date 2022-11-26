@@ -47,7 +47,7 @@ export interface FeatureSelectUconfPD extends ProductDescription {
         signpost?: string,
     };
     featureSelectionOptions: {[key: string]: FeatureCollection};
-    defaultValue: [FeatureCollection];
+    defaultValue: FeatureCollection;
 }
 
 export type UserConfigurableProductDescription = StringUserConfigurableProductDescription | StringSelectUserConfigurableProductDescription | BboxUserConfigurableProductDescription | FeatureSelectUconfPD;

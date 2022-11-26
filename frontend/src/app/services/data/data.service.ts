@@ -53,7 +53,7 @@ export class DataService {
 
   private fetchFromLink(link: string): Observable<any> {
     const cachedData = this.getFromCache(link);
-    if (cachedData) return cachedData;
+    if (cachedData) return of(cachedData);
 
     const url = this.config.getConfig().middlewareUrl;
     return this.http.get(`${url}/files/${link}`, {

@@ -19,7 +19,7 @@
       <div *ngSwitchCase="'stringselect'">
         <div class="clr-row">
           <div class="clr-col">
-            <ukis-form-stringselect-field [control]="formGroup.get(parameter.id)" [scenario]="step.scenario" [parameter]="parameter" class="form-input">
+            <ukis-form-stringselect-field [scenario]="step.scenario" [parameter]="parameter" class="form-input">
             </ukis-form-stringselect-field>
           </div>
           <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">
@@ -34,7 +34,7 @@
       <div *ngSwitchCase="'select'">
         <div class="clr-row">
           <div class="clr-col">
-            <ukis-form-featureselect-field [control]="formGroup.get(parameter.id)" [scenario]="step.scenario" [parameter]="parameter" class="form-input"></ukis-form-featureselect-field>
+            <ukis-form-featureselect-field [scenario]="step.scenario" [parameter]="parameter" class="form-input"></ukis-form-featureselect-field>
           </div>
           <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">
             <clr-signpost>

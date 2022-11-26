@@ -61,7 +61,7 @@ export class UserinputSelectedEqPeru implements WizardableProductAugmenter {
             ... product,
             description: {
                 featureSelectionOptions: options,
-                defaultValue: [dflt],
+                defaultValue: dflt,
                 wizardProperties: {
                     fieldtype: 'select',
                     name: 'SelectedEQ',

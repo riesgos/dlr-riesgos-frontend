@@ -1,35 +1,39 @@
 # Switch
 
-form: upon selecting a default parameter, notify backend
-    string-select field: update state upon appearing.
-Backend: cache-life-time. WMS'es expire after a while
-augmenter: only those products need to be resolved where a augmenter applies.
 
 # Cleanup
-- eq-catalog: add missing parameters
-- restart, save- and reload-buttons
 - google fonts austauschen in open-map-styles
     - https://github.com/openlayers/ol-mapbox-style/blob/HEAD/src/text.js#L185-L186
     - https://gitlab.dlr.de/ukis-frontend/project-fire/-/commit/ea091e8d87550613c1f8d7faecd200007480132b
 - Include english legend in deus
+- Augmenter: only those products need to be resolved where a augmenter applies.
 - Create new legend component (with gradients)
 - Re-create graph-modal
-- cd frontend && npx ts-unused-exports tsconfig.json
-- Save and restore:
+- Eq-catalog: add missing parameters
+- Restart, save- and reload-buttons
     Store current state *and* relevant data from resolver
-- two modules: one for map, one for wizard
-    - share store between them: https://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular-not-between-to-c
-    - https://www.youtube.com/watch?v=oqZ4-ULwfbc
-    - BUT: how do I then use the Augmentor? We'd need one augmentor for each module. 
-- Include jsonix license somewhere
-- Remove layerMarshaller, have all map-products simply implement toUkisLayers.
-- Remove allowedCommonJsDependencies
+- cd frontend && npx ts-unused-exports tsconfig.json
 
 # Improvements for future
+- Restructure directories:
+    - two modules: one for map, one for wizard
+        - share store between them: https://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular-not-between-to-c
+        - https://www.youtube.com/watch?v=oqZ4-ULwfbc
+        - BUT: how do I then use the Augmentor? We'd need one augmentor for each module. 
+    - all ngrx files in dir ngrx
+- Wizard forms: Redesign
+    - Global form does not get notified when its child-forms are updated
+    - try removing the FromGroup from app-form
+- Include jsonix license somewhere
+- Remove layerMarshaller, have all map-products simply implement toUkisLayers.
 - Docker-compose file for all services and frontend
 - Eq-Selection: do we really need to have that selection step in the backend?
     - At least it should be simplified. It's silly that the frontend has the selected eq in it's memory already anyway.
 - Backend: move away from WMS'es. Serve data yourself.
+- Remove customized layer-control. Maybe ukis is good enough by now.
+- Separate pages for each translation instead of dynamic translation
+- Unify ng-translation, simplified translation, regex-translation
+- Remove allowedCommonJsDependencies
 
 # Ongoing problems
 - frontend must never have an own version of ol installed ... otherwise, `instanceof`-checks in @eoc-dlr/maps-ol won't work.

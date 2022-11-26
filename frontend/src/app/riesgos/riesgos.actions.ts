@@ -31,7 +31,7 @@ export const executeError = createAction(
 
 export const userDataProvided = createAction(
     '[Riesgos] user-data provided',
-    props<{scenario: ScenarioName, products: any}>()
+    props<{scenario: ScenarioName, products: RiesgosProduct[]}>()
 );
 
 export const restartingFromStep = createAction(

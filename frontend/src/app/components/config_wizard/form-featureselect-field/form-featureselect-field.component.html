@@ -4,15 +4,14 @@
           <label class="clr-col">
             {{parameter.description.wizardProperties.name | translate}}:
           </label>
-          <select class="clr-col" clrSelect [formControl]="stringControl">
-              <option *ngFor="let item of stringOptions" [ngValue]="item">{{item | regexTranslate}}</option>
+          <select class="clr-col" clrSelect [formControl]="control">
+              <option *ngFor="let option of options" [value]="option">{{option | regexTranslate }}</option>
           </select>
           <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
           <clr-control-error>Invalid input</clr-control-error>
         </clr-select-container>
   </div>
 
-  <!-- Deactivated: sometimes interaction cancels unexpectedly or clicks aren't being registered. -->
     <ng-container *ngIf="(featureSelectionOngoing$ | async) as ongoing; else activateButton">
         <div class="two">
           <clr-icon shape="feature-select" [title]="'select on map' | translate"

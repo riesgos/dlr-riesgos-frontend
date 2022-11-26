@@ -16,7 +16,7 @@ async function selectEq(inputs: Datum[]) {
     } else if (typeof userChoice === 'string') {
         selectedEq = availableEqs.features.find((f: any) => f.id === userChoice);
     } else {
-        const eqId = userChoice[0].features[0].id;
+        const eqId = userChoice.features[0].id;
         selectedEq = availableEqs.features.find((f: any) => f.id === eqId);
     }
 

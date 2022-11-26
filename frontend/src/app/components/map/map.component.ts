@@ -212,7 +212,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     const newFeatureCollection = tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))]);
                     const product: RiesgosProduct = {
                         ...this.interactionState$.getValue().product,
-                        value: [newFeatureCollection]
+                        value: newFeatureCollection
                     };
                     this.store.dispatch(interactionCompleted({ scenario: this.currentScenario$.getValue(), product }));
                 }

@@ -1,14 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UntypedFormControl, Validators } from '@angular/forms';
+import { FormControl, UntypedFormControl } from '@angular/forms';
 import { FeatureSelectUconfProduct } from '../wizardable_products';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { FeatureCollection } from '@turf/helpers';
 import * as InteractionActions from 'src/app/interactions/interactions.actions';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { InteractionState } from 'src/app/interactions/interactions.state';
+import { BehaviorSubject } from 'rxjs';
 import { ScenarioName } from 'src/app/riesgos/riesgos.state';
+import { userDataProvided } from 'src/app/riesgos/riesgos.actions';
+import { FeatureCollection } from '@turf/helpers';
 
 @Component({
   selector: 'ukis-form-featureselect-field',
@@ -17,63 +16,57 @@ import { ScenarioName } from 'src/app/riesgos/riesgos.state';
 })
 export class FormFeatureSelectFieldComponent implements OnInit {
 
-  public featureSelectionOngoing$: Observable<boolean>;
-
-  @Input() control: UntypedFormControl;
+  // Really, this should be a FormControl<FeatureCollection>, but I don't seem to understand selecting features with <option>'s.
+  control: FormControl<string>;
+  options: string[];
   @Input() scenario: ScenarioName;
   @Input() parameter: FeatureSelectUconfProduct;
-  public options: { [k: string]: FeatureCollection };
-
-  public stringControl: UntypedFormControl;
-  public stringOptions: string[];
-
+  featureSelectionOngoing$ = new BehaviorSubject<boolean>(false);
 
   constructor(private store: Store<State>) { }
 
   ngOnInit() {
-    this.options = this.parameter.description.featureSelectionOptions;
-    const startValue = this.control.value || this.parameter.description.defaultValue;
-    
-    this.stringOptions = Object.keys(this.options);
-    const stringStartValue = this.stringOptions.find(s => this.options[s]?.features[0]?.id === startValue[0]?.features[0]?.id);
+    let initialValueKey: string;
+    if (this.parameter.value) {
+      initialValueKey = this.parameter.value.features[0].properties['publicID'];
+    } else if (this.parameter.description.defaultValue) {
+      initialValueKey = this.parameter.description.defaultValue.features[0].properties['publicID'];
+    } else {
+      initialValueKey = Object.keys(this.parameter.description.featureSelectionOptions)[0];
+    }
 
-    this.stringControl = new UntypedFormControl(stringStartValue, [Validators.required]);
+    this.options = Object.keys(this.parameter.description.featureSelectionOptions);
 
-    this.stringControl.valueChanges.subscribe(newStringVal => {
-      const newVal = [this.findValForString(newStringVal)];
-      this.control.setValue(newVal);
-      const newProductVal: FeatureSelectUconfProduct = {
-        ... this.parameter,
-        value: newVal
-      };
-      this.store.dispatch(InteractionActions.interactionCompleted({
-        product: newProductVal,
-        scenario: this.scenario,
-      }));
+    this.control = new FormControl<string>(initialValueKey);
+
+    this.control.valueChanges.subscribe(newKey => this.notifyValueChanged(newKey));
+
+    if (!this.parameter.value) {
+      this.notifyValueChanged(initialValueKey);
+    }
+
+    this.store.select('interactionState').subscribe(state => {
+      if (state.mode === 'featureselection') {
+        this.featureSelectionOngoing$.next(true);
+      }
+      else if (state.mode === 'normal' && this.featureSelectionOngoing$.value === true) {
+        this.control.setValue(state.product.value);
+        this.featureSelectionOngoing$.next(false);
+      }
     });
-
-    this.featureSelectionOngoing$ = this.store.pipe(
-      select('interactionState'),
-      map((currentInteractionState: InteractionState) => {
-        switch (currentInteractionState.mode) {
-          case 'featureselection':
-            return true;
-          default:
-            return false;
-        }
-      })
-    );
   }
 
-  private findValForString(key: string): any {
-    // return this.options.find(o => key === this.findKeyForVal(o));
-    return this.options[key];
+  private notifyValueChanged(newKey: string) {
+    const newVal = this.parameter.description.featureSelectionOptions[newKey];
+    const newProductVal: FeatureSelectUconfProduct = {
+      ... this.parameter,
+      value: newVal
+    };
+    this.store.dispatch(userDataProvided({
+      scenario: this.scenario,
+      products: [newProductVal]
+    }));
   }
-
-  private findKeyForVal(val: FeatureCollection): string {
-    return val[0].features[0].id;
-  }
-
 
   activateFeatureselectInteraction(startInteraction: boolean): void {
     if (startInteraction) {
@@ -83,30 +76,11 @@ export class FormFeatureSelectFieldComponent implements OnInit {
         product: { ... this.parameter }
       }));
     } else {
-      this.store.dispatch(InteractionActions.interactionCompleted({ 
-        product: { ...this.parameter },
+      this.store.dispatch(InteractionActions.interactionCompleted({
         scenario: this.scenario,
+        product: { ...this.parameter },
       }));
     }
   }
 
-}
-
-
-function recursiveEqual(obj1: object, obj2: object): boolean {
-  for (const key1 in obj1) {
-    if (!obj2[key1]) {
-      return false;
-    }
-    else if (typeof obj1[key1] === 'object') {
-      const subEqual = recursiveEqual(obj1[key1], obj2[key1]);
-      if (!subEqual) {
-        return false;
-      }
-    }
-    else if (obj2[key1] !== obj1[key1]) {
-      return false;
-    }
-  }
-  return true;
 }

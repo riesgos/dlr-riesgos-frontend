@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import {  StringSelectUserConfigurableProduct } from '../wizardable_products';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
-import { UntypedFormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ScenarioName } from 'src/app/riesgos/riesgos.state';
 
 @Component({
@@ -13,7 +13,7 @@ import { ScenarioName } from 'src/app/riesgos/riesgos.state';
 })
 export class FormStringselectFieldComponent implements OnInit {
 
-    @Input() control: UntypedFormControl;
+    control: FormControl<string>;
     @Input() scenario: ScenarioName;
     @Input() parameter: StringSelectUserConfigurableProduct;
     public options: string[];
@@ -22,21 +22,32 @@ export class FormStringselectFieldComponent implements OnInit {
     constructor(private store: Store<State>) { }
 
     ngOnInit() {
-        this.control.valueChanges.subscribe(newVal => this.onChange(newVal));
         this.options = this.parameter.description.options;
-        if (this.control.value === null) {
-            this.control.setValue(this.options[0]);
-            this.onChange(this.control.value);
+
+        let initivalValue;
+        if (this.parameter.value) {
+            initivalValue = this.parameter.value;
+        } else if (this.parameter.description.defaultValue) {
+            initivalValue = this.parameter.description.defaultValue;
+        } else {
+            initivalValue = this.parameter.description.options[0];
+        }
+
+        this.control = new FormControl<string>(initivalValue);
+
+        this.control.valueChanges.subscribe(newVal => this.notifyDataChanged(newVal));
+
+        if (!this.parameter.value) {
+            this.notifyDataChanged(initivalValue);
         }
     }
 
-
-    onChange(newValString) {
+    private notifyDataChanged(newVal: string) {
         this.store.dispatch(RiesgosActions.userDataProvided({
             scenario: this.scenario,
             products: [{
                 ...this.parameter,
-                value: newValString
+                value: newVal
             }]
         }));
     }

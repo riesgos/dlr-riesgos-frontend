@@ -4,9 +4,9 @@ import { getNeptunusTsunamiDamage, getFragility } from "../wpsServices";
 
 async function tsDamage(inputs: Datum[]) {
 
-    const chosenFragility = inputs.find(i => i.id === 'schemaTs')!;
-    const updatedExposureRef = inputs.find(i => i.id === 'eqDamageRef')!;
-    const tsWms = inputs.find(i => i.id === 'tsWms')!;
+    const chosenFragility = inputs.find(i => i.id === 'schemaTsChile')!;
+    const updatedExposureRef = inputs.find(i => i.id === 'eqDamageRefChile')!;
+    const tsWms = inputs.find(i => i.id === 'tsWmsChile')!;
 
 
 
@@ -27,10 +27,10 @@ async function tsDamage(inputs: Datum[]) {
   
 
     return [{
-        id: 'tsDamageWms',
+        id: 'tsDamageWmsChile',
         value: wms
     }, {
-        id: 'tsDamageSummary',
+        id: 'tsDamageSummaryChile',
         value: summary
     }];
 }
@@ -38,21 +38,21 @@ async function tsDamage(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'TsDamage',
+    id: 'TsDamageChile',
     title: 'Multihazard_damage_estimation/Tsunami',
     description: 'ts_damage_svc_description',
     inputs: [{
-        id: 'schemaTs',
+        id: 'schemaTsChile',
         options: ['Medina_2019', 'SUPPASRI2013_v2.0']
     }, {
-        id: 'tsWms'
+        id: 'tsWmsChile'
     }, {
-        id: 'eqDamageRef',
+        id: 'eqDamageRefChile',
     }],
     outputs: [{
-        id: 'tsDamageWms'
+        id: 'tsDamageWmsChile'
     }, {
-        id: 'tsDamageSummary'
+        id: 'tsDamageSummaryChile'
     }],
     function: tsDamage
 };

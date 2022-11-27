@@ -4,15 +4,15 @@ import { getExposureModel } from "../wpsServices";
 
 async function getExposure(inputs: Datum[]) {
 
-    const exposureSelection = inputs.find(i => i.id === 'exposureModelName')!;
+    const exposureSelection = inputs.find(i => i.id === 'exposureModelNameChile')!;
 
     const { exposureModel, exposureRef } = await getExposureModel(exposureSelection.value, 'SARA_v1.0');
   
     return [{
-        id: 'exposure',
+        id: 'exposureChile',
         value: exposureModel
     }, {
-        id: 'exposureRef',
+        id: 'exposureRefChile',
         value: exposureRef
     }];
 }
@@ -20,25 +20,22 @@ async function getExposure(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'Exposure',
+    id: 'ExposureChile',
     title: 'Exposure',
     description: 'Picks exposure model',
     inputs: [{
-        id: 'exposureModelName',
+        id: 'exposureModelNameChile',
         options: [
-            "LimaCVT1_PD30_TI70_5000",
-            "LimaCVT2_PD30_TI70_10000",
-            "LimaCVT3_PD30_TI70_50000",
-            "LimaCVT4_PD40_TI60_5000",
-            "LimaCVT5_PD40_TI60_10000",
-            "LimaCVT6_PD40_TI60_50000",
-            "LimaBlocks",
+            'ValpCVTBayesian',
+            'ValpCommuna'‚
+            'ValpRegularOriginal',
+            'ValpRegularGrid'
          ]
     }],
     outputs: [{
-        id: 'exposure'
+        id: 'exposureChile'
     }, {
-        id: 'exposureRef'
+        id: 'exposureRefChile'
     }],
     function: getExposure
 };

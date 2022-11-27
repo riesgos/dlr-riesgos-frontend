@@ -4,12 +4,12 @@ import { getTsunami } from "../wpsServices";
 
 async function tsunamiSimulation(inputs: Datum[]) {
 
-    const selectedEq = inputs.find(i => i.id === 'selectedEq')!;
+    const selectedEq = inputs.find(i => i.id === 'selectedEqChile')!;
 
     const wms = await getTsunami(selectedEq.value.features[0]);
   
     return [{
-        id: 'tsWms',
+        id: 'tsWmsChile',
         value: wms
     }];
 }
@@ -17,14 +17,14 @@ async function tsunamiSimulation(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'Tsunami',
+    id: 'TsunamiChile',
     title: 'TS-Service',
     description: 'TsShortDescription',
     inputs: [{
-        id: 'selectedEq'
+        id: 'selectedEqChile'
     }],
     outputs: [{
-        id: 'tsWms'
+        id: 'tsWmsChile'
     }],
     function: tsunamiSimulation
 };

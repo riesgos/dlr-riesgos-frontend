@@ -4,20 +4,20 @@ import { getFragility, getDamage } from "../wpsServices";
 
 async function calculateDamage(inputs: Datum[]) {
 
-    const eqSimXmlRef = inputs.find(i => i.id === 'eqSimXmlRef')!;
-    const exposureModelRef = inputs.find(i => i.id === 'exposureRef')!;
+    const eqSimXmlRef = inputs.find(i => i.id === 'eqSimXmlRefChile')!;
+    const exposureModelRef = inputs.find(i => i.id === 'exposureRefChile')!;
     const fragilityRef = await getFragility('SARA_v1.0');
     
     const { wms, summary, damageRef } = await getDamage('SARA_v1.0', fragilityRef, eqSimXmlRef.value, exposureModelRef.value);
   
     return [{
-        id: 'eqDamageWms',
+        id: 'eqDamageWmsChile',
         value: wms
     }, {
-        id: 'eqDamageSummary',
+        id: 'eqDamageSummaryChile',
         value: summary
     }, {
-        id: 'eqDamageRef',
+        id: 'eqDamageRefChile',
         value: damageRef
     }];
 }
@@ -25,20 +25,20 @@ async function calculateDamage(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'EqDamage',
+    id: 'EqDamageChile',
     title: 'Multihazard_damage_estimation/Earthquake',
     description: 'eq_damage_svc_description',
     inputs: [{
-        id: 'eqSimXmlRef'
+        id: 'eqSimXmlRefChile'
     }, {
-        id: 'exposureRef',
+        id: 'exposureRefChile',
     }],
     outputs: [{
-        id: 'eqDamageWms'
+        id: 'eqDamageWmsChile'
     }, {
-        id: 'eqDamageSummary'
+        id: 'eqDamageSummaryChile'
     }, {
-        id: 'eqDamageRef'
+        id: 'eqDamageRefChile'
     }],
     function: calculateDamage
 };

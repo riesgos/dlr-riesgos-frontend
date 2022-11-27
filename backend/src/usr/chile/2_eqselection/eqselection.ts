@@ -5,8 +5,8 @@ import { Datum, Step } from "../../../scenarios/scenarios";
 
 async function selectEq(inputs: Datum[]) {
 
-    const availableEqs = inputs.find(i => i.id === 'availableEqs')!.value;
-    const userChoice = inputs.find(i => i.id === 'userChoice')!.value;
+    const availableEqs = inputs.find(i => i.id === 'availableEqsChile')!.value;
+    const userChoice = inputs.find(i => i.id === 'userChoiceChile')!.value;
     
     // @TODO: currently, we're expecting the user-choice to already be a feature-collection.
     // This is really silly. A simple id would do.
@@ -26,7 +26,7 @@ async function selectEq(inputs: Datum[]) {
     };
 
     return [{
-        id: 'selectedEq',
+        id: 'selectedEqChile',
         value: wrappedSelectedEq
     }];
 }
@@ -34,17 +34,17 @@ async function selectEq(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'selectEq',
+    id: 'SelectEqChile',
     title: 'Select earthquake',
     description: 'select_eq_description',
     inputs: [{
-        id: 'availableEqs'
+        id: 'availableEqsChile'
     }, {
-        id: 'userChoice',
+        id: 'userChoiceChile',
         options: []  // really, only the features in `availableEqs` should be valid options here.
     }],
     outputs: [{
-        id: 'selectedEq'
+        id: 'selectedEqChile'
     }],
     function: selectEq
 };

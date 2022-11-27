@@ -5,17 +5,17 @@ import { getEqSim } from "../wpsServices";
 
 async function simulateEq(inputs: Datum[]) {
 
-    const selectedEq = inputs.find(i => i.id === 'selectedEq')!.value;
-    const gmpe = inputs.find(i => i.id === 'gmpe')!.value;
-    const vsgrid = inputs.find(i => i.id === 'vsgrid')!.value;
+    const selectedEq = inputs.find(i => i.id === 'selectedEqChile')!.value;
+    const gmpe = inputs.find(i => i.id === 'gmpeChile')!.value;
+    const vsgrid = inputs.find(i => i.id === 'vsgridChile')!.value;
 
     const { wms, xml } = await getEqSim(gmpe, vsgrid, selectedEq);
 
     return [{
-        id: 'eqSimWms',
+        id: 'eqSimWmsChile',
         value: wms,
     }, {
-        id: 'eqSimXmlRef',
+        id: 'eqSimXmlRefChile',
         value: xml
     }];
 }
@@ -23,22 +23,22 @@ async function simulateEq(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'EqSimulation',
+    id: 'EqSimulationChile',
     title: 'Earthquake Simulation',
     description: 'EqSimulationShortText',
     inputs: [{
-        id: 'selectedEq'
+        id: 'selectedEqChile'
     }, {
-        id: 'gmpe',
+        id: 'gmpeChile',
         options: [ 'MontalvaEtAl2016SInter', 'GhofraniAtkinson2014', 'AbrahamsonEtAl2015SInter', 'YoungsEtAl1997SInterNSHMP2008' ]
     }, {
-        id: 'vsgrid',
+        id: 'vsgridChile',
         options: ['USGSSlopeBasedTopographyProxy', 'FromSeismogeotechnicsMicrozonation']
     }],
     outputs: [{
-        id: 'eqSimWms'
+        id: 'eqSimWmsChile'
     }, {
-        id: 'eqSimXmlRef'
+        id: 'eqSimXmlRefChile'
     }],
     function: simulateEq
 };

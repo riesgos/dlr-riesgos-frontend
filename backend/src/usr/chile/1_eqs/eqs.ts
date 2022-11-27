@@ -5,7 +5,7 @@ import { Bbox, getAvailableEqs } from "../wpsServices";
 
 async function loadEqs(inputs: Datum[]) {
 
-    const catalogType = inputs.find(i => i.id === 'eqCatalogType')!.value;
+    const catalogType = inputs.find(i => i.id === 'eqCatalogTypeChile')!.value;
 
     const bbox: Bbox = {
         crs: 'EPSG:4326',
@@ -16,7 +16,7 @@ async function loadEqs(inputs: Datum[]) {
     const result = await getAvailableEqs(catalogType, bbox);
 
     return [{
-        id: 'availableEqs',
+        id: 'availableEqsChile',
         value: result
     }];
 }
@@ -28,11 +28,11 @@ export const step: Step = {
     title: 'quakeledger',
     description: 'QuakeLedgerDescription',
     inputs: [{
-        id: 'eqCatalogType',
+        id: 'eqCatalogTypeChile',
         options: ['expert']
     }],
     outputs: [{
-        id: 'availableEqs'
+        id: 'availableEqsChile'
     }],
     function: loadEqs
 };

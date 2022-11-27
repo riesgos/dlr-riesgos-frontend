@@ -4,12 +4,12 @@ import { getSystemReliability } from "../wpsServices";
 
 async function calcSysRel(inputs: Datum[]) {
 
-    const intensityRef = inputs.find(i => i.id === 'eqSimXmlRef')!;
+    const intensityRef = inputs.find(i => i.id === 'eqSimXmlRefChile')!;
 
-    const result = await getSystemReliability('peru', intensityRef.value);
+    const result = await getSystemReliability('chile', intensityRef.value);
 
     return [{
-        id: 'sysRel',
+        id: 'sysRelChile',
         value: result
     }];
 }
@@ -17,14 +17,14 @@ async function calcSysRel(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'SysRel',
+    id: 'SysRelChile',
     title: 'System reliability after EQ',
     description: 'Description_system_reliability',
     inputs: [{
-        id: 'eqSimXmlRef'
+        id: 'eqSimXmlRefChile'
     }],
     outputs: [{
-        id: 'sysRel'
+        id: 'sysRelChile'
     }],
     function: calcSysRel
 };

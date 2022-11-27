@@ -1,209 +1,133 @@
-import { WpsProcess, ProcessStateUnavailable, Product } from '../../riesgos.datatypes';
-import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { WpsData } from '../../../services/wps/wps.datatypes';
-import { WmsLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { selectedEq } from './2_eqselection';
-import { HttpClient } from '@angular/common/http';
-import { FeatureCollection } from '@turf/helpers';
-import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
-import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { FeatureCollection } from "@turf/helpers";
+import { StringSelectUserConfigurableProduct, WizardableProduct } from "src/app/components/config_wizard/wizardable_products";
+import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
+import { WmsLayerProduct } from "src/app/components/map/mappable/mappable_products";
+import { toDecimalPlaces } from "src/app/helpers/colorhelpers";
+import { MappableProductAugmenter, WizardableProductAugmenter, WizardableStepAugmenter } from "src/app/services/augmenter/augmenter.service";
+import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from "../../riesgos.state";
 
 
 
-export const eqShakemapRef: WpsData & Product = {
-    uid: 'Shakyground_shakemap',
-    description: {
-        id: 'shakeMapFile',
-        title: 'shakeMapFile',
-        type: 'complex',
-        reference: true,
-        format: 'text/xml',
-        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
-        encoding: 'UTF-8'
-    },
-    value: null
-};
-
-export const shakemapPgaOutput: WpsData & WmsLayerProduct = {
-    uid: 'Shakyground_wms',
-    description: {
-        id: 'shakeMapFile',
-        title: 'shakeMapFile',
-        icon: 'earthquake',
-        name: 'shakemap',
-        type: 'complex',
-        reference: false,
-        format: 'application/WMS',
-        styles: ['shakemap-pga'],
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            const html = `
-            <p><b>{{ Ground_acceleration_PGA }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
-            `;
-            return html;
-        },
-    },
-    value: null
-};
-
-export const shakemapSa03WmsOutput: WpsData & WmsLayerProduct = {
-    uid: 'Shakyground_sa03_wms',
-    description: {
-        id: 'SA03_shakeMapFile',
-        title: 'SA03_shakeMapFile',
-        icon: 'earthquake',
-        name: 'SA03_shakemap',
-        type: 'complex',
-        reference: false,
-        format: 'application/WMS',
-        styles: ['shakemap-pga'],
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            const html = `
-            <p><b>{{ Ground_acceleration_SA03 }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
-            `;
-            return html;
-        },
-    },
-    value: null
-};
-
-export const shakemapSa10WmsOutput: WpsData & WmsLayerProduct = {
-    uid: 'Shakyground_sa10_wms',
-    description: {
-        id: 'SA10_shakeMapFile',
-        title: 'SA10_shakeMapFile',
-        icon: 'earthquake',
-        name: 'SA10_shakemap',
-        type: 'complex',
-        reference: false,
-        format: 'application/WMS',
-        styles: ['shakemap-pga'],
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            const html = `
-            <p><b>{{ Ground_acceleration_SA10 }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
-            `;
-            return html;
-        },
-    },
-    value: null
-};
-
-export const Gmpe: WpsData & StringSelectUserConfigurableProduct = {
-    uid: 'Shakyground_gmpe',
-    description: {
-        id: 'gmpe',
-        title: 'gmpe',
-        type: 'literal',
-        reference: false,
-        options: [
-            'MontalvaEtAl2016SInter',
-            'GhofraniAtkinson2014',
-            'AbrahamsonEtAl2015SInter',
-            'YoungsEtAl1997SInterNSHMP2008'
-        ],
-        defaultValue: 'MontalvaEtAl2016SInter',
-        wizardProperties: {
-            fieldtype: 'stringselect',
-            name: 'gmpe',
-            description: ''
-        }
-    },
-    value: null
-};
-
-export const VsGrid: WpsData & StringSelectUserConfigurableProduct = {
-    uid: 'Shakyground_vsgrid',
-    description: {
-        id: 'vsgrid',
-        title: 'vsgrid',
-        type: 'literal',
-        reference: false,
-        options: [
-            'FromSeismogeotechnicsMicrozonation',
-            'USGSSlopeBasedTopographyProxy',
-        ],
-        defaultValue: 'FromSeismogeotechnicsMicrozonation',
-        wizardProperties: {
-            fieldtype: 'stringselect',
-            name: 'vsgrid',
-            description: ''
-        }
-    },
-    value: null
-};
-
-
-export class Shakyground extends WpsProcess implements WizardableStep {
-
-    readonly wizardProperties: WizardProperties;
-
-    constructor(http: HttpClient, middleWareUrl: string) {
-        super(
-            'Shakyground',
-            'GroundmotionService',
-            [selectedEq, Gmpe, VsGrid].map(p => p.uid),
-            [eqShakemapRef, shakemapPgaOutput, shakemapSa03WmsOutput, shakemapSa10WmsOutput].map(p => p.uid),
-            'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess',
-            'EqSimulationShortText',
-            `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`,
-            '1.0.0',
-            http,
-            new ProcessStateUnavailable(),
-            middleWareUrl
-        );
-        this.wizardProperties = {
-            shape: 'earthquake',
-            providerName: 'GFZ',
-            providerUrl: 'https://www.gfz-potsdam.de/en/',
-            wikiLink: 'EqSimulation',
-            dataSources: [{ label: 'Shakyground (GFZ)', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=2dd724a7-47a1-11ec-947f-3811b03e280f' }]
-        };
+export class GmpeChile implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'gmpeChile';
     }
 
-    execute(inputs: Product[], outputs: Product[], doWhile): Observable<Product[]> {
-
-        // step 1: adjusting outputs.
-        // Replacing shakemap-wms'es with shakemap-json-data
-        const newOutputs = outputs.filter(i =>
-                    i.uid !== shakemapPgaOutput.uid
-                &&  i.uid !== shakemapSa03WmsOutput.uid
-                &&  i.uid !== shakemapSa10WmsOutput.uid);
-        const shakemapSaWmsData: WpsData & Product = {
-            uid: 'Shakyground_sa_wms',
+    makeProductWizardable(product: RiesgosProduct): StringSelectUserConfigurableProduct[] {
+        return [{
+            ... product,
             description: {
-                id: 'shakeMapFile',
-                title: 'shakeMapFile',
-                type: 'complex',
-                reference: false,
-                format: 'application/json',
+                options: product.options,
+                defaultValue: product.options[0],
+                wizardProperties: {
+                    fieldtype: 'stringselect',
+                    name: 'gmpe',
+                    description: ''
+                }
             },
-            value: null
-        };
-        newOutputs.push(shakemapSaWmsData);
+        }];
+    }
+}
 
-        // step 2: executing
-        return super.execute(inputs, newOutputs, doWhile).pipe(
-            map((products) => {
-                // step 3: reading shakemap-json-data into shakemap-wms'es
-                const wmsJsonData = products.find(p => p.uid === shakemapSaWmsData.uid).value[0];
-                const newProducts = products.filter(p => p.uid !== shakemapSaWmsData.uid);
-                newProducts.push({
-                    ... shakemapPgaOutput,
-                    value: [wmsJsonData['PGA']]
-                });
-                newProducts.push({
-                    ... shakemapSa03WmsOutput,
-                    value: [wmsJsonData['SA(0.3)']]
-                });
-                newProducts.push({
-                    ... shakemapSa10WmsOutput,
-                    value: [wmsJsonData['SA(1.0)']]
-                });
-                return newProducts;
-            })
-        );
+export class VsgridChile implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'vsgridChile';
+    }
+
+    makeProductWizardable(product: RiesgosProduct): StringSelectUserConfigurableProduct[] {
+        return [{
+            ... product,
+            description: {
+                options: product.options,
+                defaultValue: product.options[0],
+                wizardProperties: {
+                    fieldtype: 'stringselect',
+                    name: 'vsgrid',
+                    description: '',
+                }
+            }
+        }];
+    }
+}
+
+
+export class ShakygroundChile implements WizardableStepAugmenter {
+    appliesTo(step: RiesgosStep): boolean {
+        return step.step.id === 'EqSimulationChile';
+    }
+
+    makeStepWizardable(step: RiesgosStep): WizardableStep {
+        return {
+            ... step,
+            scenario: 'Chile',
+            wizardProperties: {
+                shape: 'earthquake',
+                providerName: 'GFZ',
+                providerUrl: 'https://www.gfz-potsdam.de/en/',
+                wikiLink: 'EqSimulation',
+                dataSources: [{ label: 'Shakyground (GFZ)', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=2dd724a7-47a1-11ec-947f-3811b03e280f' }]
+            }
+        };
+    }
+}
+
+
+
+export class ShakemapWmsChile implements MappableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqSimWmsChile'
+    }
+
+    makeProductMappable(product: RiesgosProductResolved): WmsLayerProduct[] {
+        return [{
+            ... product,
+            description: {
+                id: 'Shakyground_wmsChile',
+                icon: 'earthquake',
+                name: 'shakemap',
+                type: 'literal',
+                format: 'application/WMS',
+                styles: ['shakemap-pga'],
+                featureInfoRenderer: (fi: FeatureCollection) => {
+                    const html = `
+                    <p><b>{{ Ground_acceleration_PGA }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
+                    `;
+                    return html;
+                },
+            },
+        }, {
+            ... product,
+            description: {
+                id: 'Shakyground_sa03_wmsChile',
+                icon: 'earthquake',
+                name: 'SA03_shakemap',
+                type: 'literal',
+                format: 'application/WMS',
+                styles: ['shakemap-pga'],
+                featureInfoRenderer: (fi: FeatureCollection) => {
+                    const html = `
+                    <p><b>{{ Ground_acceleration_SA03 }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
+                    `;
+                    return html;
+                },
+            }
+        }, {
+            ...product,
+            description: {
+                id: 'Shakyground_sa10_wmsChile',
+                icon: 'earthquake',
+                name: 'SA10_shakemap',
+                type: 'literal',
+                format: 'application/WMS',
+                styles: ['shakemap-pga'],
+                featureInfoRenderer: (fi: FeatureCollection) => {
+                    const html = `
+                    <p><b>{{ Ground_acceleration_SA10 }}:</b></br>a = ${toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2)} g</p>
+                    `;
+                    return html;
+                },
+            },
+        }];
     }
 
 }

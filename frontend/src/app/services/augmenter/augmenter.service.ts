@@ -17,6 +17,7 @@ import { State } from 'src/app/ngrx_register';
 import { TsServicePeru, TsWmsPeru } from 'src/app/riesgos/scenarios/peru/6_tssim';
 import { SchemaTs, TsDamageWmsPeru, TsDeusPeru } from 'src/app/riesgos/scenarios/peru/7_tsdamage';
 import { ConfigService } from '../configService/configService';
+import { DamageConsumerAreasPeru, EqReliabilityPeru } from 'src/app/riesgos/scenarios/peru/8_sysrel';
 
 
 
@@ -86,7 +87,8 @@ export class AugmenterService {
       new ModelChoicePeru(),                                  new ExposureModelPeru(),  new InitialExposurePeru(),  
                                                               new EqDeusPeru(),         new EqDamageWmsPeru(this.store, this.dataSvc),
                                                               new TsServicePeru(),      new TsWmsPeru(),
-      new SchemaTs(),                                         new TsDeusPeru(),         new TsDamageWmsPeru(this.store, this.dataSvc)
+      new SchemaTs(),                                         new TsDeusPeru(),         new TsDamageWmsPeru(this.store, this.dataSvc),
+                                                              new EqReliabilityPeru(),  new DamageConsumerAreasPeru(),
     ];
   }
 

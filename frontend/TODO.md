@@ -1,9 +1,7 @@
 # Switch
 
-- Peru
-    - Ts-Damage
-    remove GfzUseStaging
-    - Sysrel
+remove GfzUseStaging
+popup: remove blocker on arrow
 - Chile
 - Ecuador
 - Create new legend component (with gradients)

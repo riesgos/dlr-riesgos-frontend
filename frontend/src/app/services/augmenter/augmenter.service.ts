@@ -15,6 +15,8 @@ import { ExposureModelPeru, InitialExposurePeru, ModelChoicePeru } from 'src/app
 import { EqDamageWmsPeru, EqDeusPeru } from 'src/app/riesgos/scenarios/peru/5_eqdamage';
 import { State } from 'src/app/ngrx_register';
 import { TsServicePeru, TsWmsPeru } from 'src/app/riesgos/scenarios/peru/6_tssim';
+import { SchemaTs, TsDamageWmsPeru, TsDeusPeru } from 'src/app/riesgos/scenarios/peru/7_tsdamage';
+import { ConfigService } from '../configService/configService';
 
 
 
@@ -73,7 +75,8 @@ export class AugmenterService {
 
   constructor(
     private store: Store<State>,
-    private dataSvc: DataService
+    private dataSvc: DataService,
+    private config: ConfigService,
   ) {
     this.augmenters = [
       // inputs                                               // steps                  // outputs
@@ -83,6 +86,7 @@ export class AugmenterService {
       new ModelChoicePeru(),                                  new ExposureModelPeru(),  new InitialExposurePeru(),  
                                                               new EqDeusPeru(),         new EqDamageWmsPeru(this.store, this.dataSvc),
                                                               new TsServicePeru(),      new TsWmsPeru(),
+      new SchemaTs(),                                         new TsDeusPeru(),         new TsDamageWmsPeru(this.store, this.dataSvc)
     ];
   }
 
@@ -113,7 +117,9 @@ export class AugmenterService {
 
     const augmenter = this.getWizardProductAugmenters().find(a => a.appliesTo(product));
     if (!augmenter) { 
-      console.warn(`No wizard-product-augmenter found for product ${product.id}`);
+      if (this.config.getConfig().production === false) {
+        console.warn(`No wizard-product-augmenter found for product ${product.id}`);
+      }
       return undefined;
     }
 
@@ -125,7 +131,9 @@ export class AugmenterService {
   public loadWizardPropertiesForStep(step: RiesgosStep): WizardableStep {
     const augmenter = this.getWizardStepAugmenters().find(a => a.appliesTo(step));
     if (!augmenter) { 
-      console.warn(`No wizard-step-augmenter found for step ${step.step.id}`);
+      if (this.config.getConfig().production === false) {
+        console.warn(`No wizard-step-augmenter found for step ${step.step.id}`);
+      }
       return undefined;
     }
     return augmenter.makeStepWizardable(step);
@@ -137,7 +145,9 @@ export class AugmenterService {
 
     const augmenter = this.getMapProductAugmenters().find(a => a.appliesTo(product));
     if (!augmenter) { 
-      console.warn(`No map-product-augmenter found for product ${product.id}`);
+      if (this.config.getConfig().production === false) {
+        console.warn(`No map-product-augmenter found for product ${product.id}`);
+      }
       return undefined;
     }
 

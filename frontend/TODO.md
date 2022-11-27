@@ -2,14 +2,15 @@
 
 - Peru
     - Ts-Damage
+    remove GfzUseStaging
     - Sysrel
 - Chile
 - Ecuador
+- Create new legend component (with gradients)
 
 # Next
 
 - Augmenter: only those products need to be resolved where a augmenter applies.
-- Create new legend component (with gradients)
 - Re-create graph-modal
 - Eq-catalog: add missing parameters
 - Restart, save- and reload-buttons

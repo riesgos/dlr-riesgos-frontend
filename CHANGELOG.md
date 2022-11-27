@@ -25,7 +25,12 @@
     - Many steps do not involve calling webservices
     - Setting up a webservice is hard, writing some js code in backend is relavitely easy
 
-- Selecting an eq from the catalog-output
+- **Frontend: ngrx-state is simple and abstract**
+    - Individual components may add additional information to state using `Augmentors`.
+    - But generally, information that is only relevant to one component should not pollute the global state.
+
+- **Backend: no steps may not run side-effects**
+    - Based on problem: Selecting an eq from the catalog-output
     - Decision: The backend will *not* set the `options` parameter of the `userChoice` parameter.
     - Justification: 
         - The catalog's output does already constitute the possible options for `userChoice`.

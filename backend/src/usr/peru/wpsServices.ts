@@ -364,6 +364,89 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
         type: 'complex',
         reference: false,
         format: 'application/json'
+    }, {
+        id: 'merged_output',
+        reference: true,
+        type: 'complex',
+        format: 'application/json'
+    }];
+
+    const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
+
+    return {
+        wms: results.find(r => r.description.id === 'shapefile_summary')?.value[0],
+        summary: results.find(r => r.description.id === 'meta_summary')?.value[0],
+        damageRef: results.find(r => r.description.id === 'merged_output')?.value
+    };
+}
+
+
+
+
+export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef: string, intensityGeotiffUrl: string, updatedExposureRef: string) {
+
+    const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
+    const processId = "org.n52.gfz.riesgos.algorithm.impl.NeptunusProcess";
+
+    const inputs: WpsInput[] = [{
+        description: {
+            id: 'intensity',
+            reference: true,
+            type: 'complex',
+            format: 'image/geotiff'
+        },
+        value: intensityGeotiffUrl
+    }, {
+        description: {
+            id: 'exposure',
+            reference: true,
+            type: 'complex',
+            format: 'application/json'
+        },
+        value: updatedExposureRef
+    }, {
+        description: {
+            id: 'fragility',
+            reference: true,
+            type: 'complex',
+            format: 'application/json'
+        },
+        value: fragilityRef
+    }, {
+        description: {
+            id: 'schema',
+            reference: false,
+            type: 'literal'
+        },
+        value: schemaName
+    }, {
+        description: {
+            id: 'intensityname',
+            title: '',
+            type: 'literal',
+            reference: false,
+        },
+        value: 'MWH'
+    }, {
+        description: {
+            id: 'intensityunit',
+            title: '',
+            reference: false,
+            type: 'literal'
+        },
+        value: 'm'
+    }];
+
+    const outputs: WpsOutputDescription[] = [{
+        id: 'shapefile_summary',
+        type: 'complex',
+        reference: false,
+        format: 'application/WMS'
+    }, {
+        id: 'meta_summary',
+        type: 'complex',
+        reference: false,
+        format: 'application/json'
     }];
 
     const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
@@ -373,6 +456,9 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
         summary: results.find(r => r.description.id === 'meta_summary')?.value[0]
     };
 }
+
+
+
 
 
 export async function getTsunami(selectedEq: Feature<Point, any>) {

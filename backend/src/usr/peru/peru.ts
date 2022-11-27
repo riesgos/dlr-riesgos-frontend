@@ -6,6 +6,7 @@ import { step as exposure } from './4_exposure/exposure';
 import { step as eqDmg } from './5_eqdamage/eqdamage';
 import { step as tsSim } from './6_tssim/tssim';
 import { step as tsDmg } from './7_tsdamage/tsdamage';
+import { step as sysRel } from './8_sysrel/sysrel';
 
 export const peruFactory = new ScenarioFactory(
     'Peru',
@@ -19,3 +20,4 @@ peruFactory.registerStep(exposure);
 peruFactory.registerStep(eqDmg);
 peruFactory.registerStep(tsSim);
 peruFactory.registerStep(tsDmg);
+peruFactory.registerStep(sysRel);

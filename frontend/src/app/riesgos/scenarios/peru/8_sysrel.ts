@@ -13,34 +13,8 @@ import Geometry from 'ol/geom/Geometry';
 
 
 
-export const countryPeru: WpsData & Product = {
-    uid: 'systemreliability_country_peru',
-    description: {
-        id: 'country',
-        title: '',
-        defaultValue: 'chile',
-        description: 'What country are we working in?',
-        reference: false,
-        type: 'literal',
-        format: 'text/plain'
-    },
-    value: 'peru'
-};
 
 
-export const hazardEqPeru: WpsData & Product = {
-    uid: 'systemreliability_hazard_eq_peru',
-    description: {
-        id: 'hazard',
-        title: 'hazard',
-        defaultValue: 'earthquake',
-        description: 'What hazard are we dealing with?',
-        reference: false,
-        type: 'literal',
-        format: 'text/plain'
-    },
-    value: 'earthquake'
-};
 
 export const damageConsumerAreasPeru: WpsData & Product & VectorLayerProduct = {
     uid: 'systemreliability_damage_consumerareas_peru',

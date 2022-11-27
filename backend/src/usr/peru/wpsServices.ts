@@ -507,3 +507,62 @@ export async function getTsunami(selectedEq: Feature<Point, any>) {
 
     return results[0].value;
 }
+
+
+
+export async function getSystemReliability(countryName: 'peru' | 'chile' | 'ecuador', intensityRef: string) {
+
+    const url = 'https://riesgos.52north.org/javaps/service';
+    const processId = 'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess';
+
+    const country: WpsInput = {
+        description: {
+            id: 'country',
+            title: '',
+            defaultValue: 'chile',
+            description: 'What country are we working in?',
+            reference: false,
+            type: 'literal',
+            format: 'text/plain'
+        },
+        value: countryName
+    };
+
+    const hazardType: WpsInput = {
+        description: {
+            id: 'hazard',
+            title: 'hazard',
+            defaultValue: 'earthquake',
+            description: 'What hazard are we dealing with?',
+            options: ['earthquake', 'lahar'],
+            reference: false,
+            type: 'literal',
+            format: 'text/plain'
+        },
+        value: countryName === 'ecuador' ? 'lahar' : 'earthquake'
+    }
+
+    const intensityData: WpsInput = {
+        description: {
+            id: 'intensity',
+            type: 'complex',
+            reference: true,
+            format: 'text/xml',
+            schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+            encoding: 'UTF-8'
+        },
+        value: intensityRef
+    }
+
+    const damageData: WpsOutputDescription = {
+        id: 'damage_consumer_areas',
+        title: 'damage_consumer_areas',
+        format: 'application/vnd.geo+json',
+        reference: false,
+        type: 'complex',
+    };
+
+    const results = await wpsClient2.executeAsync(url, processId, [country, hazardType, intensityData], [damageData]);
+
+    return results[0];
+}

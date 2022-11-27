@@ -1,7 +1,6 @@
 # Switch
 
 - Peru
-    - Tsunami
     - Ts-Damage
     - Sysrel
 - Chile

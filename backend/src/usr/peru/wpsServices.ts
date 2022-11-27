@@ -1,3 +1,4 @@
+import { Feature, Point } from "geojson";
 import { WpsClient, WpsInput, WpsOutputDescription } from "../../utils/wps/public-api";
 
 
@@ -371,4 +372,52 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
         wms: results.find(r => r.description.id === 'shapefile_summary')?.value[0],
         summary: results.find(r => r.description.id === 'meta_summary')?.value[0]
     };
+}
+
+
+export async function getTsunami(selectedEq: Feature<Point, any>) {
+
+    const url = "https://riesgos.52north.org/wps";
+    const processId = "get_scenario";
+
+    const latPeru: WpsInput = {
+        description: {
+            id: 'lat',
+            title: 'lat',
+            reference: false,
+            type: 'literal',
+        },
+        value: selectedEq.geometry.coordinates[1]
+    };
+    const lonPeru: WpsInput = {
+        description: {
+            id: 'lon',
+            title: 'lon',
+            reference: false,
+            type: 'literal',
+        },
+        value: selectedEq.geometry.coordinates[0]
+    };
+    const magPeru: WpsInput = {
+        description: {
+            id: 'mag',
+            title: 'mag',
+            reference: false,
+            type: 'literal',
+        },
+        value: selectedEq.properties['magnitude.mag.value']
+    };
+
+    const wmsOutput: WpsOutputDescription = {
+        id: 'epiCenter',
+        title: 'epiCenter',
+        reference: false,
+        format: 'string',
+        type: 'literal',
+    }
+
+
+    const results = await wpsClient1.executeAsync(url, processId, [latPeru, lonPeru, magPeru], [wmsOutput]);
+
+    return results[0].value;
 }

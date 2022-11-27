@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getEqSim } from "../wpsServices";
+import { getEqSim } from "../../wpsServices";
 
 
 

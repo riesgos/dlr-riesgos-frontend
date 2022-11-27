@@ -1,12 +1,20 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getExposureModel } from "../wpsServices";
+import { Bbox, getExposureModel } from "../../wpsServices";
 
 
 async function getExposure(inputs: Datum[]) {
 
     const exposureSelection = inputs.find(i => i.id === 'exposureModelName')!;
 
-    const { exposureModel, exposureRef } = await getExposureModel(exposureSelection.value, 'SARA_v1.0');
+    const bbox: Bbox = {
+        crs: 'EPSG:4326',
+        lllon: -80.8,
+        urlon:  -71.4,
+        lllat: -20.2,
+        urlat: -10.0
+    }
+
+    const { exposureModel, exposureRef } = await getExposureModel(exposureSelection.value, 'SARA_v1.0', bbox);
   
     return [{
         id: 'exposure',

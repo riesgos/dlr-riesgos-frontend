@@ -1,5 +1,5 @@
 import { Feature, Point } from "geojson";
-import { WpsClient, WpsInput, WpsOutputDescription } from "../../utils/wps/public-api";
+import { WpsClient, WpsInput, WpsOutputDescription } from "../utils/wps/public-api";
 
 
 const wpsClient1 = new WpsClient('1.0.0');
@@ -219,7 +219,7 @@ export type ExposureModel =  "ValpCVTBayesian" | "ValpCommuna" | "ValpRegularOri
 /**
  * Calls Assetmaster
  */
-export async function getExposureModel(modelName: ExposureModel, schemaName: Schema) {
+export async function getExposureModel(modelName: ExposureModel, schemaName: Schema, bbox: Bbox) {
 
     const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
     const processId = "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess";
@@ -232,7 +232,7 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
             reference: false,
             type: 'literal'
         },
-        value: '-88'
+        value: bbox.lllon + ''
     };
     const lonmax: WpsInput = {
         description: {
@@ -240,7 +240,7 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
             reference: false,
             type: 'literal'
         },
-        value: '-66',
+        value: bbox.urlon + ''
     };
     const latmin: WpsInput = {
         description: {
@@ -248,7 +248,7 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
             reference: false,
             type: 'literal'
         },
-        value: '-21'
+        value: bbox.lllat + ''
     };
     const latmax: WpsInput = {
         description: {
@@ -256,7 +256,7 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
             reference: false,
             type: 'literal'
         },
-        value: '-0'
+        value: bbox.urlat + ''
     };
 
 
@@ -466,7 +466,7 @@ export async function getTsunami(selectedEq: Feature<Point, any>) {
     const url = "https://riesgos.52north.org/wps";
     const processId = "get_scenario";
 
-    const latPeru: WpsInput = {
+    const lat: WpsInput = {
         description: {
             id: 'lat',
             title: 'lat',
@@ -475,7 +475,7 @@ export async function getTsunami(selectedEq: Feature<Point, any>) {
         },
         value: selectedEq.geometry.coordinates[1]
     };
-    const lonPeru: WpsInput = {
+    const lon: WpsInput = {
         description: {
             id: 'lon',
             title: 'lon',
@@ -484,7 +484,7 @@ export async function getTsunami(selectedEq: Feature<Point, any>) {
         },
         value: selectedEq.geometry.coordinates[0]
     };
-    const magPeru: WpsInput = {
+    const mag: WpsInput = {
         description: {
             id: 'mag',
             title: 'mag',
@@ -503,7 +503,7 @@ export async function getTsunami(selectedEq: Feature<Point, any>) {
     }
 
 
-    const results = await wpsClient1.executeAsync(url, processId, [latPeru, lonPeru, magPeru], [wmsOutput]);
+    const results = await wpsClient1.executeAsync(url, processId, [lat, lon, mag], [wmsOutput]);
 
     return results[0].value;
 }

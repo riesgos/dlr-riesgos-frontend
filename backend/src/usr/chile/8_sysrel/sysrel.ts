@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getSystemReliability } from "../wpsServices";
+import { getSystemReliability } from "../../wpsServices";
 
 
 async function calcSysRel(inputs: Datum[]) {

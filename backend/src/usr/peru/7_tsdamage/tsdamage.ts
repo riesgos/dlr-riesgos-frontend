@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getNeptunusTsunamiDamage, getFragility } from "../wpsServices";
+import { getNeptunusTsunamiDamage, getFragility } from "../../wpsServices";
 
 
 async function tsDamage(inputs: Datum[]) {

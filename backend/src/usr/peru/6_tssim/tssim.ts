@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getTsunami } from "../wpsServices";
+import { getTsunami } from "../../wpsServices";
 
 
 async function tsunamiSimulation(inputs: Datum[]) {

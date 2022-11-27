@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { Bbox, getAvailableEqs } from "../wpsServices";
+import { Bbox, getAvailableEqs } from "../../wpsServices";
 
 
 

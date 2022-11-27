@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getFragility, getDamage } from "../wpsServices";
+import { getFragility, getDamage } from "../../wpsServices";
 
 
 async function calculateDamage(inputs: Datum[]) {

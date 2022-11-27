@@ -1,245 +1,192 @@
-import { ProcessStateUnavailable, Product, ExecutableProcess, ProcessState } from 'src/app/riesgos/riesgos.datatypes';
-import { initialExposureRef } from './4_exposure';
-import { WpsData } from '../../../services/wps/wps.datatypes';
-import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { HttpClient } from '@angular/common/http';
-import { forkJoin, Observable } from 'rxjs';
-import { fragilityRef, VulnerabilityModel } from './modelProp';
-import { eqShakemapRef } from './3_eqsim';
-import { Deus } from './deus';
-import { map, switchMap, take } from 'rxjs/operators';
-import { ProductLayer, ProductRasterLayer } from 'src/app/mappable/map.types';
-import { MapOlService } from '@dlr-eoc/map-ol';
-import { LayersService } from '@dlr-eoc/services-layers';
-import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
-import { DamagePopupComponent } from 'src/app/components/dynamic/damage-popup/damage-popup.component';
 import { MapBrowserEvent } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
-import { Store } from '@ngrx/store';
-import { State } from 'src/app/ngrx_register';
 import { InfoTableComponentComponent } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
 import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
 import { createHeaderTableHtml } from 'src/app/helpers/others';
 import { EconomicDamagePopupComponent } from 'src/app/components/dynamic/economic-damage-popup/economic-damage-popup.component';
+import { MappableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
+import { MappableProduct } from 'src/app/components/map/mappable/mappable_products';
+import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
+import { DamagePopupComponent } from 'src/app/components/dynamic/damage-popup/damage-popup.component';
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import { map, switchMap, take } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, of } from 'rxjs';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
+import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
+import { ProductLayer, ProductRasterLayer } from 'src/app/components/map/mappable/map.types';
+import { DataService } from 'src/app/services/data/data.service';
+import { getProduct } from '../../riesgos.selectors';
+import { TranslatedImageComponent } from 'src/app/components/dynamic/translated-image/translated-image.component';
 
 
 
+export class EqDamageWmsChile implements MappableProductAugmenter {
 
-export const loss: WpsData & Product = {
-    uid: 'loss',
-    description: {
-        id: 'loss',
-        title: '',
-        reference: false,
-        type: 'literal'
-    },
-    value: 'testinputs/loss_sara.json'
-};
+    private metadata$ = new BehaviorSubject<RiesgosProductResolved | undefined>(undefined);
 
-export const eqDamageWms: WpsData & MappableProduct = {
-    uid: 'eq_damage',
-    description: {
-        id: 'shapefile_summary',
-        title: 'shapefile_summary',
-        reference: false,
-        type: 'complex',
-        format: 'application/WMS',
-    },
-    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
-
-        const riesgosState$ = store.select((state) => state.riesgosState).pipe(take(1));
-        const layers$ = layerMarshaller.makeWmsLayers(this);
-
-        return forkJoin([layers$, riesgosState$]).pipe(
-            map(([layers, riesgosState]) => {
-
-                const metaData = riesgosState.scenarioData['c1'].products.find(p => p.uid === eqDamageMeta.uid);
-                const metaDataValue = metaData.value[0];
-
-                const econLayer: ProductLayer = layers[0];
-                const damageLayer: ProductLayer = new ProductRasterLayer({...econLayer });
-
-                econLayer.id += '_economic';
-                econLayer.name = 'eq-economic-loss-title';
-                econLayer.icon = 'dot-circle';
-                econLayer.params.STYLES = 'style-cum-loss-chile-plasma';
-                econLayer.legendImg += '&style=style-cum-loss-chile-plasma';
-                const totalDamage = +(metaDataValue.total.loss_value);
-                const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
-                econLayer.dynamicDescription = {
-                    component: InfoTableComponentComponent,
-                    inputs: {
-                        // title: 'Total damage',
-                        data: [[{value: 'Loss'}, {value: totalDamageFormatted}]],
-                        bottomText: `{{ loss_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
-                    }
+    constructor(private store: Store, private resolver: DataService) {
+        this.store.select(getProduct('eqDamageSummaryChile')).pipe(
+            switchMap(p => {
+                if (p) {
+                    if (p.reference) return this.resolver.resolveReference(p);
+                    return of(p);
                 }
-                econLayer.popup = {
-                    dynamicPopup: {
-                        component: EconomicDamagePopupComponent,
-                        getAttributes: (args) => {
-                            const event: MapBrowserEvent<any> = args.event;
-                            const layer: TileLayer<TileWMS> = args.layer;
-                            return {
-                                event: event,
-                                layer: layer,
-                                metaData: metaData.value[0],
-                                title: 'eq-economic-loss-title'
-                            };
-                        }
-                    }
-                }
-
-
-                damageLayer.id += '_damage';
-                damageLayer.name = 'eq-exposure';
-                damageLayer.icon = 'dot-circle';
-                damageLayer.params = { ... econLayer.params };
-                damageLayer.params.STYLES = 'style-damagestate-sara-plasma';
-                damageLayer.legendImg += '&style=style-damagestate-sara-plasma';
-                delete damageLayer.params.SLD_BODY;
-                damageLayer.popup = {
-                    dynamicPopup: {
-                        component: DamagePopupComponent,
-                        getAttributes: (args) => {
-                            const event: MapBrowserEvent<any> = args.event;
-                            const layer: TileLayer<TileWMS> = args.layer;
-                            return {
-                                event: event,
-                                layer: layer,
-                                metaData: metaData.value[0],
-                                xLabel: 'damage',
-                                yLabel: 'Nr_buildings',
-                                schema: 'SARA_v1.0',
-                                heading: 'earthquake_damage_classification',
-                                additionalText: 'DamageStatesSara'
-                            };
-                        }
-                    }
-                };
-                const counts = metaDataValue.total.buildings_by_damage_state;
-                const html =
-                    createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
-                    + '{{ BuildingTypesSaraExtensive }}';
-
-                damageLayer.dynamicDescription = {
-                    component: TranslatableStringComponent,
-                    inputs: {
-                        text: html
-                    }
-                };
-
-                
-                return [econLayer, damageLayer];
-            })
-        );
-    },
-    value: null
-}
-
-export const eqDamageMeta: WpsData & Product = {
-    uid: 'chile_eqdamage_metadata',
-    description: {
-        id: 'meta_summary',
-        reference: false,
-        title: '',
-        type: 'complex',
-        format: 'application/json'
-    },
-    value: null
-}
-
-export const eqDamageMRef: WpsData & Product = {
-    uid: 'merged_output_ref',
-    description: {
-        id: 'merged_output',
-        title: '',
-        reference: true,
-        type: 'complex',
-        format: 'application/json'
-    },
-    value: null
-};
-
-
-export class EqDeus implements ExecutableProcess, WizardableStep {
-
-    readonly state: ProcessState;
-    readonly uid = 'EQ-Deus';
-    readonly name = 'Multihazard_damage_estimation/Earthquake';
-    readonly requiredProducts = [eqShakemapRef, initialExposureRef].map(p => p.uid);
-    readonly providedProducts = [eqDamageWms, eqDamageMRef, eqDamageMeta].map(p => p.uid);
-    readonly description = 'eq_damage_svc_description';
-    readonly wizardProperties: WizardProperties = {
-        providerName: 'GFZ',
-        providerUrl: 'https://www.gfz-potsdam.de/en/',
-        shape: 'dot-circle',
-        wikiLink: 'ExposureAndVulnerability'
-    };
-
-    private vulnerabilityProcess: VulnerabilityModel;
-    private deusProcess: Deus;
-
-    constructor(http: HttpClient, middleWareUrl: string) {
-        this.state = new ProcessStateUnavailable();
-        this.vulnerabilityProcess = new VulnerabilityModel(http, middleWareUrl);
-        this.deusProcess = new Deus(http, middleWareUrl);
+                return of(undefined);
+            }),
+        )
+        .subscribe((aeqs: RiesgosProductResolved | undefined) => {
+            this.metadata$.next(aeqs);
+        });
     }
 
-    execute(
-        inputProducts: Product[],
-        outputProducts?: Product[],
-        doWhileExecuting?: (response: any, counter: number) => void): Observable<Product[]> {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqDamageWmsChile';
+    }
 
-        const schema: Product & WpsData = {
-            uid: 'schema',
-            description: {
-              id: 'schema',
-              title: 'schema',
-              reference: false,
-              type: 'literal',
+    makeProductMappable(product: RiesgosProductResolved): MappableProduct[] {
+        
+        const metaDataValue = this.metadata$.value.value;
+
+        return [{
+            ... product,
+            toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store, layerMarshaller: LayerMarshaller) {
+
+                const layers$ = layerMarshaller.makeWmsLayers({
+                    id: product.id,
+                    value: product.value,
+                    reference: product.reference,
+                    description: {
+                        id: 'shapefile_summary',
+                        name: 'shapefile_summary',
+                        type: 'literal',
+                        format: 'application/WMS',
+                    },
+                });
+        
+                return layers$.pipe(
+                    map((layers) => {
+                        const econLayer: ProductLayer = layers[0];
+                        const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
+        
+                        econLayer.id += '_economic';
+                        econLayer.name = 'eq-economic-loss-title';
+                        econLayer.icon = 'dot-circle';
+                        econLayer.params.STYLES = 'style-cum-loss-Chile-plasma';
+                        const baseLegendEcon = econLayer.legendImg;
+                        econLayer.legendImg = {
+                            component: TranslatedImageComponent,
+                            inputs: {
+                                languageImageMap: {
+                                    'EN': baseLegendEcon + '&style=style-cum-loss-plasma&language=en',
+                                    'ES': baseLegendEcon + '&style=style-cum-loss-plasma',
+                                }
+                            }
+                        };
+                        const totalDamage = +(metaDataValue.total.loss_value);
+                        const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
+                        econLayer.dynamicDescription = {
+                            component: InfoTableComponentComponent,
+                            inputs: {
+                                // title: 'Total damage',
+                                data: [[{value: 'Loss'}, {value: totalDamageFormatted}]],
+                                bottomText: `{{ loss_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
+                            }
+                        }
+                        econLayer.popup = {
+                            dynamicPopup: {
+                                component: EconomicDamagePopupComponent,
+                                getAttributes: (args) => {
+                                    const event: MapBrowserEvent<any> = args.event;
+                                    const layer: TileLayer<TileWMS> = args.layer;
+                                    return {
+                                        event: event,
+                                        layer: layer,
+                                        metaData: metaDataValue,
+                                        title: 'eq-economic-loss-title'
+                                    };
+                                }
+                            }
+                        }
+        
+                        
+                        damageLayer.id += '_damage';
+                        damageLayer.name = 'eq-exposure';
+                        damageLayer.icon = 'dot-circle';
+                        damageLayer.params = { ... econLayer.params };
+                        damageLayer.params.STYLES = 'style-damagestate-sara-plasma';
+                        const baseLegendDmg = damageLayer.legendImg;
+                        damageLayer.legendImg = {
+                            component: TranslatedImageComponent,
+                            inputs: {
+                                languageImageMap: {
+                                    'EN': baseLegendDmg + '&style=style-damagestate-sara-plasma&language=en',
+                                    'ES': baseLegendDmg + '&style=style-damagestate-sara-plasma',
+                                }
+                            }
+                        };
+                        delete damageLayer.params.SLD_BODY;
+                        damageLayer.popup = {
+                            dynamicPopup: {
+                                component: DamagePopupComponent,
+                                getAttributes: (args) => {
+                                    const event: MapBrowserEvent<any> = args.event;
+                                    const layer: TileLayer<TileWMS> = args.layer;
+                                    return {
+                                        event: event,
+                                        layer: layer,
+                                        metaData: metaDataValue,
+                                        xLabel: 'damage',
+                                        yLabel: 'Nr_buildings',
+                                        schema: 'SARA_v1.0',
+                                        heading: 'earthquake_damage_classification',
+                                        additionalText: 'DamageStatesSara'
+                                    };
+                                }
+                            }
+                        };
+                        const counts = metaDataValue.total.buildings_by_damage_state;
+                        const html =
+                            createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
+                            + '{{ BuildingTypesSaraExtensive }}';
+        
+                        damageLayer.dynamicDescription = {
+                            component: TranslatableStringComponent,
+                            inputs: {
+                                text: html
+                            }
+                        };
+        
+                        
+                        return [econLayer, damageLayer];
+                    })
+                );
             },
-            value: 'SARA_v1.0'
-          };
-
-        const vulnerabilityInputs = [ schema ];
-        const vulnerabilityOutputs = [ fragilityRef ];
-
-        return this.vulnerabilityProcess.execute(vulnerabilityInputs, vulnerabilityOutputs, doWhileExecuting)
-            .pipe(
-                switchMap((resultProducts: Product[]) => {
-                    const fragility = resultProducts.find(prd => prd.uid === fragilityRef.uid);
-                    const shakemap = inputProducts.find(prd => prd.uid === eqShakemapRef.uid);
-                    const exposure = inputProducts.find(prd => prd.uid === initialExposureRef.uid);
-
-                    const deusInputs = [{
-                        ...schema,
-                        value: 'SARA_v1.0'
-                    }, {
-                        ...fragility,
-                        description: {
-                            ...fragilityRef.description,
-                            id: 'fragility'
-                        }
-                    }, {
-                        ...shakemap,
-                        description: {
-                            ...shakemap.description,
-                            id: 'intensity'
-                        }
-                    }, {
-                        ...exposure,
-                        description: {
-                            ...exposure.description,
-                            id: 'exposure'
-                        }
-                    }];
-                    const deusOutputs = outputProducts;
-                    return this.deusProcess.execute(deusInputs, deusOutputs, doWhileExecuting);
-                })
-            );
+        }];
     }
+
+}
+
+export class EqDeusChile implements WizardableStepAugmenter {
+    appliesTo(step: RiesgosStep): boolean {
+        return step.step.id === 'EqDamageChile';
+    }
+
+    makeStepWizardable(step: RiesgosStep): WizardableStep {
+        return {
+            ...step,
+            scenario: 'Chile',
+            wizardProperties: {
+                providerName: 'GFZ',
+                providerUrl: 'https://www.gfz-potsdam.de/en/',
+                shape: 'dot-circle' as 'dot-circle',
+                wikiLink: 'ExposureAndVulnerability'
+            }
+        }
+    }
+
 }

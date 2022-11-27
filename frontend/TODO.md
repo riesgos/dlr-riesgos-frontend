@@ -1,24 +1,21 @@
 # Switch
 
-
-- google fonts austauschen in open-map-styles
-    - https://github.com/openlayers/ol-mapbox-style/blob/HEAD/src/text.js#L185-L186
-    - https://gitlab.dlr.de/ukis-frontend/project-fire/-/commit/ea091e8d87550613c1f8d7faecd200007480132b
 - Peru
     - Tsunami
     - Ts-Damage
     - Sysrel
 - Chile
 - Ecuador
-- cd frontend && npx ts-unused-exports tsconfig.json
 
-# Cleanup
+# Next
+
 - Augmenter: only those products need to be resolved where a augmenter applies.
 - Create new legend component (with gradients)
 - Re-create graph-modal
 - Eq-catalog: add missing parameters
 - Restart, save- and reload-buttons
     Store current state *and* relevant data from resolver
+- cd frontend && npx ts-unused-exports tsconfig.json
 
 # Improvements for future
 

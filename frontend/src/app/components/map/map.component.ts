@@ -12,14 +12,19 @@ import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr
 
 import { click, noModifierKeys } from 'ol/events/condition';
 import { DragBox, Select } from 'ol/interaction';
-import { GeoJSON, KML } from 'ol/format';
+import { GeoJSON, KML, MVT } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import { SelectEvent } from 'ol/interaction/Select';
-import { TileWMS } from 'ol/source';
+import { TileWMS, VectorTile } from 'ol/source';
 import Geometry from 'ol/geom/Geometry';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import { applyStyle } from 'ol-mapbox-style';
+import { createXYZ } from 'ol/tilegrid';
+import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
+
 
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
 import { getCurrentScenarioName, getProducts, getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
@@ -596,35 +601,35 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getBaseLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
 
         const osmLayer = new OsmTileLayer({
-            visible: true,
+            visible: false,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });
 
-        // const vectorTile = new VectorTileLayer({
-        //     declutter: true,
-        //     source: new VectorTile({
-        //         format: new MVT(),
-        //         tileGrid: createXYZ({
-        //             minZoom: 0,
-        //             maxZoom: 12
-        //         }),
-        //         url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
-        //     }),
-        //     renderMode: 'hybrid'
-        // });
-        // applyStyle(vectorTile, greyScale, 'planet0-12');
+        const vectorTile = new VectorTileLayer({
+            declutter: true,
+            source: new VectorTile({
+                format: new MVT(),
+                tileGrid: createXYZ({
+                    minZoom: 0,
+                    maxZoom: 12
+                }),
+                url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
+            }),
+            renderMode: 'hybrid'
+        });
+        applyStyle(vectorTile, greyScale, 'planet0-12');
 
-        // const geoserviceVTiles = new CustomLayer<VectorTileLayer>({
-        //     name: 'OpenMapStyles',
-        //     id: 'planet_eoc_vector_tiles',
-        //     attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
-        //     description: `vtiles_description`,
-        //     type: 'custom',
-        //     visible: true,
-        //     custom_layer: vectorTile
-        // });
+        const geoserviceVTiles = new CustomLayer<VectorTileLayer>({
+            name: 'OpenMapStyles',
+            id: 'planet_eoc_vector_tiles',
+            attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
+            description: `vtiles_description`,
+            type: 'custom',
+            visible: true,
+            custom_layer: vectorTile
+        });
 
-        return of([osmLayer]);
+        return of([osmLayer, geoserviceVTiles]);
     }
 
 }

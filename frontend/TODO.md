@@ -1,10 +1,9 @@
 # Switch
 
+Ecuador
 remove GfzUseStaging
 popup: remove blocker on arrow
-- Chile
-- Ecuador
-- Create new legend component (with gradients)
+Create new legend component (with gradients)
 
 # Next
 
@@ -17,6 +16,12 @@ popup: remove blocker on arrow
 
 # Improvements for future
 
+- Restructure directories:
+    - two modules: one for map, one for wizard
+        - share store between them: https://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular-not-between-to-c
+        - https://www.youtube.com/watch?v=oqZ4-ULwfbc
+        - BUT: how do I then use the Augmentor? We'd need one augmentor for each module. 
+    - all ngrx files in dir ngrx
 - Running two processes in parallel sometimes has one end up stuck
     - backend completes both processes
     - but frontend only fetches one 
@@ -24,12 +29,6 @@ popup: remove blocker on arrow
         - Note how newState2 does not yet include result1.
         - Frontend needs to merge together those two new states.
             - Hmm, problem persists...
-- Restructure directories:
-    - two modules: one for map, one for wizard
-        - share store between them: https://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular-not-between-to-c
-        - https://www.youtube.com/watch?v=oqZ4-ULwfbc
-        - BUT: how do I then use the Augmentor? We'd need one augmentor for each module. 
-    - all ngrx files in dir ngrx
 - Wizard forms: Redesign
     - Global form does not get notified when its child-forms are updated
     - try removing the FromGroup from app-form

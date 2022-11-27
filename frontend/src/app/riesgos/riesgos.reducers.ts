@@ -51,10 +51,17 @@ export const reducer = createReducer(
         const step = scenario.steps.find(s => s.step.id === action.step);
         step.state = new StepStateCompleted();
         for (const newProduct of action.newData) {
-            for (let i = 0; i < scenario.products.length; i++) {
-                if (newProduct.id === scenario.products[i].id) {
-                    scenario.products[i] = newProduct;
-                    break;
+            
+            // Only do updates on products that have new data.
+            // This prevents us from over-writing results from
+            // requests that have been started at the same time
+            // as this request.
+            if (newProduct.value || newProduct.reference) {  
+                for (let i = 0; i < scenario.products.length; i++) {
+                    if (newProduct.id === scenario.products[i].id) {
+                        scenario.products[i] = newProduct;
+                        break;
+                    }
                 }
             }
         }

@@ -13,6 +13,7 @@ import { EqSelectionPeru, SelectedEqPeru, UserinputSelectedEqPeru } from 'src/ap
 import { GmpePeru, ShakemapWmsPeru, ShakygroundPeru, VsgridPeru } from 'src/app/riesgos/scenarios/peru/3_eqsim';
 import { ExposureModelPeru, InitialExposurePeru, ModelChoicePeru } from 'src/app/riesgos/scenarios/peru/4_exposure';
 import { EqDamageWmsPeru, EqDeusPeru } from 'src/app/riesgos/scenarios/peru/5_eqdamage';
+import { State } from 'src/app/ngrx_register';
 
 
 
@@ -70,7 +71,7 @@ export class AugmenterService {
   private augmenters: Augmenter[] = [];
 
   constructor(
-    private store: Store,
+    private store: Store<State>,
     private dataSvc: DataService
   ) {
     this.augmenters = [
@@ -79,7 +80,7 @@ export class AugmenterService {
       new UserinputSelectedEqPeru(this.store, this.dataSvc),  new EqSelectionPeru(),    new SelectedEqPeru(),
       new VsgridPeru(), new GmpePeru(),                       new ShakygroundPeru(),    new ShakemapWmsPeru(),
       new ModelChoicePeru(),                                  new ExposureModelPeru(),  new InitialExposurePeru(),  
-                                                              new EqDeusPeru(),         new EqDamageWmsPeru(),                
+                                                              new EqDeusPeru(),         new EqDamageWmsPeru(this.store, this.dataSvc),                
     ];
   }
 

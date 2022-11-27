@@ -79,6 +79,7 @@ import { WMTSLayerFactory } from './components/map/mappable/wmts';
 // import all used icons
 import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from '@cds/core/icon';
 import { DataService } from './services/data/data.service';
+import { TranslatedImageComponent } from './components/dynamic/translated-image/translated-image.component';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
@@ -135,6 +136,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     VectorLegendComponent,
     VerticalNavResizeComponent,
     WizardPageComponent,
+    TranslatedImageComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -150,7 +152,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot(effects),
     !environment.production ? StoreDevtoolsModule.instrument({
-      maxAge: 5,
+      maxAge: 25,
     }) : [],
     TranslateModule.forRoot({
       loader: {

@@ -14,34 +14,62 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { map, take } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, of } from 'rxjs';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
 import { ProductLayer, ProductRasterLayer } from 'src/app/components/map/mappable/map.types';
-import { State } from 'src/app/ngrx_register';
+import { DataService } from 'src/app/services/data/data.service';
+import { getProduct } from '../../riesgos.selectors';
+import { TranslatedImageComponent } from 'src/app/components/dynamic/translated-image/translated-image.component';
 
 
 
 export class EqDamageWmsPeru implements MappableProductAugmenter {
+
+    private metadata$ = new BehaviorSubject<RiesgosProductResolved | undefined>(undefined);
+
+    constructor(private store: Store, private resolver: DataService) {
+        this.store.select(getProduct('eqDamageSummary')).pipe(
+            switchMap(p => {
+                if (p) {
+                    if (p.reference) return this.resolver.resolveReference(p);
+                    return of(p);
+                }
+                return of(undefined);
+            }),
+        )
+        .subscribe((aeqs: RiesgosProductResolved | undefined) => {
+            this.metadata$.next(aeqs);
+        });
+    }
+
     appliesTo(product: RiesgosProduct): boolean {
         return product.id === 'eqDamageWms';
     }
 
     makeProductMappable(product: RiesgosProductResolved): MappableProduct[] {
+        
+        const metaDataValue = this.metadata$.value.value;
+
         return [{
             ... product,
-            toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+            toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store, layerMarshaller: LayerMarshaller) {
 
-                const riesgosState$ = store.select((state) => state.riesgosState).pipe(take(1));
-                const layers$ = layerMarshaller.makeWmsLayers(this);
+                const layers$ = layerMarshaller.makeWmsLayers({
+                    id: product.id,
+                    value: product.value,
+                    reference: product.reference,
+                    description: {
+                        id: 'shapefile_summary',
+                        name: 'shapefile_summary',
+                        type: 'literal',
+                        format: 'application/WMS',
+                    },
+                });
         
-                return forkJoin([layers$, riesgosState$]).pipe(
-                    map(([layers, riesgosState]) => {
-        
-                        const metaData = riesgosState.scenarioData['p1'].products.find(p => p.id === 'eqDamageSummary');
-                        const metaDataValue = metaData.value[0];
-        
+                return layers$.pipe(
+                    map((layers) => {
                         const econLayer: ProductLayer = layers[0];
                         const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
         
@@ -49,7 +77,16 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                         econLayer.name = 'eq-economic-loss-title';
                         econLayer.icon = 'dot-circle';
                         econLayer.params.STYLES = 'style-cum-loss-peru-plasma';
-                        econLayer.legendImg += '&style=style-cum-loss-peru-plasma';
+                        const baseLegendEcon = econLayer.legendImg;
+                        econLayer.legendImg = {
+                            component: TranslatedImageComponent,
+                            inputs: {
+                                languageImageMap: {
+                                    'EN': baseLegendEcon + '&style=style-cum-loss-peru-plasma&language=en',
+                                    'ES': baseLegendEcon + '&style=style-cum-loss-peru-plasma',
+                                }
+                            }
+                        };
                         const totalDamage = +(metaDataValue.total.loss_value);
                         const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                         econLayer.dynamicDescription = {
@@ -69,7 +106,7 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                                     return {
                                         event: event,
                                         layer: layer,
-                                        metaData: metaData.value[0],
+                                        metaData: metaDataValue,
                                         title: 'eq-economic-loss-title'
                                     };
                                 }
@@ -82,7 +119,16 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                         damageLayer.icon = 'dot-circle';
                         damageLayer.params = { ... econLayer.params };
                         damageLayer.params.STYLES = 'style-damagestate-sara-plasma';
-                        damageLayer.legendImg += '&style=style-damagestate-sara-plasma';
+                        const baseLegendDmg = damageLayer.legendImg;
+                        damageLayer.legendImg = {
+                            component: TranslatedImageComponent,
+                            inputs: {
+                                languageImageMap: {
+                                    'EN': baseLegendDmg + '&style=style-damagestate-sara-plasma&language=en',
+                                    'ES': baseLegendDmg + '&style=style-damagestate-sara-plasma',
+                                }
+                            }
+                        };
                         delete damageLayer.params.SLD_BODY;
                         damageLayer.popup = {
                             dynamicPopup: {
@@ -93,7 +139,7 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                                     return {
                                         event: event,
                                         layer: layer,
-                                        metaData: metaData.value[0],
+                                        metaData: metaDataValue,
                                         xLabel: 'damage',
                                         yLabel: 'Nr_buildings',
                                         schema: 'SARA_v1.0',

@@ -36,7 +36,7 @@ export class RiesgosEffects {
             // fetch current data, convert, execute, and convert back
             mergeMap(_ => this.store$.select(getProductsForScenario(memScenario)).pipe(take(1))),
             map(products => convertFrontendDataToApiState(products)),
-            switchMap(apiState => this.backendSvc.execute(memScenario, memStep, apiState)),
+            mergeMap(apiState => this.backendSvc.execute(memScenario, memStep, apiState)),
             map(newApiState => convertApiDataToRiesgosData(newApiState.data)),
             
             // notify app of new data

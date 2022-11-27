@@ -1,5 +1,5 @@
 import { readFile, writeFile, unlink, stat, mkdir, rm, appendFile, readdir } from 'fs/promises';
-import { existsSync, statSync } from 'fs';
+import { existsSync, statSync, renameSync, writeFileSync } from 'fs';
 import path from 'path';
 
 
@@ -38,6 +38,16 @@ export function fileExists(path: string): boolean {
 export async function readTextFile(filePath: string) {
     const contents = await readFile(filePath, {encoding: 'utf-8', flag: 'r'});
     return contents;
+}
+
+export function renameFileSync(filePath: string, newPath: string) {
+    renameSync(filePath, newPath);
+}
+
+export function createFileSync(filePath: string) {
+    writeFileSync(filePath, "", {
+        encoding: 'utf-8',
+    });
 }
 
 export async function writeTextFile(filePath: string, data: string) {
@@ -82,7 +92,43 @@ export async function writeBinaryFile(filePath: string, data: Buffer) {
     }
 }
 
+export function getFileAgeSync(filePath: string): number {
+    try {
+        const statistics = statSync(filePath);
+        const createdDate = statistics.birthtime;
+        const currentTime = new Date();
+        const secondsSinceCreation = (currentTime.getTime() - createdDate.getTime()) / 1000;
+        return secondsSinceCreation;
+    } catch (e) {
+        return -1;
+    }
+}
+
+export function getFileLastChangeSync(filePath: string): number {
+    try {
+        const statistics = statSync(filePath);
+        const lastChange = statistics.ctime;
+        const currentTime = new Date();
+        const secondsSinceChange = (currentTime.getTime() - lastChange.getTime()) / 1000;
+        return secondsSinceChange;
+    } catch (e) {
+        return -1;
+    }
+}
+
 export async function getFileAge(filePath: string): Promise<number> {
+    try {
+        const statistics = await stat(filePath);
+        const createdDate = statistics.birthtime;
+        const currentTime = new Date();
+        const secondsSinceCreation = (currentTime.getTime() - createdDate.getTime()) / 1000;
+        return secondsSinceCreation;
+    } catch (e) {
+        return -1;
+    }
+}
+
+export async function getFileLastChange(filePath: string): Promise<number> {
     try {
         const statistics = await stat(filePath);
         const lastChange = statistics.ctime;

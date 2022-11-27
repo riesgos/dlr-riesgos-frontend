@@ -1,11 +1,16 @@
 import { appendFileSync } from "fs"
+import { createFileSync, getFileAgeSync, renameFileSync } from "../utils/files";
 
 // @TODO: 
 // log-rotate: a new log every day.
 // maybe even delete very old logs.
 
 export class Logger {
-    constructor(private loggingDir: string, private verbosity: 'verbose' | 'silent' = 'verbose') {
+    constructor(
+        private loggingDir: string,
+        private verbosity: 'verbose' | 'silent' = 'verbose',
+        private maxLogAge = 24 * 60 * 60
+    ) {
         this.loggingDir = loggingDir.replace(/\/+$/, '');
     }
 
@@ -29,6 +34,7 @@ export class Logger {
     }
 
     log(message: any, ...optionalParas: any[]) {
+        this.checkRotate(`${this.loggingDir}/log.txt`);
         const time = new Date();
         const messageString = this.messageToString(message);
         const additionalText = JSON.stringify(optionalParas);
@@ -36,6 +42,7 @@ export class Logger {
     }
 
     error(message: any, ...optionalParas: any[]) {
+        this.checkRotate(`${this.loggingDir}/errors.txt`);
         const time = new Date();
         const messageString = this.messageToString(message);
         const additionalText = JSON.stringify(optionalParas);
@@ -53,6 +60,14 @@ export class Logger {
             messageString = JSON.stringify(message);
         }
         return messageString;
+    }
+
+    private checkRotate(filePath: string) {
+        const fileAgeSecs = getFileAgeSync(filePath);
+        if (fileAgeSecs > this.maxLogAge) {
+            renameFileSync(filePath, `${filePath}_${new Date().toISOString()}.txt`);
+            createFileSync(filePath);
+        }
     }
 }
 

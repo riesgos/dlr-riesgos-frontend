@@ -1,5 +1,5 @@
 import objectHash from 'object-hash';
-import { deleteFile, getFileAge, pathJoin, readJsonFile, writeJsonFile } from '../utils/files';
+import { deleteFile, getFileLastChange, pathJoin, readJsonFile, writeJsonFile } from '../utils/files';
 
 
 
@@ -24,7 +24,7 @@ export class FileStorage<Properties extends {}> {
     public async getDataByKey<T>(key: string): Promise<T | undefined> {
         const fullFilePath = pathJoin([this.filePath, key]);
         try {
-            const age = await getFileAge(fullFilePath);
+            const age = await getFileLastChange(fullFilePath);
             if (age > this.maxCacheLifetime) {
                 await deleteFile(fullFilePath);
                 return undefined;

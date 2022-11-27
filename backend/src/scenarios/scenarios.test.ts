@@ -16,6 +16,7 @@ let app: Express;
 let server: Server;
 beforeAll(async () => {
     await deleteFile(storeDir);
+    await deleteFile(logDir);
     app = express();
     app.use(express.json());
     const scenarioFactories = [italyScenarioFactory];
@@ -192,6 +193,7 @@ describe('scenarios - in/out', () => {
 
     beforeAll(async () => {
         await deleteFile(storeDir);
+        await deleteFile(logDir);
     })
 
 
@@ -202,8 +204,8 @@ describe('scenarios - in/out', () => {
     test('executing two jobs side-by-side.', async () => {
 
         const scenario: ScenarioDescription = (await http.get(`http://localhost:${port}/scenarios/Italy`)).data;
-        const step = scenario.steps.find(s => s.id === 'EqSim')!;
-        const inputs = step.inputs;
+        const step1 = scenario.steps.find(s => s.id === 'EqSim')!;
+        const inputs = step1.inputs;
         const input = inputs[0];
         const state = {
             data: [{
@@ -212,10 +214,12 @@ describe('scenarios - in/out', () => {
             }]
         };
 
-        const { ticket } = (await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute`, state)).data;
-        await sleep(1000);
-        const { results } = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step.id}/execute/poll/${ticket}`)).data;
-        const newState = results;
+        let response = (await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step1.id}/execute`, state)).data;
+        while (response.ticket) {
+            await sleep(100);
+            response = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step1.id}/execute/poll/${response.ticket}`)).data;
+        }
+        const newState = response.data;
         expect(newState).toBeTruthy();
 
         const step2 = scenario.steps.find(s => s.id === 'EqDmg')!;

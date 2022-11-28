@@ -1,7 +1,5 @@
 {
     "production": false,
     "middlewareUrl": "http://localhost:1411",
-    "useProxy": false,
-    "proxyUrl": "https://riesgos.dlr.de/proxy",
-    "gfzUseStaging": false
+    "proxyUrl": ""
 }

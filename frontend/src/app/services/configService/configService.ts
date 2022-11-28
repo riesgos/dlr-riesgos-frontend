@@ -5,9 +5,7 @@ import { environment } from "src/environments/environment";
 export interface AppConfig {
     "production": boolean,
     "middlewareUrl": string,
-    "useProxy": boolean,
     "proxyUrl": string,
-    "gfzUseStaging": boolean
   }
   
 
@@ -38,7 +36,7 @@ export class ConfigService {
     }
 
     public needsProxy(targetUrl: string): boolean {
-        if (this.config.useProxy) {
+        if (this.config.proxyUrl) {
             if (targetUrl.includes('localhost')) return false;
             if (targetUrl.includes(window.location.hostname)) return false;
             if (targetUrl.startsWith('https://')) return false;

@@ -23,9 +23,7 @@ class MockConfigService extends ConfigService {
     protected config = {
         production: false,
         middlewareUrl: "http://localhost:1411",
-        useProxy: false,
         proxyUrl: "",
-        gfzUseStaging: false
     }
 }
 

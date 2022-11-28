@@ -1,7 +1,6 @@
 # Switch
 
 Ecuador
-remove GfzUseStaging
 popup: remove blocker on arrow
 Create new legend component (with gradients)
 
@@ -22,6 +21,17 @@ Create new legend component (with gradients)
         - https://www.youtube.com/watch?v=oqZ4-ULwfbc
         - BUT: how do I then use the Augmentor? We'd need one augmentor for each module. 
     - all ngrx files in dir ngrx
+- Interesting problem:
+    - Ecuador, 1st service: picking VEI.
+    - VEI is just a parameter used in a few places further downstream
+    - Such an parameter, which had no computation associated with it and only serves as an input downstream, should probably not need its own step in the backend
+    - And indeed, in the backend it doesnt.
+    - But: The frontend will only display a step when it got one from the backend that it can augment.
+    - In the frontend, steps cannot be frontend-only.
+        - Suggestion: no longer create steps from backend-data, but hardcode them
+            - Pro: More control
+            - Pro: Could move all of wizard in own module on the same occasion
+            - Con: frontend is supposed to be a dynamic image of backend
 - Running two processes in parallel sometimes has one end up stuck
     - backend completes both processes
     - but frontend only fetches one 

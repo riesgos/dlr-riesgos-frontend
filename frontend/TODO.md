@@ -3,6 +3,7 @@
 popup: remove blocker on arrow
 Create new legend component (with gradients)
 display error messages
+new docs
 
 # Next
 

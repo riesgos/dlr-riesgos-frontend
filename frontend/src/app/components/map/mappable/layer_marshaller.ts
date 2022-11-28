@@ -321,7 +321,7 @@ export class LayerMarshaller  {
             features: (new GeoJSON({
                 dataProjection: 'EPSG:4326',
                 featureProjection: this.mapSvc.map.getView().getProjection().getCode()
-            })).readFeatures(product.value[0])
+            })).readFeatures(product.value)
         });
 
         const layers = [];

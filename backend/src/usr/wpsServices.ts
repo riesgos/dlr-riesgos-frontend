@@ -1,4 +1,4 @@
-import { Feature, Point } from "geojson";
+import { Feature, FeatureCollection, Point } from "geojson";
 import { WpsClient, WpsInput, WpsOutputDescription } from "../utils/wps/public-api";
 
 
@@ -458,7 +458,80 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
 }
 
 
+export async function getVolcanusAshfallDamage(intensityValue: FeatureCollection<Point, any>, exposureRef: string, vulnerabilityRef: string) {
+    const url = 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService';
+    const processId = 'org.n52.gfz.riesgos.algorithm.impl.VolcanusProcess';
 
+    const intensity: WpsInput = {
+        description: {
+            id: 'intensity',
+            reference: false,
+            format: 'application/vnd.geo+json',
+            type: 'complex'
+        },
+        value: intensityValue
+    };
+
+    const intensityColumn: WpsInput = {
+        description: {
+            id: 'intensitycolumn',
+            reference: false,
+            type: 'literal'
+        },
+        value: 'load'
+    };
+
+    const exposure: WpsInput = {
+        description: {
+            id: 'exposure',
+            reference: true,
+            type: 'complex',
+            format: 'application/json'
+        },
+        value: exposureRef
+    };
+
+    const schema: WpsInput = {
+        description: {
+            id: 'schema',
+            reference: false,
+            type: 'literal',
+        },
+        value: 'Torres_Corredor_et_al_2017'
+    };
+
+    const fragility: WpsInput = {
+        description: {
+            id: 'fragility',
+            reference: true,
+            type: 'complex',
+            format: 'application/json'
+        },
+        value: vulnerabilityRef
+    };
+
+    const ashfallDamage: WpsOutputDescription = {
+        id: 'merged_output',
+        reference: false,
+        type: 'complex',
+        format: 'application/json',
+    };
+
+    const ashfallDamageRef: WpsOutputDescription = {
+        id: 'merged_output',
+        title: '',
+        reference: true,
+        type: 'complex',
+        format: 'application/json'
+    };
+
+    const results = await wpsClient1.executeAsync(url, processId, [intensity, intensityColumn, exposure, schema, fragility], [ashfallDamage, ashfallDamageRef]);
+
+    return {
+        damage: results.find(r => r.description.reference === false)?.value[0],
+        damageRef: results.find(r => r.description.reference === true)?.value
+    };
+}
 
 
 export async function getTsunami(selectedEq: Feature<Point, any>) {

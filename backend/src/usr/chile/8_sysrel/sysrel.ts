@@ -9,7 +9,7 @@ async function calcSysRel(inputs: Datum[]) {
     const result = await getSystemReliability('chile', intensityRef.value);
 
     return [{
-        id: 'sysRelChile',
+        id: 'damageConsumerAreasChile',
         value: result
     }];
 }
@@ -17,14 +17,14 @@ async function calcSysRel(inputs: Datum[]) {
 
 
 export const step: Step = {
-    id: 'SysRelChile',
+    id: 'damageConsumerAreasChile',
     title: 'System reliability after EQ',
     description: 'Description_system_reliability',
     inputs: [{
         id: 'eqSimXmlRefChile'
     }],
     outputs: [{
-        id: 'sysRelChile'
+        id: 'damageConsumerAreasChile'
     }],
     function: calcSysRel
 };

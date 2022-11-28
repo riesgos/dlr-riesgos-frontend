@@ -1,5 +1,7 @@
 # Switch
 
+Chile debugging
+
 Ecuador
 popup: remove blocker on arrow
 Create new legend component (with gradients)

@@ -6,7 +6,7 @@ import { TileWMS } from 'ol/source';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { getBuildingClassColor } from 'src/app/helpers/colorhelpers';
-import { DeusGetFeatureInfo, DeusMetaData } from 'src/app/riesgos/scenarios/chile/deus';
+import { DeusGetFeatureInfo, DeusMetaData } from './deusApi';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { Grouping } from '../../grouped-bar-chart/grouped-bar-chart.component';
 import { GroupedBarChartData, GroupingFunction, SubGroupData } from '../../grouped-bar-chart/groupedChart';

@@ -100,17 +100,17 @@ export class LayerMarshaller  {
         if (isVectorLayerProduct(product) && ['initial_Exposure', 'initial_Exposure_Lahar', 'AssetmasterProcess_Exposure_Peru'].includes(product.description.id)) {
             return this.createWebglLayer(product).pipe(map(layer => [layer]));
         }
-        if (isWmsProduct(product) && ['Shakyground_wms', 'Shakyground_sa03_wms', 'Shakyground_sa10_wms','Shakyground_wmsPeru', 'Shakyground_sa03_wmsPeru', 'Shakyground_sa10_wmsPeru' ].includes(product.description.id)) {
+        if (isWmsProduct(product) && ['Shakyground_wmsChile', 'Shakyground_sa03_wmsChile', 'Shakyground_sa10_wmsChile','Shakyground_wmsPeru', 'Shakyground_sa03_wmsPeru', 'Shakyground_sa10_wmsPeru' ].includes(product.description.id)) {
             return this.makeWmsLayers(product).pipe(map(layers => {
                 switch (product.description.id) {
-                    case 'Shakyground_wms':
+                    case 'Shakyground_wmsChile':
                         layers[0].name = 'PGA';
                         break;
-                    case 'Shakyground_sa03_wms':
+                    case 'Shakyground_sa03_wmsChile':
                         layers[0].name = 'SA(0.3)';
                         layers[0].visible = false;
                         break;
-                    case 'Shakyground_sa10_wms':
+                    case 'Shakyground_sa10_wmsChile':
                         layers[0].name = 'SA(1.0)';
                         layers[0].visible = false;
                         break;

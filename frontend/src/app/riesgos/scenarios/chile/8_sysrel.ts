@@ -11,7 +11,7 @@ import Geometry from 'ol/geom/Geometry';
 
 export class DamageConsumerAreasChile implements MappableProductAugmenter {
     appliesTo(product: RiesgosProduct): boolean {
-        return product.id === 'SysRelChile';
+        return product.id === 'damageConsumerAreasChile';
     }
 
     makeProductMappable(product: RiesgosProductResolved): VectorLayerProduct[] {
@@ -90,7 +90,7 @@ export class DamageConsumerAreasChile implements MappableProductAugmenter {
 
 export class EqReliabilityChile implements WizardableStepAugmenter {
     appliesTo(step: RiesgosStep): boolean {
-        return step.step.id === 'SysRelChile'
+        return step.step.id === 'damageConsumerAreasChile'
     }
     makeStepWizardable(step: RiesgosStep): WizardableStep {
         return {

@@ -348,7 +348,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getInfoLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
         const layers: Array<Layer | LayerGroup> = [];
 
-        if (scenario === 'c1') {
+        if (scenario === 'Chile') {
 
             const powerlineLayer = new CustomLayer({
                 custom_layer: new olVectorLayer({
@@ -449,7 +449,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             layers.push(shoaLayers);
         }
 
-        if (scenario === 'p1') {
+        if (scenario === 'Peru') {
 
 
             const distributionLines = new CustomLayer<TileLayer<TileWMS>>({
@@ -544,7 +544,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             layers.push(energyGroup);
         }
 
-        if (scenario === 'e1') {
+        if (scenario === 'Ecuador') {
 
 
             const sniLayers = new LayerGroup({

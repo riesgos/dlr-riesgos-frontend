@@ -21,7 +21,7 @@ export class UserinputSelectedEqChile implements WizardableProductAugmenter {
     private availableEqs$ = new BehaviorSubject<RiesgosProduct | undefined>(undefined);
 
     constructor(private store: Store, private resolver: DataService) {
-        this.store.select(getProduct('availableEqs'))
+        this.store.select(getProduct('availableEqsChile'))
             .pipe(
                 switchMap(p => {
                     if (p) {

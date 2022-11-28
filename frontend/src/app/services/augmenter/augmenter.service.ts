@@ -31,6 +31,8 @@ import { Ashfall, AshfallService, Probability } from 'src/app/riesgos/scenarios/
 import { AshfallExposureEcuador, AshfallExposureProvider } from 'src/app/riesgos/scenarios/ecuador/3_ashfall_exposure';
 import { LaharExposureEcuador, LaharExposureProvider } from 'src/app/riesgos/scenarios/ecuador/6_lahar_exposure';
 import { AshfallDamage, AshfallDamageMultiLayer } from 'src/app/riesgos/scenarios/ecuador/4_ashfalldamage';
+import { LaharDirection, LaharSim, LaharWmses } from 'src/app/riesgos/scenarios/ecuador/5_lahar';
+import { LaharDamage, LaharDamageMultiLayer } from 'src/app/riesgos/scenarios/ecuador/7_lahardamage';
 
 
 
@@ -119,12 +121,14 @@ export class AugmenterService {
 
 
       // Ecuador
-      // inputs                                                // steps                  // outputs
-      new SelectableVei(),                                     new VeiSelector(),
-      new Probability(),                                       new AshfallService(),      new Ashfall(),
-                                                               new AshfallExposureProvider(), new AshfallExposureEcuador(),
-                                                               new AshfallDamage(),       new AshfallDamageMultiLayer(),
-                                                               new LaharExposureProvider(), new LaharExposureEcuador(),
+      // inputs               // steps                        // outputs
+      new SelectableVei(),    new VeiSelector(),
+      new Probability(),      new AshfallService(),           new Ashfall(),
+                              new AshfallExposureProvider(),  new AshfallExposureEcuador(),
+                              new AshfallDamage(),            new AshfallDamageMultiLayer(),
+                              new LaharSim(),                 new LaharWmses(),
+      new LaharDirection(),   new LaharExposureProvider(),    new LaharExposureEcuador(),
+                              new LaharDamage(),              new LaharDamageMultiLayer(),
 
     ];
   }

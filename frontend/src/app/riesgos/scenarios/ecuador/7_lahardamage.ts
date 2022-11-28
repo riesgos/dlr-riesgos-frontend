@@ -1,29 +1,20 @@
-import { ExecutableProcess, ProcessState, ProcessStateUnavailable, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { ashfallDamageMRef } from './4_ashfalldamage';
-import { laharVelocityShakemapRef } from './5_lahar';
-import { Deus } from '../chile/deus';
-import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
-import { Observable } from 'rxjs';
-import { schemaEcuador, initialExposureLaharRef } from './3_ashfall_exposure';
-import { fragilityRef } from '../chile/modelProp';
-import { switchMap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
-import { WpsData } from '../../../services/wps/wps.datatypes';
-import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { greenVioletRangeStepwise, toDecimalPlaces, weightedDamage, yellowBlueRange } from 'src/app/helpers/colorhelpers';
-import { FeatureCollection } from '@turf/helpers';
-import { createTableHtml, zeros, filledMatrix, getMaxFromDict } from 'src/app/helpers/others';
-import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
-import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
-import { maxDamage$ } from '../chile/constants';
 import Geometry from 'ol/geom/Geometry';
+import { MappableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
+import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
+import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/components/map/mappable/mappable_products';
+import { createTableHtml, filledMatrix, getMaxFromDict, zeros } from 'src/app/helpers/others';
+import { FeatureCollection } from '@turf/helpers';
+import { InfoTableComponentComponent, TableEntry } from 'src/app/components/dynamic/info-table-component/info-table-component.component';
+import { greenVioletRangeStepwise, toDecimalPlaces, yellowBlueRange } from 'src/app/helpers/colorhelpers';
+import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';
+import { maxDamage$ } from './constants';
 
 
 
-export const laharLossProps: VectorLayerProperties = {
+const laharLossProps: VectorLayerProperties = {
         name: 'laharLoss',
         icon: 'avalanche',
         vectorLayerAttributes: {
@@ -86,8 +77,8 @@ export const laharLossProps: VectorLayerProperties = {
             detailPopupHtml: (props: object) => {
                 return `<h4>{{ economic_loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
-            globalSummary: (value: [FeatureCollection]) => {
-                const features = value[0].features;
+            globalSummary: (value: FeatureCollection) => {
+                const features = value.features;
                 const damages = features.map(f => f.properties['loss_value']);
                 const totalDamage = damages.reduce((carry, current) => carry + current, 0);
                 const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
@@ -104,150 +95,7 @@ export const laharLossProps: VectorLayerProperties = {
 
 };
 
-export const laharTransitionProps: VectorLayerProperties = {
-        name: 'laharTransition',
-        icon: 'avalanche',
-        vectorLayerAttributes: {
-            featureStyle: (feature: olFeature<Geometry>, resolution: number) => {
-                const props = feature.getProperties();
-
-                const I = props['transitions']['n_buildings'].length;
-                const total = props['transitions']['n_buildings'].reduce((v, c) => v + c, 0);
-
-                const toStates = props['transitions']['to_damage_state'];
-                const fromStates = props['transitions']['from_damage_state'];
-                const nrBuildings = props['transitions']['n_buildings'];
-
-                let sumTo = 0;
-                let sumFrom = 0;
-                let sumBuildings = 0;
-                for (let i = 0; i < I; i++) {
-                    sumBuildings += nrBuildings[i];
-                    sumTo += toStates[i] * nrBuildings[i];
-                    sumFrom += fromStates[i] * nrBuildings[i];
-                }
-                const meanStateFrom = sumFrom / sumBuildings;
-                const meanStateTo = sumTo / sumBuildings;
-
-                const weightedChange = (meanStateTo - meanStateFrom) / (5 - meanStateFrom);
-
-                let r; let g; let b;
-                if (total > 0) {
-                    [r, g, b] = yellowBlueRange(0, 1, weightedChange);
-                } else {
-                    r = b = g = 160;
-                }
-
-                return new olStyle({
-                  fill: new olFill({
-                    color: [r, g, b, 1],
-                  }),
-                  stroke: new olStroke({
-                    color: [0.8 * r, 0.8 * g, 0.8 * b, 1],
-                    width: 2
-                  })
-                });
-            },
-            legendEntries: [{
-                feature: {
-                    "type": "Feature",
-                    "properties": {'transitions': {'n_buildings': [100], 'from_damage_state': [0, 0, 0, 0], 'to_damage_state': [90, 10, 0, 0]}},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
-                    }
-                },
-                text: 'SmallDamageChange'
-            }, {
-                feature: {
-                    "type": "Feature",
-                    "properties": {'transitions': {'n_buildings': [100], 'from_damage_state': [0, 0, 0, 0], 'to_damage_state': [0, 0, 10, 90]}},
-                    "geometry": {
-                      "type": "Polygon",
-                      "coordinates": [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
-                    }
-                },
-                text: 'LargeDamageChange'
-            }],
-            detailPopupHtml: (props: object) => {
-
-                const matrix = zeros(5, 5);
-                const fromDamageState = props['transitions']['from_damage_state'];
-                const nrBuildings = props['transitions']['n_buildings'];
-                const toDamageState = props['transitions']['to_damage_state'];
-                for (let i = 0; i < fromDamageState.length; i++) {
-                    const r = fromDamageState[i];
-                    const c = toDamageState[i];
-                    const nr = nrBuildings[i];
-                    matrix[r][c] += nr;
-                }
-
-                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
-                for (let r = 0; r < labeledMatrix.length; r++) {
-                    for (let c = 0; c < labeledMatrix[0].length; c++) {
-                        if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = '<b>{{ from_to }}</b>';
-                        } else if (r === 0) {
-                            labeledMatrix[r][c] = `<b>${c - 1}</b>`;
-                        } else if (c === 0) {
-                            labeledMatrix[r][c] = `<b>${r - 1}</b>`;
-                        } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = Math.round(matrix[r-1][c-1]);
-                        }
-                    }
-                }
-
-                return `<h4>{{ Transitions }}</h4>${createTableHtml(labeledMatrix)}`;
-            },
-            globalSummary: (value: [FeatureCollection]) => {
-                const matrix = zeros(5, 5);
-                for (const feature of value[0].features) {
-                    const fromDamageState = feature.properties['transitions']['from_damage_state'];
-                    const nrBuildings = feature.properties['transitions']['n_buildings'];
-                    const toDamageState = feature.properties['transitions']['to_damage_state'];
-                    for (let i = 0; i < fromDamageState.length; i++) {
-                        const r = fromDamageState[i];
-                        const c = toDamageState[i];
-                        const nr = nrBuildings[i];
-                        matrix[r][c] += nr;
-                    }
-                }
-
-                const labeledMatrix = filledMatrix(matrix.length + 1, matrix[0].length + 1,  '');
-                for (let r = 0; r < labeledMatrix.length; r++) {
-                    for (let c = 0; c < labeledMatrix[0].length; c++) {
-                        if (r === 0 && c === 0) {
-                            labeledMatrix[r][c] = { value: 'from_to', style: {'font-weight': 'bold'}};
-                        } else if (r === 0) {
-                            labeledMatrix[r][c] = {value: `${c - 1}`, style: {'font-weight': 'bold'}};
-                        } else if (c === 0) {
-                            labeledMatrix[r][c] = {value: `${r - 1}`, style: {'font-weight': 'bold'}};
-                        } else if (r > 0 && c > 0) {
-                            labeledMatrix[r][c] = {value: Math.round(matrix[r-1][c-1]) };
-                        }
-                    }
-                }
-
-                return {
-                    component: InfoTableComponentComponent,
-                    inputs: {
-                        title: 'Transitions',
-                        data: labeledMatrix
-                    }
-                };
-            }
-        }
-};
-
-export const laharUpdatedExposureProps: VectorLayerProperties = {
+const laharUpdatedExposureProps: VectorLayerProperties = {
         name: 'laharExposure',
         icon: 'avalanche',
         vectorLayerAttributes: {
@@ -395,7 +243,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                 const anchorUpdated = createGroupedBarChart(anchor, data, 400, 400, '{{ taxonomy_DX }}', '{{ nr_buildings }}');
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ Lahar_damage_classification }}</h4>${anchor.innerHTML} {{ DamageStatesMavrouli }}{{StatesNotComparable}}`;
             },
-            globalSummary: (value: [FeatureCollection]) => {
+            globalSummary: (value: FeatureCollection) => {
                 const counts = {
                     'D0': 0,
                     'D1': 0,
@@ -403,7 +251,7 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                     'D3': 0,
                     'D4': 0
                 };
-                for (const feature of value[0].features) {
+                for (const feature of value.features) {
                     for (let i = 0; i < feature.properties.expo.Damage.length; i++) {
                         const damageClass = feature.properties.expo.Damage[i];
                         const nrBuildings = feature.properties.expo.Buildings[i];
@@ -433,107 +281,43 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
 
 };
 
-export const laharDamageM: WpsData & MultiVectorLayerProduct = {
-    uid: 'lahar_damage_output_values',
-    description: {
-        id: 'merged_output',
-        title: '',
-        reference: false,
-        defaultValue: null,
-        format: 'application/json',
-        type: 'complex',
-        description: '',
-        vectorLayers: [laharUpdatedExposureProps, laharLossProps]
-    },
-    value: null
-};
 
 
-export const laharDamageMRef: WpsData & Product = {
-    uid: 'laharUpdatedExposureRef',
-    description: {
-        id: 'merged_output',
-        title: '',
-        format: 'application/json',
-        reference: true,
-        type: 'complex'
-    },
-    value: null
-};
-
-
-
-export class DeusLahar implements ExecutableProcess, WizardableStep {
-
-    readonly uid: string = 'DeusLahar';
-    readonly name: string = 'Lahar Damage';
-    readonly state: ProcessState = new ProcessStateUnavailable();
-    readonly requiredProducts: string[] = [initialExposureLaharRef, laharVelocityShakemapRef].map(p => p.uid);
-    readonly providedProducts: string[] = [laharDamageM, laharDamageMRef].map(p => p.uid);
-    readonly description?: string = 'lahar_damage_service_description';
-    readonly wizardProperties: WizardProperties = {
-        shape: 'dot-circle',
-        providerName: 'GFZ',
-        providerUrl: 'https://www.gfz-potsdam.de/en/',
-        wikiLink: 'ExposureAndVulnerabilityEcuador'
-    };
-
-    private deus: Deus;
-    private vulnerability: VulnerabilityModelEcuador;
-
-    constructor(http: HttpClient, middleWareUrl: string) {
-        this.deus = new Deus(http, middleWareUrl);
-        this.vulnerability = new VulnerabilityModelEcuador(http, middleWareUrl);
+export class LaharDamageMultiLayer implements MappableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'laharDamage';
     }
 
-    execute(
-        inputs: Product[], outputs?: Product[],
-        doWhileExecuting?: (response: any, counter: number) => void
-    ): Observable<Product[]> {
-
-        const vulnInputs = [{
-            ... schemaEcuador,
-            value: 'Mavrouli_et_al_2014',
-        }, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador];
-        const vulnOutputs = [fragilityRef];
-
-        return this.vulnerability.execute(vulnInputs, vulnOutputs, doWhileExecuting).pipe(
-            switchMap((results: Product[]) => {
-                const fragility = results.find(prd => prd.uid === fragilityRef.uid);
-                const shakemap = inputs.find(prd => prd.uid === laharVelocityShakemapRef.uid);
-                const exposure = inputs.find(prd => prd.uid === initialExposureLaharRef.uid);
-
-                const deusInputs: Product[] = [{
-                    ... shakemap,
-                    description: {
-                        ... shakemap.description,
-                        format: 'text/xml',
-                        id: 'intensity'
-                    }
-                },
-                {
-                    ... exposure,
-                    description: {
-                        ... exposure.description,
-                        id: 'exposure'
-                    },
-                    value: exposure.value
-                }, {
-                    ... schemaEcuador,
-                    value: 'Mavrouli_et_al_2014',
-                }, {
-                    ... fragility,
-                    description: {
-                        ... fragilityRef.description,
-                        id: 'fragility'
-                    }
-                }
-                ];
-
-                const deusOutputs: Product[] = [laharDamageM, laharDamageMRef];
-
-                return this.deus.execute(deusInputs, deusOutputs, doWhileExecuting);
-            })
-        );
+    makeProductMappable(product: RiesgosProductResolved): MultiVectorLayerProduct[] {
+        return [{
+            ...product,
+            description: {
+                format: 'application/json',
+                type: 'complex',
+                vectorLayers: [laharUpdatedExposureProps, laharLossProps]
+            },
+        }];
     }
+
+}
+
+
+export class LaharDamage implements WizardableStepAugmenter {
+    appliesTo(step: RiesgosStep): boolean {
+        return step.step.id === 'LaharDamage';
+    }
+
+    makeStepWizardable(step: RiesgosStep): WizardableStep {
+        return {
+            ... step,
+            scenario: 'Ecuador',
+            wizardProperties: {
+                shape: 'dot-circle',
+                providerName: 'GFZ',
+                providerUrl: 'https://www.gfz-potsdam.de/en/',
+                wikiLink: 'ExposureAndVulnerabilityEcuador'
+            }
+        }
+    }
+
 }

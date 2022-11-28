@@ -1,151 +1,102 @@
-import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { Observable, forkJoin } from 'rxjs';
-import { LaharWps, direction, vei, parameter, laharWms, laharShakemap } from './lahar';
-import { WpsData } from '../../../services/wps/wps.datatypes';
-import { WmsLayerProduct, MappableProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { FeatureCollection } from '@turf/helpers';
-import { createKeyValueTableHtml } from 'src/app/helpers/others';
-import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
-import { MapOlService } from '@dlr-eoc/map-ol';
-import { LayersService } from '@dlr-eoc/services-layers';
-import { Store } from '@ngrx/store';
-import { SliderEntry, GroupSliderComponent } from 'src/app/components/dynamic/group-slider/group-slider.component';
-import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
-import { ProductRasterLayer, ProductCustomLayer } from 'src/app/mappable/map.types';
 import olTileLayer from 'ol/layer/Tile';
 import olTileWMS from 'ol/source/TileWMS';
 import olLayerGroup from 'ol/layer/Group';
-import { State } from 'src/app/ngrx_register';
+import { MappableProductAugmenter, WizardableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
+import { HttpClient } from '@angular/common/http';
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { LayersService } from '@dlr-eoc/services-layers';
+import { Store } from '@ngrx/store';
+import { FeatureCollection } from '@turf/helpers';
+import { map } from 'rxjs/operators';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { TranslatableStringComponent } from 'src/app/components/dynamic/translatable-string/translatable-string.component';
+import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
+import { ProductRasterLayer, ProductCustomLayer } from 'src/app/components/map/mappable/map.types';
+import { UkisMapProduct, WmsLayerProduct } from 'src/app/components/map/mappable/mappable_products';
+import { toDecimalPlaces } from 'src/app/helpers/colorhelpers';
+import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
+import { State } from 'src/app/ngrx_register';
+import { GroupSliderComponent, SliderEntry } from 'src/app/components/dynamic/group-slider/group-slider.component';
+import { StringSelectUserConfigurableProduct, WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
 
 
+export class LaharDirection implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'direction';
+    }
 
-export const laharHeightWms: WmsLayerProduct & Product = {
-    ...laharWms,
-    description: {
-        ...laharWms.description,
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', { '{{ laharMaxDepth }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m' }, 'medium');
-            } else {
-                return '';
+    makeProductWizardable(product: RiesgosProduct): StringSelectUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                defaultValue: 'South',
+                options: ['South', 'North'],
+                wizardProperties: {
+                    fieldtype: 'stringselect',
+                    name: 'direction',
+                }
+            }
+        }];
+    }
+}
+
+
+export class LaharWmses implements MappableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'laharWmses';
+    }
+    makeProductMappable(product: RiesgosProductResolved): (WmsLayerProduct | UkisMapProduct)[] {
+        const {velWms, heightWms, erosionWms, pressureWms, contourWms} = product.value;
+
+        return [
+        //     { deactivated for now
+        //     ... contourLayer,
+        //     value: contourWms,
+        // }, 
+        {
+            ... heightLayer,
+            value: heightWms,
+        }, {
+            ... velLayer,
+            value: velWms
+        }, {
+            ... erosionLayer,
+            value: erosionWms
+        }, {
+            ... pressureLayer,
+            value: pressureWms
+        }];
+    }
+}
+
+
+export class LaharSim implements WizardableStepAugmenter {
+    appliesTo(step: RiesgosStep): boolean {
+        return step.step.id === 'LaharSim';
+    }
+
+    makeStepWizardable(step: RiesgosStep): WizardableStep {
+        return {
+            ...step,
+            scenario: 'Ecuador',
+            wizardProperties: {
+                providerName: 'TUM',
+                providerUrl: 'https://www.tum.de/nc/en/',
+                shape: 'avalanche',
+                wikiLink: 'LaharSimulation',
+                dataSources: [{ label: 'Frimberger (2021)', href: 'https://doi.org/10.1002/esp.5056'}]
             }
         }
-    },
-    uid: 'LaharHeightWms'
-};
-
-export const laharHeightShakemapRef: WpsData & Product = {
-    ...laharShakemap,
-    uid: 'LaharHeightShakemap'
-};
-
-export const laharVelocityWms: WmsLayerProduct & MappableProduct = {
-    ...laharWms,
-    description: {
-        ...laharWms.description,
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', { '{{ laharVelocity }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s' }, 'medium');
-            } else {
-                return '';
-            }
-        }
-    },
-    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
-
-        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
-        return basicLayers$.pipe(map((layers) => {
-            layers.map(l => l.visible = false);
-            return layers;
-        }));
-
-    },
-    uid: 'LaharVelocityWms'
-};
-
-export const laharVelocityShakemapRef: WpsData & Product = {
-    ...laharShakemap,
-    uid: 'LaharVelocityShakemap'
-};
-
-export const laharPressureWms: WmsLayerProduct & MappableProduct = {
-    ...laharWms,
-    description: {
-        ...laharWms.description,
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', { '{{ laharPressure }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' kPa' }, 'medium');
-            } else {
-                return '';
-            }
-        }
-    },
-    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
-
-        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
-        return basicLayers$.pipe(map((layers) => {
-            layers.map(l => l.visible = false);
-            return layers;
-        }));
-
-    },
-    uid: 'LaharPressureWms'
-};
-
-export const laharErosionWms: WmsLayerProduct & MappableProduct = {
-    ...laharWms,
-    description: {
-        ...laharWms.description,
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', { '{{ laharErosion }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m' }, 'medium');
-            } else {
-                return '';
-            }
-        }
-    },
-    toUkisLayers:  function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
-
-        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
-        return basicLayers$.pipe(map((layers) => {
-            layers.map(l => l.visible = false);
-            return layers;
-        }));
-
-    },
-    uid: 'LaharErosionWms'
-};
-
-export const laharDepositionWms: WmsLayerProduct & MappableProduct = {
-    ...laharWms,
-    description: {
-        ...laharWms.description,
-        featureInfoRenderer: (fi: FeatureCollection) => {
-            if (fi.features && fi.features.length > 0) {
-                return createKeyValueTableHtml('', { '{{ laharDeposition }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m' }, 'medium');
-            } else {
-                return '';
-            }
-        }
-    },
-    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
-
-        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
-        return basicLayers$.pipe(map((layers) => {
-            layers.map(l => l.visible = false);
-            return layers;
-        }));
-
-    },
-    uid: 'LaharDepositionWms'
-};
+    }
+}
 
 
-export const laharContoursWms: WmsLayerProduct & MappableProduct = {
+
+const contourLayer: UkisMapProduct & WmsLayerProduct = {
+    id: 'LaharContourLines',
+    reference: undefined,
+    value: undefined,
     description: {
         id: 'LaharContourLines',
         icon: 'avalanche',
@@ -223,96 +174,115 @@ export const laharContoursWms: WmsLayerProduct & MappableProduct = {
         return laharLayers$;
 
     },
-    value: null,
-    uid: 'LaharContourLines'
 };
 
-export class LaharWrapper implements ExecutableProcess, WizardableStep {
 
-    state: ProcessState;
-    uid = 'LaharWrapper';
-    name = 'LaharService';
-    requiredProducts = [direction, vei].map(prd => prd.uid);
-    providedProducts = [laharHeightWms, laharHeightShakemapRef, laharVelocityWms, laharVelocityShakemapRef,
-        laharPressureWms, laharErosionWms, laharDepositionWms, laharContoursWms].map(prd => prd.uid);
-    description?: string;
-    private laharWps: LaharWps;
+const heightLayer: WmsLayerProduct = {
+    id: 'LaharHeightWms',
+    reference: undefined,
+    value: undefined,
+    description: {
+        id: 'LaharHeightWms',
+        icon: 'avalanche',
+        name: 'laharWms',
+        type: 'literal',
+        format: 'application/WMS',
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', { '{{ laharMaxDepth }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m' }, 'medium');
+            } else {
+                return '';
+            }
+        }
+    },
+};
 
-    readonly wizardProperties: WizardProperties;
 
-    constructor(http: HttpClient, middleWareUrl: string) {
-        this.laharWps = new LaharWps(http, middleWareUrl);
-        this.wizardProperties = this.laharWps.wizardProperties;
-        this.description = this.laharWps.description;
-        this.state = new ProcessStateUnavailable();
-    }
+const velLayer: WmsLayerProduct & UkisMapProduct = {
+    id: 'LaharVelocityWms',
+    value: undefined,
+    reference: undefined,
+    description: {
+        id: 'LaharVelocityWms',
+        icon: 'avalanche',
+        name: 'laharWms',
+        type: 'literal',
+        format: 'application/WMS',
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', { '{{ laharVelocity }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m/s' }, 'medium');
+            } else {
+                return '';
+            }
+        }
+    },
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
 
-    execute(inputs: Product[], outputs?: Product[], doWhile?): Observable<Product[]> {
+        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
+        return basicLayers$.pipe(map((layers) => {
+            layers.map(l => l.visible = false);
+            return layers;
+        }));
 
-        const directionV = inputs.find(prd => prd.uid === direction.uid);
-        const veiV = inputs.find(prd => prd.uid === vei.uid);
+    },
+};
 
-        const heightProc$ = this.laharWps.execute(
-            [directionV, veiV, { ...parameter, value: 'MaxHeight' }], [laharHeightWms, laharHeightShakemapRef], doWhile);
-        const velProc$ = this.laharWps.execute(
-            [directionV, veiV, { ...parameter, value: 'MaxVelocity' }], [laharVelocityWms, laharVelocityShakemapRef], doWhile);
-        const pressureProc$ = this.laharWps.execute(
-            [directionV, veiV, { ...parameter, value: 'MaxPressure' }], [laharPressureWms], doWhile);
-        const erosionProc$ = this.laharWps.execute(
-            [directionV, veiV, { ...parameter, value: 'MaxErosion' }], [laharErosionWms], doWhile);
-        // const depositionProc$ = this.laharWps.execute(
-        //     [directionV, veiV, { ...parameter, value: 'Deposition' }], [laharDepositionWms], doWhile);
 
-        // merge
-        return forkJoin([heightProc$, velProc$, pressureProc$, erosionProc$]).pipe(
-            map((results: Product[][]) => {
-                const flattened: Product[] = [];
-                for (const result of results) {
-                    for (const data of result) {
-                        flattened.push(data);
-                    }
-                }
+const pressureLayer: WmsLayerProduct & UkisMapProduct = {
+    id: 'LaharPressureWms',
+    value: undefined,
+    reference: undefined,
+    description: {
+        id: 'LaharPressureWms',
+        icon: 'avalanche',
+        name: 'laharWms',
+        type: 'literal',
+        format: 'application/WMS',
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', { '{{ laharPressure }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' kPa' }, 'medium');
+            } else {
+                return '';
+            }
+        }
+    },
+    toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
 
-                const vals = [];
-                if (directionV.value === 'South') {
-                    vals.push(
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min10&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min20&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min40&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min60&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min80&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min100&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                    );
-                    if (veiV.value !== 'VEI4') {
-                        vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiV.value}_time_min120&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
-                    }
-                } else {
-                    vals.push(
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min10&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min20&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min40&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min60&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min80&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min100&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                        `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min120&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
-                    );
-                    if (veiV.value !== 'VEI4') {
-                        vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min140&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
-                        if (veiV.value !== 'VEI3') {
-                            vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min160&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
-                            if (veiV.value !== 'VEI2') {
-                                vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiV.value}_time_min180&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
-                            }
-                        }
-                    }
-                }
-                flattened.push({
-                    ...laharContoursWms,
-                    value: vals
-                });
+        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
+        return basicLayers$.pipe(map((layers) => {
+            layers.map(l => l.visible = false);
+            return layers;
+        }));
 
-                return flattened;
-            })
-        );
-    }
-}
+    },
+};
+
+
+const erosionLayer: WmsLayerProduct & UkisMapProduct = {
+    id: 'LaharErosionWms',
+    value: undefined,
+    reference: undefined,
+    description: {
+        id: 'LaharErosionWms',
+        icon: 'avalanche',
+        name: 'laharWms',
+        type: 'literal',
+        format: 'application/WMS',
+        featureInfoRenderer: (fi: FeatureCollection) => {
+            if (fi.features && fi.features.length > 0) {
+                return createKeyValueTableHtml('', { '{{ laharErosion }}': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m' }, 'medium');
+            } else {
+                return '';
+            }
+        }
+    },
+    toUkisLayers:  function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+
+        const basicLayers$ = layerMarshaller.makeWmsLayers(this as WmsLayerProduct);
+        return basicLayers$.pipe(map((layers) => {
+            layers.map(l => l.visible = false);
+            return layers;
+        }));
+
+    },
+};

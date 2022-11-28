@@ -6,7 +6,7 @@ const wpsClient1 = new WpsClient('1.0.0');
 const wpsClient2 = new WpsClient('2.0.0');
 
 
-export type CatalogType =  'observed' | 'deaggregation' | 'stochastic' | 'expert';
+export type CatalogType = 'observed' | 'deaggregation' | 'stochastic' | 'expert';
 
 export interface Bbox {
     crs: 'EPSG:4326',
@@ -106,7 +106,7 @@ export type Gmpe = 'MontalvaEtAl2016SInter' | 'GhofraniAtkinson2014' | 'Abrahams
 /**
  * Calls shakyground
  */
-export async function getEqSim( gmpe: Gmpe, vsgrid: Vsgrid, selectedEq: any) {
+export async function getEqSim(gmpe: Gmpe, vsgrid: Vsgrid, selectedEq: any) {
 
     const url = `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`;
     const processId = 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess';
@@ -159,7 +159,7 @@ export async function getEqSim( gmpe: Gmpe, vsgrid: Vsgrid, selectedEq: any) {
 
 
 
-export type Schema = "SARA_v1.0" |"HAZUS_v1.0" |"SUPPASRI2013_v2.0" |"Mavrouli_et_al_2014" |"Torres_Corredor_et_al_2017" |"Medina_2019";
+export type Schema = "SARA_v1.0" | "HAZUS_v1.0" | "SUPPASRI2013_v2.0" | "Mavrouli_et_al_2014" | "Torres_Corredor_et_al_2017" | "Medina_2019";
 
 /**
  * Calls Modelprop
@@ -213,7 +213,7 @@ export async function getFragility(schemaName: Schema) {
 
 
 
-export type ExposureModel =  "ValpCVTBayesian" | "ValpCommuna" | "ValpRegularOriginal" | "ValpRegularGrid" | "LimaCVT1_PD30_TI70_5000" | "LimaCVT2_PD30_TI70_10000" | "LimaCVT3_PD30_TI70_50000" | "LimaCVT4_PD40_TI60_5000" | "LimaCVT5_PD40_TI60_10000" | "LimaCVT6_PD40_TI60_50000" | "LimaBlocks" | "LatacungaRuralAreas";
+export type ExposureModel = "ValpCVTBayesian" | "ValpCommuna" | "ValpRegularOriginal" | "ValpRegularGrid" | "LimaCVT1_PD30_TI70_5000" | "LimaCVT2_PD30_TI70_10000" | "LimaCVT3_PD30_TI70_50000" | "LimaCVT4_PD40_TI60_5000" | "LimaCVT5_PD40_TI60_10000" | "LimaCVT6_PD40_TI60_50000" | "LimaBlocks" | "LatacungaRuralAreas";
 
 
 /**
@@ -275,7 +275,7 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
         },
         value: schemaName
     },
-    lonmin, lonmax, latmin, latmax,
+        lonmin, lonmax, latmin, latmax,
     {
         description: {
             id: 'assettype',
@@ -380,6 +380,71 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
     };
 }
 
+
+
+export async function getDamageJson(schemaName: Schema, fragilityRef: string, intensityXMLRef: string, exposureRef: string) {
+
+    const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
+    const processId = "org.n52.gfz.riesgos.algorithm.impl.DeusProcess";
+
+    const inputs: WpsInput[] = [{
+        description: {
+            id: 'intensity',
+            reference: true,
+            type: 'complex',
+            format: 'text/xml'
+        },
+        value: intensityXMLRef
+    }, {
+        description: {
+            id: 'exposure',
+            reference: true,
+            type: 'complex',
+            format: 'application/json'
+        },
+        value: exposureRef
+    }, {
+        description: {
+            id: 'fragility',
+            reference: true,
+            type: 'complex',
+            format: 'application/json'
+        },
+        value: fragilityRef
+    }, {
+        description: {
+            id: 'schema',
+            reference: false,
+            type: 'literal'
+        },
+        value: schemaName
+    }];
+
+    const outputs: WpsOutputDescription[] = [{
+        id: 'merged_output',
+        type: 'complex',
+        reference: false,
+        format: 'application/json'
+    }, {
+        id: 'merged_output',
+        reference: true,
+        type: 'complex',
+        format: 'application/json'
+    }, {
+        id: 'meta_summary',
+        type: 'complex',
+        reference: false,
+        format: 'application/json'
+    }];
+
+    const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
+
+    return {
+        json: results.find(r => r.description.id === 'merged_output' && r.description.reference === false)?.value[0],
+        damageRef: results.find(r => r.description.id === 'merged_output' && r.description.reference === true)?.value,
+        summary: results.find(r => r.description.id === 'meta_summary')?.value[0],
+    };
+}
 
 
 
@@ -638,4 +703,116 @@ export async function getSystemReliability(countryName: 'peru' | 'chile' | 'ecua
     const results = await wpsClient2.executeAsync(url, processId, [country, hazardType, intensityData], [damageData]);
 
     return results[0].value;
+}
+
+
+export type LaharDirection = 'North' | 'South';
+export type LaharParameter = 'MaxHeight' | 'MaxVelocity' | 'MaxPressure' | 'MaxErosion' | 'Deposition';
+
+export async function getLahar(directionValue: LaharDirection, veiValue: number) {
+    const url = 'https://riesgos.52north.org/geoserver/ows';
+    const processId = 'gs:LaharModel';
+
+    const direction: WpsInput = {
+        description: {
+            id: 'direction',
+            type: 'literal',
+            reference: false
+        },
+        value: directionValue
+    };
+
+    const vei: WpsInput = {
+        description: {
+            id: 'intensity',
+            reference: false,
+            type: 'literal',
+        },
+        value: `VEI${veiValue}`
+    };
+
+    const parameter: WpsInput = {
+        description: {
+            id: 'parameter',
+            reference: false,
+            type: 'literal'
+        },
+        value: undefined
+    }
+
+    const laharWms: WpsOutputDescription = {
+        id: 'wms',
+        type: 'literal',
+        reference: false,
+        format: 'application/WMS'
+    };
+
+    const laharShakemapRef: WpsOutputDescription = {
+        id: 'shakemap',
+        reference: true,
+        type: 'complex',
+        encoding: 'UTF-8',
+        format: 'application/xml',
+        schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+    };
+
+
+
+    const heightTask$ = wpsClient1.executeAsync(url, processId, [direction, vei, { ...parameter, value: 'MaxHeight' }], [laharWms, laharShakemapRef]);
+    const velTask$ = wpsClient1.executeAsync(url, processId, [direction, vei, { ...parameter, value: 'MaxVelocity' }], [laharWms, laharShakemapRef]);
+    const pressureTask$ = wpsClient1.executeAsync(url, processId, [direction, vei, { ...parameter, value: 'MaxPressure' }], [laharWms]);
+    const erosionTask$ = wpsClient1.executeAsync(url, processId, [direction, vei, { ...parameter, value: 'MaxErosion' }], [laharWms]);
+
+    const results = await Promise.all([heightTask$, velTask$, pressureTask$, erosionTask$]);
+
+    return {
+        heightWms: results[0].find(r => r.description.reference === false)?.value,
+        heightRef: results[0].find(r => r.description.reference === true)?.value,
+        velWms: results[1].find(r => r.description.reference === false)?.value,
+        velRef: results[1].find(r => r.description.reference === true)?.value,
+        pressureWms: results[2][0].value,
+        erosionWms: results[3][0].value
+    }
+
+}
+
+export function getLaharContourWms(directionValue: LaharDirection, veiValue: number) {
+
+    const veiString = `VEI${veiValue}`;
+    
+    const vals = [];
+    if (directionValue === 'South') {
+        vals.push(
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiString}_time_min10&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiString}_time_min20&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiString}_time_min40&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiString}_time_min60&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiString}_time_min80&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiString}_time_min100&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+        );
+        if (veiString !== 'VEI4') {
+            vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_S_${veiString}_time_min120&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+        }
+    } else {
+        vals.push(
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min10&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min20&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min40&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min60&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min80&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min100&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+            `https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min120&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`,
+        );
+        if (veiString !== 'VEI4') {
+            vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min140&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+            if (veiString !== 'VEI3') {
+                vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min160&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+                if (veiString !== 'VEI2') {
+                    vals.push(`https://riesgos.52north.org/geoserver/ows?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-0.9180023421741969614,-78.63448207604660922,-0.6413804570762020596,-78.4204016501013399&CRS=EPSG:4326&WIDTH=1233&HEIGHT=1593&LAYERS=LaharArrival_N_${veiString}_time_min180&STYLES=&FORMAT=image/png&DPI=240&MAP_RESOLUTION=240&FORMAT_OPTIONS=dpi:240&TRANSPARENT=TRUE`);
+                }
+            }
+        }
+    }
+
+    return vals;
 }

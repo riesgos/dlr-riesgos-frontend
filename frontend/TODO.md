@@ -1,12 +1,15 @@
 # Switch
 
 Ecuador
+ combined damage
+ sysrel
 popup: remove blocker on arrow
 Create new legend component (with gradients)
 display error messages
 
 # Next
 
+- re-create slider and rea-activate lahar-contours
 - Augmenter: only those products need to be resolved where a augmenter applies.
 - Re-create graph-modal
 - Eq-catalog: add missing parameters
@@ -16,6 +19,7 @@ display error messages
 
 # Improvements for future
 
+- Backend: use zod to parse inputs?
 - Restructure directories:
     - two modules: one for map, one for wizard
         - share store between them: https://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular-not-between-to-c

@@ -1,49 +1,50 @@
-import { WizardableStep } from 'src/app/components/config_wizard/wizardable_processes';
-import { vei } from './lahar';
-import { ProcessStateUnavailable, ExecutableProcess, Product } from 'src/app/riesgos/riesgos.datatypes';
-import { Observable, of } from 'rxjs';
-import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/userconfigurable_wpsdata';
-import { WpsData } from '../../../services/wps/wps.datatypes';
+import { StringSelectUserConfigurableProduct, WizardableProduct } from "src/app/components/config_wizard/wizardable_products";
+import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
+import { WizardableProductAugmenter, WizardableStepAugmenter } from "src/app/services/augmenter/augmenter.service";
+import { RiesgosProduct, RiesgosStep } from "../../riesgos.state";
 
 
+// @TODO: this is awkward.
+// In future, frontend should be able to create its own steps
+// without needing one from the backend
 
-export const selectableVei: StringSelectUserConfigurableProduct & WpsData = {
-    uid: 'selectable_intensity',
-    description: {
-        id: 'intensity',
-        title: '',
-        reference: false,
-        type: 'literal',
-        options: ['VEI1', 'VEI2', 'VEI3', 'VEI4'],
-        defaultValue: 'VEI1',
-        wizardProperties: {
-            fieldtype: 'stringselect',
-            name: 'intensity',
+
+export class SelectableVei implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'veiUserSelection'
+    }
+
+    makeProductWizardable(product: RiesgosProduct): StringSelectUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                options: ['VEI1', 'VEI2', 'VEI3', 'VEI4'],
+                defaultValue: 'VEI1',
+                wizardProperties: {
+                    fieldtype: 'stringselect',
+                    name: 'intensity',
+                }
+            },
+        }]
+    }
+
+}
+
+
+export class VeiSelector implements WizardableStepAugmenter {
+    appliesTo(step: RiesgosStep): boolean {
+        return step.step.id === 'VeiSelection';
+    }
+    makeStepWizardable(step: RiesgosStep): WizardableStep {
+        return {
+            ...step,
+            scenario: 'Ecuador',
+            wizardProperties: {
+                providerName: '',
+                providerUrl: '',
+                shape: 'volcanoe',
+                wikiLink: 'VeiSelection'
+            }
         }
-    },
-    value: null
-};
-
-
-
-export const VeiProvider: WizardableStep & ExecutableProcess = {
-    uid: 'vei_provider',
-    name: 'VEI Selection',
-    description: 'VEI_description',
-    requiredProducts: [selectableVei.uid],
-    providedProducts: [vei.uid],
-    state: new ProcessStateUnavailable(),
-    wizardProperties: {
-        providerName: '',
-        providerUrl: '',
-        shape: 'volcanoe',
-        wikiLink: 'VeiSelection'
-    },
-    execute: (products: Product[]): Observable<Product[]> => {
-        const selectedVeiProd = products.find(p => p.uid === selectableVei.uid);
-        return of([{
-            ... vei,
-            value: selectedVeiProd.value
-        }]);
     }
 }

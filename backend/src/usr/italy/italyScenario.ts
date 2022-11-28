@@ -1,5 +1,6 @@
-import { sleep, toPromise } from '../utils/async';
-import { Datum, ScenarioFactory } from './scenarios';
+import { ScenarioFactory, Datum } from "../../scenarios/scenarios";
+import { sleep, toPromise } from "../../utils/async";
+
 
 
 export const italyScenarioFactory = new ScenarioFactory('Italy', 'An example scenario');

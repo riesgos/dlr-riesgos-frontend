@@ -3,6 +3,7 @@
 Ecuador
 popup: remove blocker on arrow
 Create new legend component (with gradients)
+display error messages
 
 # Next
 
@@ -32,6 +33,7 @@ Create new legend component (with gradients)
             - Pro: More control
             - Pro: Could move all of wizard in own module on the same occasion
             - Con: frontend is supposed to be a dynamic image of backend
+        - Suggestion: have augmenterService not only augment steps, but also create them on his own
 - Running two processes in parallel sometimes has one end up stuck
     - backend completes both processes
     - but frontend only fetches one 

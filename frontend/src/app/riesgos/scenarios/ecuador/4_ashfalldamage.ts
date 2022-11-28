@@ -8,7 +8,7 @@ import { switchMap } from 'rxjs/operators';
 import { ashfallPoint } from './2_ashfallsim';
 import { WpsData, WpsDataDescription } from '../../../services/wps/wps.datatypes';
 import { MultiVectorLayerProduct, VectorLayerProperties } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { schemaEcuador, initialExposureAshfallRef } from './3_exposure';
+import { schemaEcuador, initialExposureAshfallRef } from './3_ashfall_exposure';
 import { FeatureCollection } from '@turf/helpers';
 import { fragilityRef } from '../chile/modelProp';
 import { BarData, createGroupedBarChart } from 'src/app/helpers/d3charts';

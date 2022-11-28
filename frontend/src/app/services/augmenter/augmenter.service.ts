@@ -26,6 +26,10 @@ import { EqDeusChile, EqDamageWmsChile } from 'src/app/riesgos/scenarios/chile/5
 import { TsServiceChile, TsWmsChile } from 'src/app/riesgos/scenarios/chile/6_tssim';
 import { SchemaTsChile, TsDeusChile, TsDamageWmsChile } from 'src/app/riesgos/scenarios/chile/7_tsdamage';
 import { EqReliabilityChile, DamageConsumerAreasChile } from 'src/app/riesgos/scenarios/chile/8_sysrel';
+import { SelectableVei, VeiSelector } from 'src/app/riesgos/scenarios/ecuador/1_veiselection';
+import { Ashfall, AshfallService, Probability } from 'src/app/riesgos/scenarios/ecuador/2_ashfallsim';
+import { AshfallExposureEcuador, AshfallExposureProvider } from 'src/app/riesgos/scenarios/ecuador/3_ashfall_exposure';
+import { LaharExposureEcuador, LaharExposureProvider } from 'src/app/riesgos/scenarios/ecuador/6_lahar_exposure';
 
 
 
@@ -111,6 +115,15 @@ export class AugmenterService {
                                                                new TsServiceChile(),      new TsWmsChile(),
       new SchemaTsChile(),                                     new TsDeusChile(),         new TsDamageWmsChile(this.store, this.dataSvc),
                                                                new EqReliabilityChile(),  new DamageConsumerAreasChile(),
+
+
+      // Ecuador
+      // inputs                                                // steps                  // outputs
+      new SelectableVei(),                                     new VeiSelector(),
+      new Probability(),                                       new AshfallService(),      new Ashfall(),
+                                                               new AshfallExposureProvider(), new AshfallExposureEcuador(),
+                                                               new LaharExposureProvider(), new LaharExposureEcuador(),
+
     ];
   }
 
@@ -140,12 +153,7 @@ export class AugmenterService {
     if (!resolved$) resolved$ = of(product);
 
     const augmenter = this.getWizardProductAugmenters().find(a => a.appliesTo(product));
-    if (!augmenter) { 
-      if (this.config.getConfig().production === false) {
-        console.warn(`No wizard-product-augmenter found for product ${product.id}`);
-      }
-      return undefined;
-    }
+    if (!augmenter) return undefined;
 
     return resolved$.pipe(
       map(resolvedProduct => augmenter.makeProductWizardable(resolvedProduct))
@@ -154,12 +162,8 @@ export class AugmenterService {
 
   public loadWizardPropertiesForStep(step: RiesgosStep): WizardableStep {
     const augmenter = this.getWizardStepAugmenters().find(a => a.appliesTo(step));
-    if (!augmenter) { 
-      if (this.config.getConfig().production === false) {
-        console.warn(`No wizard-step-augmenter found for step ${step.step.id}`);
-      }
-      return undefined;
-    }
+    if (!augmenter) return undefined;
+
     return augmenter.makeStepWizardable(step);
   }
 
@@ -168,12 +172,7 @@ export class AugmenterService {
     if (!resolved$) return undefined;
 
     const augmenter = this.getMapProductAugmenters().find(a => a.appliesTo(product));
-    if (!augmenter) { 
-      if (this.config.getConfig().production === false) {
-        console.warn(`No map-product-augmenter found for product ${product.id}`);
-      }
-      return undefined;
-    }
+    if (!augmenter) return undefined;
 
     return resolved$.pipe(
       map(resolvedProduct => augmenter.makeProductMappable(resolvedProduct))

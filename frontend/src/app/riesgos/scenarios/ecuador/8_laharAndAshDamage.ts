@@ -7,7 +7,7 @@ import { laharVelocityShakemapRef } from './5_lahar';
 import { HttpClient } from '@angular/common/http';
 import { MultiVectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
 import { WpsData } from '../../../services/wps/wps.datatypes';
-import { schemaEcuador } from './3_exposure';
+import { schemaEcuador } from './3_ashfall_exposure';
 import { fragilityRef } from '../chile/modelProp';
 import { Deus } from '../chile/deus';
 import { ashfallDamageM, ashfallDamageMRef } from './4_ashfalldamage';

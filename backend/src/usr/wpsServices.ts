@@ -706,6 +706,69 @@ export async function getSystemReliability(countryName: 'peru' | 'chile' | 'ecua
 }
 
 
+export async function getSystemReliabilityEcuador(heightXmlRef: string, velocityXmlRef: string) {
+
+    const url = 'https://riesgos.52north.org/javaps/service';
+    const processId = 'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess';
+
+    const country: WpsInput = {
+        description: {
+            id: 'country',
+            reference: false,
+            type: 'literal',
+            format: 'text/plain'
+        },
+        value: 'ecuador'
+    };
+
+    const hazardType: WpsInput = {
+        description: {
+            id: 'hazard',
+            reference: false,
+            type: 'literal',
+            format: 'text/plain'
+        },
+        value: 'lahar'
+    }
+
+    const heightInput: WpsInput = {
+        description: {
+            id: 'height',
+            type: 'complex',
+            reference: true,
+            format: 'text/xml',
+            schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+            encoding: 'UTF-8'
+        },
+        value: heightXmlRef
+    };
+
+    const velocityInput: WpsInput = {
+        description: {
+            id: 'velocity',
+            type: 'complex',
+            reference: true,
+            format: 'text/xml',
+            schema: 'http://earthquake.usgs.gov/eqcenter/shakemap',
+            encoding: 'UTF-8'
+        },
+        value: velocityXmlRef
+    };
+
+    const damageData: WpsOutputDescription = {
+        id: 'damage_consumer_areas',
+        format: 'application/vnd.geo+json',
+        reference: false,
+        type: 'complex'
+    };
+
+    const results = await wpsClient2.executeAsync(url, processId, [country, hazardType, heightInput, velocityInput], [damageData]);
+
+    return results[0].value[0];
+}
+
+
+
 export type LaharDirection = 'North' | 'South';
 export type LaharParameter = 'MaxHeight' | 'MaxVelocity' | 'MaxPressure' | 'MaxErosion' | 'Deposition';
 

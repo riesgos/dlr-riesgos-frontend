@@ -7,6 +7,7 @@ import { step as lahar } from './5_laharsim/laharsim';
 import { step as laharExposure } from './6_lahar_exposure/exposure';
 import { step as laharDamage } from './7_lahar_damage/lahar_damage';
 import { step as combinedDamage } from './8_combined_damage/combined_damage';
+import { step as sysrel } from './9_sysrel/sysrel';
 
 
 export const ecuadorFactory = new ScenarioFactory(
@@ -22,3 +23,4 @@ ecuadorFactory.registerStep(lahar);
 ecuadorFactory.registerStep(laharExposure);
 ecuadorFactory.registerStep(laharDamage);
 ecuadorFactory.registerStep(combinedDamage);
+ecuadorFactory.registerStep(sysrel);

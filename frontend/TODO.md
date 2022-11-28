@@ -1,8 +1,5 @@
 # Switch
 
-Ecuador
- combined damage
- sysrel
 popup: remove blocker on arrow
 Create new legend component (with gradients)
 display error messages

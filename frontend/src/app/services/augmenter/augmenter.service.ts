@@ -33,6 +33,7 @@ import { LaharExposureEcuador, LaharExposureProvider } from 'src/app/riesgos/sce
 import { AshfallDamage, AshfallDamageMultiLayer } from 'src/app/riesgos/scenarios/ecuador/4_ashfalldamage';
 import { LaharDirection, LaharSim, LaharWmses } from 'src/app/riesgos/scenarios/ecuador/5_lahar';
 import { LaharDamage, LaharDamageMultiLayer } from 'src/app/riesgos/scenarios/ecuador/7_lahardamage';
+import { LaharAshfallDamage, LaharAshfallDamageMultiLayer } from 'src/app/riesgos/scenarios/ecuador/8_laharAndAshDamage';
 
 
 
@@ -129,6 +130,7 @@ export class AugmenterService {
                               new LaharSim(),                 new LaharWmses(),
       new LaharDirection(),   new LaharExposureProvider(),    new LaharExposureEcuador(),
                               new LaharDamage(),              new LaharDamageMultiLayer(),
+                              new LaharAshfallDamage(),       new LaharAshfallDamageMultiLayer()
 
     ];
   }

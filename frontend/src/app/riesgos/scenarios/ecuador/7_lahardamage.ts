@@ -14,7 +14,7 @@ import { maxDamage$ } from './constants';
 
 
 
-const laharLossProps: VectorLayerProperties = {
+export const laharLossProps: VectorLayerProperties = {
         name: 'laharLoss',
         icon: 'avalanche',
         vectorLayerAttributes: {
@@ -95,7 +95,7 @@ const laharLossProps: VectorLayerProperties = {
 
 };
 
-const laharUpdatedExposureProps: VectorLayerProperties = {
+export const laharUpdatedExposureProps: VectorLayerProperties = {
         name: 'laharExposure',
         icon: 'avalanche',
         vectorLayerAttributes: {

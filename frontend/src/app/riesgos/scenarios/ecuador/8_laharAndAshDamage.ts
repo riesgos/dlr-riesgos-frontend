@@ -1,29 +1,15 @@
-import { ExecutableProcess, Product, ProcessState, ProcessStateUnavailable } from 'src/app/riesgos/riesgos.datatypes';
-import { WizardableStep, WizardProperties } from 'src/app/components/config_wizard/wizardable_processes';
-import { Observable } from 'rxjs';
-import { VulnerabilityModelEcuador, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador } from './vulnerability';
-import { map, switchMap } from 'rxjs/operators';
-import { laharVelocityShakemapRef } from './5_lahar';
-import { HttpClient } from '@angular/common/http';
-import { MultiVectorLayerProduct } from 'src/app/mappable/riesgos.datatypes.mappable';
-import { WpsData } from '../../../services/wps/wps.datatypes';
-import { schemaEcuador } from './3_ashfall_exposure';
-import { fragilityRef } from '../chile/modelProp';
-import { Deus } from '../chile/deus';
-import { ashfallDamageM, ashfallDamageMRef } from './4_ashfalldamage';
-import { laharLossProps, laharTransitionProps, laharUpdatedExposureProps, laharDamageMRef } from './7_lahardamage';
-import { createGroupedBarChart, BarData } from 'src/app/helpers/d3charts';
+import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
+import { MultiVectorLayerProduct } from "src/app/components/map/mappable/mappable_products";
+import { BarData, createGroupedBarChart } from "src/app/helpers/d3charts";
+import { MappableProductAugmenter, WizardableStepAugmenter } from "src/app/services/augmenter/augmenter.service";
+import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from "../../riesgos.state";
+import { laharLossProps, laharUpdatedExposureProps } from "./7_lahardamage";
 
 
 
 const laharAshfallLossProps = {
     ... laharLossProps,
     name: 'Lahar_and_Ashfall_Loss',
-};
-
-const laharAshfallTransitionProps = {
-    ... laharTransitionProps,
-    name: 'LaharAndAshfallTransition',
 };
 
 const laharAshfallUpdatedExposureProps = {
@@ -66,107 +52,41 @@ const laharAshfallUpdatedExposureProps = {
     name: 'LaharAndAshfallExposure',
 };
 
-export const laharAshfallDamageM: WpsData & MultiVectorLayerProduct = {
-    uid: 'lahar_ashfall_damage_output_values',
-    description: {
-        id: 'merged_output',
-        title: '',
-        reference: false,
-        defaultValue: null,
-        format: 'application/json',
-        type: 'complex',
-        description: '',
-        vectorLayers: [laharAshfallUpdatedExposureProps, laharAshfallLossProps]
-    },
-    value: null
-};
 
-
-export class DeusLaharAndAshfall implements ExecutableProcess, WizardableStep {
-
-    readonly uid: string = 'DeusLaharAndAshfall';
-    readonly name: string = 'LaharAndAshfallDamage';
-    readonly state: ProcessState = new ProcessStateUnavailable();
-    readonly requiredProducts: string[] = [ashfallDamageM, ashfallDamageMRef, laharDamageMRef, laharVelocityShakemapRef].map(p => p.uid);
-    readonly providedProducts: string[] = [laharAshfallDamageM].map(p => p.uid);
-    readonly description?: string = 'ashfall_and_lahar_damage_service_description';
-    readonly wizardProperties: WizardProperties = {
-        shape: 'dot-circle',
-        providerName: 'GFZ',
-        providerUrl: 'https://www.gfz-potsdam.de/en/',
-        wikiLink: 'ExposureAndVulnerabilityEcuador'
-    };
-
-    private deus: Deus;
-    private vulnerability: VulnerabilityModelEcuador;
-
-    constructor(http: HttpClient, middleWareUrl: string) {
-        this.deus = new Deus(http, middleWareUrl);
-        this.vulnerability = new VulnerabilityModelEcuador(http, middleWareUrl);
+export class LaharAshfallDamageMultiLayer implements MappableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'combinedDamageEcuador';
     }
 
-    execute(
-        inputs: Product[], outputs?: Product[],
-        doWhileExecuting?: (response: any, counter: number) => void
-    ): Observable<Product[]> {
+    makeProductMappable(product: RiesgosProductResolved): MultiVectorLayerProduct[] {
+        return [{
+            ...product,
+            description: {
+                format: 'application/json',
+                type: 'complex',
+                vectorLayers: [laharAshfallUpdatedExposureProps, laharAshfallLossProps]
+            },
+        }];
+    }
 
-        // Step 1.1: Preparing vulnerability-service inputs
-        const vulnInputs = [{
-            ... schemaEcuador,
-            value: 'Mavrouli_et_al_2014',
-        }, assetcategoryEcuador, losscategoryEcuador, taxonomiesEcuador];
-        const vulnOutputs = [fragilityRef];
+}
 
-        // Step 1.2: executing vulnerability service
-        return this.vulnerability.execute(vulnInputs, vulnOutputs, doWhileExecuting).pipe(
-            switchMap((results: Product[]) => {
 
-                // Step 2.1: Preparing deus inputs
-                const fragility = results.find(prd => prd.uid === fragilityRef.uid);
-                const shakemap = inputs.find(prd => prd.uid === laharVelocityShakemapRef.uid);
-                const exposure = inputs.find(prd => prd.uid === ashfallDamageMRef.uid);
+export class LaharAshfallDamage implements WizardableStepAugmenter {
+    appliesTo(step: RiesgosStep): boolean {
+        return step.step.id === 'CombinedDamageEcuador';
+    }
 
-                const deusInputs: Product[] = [{
-                    ... shakemap,
-                    description: {
-                        ... shakemap.description,
-                        format: 'text/xml',
-                        id: 'intensity'
-                    }
-                },
-                {
-                    ... exposure,
-                    description: {
-                        ... exposure.description,
-                        id: 'exposure'
-                    },
-                    value: exposure.value
-                }, {
-                    ... schemaEcuador,
-                    value: 'Torres_Corredor_et_al_2017',
-                }, {
-                    ... fragility,
-                    description: {
-                        ... fragilityRef.description,
-                        id: 'fragility'
-                    }
-                }
-                ];
-
-                const deusOutputs: Product[] = [laharAshfallDamageM];
-
-                // Step 2.2: executing deus
-                return this.deus.execute(deusInputs, deusOutputs, doWhileExecuting);
-            }),
-            map((results: Product[]) => {
-                // Step 3: adding losses-by-ashfall to losses-from-ashfall-to-lahar
-                const lossesByAshfall = inputs.find(i => i.uid === ashfallDamageM.uid).value[0];
-                const lossesFromAshfallToLahar = results[0].value[0];
-                for (let i = 0; i < lossesFromAshfallToLahar.features.length; i++) {
-                    lossesFromAshfallToLahar.features[i].properties['loss_value'] += lossesByAshfall.features[i].properties['loss_value'];
-                }
-                return results;
-            })
-        );
+    makeStepWizardable(step: RiesgosStep): WizardableStep {
+        return {
+            ...step,
+            scenario: 'Ecuador',
+            wizardProperties: {
+                shape: 'dot-circle',
+                providerName: 'GFZ',
+                providerUrl: 'https://www.gfz-potsdam.de/en/',
+                wikiLink: 'ExposureAndVulnerabilityEcuador'
+            }
+        }
     }
 }

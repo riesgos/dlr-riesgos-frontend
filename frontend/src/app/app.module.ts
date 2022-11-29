@@ -81,6 +81,7 @@ import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelColl
 import { DataService } from './services/data/data.service';
 import { TranslatedImageComponent } from './components/dynamic/translated-image/translated-image.component';
 import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
+import { LegendComponent } from './components/dynamic/legend/legend.component';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
@@ -139,6 +140,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     WizardPageComponent,
     TranslatedImageComponent,
     GroupSliderComponent,
+    LegendComponent,
   ],
   imports: [
     BrowserAnimationsModule,

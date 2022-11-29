@@ -17,6 +17,7 @@ new docs
 
 # Improvements for future
 
+- Backend: nightly CI and email-notification
 - Backend: use zod to parse inputs?
 - Restructure directories:
     - two modules: one for map, one for wizard

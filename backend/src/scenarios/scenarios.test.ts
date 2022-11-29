@@ -2,10 +2,10 @@ import axios from 'axios';
 import { Server } from 'http';
 import express, { Express } from 'express';
 import { addScenarioApi } from './scenario.interface';
-import { italyScenarioFactory } from './italyScenario';
 import { Scenario, ScenarioDescription, ScenarioState } from './scenarios';
 import { sleep } from '../utils/async';
 import { deleteFile } from '../utils/files';
+import { italyScenarioFactory } from '../usr/italy/italyScenario';
 
 
 const http = axios.create();

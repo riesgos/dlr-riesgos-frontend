@@ -20,16 +20,18 @@
         - Frontend was over-full, hard to maintain
         - Backend can now run steps as CI 
         - Central log of events and errors
+        - *Most important*: Easier harmonization of webservices.
 
-- **No longer based on wps, but on abstract steps**
-    - Many steps do not involve calling webservices
-    - Setting up a webservice is hard, writing some js code in backend is relavitely easy
+- **No longer based on wps'es, but on abstract steps**
+    - Many steps do not involve calling a webservices, and many more involve calling several.
+    - Setting up a webservice is hard, writing some js code in backend is relavitely easy.
+    - *Most important*: often steps had cross-dependencies. Having them all in the backend allows the developer one point where changes to the harmonization can be made.
 
 - **Frontend: ngrx-state is simple and abstract**
     - Individual components may add additional information to state using `Augmentors`.
     - But generally, information that is only relevant to one component should not pollute the global state.
 
-- **Backend: no steps may not run side-effects**
+- **Backend: steps may not run side-effects**
     - Based on problem: Selecting an eq from the catalog-output
     - Decision: The backend will *not* set the `options` parameter of the `userChoice` parameter.
     - Justification: 

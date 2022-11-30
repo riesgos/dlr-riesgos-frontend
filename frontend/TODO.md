@@ -1,22 +1,23 @@
-# Switch
+# Ongoing
 
-popup: remove blocker on arrow
 Create new legend component (with gradients)
+Profile performance bottlenecks
 display error messages
-new docs
+popup: remove blocker on arrow
+re-create slider and re-activate lahar-contours
+
 
 # Next
 
-- re-create slider and rea-activate lahar-contours
-- Augmenter: only those products need to be resolved where a augmenter applies.
-- Re-create graph-modal
 - Eq-catalog: add missing parameters
 - Restart, save- and reload-buttons
     Store current state *and* relevant data from resolver
-- cd frontend && npx ts-unused-exports tsconfig.json
+- Augmenter: only those products need to be resolved where a augmenter applies.
+- Re-create graph-modal
 
 # Improvements for future
 
+- new docs
 - Backend: nightly CI and email-notification
 - Backend: use zod to parse inputs?
 - Restructure directories:

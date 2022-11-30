@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { Entry, legendComponent, LegendDirection } from 'src/app/helpers/d3legend';
+import { LegendEntryContinuous, legendComponent, LegendDirection, LegendEntry } from 'src/app/helpers/d3legend';
 import { select } from 'd3';
 
 @Component({
@@ -13,10 +13,9 @@ export class LegendComponent implements OnInit {
   @Input() width: number = 250;
   @Input() height: number = 250;
   @Input() direction: LegendDirection = 'vertical';
-  @Input() continuous = false;
-  @Input() fractionGraphic = 0.5;
+  @Input() fractionGraphic = this.direction === 'vertical' ? 0.125 : 0.5;
   @Input() margin = 10;
-  @Input() entries: Entry[] = [];
+  @Input() entries: LegendEntry[] = [];
   @ViewChild('legendAnchor', {static: true}) div: ElementRef;
 
 
@@ -26,7 +25,7 @@ export class LegendComponent implements OnInit {
     const legend = legendComponent()
       .id(this.id)
       .width(this.width).height(this.height).direction(this.direction)
-      .continuous(this.continuous).fractionGraphic(this.fractionGraphic).margin(this.margin)
+      .fractionGraphic(this.fractionGraphic).margin(this.margin)
       .entries(this.entries);
 
     const selection = select(this.div.nativeElement);

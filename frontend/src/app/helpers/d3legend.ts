@@ -96,22 +96,105 @@ function scaleColor() {
 }
 
 
-export interface Entry {
-    position: number,
-    color: string,
-    text: string
+export interface LegendEntryDiscrete {
+  size: number,
+  color: string,
+  text: string
+}
+
+
+function createLegendDiscrete(
+  svgSelection, id: string,
+  width: number, height: number,
+  direction: LegendDirection,
+  entries: LegendEntryDiscrete[],
+  fractionGraphic: number = 0.5,
+  margin: number = 10
+) {
+
+  // layouting
+  const dominantSize = direction === 'horizontal' ? width : height;
+
+  const layoutEntries: any[] = [];
+  let wSum = 0.0;
+  for (const entry of entries) {
+    layoutEntries.push({
+      ...entry,
+      startPos:    (wSum),
+      textPos:     (wSum + entry.size / 2.0),
+      endPos:      (wSum + entry.size),
+      scaledSize:   entry.size,
+    })
+    wSum += entry.size;
+  }
+  for (const entry of layoutEntries) {
+    entry.startPos    *=   dominantSize / wSum;
+    entry.textPos     *=   dominantSize / wSum;
+    entry.endPos      *=   dominantSize / wSum;
+    entry.scaledSize  *=   dominantSize / wSum;
+  }
+
+  const bandWidth           = dominantSize / entries.length;
+  const graphicWidth        = direction === 'horizontal' ? width : fractionGraphic * width;
+  const graphicHeight       = direction === 'horizontal' ? fractionGraphic * height : height;
+  const graphicEntryWidth   = direction === 'horizontal' ? bandWidth : fractionGraphic * width;
+  const graphicEntryHeight  = direction === 'horizontal' ? fractionGraphic * height : bandWidth;
+
+
+  // appending legend to selection
+
+  const legendGroup = svgSelection
+    .attr('width', width + (2 * margin))
+    .attr('height', height + (2 * margin))
+    .append('g')
+      .attr('transform', `translate(${margin}, ${margin})`)
+      .attr('class', 'legendGroup');
+
+
+  const graphic = legendGroup.selectAll('.legendRect')
+    .data(layoutEntries)
+    .enter()
+    .append('g')
+      .attr('class', 'legendRect')
+      .attr('transform', d => direction === 'horizontal' ?
+                                            `translate(${d.startPos}, 0)` :
+                                            `translate(0, ${d.startPos})`)
+    .append('rect')
+      .attr('width',  d => direction === 'horizontal' ? d.scaledSize : graphicEntryWidth)
+      .attr('height', d => direction === 'horizontal' ? graphicEntryHeight : d.scaledSize)
+      .attr('fill',   d => d.color);
+
+
+  const labels = legendGroup.selectAll('.label')
+    .data(layoutEntries)
+    .enter()
+    .append('g')
+      .attr('class', 'label')
+      .attr('transform', d => direction === 'horizontal' ?
+                                            `translate(${d.textPos}, ${graphicHeight + 10})` :
+                                            `translate(${graphicWidth + 10}, ${d.textPos})`)
+    .append('text')
+      .text(d => d.text)
+      .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left');
+
+}
+
+export interface LegendEntryContinuous {
+  position: number,
+  color: string,
+  text: string
 }
 
 export type LegendDirection = 'horizontal' | 'vertical';
 
-function createLegend(
-    svgSelection, id: string, 
-    width: number, height: number, continuous: boolean, 
-    direction: LegendDirection, 
-    entries: Entry[], 
-    fractionGraphic: number = 0.5,
-    margin: number = 10
-  ) {
+function createLegendContinuous(
+  svgSelection, id: string,
+  width: number, height: number,
+  direction: LegendDirection,
+  entries: LegendEntryContinuous[],
+  fractionGraphic: number = 0.5,
+  margin: number = 10
+) {
 
   // layouting
   const dominantSize = direction === 'horizontal' ? width : height;
@@ -127,80 +210,52 @@ function createLegend(
     .domain(entries.map(e => e.position))
     .range(entries.map(e => e.color));
 
-  const bandWidth = dominantSize / entries.length;
-  const graphicWidth        = direction === 'horizontal' ? width                     : fractionGraphic * width;
-  const graphicHeight       = direction === 'horizontal' ? fractionGraphic * height  : height;
-  const graphicEntryWidth   = direction === 'horizontal' ? bandWidth                 : fractionGraphic * width;
-  const graphicEntryHeight  = direction === 'horizontal' ? fractionGraphic * height  : bandWidth;
+  const graphicWidth  = direction === 'horizontal' ? width : fractionGraphic * width;
+  const graphicHeight = direction === 'horizontal' ? fractionGraphic * height : height;
 
 
   // appending legend to selection
 
   const legendGroup = svgSelection
-    .attr('width', width   + (2 * margin))
+    .attr('width', width + (2 * margin))
     .attr('height', height + (2 * margin))
     .append('g')
-      .attr('transform', `translate(${margin}, ${margin})`)
-      .attr('class', 'legendGroup');
+    .attr('transform', `translate(${margin}, ${margin})`)
+    .attr('class', 'legendGroup');
 
-  if (continuous) {
-    const legendGradient = linearGradientComponent(id)
-      .direction(direction)
-      .stops(entries.map(e => ({
-        offset: e.position * 100,
-        color: colorScale(e.position),
-        opacity: 1
-      })));
-  
-    svgSelection.call(legendGradient);
-    
-    const graphic = legendGroup.append('rect')
-      .attr('class', 'graphic')
-      .attr('width', graphicWidth)
-      .attr('height', graphicHeight)
-      .attr('fill', `url(#${id})`);
-  } 
-  
-  else {
-    const startPositions = entries.map(e => placementScale(e.position));
-    startPositions.push(dominantSize);
-    const sizes = [];
-    for (let i = 0; i < entries.length; i++) {
-      const size = startPositions[i+1] - startPositions[i];
-      sizes.push(size);
-    }
+  const legendGradient = linearGradientComponent(id)
+    .direction(direction)
+    .stops(entries.map(e => ({
+      offset: e.position * 100,
+      color: colorScale(e.position),
+      opacity: 1
+    })));
 
-    const graphic = legendGroup.selectAll('.legendRect')
-      .data(entries)
-      .enter()
-        .append('g')
-        .attr('class', 'legendRect')
-        .attr('transform', d => direction === 'horizontal' ? 
-                                `translate(${placementScale(d.position)}, 0)` :
-                                `translate(0, ${placementScale(d.position)})` )
-        .append('rect')
-        .attr('width',  (d, i) => direction === 'horizontal' ? sizes[i] : graphicEntryWidth)
-        .attr('height', (d, i) => direction === 'horizontal' ? graphicEntryHeight : sizes[i])
-        .attr('fill',    d     => colorScale(d.position));
-  }
+  svgSelection.call(legendGradient);
 
-
+  const graphic = legendGroup.append('rect')
+    .attr('class', 'graphic')
+    .attr('width', graphicWidth)
+    .attr('height', graphicHeight)
+    .attr('fill', `url(#${id})`);
 
   const labels = legendGroup.selectAll('.label')
     .data(entries)
     .enter()
     .append('g')
-    .attr('class', 'label')
-    .attr('transform', d => direction === 'horizontal' ?
-                            `translate(${placementScale(d.position)}, ${graphicHeight + 10})` : 
-                            `translate(${graphicWidth + 10}, ${placementScale(d.position)})` )
+      .attr('class', 'label')
+      .attr('transform', d => direction === 'horizontal' ?
+        `translate(${placementScale(d.position)}, ${graphicHeight + 10})` :
+        `translate(${graphicWidth + 10}, ${placementScale(d.position)})`)
     .append('text')
-    .text(d => d.text)
-    .style('text-anchor',         direction === 'horizontal' ? 'middle' : 'left')
-    .style('dominant-baseline',   direction === 'horizontal' ? 'center' : 'hanging');
+      .text(d => d.text)
+      .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left')
+      .style('dominant-baseline', 'middle');
 
 }
 
+
+export type LegendEntry = LegendEntryContinuous | LegendEntryDiscrete;
 
 /**
  * ## Legend component
@@ -212,7 +267,8 @@ function createLegend(
     const entries: Entry[] = [{
     color: 'rgb(255, 0, 0)',
     text: 'red',
-    position: 0.0
+    position: 0.0  // position: legend infers that it must be continuous.
+                   // for a discrete legend, use `size`
     }, {
     color: 'rgb(0, 255, 0)',
     text: 'green',
@@ -226,9 +282,11 @@ function createLegend(
     const base = select('app');
     const svg = base.append('svg');
     const legend = legendComponent()
-    .id('mylegend')
-    .width(300).height(50).direction('horizontal')
-    .fractionGraphic(0.4).margin(5).continuous(true).entries(entries);
+      .id('mylegend')
+      .width(300).height(50).direction('horizontal')
+      .fractionGraphic(0.4)   // how much of the secondary direction should be taken up by graphic (vs labels)=
+      .margin(5)
+      .entries(entries);
     ```
  * 
  */
@@ -236,24 +294,26 @@ export function legendComponent() {
   let _id = 'myLegendGradient';
   let _width = 300;
   let _height = 100;
-  let _continuous = false;
   let _direction: LegendDirection = 'horizontal';
   let _fractionGraphic = 0.5;
   let _margin = 10;
-  let _entries: Entry[] = [];
+  let _entries: LegendEntry[] = [];
 
   function legend(selection) {
-    createLegend(selection, _id, _width, _height, _continuous, _direction, _entries, _fractionGraphic, _margin);
+    if (`size` in _entries[0]) {
+      createLegendDiscrete(selection, _id, _width, _height, _direction, _entries as LegendEntryDiscrete[], _fractionGraphic, _margin);
+    } else {
+      createLegendContinuous(selection, _id, _width, _height, _direction, _entries as LegendEntryContinuous[], _fractionGraphic, _margin);
+    }
   }
 
-  legend.id               = (id: string)                  => { _id = id; return legend; }
-  legend.width            = (width: number)               => { _width = width; return legend; }
-  legend.height           = (height: number)              => { _height = height; return legend; }
-  legend.fractionGraphic  = (fractionGraphic: number)     => { _fractionGraphic = fractionGraphic; return legend; }
-  legend.margin           = (margin: number)              => { _margin = margin; return legend; }
-  legend.continuous       = (continuous: boolean)         => { _continuous = continuous; return legend; }
-  legend.direction        = (direction: LegendDirection)  => { _direction = direction; return legend; }
-  legend.entries          = (entries: Entry[])            => { _entries = entries; return legend; }
+  legend.id              = (id: string)                       => { _id = id; return legend; }
+  legend.width           = (width: number)                    => { _width = width; return legend; }
+  legend.height          = (height: number)                   => { _height = height; return legend; }
+  legend.fractionGraphic = (fractionGraphic: number)          => { _fractionGraphic = fractionGraphic; return legend; }
+  legend.margin          = (margin: number)                   => { _margin = margin; return legend; }
+  legend.direction       = (direction: LegendDirection)       => { _direction = direction; return legend; }
+  legend.entries         = (entries: LegendEntry[])           => { _entries = entries; return legend; }
 
   return legend;
 }

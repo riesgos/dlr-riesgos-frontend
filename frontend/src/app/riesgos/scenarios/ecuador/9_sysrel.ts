@@ -2,10 +2,11 @@ import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 import { MappableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
-import { MappableProduct, VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
+import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
+import { LegendComponent } from 'src/app/components/dynamic/legend/legend.component';
 
 
 
@@ -57,49 +58,24 @@ export class DamageConsumerAreasEcuador implements MappableProductAugmenter {
                           })
                         });
                     },
-                    legendEntries: [{
-                        feature: {
-                            "type": "Feature",
-                            "properties": {'Prob_Disruption': 0.05},
-                            "geometry": {
-                              "type": "Polygon",
-                              "coordinates": [ [
-                                  [ 5.627918243408203, 50.963075942052164 ],
-                                  [ 5.627875328063965, 50.958886259879264 ],
-                                  [ 5.635471343994141, 50.95634523633128 ],
-                                  [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            }
-                        },
-                        text: 'Probability of disruption: 0.05'
-                    }, {
-                        feature: {
-                            "type": "Feature",
-                            "properties": {'Prob_Disruption': 0.4},
-                            "geometry": {
-                              "type": "Polygon",
-                              "coordinates": [ [
-                                  [ 5.627918243408203, 50.963075942052164 ],
-                                  [ 5.627875328063965, 50.958886259879264 ],
-                                  [ 5.635471343994141, 50.95634523633128 ],
-                                  [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            }
-                        },
-                        text: 'Probability of disruption: 0.4'
-                    }, {
-                        feature: {
-                            "type": "Feature",
-                            "properties": {'Prob_Disruption': 0.7},
-                            "geometry": {
-                              "type": "Polygon",
-                              "coordinates": [ [
-                                  [ 5.627918243408203, 50.963075942052164 ],
-                                  [ 5.627875328063965, 50.958886259879264 ],
-                                  [ 5.635471343994141, 50.95634523633128 ],
-                                  [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            }
-                        },
-                        text: 'Probability of disruption: 0.7'
-                    }],
+                    dynamicLegend: value => ({
+                        component: LegendComponent,
+                        inputs: {
+                            entries: [{
+                                text: 'Prob. 0.1',
+                                color: '#96fd7d'
+                            }, {
+                                text: 'Prob. 0.5',
+                                color: '#fdfd7d'
+                            }, {
+                                text: 'Prob. 0.9',
+                                color: '#fd967d'
+                            }],
+                            continuous: true,
+                            fractionGraphic: 0.1,
+                            height: 90
+                        }
+                    }),
                     detailPopupHtml: (props: object) => {
                         const selectedProps = {
                             '{{ Name }}': props['Name'],

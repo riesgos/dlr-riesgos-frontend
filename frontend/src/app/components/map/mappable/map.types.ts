@@ -15,9 +15,7 @@ export interface IProductVectorLayerOptions extends IVectorLayerOptions {
     productId: string;
     hasFocus: boolean;
     attribution?: string;
-    icon?: string;
-    /** deprecated. use dynamicLegend instead. */
-    legendEntries?: any[];  
+    icon?: string; 
     dynamicLegend?: IDynamicComponent;
     dynamicDescription?: IDynamicComponent;
 }
@@ -27,8 +25,6 @@ export class ProductVectorLayer extends VectorLayer implements IProductVectorLay
     productId: string;
     hasFocus: boolean;
     icon?: string;
-    /** deprecated. use dynamicLegend instead. */
-    legendEntries?: any[];
     dynamicLegend?: IDynamicComponent;
     zIndex?: number;
     dynamicDescription?: IDynamicComponent;

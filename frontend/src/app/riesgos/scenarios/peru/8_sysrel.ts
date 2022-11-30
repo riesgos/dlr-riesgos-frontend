@@ -7,6 +7,7 @@ import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from "../../riesg
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
+import { LegendComponent } from "src/app/components/dynamic/legend/legend.component";
 
 
 export class DamageConsumerAreasPeru implements MappableProductAugmenter {
@@ -50,37 +51,23 @@ export class DamageConsumerAreasPeru implements MappableProductAugmenter {
                         };
                         return createKeyValueTableHtml('{{ PowerGrid }}', selectedProps, 'medium');
                     },
-                    legendEntries: [{
-                        feature: {
-                            type: 'Feature',
-                            geometry: {
-                                type: 'Polygon',
-                                coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            },
-                            properties: {Prob_Disruption: 0.1}
-                        },
-                        text: 'Prob. 0.1',
-                    }, {
-                        feature: {
-                            type: 'Feature',
-                            geometry: {
-                                type: 'Polygon',
-                                coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            },
-                            properties: {Prob_Disruption: 0.5}
-                        },
-                        text: 'Prob. 0.5',
-                    }, {
-                        feature: {
-                            type: 'Feature',
-                            geometry: {
-                                type: 'Polygon',
-                                coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            },
-                            properties: {Prob_Disruption: 0.9}
-                        },
-                        text: 'Prob. 0.9',
-                    }]
+                    dynamicLegend: value => ({
+                        component: LegendComponent,
+                        inputs: {
+                            entries: [{
+                                text: 'Prob. 0.1',
+                                color: '#96fd7d'
+                            }, {
+                                text: 'Prob. 0.5',
+                                color: '#fdfd7d'
+                            }, {
+                                text: 'Prob. 0.9',
+                                color: '#fd967d'
+                            }],
+                            continuous: true,
+                            height: 90
+                        }
+                    }),
                 }
             },
         }];

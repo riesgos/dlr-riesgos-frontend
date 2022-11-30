@@ -175,7 +175,8 @@ function createLegendDiscrete(
                                             `translate(${graphicWidth + 10}, ${d.textPos})`)
     .append('text')
       .text(d => d.text)
-      .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left');
+      .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left')
+      .style('dominant-baseline', 'central');
 
 }
 

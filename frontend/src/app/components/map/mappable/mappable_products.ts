@@ -72,9 +72,6 @@ export interface VectorLayerProperties {
         featureStyle?: (feature: Feature<Geometry | GeometryCollection>, resolution: number, selected: boolean) => any;
         detailPopupHtml?: any;
         globalSummary?: (value: any) => IDynamicComponent,
-        sldFile?: string,
-        /** deprecated. use dynamicLegend instead */
-        legendEntries?: any[],
         dynamicLegend?: (value: any) => IDynamicComponent
     };
     description?: string;

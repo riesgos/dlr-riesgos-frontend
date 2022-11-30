@@ -9,6 +9,7 @@ import { weightedDamage } from 'src/app/helpers/colorhelpers';
 import { BarData, createBarChart } from 'src/app/helpers/d3charts';
 import { MappableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
+import { LegendComponent } from 'src/app/components/dynamic/legend/legend.component';
 
 
 
@@ -96,22 +97,20 @@ export class AshfallExposureEcuador implements MappableProductAugmenter {
             };
             return comp;
           },
-          legendEntries: [{
-            feature: {
-              type: 'Feature',
-              geometry: {
-                type: 'Polygon',
-                coordinates: [ [ [ 5.627918243408203, 50.963075942052164 ], [ 5.627875328063965, 50.958886259879264 ], [ 5.635471343994141, 50.95634523633128 ], [ 5.627918243408203, 50.963075942052164 ] ] ]
-            },
-              properties: {
-                expo: {
-                  Damage: [],
-                  Buildings: []
-                }
-              }
-            },
-            text: `exposureLegend`
-          }],
+          dynamicLegend: data => ({
+            component: LegendComponent,
+            inputs: {
+              text: 'exposureLegend',
+              entries: [{
+                text: 'Exposure',
+                color: '#c1c1c1'
+              }, {
+                text: 'NoData',
+                color: '#fdfdfd'
+              }],
+              height: 50
+            }
+          }),
         }
       },
     }]

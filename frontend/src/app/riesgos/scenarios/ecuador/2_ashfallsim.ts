@@ -1,13 +1,14 @@
 import { createKeyValueTableHtml } from 'src/app/helpers/others';
 import { toDecimalPlaces, linInterpolateXY } from 'src/app/helpers/colorhelpers';
-import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle, Text as olText } from 'ol/style';
+import { Style as olStyle, Fill as olFill, Stroke as olStroke, Text as olText } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 import { MappableProductAugmenter, WizardableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
-import { MappableProduct, VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
+import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
-import { StringSelectUserConfigurableProduct, WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/wizardable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
+import { LegendComponent } from 'src/app/components/dynamic/legend/legend.component';
 
 
 
@@ -60,63 +61,42 @@ export class Ashfall implements MappableProductAugmenter {
                             zIndex: thickness * 100
                         });
                     },
-                    legendEntries: [{
-                        feature: {
-                            "type": "Feature",
-                            "properties": {'thickness': 25},
-                            "geometry": {
-                              "type": "Polygon",
-                              "coordinates": [ [
-                                  [ 5.627918243408203, 50.963075942052164 ],
-                                  [ 5.627875328063965, 50.958886259879264 ],
-                                  [ 5.635471343994141, 50.95634523633128 ],
-                                  [ 5.627918243408203, 50.963075942052164 ] ] ]
+                    dynamicLegend: value => {
+
+                        const hue10  = linInterpolateXY(0, 170, 100, 280, 10);
+                        const hue25  = linInterpolateXY(0, 170, 100, 280, 25);
+                        const hue50  = linInterpolateXY(0, 170, 100, 280, 50);
+                        const hue75  = linInterpolateXY(0, 170, 100, 280, 75);
+                        const hue100 = linInterpolateXY(0, 170, 100, 280, 100);
+                        const color10   = `hsl(${hue10}, 50%, 50%)`;
+                        const color25   = `hsl(${hue25}, 50%, 50%)`;
+                        const color50   = `hsl(${hue50}, 50%, 50%)`;
+                        const color75   = `hsl(${hue75}, 50%, 50%)`;
+                        const color100  = `hsl(${hue100}, 50%, 50%)`;
+
+                        return {
+                            component: LegendComponent,
+                            inputs: {
+                                entries: [{
+                                    color: color10,
+                                    text: 'Thickness10'
+                                }, {
+                                    color: color25,
+                                    text: 'Thickness25'
+                                }, {
+                                    color: color50,
+                                    text: 'Thickness50'
+                                }, {
+                                    color: color75,
+                                    text: 'Thickness75'
+                                }, {
+                                    color: color100,
+                                    text: 'Thickness100'
+                                }],
+                                height: 100
                             }
-                        },
-                        text: 'Thickness25'
-                    }, {
-                        feature: {
-                            "type": "Feature",
-                            "properties": {'thickness': 50},
-                            "geometry": {
-                              "type": "Polygon",
-                              "coordinates": [ [
-                                  [ 5.627918243408203, 50.963075942052164 ],
-                                  [ 5.627875328063965, 50.958886259879264 ],
-                                  [ 5.635471343994141, 50.95634523633128 ],
-                                  [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            }
-                        },
-                        text: 'Thickness50'
-                    }, {
-                        feature: {
-                            "type": "Feature",
-                            "properties": {'thickness': 75},
-                            "geometry": {
-                              "type": "Polygon",
-                              "coordinates": [ [
-                                  [ 5.627918243408203, 50.963075942052164 ],
-                                  [ 5.627875328063965, 50.958886259879264 ],
-                                  [ 5.635471343994141, 50.95634523633128 ],
-                                  [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            }
-                        },
-                        text: 'Thickness75'
-                    }, {
-                        feature: {
-                            "type": "Feature",
-                            "properties": {'thickness': 100},
-                            "geometry": {
-                              "type": "Polygon",
-                              "coordinates": [ [
-                                  [ 5.627918243408203, 50.963075942052164 ],
-                                  [ 5.627875328063965, 50.958886259879264 ],
-                                  [ 5.635471343994141, 50.95634523633128 ],
-                                  [ 5.627918243408203, 50.963075942052164 ] ] ]
-                            }
-                        },
-                        text: 'Thickness100'
-                    }],
+                        };
+                    },
                     detailPopupHtml: (properties) => {
                         const thickness = properties['thickness'];
                         if (thickness) {

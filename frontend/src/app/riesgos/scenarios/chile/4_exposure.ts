@@ -1,7 +1,7 @@
 import { StringSelectUserConfigurableProduct } from "src/app/components/config_wizard/wizardable_products";
 import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
 import { TranslatableStringComponent } from "src/app/components/dynamic/translatable-string/translatable-string.component";
-import { MappableProduct, VectorLayerProduct } from "src/app/components/map/mappable/mappable_products";
+import { VectorLayerProduct } from "src/app/components/map/mappable/mappable_products";
 import { weightedDamage } from "src/app/helpers/colorhelpers";
 import { BarData, createBigBarChart } from "src/app/helpers/d3charts";
 import { MappableProductAugmenter, WizardableProductAugmenter, WizardableStepAugmenter } from "src/app/services/augmenter/augmenter.service";
@@ -9,6 +9,7 @@ import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from "../../riesg
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
+import { LegendComponent } from "src/app/components/dynamic/legend/legend.component";
 
 
 
@@ -123,22 +124,20 @@ export class InitialExposureChile implements MappableProductAugmenter {
             const anchorUpdated = createBigBarChart(anchor, data, 350, 300, '{{ Taxonomy }}', '{{ Buildings }}');
             return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}`;
           },
-          legendEntries: [{
-            feature: {
-              type: 'Feature',
-              geometry: {
-                type: 'Polygon',
-                coordinates: [[[5.627918243408203, 50.963075942052164], [5.627875328063965, 50.958886259879264], [5.635471343994141, 50.95634523633128], [5.627918243408203, 50.963075942052164]]]
-              },
-              properties: {
-                expo: {
-                  Damage: [],
-                  Buildings: []
-                }
-              }
-            },
-            text: `exposureLegend`
-          }],
+          dynamicLegend: data => ({
+            component: LegendComponent,
+            inputs: {
+              text: 'exposureLegend',
+              entries: [{
+                text: 'Exposure',
+                color: '#c1c1c1'
+              }, {
+                text: 'NoData',
+                color: '#fdfdfd'
+              }],
+              height: 50
+            }
+          }),
           globalSummary: (value) => {
             return {
               component: TranslatableStringComponent,

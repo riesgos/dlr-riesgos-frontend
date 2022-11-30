@@ -4,9 +4,10 @@ import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
 import { MappableProductAugmenter, WizardableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
-import { StringSelectUserConfigurableProduct, StringUserConfigurableProduct, WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
+import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/wizardable_products';
 import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
+import { LegendComponent } from 'src/app/components/dynamic/legend/legend.component';
 
 
 
@@ -99,59 +100,28 @@ export class AvailableEqsChile implements MappableProductAugmenter {
                         text += '</tbody></table>';
                         return text;
                     },
-                    legendEntries: [{
-                        feature: {
-                            "type": "Feature",
-                            "properties": {
-                                'magnitude.mag.value': 6.0,
-                                'origin.depth.value': 40.0
-                            },
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [ 5.625, 50.958426723359935 ]
-                              }
-                          },
-                        text: 'Mag. 6'
-                    }, {
-                        feature: {
-                            "type": "Feature",
-                            "properties": {
-                                'magnitude.mag.value': 7.0,
-                                'origin.depth.value': 40.0
-                            },
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [ 5.625, 50.958426723359935 ]
-                              }
-                          },
-                        text: 'Mag. 7'
-                    }, {
-                        feature: {
-                            "type": "Feature",
-                            "properties": {
-                                'magnitude.mag.value': 8.0,
-                                'origin.depth.value': 40.0
-                            },
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [ 5.625, 50.958426723359935 ]
-                              }
-                          },
-                        text: 'Mag. 8'
-                    }, {
-                        feature: {
-                            "type": "Feature",
-                            "properties": {
-                                'magnitude.mag.value': 9.0,
-                                'origin.depth.value': 40.0
-                            },
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [ 5.625, 50.958426723359935 ]
-                              }
-                          },
-                        text: 'Mag. 9'
-                    }]
+                    dynamicLegend: (value) => ({
+                        component: LegendComponent,
+                        inputs: {
+                            title: 'CatalogueData',
+                            entries: [{
+                                text: 'Mag. 6',
+                                color: 'rgb(202,232,199)',
+                            }, {
+                                text: 'Mag. 7',
+                                color: 'rgb(248,236,201)',
+                            }, {
+                                text: 'Mag. 8',
+                                color: 'rgb(251,196,171)',
+                            }, {
+                                text: 'Mag. 9',
+                                color: 'rgb(232,158,166)',
+                            }],
+                            continuous: true,
+                            fractionGraphic: 0.1,
+                            height: 150
+                        }
+                    })
                 }
             }
         }];

@@ -11,6 +11,7 @@ import { getMaxFromDict } from 'src/app/helpers/others';
 import { MappableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
 import { maxDamage$ } from './constants';
+import { LegendComponent } from 'src/app/components/dynamic/legend/legend.component';
 
 
 
@@ -31,49 +32,28 @@ const ashfallLossProps: VectorLayerProperties = {
                   })
                 });
             },
-            legendEntries: [{
-                feature: {
-                    'type': 'Feature',
-                    'properties': {'loss_value': 100000},
-                    'geometry': {
-                      'type': 'Polygon',
-                      'coordinates': [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+            dynamicLegend: data => {
+                const color1 = greenVioletRangeStepwise(0, maxDamage$,   100_000);
+                const color2 = greenVioletRangeStepwise(0, maxDamage$,   500_000);
+                const color3 = greenVioletRangeStepwise(0, maxDamage$, 1_000_000);
+
+                return {
+                    component: LegendComponent,
+                    inputs: {
+                      entries: [{
+                        text: '  100.000 USD',
+                        color: `rgb(${color1[0]}, ${color1[1]}, ${color1[2]})`
+                      }, {
+                        text: '  500.000 USD',
+                        color: `rgb(${color2[0]}, ${color2[1]}, ${color2[2]})`
+                      }, {
+                        text: '1.000.000 USD',
+                        color: `rgb(${color3[0]}, ${color3[1]}, ${color3[2]})`
+                      }],
+                      height: 70
                     }
-                },
-                text: 'Loss < 100.000 USD'
-            }, {
-                feature: {
-                    'type': 'Feature',
-                    'properties': {'loss_value': 500000},
-                    'geometry': {
-                      'type': 'Polygon',
-                      'coordinates': [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
-                    }
-                },
-                text: 'Loss < 500.000 USD'
-            }, {
-                feature: {
-                    'type': 'Feature',
-                    'properties': {'loss_value': 1000000},
-                    'geometry': {
-                      'type': 'Polygon',
-                      'coordinates': [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
-                    }
-                },
-                text: 'Loss < 1.000.000 USD'
-            }],
+                  }
+            },
             detailPopupHtml: (props: object) => {
                 return `<h4 style="color: var(--clr-p1-color, #666666);">{{ economic_loss }}</h4><p>${toDecimalPlaces(props['loss_value'] / 1000000, 2)} M${props['loss_unit']}</p>`;
             },
@@ -144,63 +124,33 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                   })
                 });
             },
-            legendEntries: [{
-                feature: {
-                    'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [90, 0, 0, 0]}},
-                    'geometry': {
-                      'type': 'Polygon',
-                      'coordinates': [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
+            dynamicLegend: data => {
+
+                function getColor(dr: number) {
+                    const [r, g, b] = greenVioletRangeStepwise(0, 3, dr);
+                    return `rgb(${r}, ${g}, ${b})`;
+                }
+
+                return {
+                    component: LegendComponent,
+                    inputs: {
+                        entries: [{
+                            color: getColor(0),
+                            text: `mostly_no_damage`
+                        }, {
+                            color: getColor(1),
+                            text: `mostly_light_damage`
+                        }, {
+                            color: getColor(2),
+                            text: `mostly_moderate_damage`
+                        }, {
+                            color: getColor(3),
+                            text: `mostly_collapsed_damage`
+                        }],
+                        height: 70
                     }
-                },
-                text: `mostly_no_damage`
-            }, {
-                feature: {
-                    'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 60, 0, 0]}},
-                    'geometry': {
-                      'type': 'Polygon',
-                      'coordinates': [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
-                    }
-                },
-                text: `mostly_light_damage`
-            }, {
-                feature: {
-                    'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 60, 0]}},
-                    'geometry': {
-                      'type': 'Polygon',
-                      'coordinates': [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
-                    }
-                },
-                text: `mostly_moderate_damage`
-            }, {
-                feature: {
-                    'type': 'Feature',
-                    'properties': {'expo': {'Damage': ['D0', 'D1', 'D2', 'D3'], 'Buildings': [0, 0, 0, 90]}},
-                    'geometry': {
-                      'type': 'Polygon',
-                      'coordinates': [ [
-                          [ 5.627918243408203, 50.963075942052164 ],
-                          [ 5.627875328063965, 50.958886259879264 ],
-                          [ 5.635471343994141, 50.95634523633128 ],
-                          [ 5.627918243408203, 50.963075942052164 ] ] ]
-                    }
-                },
-                text: `mostly_collapsed_damage`
-            }],
+                };
+            },
             detailPopupHtml: (props: object) => {
                 const anchor = document.createElement('div');
                 const expo = props['expo'];

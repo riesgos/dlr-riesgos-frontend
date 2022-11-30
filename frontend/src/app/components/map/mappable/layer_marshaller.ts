@@ -462,10 +462,6 @@ export class LayerMarshaller  {
     private getStyle(product: VectorLayerProduct): Observable<CallableFunction | null> {
         if (product.description.vectorLayerAttributes.featureStyle) {
             return of(product.description.vectorLayerAttributes.featureStyle);
-        } else if (product.description.vectorLayerAttributes.sldFile) {
-            // return this.sldParser.readStyleForLayer(product.description.vectorLayerAttributes.sldFile, product.description.id);
-            console.error('niewlandgeo/sldreader is currently not compatible with ol6')
-            return null;
         } else {
             return of(null);
         }

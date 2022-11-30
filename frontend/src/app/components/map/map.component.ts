@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, forkJoin, Observable, of, Subscription } from 'rxjs';
-import { map, withLatestFrom, switchMap, filter } from 'rxjs/operators';
+import { map, withLatestFrom, switchMap, filter, bufferCount } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { Store, select } from '@ngrx/store';
 
@@ -27,7 +27,7 @@ import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json
 
 
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { getCurrentScenarioName, getProducts, getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
+import { getCurrentScenarioName, getProducts, getCurrentScenarioRiesgosState, getProductsWithValOrRef } from 'src/app/riesgos/riesgos.selectors';
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
 import { interactionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
@@ -37,7 +37,7 @@ import { initialRiesgosState, RiesgosProduct, RiesgosProductResolved, RiesgosSce
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { State } from 'src/app/ngrx_register';
 import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
-import { MappableProduct } from './mappable/mappable_products';
+import { isMappableProduct, MappableProduct } from './mappable/mappable_products';
 import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 
 
@@ -118,54 +118,98 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub2);
 
         // listening for products that can be displayed on the map
-        const sub3 = this.store.pipe(
+        const diff$ = this.store.pipe(
+            select(getProductsWithValOrRef),
+            bufferCount(2, 1),
+            map(([oldProducts, newProducts]) => {
+                const diff = {
+                    toAdd: [],
+                    toRemove: [],
+                    toUpdate: []
+                }
 
-            select(getProducts),
+                for (const newProduct of newProducts) {
+                    const oldProduct = oldProducts.find(o => o.id === newProduct.id);
+                    // Product was already there. Has it changed?
+                    if (oldProduct) {
+                        if (newProduct.reference && oldProduct.reference && newProduct.reference !== oldProduct.reference) {
+                            diff.toUpdate.push(newProduct);
+                        } else if (newProduct.value && oldProduct.value && newProduct.value !== oldProduct.value) {
+                            diff.toUpdate.push(newProduct);
+                        } else if (newProduct.reference && oldProduct.value || newProduct.value && oldProduct.reference) {
+                            diff.toUpdate.push(newProduct);
+                        }
+                    }
+                    // Product is new. 
+                    else {
+                        diff.toAdd.push(newProduct);
+                    }
+                }
+                // Have old products been removed?
+                for (const oldProduct of oldProducts) {
+                    if (!newProducts.map(n => n.id).includes(oldProduct.id)) {
+                        diff.toRemove.push(oldProduct);
+                    }
+                }
+                return diff;
+            })
+        );
+
+        const addedLayers$ = diff$.pipe(
+            map(d => d.toAdd),
             switchMap(products => this.augmenter.loadMapPropertiesForProducts(products)),
-            // translate to layers
-            switchMap((products: MappableProduct[]) => {
-                return this.layerMarshaller.productsToLayers(products);
-            }),
+            switchMap((products: MappableProduct[]) => this.layerMarshaller.productsToLayers(products)),
+            filter(ls => ls.length > 0)
+        );
 
+        const updatedLayers$ = diff$.pipe(
+            map(d => d.toUpdate),
+            switchMap(products => this.augmenter.loadMapPropertiesForProducts(products)),
+            switchMap((products: MappableProduct[]) => this.layerMarshaller.productsToLayers(products)),
             withLatestFrom(this.layersSvc.getOverlays()),
-            map(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
-
+            map(([newLayers, oldLayers]: [ProductLayer[], ProductLayer[]]) => {
                 // keep user's visibility-settings
-                for (const oldLayer of oldOverlays) {
-                    const newLayer = newOverlays.find(nl => nl.id === oldLayer.id);
+                for (const oldLayer of oldLayers) {
+                    const newLayer = newLayers.find(nl => nl.id === oldLayer.id);
                     if (newLayer) {
                         newLayer.visible = oldLayer.visible;
                         newLayer.hasFocus = oldLayer.hasFocus;
                         this.shouldLayerExpand(newLayer);
                     }
                 }
-
                 // set hasFocus=true for new layers
                 // also expand new layers if they have legendImg or description
-                for (const newLayer of newOverlays) {
-                    const oldLayer = oldOverlays.find(ol => ol.id === newLayer.id);
+                for (const newLayer of newLayers) {
+                    const oldLayer = oldLayers.find(ol => ol.id === newLayer.id);
                     if (!oldLayer) {
                         newLayer.hasFocus = true;
                         this.shouldLayerExpand(newLayer);
                     }
                 }
+                return newLayers;
+            }),
+            filter(ls => ls.length > 0)
+        );
 
-                return [newOverlays, oldOverlays];
-            })
+        const removedLayers$ = diff$.pipe(
+            map(d => d.toRemove),
+            filter(ls => ls.length > 0)
+        );
 
-
-            // add to map
-        ).subscribe(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
-            const oldOverlayIds = oldOverlays.map(oo => oo.id);
-            const newOverlayIds = newOverlays.map(no => no.id);
-            const add: ProductLayer[] = newOverlays.filter(no => !oldOverlayIds.includes(no.id));
-            const update: ProductLayer[] = newOverlays.filter(no => oldOverlayIds.includes(no.id));
-            const remove: ProductLayer[] = oldOverlays.filter(oo => !newOverlayIds.includes(oo.id));
-            add.map(ol => this.layersSvc.addLayer(ol, ol.filtertype));
-            update.map(ol => this.layersSvc.updateLayer(ol, ol.filtertype));
-            remove.map(ol => this.layersSvc.removeLayer(ol, ol.filtertype));
+        const sub3 = addedLayers$.subscribe(toAdd => {
+            toAdd.map(l => this.layersSvc.addLayer(l, l.filtertype));
         });
+        const sub4 = updatedLayers$.subscribe(toUpdate => {
+            toUpdate.map(l => this.layersSvc.updateLayer(l, l.filtertype));
+        });
+        const sub7 = removedLayers$.subscribe(toRemove => {
+            const toRemoveIds = toRemove.map(r => r.id);
+            this.layersSvc.removeOverlays((layer, index, all) => toRemoveIds.includes((layer as ProductLayer).productId));
+        });
+
         this.subs.push(sub3);
+        this.subs.push(sub4);
+        this.subs.push(sub7);
 
 
         // adding drag-box interaction and hooking it into the store

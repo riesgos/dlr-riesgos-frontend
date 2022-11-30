@@ -50,6 +50,11 @@ export const getProducts = createSelector(
     (s: RiesgosState) => getCurrentScenarioState(s).products
 );
 
+export const getProductsWithValOrRef = createSelector(
+    getProducts,
+    (p: RiesgosProduct[]) => p.filter(p => p.value || p.reference)
+);
+
 export const getProduct = (productId: string) => createSelector(
     getRiesgosState,
     (s: RiesgosState) => {

@@ -702,7 +702,7 @@ export async function getSystemReliability(countryName: 'peru' | 'chile' | 'ecua
 
     const results = await wpsClient2.executeAsync(url, processId, [country, hazardType, intensityData], [damageData]);
 
-    return results[0].value;
+    return results[0].value[0];
 }
 
 

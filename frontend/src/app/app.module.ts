@@ -21,7 +21,6 @@ import { UkisRoutingModule } from './app-routing.module';
 import { BaseLayerControlComponent } from './components/riesgos_layer_control/base-layer-control/base-layer-control.component';
 import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 import { BlogentryComponent } from './components/blogentry/blogentry.component';
-import { CanvasComponent } from './components/dynamic/vector-legend/canvas/canvas.component';
 import { ConfigurationWizardComponent } from './components/config_wizard/configuration-wizard/configuration-wizard.component';
 import { DamagePopupComponent } from './components/dynamic/damage-popup/damage-popup.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
@@ -54,7 +53,6 @@ import { ScenariosComponent } from './views/scenarios/scenarios.component';
 import { TextModalComponent } from './components/text-modal/text-modal.component';
 import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { TranslatableStringComponent } from './components/dynamic/translatable-string/translatable-string.component';
-import { VectorLegendComponent } from './components/dynamic/vector-legend/vector-legend.component';
 import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
 import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
 
@@ -97,7 +95,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     BaseLayerControlComponent,
     BboxfieldComponent,
     BlogentryComponent,
-    CanvasComponent,
     ConfigurationWizardComponent,
     DamagePopupComponent,
     DisclaimerComponent,
@@ -135,7 +132,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     TextModalComponent,
     ThemePickerComponent,
     TranslatableStringComponent,
-    VectorLegendComponent,
     VerticalNavResizeComponent,
     WizardPageComponent,
     TranslatedImageComponent,

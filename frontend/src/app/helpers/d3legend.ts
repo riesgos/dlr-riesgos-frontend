@@ -205,6 +205,10 @@ function createLegendContinuous(
     .domain([minPos, maxPos])
     .range([0, dominantSize]);
 
+  const percentageScale = scaleLinear()
+    .domain([minPos, maxPos])
+    .range([0, 100]);
+
   const colorScale = scaleColor();
   colorScale
     .domain(entries.map(e => e.position))
@@ -223,10 +227,11 @@ function createLegendContinuous(
     .attr('transform', `translate(${margin}, ${margin})`)
     .attr('class', 'legendGroup');
 
+
   const legendGradient = linearGradientComponent(id)
     .direction(direction)
     .stops(entries.map(e => ({
-      offset: e.position * 100,
+      offset: percentageScale(e.position),
       color: colorScale(e.position),
       opacity: 1
     })));
@@ -255,7 +260,12 @@ function createLegendContinuous(
 }
 
 
-export type LegendEntry = LegendEntryContinuous | LegendEntryDiscrete;
+export type LegendEntry = {
+  color: string,
+  text: string,
+  position?: number,
+  size?: number
+};
 
 /**
  * ## Legend component
@@ -296,14 +306,39 @@ export function legendComponent() {
   let _height = 100;
   let _direction: LegendDirection = 'horizontal';
   let _fractionGraphic = 0.5;
+  let _continuous = false;
   let _margin = 10;
   let _entries: LegendEntry[] = [];
 
   function legend(selection) {
-    if (`size` in _entries[0]) {
-      createLegendDiscrete(selection, _id, _width, _height, _direction, _entries as LegendEntryDiscrete[], _fractionGraphic, _margin);
+    if (_continuous) {
+      
+      let p = 0;
+      const delta = Math.max(_width, _height) / _entries.length;
+      const entries: LegendEntryContinuous[] = [];
+      for (const entry of _entries) {
+        const pos = entry.position ??  p;
+        entries.push({
+          color: entry.color,
+          text: entry.text,
+          position: pos
+        });
+        p += delta;
+      }
+      createLegendContinuous(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin);
+
     } else {
-      createLegendContinuous(selection, _id, _width, _height, _direction, _entries as LegendEntryContinuous[], _fractionGraphic, _margin);
+      
+      const entries: LegendEntryDiscrete[] = [];
+      for (const entry of _entries) {
+        const size = entry.size ?? 1;
+        entries.push({
+          color: entry.color,
+          text: entry.text,
+          size: size
+        })
+      }
+      createLegendDiscrete(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin);
     }
   }
 
@@ -313,6 +348,7 @@ export function legendComponent() {
   legend.fractionGraphic = (fractionGraphic: number)          => { _fractionGraphic = fractionGraphic; return legend; }
   legend.margin          = (margin: number)                   => { _margin = margin; return legend; }
   legend.direction       = (direction: LegendDirection)       => { _direction = direction; return legend; }
+  legend.continuous      = (continuous: boolean)              => { _continuous = continuous; return legend; }
   legend.entries         = (entries: LegendEntry[])           => { _entries = entries; return legend; }
 
   return legend;

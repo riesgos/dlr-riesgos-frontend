@@ -13,7 +13,6 @@ import { FeatureCollection } from '@turf/helpers';
 
 import { State } from '../../../ngrx_register';
 import { shape } from '../../config_wizard/wizardable_steps';
-import { LegendElement } from '../../dynamic/vector-legend/vector-legend.component';
 import { LayerMarshaller } from './layer_marshaller';
 import { ProductLayer } from './map.types';
 
@@ -74,7 +73,9 @@ export interface VectorLayerProperties {
         detailPopupHtml?: any;
         globalSummary?: (value: any) => IDynamicComponent,
         sldFile?: string,
-        legendEntries?: LegendElement[]
+        /** deprecated. use dynamicLegend instead */
+        legendEntries?: any[],
+        dynamicLegend?: (value: any) => IDynamicComponent
     };
     description?: string;
     icon?: shape;

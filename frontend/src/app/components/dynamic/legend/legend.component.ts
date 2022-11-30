@@ -9,12 +9,14 @@ import { select } from 'd3';
 })
 export class LegendComponent implements OnInit {
 
+  @Input() title: string = '';
   @Input() id: string = 'GradientNr' + Math.floor(Math.random() * 1000) + '';
   @Input() width: number = 250;
   @Input() height: number = 250;
   @Input() direction: LegendDirection = 'vertical';
   @Input() fractionGraphic = this.direction === 'vertical' ? 0.125 : 0.5;
   @Input() margin = 10;
+  @Input() continuous = false;
   @Input() entries: LegendEntry[] = [];
   @ViewChild('legendAnchor', {static: true}) div: ElementRef;
 
@@ -26,6 +28,7 @@ export class LegendComponent implements OnInit {
       .id(this.id)
       .width(this.width).height(this.height).direction(this.direction)
       .fractionGraphic(this.fractionGraphic).margin(this.margin)
+      .continuous(this.continuous)
       .entries(this.entries);
 
     const selection = select(this.div.nativeElement);

@@ -9,10 +9,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { downloadBlob, downloadJson } from 'src/app/helpers/others';
 import { State } from 'src/app/ngrx_register';
-import { RiesgosProductResolved } from 'src/app/riesgos/riesgos.state';
-import {
-    SimplifiedTranslationService
-} from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -25,9 +22,6 @@ import bboxPolygon from '@turf/bbox-polygon';
 import tBuffer from '@turf/buffer';
 import { featureCollection, FeatureCollection } from '@turf/helpers';
 
-import {
-    VectorLegendComponent
-} from '../../../components/dynamic/vector-legend/vector-legend.component';
 import { WebGlPolygonLayer } from '../../../helpers/custom_renderers/renderers/polygon.renderer';
 import { ConfigService } from '../../../services/configService/configService';
 import {
@@ -252,15 +246,8 @@ export class LayerMarshaller  {
             }
         };
 
-        if (product.description.vectorLayerAttributes.legendEntries) {
-            ukisLayer.legendImg = {
-                component: VectorLegendComponent,
-                inputs: {
-                    legendTitle: product.description.description,
-                    resolution: 0.00005,
-                    styleFunction: product.description.vectorLayerAttributes.featureStyle,
-                    elementList: product.description.vectorLayerAttributes.legendEntries}
-            };
+        if (product.description.vectorLayerAttributes.dynamicLegend) {
+            ukisLayer.legendImg = product.description.vectorLayerAttributes.dynamicLegend(product.value);
         }
 
         return of(ukisLayer);
@@ -385,15 +372,8 @@ export class LayerMarshaller  {
                 }
             };
 
-            if (vectorLayerProps.vectorLayerAttributes.legendEntries) {
-                productLayer.legendImg = {
-                    component: VectorLegendComponent,
-                    inputs: {
-                        legendTitle: vectorLayerProps.description,
-                        resolution: 0.00005,
-                        styleFunction: vectorLayerProps.vectorLayerAttributes.featureStyle,
-                        elementList: vectorLayerProps.vectorLayerAttributes.legendEntries}
-                };
+            if (vectorLayerProps.vectorLayerAttributes.dynamicLegend) {
+                productLayer.legendImg = vectorLayerProps.vectorLayerAttributes.dynamicLegend(product.value)
             }
 
             layers.push(productLayer);
@@ -457,15 +437,8 @@ export class LayerMarshaller  {
                 });
                 layer.productId = product.id;
 
-                if (product.description.vectorLayerAttributes.legendEntries) {
-                    layer.legendImg = {
-                        component: VectorLegendComponent,
-                        inputs: {
-                            legendTitle: product.description.description,
-                            resolution: 0.00005,
-                            styleFunction: product.description.vectorLayerAttributes.featureStyle,
-                            elementList: product.description.vectorLayerAttributes.legendEntries}
-                    };
+                if (product.description.vectorLayerAttributes.dynamicLegend) {
+                    layer.legendImg = product.description.vectorLayerAttributes.dynamicLegend(product.value)
                 }
 
                 return layer;

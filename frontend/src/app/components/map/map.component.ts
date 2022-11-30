@@ -159,7 +159,15 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             map(d => d.toAdd),
             switchMap(products => this.augmenter.loadMapPropertiesForProducts(products)),
             switchMap((products: MappableProduct[]) => this.layerMarshaller.productsToLayers(products)),
-            filter(ls => ls.length > 0)
+            filter(ls => ls.length > 0),
+            map(addedLayers => {
+                addedLayers.map(l => {
+                    l.visible = true;
+                    l.hasFocus = true;
+                    this.shouldLayerExpand(l);
+                })
+                return addedLayers;
+            })
         );
 
         const updatedLayers$ = diff$.pipe(

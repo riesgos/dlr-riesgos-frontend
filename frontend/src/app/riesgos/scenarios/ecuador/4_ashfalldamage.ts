@@ -147,7 +147,8 @@ const ashfallUpdatedExposureProps: VectorLayerProperties = {
                             color: getColor(3),
                             text: `mostly_collapsed_damage`
                         }],
-                        height: 70
+                        height: 70,
+                        width: 350,
                     }
                 };
             },

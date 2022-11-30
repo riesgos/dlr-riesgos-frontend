@@ -51,6 +51,7 @@ export const laharLossProps: VectorLayerProperties = {
                         color: `rgb(${color3[0]}, ${color3[1]}, ${color3[2]})`
                       }],
                       height: 70,
+                      width: 350,
                       continuous: true,
                       fractionGraphic: 0.1,
                     }

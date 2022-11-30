@@ -1,4 +1,5 @@
-import { color, hsl, scaleLinear } from 'd3';
+import { color, hsl } from 'd3-color';
+import { scaleLinear } from 'd3-scale';
 
 
 

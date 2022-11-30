@@ -1,37 +1,7 @@
 # Ongoing
 
-- Profile performance bottlenecks
-    - layerMarshaller: makeGeoJSONLayer is called when clicking re-configure
-    - Does the layer-marshaller create new ol-layers every time a state changes?
-        - Yes indeed: map.component, line 124
-        ```js
-        switchMap(products => this.augmenter.loadMapPropertiesForProducts(products)),
-        // translate to layers
-        switchMap((products: MappableProduct[]) => {
-            return this.layerMarshaller.productsToLayers(products);
-        }),
-        ```
-            - I can get the part of ngrx state that has changed 
-            - https://stackoverflow.com/questions/49158066/how-to-get-the-difference-between-ngrx-states-after-another-action-completes
-            - This part is easy to compare, because data is not actually there, just need to compare the references
-            - BUT: if the map must not re-gerenate all layers every time, then we need to tell it which layers have disappeared, wich were updated, and which are new.
-            - suggestion: 
-             ```js
-             mappablesDiff$ = store.select(getProducts).pipe(
-                filter(isMappable)
-                withPrevious
-                map((mapableProducts, previousMapableProducts) => diff)
-             );
-
-             mappableDiffs$.subscribe(diff => {
-                diff['new'].map(prod => createLayer(prod))
-                diff['removed'].map(prod => removeLayer(prod))
-                diff['updated'].map(prod => removeLayer(prod); createLayer(prod);)
-             })
-             ```
 - re-create slider and re-activate lahar-contours
 - display error messages
-
 
 # Next
 
@@ -41,11 +11,11 @@
 
 - Eq-catalog: add missing parameters
 - Augmenter: only those products need to be resolved where a augmenter applies.
+- Make all popups dynamic, so that they change translation dynamically when required.
 - Re-create graph-modal
 - Restart, save- and reload-buttons
     Store current state *and* relevant data from resolver
 - new docs
-- Backend: use zod to parse inputs?
 - Restructure directories:
     - two modules: one for map, one for wizard
         - share store between them: https://stackoverflow.com/questions/40089316/how-to-share-service-between-two-modules-ngmodule-in-angular-not-between-to-c

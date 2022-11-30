@@ -1,5 +1,5 @@
 // @ts-ignore
-import { interpolateSinebow, scaleSequential } from 'd3';
+import { interpolateSinebow } from 'd3-scale-chromatic';
 import { ColoringFunction, GroupingFunction, SubGroupData } from './groupedChart';
 
 function inArray(val: any, arr: any[]) {

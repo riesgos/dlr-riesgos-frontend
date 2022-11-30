@@ -1,5 +1,8 @@
-import { select, scaleBand, scaleLinear, scaleOrdinal, axisBottom, axisLeft, format, ScaleOrdinal } from 'd3';
-import * as d3color from 'd3-color';
+import { scaleBand, scaleLinear, scaleOrdinal, ScaleOrdinal } from 'd3-scale';
+import { axisBottom, axisLeft } from 'd3-axis';
+import { format } from 'd3-format';
+import { select } from 'd3-selection';
+import { color } from 'd3-color';
 import { unique } from './helpers';
 
 
@@ -65,7 +68,7 @@ export class RearrangingGroupedBarChart {
         private widthTotal: number, 
         private heightTotal: number,
         private data: GroupedBarChartData[],
-        private grayColor = d3color.hsl(0, 0, 0.7).toString()
+        private grayColor = color.hsl(0, 0, 0.7).toString()
     ) {
         const groupNames = getGroupNames(data);
             

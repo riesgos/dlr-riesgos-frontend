@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { LegendEntryContinuous, legendComponent, LegendDirection, LegendEntry } from 'src/app/helpers/d3legend';
-import { select } from 'd3';
+import { legendComponent, LegendDirection, LegendEntry } from 'src/app/helpers/d3legend';
+import { select } from 'd3-selection';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
 @Component({

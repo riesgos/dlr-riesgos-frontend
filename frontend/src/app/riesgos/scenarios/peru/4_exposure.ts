@@ -9,6 +9,7 @@ import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from "../../riesg
 import { Style as olStyle, Fill as olFill, Stroke as olStroke } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
+import { LegendComponent } from "src/app/components/dynamic/legend/legend.component";
 
 
 
@@ -126,6 +127,20 @@ export class InitialExposurePeru implements MappableProductAugmenter {
             const anchorUpdated = createBigBarChart(anchor, data, 350, 300, '{{ Taxonomy }}', '{{ Buildings }}');
             return `<h4>{{ Exposure }}</h4>${anchor.innerHTML}`;
           },
+          dynamicLegend: data => ({
+            component: LegendComponent,
+            inputs: {
+              text: 'exposureLegend',
+              entries: [{
+                text: 'Exposure',
+                color: '#c1c1c1'
+              }, {
+                text: 'NoData',
+                color: '#fdfdfd'
+              }],
+              height: 50
+            }
+          }),
           legendEntries: [{
             feature: {
               type: 'Feature',

@@ -1,8 +1,7 @@
 # Ongoing
 
-Create new legend component (with gradients)
-Profile performance bottlenecks
 display error messages
+Profile performance bottlenecks
 popup: remove blocker on arrow
 re-create slider and re-activate lahar-contours
 

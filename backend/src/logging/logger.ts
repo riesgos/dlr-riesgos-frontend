@@ -1,9 +1,6 @@
 import { appendFileSync } from "fs"
 import { createFileSync, getFileAgeSync, renameFileSync } from "../utils/files";
 
-// @TODO: 
-// log-rotate: a new log every day.
-// maybe even delete very old logs.
 
 export class Logger {
     constructor(

@@ -1,5 +1,5 @@
 {
-    "allowedScenarios": ["Peru", "Chile", "Ecuador"],
+    "allowedScenarios": ["Chile"],
     "production": false,
     "middlewareUrl": "http://localhost:1411",
     "proxyUrl": ""

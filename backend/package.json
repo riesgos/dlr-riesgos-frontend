@@ -3,7 +3,7 @@
   "version": "2.0.0-alpha",
   "description": "",
   "scripts": {
-    "build:all": "tsc",
+    "build:prod": "tsc --build --clean",
     "build:watch": "tsc -w",
     "start": "ts-node-dev --respawn src/main.ts",
     "test": "jest --runInBand",

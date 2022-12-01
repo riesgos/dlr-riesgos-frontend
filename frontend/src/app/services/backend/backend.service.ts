@@ -65,7 +65,7 @@ export class BackendService {
             switchMap(scenarioInfos => {
                 const followUpRequests$: Observable<API_ScenarioInfo>[] = [];
                 for (const scenarioInfo of scenarioInfos) {
-                    if (allowedScenarios.includes(scenarioInfo.id)) {
+                    if (allowedScenarios.length === 0 || allowedScenarios.includes(scenarioInfo.id)) {
                         const request$ = this.http.get<API_ScenarioInfo>(`${url}/scenarios/${scenarioInfo.id}`);
                         followUpRequests$.push(request$);
                     }

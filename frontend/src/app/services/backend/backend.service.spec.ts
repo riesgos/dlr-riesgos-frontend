@@ -24,6 +24,7 @@ class MockConfigService extends ConfigService {
         production: false,
         middlewareUrl: "http://localhost:1411",
         proxyUrl: "",
+        allowedScenarios: []
     }
 }
 

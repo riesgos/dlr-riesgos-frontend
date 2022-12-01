@@ -3,7 +3,10 @@ import { ColoringFunction, GroupedBarChartData, GroupingFunction, RearrangingGro
 
 
 export interface Grouping {
-  label: string,
+  id: string,
+  label: () => string,
+  xLabel: () => string,
+  yLabel: () => string,
   groupingFunction: GroupingFunction,
   coloringFunction: ColoringFunction
 }
@@ -15,8 +18,6 @@ export interface Grouping {
 })
 export class GroupedBarChartComponent implements OnInit, AfterViewInit {
 
-  @Input() xLabel: string = '';
-  @Input() yLabel: string = '';
   @Input() width: number = 500;
   @Input() height: number = 400;
   @Input() baseData: GroupedBarChartData[] = [];
@@ -29,21 +30,22 @@ export class GroupedBarChartComponent implements OnInit, AfterViewInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.selectedGrouping = this.groupings[0].label;
+    this.selectedGrouping = this.groupings[0].id;
     this.graphHeight = this.height - 50;
   }
 
   ngAfterViewInit(): void {
     const container = this.container.nativeElement;
-    this.chart = new RearrangingGroupedBarChart(container, this.width, this.height, this.xLabel, this.yLabel, this.baseData);
-    this.chart.regroup(this.groupings[0].groupingFunction, this.groupings[0].coloringFunction);
+    this.chart = new RearrangingGroupedBarChart(container, this.width, this.height, this.baseData);
+    const grouping = this.groupings[0];
+    this.chart.regroup(grouping.groupingFunction, grouping.coloringFunction, grouping.xLabel(), grouping.yLabel());
   }
 
   updateGrouping(key: string) {
     this.selectedGrouping = key;
-    const newGrouping = this.groupings.find(g => g.label == key);
+    const newGrouping = this.groupings.find(g => g.id == key);
     if (newGrouping) {
-      this.chart.regroup(newGrouping.groupingFunction, newGrouping.coloringFunction);
+      this.chart.regroup(newGrouping.groupingFunction, newGrouping.coloringFunction, newGrouping.xLabel(), newGrouping.yLabel());
     }
   }
 

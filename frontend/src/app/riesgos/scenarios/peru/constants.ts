@@ -1,1 +1,0 @@
-export const maxDamage$ = 1000000;

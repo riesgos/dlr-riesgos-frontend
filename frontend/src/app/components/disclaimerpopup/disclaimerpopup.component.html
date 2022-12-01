@@ -1,24 +1,27 @@
-<clr-modal [(clrModalOpen)]="showModal" [clrModalClosable]="false">
-    
-    
-    <div class="modal-body">
+<div *ngIf="showModal" class="modal">
+    <div class="modal-dialog modal-xl" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-body">
         
-        <clr-alert [clrAlertType]="'info'" [clrAlertAppLevel]="false" [clrAlertClosable]="false">
-            <clr-alert-item>
-                <span style="font-weight:bolder;">
-                        {{ 'Disclaimer' | translate }}
-                </span>
-            </clr-alert-item>
-        </clr-alert>
-      
-        <p>
-            {{ 'DisclaimerText' | translate }}
-        </p>
-
+                <clr-alert [clrAlertType]="'info'" [clrAlertAppLevel]="false" [clrAlertClosable]="false">
+                    <clr-alert-item>
+                        <span style="font-weight:bolder;">
+                                {{ 'Disclaimer' | translate }}
+                        </span>
+                    </clr-alert-item>
+                </clr-alert>
+              
+                <p>
+                    {{ 'DisclaimerText' | translate }}
+                </p>
+        
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline btn-primary" (click)="hideModalSave()">
+                        {{ 'Understood and accept' | translate }}
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline btn-primary" (click)="hideModalSave()">
-                {{ 'Understood and accept' | translate }}
-        </button>
-    </div>
-</clr-modal>
+</div>
+<div *ngIf="showModal" class="modal-backdrop" aria-hidden="true"></div>

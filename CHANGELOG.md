@@ -1,31 +1,53 @@
-### Features
-- show version from package.json in app header.
+# [... verison ...](... link ...) (... date ...) ... description
 
-# Ongoing
+## Features
+- 
+
+## Bug Fixes
+- 
+
+## Breaking Changes
+- 
 
 
-### Bug Fixes
-- **New version of Plotly.js:** Fixes bug where graph axes were not labeled.
-- **Flood damage:** Products were not highlighted when associated process is selected.
-- **Focus on selected earthquake:** Preliminarily selected earthquake is no longer a mappable-product. Only the finally selected one is. This way the right output product is highlighted in the layer-selection when a user focuses on the eq-selection step.
-- **WebGL Polygon Renderer:** Now returns correct pixel value in `getDataAtPixel` method.
-- **Translatable-String Component:** Now also updates dynamically when language changes.
-- **Eq-Selection:** Styling of selected eq was only adjusted after clicking "send". Now happens immediately after click.
-- **Tsunami damage:** Did not pass the right schema along with a request to modelprop and deus.
 
-### Features
-- **Removed @dlr-eoc/services-util-storage:** Better build time, less optimization bailouts due to module formats CommonJS or AMD.
-- **Exposure is now passed to backend as a reference:** So no more need to `JSON.stringify` the exposure before uploading it. Speeds up things a lot.
-- **Using same data-source for all tsunami-damage-layers:** Saves a lot of memory
-- **Added vector-tile base-map:** Allows individually styling background layer. Adjusts to dark-mode.
-- **Spectral acceleration data:** Now also displayed as another output of the ground-motion-service.
-- **Colors:** updated color scales to be less saturated.
-- **Administrative layers Peru**
-- **Feature selection for earthquakes:** Now also includes magnitude in selection-field. Also displays detailed information in sidebar for selected earthquake.
-- **WebGL layers:** Can now display user-configured opacities as well as different colors for outlines and fills.
-- **Listening to changing bbox**: in url without reload.
+# [2.0.0-alpha](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0-alpha) (Dec. 1 2022) All orchestration-logic in backend
 
-### Breaking Changes
-- **xyz:**
+> Large refactor.
+>
+> **Motivation** was a problem seen when attempting to use Riesgos at other institutions.
+> - Replacing services was hard. Reason: new services provide data in new formats, and often downstream processes require a very specific input format.
+> - Solution: we provide a layer between the frontend and the webservices. This layer - a node.js-backend - serves to handle all the harmonization between the actual webservices.
+> - Any required duct-taping of service-outputs can now be handled in this intermediate layer.
 
-# [1.9.0](https://github.com/riesgos/dlr-riesgos-frontend/tree/v1.9) (2021-10-05) (merged in changes from middleware)
+Previously there was already a lot of harmonization-code in the frontend's `WpsProcess` classes. But that meant that the frontend would manage webservices, their orchestration, their harmonization, in *addition* to all its usual tasks (state-management, error-displaying, converting output-data into a format that can be displayed on the map, ...)
+
+
+## Features
+
+- **Moved step-logic into backend**
+    - Justification:
+        - Frontend was over-full, hard to maintain
+        - Backend can now run steps as CI 
+        - Central log of events and errors
+        - *Most important*: Easier harmonization of webservices.
+
+- **No longer based on wps'es, but on abstract steps**
+    - Many steps do not involve calling a webservices, and many more involve calling several.
+    - Setting up a webservice is hard, writing some js code in backend is relavitely easy.
+    - *Most important*: often steps had cross-dependencies. Having them all in the backend allows the developer one point where changes to the harmonization can be made.
+
+- **Frontend: ngrx-state is simple and abstract**
+    - Individual components may add additional information to state using `Augmentors`.
+    - But generally, information that is only relevant to one component should not pollute the global state.
+
+- **Backend: steps may not run side-effects**
+    - Based on problem: Selecting an eq from the catalog-output
+    - Decision: The backend will *not* set the `options` parameter of the `userChoice` parameter.
+    - Justification: 
+        - The catalog's output does already constitute the possible options for `userChoice`.
+        - The alternative means that we'd allow side effects in the backend. 
+        - This allows for so many complications that it's not worth the - already questionable - feature.
+        - Examples of potential complications:
+            - side-effects that add new values must be cached, side-effects that only add new options must not
+            - if side-effects may output options to a datum, it's no longer guaranteed that new data consists 100% of *resolved* data

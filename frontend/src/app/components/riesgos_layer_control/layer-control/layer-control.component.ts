@@ -13,9 +13,9 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
   styleUrls: ['./layer-control.component.scss']
 })
 export class RiesgosLayerControlComponent implements OnInit, OnDestroy {
-  @Input('layersSvc') layersSvc: LayersService;
-  @Input('mapStateSvc') mapStateSvc?: MapStateService;
-  @Input('layerfilter') layerfilter: Layer['filtertype'] = 'Layers';
+  @Input() layersSvc: LayersService;
+  @Input() mapStateSvc?: MapStateService;
+  @Input() layerfilter: Layer['filtertype'] = 'Layers';
 
   layerGroupsSubscription: Subscription;
   layersSubscription: Subscription;

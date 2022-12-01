@@ -6,29 +6,29 @@
 <clr-vertical-nav  class="left" appNavResize [width]="nav.left.width" [unit]="nav.left.unit" [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsedConfigurationWizard" id="serviceControl" #serviceControl>
   <app-vertical-nav-resize [width]="nav.left.width" [minWidth]="nav.left.minWidth" [maxWidth]="nav.left.maxWidth" (widthChange)="nav.left.width = $event;">
   </app-vertical-nav-resize>
-  <!-- <app-changedetector></app-changedetector> -->
         <h3 class="clr-vertical-nav-header is-highlight"><span>{{'Configuration Wizard' | translate}}</span></h3>
-        <ukis-configuration-wizard *ngIf="processes" [processes]="processes" [navExpanded]="!collapsedConfigurationWizard" ></ukis-configuration-wizard>
+        <ukis-configuration-wizard *ngIf="steps$ | async as steps" [steps]="steps" [navExpanded]="!collapsedConfigurationWizard" ></ukis-configuration-wizard>
 </clr-vertical-nav>
 
 
 
 <clr-vertical-nav class="right" appNavResize [width]="nav.right.width" [unit]="nav.right.unit" [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="collapsedLayerControl" [clr-nav-level]="2" id="layerControl" #layerControl>
-  <app-vertical-nav-resize [width]="nav.right.width" [minWidth]="nav.right.minWidth" [maxWidth]="nav.right.maxWidth" (widthChange)="nav.right.width = $event;">
-  </app-vertical-nav-resize>
-
-        <!-- <app-changedetector></app-changedetector> -->
+    <app-vertical-nav-resize [width]="nav.right.width" [minWidth]="nav.right.minWidth" [maxWidth]="nav.right.maxWidth" (widthChange)="nav.right.width = $event;">
+    </app-vertical-nav-resize>
 
         <h3 class="clr-vertical-nav-header is-highlight"><span>{{'Layer control' | translate}}</span></h3>
         <ukis-layercontrol [navExpanded]="!collapsedLayerControl"></ukis-layercontrol>
-
-        <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers" style="margin-top: auto;">
+        
+        <!-- deactivated until save-and-restore functionality works again -->
+        <!-- <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers" style="margin-top: auto;">
             <clr-icon shape="tools" title="{{'Tools' | translate}}" clrVerticalNavIcon></clr-icon>
-            <span class="p1">{{'Tools' | translate}}</span>
+            <span class="p1">{{'Tools' | translate}}</span>                
             <clr-vertical-nav-group-children class="padding title-ellipsis">
                 <ukis-helper-buttons></ukis-helper-buttons>
             </clr-vertical-nav-group-children>
-        </clr-vertical-nav-group>
+        </clr-vertical-nav-group> -->
 
 </clr-vertical-nav>
+
+
 <ukis-text-modal></ukis-text-modal>

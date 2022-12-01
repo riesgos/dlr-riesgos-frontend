@@ -1,4 +1,4 @@
-import Plotly from 'plotly.js-dist';
+import Plotly from 'plotly.js-basic-dist-min';
 import { getBuildingClassColor } from './colorhelpers';
 
 
@@ -158,6 +158,9 @@ export function createBarChart(
 export function createBigBarChart(
     anchorSelector: any, data: BarData[], width: number, height: number, xLabel: string, yLabel: string) {
 
+
+        const maxLabelLength = Math.max(...data.map(d => d.label.length));
+
         let dataLength = 0;
         for (const dp of data) {
             dataLength += dp.value;
@@ -196,42 +199,11 @@ export function createBigBarChart(
             margin: {
                 l: 50,
                 r: 30,
-                b: 50,
+                b: 20 + maxLabelLength * 7,
                 t: 15,
                 pad: 5
             },
         };
 
         Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
-}
-
-export function createConfusionMatrix(
-    anchorSelector: any, data: number[][], width: number, height: number, xLabel: string, yLabel: string) {
-
-    if (data.length === 0) {
-        anchorSelector.innerHTML = '<p>{{ NoData }}</p>';
-        return;
-    }
-    
-    const newData = [{
-        type: 'heatmap',
-        z: data
-    }];
-
-    const layout = {
-        xaxis: {
-            title: {
-                text: xLabel
-            }
-        },
-        yaxis: {
-            title: {
-                text: yLabel
-            }
-        },
-        width: width,
-        height: height,
-    };
-
-    Plotly.newPlot(anchorSelector, newData, layout, {staticPlot: true});
 }

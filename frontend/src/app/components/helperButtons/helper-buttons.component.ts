@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
 import { RiesgosScenarioState, isRiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
-import { RestartingScenario, ProductsProvided } from 'src/app/riesgos/riesgos.actions';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { downloadJson, parseFile } from 'src/app/helpers/others';
 import { map, tap } from 'rxjs/operators';
-import { createGraph } from 'src/app/riesgos/riesgos.workflowcontrol';
 
 
 
@@ -22,7 +21,7 @@ export class HelperButtonsComponent implements OnInit {
     showResetModal = false;
     showRestoreModal = false;
     showStoreModal = false;
-    nameControl: FormControl;
+    nameControl: UntypedFormControl;
     dropFieldText$: BehaviorSubject<string>;
     stateToBeRestored$: BehaviorSubject<RiesgosScenarioState>;
     private currentState: RiesgosScenarioState;
@@ -30,7 +29,7 @@ export class HelperButtonsComponent implements OnInit {
     constructor(
         private store: Store<State>
     ) {
-        this.nameControl = new FormControl('Save state', [Validators.required, noSpecialChars]);
+        this.nameControl = new UntypedFormControl('Save state', [Validators.required, noSpecialChars]);
     }
 
     ngOnInit() {
@@ -50,7 +49,7 @@ export class HelperButtonsComponent implements OnInit {
 
     onResetClicked(): void {
         const currentScenario = this.currentState.scenario;
-        this.store.dispatch(new RestartingScenario({scenario: currentScenario}));
+        this.store.dispatch(RiesgosActions.restartingScenario({scenario: currentScenario}));
         this.showResetModal = false;
     }
 
@@ -58,8 +57,9 @@ export class HelperButtonsComponent implements OnInit {
         const stateToRestore: RiesgosScenarioState = this.stateToBeRestored$.value;
         // @TODO: instead of just a ProductsProvided action,
         // create a new action that validates that all data is still there on the remote servers.
-        this.store.dispatch(new ProductsProvided({
-            products: stateToRestore.productValues.filter(pv => pv.value !== null)
+        this.store.dispatch(RiesgosActions.userDataProvided({
+            scenario: this.currentState.scenario,
+            products: stateToRestore.products
         }));
 
         // Don't do a RiesgosDataUpdate here!
@@ -91,14 +91,6 @@ export class HelperButtonsComponent implements OnInit {
     private extractSaveState(file: File): Observable<RiesgosScenarioState> {
         const state$ = parseFile(file).pipe(
             map((content: string) => JSON.parse(content)),
-            map((state: RiesgosScenarioState) => {
-                return {
-                    ... state,
-                    // the graph can only be saved as a flat structure without functions
-                    // this is to restore its full capabilities
-                    graph: createGraph(state.processStates)
-                };
-            }),
             tap((result: RiesgosScenarioState) => {
                 if (!isRiesgosScenarioState(result)) {
                     throw Error(`The file ${file.name} did not contain a valid RiesgosScenarioState`);
@@ -111,7 +103,7 @@ export class HelperButtonsComponent implements OnInit {
 }
 
 
-function noSpecialChars(control: FormControl): { [key: string]: boolean } {
+function noSpecialChars(control: UntypedFormControl): { [key: string]: boolean } {
     const nameRegexp: RegExp = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     if (control.value && nameRegexp.test(control.value)) {
        return { invalidName: true };

@@ -1,14 +1,11 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl, RequiredValidator, Validators } from '@angular/forms';
-import { UserConfigurableProductDescription, UserConfigurableProduct, isBboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
-import { WizardableProcess } from '../wizardable_processes';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { WizardableProduct, isBboxUserConfigurableProduct } from '../wizardable_products';
+import { WizardableStep } from '../wizardable_steps';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ClickRunProcess, ProductsProvided } from 'src/app/riesgos/riesgos.actions';
-import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { isBbox } from '../../../services/wps/wps.datatypes';
-import { debounceTime } from 'rxjs/operators';
-import { Observable, Subscription } from 'rxjs';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ukis-form',
@@ -17,10 +14,10 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class FormComponent implements OnInit, OnDestroy {
 
-  @Input() process: WizardableProcess;
-  @Input() parameters: UserConfigurableProduct[];
+  @Input() step: WizardableStep;
+  @Input() parameters: WizardableProduct[];
   @Input() disabled = false;  // <------------ @TODO: can we infer this from formgroup?
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -31,22 +28,26 @@ export class FormComponent implements OnInit, OnDestroy {
     const controls = {};
 
     for (const parameter of this.parameters) {
-      const key = parameter.uid;
+      const key = parameter.id;
       const startValue = parameter.value || parameter.description.defaultValue || null;
-      controls[key] = new FormControl(startValue, [Validators.required]);
+      controls[key] = new UntypedFormControl(startValue, [Validators.required]);
     }
 
-    this.formGroup = new FormGroup(controls);
+    this.formGroup = new UntypedFormGroup(controls);
 
     for (const parameter of this.parameters) {
       if (isBboxUserConfigurableProduct(parameter)) {
-        const control = this.formGroup.get(parameter.uid);
-        const sub$ = control.valueChanges.pipe( debounceTime(500) ).subscribe(newVal => {
+        const control = this.formGroup.get(parameter.id);
+        const sub$ = control.valueChanges.subscribe(newVal => {
+          console.log(`Global form: value changed`);
           if (control.valid) {
-            this.store.dispatch(new ProductsProvided({products: [{
-              ...parameter,
-              value: newVal
-            }]}));
+            this.store.dispatch(RiesgosActions.userDataProvided({
+              scenario: this.step.scenario,
+              products: [{
+                ...parameter,
+                value: newVal
+              }]
+            }));
           }
         });
         this.subscriptions.push(sub$);
@@ -59,11 +60,10 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   onSubmitClicked() {
-    for (const parameter of this.parameters) {
-      const formControl = this.formGroup.get(parameter.uid);
-      parameter.value = formControl.value;
-    }
-    this.store.dispatch(new ClickRunProcess({productsProvided: this.parameters, process: this.process }));
+    this.store.dispatch(RiesgosActions.executeStart({
+      scenario: this.step.scenario,
+      step: this.step.step.id
+    }));
   }
 
 }

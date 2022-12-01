@@ -1,2 +1,6 @@
 {
+    "allowedScenarios": ["Ecuador"],
+    "production": false,
+    "middlewareUrl": "http://localhost:1411",
+    "proxyUrl": ""
 }

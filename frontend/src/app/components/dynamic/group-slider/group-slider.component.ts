@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LabelType, Options } from 'ng5-slider';
+import { LabelType, Options } from '@angular-slider/ngx-slider';
 
 export interface SliderEntry {
   id: string;

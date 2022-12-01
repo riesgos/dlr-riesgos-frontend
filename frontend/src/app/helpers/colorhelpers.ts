@@ -405,14 +405,14 @@ export function getBuildingClassColorOld(name: string): string {
 }
 
 const phi = 0.618;
-const colorMapping = {};
+const colorMapping: {[key: string]: string} = {};
 export function getBuildingClassColor(name: string): string {
   if (name in colorMapping) {
     return colorMapping[name];
   }
   const n = Object.keys(colorMapping).length;
   const direction = (360 * phi * n) % 360;
-  const colorHSL = d3color.hsl(direction, 0.7, 0.7);
+  const colorHSL = d3color.hsl(direction, 0.3, 0.6);
   const colorRGB = colorHSL.rgb();
   const colorString = colorRGB.toString();
   colorMapping[name] = colorString;

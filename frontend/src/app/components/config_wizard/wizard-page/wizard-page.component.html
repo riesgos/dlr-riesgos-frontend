@@ -1,21 +1,21 @@
-<app-read-more [text]="process.description" [threshold]="8"></app-read-more>
+<app-read-more [text]="step.step.description" [threshold]="8"></app-read-more>
 
-<ng-container *ngIf="process.wizardProperties.wikiLink">
+<ng-container *ngIf="step.wizardProperties.wikiLink">
     <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
-        Wiki: <a routerLink="/documentation" fragment="{{process.wizardProperties.wikiLink}}" target="_blank" class="label label-blue clickable" style="white-space: pre-line;">{{process.wizardProperties.wikiLink | translate}}</a>
+        Wiki: <a routerLink="/documentation" fragment="{{step.wizardProperties.wikiLink}}" target="_blank" class="label label-blue clickable" style="white-space: pre-line;">{{step.wizardProperties.wikiLink | translate}}</a>
     </p>
 </ng-container>
 
-<ng-container *ngIf="process.wizardProperties.providerUrl">
+<ng-container *ngIf="step.wizardProperties.providerUrl">
     <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
-        {{'Provider' | translate}}: <a href="{{process.wizardProperties.providerUrl}}" target="_blank" class="label label-blue clickable" style="white-space: pre-line;">{{process.wizardProperties.providerName | translate}}</a>
+        {{'Provider' | translate}}: <a href="{{step.wizardProperties.providerUrl}}" target="_blank" class="label label-blue clickable" style="white-space: pre-line;">{{step.wizardProperties.providerName | translate}}</a>
     </p>
 </ng-container>
 
-<ng-container *ngIf="process.wizardProperties.dataSources">
+<ng-container *ngIf="step.wizardProperties.dataSources">
     <p class="p3" style="white-space: no-wrap; margin-top: 0px;">
         {{'DataSources' | translate}}:
-        <ng-container *ngFor="let dataSource of process.wizardProperties.dataSources">
+        <ng-container *ngFor="let dataSource of step.wizardProperties.dataSources">
             <a *ngIf="dataSource.href"
                 [href]="dataSource.href" target="_blank"
                 class="label label-blue clickable" style="white-space: pre-line;">{{dataSource.label | translate}}</a>
@@ -27,7 +27,7 @@
 </ng-container>
 
 <div class="wizardElement">
-    <ng-container [ngSwitch]="process.state.type">
+    <ng-container [ngSwitch]="step.state.type">
 
 
         <ng-container *ngSwitchCase="'unavailable'">
@@ -37,7 +37,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'available'">
-            <ukis-form [process]="process" [parameters]="parameters$ | async"></ukis-form>
+            <ukis-form *ngIf="parameters$ | async as parameters" [parameters]="parameters" [step]="step" ></ukis-form>
         </ng-container>
 
 
@@ -46,7 +46,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'completed'">
-            <ukis-form [parameters]="parameters$ | async" [disabled]="true"> </ukis-form>
+            <ukis-form *ngIf="parameters$ | async as parameters" [parameters]="parameters" [step]="step" [disabled]="true"> </ukis-form>
             <button class="btn btn-outline" (click)="onReconfigureClicked()" >{{'Reconfigure' | translate}}</button>
         </ng-container>
 

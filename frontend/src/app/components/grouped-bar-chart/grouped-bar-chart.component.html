@@ -1,13 +1,13 @@
-<div id="container" #container [style]="{'width': width + 'px', 'height': graphHeight + 'px'}"></div>
 <div *ngIf="groupings.length > 1" class="radioContainer" style="display: flex;">
     <div *ngFor="let grouping of groupings" style="margin: 0 .25rem 0 .25rem;">
-        <label for="grouping.label">{{ grouping.label | sTranslate }}</label><br>
+        <label for="grouping.id">{{ grouping.label() }}</label><br>
         <input 
         type="radio"
-        id="grouping.label"
-        name="grouping.label"
-        value="grouping.label" 
-        (click)="updateGrouping(grouping.label)"
-        [checked]="grouping.label === selectedGrouping">
+        id="grouping.id"
+        name="grouping.id"
+        value="grouping.id" 
+        (click)="updateGrouping(grouping.id)"
+        [checked]="grouping.id === selectedGrouping">
     </div>
 </div>
+<div id="container" #container [style]="{'width': width + 'px', 'height': graphHeight + 'px'}"></div>

@@ -16,10 +16,10 @@ export class LayerentryGroupComponent implements OnInit {
   @HostBinding('class.group-visible') get visible() { return this.group.visible; }
   @HostBinding('class') get cssClass() { return this.group.cssClass; }
 
-  @Input('layersSvc') layersSvc: LayersService;
-  @Input('mapState') mapState?: MapStateService;
-  @Input('group') group: LayerGroup;
-  @Input('layerGroups') layerGroups: LayerGroup[];
+  @Input() layersSvc: LayersService;
+  @Input() mapState?: MapStateService;
+  @Input() group: LayerGroup;
+  @Input() layerGroups: LayerGroup[];
 
   public set openAllLayersProperties(value: boolean) {
     if (this.group && this.group.layers.length) {

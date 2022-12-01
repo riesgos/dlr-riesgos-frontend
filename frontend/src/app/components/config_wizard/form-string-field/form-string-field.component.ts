@@ -1,9 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { StringUserConfigurableProduct } from '../userconfigurable_wpsdata';
+import { UntypedFormControl, Validators } from '@angular/forms';
+import { StringUserConfigurableProduct } from '../wizardable_products';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 
 @Component({
   selector: 'ukis-form-string-field',
@@ -12,7 +11,7 @@ import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
 })
 export class FormStringFieldComponent implements OnInit {
 
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
   @Input() parameter: StringUserConfigurableProduct;
 
   constructor(private store: Store<State>) {}

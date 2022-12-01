@@ -1,11 +1,11 @@
 import { Component, OnInit, forwardRef, ViewEncapsulation } from '@angular/core';
 import {
-  ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, FormControl,
+  ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormGroup, UntypedFormControl,
   Validators, AbstractControl, ValidationErrors, Validator, NG_VALIDATORS
 } from '@angular/forms';
 
 
-export interface WpsBboxValue {
+export interface BboxValue {
   lllon: number;
   lllat: number;
   urlon: number;
@@ -23,7 +23,7 @@ function validateNumeric(control: AbstractControl): ValidationErrors | null {
 }
 
 function properlyFormattedBbox(control: AbstractControl): ValidationErrors | null {
-  const val: WpsBboxValue = control.value;
+  const val: BboxValue = control.value;
   if (+val.lllon >= +val.urlon) {
     return {'not a bbox': val};
   } else if (+val.lllat >= +val.urlat) {
@@ -65,17 +65,17 @@ export class BboxfieldComponent implements OnInit, ControlValueAccessor, Validat
 
   onChangeCallback: any;
   onTouchedCallback: any;
-  bboxFormGroup: FormGroup;
+  bboxFormGroup: UntypedFormGroup;
   validatorFunction: () => void;
 
   constructor() { }
 
   ngOnInit() {
-    const lllon = new FormControl(0.0, [Validators.required, validateNumeric]);
-    const lllat = new FormControl(0.0, [Validators.required, validateNumeric]);
-    const urlon = new FormControl(1.0, [Validators.required, validateNumeric]);
-    const urlat = new FormControl(1.0, [Validators.required, validateNumeric]);
-    this.bboxFormGroup = new FormGroup({ lllon, lllat, urlon, urlat }, [properlyFormattedBbox]);
+    const lllon = new UntypedFormControl(0.0, [Validators.required, validateNumeric]);
+    const lllat = new UntypedFormControl(0.0, [Validators.required, validateNumeric]);
+    const urlon = new UntypedFormControl(1.0, [Validators.required, validateNumeric]);
+    const urlat = new UntypedFormControl(1.0, [Validators.required, validateNumeric]);
+    this.bboxFormGroup = new UntypedFormGroup({ lllon, lllat, urlon, urlat }, [properlyFormattedBbox]);
 
     this.bboxFormGroup.valueChanges.subscribe(newVals => {
       if (this.onChangeCallback) {
@@ -89,7 +89,7 @@ export class BboxfieldComponent implements OnInit, ControlValueAccessor, Validat
     });
   }
 
-  writeValue(bbx: WpsBboxValue): void {
+  writeValue(bbx: BboxValue): void {
     this.bboxFormGroup.get('lllon').setValue(bbx.lllon);
     this.bboxFormGroup.get('lllat').setValue(bbx.lllat);
     this.bboxFormGroup.get('urlon').setValue(bbx.urlon);
@@ -117,7 +117,7 @@ export class BboxfieldComponent implements OnInit, ControlValueAccessor, Validat
   }
 
   validate(control: AbstractControl): ValidationErrors {
-    const val: WpsBboxValue = control.value;
+    const val: BboxValue = control.value;
     if (isNaN(val.lllat) || isNaN(val.lllon) || isNaN(val.urlat) || isNaN(val.urlon)) {
       return {'not numeric': val};
     } else if (+val.lllon >= +val.urlon) {

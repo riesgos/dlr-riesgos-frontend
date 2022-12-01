@@ -1,8 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { RiesgosState, RiesgosScenarioState } from './riesgos.state';
-import { Product, ProcessId, ImmutableProcess } from './riesgos.datatypes';
-import { isVectorLayerProduct, isBboxLayerProduct, isWmsProduct, isMultiVectorLayerProduct, isMappableProduct } from '../mappable/riesgos.datatypes.mappable';
+import { RiesgosState, RiesgosScenarioState, RiesgosStep, RiesgosProduct, ScenarioName } from './riesgos.state';
 
 
 const getRiesgosState = (state: State) => {
@@ -35,13 +33,13 @@ export const getCurrentScenarioRiesgosState = createSelector(
 );
 
 
-export const getProcessStates = createSelector(
+export const getSteps = createSelector(
     getRiesgosState,
-    (s: RiesgosState) => getCurrentScenarioState(s).processStates
+    (s: RiesgosState) => getCurrentScenarioState(s).steps
 );
 
 
-export const getScenario = createSelector(
+export const getCurrentScenarioName = createSelector(
     getRiesgosState,
     (s: RiesgosState) => s.currentScenario
 );
@@ -49,59 +47,45 @@ export const getScenario = createSelector(
 
 export const getProducts = createSelector(
     getRiesgosState,
-    (s: RiesgosState) => getCurrentScenarioState(s).productValues
+    (s: RiesgosState) => getCurrentScenarioState(s).products
+);
+
+export const getProductsWithValOrRef = createSelector(
+    getProducts,
+    (p: RiesgosProduct[]) => p.filter(p => p.value || p.reference)
 );
 
 export const getProduct = (productId: string) => createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
-        const products = getCurrentScenarioState(s).productValues;
-        return products.find(p => p.uid === productId);
+        const products = getCurrentScenarioState(s).products;
+        return products.find(p => p.id === productId);
     }
 );
 
-
-export const getGraph = createSelector(
+export const getProductsForScenario = (scenario: ScenarioName) => createSelector(
     getRiesgosState,
-    (s: RiesgosState) => getCurrentScenarioState(s).graph
+    s => s.scenarioData[scenario].products
 );
 
-
-export const getInputsForProcess = (processId: string) => createSelector(
+export const getInputsForStep = (processId: string) => createSelector(
     getRiesgosState,
     (s: RiesgosState) => {
-        const process = getProcessById(processId, getCurrentScenarioState(s).processStates);
-        return filterInputsForProcess(process, getCurrentScenarioState(s).productValues);
+        const step = getStepById(processId, getCurrentScenarioState(s).steps);
+        return filterInputsForStep(step, getCurrentScenarioState(s).products);
     }
 );
 
-
-export const getMappableProducts = createSelector(
-    getRiesgosState,
-    (s: RiesgosState) => {
-        return getCurrentScenarioState(s).productValues
-            .filter(prod => prod.value != null)
-            .filter(prod => isVectorLayerProduct(prod) || isBboxLayerProduct(prod)
-                            || isWmsProduct(prod) || isMultiVectorLayerProduct(prod)
-                            || isMappableProduct(prod) );
+export const getStepById = (id: string, steps: RiesgosStep[]): RiesgosStep => {
+    const step = steps.find(p => p.step.id === id);
+    if (step === undefined) {
+        throw new Error(`Could not find step ${id}`);
     }
-);
-
-
-
-
-
-
-export const getProcessById = (id: ProcessId, processes: ImmutableProcess[]): ImmutableProcess => {
-    const process = processes.find(p => p.uid === id);
-    if (process === undefined) {
-        throw new Error(`Could not find process ${id}`);
-    }
-    return process;
+    return step;
 };
 
-export const getProductById = (id: string, products: Product[]): Product => {
-    const product = products.find(p => p.uid === id);
+export const getProductById = (id: string, products: RiesgosProduct[]): RiesgosProduct => {
+    const product = products.find(p => p.id === id);
     if (product === undefined) {
         throw new Error(`Could not find product ${id}`);
     }
@@ -109,7 +93,7 @@ export const getProductById = (id: string, products: Product[]): Product => {
 };
 
 
-export const filterInputsForProcess = (process: ImmutableProcess, products: Product[]): Product[] => {
-    const filteredProducts = process.requiredProducts.map(pid => getProductById(pid, products));
+export const filterInputsForStep = (step: RiesgosStep, products: RiesgosProduct[]): RiesgosProduct[] => {
+    const filteredProducts = step.step.inputs.map(input => getProductById(input.id, products));
     return filteredProducts;
 };

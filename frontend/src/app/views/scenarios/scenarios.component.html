@@ -117,16 +117,20 @@
   </footer>
 </main>
 
-<clr-modal *ngIf="showInfo" [(clrModalOpen)]="modalOpen" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="false">
 
-  <h3 class="modal-title">{{selectedScenario.title | translate}}</h3>
-  <div class="modal-body">
-    <img [src]="selectedScenario.preview" alt="ukis logo white">
-    <span [innerHTML]="selectedScenario.description"></span>
+<div *ngIf="showInfo" class="modal">
+  <div class="modal-dialog modal-xl" role="dialog" aria-hidden="true">
+      <div class="modal-content">
+        <h3 class="modal-title">{{selectedScenario.title | translate}}</h3>
+        <div class="modal-body">
+          <img [src]="selectedScenario.preview" alt="ukis logo white">
+          <span [innerHTML]="selectedScenario.description"></span>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
   </div>
-  <div class="modal-footer">
-  </div>
-
-</clr-modal>
+</div>
+<div *ngIf="showInfo" class="modal-backdrop" aria-hidden="true"></div>
 
 <app-disclaimerpopup></app-disclaimerpopup>

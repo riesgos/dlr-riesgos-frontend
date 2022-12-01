@@ -1,29 +1,16 @@
-import { Action } from '@ngrx/store'; 
-import { ProcessId } from '../riesgos/riesgos.datatypes';
+import { createAction, props } from '@ngrx/store';
 
 
 
-export enum EFocusActionTypes {
-    appInit = '[Focus] app initialized',
-    newProcessClicked = '[Focus] new process clicked',
-    goToNextProcess = '[Focus] going to next process'
-}
+export const appInit = createAction(
+    '[Focus] app initialized'
+);
 
+export const newProcessClicked = createAction(
+    '[Focus] new process clicked',
+    props<{processId: string}>()
+);
 
-export class AppInit implements Action {
-    type: string = EFocusActionTypes.appInit;
-}
-
-
-export class NewProcessClicked implements Action {
-    type: string = EFocusActionTypes.newProcessClicked;
-    constructor(public payload: {processId: ProcessId}) {}
-}
-
-
-export class GoToNextProcess implements Action {
-    type: string = EFocusActionTypes.goToNextProcess;
-}
-
-
-export type FocusAction = AppInit | NewProcessClicked | GoToNextProcess;
+export const goToNextProcess = createAction(
+    '[Focus] going to next process'
+);

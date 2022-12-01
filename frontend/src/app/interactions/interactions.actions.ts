@@ -1,24 +1,16 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { InteractionMode } from './interactions.state';
-import { Product } from '../riesgos/riesgos.datatypes';
+import { RiesgosProduct, ScenarioName } from '../riesgos/riesgos.state';
 
 
-export enum InteractionActionTypes {
-    started = '[Interactions] Interaction started',
-    completed = '[Interactions] Interaction completed'
-}
+export const interactionStarted = createAction(
+    '[Interactions] Interaction started',
+    props<{mode: InteractionMode, scenario: ScenarioName, product: RiesgosProduct }>()
+);
 
 
-export class InteractionStarted implements Action {
-    type: string = InteractionActionTypes.started;
-    constructor(public payload: {mode: InteractionMode, product: Product}) {}
-}
+export const interactionCompleted = createAction(
+    '[Interactions] Interaction completed',
+    props<{scenario: ScenarioName, product: RiesgosProduct }>()
+);
 
-
-export class InteractionCompleted implements Action {
-    type: string = InteractionActionTypes.completed;
-    constructor(public payload: {product: Product}) {}
-}
-
-
-export type InteractionAction = InteractionStarted | InteractionCompleted;

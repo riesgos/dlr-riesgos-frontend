@@ -1,17 +1,17 @@
-<clr-vertical-nav-group *ngFor="let process of processes" (clrVerticalNavGroupExpandedChange)="onBlockClicked($event, process)">
+<clr-vertical-nav-group *ngFor="let step of steps" (clrVerticalNavGroupExpandedChange)="onBlockClicked($event, step)">
 
-  <clr-icon [attr.shape]="process.wizardProperties.shape" [ngClass]="getClassForProcess(process.state.type)" clrVerticalNavIcon></clr-icon>
+  <clr-icon [attr.shape]="step.wizardProperties.shape" [ngClass]="getClassForProcess(step.state.type)" clrVerticalNavIcon></clr-icon>
 
 
   <div class="clr-row">
       <div class="clr-col-8" style="overflow: hidden;">
-              {{process.name | translate}}
+              {{step.step.title | translate }}
       </div>
       <div class="clr-col-4">
           <clr-signpost (click)="$event.stopPropagation();">
 
-              <span class="label" [ngClass]="getClassForLabel(process.state.type)" clrSignpostTrigger>
-                  {{processStateForTranslate(process.state.type) | translate}}
+              <span class="label" [ngClass]="getClassForLabel(step.state.type)" clrSignpostTrigger>
+                  {{processStateForTranslate(step.state.type) | translate}}
               </span>
 
               <clr-signpost-content>
@@ -51,9 +51,9 @@
       </div>
   </div>
 
-  <ng-template [clrIfExpanded]="hasFocus(process) | async" (clrIfExpandedChange)="updateGroupExpand($event)">
+  <ng-template [clrIfExpanded]="hasFocus(step) | async" (clrIfExpandedChange)="updateGroupExpand($event)">
       <clr-vertical-nav-group-children class="padding title-ellipsis" *clrIfExpanded>
-          <ukis-wizard-page [process]="process"> </ukis-wizard-page>
+          <ukis-wizard-page [step]="step"> </ukis-wizard-page>
       </clr-vertical-nav-group-children>
   </ng-template>
 

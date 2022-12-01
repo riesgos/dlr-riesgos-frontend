@@ -1,26 +1,22 @@
-import { InteractionActionTypes, InteractionAction, InteractionStarted, InteractionCompleted } from './interactions.actions';
-import { initialInteractionState, InteractionState } from './interactions.state';
+import { createReducer, on } from '@ngrx/store';
+import * as InteractionActions from './interactions.actions';
+import { initialInteractionState } from './interactions.state';
 
 
+export const reducer = createReducer(
+    initialInteractionState,
 
+    on(InteractionActions.interactionStarted, (state, action) => {
+        return {
+            mode: action.mode,
+            product: action.product
+        };
+    }),
 
-export function interactionReducer(state: InteractionState = initialInteractionState, action: InteractionAction): InteractionState {
-    switch (action.type) {
-
-        case InteractionActionTypes.started:
-            return {
-                mode: (action as InteractionStarted).payload.mode,
-                product: (action as InteractionStarted).payload.product
-            };
-
-        case InteractionActionTypes.completed:
-            return {
-                mode: 'normal',
-                product: (action as InteractionCompleted).payload.product
-            };
-
-        default:
-            return state;
-
-    }
-}
+    on(InteractionActions.interactionCompleted, (state, action) => {
+        return {
+            mode: 'normal',
+            product: action.product
+        };
+    })
+)

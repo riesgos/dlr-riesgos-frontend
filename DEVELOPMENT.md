@@ -4,8 +4,7 @@ This document serves as a brief introduction to working with and extending this 
 
 
 ## Business logic
-Our RIESGOS business model consists of `processes` and `products`. They form a directed, bipartite graph: each process provides one or more products, which may or may not be the input to another process. We arrange that graph in a linear sequence by running a `toposort` on it. This linear sequence is then displayed in the UI: by arranging the processes in a sequence, we make it easier to guide the user through the chain of steps necessary to simulate a full scenario.
-
+@TODO
 
 ## Getting started
 Usually, you'll want to use [one of our stable releases](https://github.com/riesgos/dlr-riesgos-frontend/tags).
@@ -21,18 +20,7 @@ From there, you can ...
  - ... or build a deployable version of the code 
 
 ### Adjusting configuration
- - `frontend/src/environments`
-    - `production`: whether this app is meant to run in production or not
-    - `middlewareUrl`: where to reach the middleware
-    - `useProxy`: should non-https-pages be redirected over a proxy?
-    - `proxyUrl`: where can that proxy be reached?
- - `middleware/src/config.ts`
-     - `port`: where to listen for incoming requests
-     - `useCache`: store WPS results (may only store references to where the actual results are hosted)
-     - `siteAdmins`: who should get emails when errors occur?
-     - `sourceEmail`: address under which to send error-emails
-     - `cacheDir`: where cached WPS results should be kept
-     - `tempDir`: where the last sent request-body should be kept
+@TODO
 
 ### Local development
 For local development, use two terminals. In the first:
@@ -44,16 +32,13 @@ npm run start
 
 And in the second:
 ```bash
-cd middleware
+cd backend
 npm install 
 npm run start
 ```
 
 ### Deployable version
-This application has been dockerized. After configuring the app to your needs, you should be able to roll out this app with a simple:
-```bash
-docker-compose up
-```
+@TODO
 
 
 ## Integrating external webservices
@@ -144,103 +129,4 @@ This class and all relevant methods are documented with annotations that give Ja
  - Otherwise java offers a few methods to call other programs from within java-sourcecode. Here is an introduction on [running python programs from java](https://www.baeldung.com/java-working-with-python).
 
 #### Integrating a WPS in the frontend
-
-Once a WPS is available via the internet, you can register it in the frontend. This process differs between Riesgos 1.0 and 2.0. Within Riesgos 1.0 it is required to code the services name, url, and a few other properties in the frontend-source.
-
-##### Riesgos 1.0
-Adding a WPS into an existing scenario is a three step process. 
-
-###### Creating the service: Implementing the Process-Interface
-Any WPS must be represented by a class implementing the `Process` interface. 
-Very often, you will want to extend the `WpsProcess` class: this is a class implementing the `Process` interface that already has the method `execute` implemented for you. Additionally, if you want the service to be visible in the UI, implement the interface `WizardableProcess`.
-```js
-/**
- * Our new service.
- *  - Extends WpsProcess: this is to describe a remote WPS that can be executed from the frontend.
- *  - Implements WizzardableProcess: this adds additional information to be displayed in the configuration-wizard. 
- */
-export class MyGreeterService extends WpsProcess implements WizardableProcess {
-    wizardProperties: WizardProperties;
-    constructor(httpClient: HttpClient) {
-        const uid = 'myGreeterService';  // frontend-wide
-        const id = 'GreeterService';   // id of process on WPS
-        const name = 'My greeter service';
-        const description = 'A simple greeter';
-        const serviceUrl = 'https://myserver.org/wps';
-        const wpsVersion = '2.0.0';
-        super(uid, name, [personToGreet.uid], [greeting.uid], id, 
-              description, serviceUrl, wpsVersion, httpClient);
-        this.wizardProperties = {
-            providerName: 'My Company',
-            providerUrl: 'mycompany.org',
-            shape: 'bolt',   // what logo to use to the left of the service-name?
-        };
-    }
-}
-
-
-
-```
-If your `execute` method needs to do more than just send an execute-request to a WPS, implement the interface `ExecutableProcess`. Doing this makes sense for example when you need to change your input-parameters' names or values before sending them off to the WPS.
-
-
-###### Creating the products: Implementing the Product-Interface
-A `product` is an object implementing the `Product` interface. Usually your products will come from and be sent to a WPS: in this case, they are `WpsData`.
-If you do not want the WPS to return to you the actual data but merely a link to the data's location on the server, set `reference: true`.
-```js
-/**
- * Implements ...
- *  - WpsData: something that is returned from a WPS, and ...
- *  - Product: something that can be passed from service to service in the frontend.
- * Note that there are many useful subtypes of `Product`, like `StringSelectUconfProduct`, `VectorLayerProduct`, etc.
- * Many of these contain additional information that is required to display the product on a map. 
- */
-const greeting: WpsData & Product = {
-    // frontend-wide unique.
-    uid: 'greeting',
-    description: {
-        // the id of the product on the WPS
-        id: 'greeting',
-        // whether to return a reference (a url pointing to the actual result) 
-           or to return the literal result immediately.
-        reference: false,
-        type: 'literal'
-    },
-    value: null // ... null, as of yet. But that value will be set by `MyGreeterService`
-};
-```
-
-###### Registering service and products in the scenario
-Finally, for your service to be integrated into a scenario, it must be listed in the scenario's list of processes (and products).
-You can register both scenarios and their component processes and products in the `RiesgosService`.
-```js
-public loadScenarioData(scenario: string): [Process[], Product[]] {
-    ...
-
-    let processes: Process[] = [];
-    let products: Product[] = [];
-    switch (scenario) {
-      case 'c1':
-        processes = [
-          new ExposureSelection(this.httpClient),
-          new QuakeLedger(this.httpClient),
-          new MyGreeterService(this.httpClient),
-          ...
-        ];
-        products = [
-          modelChoice,	
-	      personToGreet, greeting, 
-          lonmin, lonmax, latmin, latmax, assettype,
-	      ...
-    ];
-    break;
-```
-
-##### Riesgos 2.0
-
-One of the aims of Riesgos 2.0 is to simplify the integration of new services. A WPS provider will no longer have to register his service directly in a frontend but in a more general, more open catalogue instead. This indirection is intended to open the Riesgos architecture to more third party services. Frontend-work will then only be required for defining unconventional styling of new products.
-
-
-### Licenses
-3rd party licenses are displayed with the component 'licenses.component'. This component requires there to be a file named 'licenses.json' in the assets directory. 
-This file has been autogenerated with the 'license-checker' npm-module. When new dependencies are added, the file needs to be regenerated manually.
+@TODO

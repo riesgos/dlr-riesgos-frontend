@@ -31,8 +31,7 @@ Our team includes (in alphabetical order):
 
 
 ## Business logic
-Our RIESGOS business model consists of `processes` and `products`. They form a directed, bipartite graph: each process provides one or more products, which may or may not be the input to another process. We arrange that graph in a linear sequence by running a `toposort` on it. This linear sequence is then displayed in the UI: by arranging the processes in a sequence, we make it easier to guide the user through the chain of steps necessary to simulate a full scenario. 
-For more instructions, consult [the development guide](DEVELOPMENT.md).
+@TODO
 
 
 ## Licenses

@@ -1,22 +1,17 @@
-import { FocusAction, EFocusActionTypes, NewProcessClicked } from './focus.actions';
-import { FocusState, initialFocusState } from './focus.state';
+import { initialFocusState } from './focus.state';
+import * as FocusActions from './focus.actions';
+import { createReducer, on } from '@ngrx/store';
 
 
+export const reducer = createReducer(
+    initialFocusState,
 
+    on(FocusActions.newProcessClicked, (state, action) => {
+        return {
+            ...state,
+            focussedProcessId: action.processId
+        }
+    }),
 
-export function focusReducer(state: FocusState = initialFocusState, action: FocusAction): FocusState {
-    switch (action.type) {
-
-        case EFocusActionTypes.newProcessClicked:
-            return {
-                ...state,
-                focussedProcessId: (action as NewProcessClicked).payload.processId
-            };
-
-
-        case EFocusActionTypes.goToNextProcess:
-        default:
-            return state;
-
-    }
-}
+    on(FocusActions.goToNextProcess, (state, action) => state)
+);

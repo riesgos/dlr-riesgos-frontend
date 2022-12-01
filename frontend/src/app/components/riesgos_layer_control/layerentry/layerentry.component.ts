@@ -4,8 +4,7 @@ import {
   isVectorLayer, LayersService
 } from '@dlr-eoc/services-layers';
 import { MapStateService } from '@dlr-eoc/services-map-state';
-import { } from '@dlr-eoc/services-layers';
-import { ProductLayer } from '../../../mappable/map.types';
+import { ProductLayer } from '../../map/mappable/map.types';
 import { state, style, transition, animate, trigger } from '@angular/animations';
 import { ThemeService, ThemeMetadata } from 'src/app/services/theme/theme.service';
 
@@ -75,25 +74,25 @@ export class RiesgosLayerentryComponent implements OnInit {
   @HostBinding('class.layer-visible') get visible() { return this.layer.visible; }
   @HostBinding('class') get cssClass() { return this.layer.cssClass; }
 
-  @Input('layersSvc') layersSvc: LayersService;
-  @Input('mapState') mapState?: MapStateService;
-  @Input('layer') layer: ProductLayer;
+  @Input() layersSvc: LayersService;
+  @Input() mapState?: MapStateService;
+  @Input() layer: ProductLayer;
 
-  @Input('group') group?: LayerGroup;
-  @Input('layerGroups') layerGroups?: LayerGroup[];
-  @Input('expanded') set expanded(value: boolean) {
+  @Input() group?: LayerGroup;
+  @Input() layerGroups?: LayerGroup[];
+  @Input() set expanded(value: boolean) {
     if (this.layer) {
       this.layer.expanded = value;
     }
   }
   get expanded() {
     if (this.layer) {
-      return this.layer.expanded;
+      return !!(this.layer.expanded);
     } else {
       return false;
     }
   }
-  @Input('expandable') expandable = true;
+  @Input() expandable = true;
 
 
   @Output() update = new EventEmitter<{ layer: Layer }>();

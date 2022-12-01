@@ -1,43 +1,45 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, forkJoin, Observable, of, Subscription } from 'rxjs';
-import { map, withLatestFrom, switchMap, filter } from 'rxjs/operators';
-import { Graph } from 'graphlib';
+import { map, withLatestFrom, switchMap, filter, bufferCount } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { Store, select } from '@ngrx/store';
-
-import { DragBox, Select } from 'ol/interaction';
-import olVectorLayer from 'ol/layer/Vector';
-import olVectorSource from 'ol/source/Vector';
-import { GeoJSON, KML, MVT } from 'ol/format';
-import { get as getProjection } from 'ol/proj';
-import { click, noModifierKeys } from 'ol/events/condition';
-import { applyStyle } from 'ol-mapbox-style';
-import { createXYZ } from 'ol/tilegrid';
-import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
 
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@dlr-eoc/services-layers';
-import { WpsBboxValue } from '../../services/wps/wps.datatypes';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
 
-import { State } from 'src/app/ngrx_register';
-import { getMappableProducts, getScenario, getGraph } from 'src/app/riesgos/riesgos.selectors';
-import { Product } from 'src/app/riesgos/riesgos.datatypes';
-import { InteractionCompleted } from 'src/app/interactions/interactions.actions';
-import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
-import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { LayerMarshaller } from '../../mappable/layer_marshaller';
-import { ProductLayer } from '../../mappable/map.types';
-import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+import { click, noModifierKeys } from 'ol/events/condition';
+import { DragBox, Select } from 'ol/interaction';
+import { GeoJSON, KML, MVT } from 'ol/format';
+import { get as getProjection } from 'ol/proj';
 import { SelectEvent } from 'ol/interaction/Select';
-import VectorTileLayer from 'ol/layer/VectorTile';
 import { TileWMS, VectorTile } from 'ol/source';
-import { createTableHtml } from 'src/app/helpers/others';
-import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
-import { NavigationStart, Router } from '@angular/router';
+import Geometry from 'ol/geom/Geometry';
+import olVectorLayer from 'ol/layer/Vector';
+import olVectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';
-import { Fill, Stroke, Style } from 'ol/style';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import { applyStyle } from 'ol-mapbox-style';
+import { createXYZ } from 'ol/tilegrid';
+import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
+
+
+import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
+import { getCurrentScenarioName, getProducts, getCurrentScenarioRiesgosState, getProductsWithValOrRef } from 'src/app/riesgos/riesgos.selectors';
+import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
+import { interactionCompleted } from 'src/app/interactions/interactions.actions';
+import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
+import { LayerMarshaller } from './mappable/layer_marshaller';
+import { ProductLayer } from './mappable/map.types';
+import { initialRiesgosState, RiesgosProduct, RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from 'src/app/riesgos/riesgos.state';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
+import { State } from 'src/app/ngrx_register';
+import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
+import { isMappableProduct, MappableProduct } from './mappable/mappable_products';
+import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
+
 
 const mapProjection = 'EPSG:3857';
 
@@ -56,6 +58,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         featureProjection: this.mapSvc.map.getView().getProjection().getCode()
     });
     private interactionState$ = new BehaviorSubject<InteractionState>(initialInteractionState);
+    private currentScenario$ = new BehaviorSubject<ScenarioName>(initialRiesgosState.currentScenario);
     private subs: Subscription[] = [];
 
     constructor(
@@ -65,7 +68,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         private layerMarshaller: LayerMarshaller,
         public layersSvc: LayersService,
         private translator: SimplifiedTranslationService,
-        private router: Router
+        private router: Router,
+        private augmenter: AugmenterService
     ) {
         this.controls = { attribution: true, scaleLine: true };
     }
@@ -80,23 +84,27 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             this.interactionState$.next(currentInteractionState);
         });
         this.subs.push(sub1);
+        // listening for current scenario
+        const sub6 = this.store.select(getCurrentScenarioName).subscribe(name => {
+            this.currentScenario$.next(name);
+        });
+        this.subs.push(sub6);
 
         // listening for focus-change
         const sub2 = this.store.pipe(
             select(getFocussedProcessId),
             withLatestFrom(
-                this.store.pipe(select(getGraph)),
-                this.layersSvc.getOverlays()
+                this.layersSvc.getOverlays(),
+                this.store.pipe(select(getCurrentScenarioRiesgosState)),
             ),
-        ).subscribe(([focussedProcessId, graph, currentOverlays]: [string, Graph, ProductLayer[]]) => {
-            if (graph && focussedProcessId !== 'some initial focus') {
-                const inEdges = graph.inEdges(focussedProcessId);
-                const outEdges = graph.outEdges(focussedProcessId);
+        ).subscribe(([focussedStepId, currentOverlays, state]: [string, ProductLayer[], RiesgosScenarioState]) => {
+            if (focussedStepId && focussedStepId !== 'some initial focus') {
+                const focussedStep = state.steps.find(s => s.step.id === focussedStepId).step;
+                const inEdges = focussedStep.inputs.map(i => i.id);
+                const outEdges = focussedStep.outputs.map(i => i.id);
                 if (inEdges && outEdges) {
-                    const inputs = inEdges.map(edge => edge.v);
-                    const outputs = outEdges.map(edge => edge.w);
                     for (const layer of currentOverlays) {
-                        if (outputs.includes((layer as ProductLayer).productId)) {
+                        if (outEdges.includes((layer as ProductLayer).productId)) {
                             layer.hasFocus = true;
                         } else {
                             layer.hasFocus = false;
@@ -110,53 +118,106 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subs.push(sub2);
 
         // listening for products that can be displayed on the map
-        const sub3 = this.store.pipe(
-            select(getMappableProducts),
+        const diff$ = this.store.pipe(
+            select(getProductsWithValOrRef),
+            bufferCount(2, 1),
+            map(([oldProducts, newProducts]) => {
+                const diff = {
+                    toAdd: [],
+                    toRemove: [],
+                    toUpdate: []
+                }
 
-            // translate to layers
-            switchMap((products: Product[]) => {
-                return this.layerMarshaller.productsToLayers(products);
-            }),
+                for (const newProduct of newProducts) {
+                    const oldProduct = oldProducts.find(o => o.id === newProduct.id);
+                    // Product was already there. Has it changed?
+                    if (oldProduct) {
+                        if (newProduct.reference && oldProduct.reference && newProduct.reference !== oldProduct.reference) {
+                            diff.toUpdate.push(newProduct);
+                        } else if (newProduct.value && oldProduct.value && newProduct.value !== oldProduct.value) {
+                            diff.toUpdate.push(newProduct);
+                        } else if (newProduct.reference && oldProduct.value || newProduct.value && oldProduct.reference) {
+                            diff.toUpdate.push(newProduct);
+                        }
+                    }
+                    // Product is new. 
+                    else {
+                        diff.toAdd.push(newProduct);
+                    }
+                }
+                // Have old products been removed?
+                for (const oldProduct of oldProducts) {
+                    if (!newProducts.map(n => n.id).includes(oldProduct.id)) {
+                        diff.toRemove.push(oldProduct);
+                    }
+                }
+                return diff;
+            })
+        );
 
+        const addedLayers$ = diff$.pipe(
+            map(d => d.toAdd),
+            switchMap(products => this.augmenter.loadMapPropertiesForProducts(products)),
+            switchMap((products: MappableProduct[]) => this.layerMarshaller.productsToLayers(products)),
+            filter(ls => ls.length > 0),
+            map(addedLayers => {
+                addedLayers.map(l => {
+                    l.visible = true;
+                    l.hasFocus = true;
+                    this.shouldLayerExpand(l);
+                })
+                return addedLayers;
+            })
+        );
+
+        const updatedLayers$ = diff$.pipe(
+            map(d => d.toUpdate),
+            switchMap(products => this.augmenter.loadMapPropertiesForProducts(products)),
+            switchMap((products: MappableProduct[]) => this.layerMarshaller.productsToLayers(products)),
             withLatestFrom(this.layersSvc.getOverlays()),
-            map(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
-
+            map(([newLayers, oldLayers]: [ProductLayer[], ProductLayer[]]) => {
                 // keep user's visibility-settings
-                for (const oldLayer of oldOverlays) {
-                    const newLayer = newOverlays.find(nl => nl.id === oldLayer.id);
+                for (const oldLayer of oldLayers) {
+                    const newLayer = newLayers.find(nl => nl.id === oldLayer.id);
                     if (newLayer) {
                         newLayer.visible = oldLayer.visible;
                         newLayer.hasFocus = oldLayer.hasFocus;
                         this.shouldLayerExpand(newLayer);
                     }
                 }
-
                 // set hasFocus=true for new layers
                 // also expand new layers if they have legendImg or description
-                for (const newLayer of newOverlays) {
-                    const oldLayer = oldOverlays.find(ol => ol.id === newLayer.id);
+                for (const newLayer of newLayers) {
+                    const oldLayer = oldLayers.find(ol => ol.id === newLayer.id);
                     if (!oldLayer) {
                         newLayer.hasFocus = true;
                         this.shouldLayerExpand(newLayer);
                     }
                 }
+                return newLayers;
+            }),
+            filter(ls => ls.length > 0)
+        );
 
-                return [newOverlays, oldOverlays];
-            })
+        const removedLayers$ = diff$.pipe(
+            map(d => d.toRemove),
+            filter(ls => ls.length > 0)
+        );
 
-
-            // add to map
-        ).subscribe(([newOverlays, oldOverlays]: [ProductLayer[], ProductLayer[]]) => {
-            const oldOverlayIds = oldOverlays.map(oo => oo.id);
-            const newOverlayIds = newOverlays.map(no => no.id);
-            const add: ProductLayer[] = newOverlays.filter(no => !oldOverlayIds.includes(no.id));
-            const update: ProductLayer[] = newOverlays.filter(no => oldOverlayIds.includes(no.id));
-            const remove: ProductLayer[] = oldOverlays.filter(oo => !newOverlayIds.includes(oo.id));
-            add.map(ol => this.layersSvc.addLayer(ol, ol.filtertype));
-            update.map(ol => this.layersSvc.updateLayer(ol, ol.filtertype));
-            remove.map(ol => this.layersSvc.removeLayer(ol, ol.filtertype));
+        const sub3 = addedLayers$.subscribe(toAdd => {
+            toAdd.map(l => this.layersSvc.addLayer(l, l.filtertype));
         });
+        const sub4 = updatedLayers$.subscribe(toUpdate => {
+            toUpdate.map(l => this.layersSvc.updateLayer(l, l.filtertype));
+        });
+        const sub7 = removedLayers$.subscribe(toRemove => {
+            const toRemoveIds = toRemove.map(r => r.id);
+            this.layersSvc.removeOverlays((layer, index, all) => toRemoveIds.includes((layer as ProductLayer).productId));
+        });
+
         this.subs.push(sub3);
+        this.subs.push(sub4);
+        this.subs.push(sub7);
 
 
         // adding drag-box interaction and hooking it into the store
@@ -165,7 +226,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 return this.interactionState$.getValue().mode === 'bbox';
             },
             onBoxEnd: () => {
-                const originalProjection = this.interactionState$.getValue().product.value.crs;
+                const originalProjection = (this.interactionState$.getValue().product as RiesgosProductResolved).value.crs;
                 dragBox.getGeometry().transform(mapProjection, originalProjection);
                 const lons = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[0]);
                 const lats = dragBox.getGeometry().getCoordinates()[0].map(coords => coords[1]);
@@ -173,18 +234,17 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 const maxLon = Math.max(...lons);
                 const minLat = Math.min(...lats);
                 const maxLat = Math.max(...lats);
-                const box: WpsBboxValue = {
-                    crs: originalProjection,
+                const box: BboxValue = {
                     lllat: minLat.toFixed(1) as unknown as number,
                     lllon: minLon.toFixed(1) as unknown as number,
                     urlat: maxLat.toFixed(1) as unknown as number,
                     urlon: maxLon.toFixed(1) as unknown as number
                 };
-                const product: Product = {
+                const product: RiesgosProduct = {
                     ...this.interactionState$.getValue().product,
                     value: box
                 };
-                this.store.dispatch(new InteractionCompleted({ product }));
+                this.store.dispatch(interactionCompleted({ scenario: this.currentScenario$.getValue(), product }));
             }
         });
         this.mapSvc.map.addInteraction(dragBox as any);
@@ -207,11 +267,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (this.interactionState$.getValue().mode === 'featureselection') {
                     const feature = features[0];
                     const newFeatureCollection = tFeatureCollection([JSON.parse(this.geoJson.writeFeature(feature))]);
-                    const product = {
+                    const product: RiesgosProduct = {
                         ...this.interactionState$.getValue().product,
-                        value: [newFeatureCollection]
+                        value: newFeatureCollection
                     };
-                    this.store.dispatch(new InteractionCompleted({ product }));
+                    this.store.dispatch(interactionCompleted({ scenario: this.currentScenario$.getValue(), product }));
                 }
             }
         });
@@ -226,7 +286,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         // listening for change in scenario - onInit
-        const sub5 = this.store.pipe(select(getScenario)).subscribe((scenario: string) => {
+        const sub5 = this.store.pipe(select(getCurrentScenarioName)).subscribe((scenario: string) => {
             this.layersSvc.removeLayers();
             const baseLayers$ = this.getBaseLayers(scenario);
             const infoLayers$ = this.getInfoLayers(scenario);
@@ -270,6 +330,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
     }
+    
 
     ngAfterViewInit(): void {
         // These functions can only be called after view init, because map-service is not yet ready before that.
@@ -325,12 +386,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private getCenter(scenario: string): [number, number] {
         switch (scenario) {
-            case 'c1':
-            case 'c2':
+            case 'Chile':
                 return [-70.799, -33.990];
-            case 'e1':
+            case 'Ecuador':
                 return [-78.4386, -0.6830];
-            case 'p1':
+            case 'Peru':
                 return [-75.902, -11.490];
             default:
                 throw new Error(`Unknown scenario: ${scenario}`);
@@ -340,14 +400,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getInfoLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
         const layers: Array<Layer | LayerGroup> = [];
 
-        const osmLayer = new OsmTileLayer({
-            visible: true,
-            removable: true,
-            legendImg: 'assets/layer-preview/osm-96px.jpg'
-        });
-        layers.push(osmLayer);
-
-        if (scenario === 'c1') {
+        if (scenario === 'Chile') {
 
             const powerlineLayer = new CustomLayer({
                 custom_layer: new olVectorLayer({
@@ -423,7 +476,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'Tsunami Flood Layers (CITSU)',
                 description: 'CITSU_description',
                 layers: [
-                    new CustomLayer({
+                    new CustomLayer<olVectorLayer<olVectorSource<any>>>({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/kml/citsu_valparaiso_vinna.kml',
@@ -448,10 +501,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             layers.push(shoaLayers);
         }
 
-        if (scenario === 'p1') {
+        if (scenario === 'Peru') {
 
 
-            const distributionLines = new CustomLayer({
+            const distributionLines = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -467,7 +520,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'distribution_lines',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=12&'
             });
-            const substations = new CustomLayer({
+            const substations = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -483,7 +536,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'substations',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=16&'
             });
-            const nonConventional = new CustomLayer({
+            const nonConventional = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -499,7 +552,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'generation_nonConventional',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=25&'
             });
-            const conventional = new CustomLayer({
+            const conventional = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -515,7 +568,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'generation_conventional',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=33&'
             });
-            const transmission = new CustomLayer({
+            const transmission = new CustomLayer<TileLayer<TileWMS>>({
                 custom_layer: new TileLayer({
                     source: new TileWMS({
                         projection: 'EPSG:4326',
@@ -528,7 +581,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     })
                 }),
                 id: 'peru_transmission',
-                name: 'transmission',
+                name: 'Powerlines',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=19&'
             });
 
@@ -543,7 +596,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             layers.push(energyGroup);
         }
 
-        if (scenario === 'e1') {
+        if (scenario === 'Ecuador') {
 
 
             const sniLayers = new LayerGroup({
@@ -551,7 +604,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: 'sniLayers',
                 name: 'SNI',
                 layers: [
-                    new CustomLayer({
+                    new CustomLayer<olVectorLayer<olVectorSource<Geometry>>>({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/ecuador_energy/linea_transmision_ecuador.geojson',
@@ -561,7 +614,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 })
                             })
                         }),
-                        name: 'Transmission',
+                        name: 'Powerlines',
                         id: 'transmision',
                         type: 'custom',
                         visible: false,
@@ -569,7 +622,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         // legendImg: 'assets/layer-preview/citsu-96px.jpg',
                         popup: true
                     }),
-                    new CustomLayer({
+                    new CustomLayer<olVectorLayer<olVectorSource<Geometry>>>({
                         custom_layer: new olVectorLayer({
                             source: new olVectorSource({
                                 url: 'assets/data/geojson/ecuador_energy/linea_subtransmision_ecuador.geojson',
@@ -618,7 +671,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         applyStyle(vectorTile, greyScale, 'planet0-12');
 
-        const geoserviceVTiles = new CustomLayer({
+        const geoserviceVTiles = new CustomLayer<VectorTileLayer>({
             name: 'OpenMapStyles',
             id: 'planet_eoc_vector_tiles',
             attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,

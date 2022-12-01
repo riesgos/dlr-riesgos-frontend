@@ -1,198 +1,185 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { UkisRoutingModule } from './app-routing.module';
+import { environment } from '../environments/environment';
+
+// modules
 import { AppComponent } from './app.component';
-import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StoreModule } from '@ngrx/store';
+import { BrowserModule } from '@angular/platform-browser';
+import { ClarityModule } from '@clr/angular';
+import { CoreUiModule } from '@dlr-eoc/core-ui';
 import { EffectsModule } from '@ngrx/effects';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import { MapOlModule } from '@dlr-eoc/map-ol';
-import { CoreUiModule } from '@dlr-eoc/core-ui';
 import { LayersModule } from '@dlr-eoc/services-layers';
-import { Ng5SliderModule } from 'ng5-slider';
+import { MapOlModule } from '@dlr-eoc/map-ol';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { UkisRoutingModule } from './app-routing.module';
 
-import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
-import { GlobalFooterComponent } from './components/global-footer/global-footer.component';
-import { GlobalProgressComponent } from './components/global-progress/global-progress.component';
-import { HeaderComponent } from './components/header/header.component';
+// components
+import { BaseLayerControlComponent } from './components/riesgos_layer_control/base-layer-control/base-layer-control.component';
+import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/bboxfield/bboxfield.component';
+import { BlogentryComponent } from './components/blogentry/blogentry.component';
 import { ConfigurationWizardComponent } from './components/config_wizard/configuration-wizard/configuration-wizard.component';
+import { DamagePopupComponent } from './components/dynamic/damage-popup/damage-popup.component';
+import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
+import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
+import { DisclaimerTriggerComponent } from './components/disclaimer-trigger/disclaimer-trigger.component';
+import { EconomicDamagePopupComponent } from './components/dynamic/economic-damage-popup/economic-damage-popup.component';
+import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
 import { FormComponent } from './components/config_wizard/form/form.component';
 import { FormFeatureSelectFieldComponent } from './components/config_wizard/form-featureselect-field/form-featureselect-field.component';
 import { FormStringFieldComponent } from './components/config_wizard/form-string-field/form-string-field.component';
-import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
-import { ScenariosComponent } from './views/scenarios/scenarios.component';
-import { RouteMapComponent } from './views/route-map/route-map.component';
-import { MapComponent } from './components/map/map.component';
-import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
-import { FormBboxFieldComponent } from './components/config_wizard/form-bbox-field/form-bbox-field.component';
-import { ScreenshotComponent } from './components/screenshot/screenshot.component';
 import { FormStringselectFieldComponent } from './components/config_wizard/form-stringselect-field/form-stringselect-field.component';
-import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
-import { GraphvizcompComponent } from './components/graphvizcomp/graphvizcomp.component';
-import { ShowgraphComponent } from './components/showgraph/showgraph.component';
-import { BboxfieldComponent } from './components/config_wizard/form-bbox-field/bboxfield/bboxfield.component';
-import { RouteDocumentationComponent } from './views/route-documentation/route-documentation.component';
-import { ReadMoreComponent } from './components/read-more/read-more.component';
-import { TextModalComponent } from './components/text-modal/text-modal.component';
-import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
-import { DisclaimerpopupComponent } from './components/disclaimerpopup/disclaimerpopup.component';
-import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
-import { LicensesComponent } from './views/licenses/licenses.component';
-import { BlogentryComponent } from './components/blogentry/blogentry.component';
-import { RiesgosLayerControlComponent } from './components/riesgos_layer_control/layer-control/layer-control.component';
-import { BaseLayerControlComponent } from './components/riesgos_layer_control/base-layer-control/base-layer-control.component';
-import { RiesgosLayerentryComponent } from './components/riesgos_layer_control/layerentry/layerentry.component';
-import { LayerentryGroupComponent } from './components/riesgos_layer_control/layerentry-group/layerentry-group.component';
-import { VectorLegendComponent } from './components/dynamic/vector-legend/vector-legend.component';
-import { CanvasComponent } from './components/dynamic/vector-legend/canvas/canvas.component';
-import { ChangedetectorComponent } from './components/changedetector/changedetector.component';
-import { BlinkerComponent } from './components/changedetector/blinker/blinker.component';
-import { FpserComponent } from './components/changedetector/fpser/fpser.component';
-import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
-import { PrintComponent } from './components/print/print.component';
-import { PrintMapComponent } from './components/print/print-map/print-map.component';
-import { ScalerComponent } from './components/scaler/scaler.component';
-import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
-import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
+import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
+import { GlobalProgressComponent } from './components/global-progress/global-progress.component';
+import { GroupedBarChartComponent } from './components/grouped-bar-chart/grouped-bar-chart.component';
+import { HeaderComponent } from './components/header/header.component';
 import { HelperButtonsComponent } from './components/helperButtons/helper-buttons.component';
-
-import { RiesgosService } from './riesgos/riesgos.service';
-import { ProgressService } from './components/global-progress/progress.service';
-import { FooterService } from './components/global-footer/footer.service';
-import { AlertService } from './components/global-alert/alert.service';
-
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import { VarDirective } from './ng-var.directive';
-import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
-import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-translate.pipe';
-import { SimpleTranslatePipe } from './services/simplifiedTranslation/simple-translate.pipe';
-import { ReversePipe } from './components/riesgos_layer_control/utils/array-reverse.pipe';
-import { WMTSLayerFactory } from './mappable/wmts';
-import { reducers, effects } from './ngrx_register';
-
-import { environment } from '../environments/environment';
+import { InfoTableComponentComponent } from './components/dynamic/info-table-component/info-table-component.component';
+import { InteractionstatemonitorComponent } from './components/interactionstatemonitor/interactionstatemonitor.component';
+import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
+import { LayercontrolComponent } from './components/layercontrol/layercontrol.component';
+import { LayerentryGroupComponent } from './components/riesgos_layer_control/layerentry-group/layerentry-group.component';
+import { LicensesComponent } from './views/licenses/licenses.component';
+import { MapComponent } from './components/map/map.component';
+import { ReadMoreComponent } from './components/read-more/read-more.component';
+import { RiesgosLayerControlComponent } from './components/riesgos_layer_control/layer-control/layer-control.component';
+import { RiesgosLayerentryComponent } from './components/riesgos_layer_control/layerentry/layerentry.component';
+import { RouteDocumentationComponent } from './views/route-documentation/route-documentation.component';
+import { RouteMapComponent } from './views/route-map/route-map.component';
+import { ScenariosComponent } from './views/scenarios/scenarios.component';
+import { TextModalComponent } from './components/text-modal/text-modal.component';
+import { ThemePickerComponent } from './components/theme-picker/theme-picker.component';
 import { TranslatableStringComponent } from './components/dynamic/translatable-string/translatable-string.component';
 import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
+import { WizardPageComponent } from './components/config_wizard/wizard-page/wizard-page.component';
+
+// services
+import { AlertService } from './components/global-alert/alert.service';
+import { BackendService } from './services/backend/backend.service';
+import { ConfigService } from './services/configService/configService';
+import { ProgressService } from './components/global-progress/progress.service';
+import { DisclaimerService } from './components/disclaimer/disclaimer.service';
+
+// other
+import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
 import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
+import { ProxyInterceptor } from './services/interceptors/ProxyInterceptor';
+import { reducers, effects } from './ngrx_register';
+import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-translate.pipe';
+import { ReversePipe } from './components/riesgos_layer_control/utils/array-reverse.pipe';
+import { SimpleTranslatePipe } from './services/simplifiedTranslation/simple-translate.pipe';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { WMTSLayerFactory } from './components/map/mappable/wmts';
 
 // import all used icons
 import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from '@cds/core/icon';
-import { DisclaimerTriggerComponent } from './components/disclaimer-trigger/disclaimer-trigger.component';
-import { DisclaimerService } from './components/disclaimer/disclaimer.service';
-import { ProxyInterceptor } from './services/interceptors/ProxyInterceptor';
-import { DamagePopupComponent } from './components/dynamic/damage-popup/damage-popup.component';
-import { GroupedBarChartComponent } from './components/grouped-bar-chart/grouped-bar-chart.component';
-import { EconomicDamagePopupComponent } from './components/dynamic/economic-damage-popup/economic-damage-popup.component';
+import { DataService } from './services/data/data.service';
+import { TranslatedImageComponent } from './components/dynamic/translated-image/translated-image.component';
+import { GroupSliderComponent } from './components/dynamic/group-slider/group-slider.component';
+import { LegendComponent } from './components/dynamic/legend/legend.component';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
+
+
+
+
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    GlobalAlertComponent,
-    GlobalFooterComponent,
-    GlobalProgressComponent,
-    HeaderComponent,
-    HelperButtonsComponent,
+    BaseLayerControlComponent,
+    BboxfieldComponent,
+    BlogentryComponent,
     ConfigurationWizardComponent,
+    DamagePopupComponent,
+    DisclaimerComponent,
+    DisclaimerpopupComponent,
+    DisclaimerTriggerComponent,
+    DndDirective,
+    EconomicDamagePopupComponent,
+    FormBboxFieldComponent,
     FormComponent,
     FormFeatureSelectFieldComponent,
     FormStringFieldComponent,
-    WizardPageComponent,
-    ScenariosComponent,
-    RouteMapComponent,
-    MapComponent,
-    LayercontrolComponent,
-    FormBboxFieldComponent,
-    VarDirective,
-    ScreenshotComponent,
     FormStringselectFieldComponent,
-    LanguageSwitcherComponent,
-    GraphvizcompComponent,
-    ShowgraphComponent,
-    BboxfieldComponent,
-    RouteDocumentationComponent,
-    ReadMoreComponent,
-    TextModalComponent,
-    DisclaimerComponent,
-    DisclaimerpopupComponent,
-    InteractionstatemonitorComponent,
-    LicensesComponent,
-    BlogentryComponent,
-    DndDirective,
-    RiesgosLayerControlComponent,
-    BaseLayerControlComponent,
-    RiesgosLayerentryComponent,
-    LayerentryGroupComponent,
-    VectorLegendComponent,
-    CanvasComponent,
-    ReversePipe,
-    RegexTranslatePipe,
-    SimpleTranslatePipe,
-    ChangedetectorComponent,
-    BlinkerComponent,
-    FpserComponent,
-    ThemePickerComponent,
-    PrintComponent,
-    PrintMapComponent,
-    ScalerComponent,
-    GroupSliderComponent,
+    GlobalAlertComponent,
+    GlobalProgressComponent,
+    GroupedBarChartComponent,
+    HeaderComponent,
+    HelperButtonsComponent,
     InfoTableComponentComponent,
+    InteractionstatemonitorComponent,
+    LanguageSwitcherComponent,
+    LayercontrolComponent,
+    LayerentryGroupComponent,
+    LicensesComponent,
+    MapComponent,
+    NavResizeDirectiveDirective,
+    ReadMoreComponent,
+    RegexTranslatePipe,
+    ReversePipe,
+    RiesgosLayerControlComponent,
+    RiesgosLayerentryComponent,
+    RouteDocumentationComponent,
+    RouteMapComponent,
+    ScenariosComponent,
+    SimpleTranslatePipe,
+    TextModalComponent,
+    ThemePickerComponent,
     TranslatableStringComponent,
     VerticalNavResizeComponent,
-    NavResizeDirectiveDirective,
-    DisclaimerTriggerComponent,
-    DamagePopupComponent,
-    GroupedBarChartComponent,
-    EconomicDamagePopupComponent
+    WizardPageComponent,
+    TranslatedImageComponent,
+    GroupSliderComponent,
+    LegendComponent,
   ],
   imports: [
-    BrowserModule,
-    UkisRoutingModule,
-    CoreUiModule,
-    MapOlModule,
-    LayersModule,
-    ClarityModule,
     BrowserAnimationsModule,
-    Ng5SliderModule,
-    StoreModule.forRoot(reducers, {
-      runtimeChecks: {
-        strictStateImmutability: false,
-        strictActionImmutability: false,
-        strictStateSerializability: false,
-        strictActionSerializability: false,
-      },
-    }),
-    EffectsModule.forRoot(effects),
+    BrowserModule,
+    ClarityModule,
+    CoreUiModule,
     FormsModule,
-    ReactiveFormsModule,
     HttpClientModule,
+    LayersModule,
+    MapOlModule,
+    ReactiveFormsModule,
+    UkisRoutingModule,
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot(effects),
+    !environment.production ? StoreDevtoolsModule.instrument({
+      maxAge: 25,
+    }) : [],
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/translations/', '.json'),
         deps: [HttpClient]
       }
-    }),
-    // !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 3 }) : []
-    []
+    })
   ],
   providers: [
+    {
+      multi: true,
+      provide: APP_INITIALIZER,
+      deps: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return () => configService.loadConfig();
+      }
+    }, {
+      multi: true,
+      provide: HTTP_INTERCEPTORS,
+      useClass: ProxyInterceptor
+    },
     AlertService,
     DisclaimerService,
-    FooterService,
     ProgressService,
-    RiesgosService,
-    WMTSLayerFactory, {
-      provide: HTTP_INTERCEPTORS,
-      multi: true,
-      useClass: ProxyInterceptor
-    }
+    WMTSLayerFactory,
+    BackendService
   ],
   bootstrap: [AppComponent]
 })

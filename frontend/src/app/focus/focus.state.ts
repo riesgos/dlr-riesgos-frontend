@@ -1,14 +1,7 @@
-import { ProcessId } from '../riesgos/riesgos.datatypes';
-
-
-
-
-
 
 export interface FocusState {
-    focussedProcessId: ProcessId | null;
+    focussedProcessId: string | null;
 }
-
 
 export const initialFocusState: FocusState = {
     focussedProcessId: null

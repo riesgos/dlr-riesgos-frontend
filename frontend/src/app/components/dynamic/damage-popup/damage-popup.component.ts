@@ -6,7 +6,8 @@ import { TileWMS } from 'ol/source';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { getBuildingClassColor } from 'src/app/helpers/colorhelpers';
-import { DeusGetFeatureInfo, DeusMetaData } from 'src/app/riesgos/scenarios/chile/deus';
+import { DeusGetFeatureInfo, DeusMetaData } from './deusApi';
+import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { Grouping } from '../../grouped-bar-chart/grouped-bar-chart.component';
 import { GroupedBarChartData, GroupingFunction, SubGroupData } from '../../grouped-bar-chart/groupedChart';
 import { createGrouping, randomColoring, simpleGrouping } from '../../grouped-bar-chart/helpers';
@@ -40,40 +41,25 @@ function createSubstringGrouping(labels: string[]): GroupingFunction {
   }
 }
 
+function allIntoOneGrouping(oldGroups: SubGroupData[]): SubGroupData[] {
+  const newGroups: SubGroupData[] = [{
+    key: '',
+    val: 0
+  }];
+  for (const oldGroup of oldGroups) {
+    newGroups[0].val += oldGroup.val;
+  }
+  return newGroups;
+}
+
 const saraGroupingSubtype = createSubstringGrouping(['LDUAL', 'LFINF', 'LWAL', 'ETR', 'STDRE', 'STRUB', 'WBB', 'WHE', 'WLI', 'WS', 'WWD']);
 
 const saraGroupingHeight = createSubstringGrouping(['H1', 'H1-2', 'H1-3', 'H4-7', 'H8-19']);
 
-const groupings = {
-  'SARA_v1.0': [{
-    label: 'material',
-    coloringFunction: getBuildingClassColor,
-    groupingFunction: saraGroupingMaterial
-  }, {
-    label: 'subtype',
-    coloringFunction: getBuildingClassColor,
-    groupingFunction: saraGroupingSubtype
-  }, {
-    label: 'height',
-    coloringFunction: getBuildingClassColor,
-    groupingFunction: saraGroupingHeight
-  }],
-
-  'SUPPASRI2013_v2.0': [{
-    label: 'type',
-    coloringFunction: getBuildingClassColor,
-    groupingFunction: simpleGrouping
-  }],
-
-  'Medina_2019': [{
-    label: 'type',
-    coloringFunction: getBuildingClassColor,
-    groupingFunction: simpleGrouping
-  }]
-};
 
 
-export type knownSchemas = 'SARA_v1.0' | 'SUPPASRI2013_v2.0' | 'Medina_2019';
+
+type knownSchemas = 'SARA_v1.0' | 'SUPPASRI2013_v2.0' | 'Medina_2019';
 
 @Component({
   selector: 'app-damage-popup',
@@ -85,19 +71,71 @@ export class DamagePopupComponent implements OnInit {
   @Input() metaData: DeusMetaData;
   @Input() layer: TileLayer<TileWMS>;
   @Input() event: MapBrowserEvent<any>;
-  @Input() xLabel: string;
-  @Input() yLabel: string;
   @Input() schema: knownSchemas;
   @Input() additionalText?: string;
   @Input() heading?: string;
-  public width = 400;
-  public height = 400;
+  public width = 350;
+  public height = 350;
   public groupings: Grouping[];
   public baseData$: Observable<GroupedBarChartData[]>;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private translateSvc: SimplifiedTranslationService) { }
 
   ngOnInit(): void {
+
+
+    const groupings: {[key: string]: Grouping[]} = {
+      'SARA_v1.0': [{
+        id: 'SARA_base',
+        label: () => this.translateSvc.syncTranslate('bundled'),
+        xLabel: () => this.translateSvc.syncTranslate('damage-class'),
+        yLabel: () => this.translateSvc.syncTranslate('quantity'),
+        coloringFunction: getBuildingClassColor,
+        groupingFunction: allIntoOneGrouping
+      }, {
+        id: 'SARA_material',
+        label: () => this.translateSvc.syncTranslate('material'),
+        xLabel: () => this.translateSvc.syncTranslate('damage-class'),
+        yLabel: () => this.translateSvc.syncTranslate('quantity'),
+        coloringFunction: getBuildingClassColor,
+        groupingFunction: saraGroupingMaterial
+      }, {
+        id: 'SARA_height',
+        label: () => this.translateSvc.syncTranslate('height'),
+        xLabel: () => this.translateSvc.syncTranslate('damage-class'),
+        yLabel: () => this.translateSvc.syncTranslate('quantity'),
+        coloringFunction: getBuildingClassColor,
+        groupingFunction: saraGroupingHeight
+      }, {
+        id: 'SARA_all',
+        label: () => this.translateSvc.syncTranslate('all classes'),
+        xLabel: () => this.translateSvc.syncTranslate('damage-class'),
+        yLabel: () => this.translateSvc.syncTranslate('quantity'),
+        coloringFunction: getBuildingClassColor,
+        groupingFunction: data => data
+      }],
+    
+      'SUPPASRI2013_v2.0': [{
+        id: 'suppasri_base',
+        label: () => this.translateSvc.syncTranslate('type'),
+        xLabel: () => this.translateSvc.syncTranslate('damage-class'),
+        yLabel: () => this.translateSvc.syncTranslate('quantity'),
+        coloringFunction: getBuildingClassColor,
+        groupingFunction: simpleGrouping
+      }],
+    
+      'Medina_2019': [{
+        id: 'medina_base',
+        label: () => this.translateSvc.syncTranslate('type'),
+        xLabel: () => this.translateSvc.syncTranslate('damage-class'),
+        yLabel: () => this.translateSvc.syncTranslate('quantity'),
+        coloringFunction: getBuildingClassColor,
+        groupingFunction: simpleGrouping
+      }]
+    };
+
+
+
     this.groupings = groupings[this.schema];
 
     const url = this.layer.getSource().getFeatureInfoUrl(
@@ -122,7 +160,7 @@ export class DamagePopupComponent implements OnInit {
               const damageCounts = props[key] === '' ? {} : JSON.parse(props[key]);
               for (const damageClass in damageCounts) {
                 const count = damageCounts[damageClass];
-  
+
                 let groupData = parsedData.find(p => p.groupName === damageClass);
                 if (!groupData) {
                   groupData = { groupName: damageClass, subGroups: [] };

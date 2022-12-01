@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import {  StringSelectUserConfigurableProduct } from '../userconfigurable_wpsdata';
-import { ProductsProvided } from 'src/app/riesgos/riesgos.actions';
+import {  StringSelectUserConfigurableProduct } from '../wizardable_products';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { FormControl } from '@angular/forms';
+import { ScenarioName } from 'src/app/riesgos/riesgos.state';
 
 @Component({
     selector: 'ukis-form-stringselect-field',
@@ -12,7 +13,8 @@ import { FormControl } from '@angular/forms';
 })
 export class FormStringselectFieldComponent implements OnInit {
 
-    @Input() control: FormControl;
+    control: FormControl<string>;
+    @Input() scenario: ScenarioName;
     @Input() parameter: StringSelectUserConfigurableProduct;
     public options: string[];
 
@@ -21,17 +23,31 @@ export class FormStringselectFieldComponent implements OnInit {
 
     ngOnInit() {
         this.options = this.parameter.description.options;
-        if (this.control.value === null) {
-            this.control.setValue(this.options[0]);
+
+        let initivalValue;
+        if (this.parameter.value) {
+            initivalValue = this.parameter.value;
+        } else if (this.parameter.description.defaultValue) {
+            initivalValue = this.parameter.description.defaultValue;
+        } else {
+            initivalValue = this.parameter.description.options[0];
+        }
+
+        this.control = new FormControl<string>(initivalValue);
+
+        this.control.valueChanges.subscribe(newVal => this.notifyDataChanged(newVal));
+
+        if (!this.parameter.value) {
+            this.notifyDataChanged(initivalValue);
         }
     }
 
-
-    onChange(newValString) {
-        this.store.dispatch(new ProductsProvided({
+    private notifyDataChanged(newVal: string) {
+        this.store.dispatch(RiesgosActions.userDataProvided({
+            scenario: this.scenario,
             products: [{
                 ...this.parameter,
-                value: newValString
+                value: newVal
             }]
         }));
     }

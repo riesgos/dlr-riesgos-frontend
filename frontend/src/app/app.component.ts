@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { State } from './ngrx_register';
-import { AppInit } from './focus/focus.actions';
+import * as FocusActions from './focus/focus.actions';
 import { ThemeService } from './services/theme/theme.service';
 import { appVersion } from 'src/environments/version';
 
@@ -82,7 +82,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(new AppInit());
+    this.store.dispatch(FocusActions.appInit());
   }
 
   /**

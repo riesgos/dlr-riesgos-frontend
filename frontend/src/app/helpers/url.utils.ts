@@ -1,10 +1,3 @@
-export function obj2SearchParams(obj: { [key: string]: any }) {
-  const usp = new URLSearchParams();
-  Object.keys(obj).forEach(key => {
-    usp.set(key, obj[key]);
-  });
-  return usp;
-}
 
 export function getSearchParamsHashRouting(url = window.location.href) {
   if (url.indexOf('http') === -1) {

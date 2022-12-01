@@ -1,1 +1,0 @@
-This directory contains different clients for different methods of persisting data.

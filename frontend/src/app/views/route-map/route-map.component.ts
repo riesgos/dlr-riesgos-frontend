@@ -2,16 +2,17 @@ import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { ActivatedRoute } from '@angular/router';
-import { ScenarioChosen } from 'src/app/riesgos/riesgos.actions';
+import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
-import { LayerMarshaller } from 'src/app/mappable/layer_marshaller';
+import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
 
-import { Subscription } from 'rxjs';
-import { isWizardableProcess, WizardableProcess } from 'src/app/components/config_wizard/wizardable_processes';
-import { map } from 'rxjs/operators';
-import { getProcessStates } from 'src/app/riesgos/riesgos.selectors';
+import { Observable, Subscription } from 'rxjs';
+import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
+import { map, switchMap } from 'rxjs/operators';
+import { getSteps } from 'src/app/riesgos/riesgos.selectors';
+import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
 
 @Component({
   selector: 'ukis-route-map',
@@ -44,13 +45,14 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   };
 
   // we need the processes here to create nav groups frot them;
-  public processes: WizardableProcess[] = null;
+  public steps$: Observable<WizardableStep[]>;
   private subs: Subscription[] = [];
 
   constructor(
     private activeRoute: ActivatedRoute,
     private store: Store<State>,
-    private olSvc: MapOlService
+    private olSvc: MapOlService,
+    private augmenter: AugmenterService
   ) { }
 
   private _collapsedLayerControl = false;
@@ -71,23 +73,18 @@ export class RouteMapComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const scenario = this.activeRoute.snapshot.queryParams['id'] || 'c1';
+    const scenario = this.activeRoute.snapshot.queryParams['id'];
     this.olSvc.setProjection('EPSG:4326');
-    this.store.dispatch(new ScenarioChosen({ scenario }));
-    // get processes after store was dispatched
-    this.getProcesses();
+    this.store.dispatch(RiesgosActions.scenarioChosen({ scenario }));
+    // get steps after store was dispatched
+    this.getSteps();
   }
 
-  getProcesses() {
-    const processSub = this.store.pipe(
-      select(getProcessStates),
-      map(processes => {
-        return processes.filter(process => isWizardableProcess(process)) as WizardableProcess[];
-      })
-    ).subscribe(processes => {
-      this.processes = processes;
-    });
-    this.subs.push(processSub);
+  getSteps() {
+    this.steps$ = this.store.pipe(
+      select(getSteps),
+      map(steps => this.augmenter.loadWizardPropertiesForSteps(steps))
+    );
   }
 
   ngOnDestroy(): void {

@@ -1,2 +1,6 @@
 {
+    "allowedScenarios": ["Peru"],
+    "production": true,
+    "middlewareUrl": "<your-backend-server-url>",
+    "proxyUrl": ""
 }

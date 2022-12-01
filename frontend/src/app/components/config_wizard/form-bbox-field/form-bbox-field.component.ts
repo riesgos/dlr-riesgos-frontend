@@ -1,13 +1,14 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { BboxUserConfigurableProductDescription, BboxUserConfigurableProduct } from '../userconfigurable_wpsdata';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, Input } from '@angular/core';
+import { BboxUserConfigurableProduct } from '../wizardable_products';
+import { UntypedFormControl } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
-import { InteractionStarted, InteractionCompleted } from 'src/app/interactions/interactions.actions';
-import { debounceTime, map } from 'rxjs/operators';
-import { WpsBboxValue } from '../../../services/wps/wps.datatypes';
+import * as InteractionActions from 'src/app/interactions/interactions.actions';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { InteractionState } from 'src/app/interactions/interactions.state';
+import { ScenarioName } from 'src/app/riesgos/riesgos.state';
+import { BboxValue } from './bboxfield/bboxfield.component';
 
 @Component({
     selector: 'ukis-form-bbox-field',
@@ -19,8 +20,9 @@ export class FormBboxFieldComponent implements OnInit {
 
     public bboxSelectionOngoing$: Observable<boolean>;
 
+    @Input() scenario: ScenarioName;
     @Input() parameter: BboxUserConfigurableProduct;
-    @Input() control: FormControl;
+    @Input() control: UntypedFormControl;
     public disabled = false;
 
     constructor(
@@ -29,7 +31,7 @@ export class FormBboxFieldComponent implements OnInit {
     }
 
     ngOnInit() {
-        const initialBbox: WpsBboxValue = this.parameter.value || this.parameter.description.defaultValue;
+        const initialBbox: BboxValue = this.parameter.value || this.parameter.description.defaultValue;
         // this.control.setValue(initialBbox);
 
         this.bboxSelectionOngoing$ = this.store.pipe(
@@ -47,17 +49,20 @@ export class FormBboxFieldComponent implements OnInit {
 
     activateBboxselectInteraction(startInteraction: boolean): void {
         if (startInteraction) {
-            this.store.dispatch(new InteractionStarted({
+          const newProductVal = {
+            ...this.parameter,
+            value: this.control.value
+          };
+            this.store.dispatch(InteractionActions.interactionStarted({
                 mode: 'bbox',
-                product: {
-                    ...this.parameter,
-                    value: this.control.value
-                }
+                scenario: this.scenario,
+                product: newProductVal
             }));
         } else {
-          this.store.dispatch(new InteractionCompleted(
-            { product: { ...this.parameter }}
-          ));
+          this.store.dispatch(InteractionActions.interactionCompleted({
+            product: { ...this.parameter },
+            scenario: this.scenario
+          }));
         }
       }
 

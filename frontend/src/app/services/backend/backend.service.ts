@@ -55,6 +55,8 @@ export class BackendService {
     ) {}
 
     loadScenarios(): Observable<API_ScenarioInfo[]> {
+
+        const allowedScenarios = this.configService.getConfig().allowedScenarios;
         
         const url = this.configService.getConfig().middlewareUrl;
         const get$ = this.http.get<{id: string, description: string}[]>(`${url}/scenarios`);
@@ -63,8 +65,10 @@ export class BackendService {
             switchMap(scenarioInfos => {
                 const followUpRequests$: Observable<API_ScenarioInfo>[] = [];
                 for (const scenarioInfo of scenarioInfos) {
-                    const request$ = this.http.get<API_ScenarioInfo>(`${url}/scenarios/${scenarioInfo.id}`);
-                    followUpRequests$.push(request$);
+                    if (allowedScenarios.includes(scenarioInfo.id)) {
+                        const request$ = this.http.get<API_ScenarioInfo>(`${url}/scenarios/${scenarioInfo.id}`);
+                        followUpRequests$.push(request$);
+                    }
                 }
                 return combineLatest(followUpRequests$);
             })

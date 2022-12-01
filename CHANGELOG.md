@@ -11,7 +11,17 @@
 
 
 
-# [2.0.0](... link ...) (... date ...) ... description
+# [2.0.0-alpha](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0-alpha) (Dec. 1 2022) All orchestration-logic in backend
+
+> Large refactor.
+>
+> **Motivation** was a problem seen when attempting to use Riesgos at other institutions.
+> - Replacing services was hard. Reason: new services provide data in new formats, and often downstream processes require a very specific input format.
+> - Solution: we provide a layer between the frontend and the webservices. This layer - a node.js-backend - serves to handle all the harmonization between the actual webservices.
+> - Any required duct-taping of service-outputs can now be handled in this intermediate layer.
+
+Previously there was already a lot of harmonization-code in the frontend's `WpsProcess` classes. But that meant that the frontend would manage webservices, their orchestration, their harmonization, in *addition* to all its usual tasks (state-management, error-displaying, converting output-data into a format that can be displayed on the map, ...)
+
 
 ## Features
 

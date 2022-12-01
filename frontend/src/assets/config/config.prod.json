@@ -1,4 +1,5 @@
 {
+    "allowedScenarios": ["Peru", "Chile", "Ecuador"],
     "production": true,
     "middlewareUrl": "https://riesgos.dlr.de/middleware",
     "proxyUrl": "https://riesgos.dlr.de/proxy"

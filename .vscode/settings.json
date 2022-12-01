@@ -1,20 +1,15 @@
 {
-    "cSpell.enabled": true,
     "cSpell.words": [
-        "assettype",
-        "etype",
+        "Abrahamson",
+        "CITSU",
+        "Corredor",
+        "DCTO",
         "geomer",
-        "Gmpe",
-        "latmin",
-        "lonmax",
-        "lonmin",
-        "Manzanas",
-        "mmin",
-        "querymode",
-        "Shakyground",
+        "Mavrouli",
+        "neptunus",
         "Suppasri",
-        "tlat",
-        "zmax",
-        "zmin"
-    ]
+        "volcanoe",
+        "Yepes"
+    ],
+    "angular.enable-strict-mode-prompt": false
 }

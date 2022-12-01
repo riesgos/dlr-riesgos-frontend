@@ -1,0 +1,83 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmitClicked()" [attr.disabled]="disabled" clrForm>
+  <div *ngFor="let parameter of parameters">
+    <ng-container [ngSwitch]="parameter.description.wizardProperties.fieldtype">
+      <div *ngSwitchCase="'string'">
+        <div class="clr-row">
+          <div class="clr-col">
+            <ukis-form-string-field [control]="formGroup.get(parameter.id)" [parameter]="parameter" class="form-input">
+            </ukis-form-string-field>
+          </div>
+          <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">
+            <clr-signpost>
+              <clr-signpost-content *clrIfOpen>
+                <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
+              </clr-signpost-content>
+            </clr-signpost>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchCase="'stringselect'">
+        <div class="clr-row">
+          <div class="clr-col">
+            <ukis-form-stringselect-field [scenario]="step.scenario" [parameter]="parameter" class="form-input">
+            </ukis-form-stringselect-field>
+          </div>
+          <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">
+            <clr-signpost>
+              <clr-signpost-content *clrIfOpen>
+                <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
+              </clr-signpost-content>
+            </clr-signpost>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchCase="'select'">
+        <div class="clr-row">
+          <div class="clr-col">
+            <ukis-form-featureselect-field [scenario]="step.scenario" [parameter]="parameter" class="form-input"></ukis-form-featureselect-field>
+          </div>
+          <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">
+            <clr-signpost>
+              <clr-signpost-content *clrIfOpen>
+                <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
+              </clr-signpost-content>
+            </clr-signpost>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchCase="'bbox'">
+        <div class="clr-row">
+          <div class="clr-col">
+            <ukis-form-bbox-field [control]="formGroup.get(parameter.id)" [scenario]="step.scenario" [parameter]="parameter" class="form-input"></ukis-form-bbox-field>
+          </div>
+          <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">
+            <clr-signpost>
+              <clr-signpost-content *clrIfOpen>
+                <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
+              </clr-signpost-content>
+            </clr-signpost>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchDefault>
+        <div class="clr-row">
+          <div class="clr-col">
+            <ukis-form-string-field [control]="formGroup.get(parameter.id)" [parameter]="parameter" class="form-input">
+            </ukis-form-string-field>
+          </div>
+          <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">
+            <clr-signpost>
+              <clr-signpost-content *clrIfOpen>
+                <p [innerHTML]="parameter.description.wizardProperties.signpost | translate"></p>
+              </clr-signpost-content>
+            </clr-signpost>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="!disabled">
+    <button type="submit" [disabled]="!formGroup.valid" class="btn btn-outline">{{'Submit' | translate}}</button>
+  </ng-container>
+</form>

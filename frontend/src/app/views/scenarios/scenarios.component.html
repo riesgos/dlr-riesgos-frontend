@@ -1,0 +1,136 @@
+<main class="content-area scenario-view">
+  <section class="view-item center clr-row">
+    <h3>{{ 'Pilot regions' | translate }}</h3>
+    <p>
+      {{ 'Pilot region description' | translate }}
+    </p>
+  </section>
+
+  <section class="view-item cards clr-row">
+    <div *ngFor='let scenario of scenarios$ | async' class="card-col">
+      <div class="card clickable" [title]="( scenario.title | translate )">
+
+        <a [routerLink]="['/map']" [queryParams]="{id: scenario.id}" title="{{ scenario.id | translate }}">
+          <div class="card-img">
+            <img [src]="scenario.preview | translate" alt="ukis logo white">
+          </div>
+        </a>
+
+        <div class="card-footer">
+          <span class="card-text">
+            <a [routerLink]="['/map']" [queryParams]="{id: scenario.id}" title="{{ scenario.id | translate }}">
+              {{scenario.title | translate}}
+            </a>
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+  <section class="view-item center clr-row">
+    {{ 'Further information can be found on the project website.' | translate }}
+  </section>
+
+  <section class="view-item center clr-row">
+    <a [href]="'https://riesgos.de/' + (translator.currentLang | lowercase)" target="_blank">
+      <img [src]="'/assets/logos/riesgos_base_small_' + (translator.currentLang | lowercase) + '.svg'"
+        alt="{{'website' | translate}}" style="height: 100px;">
+    </a>
+  </section>
+  <footer class="view-item scenario-footer clr-row">
+    <div class="clr-row scenario-footer-first">
+      <div class="consortium-logos first">
+        <a href="https://www.bmbf.de/bmbf/en/home/home_node.html" target="_blank">
+          <img src="/assets/logos/BMBF_{{translator.currentLang | lowercase}}.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="https://www.dlr.de/EN" target="_blank">
+          <img src="/assets/logos/dlr.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="http://www.gfz-potsdam.de/en/home/" target="_blank">
+          <img src="/assets/logos/GFZ.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="https://www.awi.de/en/" target="_blank">
+          <img src="/assets/logos/AWI.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="https://www.tum.de/nc/en/" target="_blank">
+          <img src="/assets/logos/TUM.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="http://52north.org" target="_blank">
+          <img src="/assets/logos/52n.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="https://www.geomer.de/en/index.html" target="_blank">
+          <img src="/assets/logos/geomer.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="http://www.eomap.com" target="_blank">
+          <img src="/assets/logos/eomap.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="http://www.plan-risk-consult.de" target="_blank">
+          <img src="/assets/logos/prc.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="https://www.dialogik-expert.de/en" target="_blank">
+          <img src="/assets/logos/dialogik.png">
+        </a>
+      </div>
+
+      <div class="consortium-logos">
+        <a href="https://www.slu-web.eu/" target="_blank">
+          <img src="/assets/logos/slu.png">
+        </a>
+      </div>
+
+    </div>
+
+    <div class="clr-row scenario-footer-second">
+      {{ 'Made with ' | translate }}
+      <a href="https://github.com/dlr-eoc/ukis-frontend-libraries" target="_blank" alt="link to dlr ukis">
+        <img src="assets/icons/icon-72x72.png" alt="ukis-icon" width="30" height="30">
+      </a>
+    </div>
+  </footer>
+</main>
+
+
+<div *ngIf="showInfo" class="modal">
+  <div class="modal-dialog modal-xl" role="dialog" aria-hidden="true">
+      <div class="modal-content">
+        <h3 class="modal-title">{{selectedScenario.title | translate}}</h3>
+        <div class="modal-body">
+          <img [src]="selectedScenario.preview" alt="ukis logo white">
+          <span [innerHTML]="selectedScenario.description"></span>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+  </div>
+</div>
+<div *ngIf="showInfo" class="modal-backdrop" aria-hidden="true"></div>
+
+<app-disclaimerpopup></app-disclaimerpopup>

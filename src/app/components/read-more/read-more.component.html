@@ -1,9 +1,0 @@
-<div class="p3" *ngIf="isExpanded">
-    <div [innerHTML]="fullText"></div>
-    <clr-icon *ngIf="exceedsThreshold" shape="caret up" (click)="isExpanded = false"></clr-icon>
-</div>
-
-<div class="p3" *ngIf="!isExpanded">
-    <div [innerHTML]="shortText"></div>
-    <clr-icon *ngIf="exceedsThreshold" shape="caret down" (click)="isExpanded = true"></clr-icon>
-</div>

@@ -1,0 +1,33 @@
+<div *ngIf="showModal" class="modal">
+    <div class="modal-dialog modal-xl" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <h3 class="modal-title">{{ 'RIESGOS Demonstrator' | translate }}</h3>
+            <div class="modal-body">
+                <h4>{{ 'Quickstart' | translate }}:</h4>
+
+                <div style="overflow: auto;">
+                    <p>
+                        <img src="assets/images/processwizard.png" align="left" style="height:300px;margin: 7px;">
+                        {{ 'How to use this site ...' | translate }}
+                    </p>
+                
+                    <p>
+                        {{ 'More on how to use this' | translate }}
+                        <img src="assets/images/map.png" align="right"  style="height:300px;margin: 7px;">
+                    </p>
+                </div>
+
+        
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline btn-primary" (click)="hideModalSave()">
+                        {{ 'Don\'t show this again' | translate }}
+                </button>
+                <button type="button" class="btn btn-primary" (click)="showModal = false">
+                        {{ 'Close' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="showModal" class="modal-backdrop" aria-hidden="true"></div>

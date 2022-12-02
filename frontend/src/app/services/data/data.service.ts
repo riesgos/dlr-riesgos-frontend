@@ -55,7 +55,7 @@ export class DataService {
     const cachedData = this.getFromCache(link);
     if (cachedData) return of(cachedData);
 
-    const url = this.config.getConfig().middlewareUrl;
+    const url = this.config.getConfig().backendUrl;
     return this.http.get(`${url}/files/${link}`, {
       responseType: 'text'
     }).pipe(

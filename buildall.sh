@@ -28,6 +28,7 @@ cd assetmaster
 docker image build --tag gfzriesgos/assetmaster --file ./metadata/Dockerfile .
 cp metadata/assetmaster.json ../configs
 cd ..
+# @TODO: include data from ...
 
 
 echo "Building shakyground ..."
@@ -53,7 +54,8 @@ docker image build --tag gfzriesgos/deus --file ./metadata/Dockerfile .
 cp metadata/deus.json ../configs
 cd ..
 
-
+echo "Building neptunus ..."
+echo "Building volcanus ..."
 echo "Building tsunami-service ..."
 echo "Building sysrel ..."
 

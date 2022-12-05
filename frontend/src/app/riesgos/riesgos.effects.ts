@@ -41,7 +41,7 @@ export class RiesgosEffects {
             
             // notify app of new data
             map(newData => RiesgosActions.executeSuccess({ scenario: memScenario, step: memStep, newData })),
-            catchError(e => of(RiesgosActions.executeError({ scenario: memScenario, step: memStep, error: e })))
+            catchError(e => of(RiesgosActions.executeError({ scenario: memScenario, step: memStep, error: typeof e === 'string' ? JSON.parse(e) : e })))
         );
     });
 

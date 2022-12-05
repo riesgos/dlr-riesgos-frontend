@@ -19,7 +19,7 @@ async function main() {
     const app = express();
     app.use(cors());
     // const scenarioFactories = await parseCode(scriptDir);
-    const scenarioFactories = [peruFactory, ecuadorFactory, chileFactory];
+    const scenarioFactories = [chileFactory, ecuadorFactory, peruFactory];
     
     addScenarioApi(app, scenarioFactories, storeDir, logDir);
     const server = app.listen(port, () => console.log(`app now listening on port ${port}`));

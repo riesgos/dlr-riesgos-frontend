@@ -1,14 +1,12 @@
 # Ongoing
 
 - re-create slider and re-activate lahar-contours
-- display error messages
 
 # Next
 
 - Chile exposure after eq: no legend in production
 - Chile exposure: no-data-cells are not transparent
-- Ecuador in production: Ashfall-service: .step.find(...) is undefined (Firefox)
-- Backend: nightly CI and email-notification
+- Backend: nightly CI
 
 # Improvements for future
 

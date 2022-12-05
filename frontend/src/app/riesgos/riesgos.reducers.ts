@@ -153,8 +153,8 @@ function deriveState(state: WritableDraft<RiesgosState>) {
         const scenario = state.scenarioData[scenarioName];
         for (const step of scenario.steps) {
             
-            // doesn't mess with manually-set states (Running, Error)
-            if (step.state.type === StepStateTypes.running || step.state.type === StepStateTypes.error) continue;
+            // doesn't mess with manually-set states (Running)
+            if (step.state.type === StepStateTypes.running) continue;
 
             const inputIds = step.step.inputs.map(i => i.id);
             const inputs = inputIds.map(i => scenario.products.find(p => p.id === i));

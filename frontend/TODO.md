@@ -1,6 +1,8 @@
 # Ongoing
 
 - re-create slider and re-activate lahar-contours
+- Ecuador: Damage lahar+ash is available before damage lahar is when damage-ash is already calculated
+- When getting exposure in peru, then going to another scenario and then back again, exposure is marked green, but not displayed
 
 # Next
 

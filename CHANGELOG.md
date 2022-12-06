@@ -4,7 +4,7 @@
 - 
 
 ## Bug Fixes
-- 
+- Legend ecuador/damage post-lahar: fixed cut-off
 
 ## Breaking Changes
 - 

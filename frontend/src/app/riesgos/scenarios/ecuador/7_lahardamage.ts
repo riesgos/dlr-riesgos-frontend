@@ -152,7 +152,8 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                             text: `mostly_collapsed_damage_lahar`
                         }],
                         height: 90,
-                        width: 330
+                        width: 330,
+                        fractionGraphic: 0.05
                     }
                 };
             },

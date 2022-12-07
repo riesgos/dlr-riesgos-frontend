@@ -1,4 +1,4 @@
-<!-- # [2.0.0](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0) (Dec. 7 2022) Stable version of new frontend and backend -->
+<!-- # [2.0.0](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0) (Dec. ?? 2022) Stable version of new frontend and backend -->
 
 ## Features
 - Added testing-suite to frontend's ngrx-state-manager

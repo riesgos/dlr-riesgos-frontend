@@ -13,7 +13,7 @@
 # Improvements for future
 
 - Eq-catalog: add missing parameters
-- Augmenter: only those products need to be resolved where a augmenter applies.
+- Augmenter: only those products need to be resolved where an augmenter applies.
 - Make all popups dynamic, so that they change translation dynamically when required.
 - Re-create graph-modal
 - Restart, save- and reload-buttons

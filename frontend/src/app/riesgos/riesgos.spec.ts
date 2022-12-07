@@ -10,18 +10,11 @@ import * as RiesgosActions from './riesgos.actions';
 import { RiesgosEffects } from './riesgos.effects';
 import { initialRiesgosState, RiesgosState } from './riesgos.state';
 import { reducer as riesgosReducer } from './riesgos.reducers';
-import { getScenarioRiesgosState, getCurrentScenarioName } from './riesgos.selectors';
+import { getScenarioRiesgosState, getCurrentScenarioName, getCurrentScenarioRiesgosState } from './riesgos.selectors';
 import { AppComponent } from '../app.component';
 import { delay, tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 
-
-/**
- * 
- * @TODO: might be better off using marble-diagrams for this kind of time-senstive tests:
- * https://rxjs.dev/guide/testing/marble-testing
- * 
- */
 
 
 class MockBackendService extends BackendService {
@@ -30,6 +23,7 @@ class MockBackendService extends BackendService {
     }
 
     loadScenarios(): Observable<API_ScenarioInfo[]> {
+        console.log('Mock backend service: loading scenarios ...');
         const scenarios: API_ScenarioInfo[] = [{
             "id": "Chile",
             "description": "Chile Scenario Description",
@@ -48,6 +42,7 @@ class MockBackendService extends BackendService {
     }
 
     execute(scenarioId: string, stepId: string, state: API_ScenarioState): Observable<API_ScenarioState> {
+        console.log('Mock backend service: executing: ', scenarioId, stepId, state);
         const response: API_ScenarioState = {
             data: []
         };
@@ -105,30 +100,34 @@ fdescribe('Unit-testing riesgos/redux', () => {
         // https://betterprogramming.pub/rxjs-testing-write-unit-tests-for-observables-603af959e251
         // https://rxjs.dev/guide/testing/marble-testing
 
+        /**
+            Length of frames (i.e., number of emitted items unexpected)
+                Expected $.length = 1 to equal 2.
+            Number of frame (i.e., the expected time frame is unexpected)
+                Expected $[0].frame = 0 to equal 10.
+            Kind of frame (i.e., item, completion, error, subscription, unsubscription)
+                Expected $[0].notification.kind = 'C' to equal 'N'.
+                    N = Emitted item
+                    C = Completion
+                    E = Error
+            Frame value (i.e., emitted item value or error message)
+                Expected $[0].notification.value = undefined to equal 'tomatoes eat humans'.
+         */
+
         testScheduler.run(({ expectObservable, cold}) => {
             // now inside a synchronous scope
-
-
-            // expecting initial state to be set
-            const expectedMarbles = 'p';
-            const expectedValues = {
-                p: 'Peru'
-            };
-            const getScenarioName$ = store.select(getCurrentScenarioName);
-            expectObservable(getScenarioName$).toBe(expectedMarbles, expectedValues);
-
-
-
+            
+            const getScenarioName$ = store.select(getCurrentScenarioName); // .pipe(tap(n => console.log(n)));
 
             // expecting state to be set correctly after async updates
             const triggerMarbles = '---e---c---p';
             const triggerValues = {
-                e: store.dispatch(RiesgosActions.scenarioChosen({ scenario: 'Ecuador' })),
-                c: store.dispatch(RiesgosActions.scenarioChosen({ scenario: 'Chile' })),
-                p: store.dispatch(RiesgosActions.scenarioChosen({ scenario: 'Peru' })),
+                e: () => store.dispatch(RiesgosActions.scenarioChosen({ scenario: 'Ecuador' })),
+                c: () => store.dispatch(RiesgosActions.scenarioChosen({ scenario: 'Chile' })),
+                p: () => store.dispatch(RiesgosActions.scenarioChosen({ scenario: 'Peru' })),
             }
             const actions$ = cold(triggerMarbles, triggerValues);
-            const expectedMarbles2 = 'p---e---c---p';
+            const expectedMarbles2 = 'p--e---c---p';
             const expectedValues2 = {
                 e: 'Ecuador',
                 c: 'Chile',
@@ -144,6 +143,31 @@ fdescribe('Unit-testing riesgos/redux', () => {
 
 
     it('should maintain correct state with two parallel, long running processes', () => {
+
+        testScheduler.run(({ expectObservable, cold}) => {
+            
+            const getState$ = store.select(getCurrentScenarioRiesgosState); // .pipe(tap(n => console.log(n)));
+
+            const triggerMarbles = '---e---l--a';
+            const triggerValues = {
+                e: () => store.dispatch(RiesgosActions.scenarioChosen({ scenario: 'Ecuador' })),
+                l: () => store.dispatch(RiesgosActions.executeStart({ scenario: 'Ecuador', step: 'LaharExposureEcuador' })),
+                a: () => store.dispatch(RiesgosActions.executeStart({ scenario: 'Ecuador', step: 'AshfallExposureEcuador' })),
+            }
+            const actions$ = cold(triggerMarbles, triggerValues);
+
+
+            const expectedMarbles = 'i--';
+            const expectedValues = {
+                i: initialState,
+            }
+
+            expectObservable(getState$).toBe(expectedMarbles, expectedValues);
+            expectObservable(actions$.pipe(tap(fn => fn())));
+
+            // leaving synchronous scope
+        });
+
     });
 
 

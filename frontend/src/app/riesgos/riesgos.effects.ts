@@ -26,6 +26,8 @@ export class RiesgosEffects {
     runProcess$ = createEffect(() => {
 
         // https://medium.com/@snorredanielsen/rxjs-accessing-a-previous-value-further-down-the-pipe-chain-b881026701c1
+        // https://blog.angular-university.io/rxjs-error-handling/
+
         return this.actions$.pipe(
             ofType(RiesgosActions.executeStart),
 
@@ -34,19 +36,17 @@ export class RiesgosEffects {
             mergeMap(action => { return combineLatest([
                 this.store$.select(getProductsForScenario(action.scenario)).pipe(take(1)),
                 of(action)
-            ]) }),
+            ]); }),
 
             map(([products, action]) => ({
                 apiState: convertFrontendDataToApiState(products),
                 action: action
             })),
 
-            mergeMap(({apiState, action}) => { 
-                return combineLatest([
+            mergeMap(({apiState, action}) => { return combineLatest([
                     this.backendSvc.execute(action.scenario, action.step, apiState),
                     of(action)
-                ]); 
-            }),
+            ]); }),
 
             map(([newApiState, action]) => ({
                 newData: convertApiDataToRiesgosData(newApiState.data), 
@@ -56,11 +56,9 @@ export class RiesgosEffects {
             map(({newData, action}) => RiesgosActions.executeSuccess({ scenario: action.scenario, step: action.step, newData })),
 
             catchError((e, c) => {
-                return c.pipe(
-                    map(v => {
+                return c.pipe( map(v => {
                         return RiesgosActions.executeError({ scenario: v.scenario, step: v.step, error: typeof e === 'string' ? JSON.parse(e) : e })   
-                    })
-                );
+                }) );
             })
         );
     });

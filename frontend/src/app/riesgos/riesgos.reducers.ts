@@ -40,6 +40,7 @@ export const reducer = createReducer(
     }),
 
     immerOn(RiesgosActions.executeStart, (state, action) => {
+        console.log(`Reducers: Execute start ${action.step}`)
         const scenario = state.scenarioData[action.scenario];
         const step = scenario.steps.find(s => s.step.id === action.step);
         step.state = new StepStateRunning();
@@ -47,6 +48,7 @@ export const reducer = createReducer(
     }),
 
     immerOn(RiesgosActions.executeSuccess, (state, action) => {
+        console.log(`Reduers: Execute success ${action.step}`)
         const scenario = state.scenarioData[action.scenario];
         const step = scenario.steps.find(s => s.step.id === action.step);
         step.state = new StepStateCompleted();

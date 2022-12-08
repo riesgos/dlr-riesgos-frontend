@@ -5,7 +5,7 @@
 
 ## Bug Fixes
 - Legend ecuador/damage post-lahar: fixed cut-off
-<!-- - Frontend-state: fixed race-conditions in calculating state when two processes run in parallel -->
+- Frontend-state: fixed race-conditions in calculating state when two processes run in parallel
 
 ## Breaking Changes
 - 

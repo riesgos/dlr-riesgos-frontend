@@ -5,11 +5,11 @@ import { Actions, EffectsModule } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action, ActionReducerMap, ActionsSubject, ReducerManager, StateObservable, Store, StoreModule } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
+import { API_Datum, API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import * as RiesgosActions from './riesgos.actions';
 import * as FocusActions from '../focus/focus.actions';
 import { RiesgosEffects } from './riesgos.effects';
-import { initialRiesgosState, RiesgosState, StepStateAvailable, StepStateRunning } from './riesgos.state';
+import { initialRiesgosState, RiesgosState, StepStateAvailable, StepStateCompleted, StepStateRunning } from './riesgos.state';
 import { reducer as riesgosReducer } from './riesgos.reducers';
 import { getScenarioRiesgosState, getCurrentScenarioName, getCurrentScenarioRiesgosState } from './riesgos.selectors';
 import { AppComponent } from '../app.component';
@@ -47,10 +47,27 @@ class MockBackendService extends BackendService {
 
     execute(scenarioId: string, stepId: string, state: API_ScenarioState): Observable<API_ScenarioState> {
         console.log('Mock backend service: executing: ', scenarioId, stepId, state);
-        const response: API_ScenarioState = {
-            data: []
-        };
-        return of(response).pipe(delay(100));
+
+        const updatedState = state;
+        if (scenarioId === 'Ecuador' && stepId === 'LaharExposureEcuador') {
+            updatedState.data = state.data.map(d => {
+                if (d.id === 'laharExposureEcuador') (d as API_Datum).value = 'concreteLaharExposureValue';
+                return d;
+            })
+        }
+        else if (scenarioId === 'Ecuador' && stepId === 'AshfallExposureEcuador') {
+            updatedState.data = state.data.map(d => {
+                if (d.id === 'ashfallExposureEcuador') (d as API_Datum).value = 'concreteAshExposureValue';
+                return d;
+            })
+        }
+
+        else {
+            throw Error(`Mock-backend-service was not prepared to serve ${scenarioId}/${stepId}`);
+        }
+
+
+        return of(updatedState).pipe(delay(100));
     }
 }
 
@@ -142,7 +159,7 @@ fdescribe('Unit-testing riesgos/redux', () => {
             }
 
             expectObservable(getScenarioName$).toBe(expectedMarbles2, expectedValues2);
-            expectObservable(actions$.pipe(tap(fn => fn())));
+            expectObservable(actions$.pipe(tap(fn => fn()))); 
 
             // leaving synchronous scope
         });
@@ -165,9 +182,9 @@ fdescribe('Unit-testing riesgos/redux', () => {
             const actions$ = cold(triggerMarbles, triggerValues);
 
 
-            const expectedMarbles = 'init 99ms s 50ms e---l--a';
+            const expectedMarbles = 'i 99ms s 50ms e---l--a 96ms r--u';
             const expectedValues = {
-                init: { scenario: 'Peru', products: [], steps: [] },
+                i: { scenario: 'Peru', products: [], steps: [] },
                 s: { scenario: 'Peru', products: [], steps: [] },
                 e: { 
                     scenario: 'Ecuador', 
@@ -191,6 +208,22 @@ fdescribe('Unit-testing riesgos/redux', () => {
                     steps: [
                         {step: { "id": "LaharExposureEcuador",     "title": "", "description": "", "inputs": [], "outputs": [{ "id": "laharExposureEcuador" }] },   state: new StepStateRunning() },
                         {step: { "id": "AshfallExposureEcuador",   "title": "", "description": "", "inputs": [], "outputs": [{ "id": "ashfallExposureEcuador" }] }, state: new StepStateRunning() },
+                    ]
+                },
+                r: { 
+                    scenario: 'Ecuador', 
+                    products: [{id: 'laharExposureEcuador', value: 'concreteLaharExposureValue'}, {id: 'ashfallExposureEcuador'}], 
+                    steps: [
+                        {step: { "id": "LaharExposureEcuador",     "title": "", "description": "", "inputs": [], "outputs": [{ "id": "laharExposureEcuador" }] },   state: new StepStateCompleted() },
+                        {step: { "id": "AshfallExposureEcuador",   "title": "", "description": "", "inputs": [], "outputs": [{ "id": "ashfallExposureEcuador" }] }, state: new StepStateRunning() },
+                    ]
+                },
+                u: { 
+                    scenario: 'Ecuador', 
+                    products: [{id: 'laharExposureEcuador', value: 'concreteLaharExposureValue'}, {id: 'ashfallExposureEcuador', value: 'concreteAshExposureValue'}], 
+                    steps: [
+                        {step: { "id": "LaharExposureEcuador",     "title": "", "description": "", "inputs": [], "outputs": [{ "id": "laharExposureEcuador" }] },   state: new StepStateCompleted() },
+                        {step: { "id": "AshfallExposureEcuador",   "title": "", "description": "", "inputs": [], "outputs": [{ "id": "ashfallExposureEcuador" }] }, state: new StepStateCompleted() },
                     ]
                 },
             }

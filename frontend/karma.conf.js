@@ -1,6 +1,8 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
+// Beforehand, set CHROME_BIN=~/Desktop/Google-Chrome.AppImage
+
 module.exports = function (config) {
   config.set({
     basePath: '',
@@ -38,7 +40,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Firefox'],
+    browsers: ['Chrome'],
     singleRun: false,
     restartOnFileChange: true
   });

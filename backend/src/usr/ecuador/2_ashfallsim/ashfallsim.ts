@@ -1,9 +1,10 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { readJsonFile } from "../../../utils/files";
+import { getPathTo, readJsonFile } from "../../../utils/files";
 
 
 async function getAshfallPolys(vei: number, prob: number) {
-    const fileName = `${__dirname}/ashfall_polygons/ash_prob${prob}_vei${vei}.geojson`;
+    // relative file-name; this way also resolvable in production.
+    const fileName = `${__dirname}/../../../../data/data/ashfall_polygons/ash_prob${prob}_vei${vei}.geojson`;
     const data = await readJsonFile(fileName);
     return data;
 }
@@ -11,7 +12,9 @@ async function getAshfallPolys(vei: number, prob: number) {
 async function getAshfallPoints(vei: number, prob: number) {
     let probFormatted = `${prob}`;
     if (prob === 0) probFormatted = '0' + probFormatted;
-    const fileName = `${__dirname}/ashfall_points/VEI_${vei}_${probFormatted}percent.geojson`
+    // relative file-name; this way also resolvable in production.
+    getPathTo
+    const fileName = `${__dirname}/../../../../data/data/ashfall_points/VEI_${vei}_${probFormatted}percent.geojson`;
     const data = await readJsonFile(fileName);
     return data;
 }

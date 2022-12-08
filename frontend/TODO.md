@@ -1,16 +1,19 @@
 # Ongoing
 
 - re-create slider and re-activate lahar-contours
-- display error messages
+- Ecuador: Damage lahar+ash is available before damage lahar is when damage-ash is already calculated
+- When getting exposure in peru, then going to another scenario and then back again, exposure is marked green, but not displayed
 
 # Next
 
-- Backend: nightly CI and email-notification
+- Chile exposure after eq: no legend in production
+- Chile exposure: no-data-cells are not transparent
+- Backend: nightly CI
 
 # Improvements for future
 
 - Eq-catalog: add missing parameters
-- Augmenter: only those products need to be resolved where a augmenter applies.
+- Augmenter: only those products need to be resolved where an augmenter applies.
 - Make all popups dynamic, so that they change translation dynamically when required.
 - Re-create graph-modal
 - Restart, save- and reload-buttons
@@ -34,13 +37,6 @@
             - Pro: Could move all of wizard in own module on the same occasion
             - Con: frontend is supposed to be a dynamic image of backend
         - Suggestion: have augmenterService not only augment steps, but also create them on his own
-- Running two processes in parallel sometimes has one end up stuck
-    - backend completes both processes
-    - but frontend only fetches one 
-        - Ohh! It's because request1 gets a new state1 that includes result1 and request2 gets a newState2 that includes result2.
-        - Note how newState2 does not yet include result1.
-        - Frontend needs to merge together those two new states.
-            - Hmm, problem persists...
 - Wizard forms: Redesign
     - Global form does not get notified when its child-forms are updated
     - try removing the FromGroup from app-form

@@ -5,7 +5,7 @@ import { environment } from "src/environments/environment";
 export interface AppConfig {
     "allowedScenarios": string[],
     "production": boolean,
-    "middlewareUrl": string,
+    "backendUrl": string,
     "proxyUrl": string,
   }
   

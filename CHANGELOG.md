@@ -1,10 +1,11 @@
-# [... verison ...](... link ...) (... date ...) ... description
+# [2.0.0](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0) (Dec. 8 2022) Stable version of new frontend and backend
 
 ## Features
-- 
+- Added testing-suite to frontend's ngrx-state-manager
 
 ## Bug Fixes
-- 
+- Legend ecuador/damage post-lahar: fixed cut-off
+- Frontend-state: fixed race-conditions in calculating state when two processes run in parallel
 
 ## Breaking Changes
 - 
@@ -51,3 +52,8 @@ Previously there was already a lot of harmonization-code in the frontend's `WpsP
         - Examples of potential complications:
             - side-effects that add new values must be cached, side-effects that only add new options must not
             - if side-effects may output options to a datum, it's no longer guaranteed that new data consists 100% of *resolved* data
+
+- **Data passed per reference per default**
+    - Riesgos uses a *lot* of data
+    - All that data clogs up browser memory, makes ngrx-state too big to be easily re-created, and takes long to download
+    - So now we pass data per reference. Those references are resolved lazily. Once resolved data is also cached.

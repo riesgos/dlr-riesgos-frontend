@@ -151,7 +151,9 @@ export const laharUpdatedExposureProps: VectorLayerProperties = {
                             color: getColor(4),
                             text: `mostly_collapsed_damage_lahar`
                         }],
-                        height: 90
+                        height: 90,
+                        width: 330,
+                        fractionGraphic: 0.05
                     }
                 };
             },

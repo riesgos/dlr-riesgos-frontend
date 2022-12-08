@@ -58,14 +58,14 @@ export class BackendService {
 
         const allowedScenarios = this.configService.getConfig().allowedScenarios;
         
-        const url = this.configService.getConfig().middlewareUrl;
+        const url = this.configService.getConfig().backendUrl;
         const get$ = this.http.get<{id: string, description: string}[]>(`${url}/scenarios`);
 
         return get$.pipe(
             switchMap(scenarioInfos => {
                 const followUpRequests$: Observable<API_ScenarioInfo>[] = [];
                 for (const scenarioInfo of scenarioInfos) {
-                    if (allowedScenarios.includes(scenarioInfo.id)) {
+                    if (allowedScenarios.length === 0 || allowedScenarios.includes(scenarioInfo.id)) {
                         const request$ = this.http.get<API_ScenarioInfo>(`${url}/scenarios/${scenarioInfo.id}`);
                         followUpRequests$.push(request$);
                     }
@@ -76,7 +76,7 @@ export class BackendService {
     }
 
     execute(scenarioId: string, stepId: string, state: API_ScenarioState): Observable<API_ScenarioState> {
-        const url = this.configService.getConfig().middlewareUrl;
+        const url = this.configService.getConfig().backendUrl;
         const post$ = this.http.post<{ ticket: string }>(
             `${url}/scenarios/${scenarioId}/steps/${stepId}/execute`,
             state,
@@ -103,7 +103,7 @@ export class BackendService {
     }
 
     async asyncLoadScenarios(): Promise<API_ScenarioInfo[]> {
-        const url = this.configService.getConfig().middlewareUrl;
+        const url = this.configService.getConfig().backendUrl;
 
         const response = await fetch(`${url}/scenarios`);
         const responseData = await response.json();
@@ -121,7 +121,7 @@ export class BackendService {
     }
 
     async asyncExecute(scenarioId: string, stepId: string, state: API_ScenarioState): Promise<API_ScenarioState> {
-        const url = this.configService.getConfig().middlewareUrl;
+        const url = this.configService.getConfig().backendUrl;
 
         const response = await fetch(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute`, {
             method: 'POST',

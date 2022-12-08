@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { combineLatest, forkJoin, of } from 'rxjs';
 import { catchError, map, mergeMap, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
@@ -24,26 +24,45 @@ export class RiesgosEffects {
     });
 
     runProcess$ = createEffect(() => {
-        let memScenario: ScenarioName;
-        let memStep: string;
+
+        // https://medium.com/@snorredanielsen/rxjs-accessing-a-previous-value-further-down-the-pipe-chain-b881026701c1
+        // https://blog.angular-university.io/rxjs-error-handling/
 
         return this.actions$.pipe(
             ofType(RiesgosActions.executeStart),
-            
-            // remember initial state for later
-            tap(action => { memScenario = action.scenario; memStep = action.step }),
 
             // fetch current data, convert, execute, and convert back
-            mergeMap(_ => this.store$.select(getProductsForScenario(memScenario)).pipe(take(1))),
-            map(products => convertFrontendDataToApiState(products)),
-            mergeMap(apiState => this.backendSvc.execute(memScenario, memStep, apiState)),
-            map(newApiState => convertApiDataToRiesgosData(newApiState.data)),
             
-            // notify app of new data
-            map(newData => RiesgosActions.executeSuccess({ scenario: memScenario, step: memStep, newData })),
-            catchError(e => of(RiesgosActions.executeError({ scenario: memScenario, step: memStep, error: e })))
+            mergeMap(action => { return combineLatest([
+                this.store$.select(getProductsForScenario(action.scenario)).pipe(take(1)),
+                of(action)
+            ]); }),
+
+            map(([products, action]) => ({
+                apiState: convertFrontendDataToApiState(products),
+                action: action
+            })),
+
+            mergeMap(({apiState, action}) => { return combineLatest([
+                    this.backendSvc.execute(action.scenario, action.step, apiState),
+                    of(action)
+            ]); }),
+
+            map(([newApiState, action]) => ({
+                newData: convertApiDataToRiesgosData(newApiState.data), 
+                action: action
+            })),
+
+            map(({newData, action}) => RiesgosActions.executeSuccess({ scenario: action.scenario, step: action.step, newData })),
+
+            catchError((e, c) => {
+                return c.pipe( map(v => {
+                        return RiesgosActions.executeError({ scenario: v.scenario, step: v.step, error: typeof e === 'string' ? JSON.parse(e) : e })   
+                }) );
+            })
         );
     });
+
 
     constructor(
         private store$: Store,

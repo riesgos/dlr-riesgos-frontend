@@ -40,6 +40,7 @@ export const reducer = createReducer(
     }),
 
     immerOn(RiesgosActions.executeStart, (state, action) => {
+        console.log(`Reducers: Execute start ${action.step}`)
         const scenario = state.scenarioData[action.scenario];
         const step = scenario.steps.find(s => s.step.id === action.step);
         step.state = new StepStateRunning();
@@ -47,6 +48,7 @@ export const reducer = createReducer(
     }),
 
     immerOn(RiesgosActions.executeSuccess, (state, action) => {
+        console.log(`Reduers: Execute success ${action.step}`)
         const scenario = state.scenarioData[action.scenario];
         const step = scenario.steps.find(s => s.step.id === action.step);
         step.state = new StepStateCompleted();
@@ -153,8 +155,8 @@ function deriveState(state: WritableDraft<RiesgosState>) {
         const scenario = state.scenarioData[scenarioName];
         for (const step of scenario.steps) {
             
-            // doesn't mess with manually-set states (Running, Error)
-            if (step.state.type === StepStateTypes.running || step.state.type === StepStateTypes.error) continue;
+            // doesn't mess with manually-set states (Running)
+            if (step.state.type === StepStateTypes.running) continue;
 
             const inputIds = step.step.inputs.map(i => i.id);
             const inputs = inputIds.map(i => scenario.products.find(p => p.id === i));

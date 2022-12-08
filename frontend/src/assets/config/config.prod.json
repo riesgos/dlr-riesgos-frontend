@@ -1,6 +1,6 @@
 {
     "allowedScenarios": ["Ecuador"],
     "production": true,
-    "middlewareUrl": "<your-backend-url>",
+    "backendUrl": "<your-backend-url>",
     "proxyUrl": ""
 }

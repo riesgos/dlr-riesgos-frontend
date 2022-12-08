@@ -22,8 +22,9 @@ class TestHttpClient extends HttpClient {
 class MockConfigService extends ConfigService {
     protected config = {
         production: false,
-        middlewareUrl: "http://localhost:1411",
+        backendUrl: "http://localhost:1411",
         proxyUrl: "",
+        allowedScenarios: []
     }
 }
 

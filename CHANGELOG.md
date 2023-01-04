@@ -1,3 +1,14 @@
+# [2.0.1](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0) (Jan. 4 2023) Bugfix 
+
+## Features
+
+## Bug Fixes
+- Bugfix: bad use of d3-color in damage-popup.
+- Bugfix: when going back to eq-sim-service from further upstream, its products are not being highlighted. Reason: mistakenly gave the layer `productId = product.description.id`, should have been `productId = product.id`
+
+## Breaking Changes
+
+
 # [2.0.0](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0) (Dec. 8 2022) Stable version of new frontend and backend
 
 ## Features

@@ -518,7 +518,7 @@ export class LayerMarshaller  {
                     // @TODO: convert all search-parameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
                         productId: productId,
-                        id: `${productId}_${layerName}_result_layer`,
+                        id: `${description.id}_${layerName}_result_layer`,
                         name: `${layerName}`,
                         attribution: '',
                         opacity: 1.0,

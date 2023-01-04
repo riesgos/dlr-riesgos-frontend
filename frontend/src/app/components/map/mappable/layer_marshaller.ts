@@ -471,7 +471,7 @@ export class LayerMarshaller  {
         if (product.description.type === 'complex') {
             const parseProcesses$: Observable<ProductRasterLayer[]>[] = [];
             for (const val of product.value) {
-                parseProcesses$.push(this.makeWmsLayersFromValue(val, product.description.id, product.description));
+                parseProcesses$.push(this.makeWmsLayersFromValue(val, product.id, product.description));
             }
             return forkJoin(parseProcesses$).pipe(map((results: ProductRasterLayer[][]) => {
                 const newLayers: ProductRasterLayer[] = [];
@@ -484,14 +484,14 @@ export class LayerMarshaller  {
             }));
         } else if (product.description.type === 'literal') {
             const val = product.value;
-            return this.makeWmsLayersFromValue(val, product.description.id, product.description);
+            return this.makeWmsLayersFromValue(val, product.id, product.description);
         } else {
             throw new Error(`Could not find a value in product ${product}`);
         }
 
     }
 
-    private makeWmsLayersFromValue(val: string, uid: string, description: WmsLayerDescription): Observable<ProductRasterLayer[]> {
+    private makeWmsLayersFromValue(val: string, productId: string, description: WmsLayerDescription): Observable<ProductRasterLayer[]> {
 
         let wmsParameters$: Observable<WmsParameters>;
         if (val.includes('GetMap')) {
@@ -517,8 +517,8 @@ export class LayerMarshaller  {
                 for (const layerName of paras.layers) {
                     // @TODO: convert all search-parameter names to uppercase
                     const layer: ProductRasterLayer = new ProductRasterLayer({
-                        productId: uid,
-                        id: `${uid}_${layerName}_result_layer`,
+                        productId: productId,
+                        id: `${description.id}_${layerName}_result_layer`,
                         name: `${layerName}`,
                         attribution: '',
                         opacity: 1.0,
@@ -571,7 +571,7 @@ export class LayerMarshaller  {
                             }
                         }],
                     });
-                    layer.productId = uid;
+                    layer.productId = productId;
 
                     layer['crossOrigin'] = 'anonymous';
 

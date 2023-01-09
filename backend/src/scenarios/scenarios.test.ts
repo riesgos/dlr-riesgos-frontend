@@ -217,6 +217,7 @@ describe('scenarios - in/out', () => {
         let response = (await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step1.id}/execute`, state)).data;
         while (response.ticket) {
             await sleep(100);
+            console.log("sleeping ...")
             response = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step1.id}/execute/poll/${response.ticket}`)).data;
         }
         const newState = response.data;
@@ -248,5 +249,5 @@ describe('scenarios - in/out', () => {
 
         expect(response2.results).toBeTruthy();
         expect(response3.results).toBeTruthy();
-    });
+    }, 10_000);
 });

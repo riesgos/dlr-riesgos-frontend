@@ -1,4 +1,10 @@
-# [2.0.1](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0) (Jan. 4 2023) Bugfix 
+# Ongoing
+
+## Bug Fixes
+- Ecuador: fixed path-error for Lahars with P_ex < 10%
+
+
+# [2.0.1](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.1) (Jan. 4 2023) Bugfix 
 
 ## Features
 

@@ -9,9 +9,9 @@ async function getAshfallPolys(vei: number, prob: number) {
     return data;
 }
 
-async function getAshfallPoints(vei: number, prob: number) {
-    let probFormatted = `${prob}`;
-    if (prob === 0) probFormatted = '0' + probFormatted;
+async function getAshfallPoints(vei: number, probabilityPercentage: number) {
+    let probFormatted = `${probabilityPercentage}`;
+    if (probabilityPercentage < 10) probFormatted = '0' + probFormatted;
     // relative file-name; this way also resolvable in production.
     getPathTo
     const fileName = `${__dirname}/../../../../data/data/ashfall_points/VEI_${vei}_${probFormatted}percent.geojson`;

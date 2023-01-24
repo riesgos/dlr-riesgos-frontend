@@ -30,7 +30,7 @@ async function getExposure(inputs: Datum[]) {
 export const step: Step = {
     id: 'Exposure',
     title: 'Exposure',
-    description: 'Picks exposure model',
+    description: 'exposure_process_description_peru',
     inputs: [{
         id: 'exposureModelName',
         options: [

@@ -3,6 +3,7 @@
 ## Features
 - Discrete legends: slight outline around each field
 - Continuous legends: added marker-line
+- Nicer styling for layer-details: no word-breaking, less distance between paragraph and legend.
 
 ## Bug Fixes
 - Ecuador: fixed path-error for Lahars with P_ex < 10%

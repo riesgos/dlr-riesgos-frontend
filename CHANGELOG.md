@@ -1,5 +1,9 @@
 # Ongoing
 
+## Features
+- Discrete legends: slight outline around each field
+- Continuous legends: added marker-line
+
 ## Bug Fixes
 - Ecuador: fixed path-error for Lahars with P_ex < 10%
 

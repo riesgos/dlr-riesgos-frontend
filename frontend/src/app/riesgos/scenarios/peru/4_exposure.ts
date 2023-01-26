@@ -133,10 +133,10 @@ export class InitialExposurePeru implements MappableProductAugmenter {
               text: 'exposureLegend',
               entries: [{
                 text: 'Exposure',
-                color: '#c1c1c1'
+                color: '#fdfdfd'
               }, {
                 text: 'NoData',
-                color: '#fdfdfd'
+                color: '#c1c1c1'
               }],
               height: 50
             }

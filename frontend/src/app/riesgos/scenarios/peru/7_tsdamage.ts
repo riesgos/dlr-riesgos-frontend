@@ -40,7 +40,7 @@ export class SchemaTs implements WizardableProductAugmenter {
                 defaultValue: 'Medina_2019',
                 wizardProperties: {
                     fieldtype: 'stringselect',
-                    name: 'schema',
+                    name: 'Schema',
                     description: '',
                 },
                 options: [

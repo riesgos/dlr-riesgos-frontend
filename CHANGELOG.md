@@ -4,6 +4,11 @@
 - Discrete legends: slight outline around each field
 - Continuous legends: added marker-line
 - Nicer styling for layer-details: no word-breaking, less distance between paragraph and legend.
+- Styling:
+    - Fixed positioning eq-selection
+    - Legend titles smaller
+    - Less spacing around form controls, paragraphs
+    - Small tables a little bigger
 
 ## Bug Fixes
 - Ecuador: fixed path-error for Lahars with P_ex < 10%

@@ -1,3 +1,5 @@
-<h4 *ngIf="title !== '' && title !== undefined">{{ title | translate }}</h4>
-<svg #legendAnchor></svg>
-<p style="margin-top: 0;" *ngIf="text !== '' && text !== undefined">{{ text | translate }}</p>
+<div class="head" *ngIf="title !== '' && title !== undefined">{{ title | translate }}</div>
+<div [style]="{display: direction == 'horizontal' ? null : 'flex' }">
+    <svg #legendAnchor></svg>
+    <p style="margin-top: 0;" *ngIf="text !== '' && text !== undefined">{{ text | translate }}</p>
+</div>

@@ -71,6 +71,9 @@ export class Logger {
 
     private checkRotate(filePath: string) {
         const fileAgeSecs = getFileAgeSync(filePath);
+        if (fileAgeSecs === -1) {
+            createFileSync(filePath);
+        }
         if (fileAgeSecs > this.maxLogAge) {
             renameFileSync(filePath, `${filePath}_${new Date().toISOString()}.txt`);
             createFileSync(filePath);

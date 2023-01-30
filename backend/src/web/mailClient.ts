@@ -42,8 +42,18 @@ export class MailClient {
             subject: subject,
             html: html,
             attachments: attachments
-          }, function(err, reply) {
-            console.error(err && err.stack);
+          }, function(err: any, reply: any) {
+            let message: any = {};
+            if (err) {
+              for (const key in err) {
+                message[key] = err[key];
+              }
+            }
+            if (reply) {
+              message['reply'] = reply;
+            }
+            message['note'] = "Error sending email";
+            console.error(JSON.stringify(message));
             // console.dir(reply);
         });
     }

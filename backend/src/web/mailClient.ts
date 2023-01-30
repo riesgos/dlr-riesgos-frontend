@@ -43,18 +43,17 @@ export class MailClient {
             html: html,
             attachments: attachments
           }, function(err: any, reply: any) {
-            let message: any = {};
             if (err) {
+              let message: any = {};
               for (const key in err) {
                 message[key] = err[key];
               }
+              if (reply) {
+                message['reply'] = reply;
+              }
+              message['note'] = "Error sending email";
+              // Might cause infinite loop when console.err is monkey-patched: console.error(JSON.stringify(message));
             }
-            if (reply) {
-              message['reply'] = reply;
-            }
-            message['note'] = "Error sending email";
-            console.error(JSON.stringify(message));
-            // console.dir(reply);
         });
     }
 }

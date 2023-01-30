@@ -61,7 +61,7 @@ fakeScenarioFactory.registerStep({
 })
 
 
-const sendMailOnError = false;
+const sendMailOnError = true;
 const http = axios.create();
 const port = 5001;
 const logDir = './test-data/scenario-errors/logs';

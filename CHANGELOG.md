@@ -12,6 +12,11 @@
 
 ## Bug Fixes
 - Ecuador: fixed path-error for Lahars with P_ex < 10%
+- Backend sometimes doesn't stop an erroneous process
+    - Might be because it attempts to send an email, which did throw an error itself (separate bug, now resolved). So has to send another email ... which keeps repeating.
+    - May be re-opened if the error occurs again.
+
+
 
 
 # [2.0.1](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.1) (Jan. 4 2023) Bugfix 

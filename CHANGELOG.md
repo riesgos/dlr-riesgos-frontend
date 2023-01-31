@@ -15,6 +15,7 @@
 - Backend sometimes doesn't stop an erroneous process
     - Might be because it attempts to send an email, which did throw an error itself (separate bug, now resolved). So has to send another email ... which keeps repeating.
     - May be re-opened if the error occurs again.
+- Frontend did sometimes not display error messages from backend. Reason was that caught observable could not be completed to get scenario-id and step-id. Fixed by adding that information to the thrown error.
 
 
 

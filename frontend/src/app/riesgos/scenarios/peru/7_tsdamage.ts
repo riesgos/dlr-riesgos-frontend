@@ -143,7 +143,7 @@ export class TsDamageWmsPeru implements MappableProductAugmenter {
                                     [{ value: 'Loss' },            { value: damageFormatted      }],
                                     [{ value: 'cumulative_loss' }, { value: totalDamageFormatted }]
                                 ],
-                                bottomText: `{{ loss_calculated_from }} <a href="./documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
+                                bottomText: `{{ loss_calculated_from }} <a href="./#/documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                             }
                         }
                         econLayer.popup = {
@@ -249,7 +249,8 @@ export class TsDeusPeru implements WizardableStepAugmenter {
                 providerName: 'GFZ',
                 providerUrl: 'https://www.gfz-potsdam.de/en/',
                 shape: 'dot-circle',
-                wikiLink: 'ExposureAndVulnerability'
+                wikiLink: 'ExposureAndVulnerability',
+                dataSources: [{ label: "DEUS", href: "https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674" }]
             }
         }
     }

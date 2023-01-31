@@ -1,8 +1,8 @@
 <ng-container *ngIf="heading">
-    <h3>{{ heading | translate }}</h3>
+    <h4>{{ heading | translate }}</h4>
 </ng-container>
 
-<ng-container *ngIf="(baseData$ | async) as baseData">
+<ng-container *ngIf="(baseData$ | async) as baseData; else noData">
     <ng-container *ngIf="containsData(baseData); else noData">
         <div [style]="{'width': width + 'px', 'height': height + 'px'}">
             <app-grouped-bar-chart
@@ -13,9 +13,13 @@
         </div>
     </ng-container>
 
-    <ng-container *ngIf="additionalText">
+    <ng-container *ngIf="additionalText && containsData(baseData)">
         <div [innerHTML]="additionalText | translate"></div>
     </ng-container>
 </ng-container>
 
-<ng-template #noData><p>{{ no_data | translate }}</p></ng-template>
+<ng-template #noData>
+    <table>
+        <tr><td>{{ 'no_data' | translate }}</td></tr>
+    </table>
+</ng-template>

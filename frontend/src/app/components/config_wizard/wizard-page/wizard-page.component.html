@@ -47,7 +47,7 @@
 
         <ng-container *ngSwitchCase="'completed'">
             <ukis-form *ngIf="parameters$ | async as parameters" [parameters]="parameters" [step]="step" [disabled]="true"> </ukis-form>
-            <button class="btn btn-outline" (click)="onReconfigureClicked()" >{{'Reconfigure' | translate}}</button>
+            <button class="btn btn-outline" (click)="onReconfigureClicked()" [disabled]="reconfigButtonDisabled$ | async">{{'Reconfigure' | translate}}</button>
         </ng-container>
 
         <ng-container *ngSwitchCase="'error'">

@@ -4,10 +4,11 @@ import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from '../../riesgos.state';
 import { MappableProductAugmenter, WizardableProductAugmenter, WizardableStepAugmenter } from 'src/app/services/augmenter/augmenter.service';
-import { StringSelectUserConfigurableProduct } from 'src/app/components/config_wizard/wizardable_products';
+import { StringSelectUserConfigurableProduct, StringUserConfigurableProduct, WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
 import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LegendComponent } from 'src/app/components/dynamic/legend/legend.component';
+import { regexTransform } from 'src/app/services/simplifiedTranslation/regex-translate.pipe';
 
 
 
@@ -35,6 +36,91 @@ export class EtypeChile implements WizardableProductAugmenter {
     }
 };
 
+export class MminChile implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqMminChile';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'mmin',
+                    fieldtype: 'string'
+                },
+                defaultValue: '6.0'
+            }
+        }];
+    }
+}
+export class MmaxChile implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqMmaxChile';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'mmax',
+                    fieldtype: 'string'
+                },
+                defaultValue: '9.0'
+            }
+        }];
+    }
+}
+export class ZminChile implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqZminChile';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'zmin',
+                    fieldtype: 'string'
+                },
+                defaultValue: '0'
+            }
+        }];
+    }
+}
+export class ZmaxChile implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqZmaxChile';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'zmax',
+                    fieldtype: 'string'
+                },
+                defaultValue: '100'
+            }
+        }];
+    }
+}
+export class PChile implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqPChile';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'p',
+                    fieldtype: 'string'
+                },
+                defaultValue: '0.0'
+            }
+        }];
+    }
+}
 
 
 // Output: Available EQs
@@ -84,7 +170,7 @@ export class AvailableEqsChile implements MappableProductAugmenter {
                         const selectedProperties = {
                             '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
                             '{{ Depth }}': toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
-                            Id: properties['origin.publicID'],
+                            Id: regexTransform(properties['origin.publicID']),
                         };
                         if (properties['origin.time.value']) {
                             const date = new Date(Date.parse(properties['origin.time.value']));

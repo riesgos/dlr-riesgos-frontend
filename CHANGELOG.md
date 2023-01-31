@@ -9,6 +9,11 @@
     - Legend titles smaller
     - Less spacing around form controls, paragraphs
     - Small tables a little bigger
+    - Simplified EQ ID display
+ - Fixed some dead links, added some data-sources
+ - `Reconfigure` button disabled for a second so users can't click it accidentally when the step-menu pops open.
+ - EQ-Catalog: added the parameters mmin, mmax, zmin, zmax, and p again.
+ - EQ-Selection: showing id and magnitude for each element in dropdown.
 
 ## Bug Fixes
 - Ecuador: fixed path-error for Lahars with P_ex < 10%
@@ -16,6 +21,7 @@
     - Might be because it attempts to send an email, which did throw an error itself (separate bug, now resolved). So has to send another email ... which keeps repeating.
     - May be re-opened if the error occurs again.
 - Frontend did sometimes not display error messages from backend. Reason was that caught observable could not be completed to get scenario-id and step-id. Fixed by adding that information to the thrown error.
+- Damage-popups did not show `no-data`.
 
 
 

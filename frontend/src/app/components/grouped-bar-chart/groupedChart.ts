@@ -61,7 +61,7 @@ export class RearrangingGroupedBarChart {
         legend: null,
         legendEntriesG: null
     };
-    private margin = { top: 10, right: 30, bottom: 100, left: 50 };
+    private margin = { top: 15, right: 30, bottom: 100, left: 50 };
 
     constructor(
         private container: HTMLElement, 

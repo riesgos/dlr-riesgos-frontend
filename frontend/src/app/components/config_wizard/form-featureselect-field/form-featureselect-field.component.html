@@ -5,7 +5,7 @@
             {{parameter.description.wizardProperties.name | translate}}:
           </label>
           <select class="clr-col" clrSelect [formControl]="control">
-              <option *ngFor="let option of options" [value]="option">{{option | regexTranslate }}</option>
+              <option *ngFor="let option of options" [value]="option" [selected]="getIdForKey(option) == getSelectedId()">{{ option }}</option>
           </select>
           <clr-control-helper>{{parameter.description.wizardProperties.description | translate}}</clr-control-helper>
           <clr-control-error>Invalid input</clr-control-error>

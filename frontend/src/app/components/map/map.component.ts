@@ -113,6 +113,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.layersSvc.updateLayer(layer, 'Overlays');
                     }
                 }
+                // this.mapSvc.removeAllPopups();
             }
         });
         this.subs.push(sub2);

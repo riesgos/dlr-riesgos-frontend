@@ -6,7 +6,7 @@ import { Logger } from '../logging/logger';
 import { FileStorage } from '../storage/fileStorage';
 
 
-export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], storeDir: string, loggingDir: string, verbosity: 'verbose' | 'silent' = 'verbose') {
+export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], storeDir: string, loggingDir: string, verbosity: 'verbose' | 'silent' = 'verbose', sendMailOnError = true) {
     app.use(express.json({
         limit: '50mb'  // required because exposure objects can become pretty big
     }));
@@ -14,7 +14,7 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
     const pool = new ProcessPool();
     const fs = new FileStorage<DatumLinage>(storeDir);
     const scenarios = scenarioFactories.map(sf => sf.createScenario(fs));
-    const logger = new Logger(loggingDir, verbosity);
+    const logger = new Logger(loggingDir, verbosity, undefined, sendMailOnError);
     logger.monkeyPatch();
 
 

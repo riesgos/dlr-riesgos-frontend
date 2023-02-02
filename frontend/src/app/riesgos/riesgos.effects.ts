@@ -55,10 +55,12 @@ export class RiesgosEffects {
 
             map(({newData, action}) => RiesgosActions.executeSuccess({ scenario: action.scenario, step: action.step, newData })),
 
-            catchError((e, c) => {
-                return c.pipe( map(v => {
-                        return RiesgosActions.executeError({ scenario: v.scenario, step: v.step, error: typeof e === 'string' ? JSON.parse(e) : e })   
-                }) );
+            catchError((err, caughtObservable) => {
+                const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+                return of(RiesgosActions.executeError({ scenario: err.scenarioId, step: err.stepId, error: errorMessage }));
+                // return c.pipe( map(v => {
+                //         return RiesgosActions.executeError({ scenario: v.scenario, step: v.step, error: typeof e === 'string' ? JSON.parse(e) : e })   
+                // }) );
             })
         );
     });

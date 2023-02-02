@@ -26,16 +26,16 @@ export class FormFeatureSelectFieldComponent implements OnInit {
   constructor(private store: Store<State>) { }
 
   ngOnInit() {
+    this.options = Object.keys(this.parameter.description.featureSelectionOptions);
+
     let initialValueKey: string;
     if (this.parameter.value) {
-      initialValueKey = this.parameter.value.features[0].properties['publicID'];
+      initialValueKey = this.getKeyForValue(this.parameter.value);
     } else if (this.parameter.description.defaultValue) {
-      initialValueKey = this.parameter.description.defaultValue.features[0].properties['publicID'];
+      initialValueKey = this.getKeyForValue(this.parameter.description.defaultValue);
     } else {
       initialValueKey = Object.keys(this.parameter.description.featureSelectionOptions)[0];
     }
-
-    this.options = Object.keys(this.parameter.description.featureSelectionOptions);
 
     this.control = new FormControl<string>(initialValueKey);
 
@@ -80,6 +80,23 @@ export class FormFeatureSelectFieldComponent implements OnInit {
         scenario: this.scenario,
         product: { ...this.parameter },
       }));
+    }
+  }
+
+  getIdForKey(key: string) {
+    const featureCollection = this.parameter.description.featureSelectionOptions[key];
+    const feature = featureCollection.features[0];
+    return feature.id;
+  }
+  getSelectedId() {
+    return this.control.value;
+  }
+  private getKeyForValue(value: any): string | undefined {
+    for (const key of this.options) {
+      const selectOption = this.parameter.description.featureSelectionOptions[key];
+      if (selectOption.features[0].id === value.features[0].id) {
+        return key;
+      }
     }
   }
 

@@ -1,5 +1,5 @@
 import { readFile, writeFile, unlink, stat, mkdir, rm, appendFile, readdir } from 'fs/promises';
-import { existsSync, statSync, renameSync, writeFileSync } from 'fs';
+import { existsSync, statSync, renameSync, writeFileSync, mkdirSync } from 'fs';
 import path from 'path';
 
 
@@ -45,6 +45,8 @@ export function renameFileSync(filePath: string, newPath: string) {
 }
 
 export function createFileSync(filePath: string) {
+    const dirPath = getPathTo(filePath);
+    createDirIfNotExistsSync(dirPath);
     writeFileSync(filePath, "", {
         encoding: 'utf-8',
     });
@@ -143,6 +145,13 @@ export async function getFileLastChange(filePath: string): Promise<number> {
 export async function createDirIfNotExists(dir: string) {
     if (!fileExists(dir)) {
         await mkdir(dir, {recursive: true});
+    }
+    return true;
+}
+
+export function createDirIfNotExistsSync(dir: string) {
+    if (!fileExists(dir)) {
+        mkdirSync(dir, {recursive: true})
     }
     return true;
 }

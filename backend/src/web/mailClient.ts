@@ -42,9 +42,18 @@ export class MailClient {
             subject: subject,
             html: html,
             attachments: attachments
-          }, function(err, reply) {
-            console.error(err && err.stack);
-            // console.dir(reply);
+          }, function(err: any, reply: any) {
+            if (err) {
+              let message: any = {};
+              for (const key in err) {
+                message[key] = err[key];
+              }
+              if (reply) {
+                message['reply'] = reply;
+              }
+              message['note'] = "Error sending email";
+              // Might cause infinite loop when console.err is monkey-patched: console.error(JSON.stringify(message));
+            }
         });
     }
 }

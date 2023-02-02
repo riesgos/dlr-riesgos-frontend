@@ -96,7 +96,14 @@ export class BackendService {
                 return pollUntil(task$, r => !!r.results || !!r.error);
             }),
             map(response => {
-                if (response.error) throw response.error;
+                if (response.error) {
+                    throw {
+                        error: response.error,
+                        scenarioId: scenarioId,
+                        stepId: stepId,
+                        state: state
+                    };
+                }
                 return response.results;
             })
         )
@@ -136,6 +143,15 @@ export class BackendService {
         while (responseData.ticket) {
             const pollResponse = await fetch(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
             responseData = await pollResponse.json();
+        }
+
+        if (responseData.error) {
+            throw {
+                error: responseData.error,
+                scenarioId: scenarioId,
+                stepId: stepId,
+                state: state
+            };
         }
         
         return responseData.results;

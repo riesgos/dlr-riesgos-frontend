@@ -85,9 +85,16 @@ export class EqReliabilityPeru implements WizardableStepAugmenter {
             scenario: 'Peru',
             wizardProperties: {
                 providerName: 'TUM',
-                providerUrl: 'https://www.tum.de/nc/en/',
+                providerUrl: 'https://www.tum.de/en/',
                 shape: 'router',
-                wikiLink: 'CriticalInfrastructure'
+                wikiLink: 'CriticalInfrastructure',
+                dataSources: [{
+                    label: 'Osinergmin, 2019', href: 'https://www.osinergmin.gob.pe/SitePages/version-anterior.aspx'
+                }, {
+                    label: 'COES, 2019', href: 'https://www.coes.org.pe/portal/'
+                }, {
+                    label: 'Github', href: 'https://github.com/riesgos/System_Reliability'
+                }]
             }
         }
     }

@@ -4,8 +4,8 @@ import { State } from 'src/app/ngrx_register';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
 import { WizardableProduct } from '../wizardable_products';
 import { getInputsForStep } from 'src/app/riesgos/riesgos.selectors';
-import { map, switchMap } from 'rxjs/operators';
-import { forkJoin, Observable } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
+import { forkJoin, Observable, timer } from 'rxjs';
 import { WizardableStep } from '../wizardable_steps';
 import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
 
@@ -21,6 +21,14 @@ export class WizardPageComponent implements OnInit {
   @Input() step: WizardableStep;
   parameters$: Observable<WizardableProduct[]>;
 
+  // reconfigure button only active after a second, so users can't click it accidentally.
+  reconfigButtonDisabled$ = timer(0, 1000).pipe(
+    take(2),
+    map(v => {
+      if (v === 0) return true;
+      return false;
+    })
+  );
 
   constructor(
     private store: Store<State>,

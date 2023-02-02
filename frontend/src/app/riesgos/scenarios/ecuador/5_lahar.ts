@@ -82,7 +82,7 @@ export class LaharSim implements WizardableStepAugmenter {
             scenario: 'Ecuador',
             wizardProperties: {
                 providerName: 'TUM',
-                providerUrl: 'https://www.tum.de/nc/en/',
+                providerUrl: 'https://www.tum.de/en/',
                 shape: 'avalanche',
                 wikiLink: 'LaharSimulation',
                 dataSources: [{ label: 'Frimberger (2021)', href: 'https://doi.org/10.1002/esp.5056'}]

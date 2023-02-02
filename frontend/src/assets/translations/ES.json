@@ -573,5 +573,50 @@
     "You can choose here from two lake locations. The process will create the flood scenario for the selected lake.": "Puede elegir aquí entre dos ubicaciones del lago. El proceso creará el escenario de inundación para el lago seleccionado.",
     "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997",
     "zmax": "Profundidad máxima",
-    "zmin": "Profundidad mínima"
+    "zmin": "Profundidad mínima",
+
+
+
+
+    
+    "CR-LDUAL-DUC-4-7": "Hormigón armado (RC) con sistema de doble pared, altura media (dúctil)",
+    "CR-LDUAL-DUC-H8-19": "RC con sistema de doble pared, gran altura (dúctil)",
+    "CR-LFINF-DNO-H1-3": "RC con marco relleno, poca altura (no dúctil)",
+    "CR-LFINF-DUC-H1-3": "RC con marco relleno, poca altura (dúctil)",
+    "CR-LWAL-DNO-H4-7": "Sistema de pared RC, no dúctil, 4-7 pisos",
+    "CR-LWAL-DUC-H4-7": "Sistema de pared RC, dúctil, 4-7 pisos",
+    "CR-LWAL-DUC-H8-19": "Sistema de pared RC, dúctil, 8-19 pisos",
+    "ER-ETR-H1-2": "Tierra armada (ER) reforzada (ETR), 1-2 pisos",
+    "MCF-DNO-H1-3": "Mampostería confinada (MCF), no dúctil, 1-3 pisos",
+    "MCF-DUC-H1-3": "Mampostería confinada, dúctil, 1-3 pisos",
+    "MUR-ADO-H1-2": "Mampostería no reforzada (MUR) con bloques de adobe (ADO), 1-2 pisos",
+    "MUR-H1-3": "Mampostería no reforzada, entre 1 y 3 pisos",
+    "MUR-STDRE-H1-2": "Mampostería no reforzada de piedra labrada (STDRE), 1-2 pisos",
+    "MUR-STRUB-H1-2": "Mampostería no reforzada con escombros (piedra de campo) o piedra semi-revestida, 1-2 pisos",
+    "MR-DUC-H1-3": "Mampostería reforzada, dúctil, 1-3 pisos",
+    "UNK": "Desconocido",
+    "W-WBB-H1": "Madera (W), bambú (WBB), 1 piso",
+    "W-WHE-H1-3": "Madera, Madera pesada (WHE), 1-3 pisos",
+    "W-WLI-H1-3": "Madera (W), madera clara (WLI), 1-3 pisos",
+    "W-WS-H1-2": "Madera, madera maciza (WS), 1-2 pisos",
+    "W-WWD-H1-2": "Madera, bahareque y quincha (WWD, construcción de adobe y adobe), 1-2 pisos",
+
+    "LM_B": "Techos de material ligero. Buena calidad constructiva",
+    "LM_R": "Techos de material ligero. Regular calidad constructiva",
+    "LM_M": "Techos de material ligero. Mala calidad constructiva",
+    "P_B": "Techos de tejas de barro soportada en madera. Buena calidad constructiva",
+    "P_M": "Techos de tejas de barro soportada en madera. Mala calidad constructiva",
+    "P_R": "Techos de tejas de barro soportada en madera. Regular calidad constructiva",
+    "L_B": "Placa de concreto armado. Buena calidad constructiva",
+    "L_R": "Losas macizas (de hormigón). Regular calidad constructiva",
+    "L_M": "Placa aligerada en concreto reforzado. Mala calidad constructiva",
+
+    "RC_LD": "Edificios de concreto reforzado de baja ductilidad",
+    "RC_S_HD": "Edificios de concreto reforzado o de acero de alta ductilidad",
+    "RC_MD": "Edificios de concreto reforzado de ductilidad moderada",
+    "W_MR_LD": "Edificios de madera o de mampostería de baja ductilidad",
+    "W_MR_MD": "Edificios de madera o de mampostería de ductilidad moderada",
+    "W_MR_HD": "Edificios con techos de madera o de mampostería de alta ductilidad"
+
+
 }

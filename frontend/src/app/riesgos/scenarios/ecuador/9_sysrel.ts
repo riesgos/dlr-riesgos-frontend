@@ -103,9 +103,16 @@ export class LaharReliability implements WizardableStepAugmenter {
             scenario: 'Ecuador',
             wizardProperties: {
                 providerName: 'TUM',
-                providerUrl: 'https://www.tum.de/nc/en/',
+                providerUrl: 'https://www.tum.de/en/',
                 shape: 'router',
-                wikiLink: 'CriticalInfrastructureEcuador'
+                wikiLink: 'CriticalInfrastructureEcuador',
+                dataSources: [{
+                    label: 'CELEC EP - Transelectric, 2019', href: 'https://www.celec.gob.ec/transelectric/'
+                }, {
+                    label: 'ELEPCO S.A., 2019', href: 'https://elepcosa.com.ec/'
+                }, {
+                    label: 'Github', href: 'https://github.com/riesgos/System_Reliability'
+                }]
             }
         }
     }

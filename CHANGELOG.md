@@ -1,5 +1,12 @@
 # Ongoing
 
+## Long term work
+- Remove plotly completely, use d3 only.
+    Requires that createBarChart and createGroupedBarchart are not called from `detailPopupHTML`.
+    Reason: d3 cannot handle dom-nodes that dont exist yet.
+    For the new d3-graphs we need a dynamicPopupComponent.
+    And for a dynamicPopupComponent we need to return a ProductCustomLayer, not a VectorLayerProduct.
+
 ## Features
 - Discrete legends: slight outline around each field
 - Continuous legends: added marker-line
@@ -14,6 +21,8 @@
  - `Reconfigure` button disabled for a second so users can't click it accidentally when the step-menu pops open.
  - EQ-Catalog: added the parameters mmin, mmax, zmin, zmax, and p again.
  - EQ-Selection: showing id and magnitude for each element in dropdown.
+ - Exposure popup: now highlights current building type and gives plain-text version of building class name.
+ - Added new and corrected old data-sources .
 
 ## Bug Fixes
 - Ecuador: fixed path-error for Lahars with P_ex < 10%

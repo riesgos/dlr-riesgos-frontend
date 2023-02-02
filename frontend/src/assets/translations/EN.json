@@ -426,5 +426,47 @@
     "Wiki": "Wiki",
     "YoungsEtAl1997SInterNSHMP2008": "Youngs et al. 1997",
     "zmax": "Maximum depth",
-    "zmin": "Minimum depth"
+    "zmin": "Minimum depth",
+
+
+
+    "CR-LDUAL-DUC-4-7": "Reinforced concrete (RC) with dual wall system, medium rise (ductile)",
+    "CR-LDUAL-DUC-H8-19": "RC with dual wall system, high rise (ductile)",
+    "CR-LFINF-DNO-H1-3": "RC with infilled frame, low rise (non-ductile)",
+    "CR-LFINF-DUC-H1-3": "RC with infilled frame, low rise (ductile)",
+    "CR-LWAL-DNO-H4-7": "RC wall system, non-ductile, 4–7 stories",
+    "CR-LWAL-DUC-H4-7": "RC wall system, ductile, 4–7 stories",
+    "CR-LWAL-DUC-H8-19": "RC wall system, ductile, 8–19 stories",
+    "ER-ETR-H1-2": "Reinforced (ETR) rammed earth (ER), 1–2 stories",
+    "MCF-DNO-H1-3": "Confined masonry (MCF), non-ductile, 1–3 stories",
+    "MCF-DUC-H1-3": "Confined masonry, ductile, 1–3 stories",
+    "MUR-ADO-H1-2": "Unreinforced masonry (MUR) with adobe blocks (ADO), 1–2 stories",
+    "MUR-H1-3": "Unreinforced masonry, between 1–3 stories",
+    "MUR-STDRE-H1-2": "Dressed stone (STDRE) unreinforced masonry, 1–2 stories",
+    "MUR-STRUB-H1-2": "Unreinforced masonry with rubble (field stone) or semi-dressed stone stone, 1–2 stories",
+    "MR-DUC-H1-3": "Reinforced masonry, ductile, 1–3 stories",
+    "UNK": "Unknown",
+    "W-WBB-H1": "Wood (W), bamboo (WBB), 1 stories",
+    "W-WHE-H1-3": "Wood, Heavy wood (WHE), 1–3 stories",
+    "W-WLI-H1-3": "Wood (W), light wood (WLI), 1–3 stories",
+    "W-WS-H1-2": "Wood, solid wood (WS), 1–2 stories",
+    "W-WWD-H1-2": "Wood, bahareque and Quincha (WWD, wattle and daub construction), 1–2 stories",
+
+    "LM_B": "Ceilings of light material. Good constructive quality",
+    "LM_R": "Ceilings of light material. Regular construction quality",
+    "LM_M": "Ceilings of light material. Bad constructive quality",
+    "P_B": "Clay tile roofs supported by wood. Good constructive quality",
+    "P_M": "Clay tile roofs supported by wood. Bad constructive quality",
+    "P_R": "Clay tile roofs supported on wood. Regular construction quality",
+    "L_B": "Reinforced concrete plate. Good constructive quality",
+    "L_R": "Solid slabs (concrete). Regular construction quality",
+    "L_M": "Lightened plate in reinforced concrete. Bad constructive quality",
+
+    "RC_LD": "Low ductility reinforced concrete buildings",
+    "RC_S_HD": "Reinforced concrete or steel buildings of high ductility",
+    "RC_MD": "Reinforced concrete buildings of moderate ductility",
+    "W_MR_LD": "Wood or masonry buildings with low ductility",
+    "W_MR_MD": "Wood or masonry buildings of moderate ductility",
+    "W_MR_HD": "Buildings with wooden or masonry roofs of high ductility"
+
 }

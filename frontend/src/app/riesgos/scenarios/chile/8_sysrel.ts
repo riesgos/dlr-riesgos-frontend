@@ -86,9 +86,16 @@ export class EqReliabilityChile implements WizardableStepAugmenter {
             scenario: 'Chile',
             wizardProperties: {
                 providerName: 'TUM',
-                providerUrl: 'https://www.tum.de/nc/en/',
+                providerUrl: 'https://www.tum.de/en/',
                 shape: 'router',
-                wikiLink: 'CriticalInfrastructure'
+                wikiLink: 'CriticalInfrastructure',
+                dataSources: [{
+                    label: 'Coordinador Eléctrico Nacional, 2019', href: 'https://www.coordinador.cl/'
+                }, {
+                    label: 'Superintendencia de Electricidad y Combustibles, 2018', href: 'https://www.sec.cl/sitioweb/transparencia_activa/canales_ingreso.html'
+                }, {
+                    label: 'Github', href: 'https://github.com/riesgos/System_Reliability'
+                }]
             }
         }
     }

@@ -163,7 +163,8 @@ function createLegendDiscrete(
     .append('rect')
       .attr('width',  d => direction === 'horizontal' ? d.scaledSize : graphicEntryWidth)
       .attr('height', d => direction === 'horizontal' ? graphicEntryHeight : d.scaledSize)
-      .attr('fill',   d => d.color);
+      .attr('fill',   d => d.color)
+      .attr('stroke', d => color(d.color).darker());
 
 
   const labels = legendGroup.selectAll('.label')
@@ -240,6 +241,17 @@ function createLegendContinuous(
 
   svgSelection.call(legendGradient);
 
+  const markLines = legendGroup.selectAll('.markLine')
+    .data(entries)
+    .enter()
+    .append('line')
+    .attr('class', 'markLine')
+    .attr('x1', d => direction == 'vertical' ? 0                         : placementScale(d.position) )
+    .attr('x2', d => direction == 'vertical' ? graphicWidth + 8           : placementScale(d.position) )
+    .attr('y1', d => direction == 'vertical' ? placementScale(d.position) : 0                          )
+    .attr('y2', d => direction == 'vertical' ? placementScale(d.position) : graphicHeight + 6          )
+    .attr('stroke', 'grey');
+
   const graphic = legendGroup.append('rect')
     .attr('class', 'graphic')
     .attr('width', graphicWidth)
@@ -252,7 +264,7 @@ function createLegendContinuous(
     .append('g')
       .attr('class', 'label')
       .attr('transform', d => direction === 'horizontal' ?
-        `translate(${placementScale(d.position)}, ${graphicHeight + 10})` :
+        `translate(${placementScale(d.position)}, ${graphicHeight + 15})` :
         `translate(${graphicWidth + 10}, ${placementScale(d.position)})`)
     .append('text')
       .text(d => d.text)

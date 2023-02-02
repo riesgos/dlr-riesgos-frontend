@@ -35,7 +35,7 @@ export class EconomicDamagePopupComponent implements OnInit {
         const data = getFeatureInfoData.features[0];
         if (data) {
           const props: DeusGetFeatureInfo = data.properties; 
-          return +(props.cum_loss / 1000000).toFixed(3);
+          return +(props.cum_loss / 1_000_000).toFixed(3);
         } else {
           return null;
         }

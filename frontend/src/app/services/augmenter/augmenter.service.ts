@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { WizardableProduct } from 'src/app/components/config_wizard/wizardable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 
-import { QuakeLedgerPeru, EtypePeru, AvailableEqsPeru } from 'src/app/riesgos/scenarios/peru/1_catalog';
+import { QuakeLedgerPeru, EtypePeru, AvailableEqsPeru, MminPeru, MmaxPeru, ZminPeru, ZmaxPeru, PPeru } from 'src/app/riesgos/scenarios/peru/1_catalog';
 import { DataService } from '../data/data.service';
 import { forkJoin, Observable, of } from 'rxjs';
 import { defaultIfEmpty, map } from 'rxjs/operators';
@@ -18,7 +18,7 @@ import { TsServicePeru, TsWmsPeru } from 'src/app/riesgos/scenarios/peru/6_tssim
 import { SchemaTs, TsDamageWmsPeru, TsDeusPeru } from 'src/app/riesgos/scenarios/peru/7_tsdamage';
 import { ConfigService } from '../configService/configService';
 import { DamageConsumerAreasPeru, EqReliabilityPeru } from 'src/app/riesgos/scenarios/peru/8_sysrel';
-import { EtypeChile, QuakeLedgerChile, AvailableEqsChile } from 'src/app/riesgos/scenarios/chile/1_catalog';
+import { EtypeChile, QuakeLedgerChile, AvailableEqsChile, ZminChile, MmaxChile, MminChile, PChile, ZmaxChile } from 'src/app/riesgos/scenarios/chile/1_catalog';
 import { UserinputSelectedEqChile, EqSelectionChile, SelectedEqChile } from 'src/app/riesgos/scenarios/chile/2_eqselection';
 import { VsgridChile, GmpeChile, ShakygroundChile, ShakemapWmsChile } from 'src/app/riesgos/scenarios/chile/3_eqsim';
 import { ModelChoiceChile, ExposureModelChile, InitialExposureChile } from 'src/app/riesgos/scenarios/chile/4_exposure';
@@ -100,7 +100,8 @@ export class AugmenterService {
 
       // Peru
       // inputs                                               // steps                  // outputs
-      new EtypePeru(),                                        new QuakeLedgerPeru(),    new AvailableEqsPeru(),
+      new EtypePeru(), new MminPeru(), new MmaxPeru(), 
+      new ZminPeru(), new ZmaxPeru(), new PPeru(),            new QuakeLedgerPeru(),    new AvailableEqsPeru(),
       new UserinputSelectedEqPeru(this.store, this.dataSvc),  new EqSelectionPeru(),    new SelectedEqPeru(),
       new VsgridPeru(), new GmpePeru(),                       new ShakygroundPeru(),    new ShakemapWmsPeru(),
       new ModelChoicePeru(),                                  new ExposureModelPeru(),  new InitialExposurePeru(),  
@@ -112,7 +113,8 @@ export class AugmenterService {
 
       // Chile
       // inputs                                                // steps                  // outputs
-      new EtypeChile(),                                        new QuakeLedgerChile(),    new AvailableEqsChile(),
+      new EtypeChile(), new MminChile(), new MmaxChile(), 
+      new ZminChile(), new ZmaxChile(), new PChile(),          new QuakeLedgerChile(),    new AvailableEqsChile(),
       new UserinputSelectedEqChile(this.store, this.dataSvc),  new EqSelectionChile(),    new SelectedEqChile(),
       new VsgridChile(), new GmpeChile(),                      new ShakygroundChile(),    new ShakemapWmsChile(),
       new ModelChoiceChile(),                                  new ExposureModelChile(),  new InitialExposureChile(),  

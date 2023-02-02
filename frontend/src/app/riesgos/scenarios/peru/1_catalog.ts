@@ -8,6 +8,7 @@ import { StringSelectUserConfigurableProduct, StringUserConfigurableProduct, Wiz
 import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_products';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LegendComponent } from 'src/app/components/dynamic/legend/legend.component';
+import { regexTransform } from 'src/app/services/simplifiedTranslation/regex-translate.pipe';
 
 
 
@@ -35,6 +36,91 @@ export class EtypePeru implements WizardableProductAugmenter {
     }
 };
 
+export class MminPeru implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqMmin';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'mmin',
+                    fieldtype: 'string'
+                },
+                defaultValue: '6.0'
+            }
+        }];
+    }
+}
+export class MmaxPeru implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqMmax';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'mmax',
+                    fieldtype: 'string'
+                },
+                defaultValue: '9.0'
+            }
+        }];
+    }
+}
+export class ZminPeru implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqZmin';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'zmin',
+                    fieldtype: 'string'
+                },
+                defaultValue: '0'
+            }
+        }];
+    }
+}
+export class ZmaxPeru implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqZmax';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'zmax',
+                    fieldtype: 'string'
+                },
+                defaultValue: '100'
+            }
+        }];
+    }
+}
+export class PPeru implements WizardableProductAugmenter {
+    appliesTo(product: RiesgosProduct): boolean {
+        return product.id === 'eqP';
+    }
+    makeProductWizardable(product: RiesgosProduct): StringUserConfigurableProduct[] {
+        return [{
+            ...product,
+            description: {
+                wizardProperties: {
+                    name: 'p',
+                    fieldtype: 'string'
+                },
+                defaultValue: '0.0'
+            }
+        }];
+    }
+}
 
 
 // Output: Available EQs
@@ -84,7 +170,7 @@ export class AvailableEqsPeru implements MappableProductAugmenter {
                         const selectedProperties = {
                             '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
                             '{{ Depth }}': toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
-                            Id: properties['origin.publicID'],
+                            Id: regexTransform(properties['origin.publicID']),
                         };
                         if (properties['origin.time.value']) {
                             const date = new Date(Date.parse(properties['origin.time.value']));

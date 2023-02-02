@@ -1,10 +1,15 @@
+<ng-container *ngIf="title">
+    <h4>{{ title | translate }}</h4>
+</ng-container>
+
 <ng-container *ngIf="(loss$ | async) as lossValue; else noData">
     <table>
-        <tr><th>{{ title | translate }}</th></tr>
         <tr><td>{{ lossValue }} MUSD</td></tr>
     </table>
 </ng-container>
 
 <ng-template #noData>
-    <p>{{ no_data | translate }}</p>
+    <table>
+        <tr><td>{{ 'no_data' | translate }}</td></tr>
+    </table>
 </ng-template>

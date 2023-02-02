@@ -8,6 +8,13 @@
     And for a dynamicPopupComponent we need to return a ProductCustomLayer, not a VectorLayerProduct.
 
 ## Features
+
+## Bug fixes
+
+# [2.0.2](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.2) (Feb. 2 2023) Redactional 
+
+
+## Features
 - Discrete legends: slight outline around each field
 - Continuous legends: added marker-line
 - Nicer styling for layer-details: no word-breaking, less distance between paragraph and legend.

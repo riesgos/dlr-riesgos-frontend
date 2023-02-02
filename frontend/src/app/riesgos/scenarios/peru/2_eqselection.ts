@@ -13,6 +13,7 @@ import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
 import { DataService } from "src/app/services/data/data.service";
 import { switchMap, tap } from "rxjs/operators";
+import { regexTransform } from "src/app/services/simplifiedTranslation/regex-translate.pipe";
 
 
 
@@ -48,14 +49,14 @@ export class UserinputSelectedEqPeru implements WizardableProductAugmenter {
         let dflt = undefined;
         if (currentValue) {
             for (const feature of currentValue.value.features) {
-                options[feature.id] = {
+                const key = `${regexTransform(feature.id)}/ Mag. ${feature.properties['magnitude.mag.value']}`;
+                options[key] = {
                     type: 'FeatureCollection',
                     features: [feature]
                 };
             }
             dflt = options[Object.keys(options)[0]];
         }
-
 
         return [{
             ... product,
@@ -108,9 +109,7 @@ export class SelectedEqPeru implements MappableProductAugmenter {
                         const selectedProperties = {
                             '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
                             '{{ Depth }}': toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
-                            // Latitude: toDecimalPlaces(1, 1),
-                            // Longitude: toDecimalPlaces(2, 1),
-                            Id: properties['origin.publicID'],
+                            Id: regexTransform(properties['origin.publicID']),
                         };
                         if (properties['origin.time.value']) {
                             const date = new Date(Date.parse(properties['origin.time.value']));
@@ -131,7 +130,7 @@ export class SelectedEqPeru implements MappableProductAugmenter {
                         const properties = feature.properties;
                         const magnitude = toDecimalPlaces(properties['magnitude.mag.value'] as number, 1);
                         const depth = toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km';
-                        const id = properties['origin.publicID'];
+                        const id = regexTransform(properties['origin.publicID']);
         
                         const data = [
                             [{ value: 'Id'}, { value: id }],

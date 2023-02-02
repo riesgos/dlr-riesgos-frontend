@@ -1,4 +1,48 @@
-# [2.0.1](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.0) (Jan. 4 2023) Bugfix 
+# Ongoing
+
+## Long term work
+- Remove plotly completely, use d3 only.
+    Requires that createBarChart and createGroupedBarchart are not called from `detailPopupHTML`.
+    Reason: d3 cannot handle dom-nodes that dont exist yet.
+    For the new d3-graphs we need a dynamicPopupComponent.
+    And for a dynamicPopupComponent we need to return a ProductCustomLayer, not a VectorLayerProduct.
+
+## Features
+
+## Bug fixes
+
+# [2.0.2](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.2) (Feb. 2 2023) Redactional 
+
+
+## Features
+- Discrete legends: slight outline around each field
+- Continuous legends: added marker-line
+- Nicer styling for layer-details: no word-breaking, less distance between paragraph and legend.
+- Styling:
+    - Fixed positioning eq-selection
+    - Legend titles smaller
+    - Less spacing around form controls, paragraphs
+    - Small tables a little bigger
+    - Simplified EQ ID display
+ - Fixed some dead links, added some data-sources
+ - `Reconfigure` button disabled for a second so users can't click it accidentally when the step-menu pops open.
+ - EQ-Catalog: added the parameters mmin, mmax, zmin, zmax, and p again.
+ - EQ-Selection: showing id and magnitude for each element in dropdown.
+ - Exposure popup: now highlights current building type and gives plain-text version of building class name.
+ - Added new and corrected old data-sources .
+
+## Bug Fixes
+- Ecuador: fixed path-error for Lahars with P_ex < 10%
+- Backend sometimes doesn't stop an erroneous process
+    - Might be because it attempts to send an email, which did throw an error itself (separate bug, now resolved). So has to send another email ... which keeps repeating.
+    - May be re-opened if the error occurs again.
+- Frontend did sometimes not display error messages from backend. Reason was that caught observable could not be completed to get scenario-id and step-id. Fixed by adding that information to the thrown error.
+- Damage-popups did not show `no-data`.
+
+
+
+
+# [2.0.1](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.1) (Jan. 4 2023) Bugfix 
 
 ## Features
 

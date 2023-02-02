@@ -56,6 +56,7 @@ export class Logger {
     }
 
     private messageToString(message: any) {
+        if (!message) return "Sorry, unknown error. Maybe there is some clue further up in the error-logs."; // somehow, this can apparently happen sometimes.
         let messageString: String;
         if (typeof message === 'string' || message instanceof String) { // if already a string ...
             messageString = message;
@@ -70,6 +71,9 @@ export class Logger {
 
     private checkRotate(filePath: string) {
         const fileAgeSecs = getFileAgeSync(filePath);
+        if (fileAgeSecs === -1) {
+            createFileSync(filePath);
+        }
         if (fileAgeSecs > this.maxLogAge) {
             renameFileSync(filePath, `${filePath}_${new Date().toISOString()}.txt`);
             createFileSync(filePath);

@@ -16,7 +16,7 @@ export interface Bbox {
     urlat: number,
 }
 
-export async function getAvailableEqs(catalogType: CatalogType, bbox: Bbox) {
+export async function getAvailableEqs(catalogType: CatalogType, bbox: Bbox, mmin?: string, mmax?: string, zmin?: string, zmax?: string, p?: string) {
 
     const url = `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`;
     const processId = 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess';
@@ -34,35 +34,35 @@ export async function getAvailableEqs(catalogType: CatalogType, bbox: Bbox) {
             type: 'literal',
             reference: false
         },
-        value: '6.0'
+        value: mmin ?? '6.0'
     }, {
         description: {
             id: 'mmax',
             type: 'literal',
             reference: false
         },
-        value: '9.5'
+        value: mmax ?? '9.5'
     }, {
         description: {
             id: 'zmin',
             type: 'literal',
             reference: false
         },
-        value: '0'
+        value: zmin ?? '0'
     }, {
         description: {
             id: 'zmax',
             type: 'literal',
             reference: false
         },
-        value: '100'
+        value: zmax ?? '100'
     }, {
         description: {
             id: 'p',
             type: 'literal',
             reference: false
         },
-        value: '0.0'
+        value: p ?? '0.0'
     }, {
         description: {
             id: 'etype',

@@ -220,7 +220,7 @@ describe('scenarios - in/out', () => {
             console.log("sleeping ...")
             response = (await http.get(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step1.id}/execute/poll/${response.ticket}`)).data;
         }
-        const newState = response.data;
+        const newState = response.results;
         expect(newState).toBeTruthy();
 
         const step2 = scenario.steps.find(s => s.id === 'EqDmg')!;

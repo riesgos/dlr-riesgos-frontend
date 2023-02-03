@@ -29,12 +29,12 @@ webClient.post = async function(url: string, xmlBody: string, headers: any, resp
             </wps:StatusInfo>`
         }
     } else {
-        throw Error("Network error");
+        throw Error("Fake error for testing purposes.");
     }
 };
 webClient.get = async function(url: string, headers: any, responseType: string) {
     await sleep(100);
-    throw Error("Network error");
+    throw Error("Fake error for testing purposes.");
 };
 
 
@@ -61,7 +61,7 @@ fakeScenarioFactory.registerStep({
 })
 
 
-const sendMailOnError = true;
+const sendMailOnError = false;
 const http = axios.create();
 const port = 5001;
 const logDir = './test-data/scenario-errors/logs';

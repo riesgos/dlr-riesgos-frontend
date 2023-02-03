@@ -23,7 +23,7 @@ beforeAll(async () => {
     const app = express();
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent', false);
     server = app.listen(port);
 })
 
@@ -69,7 +69,7 @@ test('Testing eq-simulation', async () => {
     const wmsData = wmsFile.data;
     expect(wmsData).toBeTruthy();
 
-    const xmlResult = results.data.find((r: DatumReference) => r.id === 'eqSimXml');
+    const xmlResult = results.data.find((r: DatumReference) => r.id === 'eqSimXmlRef');
     expect(xmlResult.reference);
     
     const xmlFile = await axios.get(`http://localhost:${port}/files/${xmlResult.reference}`);

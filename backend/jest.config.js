@@ -2,5 +2,5 @@
 module.exports = {
   preset: 'ts-jest/presets/js-with-ts',
   testEnvironment: 'node',
-  modulePathIgnorePatterns: ['<rootDir>/build']
+  modulePathIgnorePatterns: ['<rootDir>/dist']  // jest gets confused when it encounters a compiled directory.
 };

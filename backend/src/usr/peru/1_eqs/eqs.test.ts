@@ -22,7 +22,7 @@ beforeAll(async () => {
     const app = express();
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent', false);
     server = app.listen(port);
 })
 
@@ -35,10 +35,14 @@ test('Testing eq-catalog', async () => {
     const stepId = 'Eqs';
 
     const state: ScenarioState = {
-        data: [{
-            id: 'eqCatalogType',
-            value: 'observed'
-        }]
+        data: [
+            {id: 'eqCatalogType', value: 'observed' },
+            { id: 'eqMmin', value: '6.0' },
+            { id: 'eqMmax', value: '9.5' },
+            { id: 'eqZmin', value: '0' },
+            { id: 'eqZmax', value: '100' },
+            { id: 'eqP', value: '0.0' }
+        ]
     };
 
     const response = await axios.post(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute`, state);

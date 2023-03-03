@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { combineLatest, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
-import { ConfigService } from "./configService";
+import { ConfigService } from "./config.service";
 import { pollUntil } from "./polling";
 
 export interface API_DatumDescription {
@@ -46,7 +46,9 @@ export interface API_ScenarioState {
     data: (API_Datum | API_DatumReference)[]
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class BackendService {
 
     constructor(

@@ -7,6 +7,9 @@ import { MapComponent } from './components/map/map.component';
 import { WizardComponent } from './components/wizard/wizard.component';
 import { StepComponent } from './components/wizard/step/step.component';
 import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { reducer } from './state/reducer';
+import { Effects } from './state/effects';
 
 @NgModule({
   declarations: [
@@ -18,7 +21,8 @@ import { StoreModule } from '@ngrx/store';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    StoreModule.forRoot({}, {})
+    StoreModule.forRoot({ app: reducer }, {}),
+    EffectsModule.forRoot([Effects])
   ],
   providers: [],
   bootstrap: [AppComponent]

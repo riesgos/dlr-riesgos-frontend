@@ -1,0 +1,29 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    background: var(--spectrum-accent-color-1400);
+}
+
+.header h1 {
+    color: var(--spectrum-accent-color-100);
+}
+
+
+.content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.content-wizard {
+
+}
+
+.content-map {
+    flex-grow: 1;
+}

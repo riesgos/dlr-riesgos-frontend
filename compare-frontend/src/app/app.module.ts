@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { MapComponent } from './components/map/map.component';
 import { WizardComponent } from './components/wizard/wizard.component';
 import { StepComponent } from './components/wizard/step/step.component';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { StepComponent } from './components/wizard/step/step.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    StoreModule.forRoot({}, {})
   ],
   providers: [],
   bootstrap: [AppComponent]

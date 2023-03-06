@@ -35,7 +35,8 @@
               "node_modules/@spectrum-css/button/dist/index-vars.css",
               "node_modules/@spectrum-css/page/dist/index-vars.css",
               "node_modules/@spectrum-css/typography/dist/index-vars.css",
-              "node_modules/@spectrum-css/icon/dist/index-vars.css"
+              "node_modules/@spectrum-css/icon/dist/index-vars.css",
+              "node_modules/ol/ol.css"
             ],
             "scripts": []
           },

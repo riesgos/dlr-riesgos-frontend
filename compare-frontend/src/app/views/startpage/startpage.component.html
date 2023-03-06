@@ -1,0 +1,6 @@
+
+<div class="studyareas" *ngIf="studyAreas$ | async as studyAreas">
+    <div class="studyarea" *ngFor="let studyArea of studyAreas">
+        {{ studyArea | json }}
+    </div>
+</div>

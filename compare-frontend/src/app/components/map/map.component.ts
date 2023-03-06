@@ -8,13 +8,13 @@ import { MapService } from 'src/app/services/map.service';
 })
 export class MapComponent implements AfterViewInit {
 
-  @ViewChild('#mapContainer') mapContainer?: ElementRef<HTMLDivElement>;
+  @ViewChild('mapContainer') mapContainer?: ElementRef<HTMLDivElement>;
 
   constructor(private mapSvc: MapService) {}
 
   ngAfterViewInit(): void {
     if (this.mapContainer) {
-      this.mapSvc.attachMap(this.mapContainer.nativeElement);
+      this.mapSvc.init(this.mapContainer.nativeElement);
     }
   }
 

@@ -1,9 +1,12 @@
 <div class="main">
   <div class="header">
     <h1>RIESGOS 2.0</h1>
+    <nav>
+      <a class="nav-item" [routerLinkActive]="['active']" routerLink="/">Study areas</a> |
+      <a class="nav-item" [routerLinkActive]="['active']" routerLink="/map">Map</a>
+    </nav>
   </div>
   <div class="content">
-    <app-wizard class="content-wizard"></app-wizard>
-    <app-map class="content-map"></app-map>
+    <router-outlet></router-outlet>
   </div>
 </div>

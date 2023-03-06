@@ -24,7 +24,7 @@ export class ConfigService {
 
     constructor() {}
 
-    public async loadConfig(): Promise<true> {
+    public async loadConfig(): Promise<boolean> {
         // Must not use angular's http-client.
         // Reason: http-client depends on HTTP_INTERCEPTORS
         // But our ProxyInterceptor depends on ConfigService ...

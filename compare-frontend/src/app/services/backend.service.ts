@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { combineLatest, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
+import { ScenarioName } from "../state/state";
 import { ConfigService } from "./config.service";
 import { pollUntil } from "./polling";
 
@@ -37,7 +38,7 @@ export interface API_Step {
 }
 
 export interface API_ScenarioInfo {
-    id: string,
+    id: ScenarioName,
     description: string,
     steps: API_Step[]
 }

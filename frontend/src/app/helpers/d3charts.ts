@@ -317,7 +317,6 @@ export function createBigBarChart(
             x -= maxWidthHoverText;
           }
           const y = Math.min(positionInsideSvg[1], positionInLayer[1]);
-          console.log(x, y);
           infobox
             .style('left', `${x}px`)
             .style('top', `${y}px`);

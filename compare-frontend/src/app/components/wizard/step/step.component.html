@@ -1,1 +1,14 @@
-<p>step works!</p>
+<div class="step">
+    <div class="header">
+        <h4>{{ step.step.title }}</h4>
+    </div>
+    <div class="body">
+        <app-tabs>
+            <app-tab [tabTitle]="'Configuration'"></app-tab>
+            <app-tab [tabTitle]="'Description'">
+                <p>{{ step.step.description }}</p>
+            </app-tab>
+            <app-tab [tabTitle]="'Layers'"></app-tab>
+        </app-tabs>
+    </div>
+</div>

@@ -16,6 +16,12 @@ import { MappageComponent } from './views/mappage/mappage.component';
 import { environment } from 'src/environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ConfigService } from './services/config.service';
+import { RiesgosState } from './state/state';
+import { CollapsableComponent } from './components/collapsable/collapsable.component';
+import { TabsComponent } from './components/tabs/tabs.component';
+import { TabComponent } from './components/tabs/tab.component';
+
+
 
 @NgModule({
   declarations: [
@@ -24,13 +30,16 @@ import { ConfigService } from './services/config.service';
     WizardComponent,
     StepComponent,
     StartpageComponent,
-    MappageComponent
+    MappageComponent,
+    CollapsableComponent,
+    TabsComponent,
+    TabComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot({ app: reducer }, {}),
+    StoreModule.forRoot({ riesgos: reducer }, {}),
     EffectsModule.forRoot([Effects]),
     environment.type !== 'prod' ? StoreDevtoolsModule.instrument({
       maxAge: 25,

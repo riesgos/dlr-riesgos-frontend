@@ -2,7 +2,9 @@
     <div class="wizard-heading">
         <h2>Wizard</h2>
     </div>
-    <div class="wizard-content">
-        Wizard content
+    <div class="wizard-content" *ngIf="scenarioState$ | async as scenarioState">
+        <div class="step" *ngFor="let step of scenarioState.steps">
+            <app-step [step]="step"></app-step>
+        </div>
     </div>
 </div>

@@ -1,6 +1,15 @@
-
 <div class="studyareas" *ngIf="studyAreas$ | async as studyAreas">
     <div class="studyarea" *ngFor="let studyArea of studyAreas">
-        {{ studyArea | json }}
+
+        <div class="card" (click)="activateScenario(studyArea.id)">
+            <div class="cardBody">
+                <img [src]="studyArea.preview">
+            </div>
+            <div class="cardFooter">
+                <h4>{{ studyArea.id }}</h4>
+                <p>{{ studyArea.description }}</p>
+            </div>
+        </div>
+
     </div>
 </div>

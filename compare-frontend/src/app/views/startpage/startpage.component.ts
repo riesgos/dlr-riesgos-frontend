@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { RiesgosState } from 'src/app/state/state';
+import { RiesgosState, ScenarioName } from 'src/app/state/state';
 import * as AppActions from '../../state/actions';
 
 @Component({
@@ -11,14 +12,21 @@ import * as AppActions from '../../state/actions';
 export class StartpageComponent implements OnInit {
 
   public studyAreas$ = this.store.select((state) => {
-    console.log("Got metadata: ", state.metaData)
-    return state.metaData
-  })
+    return state.riesgos.metaData
+  });
 
-  constructor(private store: Store<RiesgosState>) {}
+  constructor(
+    private store: Store<{riesgos: RiesgosState}>,
+    private router: Router
+    ) {}
 
   ngOnInit(): void {
     this.store.dispatch(AppActions.scenarioLoadStart());
+  }
+
+  activateScenario(id: ScenarioName) {
+    this.store.dispatch(AppActions.scenarioPicked({ scenario: id }));
+    this.router.navigate(['/map']);
   }
 
 }

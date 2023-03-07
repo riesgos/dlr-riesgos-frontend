@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { RiesgosStep, StepState } from 'src/app/state/state';
 
 @Component({
   selector: 'app-step',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./step.component.css']
 })
 export class StepComponent {
-
+  @Input() step!: RiesgosStep;
 }

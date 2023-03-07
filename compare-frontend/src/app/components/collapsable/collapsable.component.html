@@ -1,0 +1,9 @@
+<div>
+    <ng-template [ngIf]="expanded">
+        <button class="expandButton" (click)="expanded = false">collapse</button>
+        <ng-content></ng-content>
+    </ng-template>
+    <ng-template [ngIf]="!expanded">
+        <button class="expandButton" (click)="expanded = true">expand</button>
+    </ng-template>
+</div>

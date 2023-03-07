@@ -1,10 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked } from './actions';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone } from './state';
+import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { act } from '@ngrx/effects';
 
 
 
@@ -22,6 +21,13 @@ export const reducer = createReducer(
 
   on(scenarioLoadFailure, (state, action) => {
     return state;
+  }),
+
+  on(scenarioPicked, (state, action) => {
+    return {
+      ...state,
+      currentScenario: action.scenario
+    }
   }),
 
   on(stepSelect, (state, action) => {
@@ -54,7 +60,7 @@ export const reducer = createReducer(
 
 
 
-function parseAPIScenariosIntoState(currentScenario: ScenarioName, scenarios: API_ScenarioInfo[]): RiesgosState {
+function parseAPIScenariosIntoState(currentScenario: ScenarioNameOrNone, scenarios: API_ScenarioInfo[]): RiesgosState {
 
   const scenarioData: { [key: string]: RiesgosScenarioState } = {};
   for (const scenario of scenarios) {
@@ -119,48 +125,52 @@ function parseAPIScenariosIntoState(currentScenario: ScenarioName, scenarios: AP
 
 function deriveState(state: WritableDraft<RiesgosState>) {
   for (const scenarioName in state.scenarioData) {
-      const scenario = state.scenarioData[scenarioName];
-      for (const step of scenario.steps) {
-          
-          // doesn't mess with manually-set states (Running)
-          if (step.state.type === StepStateTypes.running) continue;
-
-          const inputIds = step.step.inputs.map(i => i.id);
-          const inputs = inputIds.map(i => scenario.products.find(p => p.id === i)!);
-          const hasMissingInputs = !!inputs.find(i => !(i.value) && !(i.reference) && !(i.options) );
-
-          const outputIds = step.step.outputs.map(o => o.id);
-          const outputs = outputIds.map(o => scenario.products.find(p => p.id === o)!);
-          const hasMissingOutputs = !!outputs.find(o => !(o.value) && !(o.reference) );
-
-          if (!hasMissingOutputs) step.state = new StepStateCompleted();
-          else if (hasMissingInputs) step.state = new StepStateUnavailable();
-          else if (!hasMissingInputs) step.state = new StepStateAvailable();
+      const scenario = state.scenarioData[scenarioName as ScenarioName];
+      if (scenario) {
+        for (const step of scenario.steps) {
+            
+            // doesn't mess with manually-set states (Running)
+            if (step.state.type === StepStateTypes.running) continue;
+  
+            const inputIds = step.step.inputs.map(i => i.id);
+            const inputs = inputIds.map(i => scenario.products.find(p => p.id === i)!);
+            const hasMissingInputs = !!inputs.find(i => !(i.value) && !(i.reference) && !(i.options) );
+  
+            const outputIds = step.step.outputs.map(o => o.id);
+            const outputs = outputIds.map(o => scenario.products.find(p => p.id === o)!);
+            const hasMissingOutputs = !!outputs.find(o => !(o.value) && !(o.reference) );
+  
+            if (!hasMissingOutputs) step.state = new StepStateCompleted();
+            else if (hasMissingInputs) step.state = new StepStateUnavailable();
+            else if (!hasMissingInputs) step.state = new StepStateAvailable();
+        }
       }
   }
   return state;
 }
 
 function removeDownstreamData(stepId: string, state: WritableDraft<RiesgosState>) {
-  const scenario = state.scenarioData[state.currentScenario];
-  const step = scenario.steps.find(s => s.step.id === stepId)!;
-  const outputIds = step.step.outputs.map(o => o.id);
-
-  const queue = new NonRepeatingQueue();
-  outputIds.map(datumId => queue.enqueue(datumId));
-
-  while (queue.data.length > 0) {
-      const datumId = queue.dequeue();
-      if (!datumId) break;
-      const datum = scenario.products.find(p => p.id === datumId)!;
-      if (datum.value) datum.value = undefined;
-      if (datum.reference) datum.reference = undefined;
-
-      const consumerSteps = scenario.steps.filter(s => s.step.inputs.map(i => i.id).includes(datumId));
-      for (const consumerStep of consumerSteps) {
-          const outputIds = consumerStep.step.outputs.map(o => o.id);
-          outputIds.map(datumId => queue.enqueue(datumId));
-      }
+  const scenario = state.scenarioData[state.currentScenario as ScenarioName];
+  if (scenario) {
+    const step = scenario.steps.find(s => s.step.id === stepId)!;
+    const outputIds = step.step.outputs.map(o => o.id);
+  
+    const queue = new NonRepeatingQueue();
+    outputIds.map(datumId => queue.enqueue(datumId));
+  
+    while (queue.data.length > 0) {
+        const datumId = queue.dequeue();
+        if (!datumId) break;
+        const datum = scenario.products.find(p => p.id === datumId)!;
+        if (datum.value) datum.value = undefined;
+        if (datum.reference) datum.reference = undefined;
+  
+        const consumerSteps = scenario.steps.filter(s => s.step.inputs.map(i => i.id).includes(datumId));
+        for (const consumerStep of consumerSteps) {
+            const outputIds = consumerStep.step.outputs.map(o => o.id);
+            outputIds.map(datumId => queue.enqueue(datumId));
+        }
+    }
   }
 
   return state;

@@ -2,7 +2,8 @@ import { API_Step } from "../services/backend.service";
 
 
 
-export type ScenarioName = 'none' | 'Chile' | 'Peru' | 'Ecuador';
+export type ScenarioName = 'Chile' | 'Peru' | 'Ecuador';
+export type ScenarioNameOrNone = 'none' | ScenarioName;
 
 
 export enum StepStateTypes {
@@ -86,7 +87,7 @@ export function isRiesgosScenarioState(obj: object): obj is RiesgosScenarioState
 
 
 export interface RiesgosScenarioMetadata {
-    id: string;
+    id: ScenarioName;
     title: string;
     description: string;
     preview: string;
@@ -94,9 +95,9 @@ export interface RiesgosScenarioMetadata {
 
 
 export interface RiesgosState {
-    currentScenario: ScenarioName;
+    currentScenario: ScenarioNameOrNone;
     scenarioData: {
-        [key: string]: RiesgosScenarioState
+        [key in ScenarioName]?: RiesgosScenarioState
     };
     metaData: RiesgosScenarioMetadata[];
 }

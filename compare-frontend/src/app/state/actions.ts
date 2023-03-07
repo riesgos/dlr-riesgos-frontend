@@ -1,11 +1,12 @@
 import { createAction, props } from '@ngrx/store';
 import { API_ScenarioInfo } from '../services/backend.service';
+import { ScenarioName } from './state';
 
 
 export const scenarioLoadStart = createAction('Scenario load start');
 export const scenarioLoadSuccess = createAction('Scenario load success', props<{ scenarios: API_ScenarioInfo[] }>());
 export const scenarioLoadFailure = createAction('Scenario load failure', props<{ error: any }>());
-export const scenarioPicked = createAction('Scenario picked', props<{ scenario: string }>());
+export const scenarioPicked = createAction('Scenario picked', props<{ scenario: ScenarioName }>());
 export const modePicked = createAction('Mode picked', props<{ mode: string }>());
 
 export const stepSelect = createAction('Step select', props<{ step: string }>());

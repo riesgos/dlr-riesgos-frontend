@@ -1,0 +1,8 @@
+<div class="tabs">
+    <ul class="tabs-list">
+        <li *ngFor="let tab of tabs" (click)="$event.preventDefault(); selectTab(tab);" [class.active]="tab.active">
+            <a href="#">{{tab.title}}</a>
+        </li>
+    </ul>
+    <ng-content></ng-content>
+</div>

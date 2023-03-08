@@ -14,7 +14,7 @@ export class MappageComponent {
     private store: Store<{ riesgos: RiesgosState }>,
     private router: Router
   ) {
-    store.select(state => state.riesgos.currentScenario).subscribe(scn => {
+    this.store.select(state => state.riesgos.currentScenario).subscribe(scn => {
       if (scn === 'none') {
         router.navigate(['/']);
       }

@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { RiesgosState } from 'src/app/state/state';
 
 @Component({
   selector: 'app-mappage',
@@ -7,4 +10,14 @@ import { Component } from '@angular/core';
 })
 export class MappageComponent {
 
+  constructor(
+    private store: Store<{ riesgos: RiesgosState }>,
+    private router: Router
+  ) {
+    store.select(state => state.riesgos.currentScenario).subscribe(scn => {
+      if (scn === 'none') {
+        router.navigate(['/']);
+      }
+    });
+  }
 }

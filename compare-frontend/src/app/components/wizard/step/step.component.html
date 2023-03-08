@@ -1,14 +1,18 @@
 <div class="step">
-    <div class="header">
+    <div class="step-header" (click)="focus()">
         <h4>{{ step.step.title }}</h4>
     </div>
-    <div class="body">
+    <div class="step-body" *ngIf="(focusedStep$ | async) === step.step.id">
         <app-tabs>
-            <app-tab [tabTitle]="'Configuration'"></app-tab>
+            <app-tab [tabTitle]="'Configuration'" *ngIf="step.state.type === 'available'">
+                <app-config [step]="step.step"></app-config>
+            </app-tab>
             <app-tab [tabTitle]="'Description'">
                 <p>{{ step.step.description }}</p>
             </app-tab>
-            <app-tab [tabTitle]="'Layers'"></app-tab>
+            <app-tab [tabTitle]="'Layers'" *ngIf="step.state.type === 'completed'">
+                <app-layers></app-layers>
+            </app-tab>
         </app-tabs>
     </div>
 </div>

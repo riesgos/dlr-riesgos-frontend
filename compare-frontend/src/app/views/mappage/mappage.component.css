@@ -1,8 +1,11 @@
 
-.content-wizard {
-
+.mappage {
+   height: 100%;
+   position: relative;
 }
 
-.content-map {
-    flex-grow: 1;
+.mappage .page-wizard {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
 }

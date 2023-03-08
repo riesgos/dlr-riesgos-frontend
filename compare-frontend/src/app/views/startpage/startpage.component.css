@@ -8,13 +8,10 @@
 }
 
 .card {
-    padding: 1rem;
-    background-color: var(--spectrum-background-base-color);
-    box-shadow:  0 0rem 1.0rem 0.1rem var(--spectrum-gray-400);
 }
 
 .card:hover {
     outline-style: solid;
     outline-width: 1px;
-    outline-color: var(--spectrum-accent-color-800);
+    outline-color: var(--accent-color-800);
 }

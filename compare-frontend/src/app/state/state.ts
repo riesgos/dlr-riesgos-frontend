@@ -93,6 +93,10 @@ export interface RiesgosScenarioMetadata {
     preview: string;
 }
 
+export interface FocusState {
+    focusedStep: string
+}
+
 
 export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
@@ -100,6 +104,7 @@ export interface RiesgosState {
         [key in ScenarioName]?: RiesgosScenarioState
     };
     metaData: RiesgosScenarioMetadata[];
+    focusState: FocusState;
 }
 
 
@@ -107,5 +112,8 @@ export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {},
     metaData: [],
+    focusState: {
+        focusedStep: ''
+    }
 };
 

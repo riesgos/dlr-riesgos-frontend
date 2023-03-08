@@ -15,7 +15,7 @@ export const reducer = createReducer(
   }),
 
   on(scenarioLoadSuccess, (state, action) => {
-    const newState = parseAPIScenariosIntoState(state.currentScenario, action.scenarios);
+    const newState = parseAPIScenariosIntoState(state, action.scenarios);
     return newState;
   }),
 
@@ -31,7 +31,12 @@ export const reducer = createReducer(
   }),
 
   on(stepSelect, (state, action) => {
-    return state;
+    return {
+      ...state,
+      focusState: {
+        focusedStep: action.stepId
+      }
+    };
   }),
 
   on(stepConfig, (state, action) => {
@@ -60,7 +65,7 @@ export const reducer = createReducer(
 
 
 
-function parseAPIScenariosIntoState(currentScenario: ScenarioNameOrNone, scenarios: API_ScenarioInfo[]): RiesgosState {
+function parseAPIScenariosIntoState(currentState: RiesgosState, scenarios: API_ScenarioInfo[]): RiesgosState {
 
   const scenarioData: { [key: string]: RiesgosScenarioState } = {};
   for (const scenario of scenarios) {
@@ -110,9 +115,9 @@ function parseAPIScenariosIntoState(currentScenario: ScenarioNameOrNone, scenari
   }));
 
   const initialState: RiesgosState = {
+    ... currentState,
     metaData, 
     scenarioData,
-    currentScenario
   };
 
   const state = deriveState(initialState);

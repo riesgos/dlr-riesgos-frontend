@@ -20,6 +20,8 @@ import { RiesgosState } from './state/state';
 import { CollapsableComponent } from './components/collapsable/collapsable.component';
 import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab.component';
+import { ConfigComponent } from './components/wizard/step/config/config.component';
+import { LayersComponent } from './components/wizard/step/layers/layers.component';
 
 
 
@@ -33,7 +35,9 @@ import { TabComponent } from './components/tabs/tab.component';
     MappageComponent,
     CollapsableComponent,
     TabsComponent,
-    TabComponent
+    TabComponent,
+    ConfigComponent,
+    LayersComponent
   ],
   imports: [
     BrowserModule,

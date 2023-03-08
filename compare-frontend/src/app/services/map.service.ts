@@ -22,7 +22,8 @@ export class MapService {
         center: [-50, -20],
         zoom: 4
       }),
-      target: nativeElement
+      target: nativeElement,
+      controls: []
     });
   }
 }

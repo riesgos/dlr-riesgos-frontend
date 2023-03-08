@@ -35,22 +35,28 @@ export const step: Step = {
     description: 'QuakeLedgerDescription',
     inputs: [{
         id: 'eqCatalogType',
-        options: ['observed', 'expert']
+        options: ['observed', 'expert'],
+        default: 'observed'
     }, {
         id: 'eqMmin',
-        options: [] // empty array: interpreted by frontend as configurable, but without options or default value.
+        options: [], // empty array: interpreted by frontend as configurable, but without options or default value.
+        default: '6.0'
     }, {
         id: 'eqMmax',
-        options: []
+        options: [],
+        default: '9.5'
     }, {
         id: 'eqZmin',
-        options: []
+        options: [],
+        default: '0'
     }, {
         id: 'eqZmax',
-        options: []
+        options: [],
+        default: '100'
     }, {
         id: 'eqP',
-        options: []
+        options: [],
+        default: '0.0'
     }],
     outputs: [{
         id: 'availableEqs'

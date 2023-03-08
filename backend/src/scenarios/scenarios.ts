@@ -3,11 +3,13 @@ import { FileStorage } from '../storage/fileStorage';
 
 export interface DataDescription {
     id: string,
-    options?: string[]
+    options?: string[],
+    default?: string
 };
 
 export interface UserSelection extends DataDescription {
-    options: string[]
+    options: string[],
+    default?: string
 }
 
 export function isUserSelection(a: DataDescription): a is UserSelection {

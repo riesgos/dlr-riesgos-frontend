@@ -1,33 +1,14 @@
-.main {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-.header {
-    background: var(--spectrum-accent-color-1400);
-    display: flex;
-    align-items: center;
-}
-
 .header h1 {
-    color: var(--spectrum-accent-color-100);
+    color: var(--accent-color-100);
     padding: 0 1rem 0 1rem;
 }
 
 .header .nav-item {
-    padding: 2rem;
-    color: var(--spectrum-accent-color-200);
+    padding: 1.9rem;
+    color: var(--accent-color-200);
 }
 
 .header .nav-item.active {
-    background-color: var(--spectrum-accent-color-1200);
-}
-
-
-.content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: row;
+    background-color: var(--accent-color-1200);
 }
 

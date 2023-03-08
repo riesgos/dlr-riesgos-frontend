@@ -9,7 +9,7 @@ export const scenarioLoadFailure = createAction('Scenario load failure', props<{
 export const scenarioPicked = createAction('Scenario picked', props<{ scenario: ScenarioName }>());
 export const modePicked = createAction('Mode picked', props<{ mode: string }>());
 
-export const stepSelect = createAction('Step select', props<{ step: string }>());
+export const stepSelect = createAction('Step select', props<{ stepId: string }>());
 export const stepConfig = createAction('Step config', props<{ config: any }>());
 export const stepExecStart = createAction('Step exec start', props<{ step: string }>());
 export const stepExecSuccess = createAction('Step exec success', props<{ newState: any }>());

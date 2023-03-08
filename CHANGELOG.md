@@ -8,8 +8,13 @@
     And for a dynamicPopupComponent we need to return a ProductCustomLayer, not a VectorLayerProduct.
 
 ## Features
+- created new frontend: allows to compare two scenarios side-by-side.
+    - new ui without clarity
+    - layercontrol and config-wizard merged
+- backend now provides optional default values for steps' inputs.
 
 ## Bug fixes
+- removed superfluous console-logs
 
 # [2.0.2](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.2) (Feb. 2 2023) Redactional 
 

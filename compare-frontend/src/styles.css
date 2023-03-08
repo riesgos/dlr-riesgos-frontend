@@ -1,4 +1,82 @@
 /* You can add global styles to this file, and also import other style files */
 body {
+    --gray-100: #eee9e9;
+    --gray-400: #c3c3c3;
+    --gray-600: #a6a3a3;
+    --accent-color-100: #c4d7ff;
+    --accent-color-200: #84a5eb;
+    --accent-color-800: #647fba;
+    --accent-color-1200: #3d4c6e;
+    --accent-color-1400: #2c3851;
     margin: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+
+
+/*
+main
+┌─────────────────────────────────────────────┐
+│┼───────────────────────────────────────────┼│
+││header                                     ││
+││                                           ││
+│┼───────────────────────────────────────────┼│
+│┼───────────────────────────────────────────┼│
+││content                                    ││
+││ ┌───────────────────────────────────────┐ ││
+││ │ page                                  │ ││
+││ │                                       │ ││
+││ │                                       │ ││
+││ │                                       │ ││
+││ │                                       │ ││
+││ │                                       │ ││
+││ │                                       │ ││
+││ └───────────────────────────────────────┘ ││
+│┼───────────────────────────────────────────┼│
+└─────────────────────────────────────────────┘
+*/
+
+
+.main {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+}
+
+.main .header {
+    height: 5rem;
+    background: var(--accent-color-1400);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+.main .content {
+    position: relative;
+    height: calc(100vh - 5rem);
+}
+
+.main .content .page {
+    height: 100%;
+    background-color: var(--gray-400);
+}
+
+
+
+
+
+
+.box {
+    background: var(--gray-100);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    outline: var(--gray-400);
+    outline-width: 1px;
+    outline-style: solid;
+}
+
+.hasShadow {
+    box-shadow:  0 0rem 1.0rem 0.1rem var(--gray-600);
 }

@@ -103,6 +103,8 @@ export class TabsComponent implements AfterContentInit {
         this.tabs.toArray().forEach(tab => tab.active = false);
 
         // activate the tab the user has clicked on.
-        tab.active = true;
+        setTimeout(() => { // to prevent expression-changed-after-checked
+          tab.active = true;
+        }, 0);
     }
 }

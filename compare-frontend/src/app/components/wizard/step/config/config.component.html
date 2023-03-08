@@ -1,3 +1,10 @@
 <form [formGroup]="formGroup">
+    <div class="formElement" *ngFor="let input of step.inputs">
+        <label [for]="input.id">{{ input.id }}</label>
+        <select *ngIf="input.options && input.options.length > 0" [formControlName]="input.id" [name]="input.id" [id]="input.id">
+            <option *ngFor="let option of input.options" [value]="option">{{ option }}</option>
+        </select>
+        <input *ngIf="!input.options || input.options.length === 0" [formControlName]="input.id" [value]="input.default" />
+    </div>
     <button (click)="execute()">Execute</button>
 </form>

@@ -39,7 +39,19 @@ export const reducer = createReducer(
     };
   }),
 
-  on(stepConfig, (state, action) => {
+  immerOn(stepConfig, (state, action) => {
+    const currentScenario = state.currentScenario;
+    if (currentScenario === 'none') return state;
+    const scenarioData = state.scenarioData[currentScenario];
+    if (!scenarioData) return state;
+    for (const productId in action.config.values) {
+      const productValue = action.config.values[productId];
+      for (const product of scenarioData.products) {
+        if (product.id === productId) {
+          product.value = productValue;
+        }
+      }
+    }
     return state;
   }),
 

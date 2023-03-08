@@ -1,0 +1,15 @@
+form label {
+    color: var(--gray-1200);
+    padding: 0 0.5rem 0 0;
+}
+
+form .formElement {
+    padding: 0.25rem;
+}
+
+form input {
+    border: none;
+    background-color: var(--gray-100);
+    border-bottom: 2px solid var(--gray-400);
+    float: right;
+}

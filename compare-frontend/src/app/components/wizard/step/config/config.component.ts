@@ -22,11 +22,14 @@ export class ConfigComponent implements OnInit {
   }
 
   public execute() {
-    this.store.dispatch(AppActions.stepConfig({ 
+    this.store.dispatch(AppActions.stepConfig({
       config: {
         stepId: this.step.id,
         values: this.formGroup.value
       } 
     }));
+    setTimeout(() => {
+      this.store.dispatch(AppActions.stepExecStart({ step: this.step.id }));
+    }, 0);
   }
 }

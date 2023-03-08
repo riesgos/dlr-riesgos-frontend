@@ -25,6 +25,12 @@ export class Effects {
         );
     });
 
+    private executeStep$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(AppActions.stepExecStart)
+        )
+    });
+
     constructor(
         private actions$: Actions,
         private configSvc: ConfigService,

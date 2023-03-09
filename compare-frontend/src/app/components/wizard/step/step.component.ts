@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RiesgosState, RiesgosStep } from 'src/app/state/state';
+import { RiesgosProduct, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 
 @Component({
@@ -10,7 +10,11 @@ import * as AppActions from 'src/app/state/actions';
 })
 export class StepComponent {
   
+  @Input() scenario!: ScenarioName;
   @Input() step!: RiesgosStep;
+  @Input() inputs!: RiesgosProduct[];
+  @Input() outputs!: RiesgosProduct[];
+
   public focusedStep$ = this.store.select(state => {
     return state.riesgos.focusState.focusedStep;
   });

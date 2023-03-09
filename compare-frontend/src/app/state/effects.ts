@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from "@ngrx/effects";
-import { from, of } from "rxjs";
-import { map, mergeMap, switchMap } from "rxjs/operators";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { of } from "rxjs";
+import { catchError, combineLatest, combineLatestWith, map, mergeMap, switchMap, take } from "rxjs/operators";
 import { API_Datum, API_DatumReference, API_ScenarioState, BackendService, isApiDatum } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
 import { MapService } from "../services/map.service";
 import * as AppActions from "./actions";
-import { RiesgosProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct } from "./state";
+import { RiesgosProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosState } from "./state";
 
 
 @Injectable()
@@ -27,12 +28,40 @@ export class Effects {
 
     private executeStep$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType(AppActions.stepExecStart)
+            ofType(AppActions.stepExecStart),
+
+            // fetch current data, convert, execute, and convert back
+            
+            mergeMap(action => of(action).pipe(combineLatestWith(
+                this.store$.select(state => state.riesgos.scenarioData[action.scenario]?.products).pipe(take(1))
+            ))),
+
+            map(([action, products]) => ({
+                apiState: convertFrontendDataToApiState(products!),
+                action: action
+            })),
+
+            mergeMap(({apiState, action}) => of(action).pipe(
+                combineLatestWith(this.backendSvc.execute(action.scenario, action.step, apiState))
+            )),
+            
+            map(([action, newApiState]) => ({
+                newData: convertApiDataToRiesgosData(newApiState.data), 
+                action: action
+            })),
+
+            map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, step: action.step, newData })),
+
+            catchError((err, caughtObservable) => {
+                const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+                return of(AppActions.stepExecFailure({ scenario: err.scenarioId, step: err.stepId, error: errorMessage }));
+            })
         )
     });
 
     constructor(
         private actions$: Actions,
+        private store$: Store<{ riesgos: RiesgosState }>,
         private configSvc: ConfigService,
         private backendSvc: BackendService,
         private dataSvc: DataService,

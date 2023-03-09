@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { RiesgosState, RiesgosStep } from 'src/app/state/state';
+import { RiesgosProduct, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
+
 
 @Component({
   selector: 'app-config',
@@ -10,26 +11,33 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./config.component.css']
 })
 export class ConfigComponent implements OnInit {
+
+  @Input() scenario!: ScenarioName;
   @Input() step!: RiesgosStep["step"];
+  @Input() products!: RiesgosProduct[];
   public formGroup: FormGroup = new FormGroup({});
 
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
     for (const input of this.step.inputs) {
-      this.formGroup.addControl(input.id, new FormControl(input.default || ''));
+      const id = input.id;
+      const existingValue = this.products.find(p => p.id === id)?.value;
+      const existingDefault = input.default;
+      this.formGroup.addControl(id, new FormControl(existingValue || existingDefault || ''));
     }
+
+    this.formGroup.valueChanges.subscribe(newVal => {
+      this.store.dispatch(AppActions.stepConfig({
+        config: {
+          stepId: this.step.id,
+          values: newVal
+        } 
+      }));
+    })
   }
 
   public execute() {
-    this.store.dispatch(AppActions.stepConfig({
-      config: {
-        stepId: this.step.id,
-        values: this.formGroup.value
-      } 
-    }));
-    setTimeout(() => {
-      this.store.dispatch(AppActions.stepExecStart({ step: this.step.id }));
-    }, 0);
+    this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, step: this.step.id }));
   }
 }

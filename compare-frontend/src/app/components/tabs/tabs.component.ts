@@ -29,7 +29,7 @@ export class TabsComponent implements AfterContentInit {
 
     selectTab(tab: TabComponent) {
         if (tab === undefined) {
-            console.log('No tab to select');
+            console.error('No tab to select');
             return;
         }
 

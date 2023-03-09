@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone } from './state';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone, StepStateRunning, StepStateError } from './state';
 import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 
@@ -55,15 +55,36 @@ export const reducer = createReducer(
     return state;
   }),
 
-  on(stepExecStart, (state, action) => {
+  immerOn(stepExecStart, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const step = scenarioData.steps.find(s => s.step.id === action.step)!;
+    step.state = new StepStateRunning();
     return state;
   }),
 
-  on(stepExecSuccess, (state, action) => {
+  immerOn(stepExecSuccess, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const step = scenarioData.steps.find(s => s.step.id === action.step)!;
+    step.state = new StepStateCompleted();
+
+    for (const newProduct of action.newData) {
+      const oldProduct = scenarioData.products.find(p => p.id === newProduct.id);
+      if (oldProduct) {
+        oldProduct.options = newProduct.options;
+        oldProduct.reference = newProduct.reference;
+        oldProduct.value = newProduct.value;
+      } else {
+        scenarioData.products.push(newProduct);
+      }
+    }
+
     return state;
   }),
 
-  on(stepExecFailure, (state, action) => {
+  immerOn(stepExecFailure, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const step = scenarioData.steps.find(s => s.step.id === action.step)!;
+    step.state = new StepStateError(action.error);
     return state;
   }),
 

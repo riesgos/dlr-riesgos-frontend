@@ -1,0 +1,10 @@
+{
+    "allowedScenarios": [
+        "Peru",
+        "Chile",
+        "Ecuador"
+    ],
+    "production": true,
+    "backendUrl": "https://riesgos.dlr.de/backend",
+    "proxyUrl": "https://riesgos.dlr.de/proxy"
+}

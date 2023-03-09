@@ -1,0 +1,17 @@
+<div class="page">
+    <div class="studyareas" *ngIf="studyAreas$ | async as studyAreas">
+        <div class="studyarea" *ngFor="let studyArea of studyAreas">
+    
+            <div class="card box hasShadow" (click)="activateScenario(studyArea.id)">
+                <div class="cardBody">
+                    <img [src]="studyArea.preview">
+                </div>
+                <div class="cardFooter">
+                    <h4>{{ studyArea.id }}</h4>
+                    <p>{{ studyArea.description }}</p>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+</div>

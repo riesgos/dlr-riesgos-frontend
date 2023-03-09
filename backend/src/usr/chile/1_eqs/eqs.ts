@@ -10,7 +10,6 @@ async function loadEqs(inputs: Datum[]) {
     const mmax = inputs.find(i => i.id === 'eqMmaxChile')!.value;
     const zmin = inputs.find(i => i.id === 'eqZminChile')!.value;
     const zmax = inputs.find(i => i.id === 'eqZmaxChile')!.value;
-    const p    = inputs.find(i => i.id === 'eqPChile')!.value;
 
     const bbox: Bbox = {
         crs: 'EPSG:4326',
@@ -18,7 +17,7 @@ async function loadEqs(inputs: Datum[]) {
         urlon: -70.5, urlat: -29.0,
     };
     
-    const result = await getAvailableEqs(catalogType, bbox, mmin, mmax, zmin, zmax, p);
+    const result = await getAvailableEqs(catalogType, bbox, mmin, mmax, zmin, zmax);
 
     return [{
         id: 'availableEqsChile',
@@ -46,9 +45,6 @@ export const step: Step = {
         options: []
     }, {
         id: 'eqZmaxChile',
-        options: []
-    }, {
-        id: 'eqPChile',
         options: []
     }],
     outputs: [{

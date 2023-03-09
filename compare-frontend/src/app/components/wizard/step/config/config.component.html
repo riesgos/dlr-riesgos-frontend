@@ -1,10 +1,17 @@
 <form [formGroup]="formGroup">
     <div class="formElement" *ngFor="let input of step.inputs">
-        <label [for]="input.id">{{ input.id }}</label>
-        <select *ngIf="input.options && input.options.length > 0" [formControlName]="input.id" [name]="input.id" [id]="input.id">
-            <option *ngFor="let option of input.options" [value]="option">{{ option }}</option>
-        </select>
-        <input *ngIf="!input.options || input.options.length === 0" [formControlName]="input.id" [value]="input.default" />
+        <!-- 
+            Kind of flaky: 
+            We interpret any input with an options-array as user-configurable, 
+            and all others as outputs of upstream processes. 
+        -->
+        <ng-container *ngIf="input.options">
+            <label [for]="input.id">{{ input.id }}</label>
+            <select *ngIf="input.options.length > 0" [formControlName]="input.id" [name]="input.id" [id]="input.id">
+                <option *ngFor="let option of input.options" [value]="option">{{ option }}</option>
+            </select>
+            <input *ngIf="input.options.length === 0" [formControlName]="input.id" />
+        </ng-container>
     </div>
     <button [disabled]="!allValuesSet()" (click)="execute()">Execute</button>
 </form>

@@ -78,6 +78,17 @@ export const reducer = createReducer(
       }
     }
 
+    // // special case: when availableEqs obtained, use them as new options for eqSelection
+    // // @TODO: the backend could also do this - 
+    // //        just have the step 'Eqs' also return the output 'userChoice'.
+    // if (action.scenario === 'Chile' || action.scenario === 'Peru') {
+    //   if (action.step === 'Eqs') {
+    //     const avblEqs = action.newData.find(p => p.id === 'availableEqs')!;
+    //     const userChoice = scenarioData.products.find(p => p.id === 'userChoice')!;
+    //     userChoice.options = avblEqs.reference
+    //   }
+    // }
+
     const newState = deriveState(state);
     return newState;
   }),

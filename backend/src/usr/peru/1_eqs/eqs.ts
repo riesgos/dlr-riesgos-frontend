@@ -10,7 +10,6 @@ async function loadEqs(inputs: Datum[]) {
     const mmax = inputs.find(i => i.id === 'eqMmax')!.value;
     const zmin = inputs.find(i => i.id === 'eqZmin')!.value;
     const zmax = inputs.find(i => i.id === 'eqZmax')!.value;
-    const p    = inputs.find(i => i.id === 'eqP')!.value;
 
 
     const bbox: Bbox = {
@@ -19,7 +18,7 @@ async function loadEqs(inputs: Datum[]) {
         urlon: -68.5, urlat: -0.6
     };
     
-    const result = await getAvailableEqs(catalogType, bbox, mmin, mmax, zmin, zmax, p);
+    const result = await getAvailableEqs(catalogType, bbox, mmin, mmax, zmin, zmax);
 
     return [{
         id: 'availableEqs',
@@ -53,10 +52,6 @@ export const step: Step = {
         id: 'eqZmax',
         options: [],
         default: '100'
-    }, {
-        id: 'eqP',
-        options: [],
-        default: '0.0'
     }],
     outputs: [{
         id: 'availableEqs'

@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { of } from "rxjs";
-import { catchError, combineLatest, combineLatestWith, map, mergeMap, switchMap, take } from "rxjs/operators";
+import { forkJoin, of } from "rxjs";
+import { catchError, combineLatestWith, filter, map, mergeMap, switchMap, take } from "rxjs/operators";
 import { API_Datum, API_DatumReference, API_ScenarioState, BackendService, isApiDatum } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
 import { MapService } from "../services/map.service";
 import * as AppActions from "./actions";
-import { RiesgosProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosState } from "./state";
+import { RiesgosProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosState, RiesgosStep } from "./state";
 
 
 @Injectable()
@@ -55,6 +55,45 @@ export class Effects {
             catchError((err, caughtObservable) => {
                 const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
                 return of(AppActions.stepExecFailure({ scenario: err.scenarioId, step: err.stepId, error: errorMessage }));
+            })
+        )
+    });
+
+
+    private postExecuteEffects$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(AppActions.stepExecSuccess),
+            filter(action => action.scenario === 'Peru' || action.scenario === 'Chile'),
+            filter(action => action.step === 'Eqs'),
+            switchMap(action => {
+                const availableEqsRef = action.newData.find(d => d.id === 'availableEqs')!;
+                const resolvedAvailableEqs$ = this.dataSvc.resolveReference(availableEqsRef);
+                const eqSelectionStep$ = this.store$.select(state => state.riesgos.scenarioData[action.scenario]!.steps.find(s => s.step.id === 'selectEq')!).pipe(take(1));
+                return forkJoin([of(action), resolvedAvailableEqs$, eqSelectionStep$]);
+            }),
+            map(([action, availableEqs, eqSelectionStep]) => {
+                // var userChoice = eqSelectionStep.step.inputs.find((input, index) => input.id === 'userChoice')!;
+                // userChoice.options = availableEqs.value.features;
+                // return AppActions.stepUpdate({ scenario: action.scenario, step: eqSelectionStep });
+                const newInputs = [];
+                for (const input of eqSelectionStep.step.inputs) {
+                    if (input.id === 'userChoice') {
+                        newInputs.push({
+                            ...input,
+                            options: availableEqs.value.features
+                        });
+                    } else {
+                        newInputs.push(input);
+                    }
+                }
+                const newEqSelectionStep = {
+                    ... eqSelectionStep,
+                    step: {
+                        ... eqSelectionStep.step,
+                        inputs: newInputs
+                    }
+                }
+                return AppActions.stepUpdate({ scenario: action.scenario, step: newEqSelectionStep });
             })
         )
     });

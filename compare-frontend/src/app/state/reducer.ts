@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone, StepStateRunning, StepStateError } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked } from './actions';
+import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 
 
@@ -78,27 +78,23 @@ export const reducer = createReducer(
       }
     }
 
-    // // special case: when availableEqs obtained, use them as new options for eqSelection
-    // // @TODO: the backend could also do this - 
-    // //        just have the step 'Eqs' also return the output 'userChoice'.
-    // if (action.scenario === 'Chile' || action.scenario === 'Peru') {
-    //   if (action.step === 'Eqs') {
-    //     const avblEqs = action.newData.find(p => p.id === 'availableEqs')!;
-    //     const userChoice = scenarioData.products.find(p => p.id === 'userChoice')!;
-    //     userChoice.options = avblEqs.reference
-    //   }
-    // }
-
     const newState = deriveState(state);
     return newState;
   }),
 
-immerOn(stepExecFailure, (state, action) => {
-  const scenarioData = state.scenarioData[action.scenario]!;
-  const step = scenarioData.steps.find(s => s.step.id === action.step)!;
-  step.state = new StepStateError(action.error);
-  return state;
-}),
+  immerOn(stepExecFailure, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const step = scenarioData.steps.find(s => s.step.id === action.step)!;
+    step.state = new StepStateError(action.error);
+    return state;
+  }),
+
+  immerOn(stepUpdate, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const step = scenarioData.steps.find(s => s.step.id === action.step.step.id)!;
+    step.step = action.step.step;
+    return state;
+  }),
 
   on(altParaPicked, (state, action) => {
     return state;

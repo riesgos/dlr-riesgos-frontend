@@ -13,12 +13,17 @@
     - layercontrol and config-wizard merged
 - backend now provides optional default values for steps' inputs.
 
+
+
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  
 
 ## Bug fixes
 - removed superfluous console-logs
 - literal parameters of eq-catalog were not accepted
     - because no `userDataProvided` action triggered when user edits literal values
+
+
+
 
 # [2.0.2](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.2) (Feb. 2 2023) Redactional 
 

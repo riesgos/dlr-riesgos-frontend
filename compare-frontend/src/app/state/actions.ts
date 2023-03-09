@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { RiesgosProduct, ScenarioName } from './state';
+import { RiesgosProduct, RiesgosStep, ScenarioName } from './state';
 
 
 export const scenarioLoadStart = createAction('Scenario load start');
@@ -14,5 +14,7 @@ export const stepConfig = createAction('Step config', props<{ config: { stepId: 
 export const stepExecStart = createAction('Step exec start', props<{ scenario: ScenarioName, step: string }>());
 export const stepExecSuccess = createAction('Step exec success', props<{ scenario: ScenarioName, step: string, newData: RiesgosProduct[] }>());
 export const stepExecFailure = createAction('Step exec failure', props<{ scenario: ScenarioName, step: string, error: any }>());
+
+export const stepUpdate = createAction('Change to step data', props<{ scenario: ScenarioName, step: RiesgosStep }>());
 
 export const altParaPicked = createAction('Parameter for comparison picked', props<{ step: string, para: any }>());

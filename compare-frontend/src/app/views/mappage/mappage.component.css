@@ -1,0 +1,11 @@
+
+.mappage {
+   height: 100%;
+   position: relative;
+}
+
+.mappage .page-wizard {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+}

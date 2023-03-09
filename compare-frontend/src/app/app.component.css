@@ -1,0 +1,14 @@
+.header h1 {
+    color: var(--accent-color-100);
+    padding: 0 1rem 0 1rem;
+}
+
+.header .nav-item {
+    padding: 1.9rem;
+    color: var(--accent-color-200);
+}
+
+.header .nav-item.active {
+    background-color: var(--accent-color-1200);
+}
+

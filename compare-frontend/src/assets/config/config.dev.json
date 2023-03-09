@@ -1,0 +1,10 @@
+{
+    "allowedScenarios": [
+        "Peru",
+        "Chile",
+        "Ecuador"
+    ],
+    "production": false,
+    "backendUrl": "http://localhost:8008",
+    "proxyUrl": ""
+}

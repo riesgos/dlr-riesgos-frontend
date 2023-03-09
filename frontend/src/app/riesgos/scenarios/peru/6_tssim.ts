@@ -14,6 +14,9 @@ export class TsWmsPeru implements MappableProductAugmenter {
     }
 
     makeProductMappable(product: RiesgosProductResolved): WmsLayerProduct[] {
+        // download: access tiff from wcs instead of wms
+        // 
+
         return [{
             ...product,
             description: {
@@ -26,7 +29,7 @@ export class TsWmsPeru implements MappableProductAugmenter {
                     if (fi.features && fi.features[0] && fi.features[0].properties['GRAY_INDEX']) {
                         return createKeyValueTableHtml('Tsunami', {'mwh': toDecimalPlaces(fi.features[0].properties['GRAY_INDEX'], 2) + ' m'}, 'medium');
                     }
-                }
+                },
             },
         }]
     }

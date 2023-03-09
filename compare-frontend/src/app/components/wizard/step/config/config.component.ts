@@ -27,6 +27,14 @@ export class ConfigComponent implements OnInit {
       this.formGroup.addControl(id, new FormControl(existingValue || existingDefault || ''));
     }
 
+    // one-time update (to make sure no values are undefined)
+    this.store.dispatch(AppActions.stepConfig({
+      config: {
+        stepId: this.step.id,
+        values: this.formGroup.value
+      } 
+    }));
+
     this.formGroup.valueChanges.subscribe(newVal => {
       this.store.dispatch(AppActions.stepConfig({
         config: {
@@ -39,5 +47,13 @@ export class ConfigComponent implements OnInit {
 
   public execute() {
     this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, step: this.step.id }));
+  }
+
+  public allValuesSet() {
+    for (const key in this.formGroup.value) {
+      const value = this.formGroup.value[key];
+      if (value === '' || value === undefined) return false;
+    }
+    return true;
   }
 }

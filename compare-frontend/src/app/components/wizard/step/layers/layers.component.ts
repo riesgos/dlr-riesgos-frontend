@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { RiesgosProduct } from 'src/app/state/state';
 
 @Component({
   selector: 'app-layers',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
 })
 export class LayersComponent {
 
+  @Input() products!: RiesgosProduct[];
+  
 }

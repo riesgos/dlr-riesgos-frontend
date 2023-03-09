@@ -6,5 +6,5 @@
         </select>
         <input *ngIf="!input.options || input.options.length === 0" [formControlName]="input.id" [value]="input.default" />
     </div>
-    <button (click)="execute()">Execute</button>
+    <button [disabled]="!allValuesSet()" (click)="execute()">Execute</button>
 </form>

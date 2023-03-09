@@ -70,23 +70,24 @@ export const reducer = createReducer(
     for (const newProduct of action.newData) {
       const oldProduct = scenarioData.products.find(p => p.id === newProduct.id);
       if (oldProduct) {
-        oldProduct.options = newProduct.options;
-        oldProduct.reference = newProduct.reference;
-        oldProduct.value = newProduct.value;
+        if (newProduct.options) oldProduct.options = newProduct.options;
+        if (newProduct.reference) oldProduct.reference = newProduct.reference;
+        if (newProduct.value) oldProduct.value = newProduct.value;
       } else {
         scenarioData.products.push(newProduct);
       }
     }
 
-    return state;
+    const newState = deriveState(state);
+    return newState;
   }),
 
-  immerOn(stepExecFailure, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]!;
-    const step = scenarioData.steps.find(s => s.step.id === action.step)!;
-    step.state = new StepStateError(action.error);
-    return state;
-  }),
+immerOn(stepExecFailure, (state, action) => {
+  const scenarioData = state.scenarioData[action.scenario]!;
+  const step = scenarioData.steps.find(s => s.step.id === action.step)!;
+  step.state = new StepStateError(action.error);
+  return state;
+}),
 
   on(altParaPicked, (state, action) => {
     return state;
@@ -103,53 +104,53 @@ function parseAPIScenariosIntoState(currentState: RiesgosState, scenarios: API_S
   const scenarioData: { [key: string]: RiesgosScenarioState } = {};
   for (const scenario of scenarios) {
 
-      const steps: RiesgosStep[] = [];
-      const products: RiesgosProduct[] = [];
+    const steps: RiesgosStep[] = [];
+    const products: RiesgosProduct[] = [];
 
-      for (const step of scenario.steps) {
-          steps.push({
-              step: step,
-              state: new StepStateUnavailable()
-          })
+    for (const step of scenario.steps) {
+      steps.push({
+        step: step,
+        state: new StepStateUnavailable()
+      })
 
-          for (const input of step.inputs) {
-              if (!products.find(p => p.id === input.id)) {
-                  products.push({
-                      id: input.id
-                  });
-              }
-              if (input.options) {
-                  const product = products.find(p => p.id === input.id);
-                  if (!product) throw Error(`No such product: ${input.id}`);
-                  product.options = input.options;
-              }
-          }
-          for (const output of step.outputs) {
-              if (!products.find(p => p.id === output.id)) {
-                  products.push({
-                      id: output.id
-                  });
-              }
-          }
+      for (const input of step.inputs) {
+        if (!products.find(p => p.id === input.id)) {
+          products.push({
+            id: input.id
+          });
+        }
+        if (input.options) {
+          const product = products.find(p => p.id === input.id);
+          if (!product) throw Error(`No such product: ${input.id}`);
+          product.options = input.options;
+        }
       }
-
-      scenarioData[scenario.id] = {
-          scenario: scenario.id as ScenarioName,
-          products: products,
-          steps: steps
+      for (const output of step.outputs) {
+        if (!products.find(p => p.id === output.id)) {
+          products.push({
+            id: output.id
+          });
+        }
       }
+    }
+
+    scenarioData[scenario.id] = {
+      scenario: scenario.id as ScenarioName,
+      products: products,
+      steps: steps
+    }
   }
 
   const metaData = scenarios.map(s => ({
-      id: s.id,
-      description: s.description,
-      title: s.id,
-      preview: ''
+    id: s.id,
+    description: s.description,
+    title: s.id,
+    preview: ''
   }));
 
   const initialState: RiesgosState = {
-    ... currentState,
-    metaData, 
+    ...currentState,
+    metaData,
     scenarioData,
   };
 
@@ -163,26 +164,26 @@ function parseAPIScenariosIntoState(currentState: RiesgosState, scenarios: API_S
 
 function deriveState(state: WritableDraft<RiesgosState>) {
   for (const scenarioName in state.scenarioData) {
-      const scenario = state.scenarioData[scenarioName as ScenarioName];
-      if (scenario) {
-        for (const step of scenario.steps) {
-            
-            // doesn't mess with manually-set states (Running)
-            if (step.state.type === StepStateTypes.running) continue;
-  
-            const inputIds = step.step.inputs.map(i => i.id);
-            const inputs = inputIds.map(i => scenario.products.find(p => p.id === i)!);
-            const hasMissingInputs = !!inputs.find(i => !(i.value) && !(i.reference) && !(i.options) );
-  
-            const outputIds = step.step.outputs.map(o => o.id);
-            const outputs = outputIds.map(o => scenario.products.find(p => p.id === o)!);
-            const hasMissingOutputs = !!outputs.find(o => !(o.value) && !(o.reference) );
-  
-            if (!hasMissingOutputs) step.state = new StepStateCompleted();
-            else if (hasMissingInputs) step.state = new StepStateUnavailable();
-            else if (!hasMissingInputs) step.state = new StepStateAvailable();
-        }
+    const scenario = state.scenarioData[scenarioName as ScenarioName];
+    if (scenario) {
+      for (const step of scenario.steps) {
+
+        // doesn't mess with manually-set states (Running)
+        if (step.state.type === StepStateTypes.running) continue;
+
+        const inputIds = step.step.inputs.map(i => i.id);
+        const inputs = inputIds.map(i => scenario.products.find(p => p.id === i)!);
+        const hasMissingInputs = !!inputs.find(i => !(i.value) && !(i.reference) && !(i.options));
+
+        const outputIds = step.step.outputs.map(o => o.id);
+        const outputs = outputIds.map(o => scenario.products.find(p => p.id === o)!);
+        const hasMissingOutputs = !!outputs.find(o => !(o.value) && !(o.reference));
+
+        if (!hasMissingOutputs) step.state = new StepStateCompleted();
+        else if (hasMissingInputs) step.state = new StepStateUnavailable();
+        else if (!hasMissingInputs) step.state = new StepStateAvailable();
       }
+    }
   }
   return state;
 }
@@ -192,22 +193,22 @@ function removeDownstreamData(stepId: string, state: WritableDraft<RiesgosState>
   if (scenario) {
     const step = scenario.steps.find(s => s.step.id === stepId)!;
     const outputIds = step.step.outputs.map(o => o.id);
-  
+
     const queue = new NonRepeatingQueue();
     outputIds.map(datumId => queue.enqueue(datumId));
-  
+
     while (queue.data.length > 0) {
-        const datumId = queue.dequeue();
-        if (!datumId) break;
-        const datum = scenario.products.find(p => p.id === datumId)!;
-        if (datum.value) datum.value = undefined;
-        if (datum.reference) datum.reference = undefined;
-  
-        const consumerSteps = scenario.steps.filter(s => s.step.inputs.map(i => i.id).includes(datumId));
-        for (const consumerStep of consumerSteps) {
-            const outputIds = consumerStep.step.outputs.map(o => o.id);
-            outputIds.map(datumId => queue.enqueue(datumId));
-        }
+      const datumId = queue.dequeue();
+      if (!datumId) break;
+      const datum = scenario.products.find(p => p.id === datumId)!;
+      if (datum.value) datum.value = undefined;
+      if (datum.reference) datum.reference = undefined;
+
+      const consumerSteps = scenario.steps.filter(s => s.step.inputs.map(i => i.id).includes(datumId));
+      for (const consumerStep of consumerSteps) {
+        const outputIds = consumerStep.step.outputs.map(o => o.id);
+        outputIds.map(datumId => queue.enqueue(datumId));
+      }
     }
   }
 
@@ -218,15 +219,15 @@ class NonRepeatingQueue {
   alreadySeen: string[] = [];
   data: string[] = [];
 
-  constructor () {}
+  constructor() { }
 
   enqueue(datum: string) {
-      if (this.alreadySeen.includes(datum)) return;
-      this.alreadySeen.push(datum);
-      this.data.push(datum);
+    if (this.alreadySeen.includes(datum)) return;
+    this.alreadySeen.push(datum);
+    this.data.push(datum);
   }
 
   dequeue() {
-      return this.data.shift();
+    return this.data.shift();
   }
 }

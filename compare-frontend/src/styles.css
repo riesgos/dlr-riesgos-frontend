@@ -1,6 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+}
+
+
 body {
-    --white: #f2eded;;
+    --white: #f2eded;
+    --success-light: #a1fced;
+    --notice-light: #fff2b9;
+    --warning-light: #e38d8d;
+    --success: #7bf4e0;
+    --notice: #e3d286;
+    --warning: #b64c4c;
+    --success-dark: #4ac3af;
+    --notice-dark: #b5a24f;
+    --warning-dark: #7d1f1f;
     --gray-100: #eee9e9;
     --gray-400: #c3c3c3;
     --gray-600: #a6a3a3;
@@ -15,6 +28,10 @@ body {
     box-sizing: border-box;
 }
 
+
+h1, h2, h3, h4, ul {
+    margin: 0;
+}
 
 
 /*
@@ -75,6 +92,11 @@ button {
     padding: 0.3rem;
     color: var(--accent-color-100);
 }
+button:disabled {
+    color: var(--gray-100);
+    background: var(--gray-400);
+    cursor: not-allowed;
+}
 
 
 
@@ -85,6 +107,7 @@ button {
     outline: var(--gray-400);
     outline-width: 1px;
     outline-style: solid;
+    overflow: hidden; /* prevents background-colors from bleeding over border-radius */
 }
 
 .hasShadow {

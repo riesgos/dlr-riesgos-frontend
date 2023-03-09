@@ -1,0 +1,27 @@
+.step-header {
+    padding: 0.2rem 0 0.2rem 0.2rem;
+}
+
+.step-header-unavailable {
+    color: var(--gray-400);
+}
+
+.step-header-available {
+    color: var(--accent-color-1200);
+    background-color: var(--accent-color-100);
+}
+
+.step-header-running {
+    color: var(--notice-dark);
+    background-color: var(--notice-light);
+}
+
+.step-header-completed {
+    color: var(--success-dark);
+    background-color: var(--success-light);
+}
+
+.step-header-error {
+    color: var(--warning-dark);
+    background-color: var(--warning-light);
+}

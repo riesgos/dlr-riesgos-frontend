@@ -1,5 +1,5 @@
 <div class="step">
-    <div class="step-header" (click)="focus()">
+    <div [class]="['step-header', 'step-header-' + step.state.type]" (click)="focus()">
         <h4>{{ step.step.title }}</h4>
     </div>
     <div class="step-body" *ngIf="(focusedStep$ | async) === step.step.id">
@@ -7,11 +7,11 @@
             <app-tab [tabTitle]="'Configuration'" *ngIf="step.state.type === 'available'">
                 <app-config [scenario]="scenario" [step]="step.step" [products]="inputs"></app-config>
             </app-tab>
+            <app-tab [tabTitle]="'Layers'" *ngIf="step.state.type === 'completed'">
+                <app-layers [products]="outputs"></app-layers>
+            </app-tab>
             <app-tab [tabTitle]="'Description'">
                 <p>{{ step.step.description }}</p>
-            </app-tab>
-            <app-tab [tabTitle]="'Layers'" *ngIf="step.state.type === 'completed'">
-                <app-layers></app-layers>
             </app-tab>
         </app-tabs>
     </div>

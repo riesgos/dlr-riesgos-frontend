@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
+import { createReducer, Store } from "@ngrx/store";
 import { forkJoin, of } from "rxjs";
 import { catchError, combineLatestWith, filter, map, mergeMap, switchMap, take } from "rxjs/operators";
 import { API_Datum, API_DatumReference, API_ScenarioState, BackendService, isApiDatum } from "../services/backend.service";
@@ -80,7 +80,8 @@ export class Effects {
                     if (input.id === 'userChoice') {
                         newInputs.push({
                             ...input,
-                            options: availableEqs.value.features
+                            options: availableEqs.value.features,
+                            default: availableEqs.value.features[0]
                         });
                     } else {
                         newInputs.push(input);

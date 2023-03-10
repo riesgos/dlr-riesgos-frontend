@@ -12,6 +12,7 @@ export const modePicked = createAction('Mode picked', props<{ mode: string }>())
 export const stepSelect = createAction('Step select', props<{ stepId: string }>());
 export const stepConfig = createAction('Step config', props<{ config: { stepId: string, values: {[key: string]: any } } }>());
 export const stepExecStart = createAction('Step exec start', props<{ scenario: ScenarioName, step: string }>());
+export const stepConfigAndExecStart = createAction('Step config and exec start', props<{ scenario: ScenarioName, stepId: string, values: {[key: string]: any}}>());
 export const stepExecSuccess = createAction('Step exec success', props<{ scenario: ScenarioName, step: string, newData: RiesgosProduct[] }>());
 export const stepExecFailure = createAction('Step exec failure', props<{ scenario: ScenarioName, step: string, error: any }>());
 

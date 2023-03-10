@@ -20,20 +20,30 @@ export class ConfigComponent implements OnInit {
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
+    let requiresConfigAction = false;
     for (const input of this.step.inputs) {
-      const id = input.id;
-      const existingValue = this.products.find(p => p.id === id)?.value;
-      const existingDefault = input.default;
-      this.formGroup.addControl(id, new FormControl(existingValue || existingDefault || ''));
+      // Kind of flaky: 
+      // We interpret any input with an options-array as user-configurable, 
+      // and all others as outputs of upstream processes. 
+      if (input.options) {
+        const id = input.id;
+        const existingValue = this.products.find(p => p.id === id)?.value;
+        const existingDefault = input.default;
+        this.formGroup.addControl(id, new FormControl(existingValue || existingDefault || ''));
+        if (!existingValue && existingDefault) {
+          requiresConfigAction = true;
+        }
+      }
     }
 
-    // one-time update (to make sure no values are undefined)
-    this.store.dispatch(AppActions.stepConfig({
-      config: {
-        stepId: this.step.id,
-        values: this.formGroup.value
-      } 
-    }));
+    if (requiresConfigAction) {
+      this.store.dispatch(AppActions.stepConfig({
+        config: {
+          stepId: this.step.id,
+          values: this.formGroup.value
+        }
+      }));
+    }
 
     this.formGroup.valueChanges.subscribe(newVal => {
       this.store.dispatch(AppActions.stepConfig({

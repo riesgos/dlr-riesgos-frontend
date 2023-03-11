@@ -18,4 +18,6 @@ export const stepExecFailure = createAction('Step exec failure', props<{ scenari
 
 export const stepUpdate = createAction('Change to step data', props<{ scenario: ScenarioName, step: RiesgosStep }>());
 
+export const startAutoPilot = createAction('Starting auto-pilot', props<{ scenario: ScenarioName }>());
+export const stopAutoPilot = createAction('Stopping auto-pilot', props<{ scenario: ScenarioName }>());
 export const altParaPicked = createAction('Parameter for comparison picked', props<{ step: string, para: any }>());

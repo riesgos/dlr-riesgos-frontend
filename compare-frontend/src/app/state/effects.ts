@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { createReducer, Store } from "@ngrx/store";
+import { Action, createReducer, Store } from "@ngrx/store";
 import { forkJoin, of } from "rxjs";
 import { catchError, combineLatestWith, filter, map, mergeMap, switchMap, take } from "rxjs/operators";
 import { API_Datum, API_DatumReference, API_ScenarioState, BackendService, isApiDatum } from "../services/backend.service";
@@ -8,7 +8,7 @@ import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
 import { MapService } from "../services/map.service";
 import * as AppActions from "./actions";
-import { RiesgosProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosState, RiesgosStep } from "./state";
+import { RiesgosProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosState, RiesgosStep, StepStateTypes } from "./state";
 
 
 @Injectable()
@@ -60,45 +60,42 @@ export class Effects {
     });
 
 
-    private postExecuteEffects$ = createEffect(() => {
+    // Automatically activate autopilot after selecting EQ paras
+    private startAutoPilot$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(AppActions.stepExecSuccess),
-            filter(action => action.scenario === 'Peru' || action.scenario === 'Chile'),
-            filter(action => action.step === 'Eqs'),
-            switchMap(action => {
-                const availableEqsRef = action.newData.find(d => d.id === 'availableEqs')!;
-                const resolvedAvailableEqs$ = this.dataSvc.resolveReference(availableEqsRef);
-                const eqSelectionStep$ = this.store$.select(state => state.riesgos.scenarioData[action.scenario]!.steps.find(s => s.step.id === 'selectEq')!).pipe(take(1));
-                return forkJoin([of(action), resolvedAvailableEqs$, eqSelectionStep$]);
-            }),
-            map(([action, availableEqs, eqSelectionStep]) => {
-                // var userChoice = eqSelectionStep.step.inputs.find((input, index) => input.id === 'userChoice')!;
-                // userChoice.options = availableEqs.value.features;
-                // return AppActions.stepUpdate({ scenario: action.scenario, step: eqSelectionStep });
-                const newInputs = [];
-                for (const input of eqSelectionStep.step.inputs) {
-                    if (input.id === 'userChoice') {
-                        newInputs.push({
-                            ...input,
-                            options: availableEqs.value.features,
-                            default: availableEqs.value.features[0]
-                        });
-                    } else {
-                        newInputs.push(input);
-                    }
-                }
-                const newEqSelectionStep = {
-                    ... eqSelectionStep,
-                    step: {
-                        ... eqSelectionStep.step,
-                        inputs: newInputs
-                    }
-                }
-                return AppActions.stepUpdate({ scenario: action.scenario, step: newEqSelectionStep });
-            })
+            filter(action => action.scenario === 'PeruShort' && action.step === 'selectEq'),
+            map(action => AppActions.startAutoPilot({ scenario: action.scenario }))
         )
     });
 
+
+    // private autoPilotConfigAfterExec$ = createEffect(() => {
+    //     return this.actions$.pipe(
+    //         ofType(AppActions.stepExecSuccess),
+    //         combineLatestWith(this.store$.select(state => state.riesgos)),
+    //         filter(([action, state]) => state.useAutoPilot),
+    //         map(([action, state]) => state.scenarioData[action.scenario]!),
+    //         switchMap(state => {
+    //             const newActions: Action[] = [];
+    //             const availableSteps = state.steps.filter(step => step.state.type === StepStateTypes.available);
+    //             for (const step of availableSteps) {
+    //                 // set associated products with their default values
+    //             }
+    //             return of(newActions);
+    //         })
+    //     )
+    // });
+
+    // private autoPilotExecAfterConfig$ = createEffect(() => {
+    //     return this.actions$.pipe(
+    //         ofType(AppActions.stepConfig),
+    //         combineLatestWith(this.store$.select(state => state.riesgos)),
+    //         filter(([action, state]) => state.useAutoPilot),
+    //     )
+    // });
+
+    
     constructor(
         private actions$: Actions,
         private store$: Store<{ riesgos: RiesgosState }>,

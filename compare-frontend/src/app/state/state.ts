@@ -3,7 +3,7 @@ import { API_Step } from "../services/backend.service";
 
 
 
-export type ScenarioName = 'Chile' | 'Peru' | 'Ecuador';
+export type ScenarioName = 'Chile' | 'Peru' | 'PeruShort' | 'Ecuador';
 export type ScenarioNameOrNone = 'none' | ScenarioName;
 
 
@@ -106,6 +106,7 @@ export interface RiesgosState {
     };
     metaData: RiesgosScenarioMetadata[];
     focusState: FocusState;
+    useAutoPilot: boolean;
 }
 
 
@@ -115,6 +116,7 @@ export const initialRiesgosState: RiesgosState = {
     metaData: [],
     focusState: {
         focusedStep: ''
-    }
+    },
+    useAutoPilot: false,
 };
 

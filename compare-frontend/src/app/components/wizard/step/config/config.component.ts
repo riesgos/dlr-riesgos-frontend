@@ -16,11 +16,11 @@ export class ConfigComponent implements OnInit {
   @Input() step!: RiesgosStep["step"];
   @Input() products!: RiesgosProduct[];
   public formGroup: FormGroup = new FormGroup({});
+  private autoPilot$ = this.store.select(state => state.riesgos.useAutoPilot);
 
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
-    let requiresConfigAction = false;
     for (const input of this.step.inputs) {
       // Kind of flaky: 
       // We interpret any input with an options-array as user-configurable, 
@@ -30,13 +30,10 @@ export class ConfigComponent implements OnInit {
         const existingValue = this.products.find(p => p.id === id)?.value;
         const existingDefault = input.default;
         this.formGroup.addControl(id, new FormControl(existingValue || existingDefault || ''));
-        if (!existingValue && existingDefault) {
-          requiresConfigAction = true;
-        }
       }
     }
 
-    if (requiresConfigAction) {
+    if (this.requiresConfigAction()) {
       this.store.dispatch(AppActions.stepConfig({
         config: {
           stepId: this.step.id,
@@ -52,18 +49,52 @@ export class ConfigComponent implements OnInit {
           values: newVal
         } 
       }));
-    })
+    });
+
+    this.autoPilot$.subscribe(useAutoPilot => {
+      if (useAutoPilot) {
+
+        if (this.requiresConfigAction()) {
+          this.store.dispatch(AppActions.stepConfig({
+            config: {
+              stepId: this.step.id,
+              values: this.formGroup.value
+            }
+          }))
+        }
+
+        else if (this.allValuesSet()) {
+          this.execute();
+        }
+
+      }
+    });
   }
 
   public execute() {
     this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, step: this.step.id }));
   }
 
-  public allValuesSet() {
+  public allValuesSet(): boolean {
     for (const key in this.formGroup.value) {
       const value = this.formGroup.value[key];
       if (value === '' || value === undefined) return false;
     }
     return true;
+  }
+
+  public requiresConfigAction(): boolean {
+    let requiresConfigAction = false;
+    for (const input of this.step.inputs) {
+      if (input.options) {
+        const id = input.id;
+        const existingValue = this.products.find(p => p.id === id)?.value;
+        const existingDefault = input.default;
+        if (!existingValue && existingDefault) {
+          requiresConfigAction = true;
+        }
+      }
+    }
+    return requiresConfigAction;
   }
 }

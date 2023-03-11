@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone, StepStateRunning, StepStateError } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate } from './actions';
+import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 
 
@@ -94,6 +94,20 @@ export const reducer = createReducer(
     const step = scenarioData.steps.find(s => s.step.id === action.step.step.id)!;
     step.step = action.step.step;
     return state;
+  }),
+
+  on(startAutoPilot, (state, action) => {
+    return {
+      ...state,
+      useAutoPilot: true
+    }
+  }),
+
+  on(stopAutoPilot, (state, action) => {
+    return {
+      ...state,
+      useAutoPilot: false
+    }
   }),
 
   on(altParaPicked, (state, action) => {

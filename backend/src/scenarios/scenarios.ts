@@ -3,18 +3,10 @@ import { FileStorage } from '../storage/fileStorage';
 
 export interface DataDescription {
     id: string,
-    options?: string[],
-    default?: string
+    options?: any[],
+    default?: any
 };
 
-export interface UserSelection extends DataDescription {
-    options: string[],
-    default?: string
-}
-
-export function isUserSelection(a: DataDescription): a is UserSelection {
-    return a.hasOwnProperty('options');
-}
 
 export interface Datum {
     id: string,
@@ -44,7 +36,7 @@ export type StepFunction = (args: Datum[]) => Promise<Datum[]>;
 
 export interface Step {
     function: StepFunction,
-    inputs: (DataDescription | UserSelection)[],
+    inputs: DataDescription[],
     outputs: DataDescription[],
     id: string,
     title: string,
@@ -52,7 +44,7 @@ export interface Step {
 }
 
 export interface StepDescription {
-    inputs: (DataDescription | UserSelection)[],
+    inputs: DataDescription[],
     outputs: DataDescription[],
     id: string,
     title: string,

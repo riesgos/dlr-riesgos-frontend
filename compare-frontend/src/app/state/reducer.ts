@@ -2,8 +2,9 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone, StepStateRunning, StepStateError } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot } from './actions';
+import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot, autoPilotDequeue } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
+import { allParasSet } from './helpers';
 
 
 
@@ -40,12 +41,10 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepConfig, (state, action) => {
-    const currentScenario = state.currentScenario;
-    if (currentScenario === 'none') return state;
-    const scenarioData = state.scenarioData[currentScenario];
+    const scenarioData = state.scenarioData[action.scenario];
     if (!scenarioData) return state;
-    for (const productId in action.config.values) {
-      const productValue = action.config.values[productId];
+    for (const productId in action.values) {
+      const productValue = action.values[productId];
       for (const product of scenarioData.products) {
         if (product.id === productId) {
           product.value = productValue;
@@ -96,11 +95,34 @@ export const reducer = createReducer(
     return state;
   }),
 
-  on(startAutoPilot, (state, action) => {
-    return {
-      ...state,
-      useAutoPilot: true
+  immerOn(startAutoPilot, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]!;
+    for (const step of scenarioState.steps) {
+      for (const input of step.step.inputs) {
+        const product = scenarioState.products.find(p => p.id === input.id)!;
+        const productValue = product.value;
+        const defaultValue = input.default;
+        if (productValue) continue;
+        if (defaultValue) product.value = defaultValue;
+      }
     }
+    const newState = deriveState(state);
+    const newScenarioState = newState.scenarioData[action.scenario]!;
+    for (const step of newScenarioState.steps) {
+      if (step.state.type === "available") {
+        if (allParasSet(step, newScenarioState.products)) {
+          newScenarioState.autoPilot.queue.push(step.step.id);
+        }
+      }
+    }
+    newScenarioState.autoPilot.useAutoPilot = true;
+    return newState;
+  }),
+
+  immerOn(autoPilotDequeue, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]!;
+    scenarioState.autoPilot.queue = scenarioState.autoPilot.queue.filter(step => step != action.step);
+    return state;
   }),
 
   on(stopAutoPilot, (state, action) => {
@@ -120,15 +142,16 @@ export const reducer = createReducer(
 
 
 
-function parseAPIScenariosIntoState(currentState: RiesgosState, scenarios: API_ScenarioInfo[]): RiesgosState {
+function parseAPIScenariosIntoState(currentState: RiesgosState, apiScenarios: API_ScenarioInfo[]): RiesgosState {
 
   const scenarioData: { [key: string]: RiesgosScenarioState } = {};
-  for (const scenario of scenarios) {
+  for (const apiScenario of apiScenarios) {
+    const scenarioDataCurrentState = currentState.scenarioData[apiScenario.id];
 
     const steps: RiesgosStep[] = [];
     const products: RiesgosProduct[] = [];
 
-    for (const step of scenario.steps) {
+    for (const step of apiScenario.steps) {
       steps.push({
         step: step,
         state: new StepStateUnavailable()
@@ -155,14 +178,18 @@ function parseAPIScenariosIntoState(currentState: RiesgosState, scenarios: API_S
       }
     }
 
-    scenarioData[scenario.id] = {
-      scenario: scenario.id as ScenarioName,
+    scenarioData[apiScenario.id] = {
+      scenario: apiScenario.id,
+      autoPilot: {
+        useAutoPilot: scenarioDataCurrentState?.autoPilot.useAutoPilot || false,
+        queue: scenarioDataCurrentState?.autoPilot.queue || []
+      },
       products: products,
-      steps: steps
+      steps: steps,
     }
   }
 
-  const metaData = scenarios.map(s => ({
+  const metaData = apiScenarios.map(s => ({
     id: s.id,
     description: s.description,
     title: s.id,

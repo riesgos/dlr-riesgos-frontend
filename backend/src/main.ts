@@ -22,7 +22,7 @@ async function main() {
     // const scenarioFactories = await parseCode(scriptDir);
     const scenarioFactories = [chileFactory, ecuadorFactory, peruFactory, peruShortFactory];
     
-    addScenarioApi(app, scenarioFactories, storeDir, logDir);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'verbose', false);
     const server = app.listen(port, () => console.log(`app now listening on port ${port}`));
 }
 

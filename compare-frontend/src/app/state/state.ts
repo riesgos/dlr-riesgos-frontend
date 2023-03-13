@@ -76,6 +76,10 @@ export interface RiesgosScenarioState {
     scenario: ScenarioName;
     steps: RiesgosStep[];
     products: RiesgosProduct[];
+    autoPilot: {
+        useAutoPilot: boolean;
+        queue: string[];
+    }
 }
 
 
@@ -106,7 +110,6 @@ export interface RiesgosState {
     };
     metaData: RiesgosScenarioMetadata[];
     focusState: FocusState;
-    useAutoPilot: boolean;
 }
 
 
@@ -117,6 +120,5 @@ export const initialRiesgosState: RiesgosState = {
     focusState: {
         focusedStep: ''
     },
-    useAutoPilot: false,
 };
 

@@ -1,100 +1,108 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Action, createReducer, Store } from "@ngrx/store";
+import { Action, Store } from "@ngrx/store";
 import { forkJoin, of } from "rxjs";
-import { catchError, combineLatestWith, filter, map, mergeMap, switchMap, take } from "rxjs/operators";
-import { API_Datum, API_DatumReference, API_ScenarioState, BackendService, isApiDatum } from "../services/backend.service";
+import { catchError, combineLatestWith, filter, map, mergeMap, switchMap, take, tap, withLatestFrom } from "rxjs/operators";
+import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
 import { MapService } from "../services/map.service";
 import * as AppActions from "./actions";
-import { RiesgosProduct, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosState, RiesgosStep, StepStateTypes } from "./state";
+import { convertFrontendDataToApiState, convertApiDataToRiesgosData, allParasSet, fillWithDefaults } from "./helpers";
+import { RiesgosState, StepStateTypes } from "./state";
 
 
 @Injectable()
 export class Effects {
 
-    private loadScenarios$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(AppActions.scenarioLoadStart),
-            switchMap(() => {
-                return this.backendSvc.loadScenarios();
-            }),
-            map(scenarios => {
-                return AppActions.scenarioLoadSuccess({ scenarios });
-            })
-        );
-    });
+    private loadScenarios$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.scenarioLoadStart),
+        switchMap(() => {
+            return this.backendSvc.loadScenarios();
+        }),
+        map(scenarios => {
+            return AppActions.scenarioLoadSuccess({ scenarios });
+        })
+    ));
 
-    private executeStep$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(AppActions.stepExecStart),
-
-            // fetch current data, convert, execute, and convert back
+    private executeStep$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.stepExecStart),
+        tap(action => console.log(`Execute start: ${action.step}`)),
             
-            mergeMap(action => of(action).pipe(combineLatestWith(
-                this.store$.select(state => state.riesgos.scenarioData[action.scenario]?.products).pipe(take(1))
-            ))),
+        // fetch current data, convert, execute, and convert back
 
-            map(([action, products]) => ({
-                apiState: convertFrontendDataToApiState(products!),
-                action: action
-            })),
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        map(([action, state]) => {
+            return {
+                action: action,
+                products: state.scenarioData[action.scenario]!.products
+            }
+        }),
 
-            mergeMap(({apiState, action}) => of(action).pipe(
-                combineLatestWith(this.backendSvc.execute(action.scenario, action.step, apiState))
-            )),
-            
-            map(([action, newApiState]) => ({
-                newData: convertApiDataToRiesgosData(newApiState.data), 
-                action: action
-            })),
+        map(({action, products}) => ({
+            apiState: convertFrontendDataToApiState(products),
+            action: action
+        })),
 
-            map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, step: action.step, newData })),
+        switchMap(({apiState, action}) => {
+            return forkJoin([of(action), this.backendSvc.execute(action.scenario, action.step, apiState)])
+        }),
 
-            catchError((err, caughtObservable) => {
-                const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
-                return of(AppActions.stepExecFailure({ scenario: err.scenarioId, step: err.stepId, error: errorMessage }));
-            })
-        )
-    });
+        map(([action, newApiState]) => ({
+            newData: convertApiDataToRiesgosData(newApiState.data), 
+            action: action
+        })),
+
+        tap(({newData, action}) => console.log(`Execute success: ${action.step}`)),
+        map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, step: action.step, newData })),
+
+        // catchError((error) => {
+        //     const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+        //     return AppActions.stepExecFailure({ scenario: err.scenarioId, step: err.stepId, error: errorMessage });
+        // })
+
+    ));
 
 
     // Automatically activate autopilot after selecting EQ paras
-    private startAutoPilot$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(AppActions.stepExecSuccess),
-            filter(action => action.scenario === 'PeruShort' && action.step === 'selectEq'),
-            map(action => AppActions.startAutoPilot({ scenario: action.scenario }))
-        )
-    });
+    private startAutoPilot$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.stepExecSuccess),
+        filter(action => action.scenario === 'PeruShort' && action.step === 'selectEq'),
+        map(action => AppActions.startAutoPilot({ scenario: action.scenario })),
+    ));
 
+    private dequeueAutoPilotFirst$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.startAutoPilot),
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        map(([action, state]) => state.scenarioData[action.scenario]!),
+        filter(state => state.autoPilot.queue.length > 0),
+        tap(state => console.log(`dequeue after start-auto-pilot: ${state.autoPilot.queue}`)),
+        map(state => AppActions.autoPilotDequeue({
+                scenario: state.scenario,
+                step: state.autoPilot.queue[0]
+        }))
+    ));
 
-    // private autoPilotConfigAfterExec$ = createEffect(() => {
-    //     return this.actions$.pipe(
-    //         ofType(AppActions.stepExecSuccess),
-    //         combineLatestWith(this.store$.select(state => state.riesgos)),
-    //         filter(([action, state]) => state.useAutoPilot),
-    //         map(([action, state]) => state.scenarioData[action.scenario]!),
-    //         switchMap(state => {
-    //             const newActions: Action[] = [];
-    //             const availableSteps = state.steps.filter(step => step.state.type === StepStateTypes.available);
-    //             for (const step of availableSteps) {
-    //                 // set associated products with their default values
-    //             }
-    //             return of(newActions);
-    //         })
-    //     )
-    // });
+    private dequeueAutoPilotSubsequent$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.stepExecStart),
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        filter(([action, state]) => state.scenarioData[action.scenario]!.autoPilot.useAutoPilot),
+        tap(([action, state]) => console.log(`dequeue after exec-start ${action.step}: ${state.scenarioData[action.scenario]!.autoPilot.queue}`)),
+        map(([action, state]) => state.scenarioData[action.scenario]!),
+        filter(state => state.autoPilot.queue.length > 0),
+        map(state => AppActions.autoPilotDequeue({
+            scenario: state.scenario,
+            step: state.autoPilot.queue[0]
+        }))
+    ));
 
-    // private autoPilotExecAfterConfig$ = createEffect(() => {
-    //     return this.actions$.pipe(
-    //         ofType(AppActions.stepConfig),
-    //         combineLatestWith(this.store$.select(state => state.riesgos)),
-    //         filter(([action, state]) => state.useAutoPilot),
-    //     )
-    // });
-
+    private execDequeued$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.autoPilotDequeue),
+        map(action => AppActions.stepExecStart({
+            scenario: action.scenario,
+            step: action.step
+        }))
+    ));
     
     constructor(
         private actions$: Actions,
@@ -104,65 +112,5 @@ export class Effects {
         private dataSvc: DataService,
         private mapSvc: MapService,
     ) {}
-}
-
-
-
-
-
-
-function convertFrontendDataToApiState(products: RiesgosProduct[]): API_ScenarioState {
-    const data: (API_Datum | API_DatumReference)[] = [];
-    for (const product of products) {
-
-        const datum: any = {
-            id: product.id
-        };
-
-        if (product.options) {
-            datum.options = product.options;
-        }
-
-        if (isRiesgosUnresolvedRefProduct(product) || isRiesgosResolvedRefProduct(product)) {
-            datum.reference = product.reference;
-        } 
-        
-        else if (product.value) {
-            datum.value = product.value;
-        }
-
-        data.push(datum);
-    }
-    const apiState: API_ScenarioState = {
-        data
-    };
-    return apiState;
-}
-
-function convertApiDataToRiesgosData(apiData: (API_Datum | API_DatumReference)[]): RiesgosProduct[] {
-    
-    const riesgosData: RiesgosProduct[] = [];
-
-    for (const apiProduct of apiData) {
-        
-        const prod: RiesgosProduct = {
-            id: apiProduct.id
-        };
-
-        if ((apiProduct as any).options) {
-            prod.options = (apiProduct as any).options;
-        }
-
-        if (isApiDatum(apiProduct)) {
-            prod.value = apiProduct.value;
-        } 
-        
-        else {
-            prod.reference = apiProduct.reference;
-        }
-
-        riesgosData.push(prod);
-    }
-    return riesgosData;
 }
 

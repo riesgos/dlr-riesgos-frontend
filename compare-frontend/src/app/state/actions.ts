@@ -10,7 +10,7 @@ export const scenarioPicked = createAction('Scenario picked', props<{ scenario: 
 export const modePicked = createAction('Mode picked', props<{ mode: string }>());
 
 export const stepSelect = createAction('Step select', props<{ stepId: string }>());
-export const stepConfig = createAction('Step config', props<{ config: { stepId: string, values: {[key: string]: any } } }>());
+export const stepConfig = createAction('Step config', props<{ scenario: ScenarioName, stepId: string, values: {[key: string]: any } }>());
 export const stepExecStart = createAction('Step exec start', props<{ scenario: ScenarioName, step: string }>());
 export const stepConfigAndExecStart = createAction('Step config and exec start', props<{ scenario: ScenarioName, stepId: string, values: {[key: string]: any}}>());
 export const stepExecSuccess = createAction('Step exec success', props<{ scenario: ScenarioName, step: string, newData: RiesgosProduct[] }>());
@@ -18,6 +18,8 @@ export const stepExecFailure = createAction('Step exec failure', props<{ scenari
 
 export const stepUpdate = createAction('Change to step data', props<{ scenario: ScenarioName, step: RiesgosStep }>());
 
-export const startAutoPilot = createAction('Starting auto-pilot', props<{ scenario: ScenarioName }>());
-export const stopAutoPilot = createAction('Stopping auto-pilot', props<{ scenario: ScenarioName }>());
+export const startAutoPilot = createAction('Auto-pilot: Starting', props<{ scenario: ScenarioName }>());
+export const stopAutoPilot = createAction('Auto-pilot: Stopping', props<{ scenario: ScenarioName }>());
+export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ scenario: ScenarioName, step: string }>());
+
 export const altParaPicked = createAction('Parameter for comparison picked', props<{ step: string, para: any }>());

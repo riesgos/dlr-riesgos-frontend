@@ -16,7 +16,6 @@ export class ConfigComponent implements OnInit {
   @Input() step!: RiesgosStep["step"];
   @Input() products!: RiesgosProduct[];
   public formGroup: FormGroup = new FormGroup({});
-  private autoPilot$ = this.store.select(state => state.riesgos.useAutoPilot);
 
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
@@ -29,46 +28,28 @@ export class ConfigComponent implements OnInit {
         const id = input.id;
         const existingValue = this.products.find(p => p.id === id)?.value;
         const existingDefault = input.default;
-        this.formGroup.addControl(id, new FormControl(existingValue || existingDefault || ''));
+        const firstOption = input.options[0];
+        // @TODO: this can be a complex object, too. Make sure that angular's formControl doesn't stringify that object's value!
+        this.formGroup.addControl(id, new FormControl(existingValue || existingDefault || firstOption || ''));
       }
     }
 
     if (this.requiresConfigAction()) {
       this.store.dispatch(AppActions.stepConfig({
-        config: {
+          scenario: this.scenario,
           stepId: this.step.id,
           values: this.formGroup.value
-        }
       }));
     }
 
     this.formGroup.valueChanges.subscribe(newVal => {
       this.store.dispatch(AppActions.stepConfig({
-        config: {
+          scenario: this.scenario,
           stepId: this.step.id,
           values: newVal
-        } 
       }));
     });
 
-    this.autoPilot$.subscribe(useAutoPilot => {
-      if (useAutoPilot) {
-
-        if (this.requiresConfigAction()) {
-          this.store.dispatch(AppActions.stepConfig({
-            config: {
-              stepId: this.step.id,
-              values: this.formGroup.value
-            }
-          }))
-        }
-
-        else if (this.allValuesSet()) {
-          this.execute();
-        }
-
-      }
-    });
   }
 
   public execute() {

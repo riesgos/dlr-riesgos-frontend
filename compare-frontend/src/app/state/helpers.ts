@@ -3,18 +3,17 @@ import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, RiesgosProd
 
 
 export function allParasSet(step: RiesgosStep, products: RiesgosProduct[]): boolean {
-    let allSet = true;
     for (const input of step.step.inputs) {
-        if (input.options) {
-            const id = input.id;
-            const existingValue = products.find(p => p.id === id)?.value;
-            const existingDefault = input.default;
-            if (!existingValue && !existingDefault) {
-                allSet = true;
-            }
+        const id = input.id;
+        const existingValue = products.find(p => p.id === id)?.value;
+        const existingReference = products.find(p => p.id === id)?.reference;
+        const existingDefault = input.default;
+        if (!existingValue && !existingReference && !existingDefault) {
+            console.log(`Missing parameter for ${step.step.id} - ${input.id}`)
+            return false;
         }
     }
-    return allSet;
+    return true;
 }
 
 export function fillWithDefaults(step: RiesgosStep, products: RiesgosProduct[]) {
@@ -25,10 +24,13 @@ export function fillWithDefaults(step: RiesgosStep, products: RiesgosProduct[]) 
         const product = products.find(p => p.id === input.id);
         const productValue = product?.value;
         const defaultValue = input.default;
+        const firstOption = input.options?.length ? input.options[0] : undefined;
 
         if (productValue) configuration[step.step.id] = productValue;
-        if (defaultValue) configuration[step.step.id] = defaultValue;
+        else if (defaultValue) configuration[step.step.id] = defaultValue;
+        else if (firstOption) configuration[step.step.id] = firstOption;
     }
+    console.log(`Setting defaults: ${configuration}`);
     return configuration;
 }
 

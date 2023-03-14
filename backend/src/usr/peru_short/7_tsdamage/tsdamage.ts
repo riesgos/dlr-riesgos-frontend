@@ -43,7 +43,8 @@ export const step: Step = {
     description: 'ts_damage_svc_description',
     inputs: [{
         id: 'schemaTs',
-        options: ['Medina_2019', 'SUPPASRI2013_v2.0']
+        options: ['Medina_2019', 'SUPPASRI2013_v2.0'],
+        default: 'Medina_2019'
     }, {
         id: 'tsWms'
     }, {

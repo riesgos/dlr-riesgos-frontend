@@ -8,7 +8,7 @@
         <ng-container *ngIf="input.options">
             <label [for]="input.id">{{ input.id }}</label>
             <select *ngIf="input.options.length > 0" [formControlName]="input.id" [name]="input.id" [id]="input.id">
-                <option *ngFor="let option of input.options" [value]="option">{{ option }}</option>
+                <option *ngFor="let option of input.options" [ngValue]="option">{{ option }}</option>
             </select>
             <input *ngIf="input.options.length === 0" [formControlName]="input.id" />
         </ng-container>

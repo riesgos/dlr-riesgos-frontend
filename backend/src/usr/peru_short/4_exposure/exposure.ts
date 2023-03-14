@@ -41,7 +41,8 @@ export const step: Step = {
             "LimaCVT5_PD40_TI60_10000",
             "LimaCVT6_PD40_TI60_50000",
             "LimaBlocks",
-         ]
+         ],
+         default: "LimaCVT1_PD30_TI70_5000"
     }],
     outputs: [{
         id: 'exposure'

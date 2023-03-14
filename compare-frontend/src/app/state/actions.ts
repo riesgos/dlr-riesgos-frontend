@@ -20,6 +20,7 @@ export const stepUpdate = createAction('Change to step data', props<{ scenario: 
 
 export const startAutoPilot = createAction('Auto-pilot: Starting', props<{ scenario: ScenarioName }>());
 export const stopAutoPilot = createAction('Auto-pilot: Stopping', props<{ scenario: ScenarioName }>());
+export const updateAutoPilot = createAction('Auto-pilot: update', props<{ scenario: ScenarioName }>());
 export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ scenario: ScenarioName, step: string }>());
 
 export const altParaPicked = createAction('Parameter for comparison picked', props<{ step: string, para: any }>());

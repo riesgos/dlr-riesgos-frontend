@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone, StepStateRunning, StepStateError } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot, autoPilotDequeue } from './actions';
+import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
 
@@ -97,6 +97,12 @@ export const reducer = createReducer(
 
   immerOn(startAutoPilot, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
+    scenarioState.autoPilot.useAutoPilot = true;
+    return state;
+  }),
+
+  immerOn(updateAutoPilot, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]!;
     for (const step of scenarioState.steps) {
       for (const input of step.step.inputs) {
         const product = scenarioState.products.find(p => p.id === input.id)!;
@@ -115,13 +121,14 @@ export const reducer = createReducer(
         }
       }
     }
-    newScenarioState.autoPilot.useAutoPilot = true;
     return newState;
   }),
 
   immerOn(autoPilotDequeue, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
+    // remove from queue the process that'll be executed
     scenarioState.autoPilot.queue = scenarioState.autoPilot.queue.filter(step => step != action.step);
+    // update queue with processes that become available now
     return state;
   }),
 

@@ -30,10 +30,12 @@ export const step: Step = {
         id: 'selectedEq'
     }, {
         id: 'gmpe',
-        options: [ 'MontalvaEtAl2016SInter', 'GhofraniAtkinson2014', 'AbrahamsonEtAl2015SInter', 'YoungsEtAl1997SInterNSHMP2008' ]
+        options: [ 'MontalvaEtAl2016SInter', 'GhofraniAtkinson2014', 'AbrahamsonEtAl2015SInter', 'YoungsEtAl1997SInterNSHMP2008' ],
+        default: 'MontalvaEtAl2016SInter'
     }, {
         id: 'vsgrid',
-        options: ['USGSSlopeBasedTopographyProxy', 'FromSeismogeotechnicsMicrozonation']
+        options: ['USGSSlopeBasedTopographyProxy', 'FromSeismogeotechnicsMicrozonation'],
+        default: 'USGSSlopeBasedTopographyProxy'
     }],
     outputs: [{
         id: 'eqSimWms'

@@ -27,10 +27,10 @@ export class ConfigComponent implements OnInit {
       if (input.options) {
         const id = input.id;
         const existingValue = this.products.find(p => p.id === id)?.value;
+        const existingRef = this.products.find(p => p.id === id)?.reference;
         const existingDefault = input.default;
         const firstOption = input.options[0];
-        // @TODO: this can be a complex object, too. Make sure that angular's formControl doesn't stringify that object's value!
-        this.formGroup.addControl(id, new FormControl(existingValue || existingDefault || firstOption || ''));
+        this.formGroup.addControl(id, new FormControl(existingValue || existingRef || existingDefault || firstOption || ''));
       }
     }
 

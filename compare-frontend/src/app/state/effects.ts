@@ -103,7 +103,9 @@ check if more  │     └───────┬──────┘
 
     private updateAutoPilotOnStart$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.startAutoPilot),
-        map(action => AppActions.updateAutoPilot({ scenario: action.scenario, partition: action.partition }))
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        filter(([action, state]) => state.scenarioData[action.scenario]![action.partition].autoPilot.useAutoPilot),
+        map(([action, state]) => AppActions.updateAutoPilot({ scenario: action.scenario, partition: action.partition }))
     ));
 
     private dequeueAutoPilotAfterUpdate$ = createEffect(() => this.actions$.pipe(

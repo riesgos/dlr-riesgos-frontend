@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Action, Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { forkJoin, of } from "rxjs";
-import { catchError, combineLatestWith, filter, map, mergeMap, switchMap, take, tap, withLatestFrom } from "rxjs/operators";
+import { delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
 import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
@@ -28,7 +28,7 @@ export class Effects {
     private executeStep$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecStart),
         tap(action => console.log(`Execute start: ${action.step}`)),
-            
+
         // fetch current data, convert, execute, and convert back
 
         withLatestFrom(this.store$.select(state => state.riesgos)),
@@ -44,7 +44,7 @@ export class Effects {
             action: action
         })),
 
-        switchMap(({apiState, action}) => {
+        mergeMap(({apiState, action}) => {  // must be merge map for multiple requests in parallel
             return forkJoin([of(action), this.backendSvc.execute(action.scenario, action.step, apiState)])
         }),
 
@@ -64,6 +64,36 @@ export class Effects {
     ));
 
 
+
+
+    /**
+     * AUTO-PILOT (AP)
+     * 
+                     ┌──────────────┐
+                     │AP Start      │
+                     └───────┬──────┘
+                             │
+                     ┌───────▼──────┐
+               ┌────►│AP Update     │       state: queue ++
+               │     └───────┬──────┘
+               │             │
+               │     ┌───────▼──────┐       state: queue --
+               │     │AP Dequeue    ◄───┐
+               │     └───────┬──────┘   │
+               │             │          │  Run all queued up
+               │     ┌───────▼──────┐   │  steps in parallel
+               │     │execStart     ├───┘
+               │     └───────┬──────┘
+               │             │
+               │     ┌───────▼──────┐
+   Once done,  │     │execSuccess   │
+check if more  │     └───────┬──────┘
+ steps to run  │             │
+               └─────────────┘
+
+     * 
+     */
+
     // Automatically activate autopilot after selecting EQ paras
     private startAutoPilot$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecSuccess),
@@ -71,38 +101,43 @@ export class Effects {
         map(action => AppActions.startAutoPilot({ scenario: action.scenario })),
     ));
 
-    private dequeueAutoPilotFirst$ = createEffect(() => this.actions$.pipe(
+    private updateAutoPilotOnStart$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.startAutoPilot),
-        withLatestFrom(this.store$.select(state => state.riesgos)),
-        map(([action, state]) => state.scenarioData[action.scenario]!),
-        filter(state => state.autoPilot.queue.length > 0),
-        tap(state => console.log(`dequeue after start-auto-pilot: ${state.autoPilot.queue}`)),
-        map(state => AppActions.autoPilotDequeue({
-                scenario: state.scenario,
-                step: state.autoPilot.queue[0]
-        }))
+        map(action => AppActions.updateAutoPilot({ scenario: action.scenario }))
     ));
 
-    private dequeueAutoPilotSubsequent$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.stepExecStart),
+    private dequeueAutoPilotAfterUpdate$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.updateAutoPilot),
         withLatestFrom(this.store$.select(state => state.riesgos)),
-        filter(([action, state]) => state.scenarioData[action.scenario]!.autoPilot.useAutoPilot),
-        tap(([action, state]) => console.log(`dequeue after exec-start ${action.step}: ${state.scenarioData[action.scenario]!.autoPilot.queue}`)),
         map(([action, state]) => state.scenarioData[action.scenario]!),
         filter(state => state.autoPilot.queue.length > 0),
-        map(state => AppActions.autoPilotDequeue({
-            scenario: state.scenario,
-            step: state.autoPilot.queue[0]
-        }))
+        map(state => AppActions.autoPilotDequeue({scenario: state.scenario, step: state.autoPilot.queue[0] }))
     ));
 
     private execDequeued$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.autoPilotDequeue),
+        delay(Math.random() * 100),  // in firefox, too many simultaneous posts are being blocked.
         map(action => AppActions.stepExecStart({
             scenario: action.scenario,
             step: action.step
         }))
     ));
+
+    private dequeueMoreAfterExecStart$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.stepExecStart),
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        map(([action, state]) => state.scenarioData[action.scenario]!),
+        filter(state => state.autoPilot.useAutoPilot && state.autoPilot.queue.length > 0),
+        map(state => AppActions.autoPilotDequeue({ scenario: state.scenario, step: state.autoPilot.queue[0] }))
+    ));
+
+    private updateAutoPilotOnSuccess$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.stepExecSuccess),
+        map(action => AppActions.updateAutoPilot({ scenario: action.scenario }))
+    ));
+
+
+
     
     constructor(
         private actions$: Actions,

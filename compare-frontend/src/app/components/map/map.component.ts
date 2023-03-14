@@ -43,8 +43,17 @@ export class MapComponent implements AfterViewInit {
       });
 
       this.store.select(state => state.riesgos.scenarioData[this.scenario]![this.partition]).subscribe(state => {
-        this.map.getView().setZoom(state.map.zoom);
-        this.map.getView().setCenter(state.map.center);
+        if (
+          this.map.getView().getZoom() !== state.map.zoom ||
+          this.map.getView().getCenter()![0] !== state.map.center[0] ||
+          this.map.getView().getCenter()![1] !== state.map.center[1]
+        ) {
+          this.map.getView().animate({
+            center: state.map.center,
+            zoom: state.map.zoom,
+            duration: 250
+          })
+        }
       });
     }
   }

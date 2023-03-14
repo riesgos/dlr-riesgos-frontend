@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { forkJoin, of } from "rxjs";
 import { delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
+import { getMapPositionForStep } from "../components/map/helpers";
 import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
@@ -137,6 +138,16 @@ check if more  │     └───────┬──────┘
     ));
 
 
+
+
+
+    private focusMapOnCurrentStep$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.stepSelect),
+        map(action => {
+            const {center, zoom} = getMapPositionForStep(action.scenario, action.partition, action.stepId);
+            return AppActions.mapMove({ scenario: action.scenario, partition: action.partition, zoom, center });
+        })
+    ));
 
     
     constructor(

@@ -9,7 +9,7 @@ export const scenarioLoadFailure = createAction('Scenario load failure', props<{
 export const scenarioPicked = createAction('Scenario picked', props<{ scenario: ScenarioName }>());
 export const modePicked = createAction('Mode picked', props<{ mode: string }>());
 
-export const stepSelect = createAction('Step select', props<{ stepId: string }>());
+export const stepSelect = createAction('Step select', props<{ scenario: ScenarioName, partition: Partition, stepId: string }>());
 export const stepConfig = createAction('Step config', props<{ scenario: ScenarioName, partition: Partition, stepId: string, values: {[key: string]: any } }>());
 export const stepExecStart = createAction('Step exec start', props<{ scenario: ScenarioName, partition: Partition, step: string }>());
 export const stepConfigAndExecStart = createAction('Step config and exec start', props<{ scenario: ScenarioName, partition: Partition, stepId: string, values: {[key: string]: any}}>());

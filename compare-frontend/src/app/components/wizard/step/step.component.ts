@@ -23,6 +23,6 @@ export class StepComponent {
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   public focus() {
-    this.store.dispatch(AppActions.stepSelect({ stepId: this.step.step.id }));
+    this.store.dispatch(AppActions.stepSelect({ scenario: this.scenario, partition: this.partition, stepId: this.step.step.id }));
   }
 }

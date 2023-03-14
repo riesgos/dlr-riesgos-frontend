@@ -79,7 +79,8 @@ export interface RiesgosScenarioState {
     autoPilot: {
         useAutoPilot: boolean;
         queue: string[];
-    }
+    },
+    partition: Partition
 }
 
 
@@ -102,11 +103,14 @@ export interface FocusState {
     focusedStep: string
 }
 
+export type Partition = 'left' | 'right';
 
 export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
     scenarioData: {
-        [key in ScenarioName]?: RiesgosScenarioState
+        [key in ScenarioName]?: {
+            [key in Partition]: RiesgosScenarioState
+        }
     };
     metaData: RiesgosScenarioMetadata[];
     focusState: FocusState;

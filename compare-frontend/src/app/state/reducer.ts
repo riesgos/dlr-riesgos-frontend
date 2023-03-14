@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone, StepStateRunning, StepStateError } from './state';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone, StepStateRunning, StepStateError, Partition } from './state';
 import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
@@ -16,7 +16,7 @@ export const reducer = createReducer(
   }),
 
   on(scenarioLoadSuccess, (state, action) => {
-    const newState = parseAPIScenariosIntoState(state, action.scenarios);
+    const newState = parseAPIScenariosIntoNewState(state, action.scenarios);
     return newState;
   }),
 
@@ -41,8 +41,7 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepConfig, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario];
-    if (!scenarioData) return state;
+    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
     for (const productId in action.values) {
       const productValue = action.values[productId];
       for (const product of scenarioData.products) {
@@ -55,14 +54,14 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepExecStart, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]!;
+    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
     const step = scenarioData.steps.find(s => s.step.id === action.step)!;
     step.state = new StepStateRunning();
     return state;
   }),
 
   immerOn(stepExecSuccess, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]!;
+    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
     const step = scenarioData.steps.find(s => s.step.id === action.step)!;
     step.state = new StepStateCompleted();
 
@@ -82,27 +81,27 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepExecFailure, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]!;
+    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
     const step = scenarioData.steps.find(s => s.step.id === action.step)!;
     step.state = new StepStateError(action.error);
     return state;
   }),
 
   immerOn(stepUpdate, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]!;
+    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
     const step = scenarioData.steps.find(s => s.step.id === action.step.step.id)!;
     step.step = action.step.step;
     return state;
   }),
 
   immerOn(startAutoPilot, (state, action) => {
-    const scenarioState = state.scenarioData[action.scenario]!;
+    const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     scenarioState.autoPilot.useAutoPilot = true;
     return state;
   }),
 
   immerOn(updateAutoPilot, (state, action) => {
-    const scenarioState = state.scenarioData[action.scenario]!;
+    const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     for (const step of scenarioState.steps) {
       for (const input of step.step.inputs) {
         const product = scenarioState.products.find(p => p.id === input.id)!;
@@ -113,7 +112,7 @@ export const reducer = createReducer(
       }
     }
     const newState = deriveState(state);
-    const newScenarioState = newState.scenarioData[action.scenario]!;
+    const newScenarioState = newState.scenarioData[action.scenario]![action.partition]!;
     for (const step of newScenarioState.steps) {
       if (step.state.type === "available") {
         if (allParasSet(step, newScenarioState.products)) {
@@ -125,10 +124,8 @@ export const reducer = createReducer(
   }),
 
   immerOn(autoPilotDequeue, (state, action) => {
-    const scenarioState = state.scenarioData[action.scenario]!;
-    // remove from queue the process that'll be executed
+    const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     scenarioState.autoPilot.queue = scenarioState.autoPilot.queue.filter(step => step != action.step);
-    // update queue with processes that become available now
     return state;
   }),
 
@@ -149,51 +146,62 @@ export const reducer = createReducer(
 
 
 
-function parseAPIScenariosIntoState(currentState: RiesgosState, apiScenarios: API_ScenarioInfo[]): RiesgosState {
+function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios: API_ScenarioInfo[]): RiesgosState {
 
-  const scenarioData: { [key: string]: RiesgosScenarioState } = {};
+  const scenarioData: any = {};
+
   for (const apiScenario of apiScenarios) {
-    const scenarioDataCurrentState = currentState.scenarioData[apiScenario.id];
-
-    const steps: RiesgosStep[] = [];
-    const products: RiesgosProduct[] = [];
-
-    for (const step of apiScenario.steps) {
-      steps.push({
-        step: step,
-        state: new StepStateUnavailable()
-      })
-
-      for (const input of step.inputs) {
-        if (!products.find(p => p.id === input.id)) {
-          products.push({
-            id: input.id
-          });
-        }
-        if (input.options) {
-          const product = products.find(p => p.id === input.id);
-          if (!product) throw Error(`No such product: ${input.id}`);
-          product.options = input.options;
-        }
-      }
-      for (const output of step.outputs) {
-        if (!products.find(p => p.id === output.id)) {
-          products.push({
-            id: output.id
-          });
-        }
-      }
-    }
-
     scenarioData[apiScenario.id] = {
-      scenario: apiScenario.id,
-      autoPilot: {
-        useAutoPilot: scenarioDataCurrentState?.autoPilot.useAutoPilot || false,
-        queue: scenarioDataCurrentState?.autoPilot.queue || []
-      },
-      products: products,
-      steps: steps,
+      left: undefined,
+      right: undefined
+    };
+
+    for (const partition of ['left', 'right'] as Partition[]) {
+      const steps: RiesgosStep[] = [];
+      const products: RiesgosProduct[] = [];
+
+  
+      for (const step of apiScenario.steps) {
+        steps.push({
+          step: step,
+          state: new StepStateUnavailable()
+        })
+  
+        for (const input of step.inputs) {
+          if (!products.find(p => p.id === input.id)) {
+            products.push({
+              id: input.id
+            });
+          }
+          if (input.options) {
+            const product = products.find(p => p.id === input.id);
+            if (!product) throw Error(`No such product: ${input.id}`);
+            product.options = input.options;
+          }
+        }
+        for (const output of step.outputs) {
+          if (!products.find(p => p.id === output.id)) {
+            products.push({
+              id: output.id
+            });
+          }
+        }
+      }
+  
+      const partitionScenarioData = {
+        scenario: apiScenario.id,
+        partition: partition as Partition,
+        autoPilot: {
+          useAutoPilot: false,
+          queue: []
+        },
+        products: products,
+        steps: steps,
+      }
+
+      scenarioData[apiScenario.id][partition] = partitionScenarioData;
     }
+
   }
 
   const metaData = apiScenarios.map(s => ({
@@ -219,70 +227,29 @@ function parseAPIScenariosIntoState(currentState: RiesgosState, apiScenarios: AP
 
 function deriveState(state: WritableDraft<RiesgosState>) {
   for (const scenarioName in state.scenarioData) {
-    const scenario = state.scenarioData[scenarioName as ScenarioName];
-    if (scenario) {
-      for (const step of scenario.steps) {
-
-        // doesn't mess with manually-set states (Running)
-        if (step.state.type === StepStateTypes.running) continue;
-
-        const inputIds = step.step.inputs.map(i => i.id);
-        const inputs = inputIds.map(i => scenario.products.find(p => p.id === i)!);
-        const hasMissingInputs = !!inputs.find(i => !(i.value) && !(i.reference) && !(i.options));
-
-        const outputIds = step.step.outputs.map(o => o.id);
-        const outputs = outputIds.map(o => scenario.products.find(p => p.id === o)!);
-        const hasMissingOutputs = !!outputs.find(o => !(o.value) && !(o.reference));
-
-        if (!hasMissingOutputs) step.state = new StepStateCompleted();
-        else if (hasMissingInputs) step.state = new StepStateUnavailable();
-        else if (!hasMissingInputs) step.state = new StepStateAvailable();
+    const scenarioData = state.scenarioData[scenarioName as ScenarioName];
+    for (const scenario of [scenarioData?.left, scenarioData?.right]) {
+      if (scenario) {
+        for (const step of scenario.steps) {
+  
+          // doesn't mess with manually-set states (Running)
+          if (step.state.type === StepStateTypes.running) continue;
+  
+          const inputIds = step.step.inputs.map(i => i.id);
+          const inputs = inputIds.map(i => scenario.products.find(p => p.id === i)!);
+          const hasMissingInputs = !!inputs.find(i => !(i.value) && !(i.reference) && !(i.options));
+  
+          const outputIds = step.step.outputs.map(o => o.id);
+          const outputs = outputIds.map(o => scenario.products.find(p => p.id === o)!);
+          const hasMissingOutputs = !!outputs.find(o => !(o.value) && !(o.reference));
+  
+          if (!hasMissingOutputs) step.state = new StepStateCompleted();
+          else if (hasMissingInputs) step.state = new StepStateUnavailable();
+          else if (!hasMissingInputs) step.state = new StepStateAvailable();
+        }
       }
     }
-  }
+    }
   return state;
 }
 
-function removeDownstreamData(stepId: string, state: WritableDraft<RiesgosState>) {
-  const scenario = state.scenarioData[state.currentScenario as ScenarioName];
-  if (scenario) {
-    const step = scenario.steps.find(s => s.step.id === stepId)!;
-    const outputIds = step.step.outputs.map(o => o.id);
-
-    const queue = new NonRepeatingQueue();
-    outputIds.map(datumId => queue.enqueue(datumId));
-
-    while (queue.data.length > 0) {
-      const datumId = queue.dequeue();
-      if (!datumId) break;
-      const datum = scenario.products.find(p => p.id === datumId)!;
-      if (datum.value) datum.value = undefined;
-      if (datum.reference) datum.reference = undefined;
-
-      const consumerSteps = scenario.steps.filter(s => s.step.inputs.map(i => i.id).includes(datumId));
-      for (const consumerStep of consumerSteps) {
-        const outputIds = consumerStep.step.outputs.map(o => o.id);
-        outputIds.map(datumId => queue.enqueue(datumId));
-      }
-    }
-  }
-
-  return state;
-}
-
-class NonRepeatingQueue {
-  alreadySeen: string[] = [];
-  data: string[] = [];
-
-  constructor() { }
-
-  enqueue(datum: string) {
-    if (this.alreadySeen.includes(datum)) return;
-    this.alreadySeen.push(datum);
-    this.data.push(datum);
-  }
-
-  dequeue() {
-    return this.data.shift();
-  }
-}

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { RiesgosProduct, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { Partition, RiesgosProduct, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
 
@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 export class ConfigComponent implements OnInit {
 
   @Input() scenario!: ScenarioName;
+  @Input() partition!: Partition;
   @Input() step!: RiesgosStep["step"];
   @Input() products!: RiesgosProduct[];
   public formGroup: FormGroup = new FormGroup({});
@@ -37,6 +38,7 @@ export class ConfigComponent implements OnInit {
     if (this.requiresConfigAction()) {
       this.store.dispatch(AppActions.stepConfig({
           scenario: this.scenario,
+          partition: this.partition,
           stepId: this.step.id,
           values: this.formGroup.value
       }));
@@ -45,6 +47,7 @@ export class ConfigComponent implements OnInit {
     this.formGroup.valueChanges.subscribe(newVal => {
       this.store.dispatch(AppActions.stepConfig({
           scenario: this.scenario,
+          partition: this.partition,
           stepId: this.step.id,
           values: newVal
       }));
@@ -53,7 +56,7 @@ export class ConfigComponent implements OnInit {
   }
 
   public execute() {
-    this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, step: this.step.id }));
+    this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, partition: this.partition, step: this.step.id }));
   }
 
   public allValuesSet(): boolean {

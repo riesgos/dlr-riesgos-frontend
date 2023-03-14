@@ -9,7 +9,6 @@ export function allParasSet(step: RiesgosStep, products: RiesgosProduct[]): bool
         const existingReference = products.find(p => p.id === id)?.reference;
         const existingDefault = input.default;
         if (!existingValue && !existingReference && !existingDefault) {
-            console.log(`Missing parameter for ${step.step.id} - ${input.id}`)
             return false;
         }
     }

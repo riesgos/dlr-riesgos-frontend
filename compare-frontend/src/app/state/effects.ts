@@ -8,8 +8,8 @@ import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
 import { MapService } from "../services/map.service";
 import * as AppActions from "./actions";
-import { convertFrontendDataToApiState, convertApiDataToRiesgosData, allParasSet, fillWithDefaults } from "./helpers";
-import { RiesgosState, StepStateTypes } from "./state";
+import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
+import { RiesgosState } from "./state";
 
 
 @Injectable()
@@ -27,7 +27,7 @@ export class Effects {
 
     private executeStep$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecStart),
-        tap(action => console.log(`Execute start: ${action.step}`)),
+        tap(action => console.log(`Execute start: ${action.partition}/${action.step}`)),
 
         // fetch current data, convert, execute, and convert back
 
@@ -35,7 +35,7 @@ export class Effects {
         map(([action, state]) => {
             return {
                 action: action,
-                products: state.scenarioData[action.scenario]!.products
+                products: state.scenarioData[action.scenario]![action.partition]!.products
             }
         }),
 
@@ -53,8 +53,8 @@ export class Effects {
             action: action
         })),
 
-        tap(({newData, action}) => console.log(`Execute success: ${action.step}`)),
-        map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, step: action.step, newData })),
+        tap(({newData, action}) => console.log(`Execute success: ${action.partition}/${action.step}`)),
+        map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, partition: action.partition, step: action.step, newData })),
 
         // catchError((error) => {
         //     const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
@@ -98,20 +98,20 @@ check if more  │     └───────┬──────┘
     private startAutoPilot$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecSuccess),
         filter(action => action.scenario === 'PeruShort' && action.step === 'selectEq'),
-        map(action => AppActions.startAutoPilot({ scenario: action.scenario })),
+        map(action => AppActions.startAutoPilot({ scenario: action.scenario, partition: action.partition })),
     ));
 
     private updateAutoPilotOnStart$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.startAutoPilot),
-        map(action => AppActions.updateAutoPilot({ scenario: action.scenario }))
+        map(action => AppActions.updateAutoPilot({ scenario: action.scenario, partition: action.partition }))
     ));
 
     private dequeueAutoPilotAfterUpdate$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.updateAutoPilot),
         withLatestFrom(this.store$.select(state => state.riesgos)),
-        map(([action, state]) => state.scenarioData[action.scenario]!),
+        map(([action, state]) => state.scenarioData[action.scenario]![action.partition]!),
         filter(state => state.autoPilot.queue.length > 0),
-        map(state => AppActions.autoPilotDequeue({scenario: state.scenario, step: state.autoPilot.queue[0] }))
+        map(state => AppActions.autoPilotDequeue({scenario: state.scenario, partition: state.partition, step: state.autoPilot.queue[0] }))
     ));
 
     private execDequeued$ = createEffect(() => this.actions$.pipe(
@@ -119,6 +119,7 @@ check if more  │     └───────┬──────┘
         delay(Math.random() * 100),  // in firefox, too many simultaneous posts are being blocked.
         map(action => AppActions.stepExecStart({
             scenario: action.scenario,
+            partition: action.partition,
             step: action.step
         }))
     ));
@@ -126,14 +127,14 @@ check if more  │     └───────┬──────┘
     private dequeueMoreAfterExecStart$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecStart),
         withLatestFrom(this.store$.select(state => state.riesgos)),
-        map(([action, state]) => state.scenarioData[action.scenario]!),
+        map(([action, state]) => state.scenarioData[action.scenario]![action.partition]!),
         filter(state => state.autoPilot.useAutoPilot && state.autoPilot.queue.length > 0),
-        map(state => AppActions.autoPilotDequeue({ scenario: state.scenario, step: state.autoPilot.queue[0] }))
+        map(state => AppActions.autoPilotDequeue({ scenario: state.scenario, partition: state.partition, step: state.autoPilot.queue[0] }))
     ));
 
     private updateAutoPilotOnSuccess$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecSuccess),
-        map(action => AppActions.updateAutoPilot({ scenario: action.scenario }))
+        map(action => AppActions.updateAutoPilot({ scenario: action.scenario, partition: action.partition }))
     ));
 
 

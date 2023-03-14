@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RiesgosProduct, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { Partition, RiesgosProduct, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 
 @Component({
@@ -11,6 +11,7 @@ import * as AppActions from 'src/app/state/actions';
 export class StepComponent {
   
   @Input() scenario!: ScenarioName;
+  @Input() partition!: Partition;
   @Input() step!: RiesgosStep;
   @Input() inputs!: RiesgosProduct[];
   @Input() outputs!: RiesgosProduct[];

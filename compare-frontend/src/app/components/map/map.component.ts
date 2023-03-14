@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { MapService } from 'src/app/services/map.service';
+import { Partition } from 'src/app/state/state';
 
 @Component({
   selector: 'app-map',
@@ -8,6 +9,7 @@ import { MapService } from 'src/app/services/map.service';
 })
 export class MapComponent implements AfterViewInit {
 
+  @Input() partition!: Partition;
   @ViewChild('mapContainer') mapContainer?: ElementRef<HTMLDivElement>;
 
   constructor(private mapSvc: MapService) {}

@@ -6,7 +6,6 @@ import { delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rx
 import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
-import { MapService } from "../services/map.service";
 import * as AppActions from "./actions";
 import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
 import { RiesgosState } from "./state";
@@ -146,7 +145,6 @@ check if more  │     └───────┬──────┘
         private configSvc: ConfigService,
         private backendSvc: BackendService,
         private dataSvc: DataService,
-        private mapSvc: MapService,
     ) {}
 }
 

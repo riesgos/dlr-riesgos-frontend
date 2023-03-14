@@ -1,8 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, ScenarioNameOrNone, StepStateRunning, StepStateError, Partition } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, altParaPicked, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot } from './actions';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
+import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
 
@@ -136,10 +136,17 @@ export const reducer = createReducer(
     }
   }),
 
-  on(altParaPicked, (state, action) => {
-    return state;
-  }),
 
+  immerOn(mapMove, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]!;
+    const leftState = scenarioState.left;
+    const rightState = scenarioState.right;
+    leftState.map.center = action.center;
+    leftState.map.zoom = action.zoom;
+    rightState.map.center = action.center;
+    rightState.map.zoom = action.zoom;
+    return state;
+  })
 );
 
 
@@ -197,6 +204,10 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
         },
         products: products,
         steps: steps,
+        map: {
+          center: [0, 0],
+          zoom: 0
+        }
       }
 
       scenarioData[apiScenario.id][partition] = partitionScenarioData;

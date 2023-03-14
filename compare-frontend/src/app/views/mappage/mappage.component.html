@@ -1,8 +1,8 @@
-<div class="page">
+<div *ngIf="scenario$ | async as scenario" class="page">
     <div class="maps">
-        <app-map [partition]="'left'" class="page-map left"></app-map>
-        <app-map [partition]="'right'" class="page-map right"></app-map>
+        <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
+        <app-map [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
     </div>
-    <app-wizard [partition]="'left'" class="page-wizard left"></app-wizard>
-    <app-wizard [partition]="'right'" class="page-wizard right"></app-wizard>
+    <app-wizard [scenario]="scenario" [partition]="'left'" class="page-wizard left"></app-wizard>
+    <app-wizard [scenario]="scenario" [partition]="'right'" class="page-wizard right"></app-wizard>
 </div>

@@ -23,4 +23,5 @@ export const stopAutoPilot = createAction('Auto-pilot: Stopping', props<{ scenar
 export const updateAutoPilot = createAction('Auto-pilot: update', props<{ scenario: ScenarioName, partition: Partition }>());
 export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ scenario: ScenarioName, partition: Partition, step: string }>());
 
-export const altParaPicked = createAction('Parameter for comparison picked', props<{ step: string, para: any }>());
+export const mapMove = createAction('Map move', props<{ scenario: ScenarioName, partition: Partition, zoom: number, center: number[] }>());
+export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: Partition, location: number[] }>());

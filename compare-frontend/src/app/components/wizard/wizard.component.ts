@@ -10,12 +10,11 @@ import { Partition, RiesgosProduct, RiesgosScenarioState, RiesgosState, RiesgosS
 })
 export class WizardComponent {
 
+  @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
 
   public stepData$ = this.store.select(state => {
-    const scenario = state.riesgos.currentScenario;
-    if (scenario === 'none') return undefined;
-    const scenarioStates = state.riesgos.scenarioData[scenario];
+    const scenarioStates = state.riesgos.scenarioData[this.scenario];
     if (!scenarioStates) return undefined;
     const scenarioState = scenarioStates[this.partition];
     return scenarioState;

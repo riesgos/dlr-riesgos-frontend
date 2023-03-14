@@ -5,7 +5,9 @@ import { API_Step } from "../services/backend.service";
 
 export type ScenarioName = 'Chile' | 'Peru' | 'PeruShort' | 'Ecuador';
 export type ScenarioNameOrNone = 'none' | ScenarioName;
-
+export function scenarioNameIsNotNone(name: ScenarioNameOrNone): name is ScenarioName {
+    return name !== 'none';
+}
 
 export enum StepStateTypes {
     unavailable = 'unavailable',
@@ -80,7 +82,11 @@ export interface RiesgosScenarioState {
         useAutoPilot: boolean;
         queue: string[];
     },
-    partition: Partition
+    partition: Partition,
+    map: {
+        zoom: number,
+        center: number[]
+    }
 }
 
 

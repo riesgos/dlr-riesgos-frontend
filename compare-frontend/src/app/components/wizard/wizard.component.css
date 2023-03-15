@@ -1,3 +1,16 @@
 .wizard {
     padding: 0;
 }
+
+.wizard.unfocussed {
+    max-width: 5rem;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.wizard-header {
+    padding: 0.125rem 0.5rem 0.125rem 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

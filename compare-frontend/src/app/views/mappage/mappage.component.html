@@ -1,8 +1,10 @@
 <div *ngIf="scenario$ | async as scenario" class="page">
-    <div class="maps">
-        <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
-        <app-map [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
-    </div>
-    <app-wizard [scenario]="scenario" [partition]="'left'" class="page-wizard left"></app-wizard>
-    <app-wizard [scenario]="scenario" [partition]="'right'" class="page-wizard right"></app-wizard>
+    <ng-container *ngIf="focus$ | async as focus">
+        <div  class="maps">
+            <app-map *ngIf="focus.left || !focus.right" [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
+            <app-map *ngIf="focus.right"                [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
+        </div>
+        <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
+        <app-wizard [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
+    </ng-container>
 </div>

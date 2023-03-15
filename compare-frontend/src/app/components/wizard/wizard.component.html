@@ -1,7 +1,18 @@
-<div class="wizard box">
+<div class="wizard box" [class.unfocussed]="focus === false">
+
+    <div *ngIf="partition === 'left'" class="wizard-header">
+        <h4>Wizard</h4>
+        <button (click)="toggleFocus()">{{ focus ? 'Collapse' : 'Expand' }}</button>
+    </div>
+    <div *ngIf="partition === 'right'" class="wizard-header">
+        <button (click)="toggleFocus()">Expand</button>
+        <h4>Wizard</h4>
+    </div>
+
     <div class="wizard-content" *ngIf="stepData$ | async as stepData">
         <div class="step" *ngFor="let stepDatum of stepData">
             <app-step [scenario]="stepDatum.scenario" [partition]="stepDatum.partition" [step]="stepDatum.step" [inputs]="stepDatum.inputs" [outputs]="stepDatum.outputs"></app-step>
         </div>
     </div>
+
 </div>

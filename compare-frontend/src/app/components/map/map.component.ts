@@ -68,6 +68,9 @@ export class MapComponent implements AfterViewInit {
         switchMap(state => {
           const focussedStep = state.focusState.focusedStep;
           const scenarioState = state.scenarioData[this.scenario]![this.partition];
+          if (scenarioState.active === false) {
+            return forkJoin([of(state), of([])]);
+          }
           return forkJoin([of(state), this.updateLayers(focussedStep, scenarioState)]);
         }),
         map(([state, layers]) => {

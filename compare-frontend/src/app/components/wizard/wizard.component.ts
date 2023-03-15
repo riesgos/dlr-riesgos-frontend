@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { filter, map, OperatorFunction } from 'rxjs';
 import { Partition, RiesgosProduct, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import * as AppActions from 'src/app/state/actions';
 
 @Component({
   selector: 'app-wizard',
@@ -12,6 +13,14 @@ export class WizardComponent {
 
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
+  @Input() focus!: boolean;
+
+  // public focus$ = this.store.select(state => {
+  //   const scenarioStates = state.riesgos.scenarioData[this.scenario];
+  //   if (!scenarioStates) return false;
+  //   const scenarioState = scenarioStates[this.partition];
+  //   return scenarioState.active;
+  // });
 
   public stepData$ = this.store.select(state => {
     const scenarioStates = state.riesgos.scenarioData[this.scenario];
@@ -36,4 +45,8 @@ export class WizardComponent {
   );
 
   constructor(private store: Store<{riesgos: RiesgosState}>) {}
+
+  public toggleFocus() {
+    this.store.dispatch(AppActions.toggleFocus({ scenario: this.scenario, partition: this.partition }));
+  }
 }

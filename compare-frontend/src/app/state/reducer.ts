@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove, mapClick } from './actions';
+import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove, mapClick, toggleFocus } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
 
@@ -109,7 +109,9 @@ export const reducer = createReducer(
     for (const step of newScenarioState.steps) {
       if (step.state.type === "available") {
         if (allParasSet(step, newScenarioState.products)) {
-          newScenarioState.autoPilot.queue.push(step.step.id);
+          if (! newScenarioState.autoPilot.queue.includes(step.step.id)) {
+            newScenarioState.autoPilot.queue.push(step.step.id);
+          }
         }
       }
     }
@@ -147,6 +149,13 @@ export const reducer = createReducer(
     const rightState = scenarioState.right;
     leftState.map.clickLocation = action.location;
     rightState.map.clickLocation = action.location;
+  }),
+
+
+  immerOn(toggleFocus, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
+    scenarioState.active = !scenarioState.active;
+    return state;
   })
 );
 
@@ -209,7 +218,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
         map: {
           center: [-50, -20],
           zoom: 4,
-          clickLocation: []
+          clickLocation: undefined
         }
       }
 

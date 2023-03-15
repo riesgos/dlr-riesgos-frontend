@@ -31,13 +31,11 @@ export const reducer = createReducer(
     }
   }),
 
-  on(stepSelect, (state, action) => {
-    return {
-      ...state,
-      focusState: {
-        focusedStep: action.stepId
-      }
-    };
+  immerOn(stepSelect, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
+    scenarioData.active = true;
+    state.focusState.focusedStep = action.stepId;
+    return state;
   }),
 
   immerOn(stepConfig, (state, action) => {

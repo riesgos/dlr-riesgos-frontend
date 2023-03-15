@@ -62,10 +62,12 @@ export class MapComponent implements AfterViewInit {
 
       this.store.select(state => state.riesgos).pipe(
         tap(state => {
+          console.log(`new state ${this.partition}`, state)
           const scenarioState = state.scenarioData[this.scenario]![this.partition];
           this.updatePosition(scenarioState);
         }),
         switchMap(state => {
+          console.log(`getting layers ${this.partition}`, state)
           const focussedStep = state.focusState.focusedStep;
           const scenarioState = state.scenarioData[this.scenario]![this.partition];
           if (scenarioState.active === false) {
@@ -74,6 +76,7 @@ export class MapComponent implements AfterViewInit {
           return forkJoin([of(state), this.updateLayers(focussedStep, scenarioState)]);
         }),
         map(([state, layers]) => {
+          console.log(`new layers ${this.partition}: `, layers)
           this.map.setLayers([...this.baseLayers, ...layers]);
           return state;
         }),

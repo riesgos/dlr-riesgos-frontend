@@ -15,13 +15,6 @@ export class WizardComponent {
   @Input() partition!: Partition;
   @Input() focus!: boolean;
 
-  // public focus$ = this.store.select(state => {
-  //   const scenarioStates = state.riesgos.scenarioData[this.scenario];
-  //   if (!scenarioStates) return false;
-  //   const scenarioState = scenarioStates[this.partition];
-  //   return scenarioState.active;
-  // });
-
   public stepData$ = this.store.select(state => {
     const scenarioStates = state.riesgos.scenarioData[this.scenario];
     if (!scenarioStates) return undefined;

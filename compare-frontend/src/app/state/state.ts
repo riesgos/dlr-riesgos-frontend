@@ -83,9 +83,11 @@ export interface RiesgosScenarioState {
         queue: string[];
     },
     partition: Partition,
+    active: boolean,
     map: {
         zoom: number,
-        center: number[]
+        center: number[],
+        clickLocation: number[] | undefined
     }
 }
 

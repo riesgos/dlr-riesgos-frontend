@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, stepUpdate, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove } from './actions';
+import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove, mapClick } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
 
@@ -87,13 +87,6 @@ export const reducer = createReducer(
     return state;
   }),
 
-  immerOn(stepUpdate, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
-    const step = scenarioData.steps.find(s => s.step.id === action.step.step.id)!;
-    step.step = action.step.step;
-    return state;
-  }),
-
   immerOn(startAutoPilot, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     scenarioState.autoPilot.useAutoPilot = true;
@@ -146,6 +139,14 @@ export const reducer = createReducer(
     rightState.map.center = action.center;
     rightState.map.zoom = action.zoom;
     return state;
+  }),
+
+  immerOn(mapClick, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]!;
+    const leftState = scenarioState.left;
+    const rightState = scenarioState.right;
+    leftState.map.clickLocation = action.location;
+    rightState.map.clickLocation = action.location;
   })
 );
 
@@ -198,6 +199,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
       const partitionScenarioData = {
         scenario: apiScenario.id,
         partition: partition as Partition,
+        active: partition === 'left' ? true : false,
         autoPilot: {
           useAutoPilot: false,
           queue: []
@@ -205,8 +207,9 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
         products: products,
         steps: steps,
         map: {
-          center: [0, 0],
-          zoom: 0
+          center: [-50, -20],
+          zoom: 4,
+          clickLocation: []
         }
       }
 

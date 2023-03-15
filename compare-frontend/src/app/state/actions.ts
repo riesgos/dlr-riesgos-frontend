@@ -7,7 +7,6 @@ export const scenarioLoadStart = createAction('Scenario load start');
 export const scenarioLoadSuccess = createAction('Scenario load success', props<{ scenarios: API_ScenarioInfo[] }>());
 export const scenarioLoadFailure = createAction('Scenario load failure', props<{ error: any }>());
 export const scenarioPicked = createAction('Scenario picked', props<{ scenario: ScenarioName }>());
-export const modePicked = createAction('Mode picked', props<{ mode: string }>());
 
 export const stepSelect = createAction('Step select', props<{ scenario: ScenarioName, partition: Partition, stepId: string }>());
 export const stepConfig = createAction('Step config', props<{ scenario: ScenarioName, partition: Partition, stepId: string, values: {[key: string]: any } }>());
@@ -15,8 +14,6 @@ export const stepExecStart = createAction('Step exec start', props<{ scenario: S
 export const stepConfigAndExecStart = createAction('Step config and exec start', props<{ scenario: ScenarioName, partition: Partition, stepId: string, values: {[key: string]: any}}>());
 export const stepExecSuccess = createAction('Step exec success', props<{ scenario: ScenarioName, partition: Partition, step: string, newData: RiesgosProduct[] }>());
 export const stepExecFailure = createAction('Step exec failure', props<{ scenario: ScenarioName, partition: Partition, step: string, error: any }>());
-
-export const stepUpdate = createAction('Change to step data', props<{ scenario: ScenarioName, partition: Partition, step: RiesgosStep }>());
 
 export const startAutoPilot = createAction('Auto-pilot: Starting', props<{ scenario: ScenarioName, partition: Partition }>());
 export const stopAutoPilot = createAction('Auto-pilot: Stopping', props<{ scenario: ScenarioName, partition: Partition }>());

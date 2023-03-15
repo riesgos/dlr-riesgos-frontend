@@ -25,6 +25,7 @@ export class MapComponent implements AfterViewInit {
   private baseLayers = [new TileLayer({
     source: new OSM()
   })];
+  private overlay = new Overlay({});
   private map: Map = new Map({
     layers: this.baseLayers,
     view: new View({
@@ -32,9 +33,9 @@ export class MapComponent implements AfterViewInit {
       center: [-50, -20],
       zoom: 4
     }),
-    controls: []
+    controls: [],
+    overlays: [this.overlay]    
   });
-  private overlay = new Overlay({});
 
   constructor(
     private store: Store<{ riesgos: RiesgosState }>,

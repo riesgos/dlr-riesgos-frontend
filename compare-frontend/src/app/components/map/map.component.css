@@ -2,3 +2,13 @@
     height: 100%;
     width: 100%;
 }
+
+
+.popup {
+    background: var(--gray-100);
+    padding: .5rem;
+    border-radius: .25rem;
+    outline-width: 1px;
+    outline-color: var(--gray-400);
+    outline-style: solid;
+}

@@ -75,7 +75,10 @@ export class MapComponent implements AfterViewInit {
           if (last.scenarioState.map.zoom !== current.scenarioState.map.zoom) return true;
           if (last.scenarioState.map.center[0] !== current.scenarioState.map.center[0]) return true;
           if (last.scenarioState.map.center[1] !== current.scenarioState.map.center[1]) return true;
-          if (last.scenarioState.map.clickLocation !== current.scenarioState.map.clickLocation && !arraysEqual(last.scenarioState.map.clickLocation!, current.scenarioState.map.clickLocation!)) return true;
+          if (
+            last.scenarioState.map.clickLocation !== undefined && current.scenarioState.map.clickLocation !== undefined &&
+            !arraysEqual(last.scenarioState.map.clickLocation!, current.scenarioState.map.clickLocation!)
+          ) return true;
           return false;
         }),
         map(([last, current]) => current),

@@ -23,7 +23,7 @@ export function getMapPositionForStep(scenario: ScenarioName, partition: Partiti
                 return { zoom: 6, center: [-77.15, -12] };
             case 'TsDamage':
                 return { zoom: 10, center: [-77.15, -12] };
-            case 'sysRel':
+            case 'SysRel':
                 return { zoom: 9.5, center: [-77.15, -12] };
         }
     }

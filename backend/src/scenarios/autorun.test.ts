@@ -1,7 +1,7 @@
 import { parseCode } from '../parser/scenarioParser';
 import { deleteFile } from '../utils/files';
 import { FileStorage } from '../storage/fileStorage';
-import { DatumLinage, isDatumReference, isUserSelection, ScenarioState } from './scenarios';
+import { DatumLinage, isDatumReference, ScenarioState } from './scenarios';
 
 
 
@@ -32,7 +32,7 @@ test('autorun', async () => {
             
             // 1. simulating a user selecting some input
             for (const input of step.inputs) {
-                if (isUserSelection(input)) {
+                if (input.options) {
                     state.data.push({
                         id: input.id,
                         value: input.options[Math.floor(Math.random() * input.options.length)]

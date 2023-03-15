@@ -80,6 +80,7 @@ export class BackendService {
     }
 
     execute(scenarioId: string, stepId: string, state: API_ScenarioState): Observable<API_ScenarioState> {
+        console.log(`be-service: executing ${stepId}`)
         const url = this.configService.getConfig().backendUrl;
         const post$ = this.http.post<{ ticket: string }>(
             `${url}/scenarios/${scenarioId}/steps/${stepId}/execute`,
@@ -93,7 +94,7 @@ export class BackendService {
         return post$.pipe(
             switchMap(responseData => {
                 const task$ = this.http.get<{ ticket?: string, results?: API_ScenarioState, error?: any }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
-                return pollUntil(task$, r => !!r.results || !!r.error);
+                return pollUntil(task$, r => !!r.results || !!r.error, t => console.log(`be-service: polling for ${stepId} with ticket `, t?.ticket));
             }),
             map(response => {
                 if (response.error) {

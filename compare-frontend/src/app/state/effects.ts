@@ -136,6 +136,7 @@ check if more  │     └───────┬──────┘
 
     private updateAutoPilotOnSuccess$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecSuccess),
+        filter(action => action.scenario !== 'PeruShort' || action.step !== 'selectEq'),  // except if this is the AP-start-condition - because that's already been called.
         map(action => AppActions.updateAutoPilot({ scenario: action.scenario, partition: action.partition }))
     ));
 

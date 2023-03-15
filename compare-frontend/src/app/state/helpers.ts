@@ -2,6 +2,19 @@ import { API_ScenarioState, API_Datum, API_DatumReference, isApiDatum } from "..
 import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, RiesgosProduct, RiesgosStep } from "./state";
 
 
+
+export function arraysEqual(a1: any[], a2: any[]) {
+    if (a1.length !== a2.length) return false;
+    for (let i = 0; i < a1.length; i++) {
+        if (a1[i] !== a2[i]) return false;
+    }
+    return true;
+}
+
+export function allProductsEqual(list1: RiesgosProduct[], list2: RiesgosProduct[]): boolean {
+    return arraysEqual(list1.map(p => p.reference), list2.map(p => p.reference));
+}
+
 export function allParasSet(step: RiesgosStep, products: RiesgosProduct[]): boolean {
     for (const input of step.step.inputs) {
         const id = input.id;

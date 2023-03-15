@@ -7,8 +7,9 @@ import { Partition, RiesgosScenarioState, RiesgosState, ScenarioName } from 'src
 import * as AppActions from 'src/app/state/actions';
 import { DataService } from 'src/app/services/data.service';
 import { toOlLayers } from './helpers';
-import { forkJoin, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
+import { bufferCount, defaultIfEmpty, filter, forkJoin, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import Layer from 'ol/layer/Layer';
+import { allProductsEqual, arraysEqual } from 'src/app/state/helpers';
 
 @Component({
   selector: 'app-map',
@@ -60,28 +61,35 @@ export class MapComponent implements AfterViewInit {
         this.store.dispatch(AppActions.mapClick({ scenario: this.scenario, partition: this.partition, location: location }));
       })
 
-      this.store.select(state => state.riesgos).pipe(
-        tap(state => {
-          console.log(`new state ${this.partition}`, state)
-          const scenarioState = state.scenarioData[this.scenario]![this.partition];
+      this.store.select(state => {
+        const riesgosState = state.riesgos;
+        const scenarioState = riesgosState.scenarioData[this.scenario]![this.partition];
+        const focussedStep = riesgosState.focusState.focusedStep;
+        return { scenarioState, focussedStep };
+      }).pipe(
+        bufferCount(2, 1),  // only run when something important has changed. Prevents double-fetches
+        filter(([last, current]) => {
+          if (!current.scenarioState.active) return false;
+          if (last.focussedStep !== current.focussedStep) return true;
+          if (!allProductsEqual(last.scenarioState.products, current.scenarioState.products)) return true;
+          if (last.scenarioState.map.zoom !== current.scenarioState.map.zoom) return true;
+          if (last.scenarioState.map.center[0] !== current.scenarioState.map.center[0]) return true;
+          if (last.scenarioState.map.center[1] !== current.scenarioState.map.center[1]) return true;
+          if (last.scenarioState.map.clickLocation !== current.scenarioState.map.clickLocation && !arraysEqual(last.scenarioState.map.clickLocation!, current.scenarioState.map.clickLocation!)) return true;
+          return false;
+        }),
+        map(([last, current]) => current),
+        tap(({ scenarioState, focussedStep }) => {
           this.updatePosition(scenarioState);
         }),
-        switchMap(state => {
-          console.log(`getting layers ${this.partition}`, state)
-          const focussedStep = state.focusState.focusedStep;
-          const scenarioState = state.scenarioData[this.scenario]![this.partition];
-          if (scenarioState.active === false) {
-            return forkJoin([of(state), of([])]);
-          }
-          return forkJoin([of(state), this.updateLayers(focussedStep, scenarioState)]);
+        switchMap(({ scenarioState, focussedStep }) => {
+          return forkJoin([of(scenarioState), this.updateLayers(focussedStep, scenarioState)]);
         }),
         map(([state, layers]) => {
-          console.log(`new layers ${this.partition}: `, layers)
           this.map.setLayers([...this.baseLayers, ...layers]);
           return state;
         }),
-        switchMap(state => {
-          const scenarioState = state.scenarioData[this.scenario]![this.partition];
+        switchMap(scenarioState => {
           return this.handleClick(scenarioState);
         })
       ).subscribe(success => {});
@@ -102,7 +110,7 @@ export class MapComponent implements AfterViewInit {
     return this.resolver.resolveReferences(outputProducts).pipe(
       mergeMap(resolved => {
         const newLayers$ = resolved.map(p => toOlLayers(this.scenario, step, p));
-        return forkJoin(newLayers$);
+        return forkJoin(newLayers$).pipe(defaultIfEmpty([]));  // observable won't fire without defaultIfEmpty
       }),
       map(newLayers => newLayers.flat())
     );

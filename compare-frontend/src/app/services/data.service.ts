@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { defaultIfEmpty, map, tap } from 'rxjs/operators';
 import { isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosProduct, RiesgosProductResolved, isRiesgosValueProduct } from 'src/app/state/state';
 import { ConfigService } from './config.service';
 
@@ -29,7 +29,7 @@ export class DataService {
 
   resolveReferences(products: RiesgosProduct[]): Observable<RiesgosProductResolved[]> {
     const pendingRequests$ = products.map(p => this.resolveReference(p));
-    return forkJoin(pendingRequests$);
+    return forkJoin(pendingRequests$).pipe(defaultIfEmpty([]));   // observable won't fire without defaultIfEmpty
   }
 
   resolveReference(product: RiesgosProduct): Observable<RiesgosProductResolved> {

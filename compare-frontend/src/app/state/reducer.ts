@@ -113,12 +113,14 @@ export const reducer = createReducer(
         }
       }
     }
+    console.log(`Auto-pilot update. queue now contains ${scenarioState.autoPilot.queue}`)
     return newState;
   }),
 
   immerOn(autoPilotDequeue, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     scenarioState.autoPilot.queue = scenarioState.autoPilot.queue.filter(step => step != action.step);
+    console.log(`Auto-pilot dequeued ${action.step}. queue now contains ${scenarioState.autoPilot.queue}`)
     return state;
   }),
 

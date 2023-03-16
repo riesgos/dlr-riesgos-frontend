@@ -94,7 +94,7 @@ export class BackendService {
         return post$.pipe(
             switchMap(responseData => {
                 const task$ = this.http.get<{ ticket?: string, results?: API_ScenarioState, error?: any }>(`${url}/scenarios/${scenarioId}/steps/${stepId}/execute/poll/${responseData.ticket}`);
-                return pollUntil(task$, r => !!r.results || !!r.error, t => console.log(`be-service: polling for ${stepId} with ticket `, t?.ticket));
+                return pollUntil(task$, r => !!r.results || !!r.error, t => console.log(`be-service: polling for ${stepId} with ticket ${t?.ticket} / result ${t?.results} / error ${t?.error}`));
             }),
             map(response => {
                 if (response.error) {

@@ -6,12 +6,13 @@
     Reason: d3 cannot handle dom-nodes that dont exist yet.
     For the new d3-graphs we need a dynamicPopupComponent.
     And for a dynamicPopupComponent we need to return a ProductCustomLayer, not a VectorLayerProduct.
+- Integrate new, comparison-based frontend
+- Integrate backend for content-redaction
 
 ## Features
-- created new frontend: allows to compare two scenarios side-by-side.
-    - new ui without clarity
-    - layercontrol and config-wizard merged
-- backend now provides optional default values for steps' inputs.
+- backend: now provides optional default values for steps' inputs.
+- backend: tickets now stay alive for a certain time after they've been fetched
+- frontend: now allows multiple (dynamic) legends for one layer at the same time. Applied to eq-catalogue.
 
 
 

@@ -35,7 +35,7 @@ export class ProcessPool {
     }
 
     poll(ticket: string): { error: string } | { ticket: string } | { results: any } {
-        this.cleanOlderThan(24 * 60 * 60, 3 * 24 * 60 * 60);
+        this.cleanOlderThan(24*60*60, 3*24*60*60);
 
         const entry = this.getEntry(ticket);
 
@@ -62,6 +62,7 @@ export class ProcessPool {
             if (entry.completedTime) {
                 const deltaSecs = (currentTime - entry.completedTime.getTime()) / 1000;
                 if (deltaSecs > maxAgeSeconds) {
+                    console.log(`Cleaning entry: ${entry.key} because completed ${deltaSecs} seconds ago.`);
                     this.removeEntry(entry.key);
                 }
             }
@@ -69,6 +70,7 @@ export class ProcessPool {
             if (entry.failedTime) {
                 const deltaSecs = (currentTime - entry.failedTime.getTime()) / 1000;
                 if (deltaSecs > maxAgeSeconds) {
+                    console.log(`Cleaning entry: ${entry.key} because failed ${deltaSecs} seconds ago.`);
                     this.removeEntry(entry.key);
                 }
             }
@@ -76,8 +78,9 @@ export class ProcessPool {
             // Additionally, removing entries that have been started but never finished in, say, a few days?
             if (abandonedAgeSeconds) {
                 if (!entry.completedTime && !entry.failedTime) {
-                    const deltaSecs = (currentTime - entry.startedTime.getSeconds()) / 1000;
+                    const deltaSecs = (currentTime - entry.startedTime.getTime()) / 1000;
                     if (deltaSecs > abandonedAgeSeconds) {
+                        console.log(`Cleaning entry: ${entry.key} because unfinished since ${deltaSecs} seconds.`);
                         this.removeEntry(entry.key);
                     }   
                 }
@@ -102,7 +105,7 @@ export class ProcessPool {
     private addNewEntry(key: string): PoolEntry {
         const entry: PoolEntry = {
             key: key,
-            startedTime: new Date,
+            startedTime: new Date(),
         };
         this.entries.push(entry);
         return entry;

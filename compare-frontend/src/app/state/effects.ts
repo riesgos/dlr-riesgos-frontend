@@ -1,13 +1,16 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { forkJoin, of } from "rxjs";
-import { delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
+import { TypedAction } from "@ngrx/store/src/models";
+import { Observable } from "ol";
+import { forkJoin, ObservableInput, of } from "rxjs";
+import { catchError, delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
 import { getMapPositionForStep } from "../components/map/helpers";
 import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
 import * as AppActions from "./actions";
+import { stepExecFailure } from "./actions";
 import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
 import { RiesgosState } from "./state";
 
@@ -25,7 +28,8 @@ export class Effects {
         })
     ));
 
-    private executeStep$ = createEffect(() => this.actions$.pipe(
+    private executeStep$ = createEffect(() => 
+        { return this.actions$.pipe(
         ofType(AppActions.stepExecStart),
         tap(action => console.log(`Execute start: ${action.partition}/${action.step}`)),
 
@@ -56,12 +60,13 @@ export class Effects {
         tap(({newData, action}) => console.log(`Execute success: ${action.partition}/${action.step}`)),
         map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, partition: action.partition, step: action.step, newData })),
 
-        // catchError((error) => {
+        // catchError<any, any>((err, caught) => {
         //     const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
-        //     return AppActions.stepExecFailure({ scenario: err.scenarioId, step: err.stepId, error: errorMessage });
+        //     return of(AppActions.stepExecFailure({ scenario: err.scenarioId, partition: err.partition,  step: err.stepId, error: errorMessage }));
         // })
 
-    ));
+        // )}
+    );
 
 
 

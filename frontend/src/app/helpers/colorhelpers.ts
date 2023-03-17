@@ -65,9 +65,39 @@ export function yellowBlueRange(startVal: number, endVal: number, currentVal: nu
   return rgb;
 }
 
+export function yellowPurpleRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
+  const degree = (currentVal - startVal) / (endVal - startVal);
+  const rgb = scaleInterpolation(yellowPurpleScale, degree);
+  return rgb;
+}
+
+export function yellowRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
+  const degree = (currentVal - startVal) / (endVal - startVal);
+  const rgb = scaleInterpolation(yellowRedScale, degree);
+  return rgb;
+}
+
 export interface Scale {
   [key: string]: [number, number, number];
 }
+
+export const yellowRedScale: Scale = {
+  0.1: [254,240,217],
+  0.3: [253,204,138],
+  0.5: [252,141,89],
+  0.7: [227,74,51],
+  0.9: [179,0,0]
+};
+
+
+export const yellowPurpleScale: Scale = {
+  0.1: [254,235,226],
+  0.3: [251,180,185],
+  0.5: [247,104,161],
+  0.7: [197,27,138],
+  0.9: [122,1,119]
+};
+
 
 export const yellowBlueScale: Scale = {
   0.25: [237, 248, 177],
@@ -123,7 +153,7 @@ export function scaleInterpolation(scale: Scale, value: number, smooth = true): 
       const s = linInterpolate(startColorHSL.s, endColorHSL.s, degree);
       const l = linInterpolate(startColorHSL.l, endColorHSL.l, degree);
       const rgb = d3color.rgb(d3color.hsl(h, s, l));
-      return [rgb.r, rgb.g, rgb.b];
+      return [Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b)];
     }
   }
   return colors[nrKeys - 1];

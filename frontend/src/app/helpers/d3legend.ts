@@ -91,7 +91,7 @@ function scaleColor() {
 
   // public methods
   scale.domain = function (d) { _domain = d; return scale; };
-  scale.range = function (r) { _range = r; return scale; };
+  scale.range  = function (r) { _range = r;  return scale; };
 
   return scale;
 }

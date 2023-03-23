@@ -1,5 +1,5 @@
-import { hslToRgb } from '@cds/core/internal';
 import * as d3color from 'd3-color';
+import { hsl } from 'd3-color';
 
 /**
  * sum_i (D_i * nr_buildings_i / nr_buildings_total)
@@ -16,63 +16,63 @@ export function weightedDamage(damageStates: number[]) {
 }
 
 
+export function fraction(val: number, start: number, end: number, minDistance = 0.0000001): number {
+  if (Math.abs(end - start) < minDistance) {
+    console.warn(`Trying to calculate a fraction with start- and end-point very close to each other: ${end} - ${start} = ${end - start}`);
+    return 0.0; // by l'Hospital
+  }
+  return (val - start) / (end - start);
+}
+
 export function greenYellowRedRange(startVal: number, endVal: number, currentVal): [number, number, number] {
   const halfwayPoint = startVal + ((endVal - startVal) / 2);
   if (currentVal < halfwayPoint) {
-    const degree = (currentVal - startVal) / (halfwayPoint - startVal);
+    const degree = fraction(currentVal, startVal, halfwayPoint);
     return [degree * 255, 255, 0];
   } else {
-    const degree = (currentVal - halfwayPoint) / (endVal - halfwayPoint);
+    const degree = fraction(currentVal, halfwayPoint, endVal);
     return [255, (1 - degree) * 255, 0];
   }
 }
 
 export function greenVioletRangeStepwise(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-  const degree = (currentVal - startVal) / (endVal - startVal);
+  const degree = fraction(currentVal, startVal, endVal);
   const rgb = scaleInterpolation(violetGreenScale2, 1.0 - degree, false);
   return rgb;
 }
 
 export function greenRedRangeStepwise(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-  const degree = (currentVal - startVal) / (endVal - startVal);
+  const degree = fraction(currentVal, startVal, endVal);
   const rgb = scaleInterpolation(redGreenScale2, 1.0 - degree, false);
   return rgb;
 }
 
 export function greenRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-    // let hue = linInterpolateXY(startVal, -30, endVal, 110, currentVal);
-    // if (hue < 0) {hue = 360 + hue; }
-    // const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
-    // return [rgb.r, rgb.g, rgb.b];
-    const degree = (currentVal - startVal) / (endVal - startVal);
+    const degree = fraction(currentVal, startVal, endVal);
     const rgb = scaleInterpolation(redGreenScale2, 1.0 - degree);
     return rgb;
 }
 
 export function redGreenRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-    // let hue = linInterpolateXY(startVal, 110, endVal, -30, currentVal);
-    // if (hue < 0) {hue = 360 + hue; }
-    // const rgb = HSVtoRGB({h: hue / 360, s: 1, v: 1});
-    // return [rgb.r, rgb.g, rgb.b];
-    const degree = (currentVal - startVal) / (endVal - startVal);
+    const degree = fraction(currentVal, startVal, endVal);
     const rgb = scaleInterpolation(redGreenScale2, degree);
     return rgb;
 }
 
 export function yellowBlueRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-  const degree = (currentVal - startVal) / (endVal - startVal);
+  const degree = fraction(currentVal, startVal, endVal);
   const rgb = scaleInterpolation(yellowBlueScale, degree);
   return rgb;
 }
 
 export function yellowPurpleRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-  const degree = (currentVal - startVal) / (endVal - startVal);
+  const degree = fraction(currentVal, startVal, endVal);
   const rgb = scaleInterpolation(yellowPurpleScale, degree);
   return rgb;
 }
 
 export function yellowRedRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
-  const degree = (currentVal - startVal) / (endVal - startVal);
+  const degree = fraction(currentVal, startVal, endVal);
   const rgb = scaleInterpolation(yellowRedScale, degree);
   return rgb;
 }
@@ -82,11 +82,11 @@ export interface Scale {
 }
 
 export const yellowRedScale: Scale = {
-  0.1: [254,240,217],
-  0.3: [253,204,138],
+  0.0: [254,240,217],
+  0.25: [253,204,138],
   0.5: [252,141,89],
-  0.7: [227,74,51],
-  0.9: [179,0,0]
+  0.75: [227,74,51],
+  1.0: [179,0,0]
 };
 
 
@@ -131,22 +131,22 @@ export const violetGreenScale2: Scale = {
 };
 
 export function scaleInterpolation(scale: Scale, value: number, smooth = true): [number, number, number] {
-  const keys = Object.keys(scale);
-  const colors = Object.values(scale);
+  const keys = Object.keys(scale).map(k => +k).sort();  // js-objects dont keep the ordering of numeric keys as they were entered. instead it goes: integers, strings, decimals, each group sorted by first appearance, not value.
+  const colors = keys.map(k => scale[k]);
   const nrKeys =  keys.length;
-  if (value < +keys[0]) {
+  if (value < keys[0]) {
     return colors[0];
   }
-  for (let i = 1; i < nrKeys; i++) {
-    const startKey = +keys[i - 1];
-    const endKey = +keys[i];
+  for (let i = 0; i < nrKeys; i++) { 
+    const startKey = keys[i];
+    const endKey = keys[i+1];
     if (startKey <= value && value < endKey) {
       if (!smooth) {
         return colors[i];
       }
-      const degree = (value - startKey) / (endKey - startKey);
-      const startColorRGB = colors[i - 1];
-      const endColorRGB = colors[i];
+      const degree = fraction(value, startKey, endKey);
+      const startColorRGB = colors[i];
+      const endColorRGB = colors[i+1];
       const startColorHSL = d3color.hsl(d3color.rgb(... startColorRGB));
       const endColorHSL = d3color.hsl(d3color.rgb(... endColorRGB));
       const h = linInterpolate(startColorHSL.h, endColorHSL.h, degree);
@@ -200,6 +200,8 @@ export function percentileValue(data: number[], percentile: number): number {
       out = +val;
     }
   }
+
+  return out;
 }
 
 
@@ -213,17 +215,16 @@ export function toDecimalPlaces(value: number, decimalPlaces: number): string {
 }
 
 export function linInterpolateXY(startX: number, startY: number, endX: number, endY: number, currentX: number): number {
-    const degree = (currentX - startX) / (endX - startX);
-    const degreeTop = Math.max(Math.min(degree, 1), 0);
-    const y = degreeTop * (endY - startY) + startY;
+    const degree = fraction(currentX, startX, endX);
+    const degreeClamped = Math.max(Math.min(degree, 1), 0);
+    const y = degreeClamped * (endY - startY) + startY;
     return y;
 }
 
-export function linInterpolate(startVal: number, endVal: number, currentVal: number): number {
-    const degree = (currentVal - startVal) / (endVal - startVal);
-    const degreeTop = Math.max(Math.min(degree, 1), 0);
-    const intp = degreeTop * (endVal - startVal) + startVal;
-    return intp;
+export function linInterpolate(startVal: number, endVal: number, degree: number): number {
+    const degreeClamped = Math.max(Math.min(degree, 1), 0);
+    const interpolated = degreeClamped * (endVal - startVal) + startVal;
+    return interpolated;
 }
 
 

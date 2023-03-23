@@ -13,6 +13,7 @@
 - backend: now provides optional default values for steps' inputs.
 - backend: tickets now stay alive for a certain time after they've been fetched
 - frontend: now allows multiple (dynamic) legends for one layer at the same time. Applied to eq-catalogue.
+- frontend: now has circle-legend
 
 
 

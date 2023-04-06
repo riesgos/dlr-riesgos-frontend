@@ -74,6 +74,12 @@ export function isRiesgosUnresolvedRefProduct(prod: RiesgosProduct): prod is Rie
     return ('reference' in prod) && !('value' in prod) && prod.reference !== undefined;
 }
 
+
+export interface RiesgosScenarioMapState {
+    zoom: number,
+    center: number[],
+    clickLocation: number[] | undefined
+}
 export interface RiesgosScenarioState {
     scenario: ScenarioName;
     steps: RiesgosStep[];
@@ -84,11 +90,7 @@ export interface RiesgosScenarioState {
     },
     partition: Partition,
     active: boolean,
-    map: {
-        zoom: number,
-        center: number[],
-        clickLocation: number[] | undefined
-    }
+    map: RiesgosScenarioMapState
 }
 
 

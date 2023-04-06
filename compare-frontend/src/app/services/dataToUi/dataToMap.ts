@@ -1,12 +1,106 @@
 import Layer from "ol/layer/Layer";
 import VectorLayer from "ol/layer/Vector";
 import GeoJSON from "ol/format/GeoJSON";
-import { Partition, RiesgosProductResolved, ScenarioName } from "src/app/state/state";
+import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosScenarioState, RiesgosState, ScenarioName } from "src/app/state/state";
 import VectorSource from "ol/source/Vector";
 import TileLayer from "ol/layer/Tile";
-import TileSource from "ol/source/Tile";
 import TileWMS from "ol/source/TileWMS";
-import { Observable, of } from "rxjs";
+import { Observable, bufferCount, defaultIfEmpty, filter, forkJoin, map, mergeMap, of, switchMap, tap, withLatestFrom } from "rxjs";
+import { DataService } from "../data.service";
+import { Store } from "@ngrx/store";
+import { Injectable } from "@angular/core";
+import { allProductsEqual, arraysEqual } from "src/app/state/helpers";
+import * as AppActions from 'src/app/state/actions';
+
+
+
+export interface MapState extends RiesgosScenarioMapState {
+    layers: Layer[]
+}
+
+
+@Injectable({
+    providedIn: 'root'
+})
+export class MapService {
+    constructor(
+        private store: Store<{ riesgos: RiesgosState }>,
+        private resolver: DataService
+    ) {}
+
+    /**
+     * Only returns a value if something map-relevant has changed
+     */
+    public getMapData(scenario: ScenarioName, partition: Partition): Observable<MapState> {
+
+        const scenarioState$ = this.store.select(state => {
+            const riesgosState = state.riesgos;
+            const scenarioState = riesgosState.scenarioData[scenario]![partition];
+            const focussedStep = riesgosState.focusState.focusedStep;
+            return { scenarioState, focussedStep };
+        });
+        
+        const changedState$ = scenarioState$.pipe(
+            bufferCount(2, 1),
+            filter(([last, current]) => {
+              // only run when something important has changed. Prevents double-fetches.
+              if (!current.scenarioState.active) return false;
+              if (last.focussedStep !== current.focussedStep) return true;
+              if (!allProductsEqual(last.scenarioState.products, current.scenarioState.products)) return true;
+              if (last.scenarioState.map.zoom !== current.scenarioState.map.zoom) return true;
+              if (last.scenarioState.map.center[0] !== current.scenarioState.map.center[0]) return true;
+              if (last.scenarioState.map.center[1] !== current.scenarioState.map.center[1]) return true;
+              if (
+                last.scenarioState.map.clickLocation !== undefined && current.scenarioState.map.clickLocation !== undefined &&
+                !arraysEqual(last.scenarioState.map.clickLocation!, current.scenarioState.map.clickLocation!)
+              ) return true;
+              return false;
+            }),
+            map(([_, current]) => current)
+        );
+
+        const resolvedData$ = changedState$.pipe(
+            switchMap(({scenarioState, focussedStep}) => {
+                const currentStep = scenarioState.steps.find(s => s.step.id === focussedStep);
+                if (!currentStep) return of([]);
+
+                const outputIds = currentStep.step.outputs.map(o => o.id);
+                const outputProducts = scenarioState.products.filter(p => outputIds.includes(p.id)).filter(p => p.value || p.reference);
+                return this.resolver.resolveReferences(outputProducts);
+            })
+        );
+
+        const layers$ = resolvedData$.pipe(
+            withLatestFrom(changedState$),
+            mergeMap(([resolved, {scenarioState, focussedStep}]) => {
+                const newLayers$ = resolved.map(p => toOlLayers(scenario, focussedStep, p));
+                return forkJoin(newLayers$).pipe(defaultIfEmpty([]));  // observable won't fire without defaultIfEmpty
+            }),
+            map(newLayers => newLayers.flat())
+        );
+
+        const fullMapState$ = layers$.pipe(
+            withLatestFrom(changedState$),
+            map(([layers, {scenarioState, focussedStep}]) => {
+                return {
+                    ... scenarioState.map,
+                    layers: layers
+                }
+            })
+        )
+
+        return fullMapState$;
+    }
+
+    public mapClick(scenario: ScenarioName, partition: Partition, location: number[]) {
+        this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location }));
+    }
+
+    public mapMove(scenario: ScenarioName, partition: Partition, zoom: any, center: any) {
+        this.store.dispatch(AppActions.mapMove({ scenario: scenario, partition: partition, zoom, center }))
+    }
+}
+
 
 export function getMapPositionForStep(scenario: ScenarioName, partition: Partition, stepId: string): {center: number[], zoom: number} {
     if (scenario === 'PeruShort') {

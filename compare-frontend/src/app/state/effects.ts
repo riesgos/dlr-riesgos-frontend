@@ -5,7 +5,7 @@ import { TypedAction } from "@ngrx/store/src/models";
 import { Observable } from "ol";
 import { forkJoin, ObservableInput, of } from "rxjs";
 import { catchError, delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
-import { getMapPositionForStep } from "../components/map/helpers";
+import { getMapPositionForStep } from "../services/dataToUi/dataToMap";
 import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
@@ -65,7 +65,7 @@ export class Effects {
         //     return of(AppActions.stepExecFailure({ scenario: err.scenarioId, partition: err.partition,  step: err.stepId, error: errorMessage }));
         // })
 
-        // )}
+        )}
     );
 
 
@@ -103,7 +103,7 @@ check if more  │     └───────┬──────┘
     private startAutoPilot$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecSuccess),
         filter(action => action.scenario === 'PeruShort' && action.step === 'selectEq'),
-        map(action => AppActions.startAutoPilot({ scenario: action.scenario, partition: action.partition })),
+        map(action => AppActions.startAutoPilot({ scenario: action.scenario, partition: action.partition }))
     ));
 
     private updateAutoPilotOnStart$ = createEffect(() => this.actions$.pipe(

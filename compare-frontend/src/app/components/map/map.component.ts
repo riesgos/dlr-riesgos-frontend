@@ -1,15 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Map, Overlay, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import { Partition, RiesgosScenarioState, RiesgosState, ScenarioName } from 'src/app/state/state';
-import * as AppActions from 'src/app/state/actions';
-import { DataService } from 'src/app/services/data.service';
-import { toOlLayers } from './helpers';
-import { bufferCount, defaultIfEmpty, filter, forkJoin, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
-import Layer from 'ol/layer/Layer';
-import { allProductsEqual, arraysEqual } from 'src/app/state/helpers';
+import { Partition, ScenarioName } from 'src/app/state/state';
+import { MapService, MapState } from 'src/app/services/dataToUi/dataToMap';
+import { Observable, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -39,8 +34,7 @@ export class MapComponent implements AfterViewInit {
   });
 
   constructor(
-    private store: Store<{ riesgos: RiesgosState }>,
-    private resolver: DataService
+    private mapSvc: MapService
   ) {}
 
   ngAfterViewInit(): void {
@@ -53,81 +47,44 @@ export class MapComponent implements AfterViewInit {
         const zoom = this.map.getView().getZoom()!;
         const centerCoord = this.map.getView().getCenter()!;
         const center = [centerCoord[0], centerCoord[1]];
-        this.store.dispatch(AppActions.mapMove({ scenario: this.scenario, partition: this.partition, zoom, center }))
+        this.mapSvc.mapMove(this.scenario, this.partition, zoom, center);
       });
 
       this.map.on('click', (evt) => {
         const location = evt.coordinate;
-        this.store.dispatch(AppActions.mapClick({ scenario: this.scenario, partition: this.partition, location: location }));
+        this.mapSvc.mapClick(this.scenario, this.partition, location);
       })
 
-      this.store.select(state => {
-        const riesgosState = state.riesgos;
-        const scenarioState = riesgosState.scenarioData[this.scenario]![this.partition];
-        const focussedStep = riesgosState.focusState.focusedStep;
-        return { scenarioState, focussedStep };
-      }).pipe(
-        bufferCount(2, 1),  // only run when something important has changed. Prevents double-fetches
-        filter(([last, current]) => {
-          if (!current.scenarioState.active) return false;
-          if (last.focussedStep !== current.focussedStep) return true;
-          if (!allProductsEqual(last.scenarioState.products, current.scenarioState.products)) return true;
-          if (last.scenarioState.map.zoom !== current.scenarioState.map.zoom) return true;
-          if (last.scenarioState.map.center[0] !== current.scenarioState.map.center[0]) return true;
-          if (last.scenarioState.map.center[1] !== current.scenarioState.map.center[1]) return true;
-          if (
-            last.scenarioState.map.clickLocation !== undefined && current.scenarioState.map.clickLocation !== undefined &&
-            !arraysEqual(last.scenarioState.map.clickLocation!, current.scenarioState.map.clickLocation!)
-          ) return true;
-          return false;
+      this.mapSvc.getMapData(this.scenario, this.partition).pipe(
+        tap(mapState => {
+          this.updatePosition(mapState);
         }),
-        map(([last, current]) => current),
-        tap(({ scenarioState, focussedStep }) => {
-          this.updatePosition(scenarioState);
+        tap(mapState => {
+          this.map.setLayers([...this.baseLayers, ...mapState.layers]);
         }),
-        switchMap(({ scenarioState, focussedStep }) => {
-          return forkJoin([of(scenarioState), this.updateLayers(focussedStep, scenarioState)]);
-        }),
-        map(([state, layers]) => {
-          this.map.setLayers([...this.baseLayers, ...layers]);
-          return state;
-        }),
-        switchMap(scenarioState => {
-          return this.handleClick(scenarioState);
+        switchMap(mapState => {
+          return this.handleClick(mapState);
         })
       ).subscribe(success => {});
     }
   }
 
-  private handleClick(state: RiesgosScenarioState): Observable<boolean> {
-    this.overlay.setPosition(state.map.clickLocation);
+  private handleClick(state: MapState): Observable<boolean> {
+    this.overlay.setPosition(state.clickLocation);
     this.popupContainer!.nativeElement.innerHTML = "Pariatur nulla cillum commodo eu sit proident et tempor occaecat.";
     return of(true);
   }
 
-  private updateLayers(step: string, state: RiesgosScenarioState): Observable<Layer[]> {
-    const currentStep = state.steps.find(s => s.step.id === step);
-    if (!currentStep) return of([]);
-    const outputIds = currentStep.step.outputs.map(o => o.id);
-    const outputProducts = state.products.filter(p => outputIds.includes(p.id)).filter(p => p.value || p.reference);
-    return this.resolver.resolveReferences(outputProducts).pipe(
-      mergeMap(resolved => {
-        const newLayers$ = resolved.map(p => toOlLayers(this.scenario, step, p));
-        return forkJoin(newLayers$).pipe(defaultIfEmpty([]));  // observable won't fire without defaultIfEmpty
-      }),
-      map(newLayers => newLayers.flat())
-    );
-  }
 
-  private updatePosition(state: RiesgosScenarioState) {
+  private updatePosition(state: MapState) {
     if (
-      this.map.getView().getZoom() !== state.map.zoom ||
-      this.map.getView().getCenter()![0] !== state.map.center[0] ||
-      this.map.getView().getCenter()![1] !== state.map.center[1]
+      this.map.getView().getZoom() !== state.zoom ||
+      this.map.getView().getCenter()![0] !== state.center[0] ||
+      this.map.getView().getCenter()![1] !== state.center[1]
     ) {
       this.map.getView().animate({
-        center: state.map.center,
-        zoom: state.map.zoom,
+        center: state.center,
+        zoom: state.zoom,
         duration: 100
       })
     }

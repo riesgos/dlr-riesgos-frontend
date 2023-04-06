@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Partition, RiesgosProduct, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
-import * as AppActions from 'src/app/state/actions';
+import { Partition, RiesgosProduct, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { WizardService } from 'src/app/services/dataToUi/dataToWizard';
 
 @Component({
   selector: 'app-step',
@@ -16,13 +15,11 @@ export class StepComponent {
   @Input() inputs!: RiesgosProduct[];
   @Input() outputs!: RiesgosProduct[];
 
-  public focusedStep$ = this.store.select(state => {
-    return state.riesgos.focusState.focusedStep;
-  });
+  public focusedStep$ = this.wizardSvc.getFocussedStep(this.scenario, this.partition);
 
-  constructor(private store: Store<{ riesgos: RiesgosState }>) {}
+  constructor(private wizardSvc: WizardService) {}
 
   public focus() {
-    this.store.dispatch(AppActions.stepSelect({ scenario: this.scenario, partition: this.partition, stepId: this.step.step.id }));
+    this.wizardSvc.stepSelect(this.scenario, this.partition, this.step.step.id);
   }
 }

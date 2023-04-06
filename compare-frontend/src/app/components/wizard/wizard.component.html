@@ -10,7 +10,7 @@
 
     <div class="wizard-content" *ngIf="stepData$ | async as stepData">
         <div class="step" *ngFor="let stepDatum of stepData">
-            <app-step [scenario]="stepDatum.scenario" [partition]="stepDatum.partition" [step]="stepDatum.step" [inputs]="stepDatum.inputs" [outputs]="stepDatum.outputs"></app-step>
+            <app-step [scenario]="scenario" [partition]="partition" [step]="stepDatum.step" [inputs]="stepDatum.inputs" [outputs]="stepDatum.outputs"></app-step>
         </div>
     </div>
 

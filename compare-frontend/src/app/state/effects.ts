@@ -1,17 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { TypedAction } from "@ngrx/store/src/models";
-import { Observable } from "ol";
-import { forkJoin, ObservableInput, of } from "rxjs";
+import { forkJoin, of } from "rxjs";
 import { catchError, delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
-import { getMapPositionForStep } from "../services/dataToUi/dataToMap";
 import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { DataService } from "../services/data.service";
 import * as AppActions from "./actions";
-import { stepExecFailure } from "./actions";
-import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
+import { convertFrontendDataToApiState, convertApiDataToRiesgosData, getMapPositionForStep } from "./helpers";
 import { RiesgosState } from "./state";
 
 

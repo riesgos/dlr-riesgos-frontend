@@ -3,8 +3,8 @@ import { Map, Overlay, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { MapService, MapState } from 'src/app/services/dataToUi/dataToMap';
 import { Observable, of, switchMap, tap } from 'rxjs';
+import { MapService, MapState } from '../map.service';
 
 @Component({
   selector: 'app-map',

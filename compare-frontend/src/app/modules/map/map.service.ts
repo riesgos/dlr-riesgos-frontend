@@ -1,16 +1,16 @@
 import Layer from "ol/layer/Layer";
 import VectorLayer from "ol/layer/Vector";
 import GeoJSON from "ol/format/GeoJSON";
-import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosScenarioState, RiesgosState, ScenarioName } from "src/app/state/state";
+import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosState, ScenarioName } from "src/app/state/state";
 import VectorSource from "ol/source/Vector";
 import TileLayer from "ol/layer/Tile";
 import TileWMS from "ol/source/TileWMS";
 import { Observable, bufferCount, defaultIfEmpty, filter, forkJoin, map, mergeMap, of, switchMap, tap, withLatestFrom } from "rxjs";
-import { DataService } from "../data.service";
 import { Store } from "@ngrx/store";
-import { Injectable } from "@angular/core";
 import { allProductsEqual, arraysEqual } from "src/app/state/helpers";
 import * as AppActions from 'src/app/state/actions';
+import { DataService } from "src/app/services/data.service";
+import { Injectable } from "@angular/core";
 
 
 
@@ -19,9 +19,7 @@ export interface MapState extends RiesgosScenarioMapState {
 }
 
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()  // providedIn: MapModule?
 export class MapService {
     constructor(
         private store: Store<{ riesgos: RiesgosState }>,
@@ -102,30 +100,8 @@ export class MapService {
 }
 
 
-export function getMapPositionForStep(scenario: ScenarioName, partition: Partition, stepId: string): {center: number[], zoom: number} {
-    if (scenario === 'PeruShort') {
-        switch (stepId) {
-            case 'selectEq':
-                return { zoom: 7, center: [-77.6, -12] };
-            case 'EqSimulation':
-                return { zoom: 7, center: [-77.15, -12] };
-            case 'Exposure':
-                return { zoom: 10, center: [-77.15, -12] };
-            case 'EqDamage':
-                return { zoom: 10, center: [-77.15, -12] };
-            case 'Tsunami':
-                return { zoom: 6, center: [-77.15, -12] };
-            case 'TsDamage':
-                return { zoom: 10, center: [-77.15, -12] };
-            case 'SysRel':
-                return { zoom: 9.5, center: [-77.15, -12] };
-        }
-    }
-    return { zoom: 4, center: [-77.15, -12] };
-}
 
-
-export function toOlLayers(scenario: ScenarioName, step: string, product: RiesgosProductResolved): Observable<Layer[]> {
+function toOlLayers(scenario: ScenarioName, step: string, product: RiesgosProductResolved): Observable<Layer[]> {
     if (scenario === 'PeruShort') {
         switch (product.id) {
             case 'selectedEq':

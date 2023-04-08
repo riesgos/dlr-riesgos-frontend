@@ -3,6 +3,7 @@ import { Store } from "@ngrx/store";
 import { Observable, OperatorFunction, filter, map } from "rxjs";
 import { Partition, RiesgosProduct, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from "src/app/state/state";
 import * as AppActions from 'src/app/state/actions';
+import { WizardModule } from "./wizard.module";
 
 
 export interface StepData {
@@ -11,9 +12,8 @@ export interface StepData {
     outputs: RiesgosProduct[]
 }
 
-@Injectable({
-    providedIn: 'root'
-})
+
+@Injectable() // providedIn: WizardModule?
 export class WizardService {
 
     constructor(

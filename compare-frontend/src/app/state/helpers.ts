@@ -1,5 +1,5 @@
 import { API_ScenarioState, API_Datum, API_DatumReference, isApiDatum } from "../services/backend.service";
-import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, RiesgosProduct, RiesgosStep } from "./state";
+import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, Partition, RiesgosProduct, RiesgosStep, ScenarioName } from "./state";
 
 
 
@@ -102,4 +102,27 @@ export function convertApiDataToRiesgosData(apiData: (API_Datum | API_DatumRefer
         riesgosData.push(prod);
     }
     return riesgosData;
+}
+
+
+export function getMapPositionForStep(scenario: ScenarioName, partition: Partition, stepId: string): {center: number[], zoom: number} {
+    if (scenario === 'PeruShort') {
+        switch (stepId) {
+            case 'selectEq':
+                return { zoom: 7, center: [-77.6, -12] };
+            case 'EqSimulation':
+                return { zoom: 7, center: [-77.15, -12] };
+            case 'Exposure':
+                return { zoom: 10, center: [-77.15, -12] };
+            case 'EqDamage':
+                return { zoom: 10, center: [-77.15, -12] };
+            case 'Tsunami':
+                return { zoom: 6, center: [-77.15, -12] };
+            case 'TsDamage':
+                return { zoom: 10, center: [-77.15, -12] };
+            case 'SysRel':
+                return { zoom: 9.5, center: [-77.15, -12] };
+        }
+    }
+    return { zoom: 4, center: [-77.15, -12] };
 }

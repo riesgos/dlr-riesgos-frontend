@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Partition, RiesgosProduct, RiesgosStep, ScenarioName } from 'src/app/state/state';
-import { WizardService } from 'src/app/services/dataToUi/dataToWizard';
+import { WizardService } from '../../wizard.service';
 
 @Component({
   selector: 'app-step',

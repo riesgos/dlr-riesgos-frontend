@@ -16,6 +16,11 @@
 - frontend: now has circle-legend
 
 
+# [2.0.4]
+## Features
+Compare frontend
+ - 
+
 
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  
 

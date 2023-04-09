@@ -50,8 +50,8 @@ export const reducer = createReducer(
     const leftData = scenarioData.left;
     const rightData = scenarioData.right;
 
-    leftData.active = true;
-    rightData.active = true;
+    if (action.partition === 'left') leftData.active = true;
+    if (action.partition === 'right') rightData.active = true;
     
     if (action.partition === 'left' || rules.mirrorFocus) leftData.focus.focusedStep = action.stepId;
     if (action.partition === 'right' || rules.mirrorFocus) rightData.focus.focusedStep = action.stepId;

@@ -32,14 +32,13 @@ export const converterToken = new InjectionToken<Converter>('Converter');
 
 
 export interface MapLayer {
-    getLayer(): Layer
-    getLegend(): { component: Type<any>, args: {[key: string]: any} }
-    getInfo(): { component: Type<any>, args: {[key: string]: any} }
-    getPopup(): { component: Type<any>, args: {[key: string]: any} }
+    layer: Layer
+    // legend: { component: Type<any>, args: {[key: string]: any} }
+    // info: { component: Type<any>, args: {[key: string]: any} }
+    // popup: { component: Type<any>, args: {[key: string]: any} }
     onClick(location: number[]): void
     onHover(location: number[]): void
-    getVisibility(): boolean
-    setVisibility(visible: boolean): void
+    visible: boolean
 }
 
 export class DefaultConverter implements Converter {

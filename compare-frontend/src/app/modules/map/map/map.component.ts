@@ -92,7 +92,7 @@ export class MapComponent implements AfterViewInit {
 
   private setLayers(mapState: MapState) {
     // @TODO: set visibility from last time
-    const layers = mapState.layers.map(l => l.getLayer());
+    const layers = mapState.layers.map(l => l.layer);
     this.map.setLayers([...this.baseLayers, ...layers]);
   }
 
@@ -100,12 +100,12 @@ export class MapComponent implements AfterViewInit {
     this.overlay.setPosition(mapState.clickLocation);
     if (!mapState.clickLocation) return;
     for (const layer of mapState.layers) {
-      if (layer.getVisibility()) {
-        const { component, args } = layer.getPopup();
-        const componentRef = this.popupContainer.createComponent(component);
-          for (const key in args) {
-            componentRef.instance[key] = args[key];
-          }
+      if (layer.visible) {
+        // const { component, args } = layer.popup;
+        // const componentRef = this.popupContainer.createComponent(component);
+        //   for (const key in args) {
+        //     componentRef.instance[key] = args[key];
+        //   }
         return;
       }
     }

@@ -10,27 +10,28 @@
 - Integrate backend for content-redaction
 - Old frontend: modularize
 
-## Features
-- backend: now provides optional default values for steps' inputs.
-- backend: tickets now stay alive for a certain time after they've been fetched
-- frontend: now allows multiple (dynamic) legends for one layer at the same time. Applied to eq-catalogue.
-- frontend: now has circle-legend
 
 
 # [2.0.4]
 ## Features
-Compare frontend
- - all code now in modules
- - map allows per-step data-converters which are semi-automatically injected
- - now displays available eq's, too.
- - using rules to decide what exactly to do in reducers
- - Ongoing
-     - map has click-behavior
-        - add popup to map on click
- - Upcoming
-     - link click on eqSelection with form
-     - error-handling
-     - reducers: parseAPIScenariosIntoNewState: strict typing
+- backend: 
+    - now provides optional default values for steps' inputs.
+    - tickets now stay alive for a certain time after they've been fetched
+- frontend: 
+    - now allows multiple (dynamic) legends for one layer at the same time. Applied to eq-catalogue.
+    - now has circle-legend
+- Compare frontend
+    - all code now in modules
+    - map allows per-step data-converters which are semi-automatically injected
+    - now displays available eq's, too.
+    - using rules to decide what exactly to do in reducers
+    - Ongoing
+        - map has click-behavior
+           - add popup to map on click
+    - Upcoming
+        - link click on eqSelection with form
+        - error-handling
+        - reducers: parseAPIScenariosIntoNewState: strict typing
     
 
 

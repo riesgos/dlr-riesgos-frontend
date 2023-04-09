@@ -107,16 +107,6 @@ export class MapService {
 
             switch (product.id) {
 
-                case 'selectedEq':
-                    return of([new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(product.value)
-                        }),
-                    })]);
-
-                case 'eqSimXmlRef':
-                    return of([]);
-
                 case 'eqSimWms':
                     const fullUrl = new URL(product.value);
                     const baseUrl = fullUrl.origin + fullUrl.pathname;
@@ -132,8 +122,6 @@ export class MapService {
                         opacity: 0.4
                     })]);
 
-                case 'exposureRef':
-                    return of([]);
 
                 case 'exposure':
                     return of([new VectorLayer({
@@ -156,10 +144,6 @@ export class MapService {
                         }),
                         opacity: 0.9
                     })]);
-
-                case 'eqDamageSummary':
-                case 'eqDamageRef':
-                    return of([]);
 
                 case 'tsWms':
                     const fullUrl3 = new URL(product.value);
@@ -189,10 +173,6 @@ export class MapService {
                         }),
                         opacity: 0.9
                     })]);
-
-                case 'tsDamageSummary':
-                case 'tsDamageRef':
-                    return of([]);
 
                 case 'sysRel':
                     return of([new VectorLayer({

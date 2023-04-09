@@ -55,6 +55,7 @@ export class WizardService {
             const scenarioData = riesgosState.scenarioData[scenario];
             if (!scenarioData) return undefined;
             const partitionData = scenarioData[partition];
+            if (!partitionData) return undefined;
             const focussedStep = partitionData.focus.focusedStep;
             return focussedStep;
         });

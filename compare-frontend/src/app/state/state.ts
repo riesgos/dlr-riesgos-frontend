@@ -80,6 +80,11 @@ export interface RiesgosScenarioMapState {
     center: number[],
     clickLocation: number[] | undefined
 }
+
+export interface FocusState {
+    focusedStep: string
+}
+
 export interface RiesgosScenarioState {
     scenario: ScenarioName;
     steps: RiesgosStep[];
@@ -90,7 +95,8 @@ export interface RiesgosScenarioState {
     },
     partition: Partition,
     active: boolean,
-    map: RiesgosScenarioMapState
+    map: RiesgosScenarioMapState,
+    focus: FocusState
 }
 
 
@@ -109,9 +115,6 @@ export interface RiesgosScenarioMetadata {
     preview: string;
 }
 
-export interface FocusState {
-    focusedStep: string
-}
 
 export type Partition = 'left' | 'right';
 
@@ -123,7 +126,6 @@ export interface RiesgosState {
         }
     };
     metaData: RiesgosScenarioMetadata[];
-    focusState: FocusState;
 }
 
 
@@ -131,8 +133,5 @@ export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {},
     metaData: [],
-    focusState: {
-        focusedStep: ''
-    },
 };
 

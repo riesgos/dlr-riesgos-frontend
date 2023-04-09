@@ -8,6 +8,19 @@ import { allParasSet } from './helpers';
 
 
 
+
+
+const rules = {
+  mirrorFocus: true,
+  mirrorData: false,
+  mirrorClick: true,
+  mirrorMove: true,
+  autoPilot: true
+}
+
+
+
+
 export const reducer = createReducer(
   initialRiesgosState,
 
@@ -32,22 +45,45 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepSelect, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
-    scenarioData.active = true;
-    state.focusState.focusedStep = action.stepId;
+    const scenarioData = state.scenarioData[action.scenario]!;
+
+    const leftData = scenarioData.left;
+    const rightData = scenarioData.right;
+
+    leftData.active = true;
+    rightData.active = true;
+    
+    if (action.partition === 'left' || rules.mirrorFocus) leftData.focus.focusedStep = action.stepId;
+    if (action.partition === 'right' || rules.mirrorFocus) rightData.focus.focusedStep = action.stepId;
+
     return state;
   }),
 
   immerOn(stepConfig, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const partitionData = scenarioData[action.partition]!;
     for (const productId in action.values) {
       const productValue = action.values[productId];
-      for (const product of scenarioData.products) {
+      for (const product of partitionData.products) {
         if (product.id === productId) {
           product.value = productValue;
         }
       }
     }
+
+    if (rules.mirrorData) {
+      const otherPartition = action.partition === 'left' ? 'right' : 'left';
+      const otherPartitionData = scenarioData[otherPartition];
+      for (const productId in action.values) {
+        const productValue = action.values[productId];
+        for (const product of otherPartitionData.products) {
+          if (product.id === productId) {
+            product.value = productValue;
+          }
+        }
+      }
+    }
+
     return state;
   }),
 

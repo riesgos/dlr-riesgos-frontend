@@ -20,8 +20,9 @@
 ## Features
 Compare frontend
  - all code now in modules
- - now displays available eq's, too.
  - map allows per-step data-converters which are semi-automatically injected
+ - now displays available eq's, too.
+ - using rules to decide what exactly to do in reducers
  - Ongoing
      - map has click-behavior
         - add popup to map on click

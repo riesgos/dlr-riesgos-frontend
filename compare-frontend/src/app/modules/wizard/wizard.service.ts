@@ -52,7 +52,8 @@ export class WizardService {
     public getFocussedStep(scenario: ScenarioName, partition: Partition): Observable<string> {
         return this.store.select(state => {
             const riesgosState = state.riesgos;
-            const focussedStep = riesgosState.focusState.focusedStep;
+            const partitionData = riesgosState.scenarioData[scenario]![partition];
+            const focussedStep = partitionData.focus.focusedStep;
             return focussedStep;
         });
     }

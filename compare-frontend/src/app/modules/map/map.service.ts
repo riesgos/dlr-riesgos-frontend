@@ -33,36 +33,35 @@ export class MapService {
         const scenarioState$ = this.store.select(state => {
             const riesgosState = state.riesgos;
             const scenarioState = riesgosState.scenarioData[scenario]![partition];
-            const focussedStep = riesgosState.focusState.focusedStep;
-            return { scenarioState, focussedStep };
+            return scenarioState;
         });
 
         const changedState$ = scenarioState$.pipe(
             bufferCount(2, 1),
             filter(([last, current]) => {
                 // only run when something important has changed. Prevents double-fetches.
-                if (!current.scenarioState.active) return false;
-                if (last.focussedStep !== current.focussedStep) return true;
-                if (!allProductsEqual(last.scenarioState.products, current.scenarioState.products)) return true;
-                if (last.scenarioState.map.zoom !== current.scenarioState.map.zoom) return true;
-                if (last.scenarioState.map.center[0] !== current.scenarioState.map.center[0]) return true;
-                if (last.scenarioState.map.center[1] !== current.scenarioState.map.center[1]) return true;
+                if (!current.active) return false;
+                if (last.focus.focusedStep !== current.focus.focusedStep) return true;
+                if (!allProductsEqual(last.products, current.products)) return true;
+                if (last.map.zoom !== current.map.zoom) return true;
+                if (last.map.center[0] !== current.map.center[0]) return true;
+                if (last.map.center[1] !== current.map.center[1]) return true;
                 if (
-                    last.scenarioState.map.clickLocation !== undefined && current.scenarioState.map.clickLocation !== undefined &&
-                    !arraysEqual(last.scenarioState.map.clickLocation!, current.scenarioState.map.clickLocation!)
+                    last.map.clickLocation !== undefined && current.map.clickLocation !== undefined &&
+                    !arraysEqual(last.map.clickLocation!, current.map.clickLocation!)
                 ) return true;
                 return false;
             }),
             map(([_, current]) => current)
         );
 
-        const mapState$ = changedState$.pipe(map(({scenarioState}) => {
+        const mapState$ = changedState$.pipe(map(scenarioState => {
                 return scenarioState.map;
         }));
 
-        const layers$ = changedState$.pipe(switchMap(({focussedStep, scenarioState}) => {
-            const converter = this.converterSvc.getConverter(scenario, focussedStep);
-            return converter.makeLayers();
+        const layers$ = changedState$.pipe(switchMap(scenarioState => {
+            const converter = this.converterSvc.getConverter(scenario, scenarioState.focus.focusedStep);
+            return converter.makeLayers(scenarioState);
         }));
 
         const fullState$ = combineLatest([mapState$, layers$]).pipe(map(([mapState, layers]) => {

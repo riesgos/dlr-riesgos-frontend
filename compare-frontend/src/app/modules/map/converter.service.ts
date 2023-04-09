@@ -1,7 +1,7 @@
-import { Inject, Injectable, InjectionToken, Injector, Type } from "@angular/core";
+import { Inject, Injectable, InjectionToken, Type } from "@angular/core";
 import Layer from "ol/layer/Layer";
 import { Observable, of } from "rxjs";
-import { ScenarioName } from "src/app/state/state";
+import { RiesgosScenarioState, ScenarioName } from "src/app/state/state";
 
 
 @Injectable()
@@ -25,7 +25,7 @@ export class ConverterService {
 
 export interface Converter {
     applies(scenario: ScenarioName, step: string): boolean
-    makeLayers(): Observable<MapLayer[]>
+    makeLayers(state: RiesgosScenarioState): Observable<MapLayer[]>
 }
 
 export const converterToken = new InjectionToken<Converter>('Converter');

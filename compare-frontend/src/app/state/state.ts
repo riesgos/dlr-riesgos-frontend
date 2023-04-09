@@ -82,7 +82,7 @@ export interface RiesgosScenarioMapState {
 }
 
 export interface FocusState {
-    focusedStep: string
+    focusedStep: string  // @TODO: *might* in future be more than one step. But won't implement until certain.
 }
 
 export interface RiesgosScenarioState {

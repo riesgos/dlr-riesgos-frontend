@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Input, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { Map, Overlay, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { Observable, mergeMap, of, switchMap, tap } from 'rxjs';
 import { MapService, MapState } from '../map.service';
 
 @Component({

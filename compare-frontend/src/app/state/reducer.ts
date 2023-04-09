@@ -8,7 +8,7 @@ import { allParasSet } from './helpers';
 
 
 
-
+// @TODO: once stable, move rules into state.
 
 const rules = {
   mirrorFocus: true,
@@ -255,6 +255,9 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
           center: [-50, -20],
           zoom: 4,
           clickLocation: undefined
+        },
+        focus: {
+          focusedStep: currentState.scenarioData[apiScenario.id] ? currentState.scenarioData[apiScenario.id]![partition].focus.focusedStep : undefined
         }
       }
 

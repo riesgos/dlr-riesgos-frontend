@@ -8,6 +8,7 @@
     And for a dynamicPopupComponent we need to return a ProductCustomLayer, not a VectorLayerProduct.
 - Integrate new, comparison-based frontend
 - Integrate backend for content-redaction
+- Old frontend: modularize
 
 ## Features
 - backend: now provides optional default values for steps' inputs.
@@ -29,7 +30,7 @@ Compare frontend
  - Upcoming
      - link click on eqSelection with form
      - error-handling
-     - make configurable the allowed user-actions
+     - reducers: parseAPIScenariosIntoNewState: strict typing
     
 
 

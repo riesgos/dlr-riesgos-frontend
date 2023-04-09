@@ -1,11 +1,11 @@
 import Layer from "ol/layer/Layer";
 import VectorLayer from "ol/layer/Vector";
 import GeoJSON from "ol/format/GeoJSON";
-import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosState, ScenarioName } from "src/app/state/state";
+import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosScenarioState, RiesgosState, ScenarioName } from "src/app/state/state";
 import VectorSource from "ol/source/Vector";
 import TileLayer from "ol/layer/Tile";
 import TileWMS from "ol/source/TileWMS";
-import { Observable, bufferCount, combineLatest, defaultIfEmpty, filter, forkJoin, map, mergeMap, of, switchMap, tap, withLatestFrom } from "rxjs";
+import { Observable, OperatorFunction, bufferCount, combineLatest, defaultIfEmpty, filter, forkJoin, map, mergeMap, of, switchMap, tap, withLatestFrom } from "rxjs";
 import { Store } from "@ngrx/store";
 import { allProductsEqual, arraysEqual } from "src/app/state/helpers";
 import * as AppActions from 'src/app/state/actions';
@@ -24,17 +24,27 @@ export interface MapState extends RiesgosScenarioMapState {
 export class MapService {
     constructor(
         private store: Store<{ riesgos: RiesgosState }>,
+        private resolver: DataService,
         private converterSvc: ConverterService
     ) { }
 
 
+    /**
+                       ┌───► mapState ─────────────────────┐
+                       │                                   └► fullState
+    state ────► changedState────► resolvedData─┐            ┌►
+                       │                       │            │
+                       └──────────────────────►└─► layers───┘
+     */
     public getMapState(scenario: ScenarioName, partition: Partition): Observable<MapState> {
 
         const scenarioState$ = this.store.select(state => {
             const riesgosState = state.riesgos;
-            const scenarioState = riesgosState.scenarioData[scenario]![partition];
-            return scenarioState;
-        });
+            const scenarioState = riesgosState.scenarioData[scenario];
+            if (!scenarioState) return undefined;
+            const partitionState = scenarioState[partition];
+            return partitionState;
+        }).pipe(filter(v => v !== undefined) as OperatorFunction<RiesgosScenarioState | undefined, RiesgosScenarioState>);
 
         const changedState$ = scenarioState$.pipe(
             bufferCount(2, 1),
@@ -59,9 +69,18 @@ export class MapService {
                 return scenarioState.map;
         }));
 
-        const layers$ = changedState$.pipe(switchMap(scenarioState => {
+        const resolvedData$ = changedState$.pipe(switchMap(state => {
+            const currentStep = state.steps.find(s => s.step.id === state.focus.focusedStep);
+            if (!currentStep) return of([]);
+
+            const outputIds = currentStep.step.outputs.map(o => o.id);
+            const outputProducts = state.products.filter(p => outputIds.includes(p.id)).filter(p => p.value || p.reference);
+            return this.resolver.resolveReferences(outputProducts);
+        }));
+
+        const layers$ = combineLatest([changedState$, resolvedData$]).pipe(switchMap(([scenarioState, resolvedData]) => {
             const converter = this.converterSvc.getConverter(scenario, scenarioState.focus.focusedStep);
-            return converter.makeLayers(scenarioState);
+            return converter.makeLayers(scenarioState, resolvedData);
         }));
 
         const fullState$ = combineLatest([mapState$, layers$]).pipe(map(([mapState, layers]) => {

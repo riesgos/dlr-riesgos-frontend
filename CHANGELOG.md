@@ -19,7 +19,17 @@
 # [2.0.4]
 ## Features
 Compare frontend
- - 
+ - all code now in modules
+ - now displays available eq's, too.
+ - map allows per-step data-converters which are semi-automatically injected
+ - Ongoing
+     - map has click-behavior
+        - add popup to map on click
+ - Upcoming
+     - link click on eqSelection with form
+     - error-handling
+     - make configurable the allowed user-actions
+    
 
 
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  

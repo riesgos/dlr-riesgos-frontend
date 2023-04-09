@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { Map, Overlay, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { Observable, of, switchMap, tap } from 'rxjs';
+import { Observable, mergeMap, of, switchMap, tap } from 'rxjs';
 import { MapService, MapState } from '../map.service';
 
 @Component({
@@ -15,8 +15,9 @@ export class MapComponent implements AfterViewInit {
 
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
-  @ViewChild('mapContainer') mapContainer?: ElementRef<HTMLDivElement>;
-  @ViewChild('popup') popupContainer?: ElementRef<HTMLDivElement>;
+  @ViewChild('mapContainer') mapContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('popup') popup!: ElementRef<HTMLDivElement>;
+  @ViewChild('popupBody', { read: ViewContainerRef, static: true }) popupContainer!: ViewContainerRef;
 
   private baseLayers = [new TileLayer({
     source: new OSM()
@@ -41,7 +42,12 @@ export class MapComponent implements AfterViewInit {
     if (this.mapContainer && this.popupContainer) {
   
       this.map.setTarget(this.mapContainer.nativeElement);
-      this.overlay.setElement(this.popupContainer.nativeElement);
+      this.overlay.setElement(this.popup.nativeElement);
+
+
+      /*********************************************************************
+       *   SENDING OUT EVENTS TO STATE-MGMT
+       *********************************************************************/
 
       this.map.on('moveend', (evt) => {
         const zoom = this.map.getView().getZoom()!;
@@ -53,26 +59,21 @@ export class MapComponent implements AfterViewInit {
       this.map.on('click', (evt) => {
         const location = evt.coordinate;
         this.mapSvc.mapClick(this.scenario, this.partition, location);
-      })
+      });
 
-      this.mapSvc.getMapData(this.scenario, this.partition).pipe(
-        tap(mapState => {
+
+
+      /*********************************************************************
+       *   HANDLING EVENTS FROM STATE-MGMT
+       *********************************************************************/
+
+      this.mapSvc.getMapState(this.scenario, this.partition).pipe(
+        ).subscribe(mapState => {
           this.updatePosition(mapState);
-        }),
-        tap(mapState => {
-          this.map.setLayers([...this.baseLayers, ...mapState.layers]);
-        }),
-        switchMap(mapState => {
-          return this.handleClick(mapState);
-        })
-      ).subscribe(success => {});
+          this.setLayers(mapState);
+          this.setOverlay(mapState);
+      });
     }
-  }
-
-  private handleClick(state: MapState): Observable<boolean> {
-    this.overlay.setPosition(state.clickLocation);
-    this.popupContainer!.nativeElement.innerHTML = "Pariatur nulla cillum commodo eu sit proident et tempor occaecat.";
-    return of(true);
   }
 
 
@@ -87,6 +88,27 @@ export class MapComponent implements AfterViewInit {
         zoom: state.zoom,
         duration: 100
       })
+    }
+  }
+
+  private setLayers(mapState: MapState) {
+    // @TODO: set visibility from last time
+    const layers = mapState.layers.map(l => l.getLayer());
+    this.map.setLayers([...this.baseLayers, ...layers]);
+  }
+
+  private setOverlay(mapState: MapState) {
+    this.overlay.setPosition(mapState.clickLocation);
+    if (!mapState.clickLocation) return;
+    for (const layer of mapState.layers) {
+      if (layer.getVisibility()) {
+        const { component, args } = layer.getPopup();
+        const componentRef = this.popupContainer.createComponent(component);
+          for (const key in args) {
+            componentRef.instance[key] = args[key];
+          }
+        return;
+      }
     }
   }
 

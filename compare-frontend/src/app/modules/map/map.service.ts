@@ -10,12 +10,13 @@ import { Store } from "@ngrx/store";
 import { allProductsEqual, arraysEqual } from "src/app/state/helpers";
 import * as AppActions from 'src/app/state/actions';
 import { DataService } from "src/app/services/data.service";
-import { Injectable } from "@angular/core";
+import { Injectable, Type } from "@angular/core";
+import { ConverterService, MapLayer } from "./converter.service";
 
 
 
 export interface MapState extends RiesgosScenarioMapState {
-    layers: Layer[]
+    layers: MapLayer[],
 }
 
 
@@ -23,13 +24,11 @@ export interface MapState extends RiesgosScenarioMapState {
 export class MapService {
     constructor(
         private store: Store<{ riesgos: RiesgosState }>,
-        private resolver: DataService
+        private converterSvc: ConverterService
     ) { }
 
-    /**
-     * Only returns a value if something map-relevant has changed
-     */
-    public getMapData(scenario: ScenarioName, partition: Partition): Observable<MapState> {
+
+    public getMapState(scenario: ScenarioName, partition: Partition): Observable<MapState> {
 
         const scenarioState$ = this.store.select(state => {
             const riesgosState = state.riesgos;
@@ -57,54 +56,23 @@ export class MapService {
             map(([_, current]) => current)
         );
 
-        const resolvedData$ = changedState$.pipe(
-            switchMap(({ scenarioState, focussedStep }) => {
-                const currentStep = scenarioState.steps.find(s => s.step.id === focussedStep);
-                if (!currentStep) return of([]);
-
-                const outputIds = currentStep.step.outputs.map(o => o.id);
-                const outputProducts = scenarioState.products.filter(p => outputIds.includes(p.id)).filter(p => p.value || p.reference);
-                return this.resolver.resolveReferences(outputProducts);
-            })
-        );
-
-        const layers$ = resolvedData$.pipe(
-            withLatestFrom(changedState$),
-            mergeMap(([resolved, { scenarioState, focussedStep }]) => {
-                const newLayers$ = resolved.map(p => this.toOlLayers(scenario, focussedStep, p));
-                return forkJoin(newLayers$).pipe(defaultIfEmpty([]));  // observable won't fire without defaultIfEmpty
-            }),
-            map(newLayers => newLayers.flat())
-        );
-
-        // Sometimes we want to also display data on the map that has not been chosen by the user.
-        const additionalLayers$ = changedState$.pipe(map(({scenarioState}) => {
-            const product = scenarioState.products.find(p => p.id === 'userChoice');
-            if (!product) return [];
-            if (product.value) return [];
-            const eqLayer = new VectorLayer({
-                source: new VectorSource({
-                    features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: product.options })
-                }),
-            });
-            return [eqLayer];
+        const mapState$ = changedState$.pipe(map(({scenarioState}) => {
+                return scenarioState.map;
         }));
 
-        const allLayers$ = combineLatest([additionalLayers$, layers$]).pipe(map(([additionalLayers, layers]) => {
-            return layers.concat(additionalLayers);
+        const layers$ = changedState$.pipe(switchMap(({focussedStep, scenarioState}) => {
+            const converter = this.converterSvc.getConverter(scenario, focussedStep);
+            return converter.makeLayers();
         }));
 
-        const fullMapState$ = allLayers$.pipe(
-            withLatestFrom(changedState$),
-            map(([layers, { scenarioState }]) => {
-                return {
-                    ...scenarioState.map,
-                    layers: layers
-                }
-            }),
-        );
+        const fullState$ = combineLatest([mapState$, layers$]).pipe(map(([mapState, layers]) => {
+            return {
+                ...mapState,
+                layers
+            }
+        }));
 
-        return fullMapState$;
+        return fullState$;
     }
 
     public mapClick(scenario: ScenarioName, partition: Partition, location: number[]) {

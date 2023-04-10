@@ -118,6 +118,16 @@ export interface RiesgosScenarioMetadata {
 
 export type Partition = 'left' | 'right';
 
+
+export interface Rules {
+    partition: boolean,
+    mirrorFocus: boolean,
+    mirrorData: boolean,
+    mirrorClick: boolean,
+    mirrorMove: boolean,
+    autoPilot: boolean,
+}
+
 export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
     scenarioData: {
@@ -126,6 +136,7 @@ export interface RiesgosState {
         }
     };
     metaData: RiesgosScenarioMetadata[];
+    rules: Rules;
 }
 
 
@@ -133,5 +144,13 @@ export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {},
     metaData: [],
+    rules: {
+        partition: true,
+        mirrorFocus: true,
+        mirrorData: false,
+        mirrorClick: true,
+        mirrorMove: true,
+        autoPilot: true,
+    }
 };
 

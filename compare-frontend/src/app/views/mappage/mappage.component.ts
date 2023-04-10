@@ -40,6 +40,10 @@ export class MappageComponent {
     })
   );
 
+  public rules$ = this.store.select(state => state.riesgos).pipe(
+    map(state => state.rules)
+  );
+
   constructor(
     private store: Store<{ riesgos: RiesgosState }>,
     private router: Router

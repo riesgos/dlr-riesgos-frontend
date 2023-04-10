@@ -1,28 +1,23 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosScenarioState, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
-import { scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove, mapClick, toggleFocus } from './actions';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove, mapClick, toggleFocus } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
-
-
-
-// @TODO: once stable, move rules into state.
-
-const rules = {
-  mirrorFocus: true,
-  mirrorData: false,
-  mirrorClick: true,
-  mirrorMove: true,
-  autoPilot: true
-}
 
 
 
 
 export const reducer = createReducer(
   initialRiesgosState,
+
+  on(ruleSetPicked, (state, action) => {
+    return {
+      ... state,
+      rules: action.rules
+    };
+  }),
 
   on(scenarioLoadStart, (state, action) => {
     return state;
@@ -53,8 +48,8 @@ export const reducer = createReducer(
     if (action.partition === 'left') leftData.active = true;
     if (action.partition === 'right') rightData.active = true;
     
-    if (action.partition === 'left' || rules.mirrorFocus) leftData.focus.focusedStep = action.stepId;
-    if (action.partition === 'right' || rules.mirrorFocus) rightData.focus.focusedStep = action.stepId;
+    if (action.partition === 'left' || state.rules.mirrorFocus) leftData.focus.focusedStep = action.stepId;
+    if (action.partition === 'right' || state.rules.mirrorFocus) rightData.focus.focusedStep = action.stepId;
 
     return state;
   }),
@@ -71,7 +66,7 @@ export const reducer = createReducer(
       }
     }
 
-    if (rules.mirrorData) {
+    if (state.rules.mirrorData) {
       const otherPartition = action.partition === 'left' ? 'right' : 'left';
       const otherPartitionData = scenarioData[otherPartition];
       for (const productId in action.values) {

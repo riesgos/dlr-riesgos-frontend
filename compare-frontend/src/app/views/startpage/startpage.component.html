@@ -5,17 +5,15 @@
             <div class="card box hasShadow">
                 <div class="cardBody">
                     <img [src]="studyArea.preview">
-
+                </div>
+                <div class="cardFooter">
+                    <h4>{{ studyArea.id }}</h4>
+                    <p>{{ studyArea.description }}</p>
                     <ul>
                         <li><a (click)="ruleSetPicked( studyArea.id, 'classicRules' )">classicRules</a></li>
                         <li><a (click)="ruleSetPicked( studyArea.id, 'compareScenario' )">compareScenario</a></li>
                         <li><a (click)="ruleSetPicked( studyArea.id, 'compareAdvanced' )">compareAdvanced</a></li>
                     </ul>
-
-                </div>
-                <div class="cardFooter">
-                    <h4>{{ studyArea.id }}</h4>
-                    <p>{{ studyArea.description }}</p>
                 </div>
             </div>
     

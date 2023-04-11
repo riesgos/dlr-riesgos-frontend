@@ -99,13 +99,16 @@ export class MapComponent implements AfterViewInit {
   private setOverlay(mapState: MapState) {
     this.overlay.setPosition(mapState.clickLocation);
     if (!mapState.clickLocation) return;
+
     for (const layer of mapState.layers) {
       if (layer.visible) {
-        // const { component, args } = layer.popup;
-        // const componentRef = this.popupContainer.createComponent(component);
-        //   for (const key in args) {
-        //     componentRef.instance[key] = args[key];
-        //   }
+        const popup = layer.popup(mapState.clickLocation);
+        if (!popup) return;
+        const { component, args } = popup;
+        const componentRef = this.popupContainer.createComponent(component);
+          for (const key in args) {
+            componentRef.instance[key] = args[key];
+          }
         return;
       }
     }

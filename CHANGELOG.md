@@ -33,7 +33,10 @@
         - link click on eqSelection with form
         - error-handling
         - reducers: parseAPIScenariosIntoNewState: strict typing
-    
+        - focus on eq-selection immediately
+        - classic rules umbenennen zu selectOneScenario
+            - 
+        - neuer regelsatz: identisch, nicht gespiegelt (Jörn)
 
 
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  

@@ -1,7 +1,7 @@
 import { Inject, Injectable, InjectionToken, Type } from "@angular/core";
 import Layer from "ol/layer/Layer";
 import { Observable, of } from "rxjs";
-import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from "src/app/state/state";
+import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName, StepStateTypes } from "src/app/state/state";
 
 
 @Injectable()
@@ -35,7 +35,7 @@ export interface MapLayer {
     layer: Layer
     // legend: { component: Type<any>, args: {[key: string]: any} }
     // info: { component: Type<any>, args: {[key: string]: any} }
-    // popup: { component: Type<any>, args: {[key: string]: any} }
+    popup: (location: number[]) => { component: Type<any>, args: {[key: string]: any} } | undefined
     onClick(location: number[]): void
     onHover(location: number[]): void
     visible: boolean
@@ -48,6 +48,16 @@ export class DefaultConverter implements Converter {
 
     public makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<MapLayer[]> {
         return of([]);
+    }
+
+    private getStepOutputs(stepId: string, state: RiesgosScenarioState, data: RiesgosProductResolved[]): RiesgosProductResolved[] | undefined {
+        const step = state.steps.find(s => s.step.id === stepId);
+        if (!step) return undefined;
+        if (step.state.type !== StepStateTypes.completed) return undefined;
+
+        const outputIds = step.step.outputs.map(o => o.id);
+        const products = data.filter(d => outputIds.includes(d.id));
+        return products;
     }
 
 }

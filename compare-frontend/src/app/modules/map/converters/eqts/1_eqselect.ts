@@ -5,6 +5,7 @@ import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName, StepStateTy
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
+import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
 
 @Injectable()
 export class EqSelection implements Converter {
@@ -31,7 +32,10 @@ export class EqSelection implements Converter {
                         }),
                     // info: {},
                     // legend: {},
-                    // popup: {},
+                    popup: (location: number[]) => ({
+                      component: StringPopupComponent,
+                      args: {}  
+                    }),
                     onClick: () => {},
                     onHover: () => {},
                     visible: true
@@ -51,7 +55,10 @@ export class EqSelection implements Converter {
                         }),
                     // info: {},
                     // legend: {},
-                    // popup: {},
+                    popup: (location: number[]) => ({
+                        component: StringPopupComponent,
+                        args: {}  
+                      }),
                     onClick: () => {},
                     onHover: () => {},
                     visible: true

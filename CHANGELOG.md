@@ -26,18 +26,18 @@
     - now displays available eq's, too.
     - using rules to decide what exactly to do in reducers
     - user can chose between rule-sets
-    - can now close popups
-    - popups get features at click location as input
+    - map has click-behavior
+        - add popup to map on click
+        - can now close popups
+        - popups get features at click location as input
+    - Rules now calculated from rule-set-name by dedicated service
     - Ongoing
-        - map has click-behavior
-           - add popup to map on click
-    - Upcoming
         - link click on eqSelection with form
+        - style layer differently on click
+    - Upcoming
         - error-handling
         - reducers: parseAPIScenariosIntoNewState: strict typing
         - focus on eq-selection immediately
-        - classic rules umbenennen zu selectOneScenario
-            - 
         - neuer regelsatz: identisch, nicht gespiegelt (Jörn)
 
 

@@ -30,6 +30,7 @@
         - add popup to map on click
         - can now close popups
         - popups get features at click location as input
+        - composites can do arbitrary things on click
     - Rules now calculated from rule-set-name by dedicated service
     - Ongoing
         - link click on eqSelection with form

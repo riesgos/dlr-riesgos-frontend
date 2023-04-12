@@ -68,9 +68,9 @@ export class MapComponent implements AfterViewInit {
        *********************************************************************/
 
       this.mapSvc.getMapState(this.scenario, this.partition).subscribe(mapState => {
-          this.updatePosition(mapState);
-          this.setLayers(mapState);
-          this.setOverlay(mapState);
+          this.handleMove(mapState);
+          this.handleLayers(mapState);
+          this.handleClick(mapState);
       });
     }
   }
@@ -80,7 +80,7 @@ export class MapComponent implements AfterViewInit {
   }
 
 
-  private updatePosition(state: MapState) {
+  private handleMove(state: MapState) {
     if (
       this.map.getView().getZoom() !== state.zoom ||
       this.map.getView().getCenter()![0] !== state.center[0] ||
@@ -94,7 +94,7 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
-  private setLayers(mapState: MapState) {
+  private handleLayers(mapState: MapState) {
     const layers = mapState.layerComposites.map(c => {
       const id = c.id;
       const layer = c.layer;
@@ -105,17 +105,20 @@ export class MapComponent implements AfterViewInit {
     // @TODO: set visibility from last time
   }
 
-  private setOverlay(mapState: MapState) {
-    this.overlay.setPosition(mapState.clickLocation);
-    if (!mapState.clickLocation) return;
-    const pixel = this.map.getPixelFromCoordinate(mapState.clickLocation);
+  private handleClick(mapState: MapState) {
+    const location = mapState.clickLocation;
+    this.overlay.setPosition(location);
+    if (!location) return;
+
+    const pixel = this.map.getPixelFromCoordinate(location);
     const features = this.map.getFeaturesAtPixel(pixel, {
       layerFilter: layer => !this.baseLayers.includes(layer)
     });
 
+    // popup
     for (const composite of mapState.layerComposites) {
       if (composite.visible) {
-        const popup = composite.popup(mapState.clickLocation, features);
+        const popup = composite.popup(location, features);
         if (!popup) return;
         const { component, args } = popup;
         this.popupContainer.clear();
@@ -124,6 +127,13 @@ export class MapComponent implements AfterViewInit {
           componentRef.instance[key] = args[key];
         }
         return;
+      }
+    }
+
+    // further click handling
+    for (const composite of mapState.layerComposites) {
+      if (composite.visible) {
+        composite.onClick(location, features);
       }
     }
   }

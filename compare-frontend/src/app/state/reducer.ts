@@ -274,7 +274,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
           clickLocation: undefined
         },
         focus: {
-          focusedSteps: currentState.scenarioData[apiScenario.id] ? currentState.scenarioData[apiScenario.id]![partition]!.focus.focusedSteps : undefined
+          focusedSteps: currentState.scenarioData[apiScenario.id] ? currentState.scenarioData[apiScenario.id]![partition]!.focus.focusedSteps : []
         }
       }
 

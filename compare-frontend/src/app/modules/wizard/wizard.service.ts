@@ -54,6 +54,7 @@ export class WizardService {
         const changedState$ = scenarioState$.pipe(
             bufferCount(2, 1),
             filter(([last, current]) => {
+                if (last === undefined) return true;
                 if (!current.active) return false;
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;

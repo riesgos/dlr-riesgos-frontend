@@ -1,16 +1,16 @@
 <form [formGroup]="formGroup">
-    <div class="formElement" *ngFor="let input of step.inputs">
+    <div class="formElement" *ngFor="let input of data.inputs">
         <!-- 
             Kind of flaky: 
             We interpret any input with an options-array as user-configurable, 
             and all others as outputs of upstream processes. 
         -->
         <ng-container *ngIf="input.options">
-            <label [for]="input.id">{{ input.id }}</label>
-            <select *ngIf="input.options.length > 0" [formControlName]="input.id" [name]="input.id" [id]="input.id">
-                <option *ngFor="let option of input.options" [ngValue]="option">{{ option }}</option>
+            <label [for]="input.label">{{ input.label }}</label>
+            <select *ngIf="input.formtype === 'string-select'" [formControlName]="input.label" [name]="input.label" [id]="input.label">
+                <option *ngFor="let option of input.options | keyvalue" [ngValue]="option.value">{{ option.key }}</option>
             </select>
-            <input *ngIf="input.options.length === 0" [formControlName]="input.id" />
+            <input *ngIf="input.formtype === 'string'" [formControlName]="input.label" />
         </ng-container>
     </div>
     <button [disabled]="!allValuesSet()" (click)="execute()">Execute</button>

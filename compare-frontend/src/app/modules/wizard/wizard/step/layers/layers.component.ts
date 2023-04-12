@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RiesgosProduct } from 'src/app/state/state';
+import { Partition, RiesgosProduct, ScenarioName } from 'src/app/state/state';
 import { WizardComposite } from '../../../wizard.service';
 
 @Component({
@@ -9,6 +9,8 @@ import { WizardComposite } from '../../../wizard.service';
 })
 export class LayersComponent {
 
+  @Input() scenario!: ScenarioName;
+  @Input() partition!: Partition;
   @Input() data!: WizardComposite;
   
 }

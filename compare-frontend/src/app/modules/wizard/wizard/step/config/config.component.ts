@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Partition, RiesgosProduct, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
 import { WizardComposite } from '../../../wizard.service';
@@ -33,7 +33,7 @@ export class ConfigComponent implements OnInit {
       this.store.dispatch(AppActions.stepConfig({
           scenario: this.scenario,
           partition: this.partition,
-          stepId: this.step.id,
+          stepId: this.data.step.step.id,
           values: this.formGroup.value
       }));
     }
@@ -42,7 +42,7 @@ export class ConfigComponent implements OnInit {
       this.store.dispatch(AppActions.stepConfig({
           scenario: this.scenario,
           partition: this.partition,
-          stepId: this.step.id,
+          stepId: this.data.step.step.id,
           values: newVal
       }));
     });
@@ -50,7 +50,7 @@ export class ConfigComponent implements OnInit {
   }
 
   public execute() {
-    this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, partition: this.partition, step: this.step.id }));
+    this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, partition: this.partition, step: this.data.step.step.id }));
   }
 
   public allValuesSet(): boolean {
@@ -63,12 +63,10 @@ export class ConfigComponent implements OnInit {
 
   public requiresConfigAction(): boolean {
     let requiresConfigAction = false;
-    for (const input of this.step.inputs) {
+    for (const input of this.data.inputs) {
       if (input.options) {
-        const id = input.id;
-        const existingValue = this.products.find(p => p.id === id)?.value;
-        const existingDefault = input.default;
-        if (!existingValue && existingDefault) {
+        const existingValue = input.currentValue;
+        if (!existingValue) {
           requiresConfigAction = true;
         }
       }

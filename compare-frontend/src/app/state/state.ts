@@ -85,14 +85,16 @@ export interface FocusState {
     focusedSteps: string[]
 }
 
+export interface AutoPilotState {
+    useAutoPilot: boolean;
+    queue: string[];
+};
+
 export interface RiesgosScenarioState {
     scenario: ScenarioName;
     steps: RiesgosStep[];
     products: RiesgosProduct[];
-    autoPilot: {
-        useAutoPilot: boolean;
-        queue: string[];
-    },
+    autoPilot: AutoPilotState,
     partition: Partition,
     active: boolean,
     map: RiesgosScenarioMapState,

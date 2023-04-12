@@ -15,7 +15,7 @@ export class WizardComponent implements OnInit {
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
   @Input() focus!: boolean;
-  public state!: Observable<WizardState>;
+  public state$!: Observable<WizardState>;
 
 
   constructor(
@@ -23,7 +23,7 @@ export class WizardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.state = this.wizardSvc.getWizardState(this.scenario, this.partition);
+    this.state$ = this.wizardSvc.getWizardState(this.scenario, this.partition);
   }
 
   public toggleFocus() {

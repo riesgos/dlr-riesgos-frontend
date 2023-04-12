@@ -1,13 +1,13 @@
 <div class="step">
     <div [class]="['step-header', 'step-header-' + data.step.state.type]" (click)="focus()">
-        <h4>{{ data.step.title }}</h4>
+        <h4>{{ data.step.step.title }}</h4>
     </div>
     <div class="step-body" *ngIf="data.hasFocus">
         <app-tabs>
-            <app-tab [tabTitle]="'Configuration'" *ngIf="step.state.type === 'available'">
+            <app-tab [tabTitle]="'Configuration'" *ngIf="data.step.state.type === 'available'">
                 <app-config [scenario]="scenario" [partition]="partition" [data]="data"></app-config>
             </app-tab>
-            <app-tab [tabTitle]="'Layers'" *ngIf="step.state.type === 'completed'">
+            <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed'">
                 <app-layers [scenario]="scenario" [partition]="partition" [data]="data"></app-layers>
             </app-tab>
             <app-tab [tabTitle]="'Description'">

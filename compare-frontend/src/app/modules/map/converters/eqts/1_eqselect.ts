@@ -6,6 +6,7 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
+import Layer from "ol/layer/Layer";
 
 @Injectable()
 export class EqSelection implements Converter {
@@ -29,7 +30,7 @@ export class EqSelection implements Converter {
                             source: new VectorSource({
                                 features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
                             }),
-                        }),
+                    }),
                     // info: {},
                     // legend: {},
                     popup: (location: number[]) => ({
@@ -40,8 +41,8 @@ export class EqSelection implements Converter {
                         "body": "body"
                       }  
                     }),
-                    onClick: () => {},
-                    onHover: () => {},
+                    onClick() {},
+                    onHover() {},
                     visible: true
                 });
             }

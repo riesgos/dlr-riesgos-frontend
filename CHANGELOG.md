@@ -32,6 +32,7 @@
         - popups get features at click location as input
         - composites can do arbitrary things on click
     - Rules now calculated from rule-set-name by dedicated service
+    - LayerComposite methods are non-anonymous: allows accessing all properties with `this.`
     - Ongoing
         - link click on eqSelection with form
         - style layer differently on click

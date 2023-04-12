@@ -4,6 +4,7 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { Partition, ScenarioName } from 'src/app/state/state';
 import { MapService, MapState } from '../map.service';
+import Layer from 'ol/layer/Layer';
 
 @Component({
   selector: 'app-map',
@@ -18,7 +19,7 @@ export class MapComponent implements AfterViewInit {
   @ViewChild('popup') popup!: ElementRef<HTMLDivElement>;
   @ViewChild('popupBody', { read: ViewContainerRef, static: true }) popupContainer!: ViewContainerRef;
 
-  private baseLayers = [new TileLayer({
+  private baseLayers: Layer[] = [new TileLayer({
     source: new OSM()
   })];
   private overlay = new Overlay({});
@@ -94,19 +95,27 @@ export class MapComponent implements AfterViewInit {
   }
 
   private setLayers(mapState: MapState) {
-    // @TODO: set visibility from last time
-    const layers = mapState.layerComposites.map(l => l.layer);
+    const layers = mapState.layerComposites.map(c => {
+      const id = c.id;
+      const layer = c.layer;
+      layer.set("compositeId", id);
+      return layer;
+    });
     this.map.setLayers([...this.baseLayers, ...layers]);
+    // @TODO: set visibility from last time
   }
 
   private setOverlay(mapState: MapState) {
     this.overlay.setPosition(mapState.clickLocation);
     if (!mapState.clickLocation) return;
+    const pixel = this.map.getPixelFromCoordinate(mapState.clickLocation);
+    const features = this.map.getFeaturesAtPixel(pixel, {
+      layerFilter: layer => !this.baseLayers.includes(layer)
+    });
 
     for (const composite of mapState.layerComposites) {
       if (composite.visible) {
-        
-        const popup = composite.popup(mapState.clickLocation);
+        const popup = composite.popup(mapState.clickLocation, features);
         if (!popup) return;
         const { component, args } = popup;
         this.popupContainer.clear();

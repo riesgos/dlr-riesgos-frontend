@@ -1,4 +1,5 @@
 import { Inject, Injectable, InjectionToken, Type } from "@angular/core";
+import { FeatureLike } from "ol/Feature";
 import Layer from "ol/layer/Layer";
 import { Observable, of } from "rxjs";
 import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName, StepStateTypes } from "src/app/state/state";
@@ -32,10 +33,11 @@ export const converterToken = new InjectionToken<Converter>('Converter');
 
 
 export interface LayerComposite {
+    id: string,
     layer: Layer
     // legend: { component: Type<any>, args: {[key: string]: any} }
     // info: { component: Type<any>, args: {[key: string]: any} }
-    popup: (location: number[]) => { component: Type<any>, args: {[key: string]: any} } | undefined
+    popup: (location: number[], features: FeatureLike[]) => { component: Type<any>, args: {[key: string]: any} } | undefined
     onClick: (location: number[]) => void
     onHover: (location: number[]) => void
     visible: boolean

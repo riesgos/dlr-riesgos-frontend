@@ -24,6 +24,7 @@ export class EqSelection implements Converter {
 
             if (availableEqs) {
                 layers.push({
+                    id: "userChoiceLayer",
                     layer: new VectorLayer({
                             source: new VectorSource({
                                 features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
@@ -51,6 +52,7 @@ export class EqSelection implements Converter {
 
             if (selectedEq) {
                 layers.push({
+                    id: "selectedEqLayer",
                     layer: new VectorLayer({
                             source: new VectorSource({
                                 features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(selectedEq.value)

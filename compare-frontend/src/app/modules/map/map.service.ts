@@ -76,15 +76,15 @@ export class MapService {
             return this.resolver.resolveReferences(outputProducts);
         }));
 
-        const layers$ = combineLatest([changedState$, resolvedData$]).pipe(switchMap(([scenarioState, resolvedData]) => {
+        const layerComposites$ = combineLatest([changedState$, resolvedData$]).pipe(switchMap(([scenarioState, resolvedData]) => {
             const converter = this.converterSvc.getConverter(scenario, scenarioState.focus.focusedStep);
             return converter.makeLayers(scenarioState, resolvedData);
         }));
 
-        const fullState$ = combineLatest([mapState$, layers$]).pipe(map(([mapState, layers]) => {
+        const fullState$ = combineLatest([mapState$, layerComposites$]).pipe(map(([mapState, layerComposites]) => {
             return {
                 ...mapState,
-                layers
+                layerComposites
             }
         }));
 

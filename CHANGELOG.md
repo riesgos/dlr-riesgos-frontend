@@ -37,6 +37,7 @@
     - Wizard now converts from dynamically selected converter, too, just like map does.
     - More than one step can be focused
     - Arbitrary screen-partitions possible
+    - Wizards now have a default converter to fall back to
     - Ongoing
         - legends
     - Upcoming

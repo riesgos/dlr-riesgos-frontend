@@ -10,7 +10,7 @@ import { LayersComponent } from './wizard/step/layers/layers.component';
 import { StepComponent } from './wizard/step/step.component';
 import { WizardComponent } from './wizard/wizard.component';
 import { WizardService } from './wizard.service';
-import { ConverterService, converterToken } from './converter.service';
+import { ConverterService, DefaultConverter, converterToken } from './converter.service';
 import { EqSelection } from './converters/eqts/1_eqselect';
 
 @NgModule({
@@ -34,6 +34,7 @@ import { EqSelection } from './converters/eqts/1_eqselect';
     WizardService,
     ConverterService,
     { provide: converterToken, useClass: EqSelection, multi: true },
+    { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })
 export class WizardModule { }

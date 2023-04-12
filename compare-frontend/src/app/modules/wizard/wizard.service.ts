@@ -80,6 +80,7 @@ export class WizardService {
                 if (scenarioState.focus.focusedSteps.includes(step.step.id)) {
                     const converter = this.converterSvc.getConverter(scenario, step.step.id);
                     stepData = converter.getInfo(scenarioState, resolvedData);
+                    stepData.hasFocus = true;
                 } else {
                     stepData = {
                         hasFocus: false,

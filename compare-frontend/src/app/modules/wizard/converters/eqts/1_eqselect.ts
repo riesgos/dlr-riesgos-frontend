@@ -5,9 +5,22 @@ import { WizardComposite } from "../../wizard.service";
 
 export class EqSelection implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        throw new Error("Method not implemented.");
+        return step === "selectEq";
     }
+
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
-        throw new Error("Method not implemented.");
+        const step = state.steps.find(s => s.step.id === "selectEq")!;
+        const val = data.find(d => d.id === "userChoice");
+
+        return {
+            hasFocus: false,
+            inputs: [{
+                label: 'eq',
+                formtype: 'string-select',
+                options: val?.options,
+                currentValue: val?.value
+            }],
+            step: step,
+        }    
     }
 }

@@ -33,6 +33,7 @@
         - composites can do arbitrary things on click
     - Rules now calculated from rule-set-name by dedicated service
     - LayerComposite methods are non-anonymous: allows accessing all properties with `this.`
+    - Custom style for eq-selection layer.
     - Ongoing
         - link click on eqSelection with form
         - style layer differently on click

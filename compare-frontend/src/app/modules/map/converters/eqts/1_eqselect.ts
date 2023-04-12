@@ -6,7 +6,12 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
-import Layer from "ol/layer/Layer";
+import { linInterpolateXY, yellowRedRange } from "../../../../helpers/colorhelpers";
+import Style from "ol/style/Style";
+import Circle from "ol/style/Circle";
+import Stroke from "ol/style/Stroke";
+import Fill from "ol/style/Fill";
+import { FeatureLike } from "ol/Feature";
 
 @Injectable()
 export class EqSelection implements Converter {
@@ -30,10 +35,29 @@ export class EqSelection implements Converter {
                             source: new VectorSource({
                                 features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
                             }),
+                            style: (feature: FeatureLike, resolution: number) => {
+        
+                                const props = feature.getProperties();
+                                const magnitude = props['magnitude.mag.value'];
+                                const depth = props['origin.depth.value'];
+                
+                                let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
+                                const [r, g, b] = yellowRedRange(100, 0, depth);
+                
+                                return new Style({
+                                    image: new Circle({
+                                        radius: radius,
+                                        fill: new Fill({
+                                            color: [r, g, b, 0.5]
+                                        }),
+                                        stroke: new Stroke({
+                                            color: [r, g, b, 1]
+                                        })
+                                    }),
+                                });
+                            },
                     }),
-                    // info: {},
-                    // legend: {},
-                    popup: (location: number[]) => ({
+                    popup: () => ({
                       component: StringPopupComponent,
                       args: {
                         "title": "title",
@@ -59,8 +83,6 @@ export class EqSelection implements Converter {
                                 features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(selectedEq.value)
                             }),
                         }),
-                    // info: {},
-                    // legend: {},
                     popup: (location: number[]) => ({
                         component: StringPopupComponent,
                         args: {}  

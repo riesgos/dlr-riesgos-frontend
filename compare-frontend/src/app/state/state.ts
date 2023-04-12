@@ -82,7 +82,7 @@ export interface RiesgosScenarioMapState {
 }
 
 export interface FocusState {
-    focusedStep: string  // @TODO: *might* in future be more than one step. But won't implement until certain.
+    focusedSteps: string[]
 }
 
 export interface RiesgosScenarioState {
@@ -116,12 +116,13 @@ export interface RiesgosScenarioMetadata {
 }
 
 
-export type Partition = 'left' | 'right';
+export type Partition = 'left' | 'right' | 'top' | 'bottom';
 
 
 export interface Rules {
     partition: boolean,
     mirrorFocus: boolean,
+    oneFocusOnly: boolean,
     mirrorData: boolean,
     mirrorClick: boolean,
     mirrorMove: boolean,
@@ -132,7 +133,7 @@ export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
     scenarioData: {
         [key in ScenarioName]?: {
-            [key in Partition]: RiesgosScenarioState
+            [key in Partition]?: RiesgosScenarioState
         }
     };
     metaData: RiesgosScenarioMetadata[];
@@ -147,6 +148,7 @@ export const initialRiesgosState: RiesgosState = {
     rules: {
         partition: true,
         mirrorFocus: true,
+        oneFocusOnly: false,
         mirrorData: false,
         mirrorClick: true,
         mirrorMove: true,

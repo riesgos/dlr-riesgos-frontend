@@ -22,8 +22,7 @@ export class EqSelection implements Converter {
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {
         const layers: LayerComposite[] = [];
-        const step = state.focus.focusedStep;
-        const stepState = state.steps.find(s => s.step.id === step)?.state.type;
+        const stepState = state.steps.find(s => s.step.id === "selectEq")?.state.type;
 
         if (stepState === StepStateTypes.available) {
             const availableEqs = state.products.find(p => p.id === "userChoice");

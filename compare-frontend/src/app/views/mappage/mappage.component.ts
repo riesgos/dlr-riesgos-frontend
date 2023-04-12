@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { filter, map, tap } from 'rxjs';
-import { RiesgosState, ScenarioName, scenarioNameIsNotNone } from 'src/app/state/state';
+import { filter, map, tap, OperatorFunction } from 'rxjs';
+import { Partition, RiesgosState, RiesgosScenarioState, ScenarioName, scenarioNameIsNotNone } from 'src/app/state/state';
 
 @Component({
   selector: 'app-mappage',
@@ -31,11 +31,11 @@ export class MappageComponent {
       if (!data.left) return false;
       if (!data.right) return false;
       return true;
-    }),
+    }) as OperatorFunction<{[key in Partition]?: RiesgosScenarioState} | undefined, {[key in Partition]?: RiesgosScenarioState}>,
     map(currentScenarioData => {
       return {
-        left: currentScenarioData!.left.active,
-        right: currentScenarioData!.right.active
+        left: currentScenarioData.left?.active || false, 
+        right: currentScenarioData.right?.active || false
       }
     })
   );

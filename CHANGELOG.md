@@ -35,6 +35,8 @@
     - LayerComposite methods are non-anonymous: allows accessing all properties with `this.`
     - Custom style for eq-selection layer.
     - Wizard now converts from dynamically selected converter, too, just like map does.
+    - More than one step can be focused
+    - Arbitrary screen-partitions possible
     - Ongoing
         - legends
     - Upcoming

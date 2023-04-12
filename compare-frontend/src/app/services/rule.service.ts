@@ -13,6 +13,7 @@ export class RuleService {
         let rules: Rules = {
             partition: true,
             mirrorFocus: true,
+            oneFocusOnly: true,
             mirrorData: false,
             mirrorClick: true,
             mirrorMove: true,
@@ -23,12 +24,14 @@ export class RuleService {
         // Might want to use an inference-engine.
         switch (ruleSet) {
             case 'selectOneScenario':
+                rules.oneFocusOnly = false;
                 rules.partition = false;
                 rules.autoPilot = false;
                 break;
             case 'compareScenario':
                 break;
             case 'compareIdentical':
+                rules.oneFocusOnly = false;
                 rules.mirrorData = true;
                 rules.mirrorFocus = false;
                 break;

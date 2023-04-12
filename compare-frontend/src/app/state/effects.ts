@@ -105,7 +105,11 @@ check if more  │     └───────┬──────┘
     private updateAutoPilotOnStart$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.startAutoPilot),
         withLatestFrom(this.store$.select(state => state.riesgos)),
-        filter(([action, state]) => state.scenarioData[action.scenario]![action.partition].autoPilot.useAutoPilot),
+        filter(([action, state]) => {
+            const scenarioData = state.scenarioData[action.scenario]!;
+            const partitionData = scenarioData[action.partition]!;
+            return partitionData.autoPilot.useAutoPilot;
+        }),
         map(([action, state]) => AppActions.updateAutoPilot({ scenario: action.scenario, partition: action.partition }))
     ));
 
@@ -119,7 +123,7 @@ check if more  │     └───────┬──────┘
 
     private execDequeued$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.autoPilotDequeue),
-        delay(Math.random() * 100),  // in firefox, too many simultaneous posts are being blocked.
+        delay(Math.random() * 100),  // in firefox, too many simultaneous posts will be blocked.
         map(action => AppActions.stepExecStart({
             scenario: action.scenario,
             partition: action.partition,

@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove, mapClick, toggleFocus } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove, mapClick, togglePartition } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
 
@@ -41,22 +41,27 @@ export const reducer = createReducer(
 
   immerOn(stepSelect, (state, action) => {
     const scenarioData = state.scenarioData[action.scenario]!;
+    const actionPartition = action.partition;
 
-    const leftData = scenarioData.left;
-    const rightData = scenarioData.right;
-
-    if (action.partition === 'left') leftData.active = true;
-    if (action.partition === 'right') rightData.active = true;
-    
-    if (action.partition === 'left' || state.rules.mirrorFocus) leftData.focus.focusedStep = action.stepId;
-    if (action.partition === 'right' || state.rules.mirrorFocus) rightData.focus.focusedStep = action.stepId;
+    for (const [partition, partitionData] of Object.entries(scenarioData)) {
+      if (actionPartition === partition) {
+        if (state.rules.oneFocusOnly) partitionData.focus.focusedSteps = [action.stepId];
+        else partitionData.focus.focusedSteps.push(action.stepId);
+      }
+      else if (state.rules.mirrorFocus) {
+        if (state.rules.oneFocusOnly) partitionData.focus.focusedSteps = [action.stepId];
+        else partitionData.focus.focusedSteps.push(action.stepId);
+      }
+    }
 
     return state;
   }),
 
   immerOn(stepConfig, (state, action) => {
+
     const scenarioData = state.scenarioData[action.scenario]!;
     const partitionData = scenarioData[action.partition]!;
+
     for (const productId in action.values) {
       const productValue = action.values[productId];
       for (const product of partitionData.products) {
@@ -67,15 +72,15 @@ export const reducer = createReducer(
     }
 
     if (state.rules.mirrorData) {
-      const otherPartition = action.partition === 'left' ? 'right' : 'left';
-      const otherPartitionData = scenarioData[otherPartition];
-      for (const productId in action.values) {
-        const productValue = action.values[productId];
-        for (const product of otherPartitionData.products) {
-          if (product.id === productId) {
-            product.value = productValue;
+      for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
+        for (const productId in action.values) {
+          const productValue = action.values[productId];
+          for (const product of otherPartitionData.products) {
+            if (product.id === productId) {
+              product.value = productValue;
+            }
           }
-        }
+        }  
       }
     }
 
@@ -165,25 +170,42 @@ export const reducer = createReducer(
 
   immerOn(mapMove, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
-    const leftState = scenarioState.left;
-    const rightState = scenarioState.right;
-    leftState.map.center = action.center;
-    leftState.map.zoom = action.zoom;
-    rightState.map.center = action.center;
-    rightState.map.zoom = action.zoom;
+    const partitionData = scenarioState[action.partition]!;
+
+    partitionData.map.center = action.center;
+    partitionData.map.zoom = action.zoom;
+
+    if (state.rules.mirrorMove) {
+      for (const [otherPartition, otherPartitionData] of Object.entries(scenarioState)) {
+        if (otherPartition !== action.partition) {
+          otherPartitionData.map.center = action.center;
+          otherPartitionData.map.zoom = action.zoom;
+        }
+      }
+    }
+
     return state;
   }),
 
   immerOn(mapClick, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
-    const leftState = scenarioState.left;
-    const rightState = scenarioState.right;
-    leftState.map.clickLocation = action.location;
-    rightState.map.clickLocation = action.location;
+    const partitionData = scenarioState[action.partition]!;
+
+    partitionData.map.clickLocation = action.location;
+
+    if (state.rules.mirrorClick) {
+      for (const [otherPartition, otherPartitionData] of Object.entries(scenarioState)) {
+        if (otherPartition !== action.partition) {
+          otherPartitionData.map.clickLocation = action.location;
+        }
+      }
+    }
+
+    return state;
   }),
 
 
-  immerOn(toggleFocus, (state, action) => {
+  immerOn(togglePartition, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     scenarioState.active = !scenarioState.active;
     return state;
@@ -252,7 +274,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
           clickLocation: undefined
         },
         focus: {
-          focusedStep: currentState.scenarioData[apiScenario.id] ? currentState.scenarioData[apiScenario.id]![partition].focus.focusedStep : undefined
+          focusedSteps: currentState.scenarioData[apiScenario.id] ? currentState.scenarioData[apiScenario.id]![partition]!.focus.focusedSteps : undefined
         }
       }
 

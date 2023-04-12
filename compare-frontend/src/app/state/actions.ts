@@ -25,4 +25,4 @@ export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ sc
 export const mapMove = createAction('Map move', props<{ scenario: ScenarioName, partition: Partition, zoom: number, center: number[] }>());
 export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: Partition, location: number[] | undefined }>());
 
-export const toggleFocus = createAction('Toggling focus', props<{ scenario: ScenarioName, partition: Partition }>());
+export const togglePartition = createAction('Toggling partition', props<{ scenario: ScenarioName, partition: Partition }>());

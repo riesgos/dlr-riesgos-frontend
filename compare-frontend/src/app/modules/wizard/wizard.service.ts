@@ -55,7 +55,7 @@ export class WizardService {
             bufferCount(2, 1),
             filter(([last, current]) => {
                 if (!current.active) return false;
-                if (last.focus.focusedStep !== current.focus.focusedStep) return true;
+                if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
@@ -64,10 +64,10 @@ export class WizardService {
         );
 
         const resolvedData$ = changedState$.pipe(switchMap(state => {
-            const currentStep = state.steps.find(s => s.step.id === state.focus.focusedStep);
-            if (!currentStep) return of([]);
+            const currentSteps = state.steps.filter(s => state.focus.focusedSteps.includes(s.step.id));
+            if (currentSteps.length === 0) return of([]);
 
-            const outputIds = currentStep.step.outputs.map(o => o.id);
+            const outputIds = currentSteps.map(s => s.step.outputs.map(o => o.id)).flat();
             const outputProducts = state.products.filter(p => outputIds.includes(p.id)).filter(p => p.value || p.reference);
             return this.resolver.resolveReferences(outputProducts);
         }));
@@ -76,8 +76,8 @@ export class WizardService {
             const steps: WizardComposite[] = [];
             for (const step of scenarioState.steps) {
                 let stepData: WizardComposite;
-                if (step.step.id === scenarioState.focus.focusedStep) {
-                    const converter = this.converterSvc.getConverter(scenario, scenarioState.focus.focusedStep);
+                if (scenarioState.focus.focusedSteps.includes(step.step.id)) {
+                    const converter = this.converterSvc.getConverter(scenario, step.step.id);
                     stepData = converter.getInfo(scenarioState, resolvedData);
                 } else {
                     stepData = {
@@ -95,7 +95,7 @@ export class WizardService {
     }
 
     public toggleFocus(scenario: ScenarioName, partition: Partition) {
-        this.store.dispatch(AppActions.toggleFocus({ scenario, partition }));
+        this.store.dispatch(AppActions.togglePartition({ scenario, partition }));
     }
 
     public stepSelect(scenario: ScenarioName, partition: Partition, stepId: string) {

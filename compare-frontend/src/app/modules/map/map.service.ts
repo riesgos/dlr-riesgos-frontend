@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import TileWMS from 'ol/source/TileWMS';
 import VectorSource from 'ol/source/Vector';
-import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, switchMap } from 'rxjs';
+import { bufferCount, combineLatest, filter, forkJoin, map, Observable, of, OperatorFunction, switchMap } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -52,7 +52,7 @@ export class MapService {
             filter(([last, current]) => {
                 // only run when something important has changed. Prevents double-fetches.
                 if (!current.active) return false;
-                if (last.focus.focusedStep !== current.focus.focusedStep) return true;
+                if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (last.map.zoom !== current.map.zoom) return true;
                 if (last.map.center[0] !== current.map.center[0]) return true;
@@ -68,23 +68,28 @@ export class MapService {
         }));
 
         const resolvedData$ = changedState$.pipe(switchMap(state => {
-            const currentStep = state.steps.find(s => s.step.id === state.focus.focusedStep);
-            if (!currentStep) return of([]);
+            const currentSteps = state.steps.filter(s => state.focus.focusedSteps.includes(s.step.id));
+            if (currentSteps.length === 0) return of([]);
 
-            const outputIds = currentStep.step.outputs.map(o => o.id);
+            const outputIds = currentSteps.map(s => s.step.outputs.map(o => o.id)).flat();
             const outputProducts = state.products.filter(p => outputIds.includes(p.id)).filter(p => p.value || p.reference);
             return this.resolver.resolveReferences(outputProducts);
         }));
 
         const layerComposites$ = combineLatest([changedState$, resolvedData$]).pipe(switchMap(([scenarioState, resolvedData]) => {
-            const converter = this.converterSvc.getConverter(scenario, scenarioState.focus.focusedStep);
-            return converter.makeLayers(scenarioState, resolvedData);
+            const layerComposites$ = [];
+            for (const stepId of scenarioState.focus.focusedSteps) {
+                const converter = this.converterSvc.getConverter(scenario, stepId);
+                const layerComposite$ = converter.makeLayers(scenarioState, resolvedData);
+                layerComposites$.push(layerComposite$);
+            }
+            return forkJoin(layerComposites$);
         }));
 
         const fullState$ = combineLatest([mapState$, layerComposites$]).pipe(map(([mapState, layerComposites]) => {
             return {
                 ...mapState,
-                layerComposites
+                layerComposites: layerComposites.flat()
             }
         }));
 

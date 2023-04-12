@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-string-popup',
@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./string-popup.component.css']
 })
 export class StringPopupComponent {
+
+  @Input() title?: string;
+  @Input() subTitle?: string;
+  @Input() body?: string;
 
 }

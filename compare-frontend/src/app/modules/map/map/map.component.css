@@ -13,3 +13,13 @@
     outline-color: var(--gray-400);
     outline-style: solid;
 }
+
+.closeIcon {
+    float: right;
+    cursor: default;
+    color: var(--gray-600);
+}
+
+.closeIcon:hover {
+    color: var(--gray-1200);
+}

@@ -26,6 +26,7 @@
     - now displays available eq's, too.
     - using rules to decide what exactly to do in reducers
     - user can chose between rule-sets
+    - can now close popups
     - Ongoing
         - map has click-behavior
            - add popup to map on click

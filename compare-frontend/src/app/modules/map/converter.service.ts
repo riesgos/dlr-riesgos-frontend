@@ -25,19 +25,19 @@ export class ConverterService {
 
 export interface Converter {
     applies(scenario: ScenarioName, step: string): boolean
-    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<MapLayer[]>
+    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]>
 }
 
 export const converterToken = new InjectionToken<Converter>('Converter');
 
 
-export interface MapLayer {
+export interface LayerComposite {
     layer: Layer
     // legend: { component: Type<any>, args: {[key: string]: any} }
     // info: { component: Type<any>, args: {[key: string]: any} }
     popup: (location: number[]) => { component: Type<any>, args: {[key: string]: any} } | undefined
-    onClick(location: number[]): void
-    onHover(location: number[]): void
+    onClick: (location: number[]) => void
+    onHover: (location: number[]) => void
     visible: boolean
 }
 
@@ -46,7 +46,7 @@ export class DefaultConverter implements Converter {
         return true;
     }
 
-    public makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<MapLayer[]> {
+    public makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {
         return of([]);
     }
 

@@ -66,13 +66,16 @@ export class MapComponent implements AfterViewInit {
        *   HANDLING EVENTS FROM STATE-MGMT
        *********************************************************************/
 
-      this.mapSvc.getMapState(this.scenario, this.partition).pipe(
-        ).subscribe(mapState => {
+      this.mapSvc.getMapState(this.scenario, this.partition).subscribe(mapState => {
           this.updatePosition(mapState);
           this.setLayers(mapState);
           this.setOverlay(mapState);
       });
     }
+  }
+
+  public closePopup() {
+    this.mapSvc.closePopup(this.scenario, this.partition);
   }
 
 
@@ -92,7 +95,7 @@ export class MapComponent implements AfterViewInit {
 
   private setLayers(mapState: MapState) {
     // @TODO: set visibility from last time
-    const layers = mapState.layers.map(l => l.layer);
+    const layers = mapState.layerComposites.map(l => l.layer);
     this.map.setLayers([...this.baseLayers, ...layers]);
   }
 
@@ -100,15 +103,17 @@ export class MapComponent implements AfterViewInit {
     this.overlay.setPosition(mapState.clickLocation);
     if (!mapState.clickLocation) return;
 
-    for (const layer of mapState.layers) {
-      if (layer.visible) {
-        const popup = layer.popup(mapState.clickLocation);
+    for (const composite of mapState.layerComposites) {
+      if (composite.visible) {
+        
+        const popup = composite.popup(mapState.clickLocation);
         if (!popup) return;
         const { component, args } = popup;
-        const componentRef = this.popupContainer.createComponent(component);
-          for (const key in args) {
-            componentRef.instance[key] = args[key];
-          }
+        this.popupContainer.clear();
+        const componentRef = this.popupContainer.createComponent(component, { index: 0 });
+        for (const key in args) {
+          componentRef.instance[key] = args[key];
+        }
         return;
       }
     }

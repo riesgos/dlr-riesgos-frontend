@@ -7,21 +7,22 @@ import TileLayer from "ol/layer/Tile";
 import TileWMS from "ol/source/TileWMS";
 import { Observable, OperatorFunction, bufferCount, combineLatest, defaultIfEmpty, filter, forkJoin, map, mergeMap, of, switchMap, tap, withLatestFrom } from "rxjs";
 import { Store } from "@ngrx/store";
-import { allProductsEqual, arraysEqual } from "src/app/state/helpers";
+import { allProductsEqual, maybeArraysEqual } from "src/app/state/helpers";
 import * as AppActions from 'src/app/state/actions';
 import { DataService } from "src/app/services/data.service";
-import { Injectable, Type } from "@angular/core";
-import { ConverterService, MapLayer } from "./converter.service";
+import { Injectable } from "@angular/core";
+import { ConverterService, LayerComposite } from "./converter.service";
 
 
 
 export interface MapState extends RiesgosScenarioMapState {
-    layers: MapLayer[],
+    layerComposites: LayerComposite[],
 }
 
 
 @Injectable()  // providedIn: MapModule?
 export class MapService {
+    
     constructor(
         private store: Store<{ riesgos: RiesgosState }>,
         private resolver: DataService,
@@ -56,10 +57,7 @@ export class MapService {
                 if (last.map.zoom !== current.map.zoom) return true;
                 if (last.map.center[0] !== current.map.center[0]) return true;
                 if (last.map.center[1] !== current.map.center[1]) return true;
-                if (
-                    last.map.clickLocation !== undefined && current.map.clickLocation !== undefined &&
-                    !arraysEqual(last.map.clickLocation!, current.map.clickLocation!)
-                ) return true;
+                if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
             }),
             map(([_, current]) => current)
@@ -100,6 +98,10 @@ export class MapService {
     public mapMove(scenario: ScenarioName, partition: Partition, zoom: any, center: any) {
         this.store.dispatch(AppActions.mapMove({ scenario: scenario, partition: partition, zoom, center }))
     }
+
+    public closePopup(scenario: ScenarioName, partition: Partition) {
+        this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: undefined }));
+      }
 
 
     private toOlLayers(scenario: ScenarioName, step: string, product: RiesgosProductResolved): Observable<Layer[]> {

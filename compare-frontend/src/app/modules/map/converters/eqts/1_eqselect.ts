@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Converter, MapLayer } from "../../converter.service";
+import { Converter, LayerComposite } from "../../converter.service";
 import { Observable, of } from "rxjs";
 import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName, StepStateTypes } from "src/app/state/state";
 import VectorLayer from "ol/layer/Vector";
@@ -14,9 +14,8 @@ export class EqSelection implements Converter {
         return step === "selectEq";
     }
 
-    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<MapLayer[]> {
-        const layers: MapLayer[] = [];
-
+    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {
+        const layers: LayerComposite[] = [];
         const step = state.focus.focusedStep;
         const stepState = state.steps.find(s => s.step.id === step)?.state.type;
 
@@ -34,7 +33,11 @@ export class EqSelection implements Converter {
                     // legend: {},
                     popup: (location: number[]) => ({
                       component: StringPopupComponent,
-                      args: {}  
+                      args: {
+                        "title": "title",
+                        "subTitle": "subTitle",
+                        "body": "body"
+                      }  
                     }),
                     onClick: () => {},
                     onHover: () => {},

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Converter, MapLayer } from "../../converter.service";
+import { Converter, LayerComposite } from "../../converter.service";
 import { Observable, of } from "rxjs";
 import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved, StepStateCompleted, StepStateTypes } from "src/app/state/state";
 import TileLayer from "ol/layer/Tile";
@@ -14,7 +14,7 @@ export class EqSimulation implements Converter {
         return step === "EqSimulation";
     }
 
-    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<MapLayer[]> {
+    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {
         const step = state.steps.find(s => s.step.id === "EqSimulation");
         if (!step) return of([]);
 

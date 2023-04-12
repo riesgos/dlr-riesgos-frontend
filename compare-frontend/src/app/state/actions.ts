@@ -23,6 +23,6 @@ export const updateAutoPilot = createAction('Auto-pilot: update', props<{ scenar
 export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ scenario: ScenarioName, partition: Partition, step: string }>());
 
 export const mapMove = createAction('Map move', props<{ scenario: ScenarioName, partition: Partition, zoom: number, center: number[] }>());
-export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: Partition, location: number[] }>());
+export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: Partition, location: number[] | undefined }>());
 
 export const toggleFocus = createAction('Toggling focus', props<{ scenario: ScenarioName, partition: Partition }>());

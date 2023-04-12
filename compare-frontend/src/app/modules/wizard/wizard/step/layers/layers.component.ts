@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { RiesgosProduct } from 'src/app/state/state';
+import { WizardComposite } from '../../../wizard.service';
 
 @Component({
   selector: 'app-layers',
@@ -8,6 +9,6 @@ import { RiesgosProduct } from 'src/app/state/state';
 })
 export class LayersComponent {
 
-  @Input() products!: RiesgosProduct[];
+  @Input() data!: WizardComposite;
   
 }

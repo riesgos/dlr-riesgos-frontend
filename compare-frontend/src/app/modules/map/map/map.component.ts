@@ -1,10 +1,17 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { Map, Overlay, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import { Partition, ScenarioName } from 'src/app/state/state';
-import { MapService, MapState } from '../map.service';
+import { applyStyle } from 'ol-mapbox-style';
+import MVT from 'ol/format/MVT';
 import Layer from 'ol/layer/Layer';
+import TileLayer from 'ol/layer/Tile';
+import VectorTileLayer from 'ol/layer/VectorTile';
+import OSM from 'ol/source/OSM';
+import VectorTile from 'ol/source/VectorTile';
+import { createXYZ } from 'ol/tilegrid';
+import { Partition, ScenarioName } from 'src/app/state/state';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import greyScale from '../data/open-map-style.Positron.json';
+import { MapService, MapState } from '../map.service';
+
 
 @Component({
   selector: 'app-map',
@@ -19,9 +26,7 @@ export class MapComponent implements AfterViewInit {
   @ViewChild('popup') popup!: ElementRef<HTMLDivElement>;
   @ViewChild('popupBody', { read: ViewContainerRef, static: true }) popupContainer!: ViewContainerRef;
 
-  private baseLayers: Layer[] = [new TileLayer({
-    source: new OSM()
-  })];
+  private baseLayers: Layer[] = getBaseLayers();
   private overlay = new Overlay({});
   private map: Map = new Map({
     layers: this.baseLayers,
@@ -138,4 +143,27 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
+}
+
+
+function getBaseLayers() {
+  const osmBase = new TileLayer({
+    source: new OSM()
+  });
+
+  // const vectorTileBase = new VectorTileLayer({
+  //   declutter: true,
+  //   source: new VectorTile({
+  //       format: new MVT(),
+  //       tileGrid: createXYZ({
+  //           minZoom: 0,
+  //           maxZoom: 12
+  //       }),
+  //       url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
+  //   }),
+  //   renderMode: 'hybrid'
+  // });
+  // applyStyle(vectorTileBase, greyScale, 'planet0-12');
+
+  return [osmBase];
 }

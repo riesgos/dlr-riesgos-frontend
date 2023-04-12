@@ -34,14 +34,17 @@
     - Rules now calculated from rule-set-name by dedicated service
     - LayerComposite methods are non-anonymous: allows accessing all properties with `this.`
     - Custom style for eq-selection layer.
+    - Wizard now converts from dynamically selected converter, too, just like map does.
     - Ongoing
+        - legends
+    - Upcoming
         - link click on eqSelection with form
         - style layer differently on click
-    - Upcoming
         - error-handling
         - reducers: parseAPIScenariosIntoNewState: strict typing
         - focus on eq-selection immediately
         - neuer regelsatz: identisch, nicht gespiegelt (Jörn)
+        - Allow arbitrary partitions (not just left/right) and arbitrary many active steps (not just one)
 
 
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  

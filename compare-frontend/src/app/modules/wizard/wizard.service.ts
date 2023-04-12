@@ -1,26 +1,46 @@
-import { Injectable } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { Observable, OperatorFunction, filter, map } from "rxjs";
-import { Partition, RiesgosProduct, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from "src/app/state/state";
+import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, switchMap } from 'rxjs';
+import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
+import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
+import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { Injectable, Type } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ConverterService } from './converter.service';
 
-
-export interface StepData {
+export interface WizardComposite {
     step: RiesgosStep,
-    inputs: RiesgosProduct[],
-    outputs: RiesgosProduct[]
+    info?: () => { component: Type<any>, args: {[key: string]: any} },
+    legend?: () => { component: Type<any>, args: {[key: string]: any} },
+    inputs: {
+        formtype: 'string' | 'string-select',
+        options?: { [key: string]: any },
+        currentValue?: any,
+        label: string,
+    }[],
+    hasFocus: boolean
 }
 
+export interface WizardState {
+    stepData: WizardComposite[],
+}
 
-@Injectable() // providedIn: WizardModule?
+@Injectable()
 export class WizardService {
 
     constructor(
-        private store: Store<{ riesgos: RiesgosState }>
+        private store: Store<{ riesgos: RiesgosState }>,
+        private resolver: ResolverService,
+        private converterSvc: ConverterService
     ) {}
 
 
-    public getStepData(scenario: ScenarioName, partition: Partition): Observable<StepData[]> {
+    /**
+     *  state$ ──────► changedState$ ─────► resolvedData$ ─────┐
+     *                             │                           │
+     *                             │                           ▼
+     *                             └────────────────────────► wizardState$
+     */
+    public getWizardState(scenario: ScenarioName, partition: Partition): Observable<WizardState> {
 
         const scenarioState$ = this.store.select(state => {
             const scenarioStates = state.riesgos.scenarioData[scenario];
@@ -30,34 +50,48 @@ export class WizardService {
         }).pipe(
             filter(v => v !== undefined) as OperatorFunction<RiesgosScenarioState | undefined, RiesgosScenarioState>,
         );
-        
-        const stepData$ = scenarioState$.pipe(
-            map(scenarioState => {
-                const out: StepData[] = [];
-                for (const step of scenarioState.steps) {
-                    const inputIds = step.step.inputs.map(i => i.id);
-                    const inputs = scenarioState.products.filter(p => inputIds.includes(p.id));
-                    const outputIds = step.step.outputs.map(i => i.id);
-                    const outputs = scenarioState.products.filter(p => outputIds.includes(p.id));
-                    out.push({ step, inputs, outputs });
-                }
-                return out;
-            })
+
+        const changedState$ = scenarioState$.pipe(
+            bufferCount(2, 1),
+            filter(([last, current]) => {
+                if (!current.active) return false;
+                if (last.focus.focusedStep !== current.focus.focusedStep) return true;
+                if (!allProductsEqual(last.products, current.products)) return true;
+                if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
+                return false;
+            }),
+            map(([_, current]) => current)
         );
 
-        return stepData$;
-    }
+        const resolvedData$ = changedState$.pipe(switchMap(state => {
+            const currentStep = state.steps.find(s => s.step.id === state.focus.focusedStep);
+            if (!currentStep) return of([]);
 
-    public getFocussedStep(scenario: ScenarioName, partition: Partition): Observable<string | undefined> {
-        return this.store.select(state => {
-            const riesgosState = state.riesgos;
-            const scenarioData = riesgosState.scenarioData[scenario];
-            if (!scenarioData) return undefined;
-            const partitionData = scenarioData[partition];
-            if (!partitionData) return undefined;
-            const focussedStep = partitionData.focus.focusedStep;
-            return focussedStep;
-        });
+            const outputIds = currentStep.step.outputs.map(o => o.id);
+            const outputProducts = state.products.filter(p => outputIds.includes(p.id)).filter(p => p.value || p.reference);
+            return this.resolver.resolveReferences(outputProducts);
+        }));
+
+        const wizardState$ = combineLatest([changedState$, resolvedData$]).pipe(map(([scenarioState, resolvedData]) => {
+            const steps: WizardComposite[] = [];
+            for (const step of scenarioState.steps) {
+                let stepData: WizardComposite;
+                if (step.step.id === scenarioState.focus.focusedStep) {
+                    const converter = this.converterSvc.getConverter(scenario, scenarioState.focus.focusedStep);
+                    stepData = converter.getInfo(scenarioState, resolvedData);
+                } else {
+                    stepData = {
+                        hasFocus: false,
+                        step: step,
+                        inputs: []
+                    }
+                }
+                steps.push(stepData);
+            }
+            return { stepData: steps };
+        }));
+
+        return wizardState$;
     }
 
     public toggleFocus(scenario: ScenarioName, partition: Partition) {

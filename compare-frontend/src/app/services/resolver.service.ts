@@ -18,7 +18,7 @@ interface CacheEntry {
 @Injectable({
   providedIn: 'root'
 })
-export class DataService {
+export class ResolverService {
 
   private cache: CacheEntry[] = [];
 

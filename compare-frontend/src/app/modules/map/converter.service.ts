@@ -29,7 +29,7 @@ export interface Converter {
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]>
 }
 
-export const converterToken = new InjectionToken<Converter>('Converter');
+export const converterToken = new InjectionToken<Converter>('MapConverter');
 
 
 export interface LayerComposite {

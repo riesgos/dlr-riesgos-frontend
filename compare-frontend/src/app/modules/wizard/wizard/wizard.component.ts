@@ -1,7 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { Observable, tap } from 'rxjs';
-import { StepData, WizardService } from '../wizard.service';
+
+import { Component, Input, OnInit } from '@angular/core';
+
+import { WizardService, WizardState } from '../wizard.service';
 
 @Component({
   selector: 'app-wizard',
@@ -13,7 +15,7 @@ export class WizardComponent implements OnInit {
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
   @Input() focus!: boolean;
-  public stepData$!: Observable<StepData[]>;
+  public state!: Observable<WizardState>;
 
 
   constructor(
@@ -21,7 +23,7 @@ export class WizardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.stepData$ = this.wizardSvc.getStepData(this.scenario, this.partition);
+    this.state = this.wizardSvc.getWizardState(this.scenario, this.partition);
   }
 
   public toggleFocus() {

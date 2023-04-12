@@ -5,7 +5,7 @@ import { forkJoin, of } from "rxjs";
 import { catchError, delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
 import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
-import { DataService } from "../services/data.service";
+import { ResolverService } from "../services/resolver.service";
 import * as AppActions from "./actions";
 import { convertFrontendDataToApiState, convertApiDataToRiesgosData, getMapPositionForStep } from "./helpers";
 import { RiesgosState } from "./state";
@@ -159,7 +159,7 @@ check if more  │     └───────┬──────┘
         private store$: Store<{ riesgos: RiesgosState }>,
         private configSvc: ConfigService,
         private backendSvc: BackendService,
-        private dataSvc: DataService,
+        private dataSvc: ResolverService,
     ) {}
 }
 

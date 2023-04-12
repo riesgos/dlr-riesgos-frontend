@@ -1,31 +1,31 @@
-import Layer from "ol/layer/Layer";
-import VectorLayer from "ol/layer/Vector";
-import GeoJSON from "ol/format/GeoJSON";
-import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosScenarioState, RiesgosState, ScenarioName } from "src/app/state/state";
-import VectorSource from "ol/source/Vector";
-import TileLayer from "ol/layer/Tile";
-import TileWMS from "ol/source/TileWMS";
-import { Observable, OperatorFunction, bufferCount, combineLatest, defaultIfEmpty, filter, forkJoin, map, mergeMap, of, switchMap, tap, withLatestFrom } from "rxjs";
-import { Store } from "@ngrx/store";
-import { allProductsEqual, maybeArraysEqual } from "src/app/state/helpers";
+import GeoJSON from 'ol/format/GeoJSON';
+import Layer from 'ol/layer/Layer';
+import TileLayer from 'ol/layer/Tile';
+import VectorLayer from 'ol/layer/Vector';
+import TileWMS from 'ol/source/TileWMS';
+import VectorSource from 'ol/source/Vector';
+import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, switchMap } from 'rxjs';
+import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
-import { DataService } from "src/app/services/data.service";
-import { Injectable } from "@angular/core";
-import { ConverterService, LayerComposite } from "./converter.service";
+import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
+import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosScenarioState, RiesgosState, ScenarioName } from 'src/app/state/state';
 
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 
+import { ConverterService, LayerComposite } from './converter.service';
 
 export interface MapState extends RiesgosScenarioMapState {
     layerComposites: LayerComposite[],
 }
 
 
-@Injectable()  // providedIn: MapModule?
+@Injectable()
 export class MapService {
     
     constructor(
         private store: Store<{ riesgos: RiesgosState }>,
-        private resolver: DataService,
+        private resolver: ResolverService,
         private converterSvc: ConverterService
     ) { }
 

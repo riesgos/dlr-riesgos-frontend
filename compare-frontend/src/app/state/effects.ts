@@ -8,7 +8,7 @@ import { ConfigService } from "../services/config.service";
 import { ResolverService } from "../services/resolver.service";
 import * as AppActions from "./actions";
 import { convertFrontendDataToApiState, convertApiDataToRiesgosData, getMapPositionForStep } from "./helpers";
-import { RiesgosState } from "./state";
+import { Partition, RiesgosState, ScenarioName } from "./state";
 
 
 @Injectable()
@@ -24,46 +24,68 @@ export class Effects {
         })
     ));
 
-    private executeStep$ = createEffect(() => 
-        { return this.actions$.pipe(
-        ofType(AppActions.stepExecStart),
-        tap(action => console.log(`Execute start: ${action.partition}/${action.step}`)),
+    /**
+     * 
+     *  state$ ───┐
+     *            └─►
+     *            ┌─► apiState$ ────► executeResults$ ────► convertedResults$ ────► success$ ───► caught$
+     *            │
+     *  action$───┘
+     */
+    private executeStep$ = createEffect(() => {
 
-        // fetch current data, convert, execute, and convert back
+        const action$ = this.actions$.pipe(
+            ofType(AppActions.stepExecStart),
+            tap(action => console.log(`Execute start: ${action.scenario}/${action.partition}/${action.step}`))
+        );
 
-        withLatestFrom(this.store$.select(state => state.riesgos)),
-        map(([action, state]) => {
-            return {
-                action: action,
-                products: state.scenarioData[action.scenario]![action.partition]!.products
-            }
-        }),
+        const state$ = this.store$.select(state => state.riesgos);
 
-        map(({action, products}) => ({
-            apiState: convertFrontendDataToApiState(products),
+        const apiState$ = action$.pipe(
+            withLatestFrom(state$),
+            map(([action, state]) => {
+                const scenarioData = state.scenarioData[action.scenario]!;
+                const partitionData = scenarioData[action.partition]!;
+                const products = partitionData.products;
+                const apiState = convertFrontendDataToApiState(products);
+                return {action, apiState};
+            })
+        );
+
+        const executeResults$ = apiState$.pipe(
+            
+            // must be *merge*-map for multiple requests in parallel to not interfer with one another
+            mergeMap(({action, apiState}) => {                        
+                return this.backendSvc.execute(action.scenario, action.step, apiState).pipe(
+
+                    // instrumenting results with the action that started the execution
+                    map(apiScenarioState => ({ action, apiScenarioState })),
+
+                    tap(({action}) => console.log(`Execute success: ${action.scenario}/${action.partition}/${action.step}`)),
+
+                    // instrumenting potential errors with the action that started the execution
+                    catchError((err, caught) => {
+                        throw new ExecutionError(err, action.scenario, action.partition, action.step);
+                    })
+                );
+            })
+        );
+
+        const convertedResults$ = executeResults$.pipe(map(({action, apiScenarioState}) => ({
+            newData: convertApiDataToRiesgosData(apiScenarioState.data),
             action: action
-        })),
+        })));
 
-        mergeMap(({apiState, action}) => {  // must be merge map for multiple requests in parallel
-            return forkJoin([of(action), this.backendSvc.execute(action.scenario, action.step, apiState)])
-        }),
+        const successAction$ = convertedResults$.pipe(map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, partition: action.partition, step: action.step, newData })));
 
-        map(([action, newApiState]) => ({
-            newData: convertApiDataToRiesgosData(newApiState.data), 
-            action: action
-        })),
+        const caughtAction$ = successAction$.pipe(
+            catchError((err: ExecutionError, caught) => {
+                return of(AppActions.stepExecFailure({ scenario: err.scenario, partition: err.partition, step: err.step, error: err.initialError }));
+            })
+        );
 
-        tap(({newData, action}) => console.log(`Execute success: ${action.partition}/${action.step}`)),
-        map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, partition: action.partition, step: action.step, newData })),
-
-        // catchError<any, any>((err, caught) => {
-        //     const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
-        //     return of(AppActions.stepExecFailure({ scenario: err.scenarioId, partition: err.partition,  step: err.stepId, error: errorMessage }));
-        // })
-
-        )}
-    );
-
+        return caughtAction$;
+    });
 
 
 
@@ -99,22 +121,22 @@ check if more  │     └───────┬──────┘
     private startAutoPilot$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecSuccess),
         filter(action => action.scenario === 'PeruShort' && action.step === 'selectEq'),
-        map(action => AppActions.startAutoPilot({ scenario: action.scenario, partition: action.partition }))
+        map(action => AppActions.autoPilotStart({ scenario: action.scenario, partition: action.partition }))
     ));
 
     private updateAutoPilotOnStart$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.startAutoPilot),
+        ofType(AppActions.autoPilotStart),
         withLatestFrom(this.store$.select(state => state.riesgos)),
         filter(([action, state]) => {
             const scenarioData = state.scenarioData[action.scenario]!;
             const partitionData = scenarioData[action.partition]!;
             return partitionData.autoPilot.useAutoPilot;
         }),
-        map(([action, state]) => AppActions.updateAutoPilot({ scenario: action.scenario, partition: action.partition }))
+        map(([action, state]) => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
     ));
 
     private dequeueAutoPilotAfterUpdate$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.updateAutoPilot),
+        ofType(AppActions.autoPilotEnqueue),
         withLatestFrom(this.store$.select(state => state.riesgos)),
         map(([action, state]) => state.scenarioData[action.scenario]![action.partition]!),
         filter(state => state.autoPilot.queue.length > 0),
@@ -142,7 +164,7 @@ check if more  │     └───────┬──────┘
     private updateAutoPilotOnSuccess$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecSuccess),
         filter(action => action.scenario !== 'PeruShort' || action.step !== 'selectEq'),  // except if this is the AP-start-condition - because that's already been called.
-        map(action => AppActions.updateAutoPilot({ scenario: action.scenario, partition: action.partition }))
+        map(action => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
     ));
 
 
@@ -167,3 +189,13 @@ check if more  │     └───────┬──────┘
     ) {}
 }
 
+
+class ExecutionError extends Error {
+    constructor(
+        public initialError: Error, 
+        public scenario: ScenarioName, 
+        public partition: Partition, 
+        public step: string) {
+            super("Error during execution: " + initialError.message);
+        }
+}

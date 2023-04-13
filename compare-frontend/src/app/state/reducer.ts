@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, startAutoPilot, stopAutoPilot, autoPilotDequeue, updateAutoPilot, mapMove, mapClick, togglePartition } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotStart, autoPilotStop, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
 
@@ -115,19 +115,20 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepExecFailure, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
-    const step = scenarioData.steps.find(s => s.step.id === action.step)!;
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const partitionData = scenarioData[action.partition]!;
+    const step = partitionData.steps.find(s => s.step.id === action.step)!;
     step.state = new StepStateError(action.error);
     return state;
   }),
 
-  immerOn(startAutoPilot, (state, action) => {
+  immerOn(autoPilotStart, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     scenarioState.autoPilot.useAutoPilot = true;
     return state;
   }),
 
-  immerOn(updateAutoPilot, (state, action) => {
+  immerOn(autoPilotEnqueue, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     for (const step of scenarioState.steps) {
       for (const input of step.step.inputs) {
@@ -149,18 +150,18 @@ export const reducer = createReducer(
         }
       }
     }
-    console.log(`Auto-pilot update. queue now contains ${scenarioState.autoPilot.queue}`)
+    console.log(`Auto-pilot enqueued. Queue now contains ${scenarioState.autoPilot.queue}`)
     return newState;
   }),
 
   immerOn(autoPilotDequeue, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
     scenarioState.autoPilot.queue = scenarioState.autoPilot.queue.filter(step => step != action.step);
-    console.log(`Auto-pilot dequeued ${action.step}. queue now contains ${scenarioState.autoPilot.queue}`)
+    console.log(`Auto-pilot dequeued ${action.step}. Queue now contains ${scenarioState.autoPilot.queue}`)
     return state;
   }),
 
-  on(stopAutoPilot, (state, action) => {
+  on(autoPilotStop, (state, action) => {
     return {
       ...state,
       useAutoPilot: false

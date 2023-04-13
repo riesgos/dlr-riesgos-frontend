@@ -38,12 +38,12 @@
     - More than one step can be focused
     - Arbitrary screen-partitions possible
     - Wizards now have a default converter to fall back to
+    - error-handling during process-execution
     - Ongoing
         - legends
     - Upcoming
         - link click on eqSelection with form
         - style layer differently on click
-        - error-handling
         - reducers: parseAPIScenariosIntoNewState: strict typing
         - focus on eq-selection immediately
         - neuer regelsatz: identisch, nicht gespiegelt (Jörn)

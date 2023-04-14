@@ -1,10 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState } from './state';
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotStart, autoPilotStop, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
+import { TypedAction } from '@ngrx/store/src/models';
 
 
 
@@ -100,19 +101,31 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepExecSuccess, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]![action.partition]!;
-    const step = scenarioData.steps.find(s => s.step.id === action.step)!;
-    step.state = new StepStateCompleted();
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const partitionData = scenarioData[action.partition]!;
 
-    for (const newProduct of action.newData) {
-      const oldProduct = scenarioData.products.find(p => p.id === newProduct.id);
-      if (oldProduct) {
-        if (newProduct.options) oldProduct.options = newProduct.options;
-        if (newProduct.reference) oldProduct.reference = newProduct.reference;
-        if (newProduct.value) oldProduct.value = newProduct.value;
-      } else {
-        scenarioData.products.push(newProduct);
+    function updateProducts(partitionData: RiesgosScenarioState, action: ReturnType<typeof stepExecSuccess>) {
+      const step = partitionData.steps.find(s => s.step.id === action.step)!;
+      step.state = new StepStateCompleted();
+  
+      for (const newProduct of action.newData) {
+        const oldProduct = partitionData.products.find(p => p.id === newProduct.id);
+        if (oldProduct) {
+          if (newProduct.options) oldProduct.options = newProduct.options;
+          if (newProduct.reference) oldProduct.reference = newProduct.reference;
+          if (newProduct.value) oldProduct.value = newProduct.value;
+        } else {
+          partitionData.products.push(newProduct);
+        }
       }
+    }
+
+    if (state.rules.mirrorData) {
+      for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
+        updateProducts(otherPartitionData, action);
+      }
+    } else {
+      updateProducts(partitionData, action);
     }
 
     const newState = deriveState(state);

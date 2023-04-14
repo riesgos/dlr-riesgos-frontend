@@ -1,6 +1,10 @@
 import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from "src/app/state/state";
 import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
+import { MultiLegendComponent } from "../../legends/multi-legend/multi-legend.component";
+import { LegendComponent } from "../../legends/legend/legend.component";
+import { yellowRedRange, linInterpolateXY } from "src/app/helpers/colorhelpers";
+import { CircleLegendComponent } from "../../legends/circle-legend/circle-legend.component";
 
 
 export class EqSelection implements Converter {
@@ -10,10 +14,12 @@ export class EqSelection implements Converter {
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
         const step = state.steps.find(s => s.step.id === "selectEq")!;
-        const val = state.products.find(p => p.id === "userChoice");
-        if (!val) return { hasFocus: false, inputs: [], step };
+        const inputProd = state.products.find(p => p.id === "userChoice");
+        if (!inputProd) return { hasFocus: false, inputs: [], step };
 
-        const options = Object.fromEntries(val.options!.map(v => [v.id, v]));
+        const outputProd = state.products.find(p => p.id === "selectedEq");
+
+        const options = Object.fromEntries(inputProd.options!.map(v => [v.id, v]));
 
         return {
             hasFocus: false,
@@ -22,9 +28,55 @@ export class EqSelection implements Converter {
                 label: 'eq',
                 formtype: 'string-select',
                 options: options,
-                currentValue: val?.value
+                currentValue: inputProd?.value
             }],
             step: step,
+            legend: () => ({
+                component: MultiLegendComponent,
+                args: {
+                    legendComponents: [{
+                        component: LegendComponent,
+                        args: {
+                            title: 'Depth',
+                            entries: [{
+                                text: '0km',
+                                color: `rgb(${yellowRedRange(100, 0, 0).join(', ')})`,
+                            }, {
+                                text: '30km',
+                                color: `rgb(${yellowRedRange(100, 0, 30).join(', ')})`,
+                            }, {
+                                text: '60km',
+                                color: `rgb(${yellowRedRange(100, 0, 60).join(', ')})`,
+                            }, {
+                                text: '100km',
+                                color: `rgb(${yellowRedRange(100, 0, 100).join(', ')})`,
+                            }],
+                            continuous: true,
+                            height: 100,
+                            width: 150
+                        }
+                    }, {
+                        component: CircleLegendComponent,
+                        args: {
+                            title: 'Magnitude',
+                            entries: [{
+                                label: 'Mag. 6.0',
+                                radius: linInterpolateXY(5, 5, 10, 20, 6.0),
+                            }, {
+                                label: 'Mag. 7.0',
+                                radius: linInterpolateXY(5, 5, 10, 20, 7.0),
+                            }, {
+                                label: 'Mag. 8.0',
+                                radius: linInterpolateXY(5, 5, 10, 20, 8.0),
+                            }, {
+                                label: 'Mag. 9.0',
+                                radius: linInterpolateXY(5, 5, 10, 20, 9.0),
+                            }],
+                            height: 100
+                        }
+                    }]
+                }
+            }),
         }    
     }
 }

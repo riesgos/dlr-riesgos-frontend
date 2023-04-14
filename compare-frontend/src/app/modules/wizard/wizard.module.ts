@@ -12,6 +12,10 @@ import { WizardComponent } from './wizard/wizard.component';
 import { WizardService } from './wizard.service';
 import { ConverterService, DefaultConverter, converterToken } from './converter.service';
 import { EqSelection } from './converters/eqts/1_eqselect';
+import { MultiLegendComponent } from './legends/multi-legend/multi-legend.component';
+import { LegendComponent } from './legends/legend/legend.component';
+import { CircleLegendComponent } from './legends/circle-legend/circle-legend.component';
+import { UtilsModule } from '../utils/utils.module';
 
 @NgModule({
   declarations: [
@@ -21,11 +25,15 @@ import { EqSelection } from './converters/eqts/1_eqselect';
     ConfigComponent,
     TabsComponent,
     TabComponent,
-    LayersComponent
+    LayersComponent,
+    MultiLegendComponent,
+    LegendComponent,
+    CircleLegendComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    UtilsModule
   ],
   exports: [
     WizardComponent

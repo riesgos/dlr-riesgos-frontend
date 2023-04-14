@@ -62,7 +62,7 @@ export function drawLegend(
     // Adjust circle and label layout based on orientation
     if (orientation === "horizontal") {
         circles.attr("transform", (d, i) => `translate(${scale(d.label)}, 0)`);
-        labels.attr("transform", (d, i) => `translate(${scale(d.label) + d.radius}, ${-10}) rotate(-${textAngle})`);
+        labels.attr("transform", (d, i) => `translate(${d.radius + (scale(d.label) || 0)}, ${-10}) rotate(-${textAngle})`);
     } else {
         circles.attr("transform", (d, i) => `translate(0, ${scale(d.label)})`);
         labels.attr("transform", d => `translate(${d.radius + 5}, ${scale(d.label)})`);
@@ -79,7 +79,7 @@ export function circleLegendComponent() {
     let _orientation: Orientation = "vertical";
     let _data: LegendEntry[] = [];
 
-    function legend(selection) {
+    function legend(selection: Selection<SVGSVGElement, any, any, any>) {
         drawLegend(selection, _data, _orientation, _width, _height);
     }
 

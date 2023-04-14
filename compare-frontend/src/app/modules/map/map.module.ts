@@ -6,6 +6,7 @@ import { EqSelection } from './converters/eqts/1_eqselect';
 import { EqSimulation } from './converters/eqts/2_eqsim';
 import { ConverterService, DefaultConverter, converterToken } from './converter.service';
 import { StringPopupComponent } from './popups/string-popup/string-popup.component';
+import { UtilsModule } from '../utils/utils.module';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { StringPopupComponent } from './popups/string-popup/string-popup.compone
     StringPopupComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    UtilsModule
   ],
   exports: [
     MapComponent

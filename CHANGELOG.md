@@ -42,16 +42,17 @@
     - click on step toggles focus 
     - hides layers of un-toggled steps
     - parameter-selection shows labels in dropdown
+    - insideOne ruleset: data now mirrored
     - Ongoing
         - legends
+            - translation service
     - Upcoming
         - link click on eqSelection with form
         - style layer differently on click
         - reducers: parseAPIScenariosIntoNewState: strict typing
         - focus on eq-selection immediately
         - steps: show errors
-    - Preparation SA/Workshops
-        - 
+
 
 
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  

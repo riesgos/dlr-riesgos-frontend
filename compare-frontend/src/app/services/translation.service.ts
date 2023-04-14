@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 
 export type Language = "EN" | "ES";
@@ -10,11 +10,11 @@ export type Language = "EN" | "ES";
 export class TranslationService {
   
   getCurrentLang(): Observable<Language> {
-    throw new Error('Method not implemented.');
+    return of("EN");
   }
 
   syncTranslate(text: string): string {
-    throw new Error('Method not implemented.');
+    return text;
   }
 
 

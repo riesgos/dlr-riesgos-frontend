@@ -6,16 +6,19 @@ import { CollapsableComponent } from './collapsable/collapsable.component';
 import { TabComponent } from './tabs/tab.component';
 import { TabsComponent } from './tabs/tabs.component';
 import { ConfigComponent } from './wizard/step/config/config.component';
-import { LayersComponent } from './wizard/step/layers/layers.component';
 import { StepComponent } from './wizard/step/step.component';
 import { WizardComponent } from './wizard/wizard.component';
 import { WizardService } from './wizard.service';
 import { ConverterService, DefaultConverter, converterToken } from './converter.service';
 import { EqSelection } from './converters/eqts/1_eqselect';
-import { MultiLegendComponent } from './legends/multi-legend/multi-legend.component';
-import { LegendComponent } from './legends/legend/legend.component';
-import { CircleLegendComponent } from './legends/circle-legend/circle-legend.component';
+import { MultiLegendComponent } from './tabComponents/legends/legendComponents/multi-legend/multi-legend.component';
+import { LegendComponent } from './tabComponents/legends/legendComponents/legend/legend.component';
+import { CircleLegendComponent } from './tabComponents/legends/legendComponents/circle-legend/circle-legend.component';
 import { UtilsModule } from '../utils/utils.module';
+import { DescriptionComponent } from './tabComponents/description/description.component';
+import { DownloadComponent } from './tabComponents/download/download.component';
+import { LayersComponent } from './tabComponents/layers/layers.component';
+import { LegendsComponent } from './tabComponents/legends/legends.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,10 @@ import { UtilsModule } from '../utils/utils.module';
     LayersComponent,
     MultiLegendComponent,
     LegendComponent,
-    CircleLegendComponent
+    CircleLegendComponent,
+    DescriptionComponent,
+    DownloadComponent,
+    LegendsComponent
   ],
   imports: [
     CommonModule,

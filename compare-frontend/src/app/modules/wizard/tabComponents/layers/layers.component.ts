@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Partition, RiesgosProduct, ScenarioName } from 'src/app/state/state';
-import { WizardComposite } from '../../../wizard.service';
+import { Partition, ScenarioName } from 'src/app/state/state';
+import { WizardComposite } from '../../wizard.service';
 
 @Component({
   selector: 'app-layers',

@@ -10,8 +10,11 @@
             <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed'">
                 <app-layers [scenario]="scenario" [partition]="partition" [data]="data"></app-layers>
             </app-tab>
+            <app-tab [tabTitle]="'Legend'">
+                <app-legends [scenario]="scenario" [partition]="partition" [data]="data"></app-legends>
+            </app-tab>
             <app-tab [tabTitle]="'Description'">
-                <p>... todo ...</p>
+                <app-description [scenario]="scenario" [partition]="partition" [data]="data"></app-description>
             </app-tab>
         </app-tabs>
     </div>

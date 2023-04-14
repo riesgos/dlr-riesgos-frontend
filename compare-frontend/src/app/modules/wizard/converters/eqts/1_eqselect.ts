@@ -1,10 +1,10 @@
 import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from "src/app/state/state";
 import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
-import { MultiLegendComponent } from "../../legends/multi-legend/multi-legend.component";
-import { LegendComponent } from "../../legends/legend/legend.component";
+import { MultiLegendComponent } from "../../tabComponents/legends/legendComponents/multi-legend/multi-legend.component";
+import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
 import { yellowRedRange, linInterpolateXY } from "src/app/helpers/colorhelpers";
-import { CircleLegendComponent } from "../../legends/circle-legend/circle-legend.component";
+import { CircleLegendComponent } from "../../tabComponents/legends/legendComponents/circle-legend/circle-legend.component";
 
 
 export class EqSelection implements Converter {

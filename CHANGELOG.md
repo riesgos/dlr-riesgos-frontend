@@ -44,8 +44,8 @@
     - parameter-selection shows labels in dropdown
     - insideOne ruleset: data now mirrored
     - auto-pilot only started when rules allow it
+    - legends now displayed - if present
     - Ongoing
-        - legends
     - Upcoming
         - link click on eqSelection with form
         - style layer differently on click
@@ -53,6 +53,7 @@
         - reducers: parseAPIScenariosIntoNewState: strict typing
         - focus on eq-selection immediately
         - steps: show errors
+        - auto-pilot: configurable start-strategy
 
 
 

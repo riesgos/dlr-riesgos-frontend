@@ -12,5 +12,5 @@ export class LayersComponent {
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
   @Input() data!: WizardComposite;
-  
+
 }

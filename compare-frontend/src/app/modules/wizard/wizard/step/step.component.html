@@ -1,5 +1,5 @@
 <div class="step">
-    <div [class]="['step-header', 'step-header-' + data.step.state.type]" (click)="focus()">
+    <div [class]="['step-header', 'step-header-' + data.step.state.type]" (click)="toggleFocus()">
         <h4>{{ data.step.step.title }}</h4>
     </div>
     <div class="step-body" *ngIf="data.hasFocus">

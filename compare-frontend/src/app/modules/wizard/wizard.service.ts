@@ -1,4 +1,4 @@
-import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, switchMap } from 'rxjs';
+import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, scan, switchMap } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -52,15 +52,16 @@ export class WizardService {
         );
 
         const changedState$ = scenarioState$.pipe(
-            bufferCount(2, 1),
+            scan((acc: (RiesgosScenarioState | undefined)[], cur: RiesgosScenarioState) => [acc[1], cur], [undefined, undefined]),
             filter(([last, current]) => {
+                if (current === undefined) return false;
                 if (last === undefined) return true;
                 if (!current.active) return false;
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
-            }),
+            }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
             map(([_, current]) => current)
         );
 
@@ -100,7 +101,7 @@ export class WizardService {
         this.store.dispatch(AppActions.togglePartition({ scenario, partition }));
     }
 
-    public stepSelect(scenario: ScenarioName, partition: Partition, stepId: string) {
-        this.store.dispatch(AppActions.stepSelect({ scenario, partition, stepId }));
+    public setStepFocus(scenario: ScenarioName, partition: Partition, stepId: string, focus: boolean) {
+        this.store.dispatch(AppActions.stepSetFocus({ scenario, partition, stepId, focus }));
     }
 }

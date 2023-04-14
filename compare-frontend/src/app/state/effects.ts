@@ -67,6 +67,9 @@ export class Effects {
                     catchError((err, caught) => {
                         throw new ExecutionError(err, action.scenario, action.partition, action.step);
                     })
+
+                    // NOTE: instrumenting this pipe with an action that is only used far down the line seems inelegant. 
+                    // Maybe add the action to a zone instead?
                 );
             })
         );
@@ -172,7 +175,7 @@ check if more  │     └───────┬──────┘
 
 
     private focusMapOnCurrentStep$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.stepSelect),
+        ofType(AppActions.stepSetFocus),
         map(action => {
             const {center, zoom} = getMapPositionForStep(action.scenario, action.partition, action.stepId);
             return AppActions.mapMove({ scenario: action.scenario, partition: action.partition, zoom, center });

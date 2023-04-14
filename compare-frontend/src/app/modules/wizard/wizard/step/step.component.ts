@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Partition, RiesgosProduct, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { Component, Input } from '@angular/core';
+import { Partition, ScenarioName } from 'src/app/state/state';
 import { WizardComposite, WizardService } from '../../wizard.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-step',
@@ -16,7 +15,7 @@ export class StepComponent {
 
   constructor(private wizardSvc: WizardService) {}
 
-  public focus() {
-    this.wizardSvc.stepSelect(this.scenario, this.partition, this.data.step.step.id);
+  public toggleFocus() {
+    this.wizardSvc.setStepFocus(this.scenario, this.partition, this.data.step.step.id, !this.data.hasFocus);
   }
 }

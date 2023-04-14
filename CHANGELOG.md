@@ -39,15 +39,19 @@
     - Arbitrary screen-partitions possible
     - Wizards now have a default converter to fall back to
     - error-handling during process-execution
+    - click on step toggles focus 
+    - hides layers of un-toggled steps
     - Ongoing
+        - focus on first step immediately
         - legends
     - Upcoming
         - link click on eqSelection with form
         - style layer differently on click
         - reducers: parseAPIScenariosIntoNewState: strict typing
         - focus on eq-selection immediately
-        - neuer regelsatz: identisch, nicht gespiegelt (Jörn)
-        - Allow arbitrary partitions (not just left/right) and arbitrary many active steps (not just one)
+        - steps: show errors
+    - Preparation SA/Workshops
+        - 
 
 
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  

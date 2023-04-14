@@ -4,10 +4,10 @@ import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import TileWMS from 'ol/source/TileWMS';
 import VectorSource from 'ol/source/Vector';
-import { bufferCount, combineLatest, filter, forkJoin, map, Observable, of, OperatorFunction, switchMap } from 'rxjs';
+import { bufferCount, combineLatest, defaultIfEmpty, filter, forkJoin, map, Observable, of, OperatorFunction, scan, switchMap } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
-import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
+import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
 import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosScenarioState, RiesgosState, ScenarioName } from 'src/app/state/state';
 
 import { Injectable } from '@angular/core';
@@ -48,18 +48,20 @@ export class MapService {
         }).pipe(filter(v => v !== undefined) as OperatorFunction<RiesgosScenarioState | undefined, RiesgosScenarioState>);
 
         const changedState$ = scenarioState$.pipe(
-            bufferCount(2, 1),
+            scan((acc: (RiesgosScenarioState | undefined)[], cur: RiesgosScenarioState) => [acc[1], cur], [undefined, undefined]),
             filter(([last, current]) => {
                 // only run when something important has changed. Prevents double-fetches.
+                if (current === undefined) return false;
+                if (last === undefined) return true;
                 if (!current.active) return false;
-                if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
+                if (!arraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (last.map.zoom !== current.map.zoom) return true;
                 if (last.map.center[0] !== current.map.center[0]) return true;
                 if (last.map.center[1] !== current.map.center[1]) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
-            }),
+            }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
             map(([_, current]) => current)
         );
 
@@ -83,7 +85,7 @@ export class MapService {
                 const layerComposite$ = converter.makeLayers(scenarioState, resolvedData);
                 layerComposites$.push(layerComposite$);
             }
-            return forkJoin(layerComposites$);
+            return forkJoin(layerComposites$).pipe(defaultIfEmpty([]));
         }));
 
         const fullState$ = combineLatest([mapState$, layerComposites$]).pipe(map(([mapState, layerComposites]) => {

@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSelect, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotStart, autoPilotStop, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotStart, autoPilotStop, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet } from './helpers';
 
@@ -39,18 +39,25 @@ export const reducer = createReducer(
     }
   }),
 
-  immerOn(stepSelect, (state, action) => {
+  immerOn(stepSetFocus, (state, action) => {
     const scenarioData = state.scenarioData[action.scenario]!;
-    const actionPartition = action.partition;
+    const partitionData = scenarioData[action.partition]!;
 
-    for (const [partition, partitionData] of Object.entries(scenarioData)) {
-      if (actionPartition === partition) {
-        if (state.rules.oneFocusOnly) partitionData.focus.focusedSteps = [action.stepId];
-        else partitionData.focus.focusedSteps.push(action.stepId);
-      }
-      else if (state.rules.mirrorFocus) {
-        if (state.rules.oneFocusOnly) partitionData.focus.focusedSteps = [action.stepId];
-        else partitionData.focus.focusedSteps.push(action.stepId);
+    if (action.focus === false) {
+      partitionData.focus.focusedSteps = partitionData.focus.focusedSteps.filter(s => s !== action.stepId);
+    } else {
+      if (state.rules.oneFocusOnly) partitionData.focus.focusedSteps = [action.stepId];
+      else partitionData.focus.focusedSteps.push(action.stepId);
+    }
+
+    if (state.rules.mirrorFocus) {
+      for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
+        if (action.focus === false) {
+          otherPartitionData.focus.focusedSteps = otherPartitionData.focus.focusedSteps.filter(s => s !== action.stepId);
+        } else {
+          if (state.rules.oneFocusOnly) otherPartitionData.focus.focusedSteps = [action.stepId];
+          else otherPartitionData.focus.focusedSteps.push(action.stepId);
+        }
       }
     }
 

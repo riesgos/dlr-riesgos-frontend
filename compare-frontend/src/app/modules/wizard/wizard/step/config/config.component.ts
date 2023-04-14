@@ -25,7 +25,7 @@ export class ConfigComponent implements OnInit {
       if (input.options) {
         const existingValue = input.currentValue;
         // const firstOption = input.options[0];  // when first option is set as a default value from the start, no config-action is fired, causing error when hitting "execute" without selecting another option.
-        this.formGroup.addControl(input.label, new FormControl(existingValue || ''));
+        this.formGroup.addControl(input.productId, new FormControl(existingValue || ''));
       }
     }
 

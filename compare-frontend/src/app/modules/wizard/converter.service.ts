@@ -47,6 +47,7 @@ export class DefaultConverter implements Converter {
         for (const input of inputs) {
             const inputValue = data.find(d => d.id === input.id);
             inputOptions.push({
+                productId: input.id,
                 label: input.id,
                 formtype: input.options ? 'string-select' : 'string',
                 currentValue: inputValue,

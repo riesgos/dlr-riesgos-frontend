@@ -13,7 +13,6 @@ export const scenarioPicked = createAction('Scenario picked', props<{ scenario: 
 export const stepSetFocus = createAction('Step select', props<{ scenario: ScenarioName, partition: Partition, stepId: string, focus: boolean }>());
 export const stepConfig = createAction('Step config', props<{ scenario: ScenarioName, partition: Partition, stepId: string, values: {[key: string]: any } }>());
 export const stepExecStart = createAction('Step exec start', props<{ scenario: ScenarioName, partition: Partition, step: string }>());
-export const stepConfigAndExecStart = createAction('Step config and exec start', props<{ scenario: ScenarioName, partition: Partition, stepId: string, values: {[key: string]: any}}>());
 export const stepExecSuccess = createAction('Step exec success', props<{ scenario: ScenarioName, partition: Partition, step: string, newData: RiesgosProduct[] }>());
 export const stepExecFailure = createAction('Step exec failure', props<{ scenario: ScenarioName, partition: Partition, step: string, error: any }>());
 

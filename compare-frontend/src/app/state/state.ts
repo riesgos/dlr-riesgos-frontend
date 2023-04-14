@@ -43,7 +43,7 @@ export interface RiesgosStep {
 
 export interface RiesgosProduct {
     id: string,
-    options?: string[],
+    options?: any[],
     value?: any,
     reference?: string,
 };

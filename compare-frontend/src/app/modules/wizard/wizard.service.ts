@@ -12,6 +12,7 @@ export interface WizardComposite {
     info?: () => { component: Type<any>, args: {[key: string]: any} },
     legend?: () => { component: Type<any>, args: {[key: string]: any} },
     inputs: {
+        productId: string,
         formtype: 'string' | 'string-select',
         options?: { [key: string]: any },
         currentValue?: any,

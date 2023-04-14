@@ -10,14 +10,18 @@ export class EqSelection implements Converter {
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
         const step = state.steps.find(s => s.step.id === "selectEq")!;
-        const val = data.find(d => d.id === "userChoice");
+        const val = state.products.find(p => p.id === "userChoice");
+        if (!val) return { hasFocus: false, inputs: [], step };
+
+        const options = Object.fromEntries(val.options!.map(v => [v.id, v]));
 
         return {
             hasFocus: false,
             inputs: [{
+                productId: 'userChoice',
                 label: 'eq',
                 formtype: 'string-select',
-                options: val?.options,
+                options: options,
                 currentValue: val?.value
             }],
             step: step,

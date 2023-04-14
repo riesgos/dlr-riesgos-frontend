@@ -41,8 +41,8 @@
     - error-handling during process-execution
     - click on step toggles focus 
     - hides layers of un-toggled steps
+    - parameter-selection shows labels in dropdown
     - Ongoing
-        - focus on first step immediately
         - legends
     - Upcoming
         - link click on eqSelection with form

@@ -69,8 +69,7 @@ export const reducer = createReducer(
     const scenarioData = state.scenarioData[action.scenario]!;
     const partitionData = scenarioData[action.partition]!;
 
-    for (const productId in action.values) {
-      const productValue = action.values[productId];
+    for (const [productId, productValue] of Object.entries(action.values)) {
       for (const product of partitionData.products) {
         if (product.id === productId) {
           product.value = productValue;
@@ -80,8 +79,7 @@ export const reducer = createReducer(
 
     if (state.rules.mirrorData) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
-        for (const productId in action.values) {
-          const productValue = action.values[productId];
+        for (const [productId, productValue] of Object.entries(action.values)) {
           for (const product of otherPartitionData.products) {
             if (product.id === productId) {
               product.value = productValue;

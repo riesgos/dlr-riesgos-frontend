@@ -43,12 +43,13 @@
     - hides layers of un-toggled steps
     - parameter-selection shows labels in dropdown
     - insideOne ruleset: data now mirrored
+    - auto-pilot only started when rules allow it
     - Ongoing
         - legends
-            - translation service
     - Upcoming
         - link click on eqSelection with form
         - style layer differently on click
+        - translation service
         - reducers: parseAPIScenariosIntoNewState: strict typing
         - focus on eq-selection immediately
         - steps: show errors

@@ -100,7 +100,7 @@ export class Effects {
                      └───────┬──────┘
                              │
                      ┌───────▼──────┐
-               ┌────►│AP Update     │       state: queue ++
+               ┌────►│AP Enqueue    │       state: queue ++
                │     └───────┬──────┘
                │             │
                │     ┌───────▼──────┐       state: queue --
@@ -127,7 +127,7 @@ check if more  │     └───────┬──────┘
         map(action => AppActions.autoPilotStart({ scenario: action.scenario, partition: action.partition }))
     ));
 
-    private updateAutoPilotOnStart$ = createEffect(() => this.actions$.pipe(
+    private autoPilotFillQueue$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.autoPilotStart),
         withLatestFrom(this.store$.select(state => state.riesgos)),
         filter(([action, state]) => {
@@ -166,8 +166,14 @@ check if more  │     └───────┬──────┘
 
     private updateAutoPilotOnSuccess$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepExecSuccess),
-        filter(action => action.scenario !== 'PeruShort' || action.step !== 'selectEq'),  // except if this is the AP-start-condition - because that's already been called.
-        map(action => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        filter(([action, state]) => {
+            const scenarioData = state.scenarioData[action.scenario]!;
+            const partitionData = scenarioData[action.partition]!;
+            return partitionData.autoPilot.useAutoPilot;
+        }),
+        // filter(([action, state]) => action.scenario !== 'PeruShort' || action.step !== 'selectEq'),  // except if this is the AP-start-condition - because that's already been called.
+        map(([action, state]) => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
     ));
 
 

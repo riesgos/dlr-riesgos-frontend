@@ -142,7 +142,9 @@ export const reducer = createReducer(
 
   immerOn(autoPilotStart, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
-    scenarioState.autoPilot.useAutoPilot = true;
+    if (state.rules.autoPilot) {
+      scenarioState.autoPilot.useAutoPilot = true;
+    }
     return state;
   }),
 

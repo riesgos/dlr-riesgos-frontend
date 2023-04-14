@@ -4,6 +4,9 @@
     </div>
     <div class="step-body" *ngIf="data.hasFocus">
         <app-tabs>
+            <app-tab [tabTitle]="'Error'" *ngIf="data.step.state.type === 'error'">
+                <app-error [scenario]="scenario" [partition]="partition" [data]="data"></app-error>
+            </app-tab>
             <app-tab [tabTitle]="'Configuration'" *ngIf="data.step.state.type === 'available'">
                 <app-config [scenario]="scenario" [partition]="partition" [data]="data"></app-config>
             </app-tab>
@@ -15,6 +18,9 @@
             </app-tab>
             <app-tab [tabTitle]="'Description'">
                 <app-description [scenario]="scenario" [partition]="partition" [data]="data"></app-description>
+            </app-tab>
+            <app-tab [tabTitle]="'Download'" *ngIf="data.step.state.type === 'completed'">
+                <app-download [scenario]="scenario" [partition]="partition" [data]="data"></app-download>
             </app-tab>
         </app-tabs>
     </div>

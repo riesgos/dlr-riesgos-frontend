@@ -19,6 +19,7 @@ import { DescriptionComponent } from './tabComponents/description/description.co
 import { DownloadComponent } from './tabComponents/download/download.component';
 import { LayersComponent } from './tabComponents/layers/layers.component';
 import { LegendsComponent } from './tabComponents/legends/legends.component';
+import { ErrorComponent } from './tabComponents/error/error.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { LegendsComponent } from './tabComponents/legends/legends.component';
     CircleLegendComponent,
     DescriptionComponent,
     DownloadComponent,
-    LegendsComponent
+    LegendsComponent,
+    ErrorComponent
   ],
   imports: [
     CommonModule,

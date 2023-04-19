@@ -1,4 +1,4 @@
-import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, scan, share, switchMap } from 'rxjs';
+import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -78,27 +78,30 @@ export class WizardService {
             return this.resolver.resolveReferences(outputProducts);
         }));
 
-        const wizardState$ = combineLatest([changedState$, resolvedData$]).pipe(map(([scenarioState, resolvedData]) => {
-            const steps: WizardComposite[] = [];
-            for (const step of scenarioState.steps) {
-                let stepData: WizardComposite;
-                if (scenarioState.focus.focusedSteps.includes(step.step.id)) {
-                    const converter = this.converterSvc.getConverter(scenario, step.step.id);
-                    stepData = converter.getInfo(scenarioState, resolvedData);
-                    stepData.hasFocus = true;
-                } else {
-                    stepData = {
-                        hasFocus: false,
-                        step: step,
-                        inputs: []
+        const wizardState$ = resolvedData$.pipe(
+            withLatestFrom(changedState$),
+            map(([resolvedData, state]) => {
+                const steps: WizardComposite[] = [];
+                for (const step of state.steps) {
+                    let stepData: WizardComposite;
+                    if (state.focus.focusedSteps.includes(step.step.id)) {
+                        const converter = this.converterSvc.getConverter(scenario, step.step.id);
+                        stepData = converter.getInfo(state, resolvedData);
+                        stepData.hasFocus = true;
+                    } else {
+                        stepData = {
+                            hasFocus: false,
+                            step: step,
+                            inputs: []
+                        }
                     }
+                    steps.push(stepData);
                 }
-                steps.push(stepData);
-            }
-            return { stepData: steps };
-        }));
+                return { stepData: steps };
+            })
+        );
 
-        return wizardState$;
+        return wizardState$.pipe(tap(state => console.log(state.stepData[0].inputs[0])));
     }
 
     public toggleFocus(scenario: ScenarioName, partition: Partition) {

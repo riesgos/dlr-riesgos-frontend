@@ -18,6 +18,10 @@
     float: right;
     cursor: default;
     color: var(--gray-600);
+
+    /* increases clickable area */
+    padding: .5em;
+    margin: -.5em;
 }
 
 .closeIcon:hover {

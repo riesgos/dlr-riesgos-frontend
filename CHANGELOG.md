@@ -46,6 +46,7 @@
     - auto-pilot only started when rules allow it
     - legends now displayed - if present
     - fix: layer- and wizard-services no longer cause multiple ui-updates on every state-change (reason: base-observable now shared)
+    - popup: increased close button clickable area
     - Ongoing
         - link click on eqSelection with form
             - on click: trigger selection event

@@ -48,11 +48,10 @@
     - fix: layer- and wizard-services no longer cause multiple ui-updates on every state-change (reason: base-observable now shared)
     - popup: increased close button clickable area
     - fix: click on map only fires click-handler *once*.
+    - dropdown now selects value when clicked on map
     - Ongoing
         - link click on eqSelection with form
-            - on click: trigger selection event
-                - triggered several times ...
-                - reset immediately afterwards ...
+            - dropdown doesnt know which of the options the new value is
     - Upcoming
         - style layer differently on click
         - translation service

@@ -18,7 +18,22 @@ export function arraysEqual(a1: any[], a2: any[]) {
 }
 
 export function allProductsEqual(list1: RiesgosProduct[], list2: RiesgosProduct[]): boolean {
-    return arraysEqual(list1.map(p => p.reference), list2.map(p => p.reference));
+    const refsEqual = arraysEqual(list1.map(p => p.reference), list2.map(p => p.reference));
+    if (!refsEqual) return false;
+
+    // only need to check prods that don't have references.
+    const prodsWOrefs1 = list1.filter(p => !p.reference);
+    const prodsWOrefs2 = list2.filter(p => !p.reference);
+
+    const vals1 = prodsWOrefs1.map(p => JSON.stringify(p.value));
+    const vals2 = prodsWOrefs2.map(p => JSON.stringify(p.value));
+
+    const valsEqual = arraysEqual(vals1, vals2);
+    if (!valsEqual) return false;
+
+    // @TODO: also check options?
+
+    return true;
 }
 
 export function allParasSet(step: RiesgosStep, products: RiesgosProduct[]): boolean {

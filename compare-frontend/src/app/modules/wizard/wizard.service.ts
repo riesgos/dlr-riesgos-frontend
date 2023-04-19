@@ -101,7 +101,7 @@ export class WizardService {
             })
         );
 
-        return wizardState$.pipe(tap(state => console.log(state.stepData[0].inputs[0])));
+        return wizardState$;
     }
 
     public toggleFocus(scenario: ScenarioName, partition: Partition) {

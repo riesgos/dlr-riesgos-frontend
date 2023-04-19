@@ -21,26 +21,15 @@ export class ConfigComponent implements OnInit {
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
+    console.log(`init wizard`)
     for (const input of this.data.inputs) {
       if (input.options) {
         const existingValue = input.currentValue;
-        // const firstOption = input.options[0];  // when first option is set as a default value from the start, no config-action is fired, causing error when hitting "execute" without selecting another option.
         this.formGroup.addControl(input.productId, new FormControl(existingValue || ''));
       }
     }
 
-    // if (this.onInitRequiresConfig()) {
-    //   console.log(`step config from wizard/requiresConfigAction`)
-    //   this.store.dispatch(AppActions.stepConfig({
-    //       scenario: this.scenario,
-    //       partition: this.partition,
-    //       stepId: this.data.step.step.id,
-    //       values: this.formGroup.value
-    //   }));
-    // }
-
     this.formGroup.valueChanges.subscribe(newVal => {
-      console.log(`step config from wizard/valueChanges`)
       this.store.dispatch(AppActions.stepConfig({
           scenario: this.scenario,
           partition: this.partition,
@@ -63,16 +52,11 @@ export class ConfigComponent implements OnInit {
     return true;
   }
 
-  // private onInitRequiresConfig(): boolean {
-  //   let requiresConfigAction = false;
-  //   for (const input of this.data.inputs) {
-  //     if (input.options) {
-  //       const existingValue = input.currentValue;
-  //       if (!existingValue) {
-  //         requiresConfigAction = true;
-  //       }
-  //     }
-  //   }
-  //   return requiresConfigAction;
-  // }
+  public isSelected(productId: string, option: {key: string, value: any}) {
+    const triedValue = option.value;
+    const actualValue = this.formGroup.controls[productId].value;
+    const matches = JSON.stringify(triedValue) === JSON.stringify(actualValue);
+    // console.log(`isselected: `, productId, option, matches)
+  }
+
 }

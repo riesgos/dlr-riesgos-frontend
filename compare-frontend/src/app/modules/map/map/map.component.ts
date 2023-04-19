@@ -13,6 +13,7 @@ import greyScale from '../data/open-map-style.Positron.json';
 import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
 import { Subscription } from 'rxjs';
+import { maybeArraysEqual } from 'src/app/state/helpers';
 
 
 @Component({
@@ -126,10 +127,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // @TODO: set visibility from last time
   }
 
+
+  private _lastClickLocation: number[] | undefined;
   private handleClick(mapState: MapState) {
+    
     const location = mapState.clickLocation;
-    this.overlay.setPosition(location);
-    if (!location) return;
+    this.overlay.setPosition(location); 
+
+    if (!location || maybeArraysEqual(this._lastClickLocation, location)) {
+      this._lastClickLocation = location;
+      return;
+    } else {
+      this._lastClickLocation = location;
+    }
 
     const pixel = this.map.getPixelFromCoordinate(location);
     const features = this.map.getFeaturesAtPixel(pixel, {
@@ -152,7 +162,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // further click handling
-    // console.log(`handling click with composites: `, mapState.layerComposites.map(c => c.id))
+    console.log(`handling click with composites: `, mapState.layerComposites.map(c => c.id))
     for (const composite of mapState.layerComposites) {
       if (composite.visible) {
         composite.onClick(location, features);

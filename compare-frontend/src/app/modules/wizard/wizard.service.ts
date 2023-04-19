@@ -1,4 +1,4 @@
-import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, scan, switchMap } from 'rxjs';
+import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, scan, share, switchMap } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -63,7 +63,10 @@ export class WizardService {
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
-            map(([_, current]) => current)
+            map(([_, current]) => current),
+            // changedState is siphoned off by resolvedData and wizardState.
+            // To prevent running this block twice - and causing ui updates twice - it's turned hot here.
+            share()
         );
 
         const resolvedData$ = changedState$.pipe(switchMap(state => {

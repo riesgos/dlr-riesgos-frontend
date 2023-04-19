@@ -45,9 +45,13 @@
     - insideOne ruleset: data now mirrored
     - auto-pilot only started when rules allow it
     - legends now displayed - if present
+    - fix: layer- and wizard-services no longer cause multiple ui-updates on every state-change (reason: base-observable now shared)
     - Ongoing
-    - Upcoming
         - link click on eqSelection with form
+            - on click: trigger selection event
+                - triggered several times ...
+                - reset immediately afterwards ...
+    - Upcoming
         - style layer differently on click
         - translation service
         - reducers: parseAPIScenariosIntoNewState: strict typing

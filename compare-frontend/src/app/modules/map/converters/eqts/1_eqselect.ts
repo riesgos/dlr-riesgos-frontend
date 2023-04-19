@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Converter, LayerComposite } from "../../converter.service";
 import { Observable, of } from "rxjs";
-import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName, StepStateTypes } from "src/app/state/state";
+import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
@@ -11,10 +11,14 @@ import Style from "ol/style/Style";
 import Circle from "ol/style/Circle";
 import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
-import { FeatureLike } from "ol/Feature";
+import Feature, { FeatureLike } from "ol/Feature";
+import { Store } from "@ngrx/store";
+import { stepConfig } from "src/app/state/actions";
 
 @Injectable()
 export class EqSelection implements Converter {
+
+    constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
         return step === "selectEq";
@@ -26,6 +30,7 @@ export class EqSelection implements Converter {
 
         if (stepState === StepStateTypes.available) {
             const availableEqs = state.products.find(p => p.id === "userChoice");
+            const _store = this.store;
 
             if (availableEqs) {
                 layers.push({
@@ -64,7 +69,13 @@ export class EqSelection implements Converter {
                         "body": "body"
                       }  
                     }),
-                    onClick() {},
+                    onClick(location: number[], features: Feature[]) {
+                        if (features.length === 0) return;
+                        const olFeature = features[0];
+                        const converter = new GeoJSON();
+                        const feature = converter.writeFeature(olFeature);
+                        _store.dispatch(stepConfig({ partition: state.partition, scenario: state.scenario, stepId: "selectEq", values: { userChoice: feature } }));
+                    },
                     onHover() {},
                     visible: true
                 });

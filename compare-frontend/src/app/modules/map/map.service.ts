@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import TileWMS from 'ol/source/TileWMS';
 import VectorSource from 'ol/source/Vector';
-import { bufferCount, combineLatest, defaultIfEmpty, filter, forkJoin, map, Observable, of, OperatorFunction, scan, switchMap } from 'rxjs';
+import { combineLatest, debounceTime, defaultIfEmpty, filter, forkJoin, map, merge, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -31,11 +31,11 @@ export class MapService {
 
 
     /**
-                       ┌───► mapState ─────────────────────┐
-                       │                                   └► fullState
-    state ────► changedState────► resolvedData─┐            ┌►
-                       │                       │            │
-                       └──────────────────────►└─► layers───┘
+                       ┌───► mapState ──────────────────────────────┐
+                       │                                            └► fullState
+    state ────► changedState────► resolvedData─┐                     ┌►
+                       │                       │                     │
+                       └──────────────────────►└─► layerComposites───┘
      */
     public getMapState(scenario: ScenarioName, partition: Partition): Observable<MapState> {
 
@@ -47,6 +47,8 @@ export class MapService {
             return partitionState;
         }).pipe(filter(v => v !== undefined) as OperatorFunction<RiesgosScenarioState | undefined, RiesgosScenarioState>);
 
+
+
         const changedState$ = scenarioState$.pipe(
             scan((acc: (RiesgosScenarioState | undefined)[], cur: RiesgosScenarioState) => [acc[1], cur], [undefined, undefined]),
             filter(([last, current]) => {
@@ -57,12 +59,16 @@ export class MapService {
                 if (!arraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (last.map.zoom !== current.map.zoom) return true;
-                if (last.map.center[0] !== current.map.center[0]) return true;
-                if (last.map.center[1] !== current.map.center[1]) return true;
+                if (!arraysEqual(last.map.center, current.map.center)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
-            map(([_, current]) => current)
+            map(([_, current]) => current),
+            // changedState$ is being siphoned off from mapState, resolvedData, and layerComposites. 
+            // To prevent this block from being called thrice, we make it shared (aka. "hot").
+            // Since downstream observables pull data from ubstream observables,
+            // not sharing would mean causing three (!) ui-updates with every one state-change.
+            share(),
         );
 
         const mapState$ = changedState$.pipe(map(scenarioState => {
@@ -78,15 +84,18 @@ export class MapService {
             return this.resolver.resolveReferences(outputProducts);
         }));
 
-        const layerComposites$ = combineLatest([changedState$, resolvedData$]).pipe(switchMap(([scenarioState, resolvedData]) => {
-            const layerComposites$ = [];
-            for (const stepId of scenarioState.focus.focusedSteps) {
-                const converter = this.converterSvc.getConverter(scenario, stepId);
-                const layerComposite$ = converter.makeLayers(scenarioState, resolvedData);
-                layerComposites$.push(layerComposite$);
-            }
-            return forkJoin(layerComposites$).pipe(defaultIfEmpty([]));
-        }));
+        const layerComposites$ = resolvedData$.pipe(
+            withLatestFrom(changedState$),
+            switchMap(([resolvedData, scenarioState]) => {
+                const lcs$ = [];
+                for (const stepId of scenarioState.focus.focusedSteps) {
+                    const converter = this.converterSvc.getConverter(scenario, stepId);
+                    const layerComposite$ = converter.makeLayers(scenarioState, resolvedData);
+                    lcs$.push(layerComposite$);
+                }
+                return forkJoin(lcs$).pipe(defaultIfEmpty([]));
+            })
+        );
 
         const fullState$ = combineLatest([mapState$, layerComposites$]).pipe(map(([mapState, layerComposites]) => {
             return {

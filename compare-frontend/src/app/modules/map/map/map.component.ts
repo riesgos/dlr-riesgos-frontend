@@ -1,4 +1,4 @@
-import { Map, Overlay, View } from 'ol';
+import { Map as OlMap, Overlay, View } from 'ol';
 import { applyStyle } from 'ol-mapbox-style';
 import MVT from 'ol/format/MVT';
 import Layer from 'ol/layer/Layer';
@@ -8,9 +8,11 @@ import OSM from 'ol/source/OSM';
 import VectorTile from 'ol/source/VectorTile';
 import { createXYZ } from 'ol/tilegrid';
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import greyScale from '../data/open-map-style.Positron.json';
 import { MapService, MapState } from '../map.service';
+import BaseEvent from 'ol/events/Event';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -18,7 +20,7 @@ import { MapService, MapState } from '../map.service';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnDestroy {
 
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
@@ -28,7 +30,7 @@ export class MapComponent implements AfterViewInit {
 
   private baseLayers: Layer[] = getBaseLayers();
   private overlay = new Overlay({});
-  private map: Map = new Map({
+  private map = new OlMap({
     layers: this.baseLayers,
     view: new View({
       projection: 'EPSG:4326', // 'EPSG:900913',
@@ -39,9 +41,19 @@ export class MapComponent implements AfterViewInit {
     overlays: [this.overlay]    
   });
 
+  private olSubs: Map<'moveend' | 'click', (event: BaseEvent | Event) => unknown> = new Map();
+  private subs: Subscription[] = [];
+
   constructor(
     private mapSvc: MapService
   ) {}
+
+  ngOnDestroy(): void {
+    this.olSubs.forEach((handler, key) => {
+      this.map.un(key as any, handler);
+    });
+    this.subs.map(s => s.unsubscribe());
+  }
 
   ngAfterViewInit(): void {
     if (this.mapContainer && this.popupContainer) {
@@ -54,29 +66,33 @@ export class MapComponent implements AfterViewInit {
        *   SENDING OUT EVENTS TO STATE-MGMT
        *********************************************************************/
 
-      this.map.on('moveend', (evt) => {
+      const moveHandler = (evt: BaseEvent | Event) => {
         const zoom = this.map.getView().getZoom()!;
         const centerCoord = this.map.getView().getCenter()!;
         const center = [centerCoord[0], centerCoord[1]];
         this.mapSvc.mapMove(this.scenario, this.partition, zoom, center);
-      });
+      };
+      this.map.on('moveend', moveHandler);
 
-      this.map.on('click', (evt) => {
+      const clickHandler = (evt: any) => {
         const location = evt.coordinate;
         this.mapSvc.mapClick(this.scenario, this.partition, location);
-      });
+      }
+      this.map.on('click', clickHandler);
 
-
+      this.olSubs.set('moveend', moveHandler);
+      this.olSubs.set('click', clickHandler);
 
       /*********************************************************************
        *   HANDLING EVENTS FROM STATE-MGMT
        *********************************************************************/
 
-      this.mapSvc.getMapState(this.scenario, this.partition).subscribe(mapState => {
+      const mapStateSub = this.mapSvc.getMapState(this.scenario, this.partition).subscribe(mapState => {
           this.handleMove(mapState);
           this.handleLayers(mapState);
           this.handleClick(mapState);
       });
+      this.subs.push(mapStateSub);
     }
   }
 
@@ -94,7 +110,7 @@ export class MapComponent implements AfterViewInit {
       this.map.getView().animate({
         center: state.center,
         zoom: state.zoom,
-        duration: 100
+        duration: 100,
       })
     }
   }
@@ -131,11 +147,12 @@ export class MapComponent implements AfterViewInit {
         for (const key in args) {
           componentRef.instance[key] = args[key];
         }
-        return;
+        break;
       }
     }
 
     // further click handling
+    // console.log(`handling click with composites: `, mapState.layerComposites.map(c => c.id))
     for (const composite of mapState.layerComposites) {
       if (composite.visible) {
         composite.onClick(location, features);
@@ -151,18 +168,18 @@ function getBaseLayers() {
     source: new OSM()
   });
 
-  // const vectorTileBase = new VectorTileLayer({
-  //   declutter: true,
-  //   source: new VectorTile({
-  //       format: new MVT(),
-  //       tileGrid: createXYZ({
-  //           minZoom: 0,
-  //           maxZoom: 12
-  //       }),
-  //       url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
-  //   }),
-  //   renderMode: 'hybrid'
-  // });
+  const vectorTileBase = new VectorTileLayer({
+    declutter: true,
+    source: new VectorTile({
+        format: new MVT(),
+        tileGrid: createXYZ({
+            minZoom: 0,
+            maxZoom: 12
+        }),
+        url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
+    }),
+    renderMode: 'hybrid'
+  });
   // applyStyle(vectorTileBase, greyScale, 'planet0-12');
 
   return [osmBase];

@@ -7,7 +7,7 @@ import { BackendService } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { ResolverService } from "../services/resolver.service";
 import * as AppActions from "./actions";
-import { convertFrontendDataToApiState, convertApiDataToRiesgosData, getMapPositionForStep } from "./helpers";
+import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
 import { Partition, RiesgosState, ScenarioName } from "./state";
 
 
@@ -174,18 +174,6 @@ check if more  │     └───────┬──────┘
         }),
         // filter(([action, state]) => action.scenario !== 'PeruShort' || action.step !== 'selectEq'),  // except if this is the AP-start-condition - because that's already been called.
         map(([action, state]) => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
-    ));
-
-
-
-
-
-    private focusMapOnCurrentStep$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.stepSetFocus),
-        map(action => {
-            const {center, zoom} = getMapPositionForStep(action.scenario, action.partition, action.stepId);
-            return AppActions.mapMove({ scenario: action.scenario, partition: action.partition, zoom, center });
-        })
     ));
 
     

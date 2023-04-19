@@ -26,7 +26,7 @@ export class RuleService {
             case 'selectOneScenario':
                 rules.oneFocusOnly = false;
                 rules.partition = false;
-                rules.autoPilot = false;
+                rules.autoPilot = true;
                 break;
             case 'compareScenario':
                 break;

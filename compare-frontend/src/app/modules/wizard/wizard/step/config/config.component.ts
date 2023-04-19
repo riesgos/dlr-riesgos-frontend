@@ -29,16 +29,18 @@ export class ConfigComponent implements OnInit {
       }
     }
 
-    if (this.requiresConfigAction()) {
-      this.store.dispatch(AppActions.stepConfig({
-          scenario: this.scenario,
-          partition: this.partition,
-          stepId: this.data.step.step.id,
-          values: this.formGroup.value
-      }));
-    }
+    // if (this.onInitRequiresConfig()) {
+    //   console.log(`step config from wizard/requiresConfigAction`)
+    //   this.store.dispatch(AppActions.stepConfig({
+    //       scenario: this.scenario,
+    //       partition: this.partition,
+    //       stepId: this.data.step.step.id,
+    //       values: this.formGroup.value
+    //   }));
+    // }
 
     this.formGroup.valueChanges.subscribe(newVal => {
+      console.log(`step config from wizard/valueChanges`)
       this.store.dispatch(AppActions.stepConfig({
           scenario: this.scenario,
           partition: this.partition,
@@ -61,16 +63,16 @@ export class ConfigComponent implements OnInit {
     return true;
   }
 
-  public requiresConfigAction(): boolean {
-    let requiresConfigAction = false;
-    for (const input of this.data.inputs) {
-      if (input.options) {
-        const existingValue = input.currentValue;
-        if (!existingValue) {
-          requiresConfigAction = true;
-        }
-      }
-    }
-    return requiresConfigAction;
-  }
+  // private onInitRequiresConfig(): boolean {
+  //   let requiresConfigAction = false;
+  //   for (const input of this.data.inputs) {
+  //     if (input.options) {
+  //       const existingValue = input.currentValue;
+  //       if (!existingValue) {
+  //         requiresConfigAction = true;
+  //       }
+  //     }
+  //   }
+  //   return requiresConfigAction;
+  // }
 }

@@ -1,12 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState } from './state';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotStart, autoPilotStop, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, getMapPositionForStep } from './helpers';
-import { TypedAction } from '@ngrx/store/src/models';
-import { act } from '@ngrx/effects';
 
 
 
@@ -25,8 +23,19 @@ export const reducer = createReducer(
     return state;
   }),
 
-  on(scenarioLoadSuccess, (state, action) => {
+  immerOn(scenarioLoadSuccess, (state, action) => {
     const newState = parseAPIScenariosIntoNewState(state, action.scenarios);
+
+    // causes problem with immer: either create new or modify, not both.
+    // if (state.rules.focusFirstStepImmediately) {
+    //   for (const [scenarioName, scenarioData] of Object.entries(newState.scenarioData)) {
+    //     for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+    //       const firstStep = partitionData.steps[0].step.id;
+    //       partitionData.focus.focusedSteps = [firstStep];
+    //     }
+    //   }
+    // }
+
     return newState;
   }),
 
@@ -34,11 +43,14 @@ export const reducer = createReducer(
     return state;
   }),
 
-  on(scenarioPicked, (state, action) => {
-    return {
-      ...state,
-      currentScenario: action.scenario
+  immerOn(scenarioPicked, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario];
+    if (!scenarioData) return state;
+    for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+      partitionData.active = true;
     }
+    state.currentScenario = action.scenario;
+    return state;
   }),
 
   immerOn(stepSetFocus, (state, action) => {
@@ -240,85 +252,91 @@ export const reducer = createReducer(
 
 function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios: API_ScenarioInfo[]): RiesgosState {
 
-  const scenarioData: any = {};
+  const newScenariosData: RiesgosState["scenarioData"] = {};
 
   for (const apiScenario of apiScenarios) {
-    scenarioData[apiScenario.id] = {
-      left: undefined,
-      right: undefined
-    };
+    const newScenarioData: {[key in Partition]?: RiesgosScenarioState} = {};
+    let currentScenarioData = currentState.scenarioData[apiScenario.id];
+    if (!currentScenarioData) currentScenarioData = {};
 
     for (const partition of ['left', 'right'] as Partition[]) {
-      const steps: RiesgosStep[] = [];
-      const products: RiesgosProduct[] = [];
+      let currentPartitionData = currentScenarioData[partition];
+      if (!currentPartitionData) currentPartitionData = {
+        partition: partition,
+        scenario: apiScenario.id,
+        active: false,
+        autoPilot: {
+          queue: [],
+          useAutoPilot: false
+        },
+        focus: {
+          focusedSteps: []
+        },
+        map: {
+          center: [-30, -70],
+          zoom: 7,
+          clickLocation: undefined
+        },
+        products: [],
+        steps: []
+      };
+
+      const newSteps: RiesgosStep[] = [];
+      const newProducts: RiesgosProduct[] = [];
 
   
       for (const step of apiScenario.steps) {
-        steps.push({
+        newSteps.push({
           step: step,
           state: new StepStateUnavailable()
         })
   
         for (const input of step.inputs) {
-          if (!products.find(p => p.id === input.id)) {
-            products.push({
+          if (!newProducts.find(p => p.id === input.id)) {
+            newProducts.push({
               id: input.id
             });
           }
           if (input.options) {
-            const product = products.find(p => p.id === input.id);
+            const product = newProducts.find(p => p.id === input.id);
             if (!product) throw Error(`No such product: ${input.id}`);
             product.options = input.options;
           }
         }
         for (const output of step.outputs) {
-          if (!products.find(p => p.id === output.id)) {
-            products.push({
+          if (!newProducts.find(p => p.id === output.id)) {
+            newProducts.push({
               id: output.id
             });
           }
         }
       }
   
-      const partitionScenarioData = {
-        scenario: apiScenario.id,
-        partition: partition as Partition,
-        active: partition === 'left' ? true : false,
-        autoPilot: {
-          useAutoPilot: false,
-          queue: []
-        },
-        products: products,
-        steps: steps,
-        map: {
-          center: [-50, -20],
-          zoom: 4,
-          clickLocation: undefined
-        },
-        focus: {
-          focusedSteps: currentState.scenarioData[apiScenario.id] ? currentState.scenarioData[apiScenario.id]![partition]!.focus.focusedSteps : []
-        }
+      const newPartitionData: RiesgosScenarioState = {
+        ... currentPartitionData,
+        products: newProducts,
+        steps: newSteps,
       }
 
-      scenarioData[apiScenario.id][partition] = partitionScenarioData;
+      newScenarioData[partition] = newPartitionData;
     }
-
+    newScenariosData[apiScenario.id] = newScenarioData;
   }
 
-  const metaData = apiScenarios.map(s => ({
+  const newMetaData: RiesgosScenarioMetadata[] = apiScenarios.map(s => ({
     id: s.id,
     description: s.description,
     title: s.id,
     preview: ''
   }));
 
-  const initialState: RiesgosState = {
+  const newState: RiesgosState = {
     ...currentState,
-    metaData,
-    scenarioData,
+    metaData: newMetaData,
+    scenarioData: newScenariosData,
   };
 
-  const state = deriveState(initialState);
+  const state = deriveState(newState);
 
   return state;
 }

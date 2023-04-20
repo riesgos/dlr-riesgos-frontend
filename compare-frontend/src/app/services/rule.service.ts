@@ -14,6 +14,7 @@ export class RuleService {
             partition: true,
             mirrorFocus: true,
             oneFocusOnly: true,
+            focusFirstStepImmediately: false,
             mirrorData: false,
             mirrorClick: true,
             mirrorMove: true,
@@ -25,6 +26,7 @@ export class RuleService {
         switch (ruleSet) {
             case 'selectOneScenario':
                 rules.oneFocusOnly = false;
+                rules.focusFirstStepImmediately = true;
                 rules.partition = false;
                 rules.autoPilot = true;
                 break;
@@ -32,6 +34,7 @@ export class RuleService {
                 break;
             case 'compareIdentical':
                 rules.oneFocusOnly = false;
+                rules.focusFirstStepImmediately = true;
                 rules.mirrorData = true;
                 rules.mirrorFocus = false;
                 break;

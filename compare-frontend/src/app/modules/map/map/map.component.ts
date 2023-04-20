@@ -162,7 +162,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // further click handling
-    console.log(`handling click with composites: `, mapState.layerComposites.map(c => c.id))
     for (const composite of mapState.layerComposites) {
       if (composite.visible) {
         composite.onClick(location, features);

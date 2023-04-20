@@ -49,13 +49,17 @@
     - popup: increased close button clickable area
     - fix: click on map only fires click-handler *once*.
     - dropdown now selects value when clicked on map
+    - wizard expanded from beginning: did need to move `share` up in filter-obs
+    - reducers: parseAPIScenariosIntoNewState: strict typing
     - Ongoing
         - link click on eqSelection with form
             - dropdown doesnt know which of the options the new value is
+                - add a `valueToKey` property to wizardComplex?
+        - ol causes re-calc of select-dropdown with every map-hover
+            - run ol-events outside zone
     - Upcoming
         - style layer differently on click
         - translation service
-        - reducers: parseAPIScenariosIntoNewState: strict typing
         - focus on eq-selection immediately
         - steps: show errors
         - auto-pilot: configurable start-strategy

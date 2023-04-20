@@ -1,4 +1,4 @@
-import { bufferCount, combineLatest, filter, map, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
+import { defaultIfEmpty, filter, map, mergeMap, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -53,26 +53,28 @@ export class WizardService {
         );
 
         const changedState$ = scenarioState$.pipe(
+            // changedState is siphoned off by resolvedData and wizardState.
+            // To prevent running this block twice - and causing ui updates twice - it's turned hot here.
+            share(),
+
+            // filtering to prevent rebuilding ui on insignificant changes.
             scan((acc: (RiesgosScenarioState | undefined)[], cur: RiesgosScenarioState) => [acc[1], cur], [undefined, undefined]),
             filter(([last, current]) => {
                 if (current === undefined) return false;
                 if (last === undefined) return true;
                 if (!current.active) return false;
+                if (last.active !== current.active) return true;
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
             map(([_, current]) => current),
-            // changedState is siphoned off by resolvedData and wizardState.
-            // To prevent running this block twice - and causing ui updates twice - it's turned hot here.
-            share()
         );
 
         const resolvedData$ = changedState$.pipe(switchMap(state => {
             const currentSteps = state.steps.filter(s => state.focus.focusedSteps.includes(s.step.id));
             if (currentSteps.length === 0) return of([]);
-
             const outputIds = currentSteps.map(s => s.step.outputs.map(o => o.id)).flat();
             const outputProducts = state.products.filter(p => outputIds.includes(p.id)).filter(p => p.value || p.reference);
             return this.resolver.resolveReferences(outputProducts);

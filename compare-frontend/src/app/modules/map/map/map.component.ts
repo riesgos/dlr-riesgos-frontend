@@ -40,7 +40,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     private mapSvc: MapService,
     private zone: NgZone
   ) {
-    this.zone.runOutsideAngular(() => {
+      // no need to run this outside of zone
       this.map = new OlMap({
         layers: this.baseLayers,
         view: new View({
@@ -51,7 +51,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         controls: [],
         overlays: [this.overlay]    
       });
-    });
   }
 
   ngOnDestroy(): void {
@@ -64,6 +63,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     if (this.mapContainer && this.popupContainer) {
   
+      // needs to be outside of zone: only place where ol attaches to event-handlers
       this.zone.runOutsideAngular(() => {
         this.map.setTarget(this.mapContainer.nativeElement);
       });
@@ -86,10 +86,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.mapSvc.mapClick(this.scenario, this.partition, location);
       }
 
-      this.zone.runOutsideAngular(() =>  {
-        this.map.on('moveend', moveHandler);
-        this.map.on('click', clickHandler);
-      });
+      // no need to run this outside of zone
+      this.map.on('moveend', moveHandler);
+      this.map.on('click', clickHandler);
 
       this.olSubs.set('moveend', moveHandler);
       this.olSubs.set('click', clickHandler);

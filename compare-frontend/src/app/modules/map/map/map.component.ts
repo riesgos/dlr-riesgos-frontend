@@ -8,7 +8,7 @@ import OSM from 'ol/source/OSM';
 import VectorTile from 'ol/source/VectorTile';
 import { createXYZ } from 'ol/tilegrid';
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import greyScale from '../data/open-map-style.Positron.json';
 import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
@@ -31,23 +31,28 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private baseLayers: Layer[] = getBaseLayers();
   private overlay = new Overlay({});
-  private map = new OlMap({
-    layers: this.baseLayers,
-    view: new View({
-      projection: 'EPSG:4326', // 'EPSG:900913',
-      center: [-50, -20],
-      zoom: 4
-    }),
-    controls: [],
-    overlays: [this.overlay]    
-  });
+  private map!: OlMap;
 
   private olSubs: Map<'moveend' | 'click', (event: BaseEvent | Event) => unknown> = new Map();
   private subs: Subscription[] = [];
 
   constructor(
-    private mapSvc: MapService
-  ) {}
+    private mapSvc: MapService,
+    private zone: NgZone
+  ) {
+    this.zone.runOutsideAngular(() => {
+      this.map = new OlMap({
+        layers: this.baseLayers,
+        view: new View({
+          projection: 'EPSG:4326', // 'EPSG:900913',
+          center: [-50, -20],
+          zoom: 4
+        }),
+        controls: [],
+        overlays: [this.overlay]    
+      });
+    });
+  }
 
   ngOnDestroy(): void {
     this.olSubs.forEach((handler, key) => {
@@ -59,7 +64,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     if (this.mapContainer && this.popupContainer) {
   
-      this.map.setTarget(this.mapContainer.nativeElement);
+      this.zone.runOutsideAngular(() => {
+        this.map.setTarget(this.mapContainer.nativeElement);
+      });
       this.overlay.setElement(this.popup.nativeElement);
 
 
@@ -73,13 +80,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const center = [centerCoord[0], centerCoord[1]];
         this.mapSvc.mapMove(this.scenario, this.partition, zoom, center);
       };
-      this.map.on('moveend', moveHandler);
-
+      
       const clickHandler = (evt: any) => {
         const location = evt.coordinate;
         this.mapSvc.mapClick(this.scenario, this.partition, location);
       }
-      this.map.on('click', clickHandler);
+
+      this.zone.runOutsideAngular(() =>  {
+        this.map.on('moveend', moveHandler);
+        this.map.on('click', clickHandler);
+      });
 
       this.olSubs.set('moveend', moveHandler);
       this.olSubs.set('click', clickHandler);

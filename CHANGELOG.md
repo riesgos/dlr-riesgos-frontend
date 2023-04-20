@@ -51,12 +51,12 @@
     - dropdown now selects value when clicked on map
     - wizard expanded from beginning: did need to move `share` up in filter-obs
     - reducers: parseAPIScenariosIntoNewState: strict typing
+    - openlayers now runs outside of angular-zone
     - Ongoing
         - link click on eqSelection with form
             - dropdown doesnt know which of the options the new value is
                 - add a `valueToKey` property to wizardComplex?
-        - ol causes re-calc of select-dropdown with every map-hover
-            - run ol-events outside zone
+        - new rule: focus on first step from beginning
     - Upcoming
         - style layer differently on click
         - translation service

@@ -76,14 +76,14 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                         econLayer.id += '_economic';
                         econLayer.name = 'eq-economic-loss-title';
                         econLayer.icon = 'dot-circle';
-                        econLayer.params.STYLES = 'style-cum-loss-Chile-plasma';
+                        econLayer.params.STYLES = 'style-cum-loss-chile-plasma';
                         const baseLegendEcon = econLayer.legendImg;
                         econLayer.legendImg = {
                             component: TranslatedImageComponent,
                             inputs: {
                                 languageImageMap: {
-                                    'EN': baseLegendEcon + '&style=style-cum-loss-plasma&language=en',
-                                    'ES': baseLegendEcon + '&style=style-cum-loss-plasma',
+                                    'EN': baseLegendEcon + '&style=style-cum-loss-chile-plasma&language=en',
+                                    'ES': baseLegendEcon + '&style=style-cum-loss-chile-plasma',
                                 }
                             }
                         };

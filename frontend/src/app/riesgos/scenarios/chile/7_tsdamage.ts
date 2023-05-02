@@ -119,14 +119,14 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                         econLayer.id += '_economic_Chile';
                         econLayer.name = 'ts-economic-loss-title';
                         econLayer.icon = 'dot-circle';
-                        econLayer.params.STYLES = 'style-cum-loss-Chile-plasma';
+                        econLayer.params.STYLES = 'style-cum-loss-chile-plasma';
                         const baseLegendEcon = econLayer.legendImg;
                         econLayer.legendImg = {
                             component: TranslatedImageComponent,
                             inputs: {
                                 languageImageMap: {
-                                    'EN': baseLegendEcon + '&style=style-cum-loss-Chile-plasma&language=en',
-                                    'ES': baseLegendEcon + '&style=style-cum-loss-Chile-plasma',
+                                    'EN': baseLegendEcon + '&style=style-cum-loss-chile-plasma&language=en',
+                                    'ES': baseLegendEcon + '&style=style-cum-loss-chile-plasma',
                                 }
                             }
                         };

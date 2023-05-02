@@ -67,6 +67,7 @@ import { DisclaimerService } from './components/disclaimer/disclaimer.service';
 import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
 import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
 import { ProxyInterceptor } from './services/interceptors/ProxyInterceptor';
+import { PostSpreadInterceptor } from './services/interceptors/PostSpreadInterceptor';
 import { reducers, effects } from './ngrx_register';
 import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-translate.pipe';
 import { ReversePipe } from './components/riesgos_layer_control/utils/array-reverse.pipe';
@@ -169,17 +170,15 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
   ],
   providers: [
     {
-      multi: true,
       provide: APP_INITIALIZER,
       deps: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return () => configService.loadConfig();
-      }
-    }, {
-      multi: true,
-      provide: HTTP_INTERCEPTORS,
-      useClass: ProxyInterceptor
+      },
+      multi: true
     },
+    { provide: HTTP_INTERCEPTORS, useClass: ProxyInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: PostSpreadInterceptor, multi: true },
     AlertService,
     DisclaimerService,
     ProgressService,

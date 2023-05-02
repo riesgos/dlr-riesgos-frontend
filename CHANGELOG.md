@@ -17,6 +17,9 @@
 - backend: 
     - now provides optional default values for steps' inputs.
     - tickets now stay alive for a certain time after they've been fetched
+    - added `execute?skipCache=true` option for execute-requests
+    - added `runall.ts` which runs all steps once every hour.
+    - fix: logging threw error on circular objects.
 - frontend: 
     - now allows multiple (dynamic) legends for one layer at the same time. Applied to eq-catalogue.
     - now has circle-legend

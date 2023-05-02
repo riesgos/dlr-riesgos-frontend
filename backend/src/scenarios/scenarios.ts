@@ -90,16 +90,18 @@ export class Scenario {
         };
     }
 
-    public async execute(stepId: string, state: ScenarioState): Promise<ScenarioState> {
+    public async execute(stepId: string, state: ScenarioState, skipCache=false): Promise<ScenarioState> {
         let step = this.steps.find(s => s.id === stepId);
         if (!step) throw new Error(`No such step: "${stepId}" in scenario "${this.id}"`);
         console.log(`Scenarios: Now executing ${stepId}`);
 
-        const alreadyCalculated = await this.loadFromCache(step, state);
-        if (alreadyCalculated) {
-            console.log(`Scenarios: using a cached version of output for ${stepId}`);
-            const stateWithOutputs = this.addData(alreadyCalculated, state);
-            return stateWithOutputs;
+        if (!skipCache) {
+            const alreadyCalculated = await this.loadFromCache(step, state);
+            if (alreadyCalculated) {
+                console.log(`Scenarios: using a cached version of output for ${stepId}`);
+                const stateWithOutputs = this.addData(alreadyCalculated, state);
+                return stateWithOutputs;
+            }
         }
 
         const inputValues = await this.resolveData(step.inputs.map(i => i.id), state);

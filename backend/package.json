@@ -8,6 +8,7 @@
     "start": "ts-node-dev --respawn src/main.ts",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
+    "exec-all": "node dist/runall.js",
     "run": "node dist/main.js"
   },
   "keywords": [

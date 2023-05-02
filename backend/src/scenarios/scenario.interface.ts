@@ -37,8 +37,9 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
         if (!scenario) return [];
         const stepId = req.params.stepId;
         const state: ScenarioState = req.body;
+        const skipCache = req.query.skipCache === 'true' || req.query.skipCache === 'True' || req.query.skipCache === 'TRUE'  ? true : false;
         const key = objectHash({scenarioId, stepId, state});
-        pool.scheduleTask(key, async () => await scenario.execute(stepId, state));
+        pool.scheduleTask(key, async () => await scenario.execute(stepId, state, skipCache));
         // send user a ticket for polling
         res.send({ ticket: key });
     });

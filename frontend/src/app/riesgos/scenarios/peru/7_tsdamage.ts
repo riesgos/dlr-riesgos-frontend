@@ -145,18 +145,20 @@ export class TsDamageWmsPeru implements MappableProductAugmenter {
                                 bottomText: `{{ loss_calculated_from }} <a href="./#/documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                             }
                         }
-                        econLayer.popup = {
-                            dynamicPopup: {
-                                component: EconomicDamagePopupComponent,
-                                getAttributes: (args) => {
-                                    const event: MapBrowserEvent<any> = args.event;
-                                    const layer: TileLayer<TileWMS> = args.layer;
-                                    return {
-                                        event: event,
-                                        layer: layer,
-                                        metaData: tsMetaData.value,
-                                        title: 'ts-economic-loss-title'
-                                    };
+                        if (tsMetaData && tsMetaData.value) {
+                            econLayer.popup = {
+                                dynamicPopup: {
+                                    component: EconomicDamagePopupComponent,
+                                    getAttributes: (args) => {
+                                        const event: MapBrowserEvent<any> = args.event;
+                                        const layer: TileLayer<TileWMS> = args.layer;
+                                        return {
+                                            event: event,
+                                            layer: layer,
+                                            metaData: tsMetaData.value,
+                                            title: 'ts-economic-loss-title'
+                                        };
+                                    }
                                 }
                             }
                         }
@@ -190,26 +192,27 @@ export class TsDamageWmsPeru implements MappableProductAugmenter {
                                 }
                             }
                         };
-        
-                        damageLayer.popup = {
-                            dynamicPopup: {
-                                component: DamagePopupComponent,
-                                getAttributes: (args) => {
-                                    const event: MapBrowserEvent<any> = args.event;
-                                    const layer: TileLayer<TileWMS> = args.layer;
-                                    return {
-                                        event: event,
-                                        layer: layer,
-                                        metaData: tsMetaData.value,
-                                        xLabel: 'damage',
-                                        yLabel: 'Nr_buildings',
-                                        schema: chosenSchema,
-                                        heading: 'damage_classification_tsunami',
-                                        additionalText: chosenSchema === 'Medina_2019' ? 'DamageStatesSara' : 'DamageStatesSuppasri'
-                                    };
+                        if (tsMetaData && tsMetaData.value) {
+                            damageLayer.popup = {
+                                dynamicPopup: {
+                                    component: DamagePopupComponent,
+                                    getAttributes: (args) => {
+                                        const event: MapBrowserEvent<any> = args.event;
+                                        const layer: TileLayer<TileWMS> = args.layer;
+                                        return {
+                                            event: event,
+                                            layer: layer,
+                                            metaData: tsMetaData.value,
+                                            xLabel: 'damage',
+                                            yLabel: 'Nr_buildings',
+                                            schema: chosenSchema,
+                                            heading: 'damage_classification_tsunami',
+                                            additionalText: chosenSchema === 'Medina_2019' ? 'DamageStatesSara' : 'DamageStatesSuppasri'
+                                        };
+                                    }
                                 }
-                            }
-                        };
+                            };
+                        }
                         const counts = tsMetaData?.value?.total?.buildings_by_damage_state || 0.0;
                         let html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))]);
                         if (chosenSchema === 'SUPPASRI2013_v2.0') {

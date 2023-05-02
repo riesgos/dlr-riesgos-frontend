@@ -97,18 +97,20 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                                 bottomText: `{{ loss_calculated_from }} <a href="./#/documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                             }
                         }
-                        econLayer.popup = {
-                            dynamicPopup: {
-                                component: EconomicDamagePopupComponent,
-                                getAttributes: (args) => {
-                                    const event: MapBrowserEvent<any> = args.event;
-                                    const layer: TileLayer<TileWMS> = args.layer;
-                                    return {
-                                        event: event,
-                                        layer: layer,
-                                        metaData: metaDataValue,
-                                        title: 'eq-economic-loss-title'
-                                    };
+                        if (metaDataValue) {
+                            econLayer.popup = {
+                                dynamicPopup: {
+                                    component: EconomicDamagePopupComponent,
+                                    getAttributes: (args) => {
+                                        const event: MapBrowserEvent<any> = args.event;
+                                        const layer: TileLayer<TileWMS> = args.layer;
+                                        return {
+                                            event: event,
+                                            layer: layer,
+                                            metaData: metaDataValue,
+                                            title: 'eq-economic-loss-title'
+                                        };
+                                    }
                                 }
                             }
                         }
@@ -130,25 +132,27 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                             }
                         };
                         delete damageLayer.params.SLD_BODY;
-                        damageLayer.popup = {
-                            dynamicPopup: {
-                                component: DamagePopupComponent,
-                                getAttributes: (args) => {
-                                    const event: MapBrowserEvent<any> = args.event;
-                                    const layer: TileLayer<TileWMS> = args.layer;
-                                    return {
-                                        event: event,
-                                        layer: layer,
-                                        metaData: metaDataValue,
-                                        xLabel: 'damage',
-                                        yLabel: 'Nr_buildings',
-                                        schema: 'SARA_v1.0',
-                                        heading: 'earthquake_damage_classification',
-                                        additionalText: 'DamageStatesSara'
-                                    };
+                        if (metaDataValue) {
+                            damageLayer.popup = {
+                                dynamicPopup: {
+                                    component: DamagePopupComponent,
+                                    getAttributes: (args) => {
+                                        const event: MapBrowserEvent<any> = args.event;
+                                        const layer: TileLayer<TileWMS> = args.layer;
+                                        return {
+                                            event: event,
+                                            layer: layer,
+                                            metaData: metaDataValue,
+                                            xLabel: 'damage',
+                                            yLabel: 'Nr_buildings',
+                                            schema: 'SARA_v1.0',
+                                            heading: 'earthquake_damage_classification',
+                                            additionalText: 'DamageStatesSara'
+                                        };
+                                    }
                                 }
-                            }
-                        };
+                            };
+                        }
                         const counts = metaDataValue?.total?.buildings_by_damage_state || 0.0;
                         const html =
                             createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])

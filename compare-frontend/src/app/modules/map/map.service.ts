@@ -69,6 +69,7 @@ export class MapService {
             // Since downstream observables pull data from ubstream observables,
             // not sharing would mean causing three (!) ui-updates with every one state-change.
             share(),
+            tap(v => console.log(`map-svc: getting state ${v.map.center}`))
         );
 
         const mapState$ = changedState$.pipe(map(scenarioState => {
@@ -97,7 +98,7 @@ export class MapService {
             })
         );
 
-        const fullState$ = combineLatest([mapState$, layerComposites$]).pipe(map(([mapState, layerComposites]) => {
+        const fullState$ = combineLatest([mapState$, layerComposites$]).pipe(map(([mapState, layerComposites]) => { console.log(`map-svc: providing state ${mapState.center}`)
             return {
                 ...mapState,
                 layerComposites: layerComposites.flat()

@@ -14,8 +14,8 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { map, switchMap, take } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin, of } from 'rxjs';
+import { map, switchMap, take, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
 import { ProductLayer, ProductRasterLayer } from 'src/app/components/map/mappable/map.types';
@@ -50,11 +50,9 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
 
     makeProductMappable(product: RiesgosProductResolved): MappableProduct[] {
         
-        const metaDataValue = this.metadata$.value.value;
-
         return [{
             ... product,
-            toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store, layerMarshaller: LayerMarshaller) {
+            toUkisLayers: (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store, layerMarshaller: LayerMarshaller) => {
 
                 const layers$ = layerMarshaller.makeWmsLayers({
                     id: product.id,
@@ -68,8 +66,10 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                     },
                 });
         
-                return layers$.pipe(
-                    map((layers) => {
+                return combineLatest([layers$, this.metadata$.pipe(take(1))]).pipe(
+                    map(([layers, metaData]) => {
+                        const metaDataValue = metaData.value;
+
                         const econLayer: ProductLayer = layers[0];
                         const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
         
@@ -87,7 +87,7 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                                 }
                             }
                         };
-                        const totalDamage = +(metaDataValue.total.loss_value);
+                        const totalDamage = +(metaDataValue?.total?.loss_value) || 0.0;
                         const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                         econLayer.dynamicDescription = {
                             component: InfoTableComponentComponent,
@@ -149,7 +149,7 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                                 }
                             }
                         };
-                        const counts = metaDataValue.total.buildings_by_damage_state;
+                        const counts = metaDataValue?.total?.buildings_by_damage_state || 0.0;
                         const html =
                             createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
                             + '{{ BuildingTypesSaraExtensive }}';

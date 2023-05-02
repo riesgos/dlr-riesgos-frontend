@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { MapOlService } from "@dlr-eoc/map-ol";
 import { LayersService } from "@dlr-eoc/services-layers";
 import { Store } from "@ngrx/store";
-import { BehaviorSubject, combineLatest, forkJoin, of } from "rxjs";
-import { switchMap, map } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, of } from "rxjs";
+import { switchMap, map, withLatestFrom, take } from "rxjs/operators";
 import { StringSelectUserConfigurableProduct } from "src/app/components/config_wizard/wizardable_products";
 import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
 import { DamagePopupComponent } from "src/app/components/dynamic/damage-popup/damage-popup.component";
@@ -89,12 +89,10 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
     }
 
     makeProductMappable(product: RiesgosProductResolved): MappableProduct[] {
-        const {tsMetaData, tsSchema} = this.tsMetadata$.value;
-
         return [{
             ... product,
             
-            toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+            toUkisLayers: (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) => {
         
                 const layers$ = layerMarshaller.makeWmsLayers({
                     id: product.id,
@@ -108,9 +106,10 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                         format: 'application/WMS',
                     },
                 });
-        
-                return layers$.pipe(
-                    map((layers) => {
+
+                return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
+                    map(([layers, tsMetaDataResolved]) => {
+                        const {tsMetaData, tsSchema} = tsMetaDataResolved;
         
                         const chosenSchema = tsSchema.value;
         
@@ -131,9 +130,9 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                                 }
                             }
                         };
-                        const damage = +(tsMetaData.value.total.loss_value);
+                        const damage = +(tsMetaData?.value?.total?.loss_value) || 0.0;
                         const damageFormatted = toDecimalPlaces(damage / 1000000, 2) + ' MUSD';
-                        const totalDamage = +(tsMetaData.value.total.cum_loss);
+                        const totalDamage = +(tsMetaData?.value?.total?.cum_loss) || 0.0;
                         const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                         econLayer.dynamicDescription = {
                             component: InfoTableComponentComponent,
@@ -211,7 +210,7 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                                 }
                             }
                         };
-                        const counts = tsMetaData.value.total.buildings_by_damage_state;
+                        const counts = tsMetaData?.value?.total?.buildings_by_damage_state || 0.0;
                         let html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))]);
                         if (chosenSchema === 'SUPPASRI2013_v2.0') {
                             html += '{{ BuildingTypesSuppasri }}';

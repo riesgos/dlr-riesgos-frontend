@@ -20,6 +20,7 @@
 - frontend: 
     - now allows multiple (dynamic) legends for one layer at the same time. Applied to eq-catalogue.
     - now has circle-legend
+    - fix: race condition in making post-eq-damage mapable.
 - Compare frontend
     - all code now in modules
     - map allows per-step data-converters which are semi-automatically injected
@@ -56,7 +57,7 @@
         - link click on eqSelection with form
             - dropdown doesnt know which of the options the new value is
                 - add a `valueToKey` property to wizardComplex?
-        - new rule: focus on first step from beginning
+web        - new rule: focus on first step from beginning
     - Upcoming
         - style layer differently on click
         - translation service

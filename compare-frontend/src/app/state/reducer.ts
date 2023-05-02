@@ -23,19 +23,8 @@ export const reducer = createReducer(
     return state;
   }),
 
-  immerOn(scenarioLoadSuccess, (state, action) => {
+  on(scenarioLoadSuccess, (state, action) => {
     const newState = parseAPIScenariosIntoNewState(state, action.scenarios);
-
-    // causes problem with immer: either create new or modify, not both.
-    // if (state.rules.focusFirstStepImmediately) {
-    //   for (const [scenarioName, scenarioData] of Object.entries(newState.scenarioData)) {
-    //     for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-    //       const firstStep = partitionData.steps[0].step.id;
-    //       partitionData.focus.focusedSteps = [firstStep];
-    //     }
-    //   }
-    // }
-
     return newState;
   }),
 
@@ -46,9 +35,23 @@ export const reducer = createReducer(
   immerOn(scenarioPicked, (state, action) => {
     const scenarioData = state.scenarioData[action.scenario];
     if (!scenarioData) return state;
+
     for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
       partitionData.active = true;
     }
+
+    if (state.rules.focusFirstStepImmediately) {
+      for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+          const firstStep = partitionData.steps[0].step.id;
+          partitionData.focus.focusedSteps = [firstStep];
+          const {center, zoom} = getMapPositionForStep(action.scenario, partitionName as any, firstStep);
+          partitionData.map.center = center;
+          partitionData.map.zoom = zoom;
+        }
+      }
+    }
+
     state.currentScenario = action.scenario;
     return state;
   }),

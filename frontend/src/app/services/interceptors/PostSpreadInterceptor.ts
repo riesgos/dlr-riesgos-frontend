@@ -7,10 +7,12 @@ import { catchError, delay, retry } from "rxjs/operators";
 
 /**
  * In firefox, POST-requests that are too close to each other 
- * are being cancelled with an ... error.
+ * are being cancelled with an NS_BINDING_ABORTED error.
  * This interceptor:
  *  - delays posts by a random amount (up to 100 ms) so they are less likely to clump together
  *  - retries posts that have failed 
+ * 
+ * https://kb.webtrends.com/articles/Information/NS-BINDING-ABORTED-status-message-in-http-debugger/?l=en_US&fs=RelatedArticle
  */
 
 @Injectable()

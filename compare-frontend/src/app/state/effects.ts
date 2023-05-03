@@ -148,7 +148,7 @@ check if more  │     └───────┬──────┘
 
     private execDequeued$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.autoPilotDequeue),
-        delay(Math.random() * 100),  // in firefox, too many simultaneous posts will be blocked.
+        delay(Math.random() * 100),  // in firefox, too many simultaneous posts will be blocked, yielding NS_BINDING_ABORTED.
         map(action => AppActions.stepExecStart({
             scenario: action.scenario,
             partition: action.partition,

@@ -20,11 +20,13 @@
     - added `execute?skipCache=true` option for execute-requests
     - added `runall.ts` which runs all steps once every hour.
     - fix: logging threw error on circular objects.
+    - added `expires` headers
 - frontend: 
     - now allows multiple (dynamic) legends for one layer at the same time. Applied to eq-catalogue.
     - now has circle-legend
     - fix: race condition in making post-eq-damage mapable.
     - fix: wrong style and legend for chile-damage.
+    - fix: *should* have fixed NS_BINDING_ABORTED.
 - Compare frontend
     - all code now in modules
     - map allows per-step data-converters which are semi-automatically injected

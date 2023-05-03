@@ -10,6 +10,10 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
     app.use(express.json({
         limit: '50mb'  // required because exposure objects can become pretty big
     }));
+    app.use((req, res, next) => {
+        res.setHeader('Expires', new Date(Date.now() +  1 * 60 * 1000).toUTCString());
+        next();
+    });
 
     const pool = new ProcessPool();
     const fs = new FileStorage<DatumLinage>(storeDir);
@@ -41,12 +45,14 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
         const key = objectHash({scenarioId, stepId, state});
         pool.scheduleTask(key, async () => await scenario.execute(stepId, state, skipCache));
         // send user a ticket for polling
+        res.setHeader('Expires', new Date(Date.now() +  1 * 1000).toUTCString());
         res.send({ ticket: key });
     });
 
     app.get('/scenarios/:scenarioId/steps/:stepId/execute/poll/:ticket', async (req, res) => {
         const key = req.params.ticket;
         const response = pool.poll(key);
+        res.setHeader('Expires', new Date(Date.now() +  1 * 1000).toUTCString());
         res.send(response);
     });
 

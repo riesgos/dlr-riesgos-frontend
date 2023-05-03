@@ -7,7 +7,6 @@ import { peruFactory } from './usr/peru/peru';
 import { peruShortFactory } from './usr/peru_short/peru';
 import { chileFactory } from './usr/chile/chile';
 import { ecuadorFactory } from './usr/ecuador/ecuador';
-import { testAll } from './runall';
 
 
 const port = config.port;
@@ -24,14 +23,8 @@ async function main() {
     // const scenarioFactories = await parseCode(scriptDir);
     const scenarioFactories = [chileFactory, ecuadorFactory, peruFactory, peruShortFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'verbose', false);
+    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'verbose', true);
     const server = app.listen(port, () => console.log(`app now listening on port ${port}`));
 }
 
 main();
-
-// async function test() {
-//     await testAll('http://localhost', port);
-//     setTimeout(test, 60 * 60 * 1000);
-// }
-// test();

@@ -14,6 +14,8 @@
 
 # [2.0.4]
 ## Features
+- monitor: 
+    - created service that regularly executes all riesgos-services
 - backend: 
     - now provides optional default values for steps' inputs.
     - tickets now stay alive for a certain time after they've been fetched

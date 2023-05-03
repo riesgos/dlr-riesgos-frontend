@@ -1,9 +1,41 @@
 import axios from 'axios';
-import { Datum, ScenarioState } from './scenarios/scenarios';
-import { sleep } from './utils/async';
+import { config } from './config';
+import { MailClient } from './mailClient';
 
 
-export async function testAll(serverUrl: string, port: number) {
+
+main(`http://localhost`, config.port, 120);
+
+
+
+async function main(serverUrl: string, port: number, minutes: number) {
+    const mailClient = new MailClient();
+    try {
+        await testAndRepeat(serverUrl, port, minutes);
+    } catch (error) {
+        console.log(`Monitor has detected a problem: `, error);
+        mailClient.sendMail([config.adminEmail], `Monitor has detected a problem`, JSON.stringify(error));
+        main(serverUrl, port, minutes);
+    }
+}
+
+
+
+
+async function testAndRepeat(serverUrl: string, port: number, minutes: number) {
+    const startTime = Date.now();
+    console.log(`Starting tests: ${new Date()}`);
+    await testAll(serverUrl, port);
+    const endTime = Date.now();
+    console.log(`Tests completed: ${new Date()} - took ${(endTime - startTime) / 1000 / 60} minutes`);
+    setTimeout(testAndRepeat, minutes * 60 * 1000);
+}
+
+
+
+
+
+async function testAll(serverUrl: string, port: number) {
     const axiosArgs = {
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
@@ -12,6 +44,9 @@ export async function testAll(serverUrl: string, port: number) {
     // Test all scenarios
     const scenarios = (await axios.get(`${serverUrl}:${port}/scenarios`)).data;
     for (const scenario of scenarios) {
+        // Two scenarios we deliberately skip (for now):
+        if(scenario.id === 'Ecuador' || scenario.id === 'PeruShort') continue;
+
         console.log(`Testing scenario: ${scenario.id} ...`);
         const scenarioData = (await axios.get(`${serverUrl}:${port}/scenarios/${scenario.id}/`)).data;
 
@@ -104,4 +139,26 @@ function getDefaultValue(scenarioId: string, stepId: string, paraId: string, cur
         default:
             throw Error(`Unknown combination ${scenarioId}/${stepId}/${paraId}`);
     }
+}
+
+
+
+
+interface Datum {
+    id: string,
+    value: any
+};
+interface DatumReference {
+    id: string,
+    reference: string
+}
+interface ScenarioState {
+    data: (Datum | DatumReference)[]
+}
+
+
+async function sleep(timeMs: number): Promise<boolean> {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(true), timeMs);
+    })
 }

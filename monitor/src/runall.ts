@@ -15,7 +15,7 @@ async function main(serverUrl: string, port: number, minutes: number) {
     } catch (error) {
         console.log(`Monitor has detected a problem: `, error);
         mailClient.sendMail([config.adminEmail], `Monitor has detected a problem`, JSON.stringify(error));
-        main(serverUrl, port, minutes);
+        setTimeout(() => main(serverUrl, port, minutes), minutes * 60 * 1000);
     }
 }
 
@@ -28,7 +28,7 @@ async function testAndRepeat(serverUrl: string, port: number, minutes: number) {
     await testAll(serverUrl, port);
     const endTime = Date.now();
     console.log(`Tests completed: ${new Date()} - took ${(endTime - startTime) / 1000 / 60} minutes`);
-    setTimeout(testAndRepeat, minutes * 60 * 1000);
+    setTimeout(() => testAndRepeat(serverUrl, port, minutes), minutes * 60 * 1000);
 }
 
 
@@ -133,8 +133,28 @@ function getDefaultValue(scenarioId: string, stepId: string, paraId: string, cur
                             return { type: "FeatureCollection", features: [features[Math.floor(Math.random() * features.length)]] };
                     }
             }
+        case 'Peru':
+            switch (stepId) {
+                case 'Eqs':
+                    switch (paraId) {
+                        case 'eqMmin':
+                            return '6.0';
+                        case 'eqMmax':
+                            return '9.0';
+                        case 'eqZmin':
+                            return '0';
+                        case 'eqZmax':
+                            return '100';
+                    }
+                case 'SelectEq':
+                    switch (paraId) {
+                        case 'userChoice':
+                            const availableEqs = currentState.data.find(d => d.id === 'availableEqs')! as Datum;
+                            const features = availableEqs.value.features;
+                            return { type: "FeatureCollection", features: [features[Math.floor(Math.random() * features.length)]] };
+                    }
+            }
         case 'Ecuador':
-        case 'Peru': 
         case 'PeruShort':
         default:
             throw Error(`Unknown combination ${scenarioId}/${stepId}/${paraId}`);

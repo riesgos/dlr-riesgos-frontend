@@ -27,6 +27,7 @@
     - fix: race condition in making post-eq-damage mapable.
     - fix: wrong style and legend for chile-damage.
     - fix: *should* have fixed NS_BINDING_ABORTED.
+    - fix: error in one process does not stop processing of other processes.
 - Compare frontend
     - all code now in modules
     - map allows per-step data-converters which are semi-automatically injected

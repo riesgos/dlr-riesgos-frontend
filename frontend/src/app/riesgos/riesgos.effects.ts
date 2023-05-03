@@ -44,24 +44,28 @@ export class RiesgosEffects {
             })),
 
             mergeMap(({apiState, action}) => { return combineLatest([
-                    this.backendSvc.execute(action.scenario, action.step, apiState),
+                    this.backendSvc.execute(action.scenario, action.step, apiState).pipe(
+                        catchError((err, caughtObservable) => {
+                            const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+                            return of({ scenario: err.scenarioId, step: err.stepId, error: errorMessage });
+                        })
+                    ),
                     of(action)
             ]); }),
 
-            map(([newApiState, action]) => ({
-                newData: convertApiDataToRiesgosData(newApiState.data), 
+            map(([newStateOrError, action]) => ({
+                newData: isError(newStateOrError) ? newStateOrError : convertApiDataToRiesgosData((newStateOrError as API_ScenarioState).data), 
                 action: action
             })),
 
-            map(({newData, action}) => RiesgosActions.executeSuccess({ scenario: action.scenario, step: action.step, newData })),
+            map(({newData, action}) => {
+                if (isError(newData)) {
+                    return RiesgosActions.executeError({ scenario: action.scenario, step: action.step, error: newData.error });
+                } else {
+                    return RiesgosActions.executeSuccess({ scenario: action.scenario, step: action.step, newData });
+                }
+            }),
 
-            catchError((err, caughtObservable) => {
-                const errorMessage = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
-                return of(RiesgosActions.executeError({ scenario: err.scenarioId, step: err.stepId, error: errorMessage }));
-                // return c.pipe( map(v => {
-                //         return RiesgosActions.executeError({ scenario: v.scenario, step: v.step, error: typeof e === 'string' ? JSON.parse(e) : e })   
-                // }) );
-            })
         );
     });
 
@@ -75,7 +79,14 @@ export class RiesgosEffects {
 }
 
 
-
+interface ErrorData {
+    error: any, 
+    scenario: ScenarioName,
+    step: string
+}
+function isError(something: any): something is ErrorData {
+    return something.error && something.scenario && something.step;
+}
 
 function convertFrontendDataToApiState(products: RiesgosProduct[]): API_ScenarioState {
     const data: (API_Datum | API_DatumReference)[] = [];

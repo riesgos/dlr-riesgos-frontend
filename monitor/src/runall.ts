@@ -146,7 +146,7 @@ function getDefaultValue(scenarioId: string, stepId: string, paraId: string, cur
                         case 'eqZmax':
                             return '100';
                     }
-                case 'SelectEq':
+                case 'selectEq':
                     switch (paraId) {
                         case 'userChoice':
                             const availableEqs = currentState.data.find(d => d.id === 'availableEqs')! as Datum;

@@ -4,6 +4,7 @@ import { ProcessPool } from './pool';
 import { DatumLinage, Scenario, ScenarioFactory, ScenarioState } from './scenarios';
 import { Logger } from '../logging/logger';
 import { FileStorage } from '../storage/fileStorage';
+import { config } from '../config';
 
 
 export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], storeDir: string, loggingDir: string, verbosity: 'verbose' | 'silent' = 'verbose', sendMailOnError = true) {
@@ -16,7 +17,7 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
     });
 
     const pool = new ProcessPool();
-    const fs = new FileStorage<DatumLinage>(storeDir);
+    const fs = new FileStorage<DatumLinage>(storeDir, config.maxStoreLifeTimeMinutes * 60);
     const scenarios = scenarioFactories.map(sf => sf.createScenario(fs));
     const logger = new Logger(loggingDir, verbosity, undefined, sendMailOnError);
     logger.monkeyPatch();

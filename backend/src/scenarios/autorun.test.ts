@@ -19,7 +19,7 @@ afterAll(async () => {
 
 test('autorun', async () => {
     const factories = await parseCode(codeDir);
-    const store = new FileStorage<DatumLinage>(storeDir);
+    const store = new FileStorage<DatumLinage>(storeDir, 60);
 
     for (const factory of factories) {
 

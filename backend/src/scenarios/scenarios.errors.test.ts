@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Server } from 'http';
 import express, { Express } from 'express';
-import { addScenarioApi } from './scenario.interface';
+import { ScenarioAPIConfig, addScenarioApi } from './scenario.interface';
 import { Datum, ScenarioFactory, ScenarioState } from './scenarios';
 import { sleep } from '../utils/async';
 import { deleteFile } from '../utils/files';
@@ -64,22 +64,31 @@ fakeScenarioFactory.registerStep({
 const sendMailOnError = false;
 const http = axios.create();
 const port = 5003;
-const logDir = './test-data/scenario-errors/logs';
-const storeDir = './test-data/scenario-errors/store';
+const config: ScenarioAPIConfig = {
+    logDir: './test-data/scenario-errors/logs',
+    storeDir: './test-data/scenario-errors/store',
+    verbosity: 'silent',
+    sendMailTo: [],
+    sender: "",
+    maxLogAgeMinutes: 60,
+    maxStoreLifeTimeMinutes: 60
+}
+
+
 let app: Express;
 let server: Server;
 beforeAll(async () => {
-    await deleteFile(storeDir);
-    await deleteFile(logDir);
+    await deleteFile(config.storeDir);
+    await deleteFile(config.logDir);
     app = express();
     app.use(express.json());
     const scenarioFactories = [fakeScenarioFactory];
-    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent', sendMailOnError);
+    addScenarioApi(app, scenarioFactories, config);
     server = app.listen(port, () => {});
 });
 
 afterAll(async () => {
-    await deleteFile(storeDir);
+    await deleteFile(config.storeDir);
     server.close();
 });
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Server } from 'http';
 import express, { Express } from 'express';
-import { addScenarioApi } from './scenario.interface';
+import { ScenarioAPIConfig, addScenarioApi } from './scenario.interface';
 import { Scenario, ScenarioDescription, ScenarioState } from './scenarios';
 import { sleep } from '../utils/async';
 import { deleteFile } from '../utils/files';
@@ -10,22 +10,31 @@ import { italyScenarioFactory } from '../usr/italy/italyScenario';
 
 const http = axios.create();
 const port = 5001;
-const logDir = './test-data/scenarios/logs';
-const storeDir = './test-data/scenarios/store';
+
+const config: ScenarioAPIConfig = {
+    logDir: './test-data/scenarios/logs',
+    storeDir: './test-data/scenarios/store',
+    verbosity: 'silent',
+    sendMailTo: [],
+    sender: "",
+    maxLogAgeMinutes: 60,
+    maxStoreLifeTimeMinutes: 60
+}
+
 let app: Express;
 let server: Server;
 beforeAll(async () => {
-    await deleteFile(storeDir);
-    await deleteFile(logDir);
+    await deleteFile(config.storeDir);
+    await deleteFile(config.logDir);
     app = express();
     app.use(express.json());
     const scenarioFactories = [italyScenarioFactory];
-    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent');
+    addScenarioApi(app, scenarioFactories, config);
     server = app.listen(port, () => {});
 });
 
 afterAll(async () => {
-    await deleteFile(storeDir);
+    await deleteFile(config.storeDir);
     server.close();
 });
 
@@ -126,7 +135,7 @@ describe('scenarios - cache', () => {
     let state: ScenarioState;
     let firstExecuteResult: any;
     beforeAll(async () => {
-        await deleteFile(storeDir);
+        await deleteFile(config.storeDir);
 
         scenario = (await http.get(`http://localhost:${port}/scenarios/Italy`)).data;
         const step = scenario.steps[0];
@@ -192,8 +201,8 @@ describe('scenarios - cache', () => {
 describe('scenarios - in/out', () => {
 
     beforeAll(async () => {
-        await deleteFile(storeDir);
-        await deleteFile(logDir);
+        await deleteFile(config.storeDir);
+        await deleteFile(config.logDir);
     })
 
 

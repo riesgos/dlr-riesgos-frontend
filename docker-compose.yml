@@ -8,11 +8,11 @@ services:
       - logs:data/logs
       - store:data/store
     environment:
+      port: ${backendPort}
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
       sendMail: ${sendMail}
       adminEmail: ${adminEmail}
       sourceEmail: ${sourceEmail}
-      port: ${backendPort}
 
   monitor:
     build: ./monitor

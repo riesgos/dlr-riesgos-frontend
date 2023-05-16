@@ -4,15 +4,20 @@ import { ProcessPool } from './pool';
 import { DatumLinage, Scenario, ScenarioFactory, ScenarioState } from './scenarios';
 import { Logger } from '../logging/logger';
 import { FileStorage } from '../storage/fileStorage';
+import { config } from '../config';
 
 
 export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], storeDir: string, loggingDir: string, verbosity: 'verbose' | 'silent' = 'verbose', sendMailOnError = true) {
     app.use(express.json({
         limit: '50mb'  // required because exposure objects can become pretty big
     }));
+    app.use((req, res, next) => {
+        res.setHeader('Expires', new Date(Date.now() +  1 * 60 * 1000).toUTCString());
+        next();
+    });
 
     const pool = new ProcessPool();
-    const fs = new FileStorage<DatumLinage>(storeDir);
+    const fs = new FileStorage<DatumLinage>(storeDir, config.maxStoreLifeTimeMinutes * 60);
     const scenarios = scenarioFactories.map(sf => sf.createScenario(fs));
     const logger = new Logger(loggingDir, verbosity, undefined, sendMailOnError);
     logger.monkeyPatch();
@@ -37,15 +42,18 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
         if (!scenario) return [];
         const stepId = req.params.stepId;
         const state: ScenarioState = req.body;
+        const skipCache = req.query.skipCache === 'true' || req.query.skipCache === 'True' || req.query.skipCache === 'TRUE'  ? true : false;
         const key = objectHash({scenarioId, stepId, state});
-        pool.scheduleTask(key, async () => await scenario.execute(stepId, state));
+        pool.scheduleTask(key, async () => await scenario.execute(stepId, state, skipCache));
         // send user a ticket for polling
+        res.setHeader('Expires', new Date(Date.now() +  1 * 1000).toUTCString());
         res.send({ ticket: key });
     });
 
     app.get('/scenarios/:scenarioId/steps/:stepId/execute/poll/:ticket', async (req, res) => {
         const key = req.params.ticket;
         const response = pool.poll(key);
+        res.setHeader('Expires', new Date(Date.now() +  1 * 1000).toUTCString());
         res.send(response);
     });
 

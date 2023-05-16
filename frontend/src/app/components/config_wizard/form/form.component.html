@@ -4,7 +4,7 @@
       <div *ngSwitchCase="'string'">
         <div class="clr-row">
           <div class="clr-col">
-            <ukis-form-string-field [control]="formGroup.get(parameter.id)" [parameter]="parameter" class="form-input">
+            <ukis-form-string-field [control]="formGroup.get(parameter.id)" [scenario]="step.scenario" [parameter]="parameter" class="form-input">
             </ukis-form-string-field>
           </div>
           <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">
@@ -62,7 +62,7 @@
       <div *ngSwitchDefault>
         <div class="clr-row">
           <div class="clr-col">
-            <ukis-form-string-field [control]="formGroup.get(parameter.id)" [parameter]="parameter" class="form-input">
+            <ukis-form-string-field [control]="formGroup.get(parameter.id)" [scenario]="step.scenario" [parameter]="parameter" class="form-input">
             </ukis-form-string-field>
           </div>
           <div class="clr-col-1" *ngIf="parameter.description.wizardProperties.signpost">

@@ -1,0 +1,17 @@
+.studyareas {
+    display: flex;
+    flex-direction: row;
+}
+
+.studyarea {
+    margin: 1rem; 
+}
+
+.card {
+}
+
+.card:hover {
+    outline-style: solid;
+    outline-width: 1px;
+    outline-color: var(--accent-color-800);
+}

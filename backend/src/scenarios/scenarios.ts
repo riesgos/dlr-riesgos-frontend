@@ -3,16 +3,10 @@ import { FileStorage } from '../storage/fileStorage';
 
 export interface DataDescription {
     id: string,
-    options?: string[]
+    options?: any[],
+    default?: any
 };
 
-export interface UserSelection extends DataDescription {
-    options: string[]
-}
-
-export function isUserSelection(a: DataDescription): a is UserSelection {
-    return a.hasOwnProperty('options');
-}
 
 export interface Datum {
     id: string,
@@ -42,7 +36,7 @@ export type StepFunction = (args: Datum[]) => Promise<Datum[]>;
 
 export interface Step {
     function: StepFunction,
-    inputs: (DataDescription | UserSelection)[],
+    inputs: DataDescription[],
     outputs: DataDescription[],
     id: string,
     title: string,
@@ -50,7 +44,7 @@ export interface Step {
 }
 
 export interface StepDescription {
-    inputs: (DataDescription | UserSelection)[],
+    inputs: DataDescription[],
     outputs: DataDescription[],
     id: string,
     title: string,
@@ -96,16 +90,18 @@ export class Scenario {
         };
     }
 
-    public async execute(stepId: string, state: ScenarioState): Promise<ScenarioState> {
+    public async execute(stepId: string, state: ScenarioState, skipCache=false): Promise<ScenarioState> {
         let step = this.steps.find(s => s.id === stepId);
         if (!step) throw new Error(`No such step: "${stepId}" in scenario "${this.id}"`);
         console.log(`Scenarios: Now executing ${stepId}`);
 
-        const alreadyCalculated = await this.loadFromCache(step, state);
-        if (alreadyCalculated) {
-            console.log(`Scenarios: using a cached version of output for ${stepId}`);
-            const stateWithOutputs = this.addData(alreadyCalculated, state);
-            return stateWithOutputs;
+        if (!skipCache) {
+            const alreadyCalculated = await this.loadFromCache(step, state);
+            if (alreadyCalculated) {
+                console.log(`Scenarios: using a cached version of output for ${stepId}`);
+                const stateWithOutputs = this.addData(alreadyCalculated, state);
+                return stateWithOutputs;
+            }
         }
 
         const inputValues = await this.resolveData(step.inputs.map(i => i.id), state);

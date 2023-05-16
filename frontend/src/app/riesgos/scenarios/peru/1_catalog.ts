@@ -1,4 +1,4 @@
-import { toDecimalPlaces, linInterpolateXY, greenRedRange } from 'src/app/helpers/colorhelpers';
+import { toDecimalPlaces, linInterpolateXY, yellowRedRange } from 'src/app/helpers/colorhelpers';
 import { Style as olStyle, Fill as olFill, Stroke as olStroke, Circle as olCircle } from 'ol/style';
 import olFeature from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
@@ -9,6 +9,8 @@ import { VectorLayerProduct } from 'src/app/components/map/mappable/mappable_pro
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LegendComponent } from 'src/app/components/dynamic/legend/legend.component';
 import { regexTransform } from 'src/app/services/simplifiedTranslation/regex-translate.pipe';
+import { CircleLegendComponent } from 'src/app/components/dynamic/circle-legend/circle-legend.component';
+import { MultiLegendComponent } from 'src/app/components/dynamic/multi-legend/multi-legend.component';
 
 
 
@@ -146,8 +148,8 @@ export class AvailableEqsPeru implements MappableProductAugmenter {
                         const magnitude = props['magnitude.mag.value'];
                         const depth = props['origin.depth.value'];
         
-                        let radius = linInterpolateXY(5, 10, 60, 5, depth);
-                        const [r, g, b] = greenRedRange(6, 9, magnitude);
+                        let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
+                        const [r, g, b] = yellowRedRange(100, 0, depth);
         
                         if (selected) {
                             radius += 4;
@@ -187,24 +189,49 @@ export class AvailableEqsPeru implements MappableProductAugmenter {
                         return text;
                     },
                     dynamicLegend: (value) => ({
-                        component: LegendComponent,
+                        component: MultiLegendComponent,
                         inputs: {
-                            title: 'CatalogueData',
-                            entries: [{
-                                text: 'Mag. 6',
-                                color: 'rgb(202,232,199)',
+                            legendComponents: [{
+                                component: LegendComponent,
+                                inputs: {
+                                    title: 'Depth',
+                                    entries: [{
+                                        text: '0km',
+                                        color: `rgb(${yellowRedRange(100, 0, 0).join(', ')})`,
+                                    }, {
+                                        text: '30km',
+                                        color: `rgb(${yellowRedRange(100, 0, 30).join(', ')})`,
+                                    }, {
+                                        text: '60km',
+                                        color: `rgb(${yellowRedRange(100, 0, 60).join(', ')})`,
+                                    }, {
+                                        text: '100km',
+                                        color: `rgb(${yellowRedRange(100, 0, 100).join(', ')})`,
+                                    }],
+                                    continuous: true,
+                                    height: 100,
+                                    width: 150
+                                }
                             }, {
-                                text: 'Mag. 7',
-                                color: 'rgb(248,236,201)',
-                            }, {
-                                text: 'Mag. 8',
-                                color: 'rgb(251,196,171)',
-                            }, {
-                                text: 'Mag. 9',
-                                color: 'rgb(232,158,166)',
-                            }],
-                            continuous: true,
-                            height: 150
+                                component: CircleLegendComponent,
+                                inputs: {
+                                    title: 'Magnitude',
+                                    entries: [{
+                                        label: 'Mag. 6.0',
+                                        radius: linInterpolateXY(5, 5, 10, 20, 6.0),
+                                    }, {
+                                        label: 'Mag. 7.0',
+                                        radius: linInterpolateXY(5, 5, 10, 20, 7.0),
+                                    }, {
+                                        label: 'Mag. 8.0',
+                                        radius: linInterpolateXY(5, 5, 10, 20, 8.0),
+                                    }, {
+                                        label: 'Mag. 9.0',
+                                        radius: linInterpolateXY(5, 5, 10, 20, 9.0),
+                                    }],
+                                    height: 100
+                                }
+                            }]
                         }
                     })
                 }

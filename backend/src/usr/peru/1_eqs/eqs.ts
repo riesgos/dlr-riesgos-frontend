@@ -10,7 +10,6 @@ async function loadEqs(inputs: Datum[]) {
     const mmax = inputs.find(i => i.id === 'eqMmax')!.value;
     const zmin = inputs.find(i => i.id === 'eqZmin')!.value;
     const zmax = inputs.find(i => i.id === 'eqZmax')!.value;
-    const p    = inputs.find(i => i.id === 'eqP')!.value;
 
 
     const bbox: Bbox = {
@@ -19,7 +18,7 @@ async function loadEqs(inputs: Datum[]) {
         urlon: -68.5, urlat: -0.6
     };
     
-    const result = await getAvailableEqs(catalogType, bbox, mmin, mmax, zmin, zmax, p);
+    const result = await getAvailableEqs(catalogType, bbox, mmin, mmax, zmin, zmax);
 
     return [{
         id: 'availableEqs',
@@ -35,22 +34,24 @@ export const step: Step = {
     description: 'QuakeLedgerDescription',
     inputs: [{
         id: 'eqCatalogType',
-        options: ['observed', 'expert']
+        options: ['observed', 'expert'],
+        default: 'observed'
     }, {
         id: 'eqMmin',
-        options: [] // empty array: interpreted by frontend as configurable, but without options or default value.
+        options: [], // empty array: interpreted by frontend as configurable, but without options or default value.
+        default: '6.0'
     }, {
         id: 'eqMmax',
-        options: []
+        options: [],
+        default: '9.5'
     }, {
         id: 'eqZmin',
-        options: []
+        options: [],
+        default: '0'
     }, {
         id: 'eqZmax',
-        options: []
-    }, {
-        id: 'eqP',
-        options: []
+        options: [],
+        default: '100'
     }],
     outputs: [{
         id: 'availableEqs'

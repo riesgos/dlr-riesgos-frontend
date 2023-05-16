@@ -2,6 +2,7 @@ import { appendFileSync } from "fs"
 import { createFileSync, getFileAgeSync, renameFileSync } from "../utils/files";
 import { MailClient } from "../web/mailClient";
 import { config } from '../config';
+import { inspect } from 'util';
 
 
 export class Logger {
@@ -64,7 +65,7 @@ export class Logger {
         else if (message instanceof Error || (message.stack && message.message) ) { // if an Error object ...
             messageString = JSON.stringify(message, Object.getOwnPropertyNames(message));
         } else { // if any other object ...
-            messageString = JSON.stringify(message);
+            messageString = inspect(message);
         }
         return messageString;
     }

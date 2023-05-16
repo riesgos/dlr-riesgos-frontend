@@ -1,5 +1,7 @@
 import { color, hsl } from 'd3-color';
 import { scaleLinear } from 'd3-scale';
+import { select } from 'd3-selection';
+import { fraction, violetGreenScale2, yellowBlueRange, yellowRedRange } from './colorhelpers';
 
 
 
@@ -71,27 +73,28 @@ function scaleColor() {
 
   // deciding which colors to interpolate between
   function scale(d) {
+    // if smaller than domain-start ...
+    if (d < _domain[0]) {
+      return _range[0];
+    }
+    // if somewhere in between domain-start and -end, find out where exactly and interpolate:
     for (let i = 0; i < _domain.length; i++) {
       const dStart = _domain[i];
       const dEnd = _domain[i + 1];
-      if (d < dStart) {
-        return _range[0];
-      }
       if (dStart <= d && d < dEnd) {
         const rStart = _range[i];
         const rEnd = _range[i + 1];
-        const rel = (d - dStart) / (dEnd - dStart);
+        const rel = fraction(d, dStart, dEnd);
         return interpolate(rStart, rEnd, rel);
       }
-      if (dEnd < d) {
-        return _range[_range.length - 1];
-      }
     }
+    // ... if larger or equal to domain-end:
+    return _range[_range.length - 1];
   };
 
   // public methods
   scale.domain = function (d) { _domain = d; return scale; };
-  scale.range = function (r) { _range = r; return scale; };
+  scale.range  = function (r) { _range = r;  return scale; };
 
   return scale;
 }

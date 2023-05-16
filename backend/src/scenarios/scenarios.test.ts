@@ -165,7 +165,7 @@ describe('scenarios - cache', () => {
         const newState: ScenarioState = {
             data: [{
                 id: firstInput.id,
-                value: firstInput.options![1]  // another value than on first request
+                value: firstInput.options![2]  // another value than on first request
             }]
         };
 
@@ -226,14 +226,9 @@ describe('scenarios - in/out', () => {
         const step2 = scenario.steps.find(s => s.id === 'EqDmg')!;
         const step3 = scenario.steps.find(s => s.id === 'EqStats')!;
 
-        // const post2$ = http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.id}/execute`, newState);
-        // const post3$ = http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step3.id}/execute`, newState);  
-        // const [result2, result3] = await Promise.all([post2$, post3$]);
         const result2 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step2.id}/execute`, newState);
         const result3 = await http.post(`http://localhost:${port}/scenarios/${scenario.id}/steps/${step3.id}/execute`, newState);
 
-        console.log(result2.data);
-        console.log(result3.data);
         expect(result2.data.ticket).toBeTruthy();
         expect(result3.data.ticket).toBeTruthy();
         

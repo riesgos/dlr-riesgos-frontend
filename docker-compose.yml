@@ -10,7 +10,6 @@ services:
     environment:
       port: ${backendPort}
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
-      sendMail: ${sendMail}
       adminEmails: ${adminEmails}
       sourceEmail: ${sourceEmail}
 
@@ -21,8 +20,7 @@ services:
     environment:
       backendUrl: ${backendUrl}
       backendPort: ${backendPort}
-      sendMail: ${sendMail}
-      adminEmail: ${adminEmail}
+      adminEmails: ${adminEmail}
       sourceEmail: ${sourceEmail}
       testServiceEveryMinutes: ${testServiceEveryMinutes}
   

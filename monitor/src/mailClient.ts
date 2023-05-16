@@ -1,5 +1,4 @@
 import sendmail from 'sendmail';
-import { config } from './config';
 
 
 export interface MailAttachment {
@@ -35,9 +34,9 @@ export class MailClient {
           });
     }
 
-    public sendMail(recipients: string[], subject: string, html: string, attachments?: MailAttachment[]) {
+    public sendMail(sender: string, recipients: string[], subject: string, html: string, attachments?: MailAttachment[]) {
         this.mailClient({
-            from: config.sourceEmail,
+            from: sender,
             to: recipients.join(', '),
             subject: subject,
             html: html,

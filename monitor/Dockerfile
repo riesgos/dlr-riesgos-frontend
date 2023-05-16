@@ -6,13 +6,13 @@ RUN npm ci
 RUN npm run build:prod
 
 # config
-ENV maxStoreLifeTimeMinutes "1440"
 # adminEmails: comma separated list
+ENV backendUrl "http://localhost"
+ENV backendPort "8008"
 ENV adminEmails ""
 ENV sourceEmail "info@test.com"
-ENV port "8008"
+ENV testServiceEveryMinutes "120"
 
 
 # running
-EXPOSE ${port}
-CMD ["node",  "dist/main.js"]
+CMD ["node",  "dist/runall.js"]

@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { MapOlService } from "@dlr-eoc/map-ol";
 import { LayersService } from "@dlr-eoc/services-layers";
 import { Store } from "@ngrx/store";
-import { BehaviorSubject, combineLatest, forkJoin, of } from "rxjs";
-import { switchMap, map } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, of } from "rxjs";
+import { switchMap, map, withLatestFrom, take } from "rxjs/operators";
 import { StringSelectUserConfigurableProduct } from "src/app/components/config_wizard/wizardable_products";
 import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
 import { DamagePopupComponent } from "src/app/components/dynamic/damage-popup/damage-popup.component";
@@ -89,12 +89,10 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
     }
 
     makeProductMappable(product: RiesgosProductResolved): MappableProduct[] {
-        const {tsMetaData, tsSchema} = this.tsMetadata$.value;
-
         return [{
             ... product,
             
-            toUkisLayers: function (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) {
+            toUkisLayers: (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, httpClient: HttpClient, store: Store<State>, layerMarshaller: LayerMarshaller) => {
         
                 const layers$ = layerMarshaller.makeWmsLayers({
                     id: product.id,
@@ -108,9 +106,10 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                         format: 'application/WMS',
                     },
                 });
-        
-                return layers$.pipe(
-                    map((layers) => {
+
+                return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
+                    map(([layers, tsMetaDataResolved]) => {
+                        const {tsMetaData, tsSchema} = tsMetaDataResolved;
         
                         const chosenSchema = tsSchema.value;
         
@@ -120,20 +119,20 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                         econLayer.id += '_economic_Chile';
                         econLayer.name = 'ts-economic-loss-title';
                         econLayer.icon = 'dot-circle';
-                        econLayer.params.STYLES = 'style-cum-loss-Chile-plasma';
+                        econLayer.params.STYLES = 'style-cum-loss-chile-plasma';
                         const baseLegendEcon = econLayer.legendImg;
                         econLayer.legendImg = {
                             component: TranslatedImageComponent,
                             inputs: {
                                 languageImageMap: {
-                                    'EN': baseLegendEcon + '&style=style-cum-loss-Chile-plasma&language=en',
-                                    'ES': baseLegendEcon + '&style=style-cum-loss-Chile-plasma',
+                                    'EN': baseLegendEcon + '&style=style-cum-loss-chile-plasma&language=en',
+                                    'ES': baseLegendEcon + '&style=style-cum-loss-chile-plasma',
                                 }
                             }
                         };
-                        const damage = +(tsMetaData.value.total.loss_value);
+                        const damage = +(tsMetaData?.value?.total?.loss_value) || 0.0;
                         const damageFormatted = toDecimalPlaces(damage / 1000000, 2) + ' MUSD';
-                        const totalDamage = +(tsMetaData.value.total.cum_loss);
+                        const totalDamage = +(tsMetaData?.value?.total?.cum_loss) || 0.0;
                         const totalDamageFormatted = toDecimalPlaces(totalDamage / 1000000, 2) + ' MUSD';
                         econLayer.dynamicDescription = {
                             component: InfoTableComponentComponent,
@@ -146,18 +145,20 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                                 bottomText: `{{ loss_calculated_from }} <a href="./#/documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                             }
                         }
-                        econLayer.popup = {
-                            dynamicPopup: {
-                                component: EconomicDamagePopupComponent,
-                                getAttributes: (args) => {
-                                    const event: MapBrowserEvent<any> = args.event;
-                                    const layer: TileLayer<TileWMS> = args.layer;
-                                    return {
-                                        event: event,
-                                        layer: layer,
-                                        metaData: tsMetaData.value,
-                                        title: 'ts-economic-loss-title'
-                                    };
+                        if (tsMetaData && tsMetaData.value) {
+                            econLayer.popup = {
+                                dynamicPopup: {
+                                    component: EconomicDamagePopupComponent,
+                                    getAttributes: (args) => {
+                                        const event: MapBrowserEvent<any> = args.event;
+                                        const layer: TileLayer<TileWMS> = args.layer;
+                                        return {
+                                            event: event,
+                                            layer: layer,
+                                            metaData: tsMetaData.value,
+                                            title: 'ts-economic-loss-title'
+                                        };
+                                    }
                                 }
                             }
                         }
@@ -191,27 +192,28 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                                 }
                             }
                         };
-        
-                        damageLayer.popup = {
-                            dynamicPopup: {
-                                component: DamagePopupComponent,
-                                getAttributes: (args) => {
-                                    const event: MapBrowserEvent<any> = args.event;
-                                    const layer: TileLayer<TileWMS> = args.layer;
-                                    return {
-                                        event: event,
-                                        layer: layer,
-                                        metaData: tsMetaData.value,
-                                        xLabel: 'damage',
-                                        yLabel: 'Nr_buildings',
-                                        schema: chosenSchema,
-                                        heading: 'damage_classification_tsunami',
-                                        additionalText: chosenSchema === 'Medina_2019' ? 'DamageStatesSara' : 'DamageStatesSuppasri'
-                                    };
+                        if (tsMetaData && tsMetaData.value) {
+                            damageLayer.popup = {
+                                dynamicPopup: {
+                                    component: DamagePopupComponent,
+                                    getAttributes: (args) => {
+                                        const event: MapBrowserEvent<any> = args.event;
+                                        const layer: TileLayer<TileWMS> = args.layer;
+                                        return {
+                                            event: event,
+                                            layer: layer,
+                                            metaData: tsMetaData.value,
+                                            xLabel: 'damage',
+                                            yLabel: 'Nr_buildings',
+                                            schema: chosenSchema,
+                                            heading: 'damage_classification_tsunami',
+                                            additionalText: chosenSchema === 'Medina_2019' ? 'DamageStatesSara' : 'DamageStatesSuppasri'
+                                        };
+                                    }
                                 }
-                            }
-                        };
-                        const counts = tsMetaData.value.total.buildings_by_damage_state;
+                            };
+                        }
+                        const counts = tsMetaData?.value?.total?.buildings_by_damage_state || 0.0;
                         let html = createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))]);
                         if (chosenSchema === 'SUPPASRI2013_v2.0') {
                             html += '{{ BuildingTypesSuppasri }}';

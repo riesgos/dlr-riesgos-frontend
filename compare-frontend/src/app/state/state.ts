@@ -3,9 +3,11 @@ import { API_Step } from "../services/backend.service";
 
 
 
-export type ScenarioName = 'Chile' | 'Peru' | 'Ecuador';
+export type ScenarioName = 'Chile' | 'Peru' | 'PeruShort' | 'Ecuador';
 export type ScenarioNameOrNone = 'none' | ScenarioName;
-
+export function scenarioNameIsNotNone(name: ScenarioNameOrNone): name is ScenarioName {
+    return name !== 'none';
+}
 
 export enum StepStateTypes {
     unavailable = 'unavailable',
@@ -41,7 +43,7 @@ export interface RiesgosStep {
 
 export interface RiesgosProduct {
     id: string,
-    options?: string[],
+    options?: any[],
     value?: any,
     reference?: string,
 };
@@ -72,10 +74,31 @@ export function isRiesgosUnresolvedRefProduct(prod: RiesgosProduct): prod is Rie
     return ('reference' in prod) && !('value' in prod) && prod.reference !== undefined;
 }
 
+
+export interface RiesgosScenarioMapState {
+    zoom: number,
+    center: number[],
+    clickLocation: number[] | undefined
+}
+
+export interface FocusState {
+    focusedSteps: string[]
+}
+
+export interface AutoPilotState {
+    useAutoPilot: boolean;
+    queue: string[];
+};
+
 export interface RiesgosScenarioState {
     scenario: ScenarioName;
     steps: RiesgosStep[];
     products: RiesgosProduct[];
+    autoPilot: AutoPilotState,
+    partition: Partition,
+    active: boolean,
+    map: RiesgosScenarioMapState,
+    focus: FocusState
 }
 
 
@@ -94,18 +117,30 @@ export interface RiesgosScenarioMetadata {
     preview: string;
 }
 
-export interface FocusState {
-    focusedStep: string
-}
 
+export type Partition = 'left' | 'right' | 'top' | 'bottom';
+
+
+export interface Rules {
+    partition: boolean,
+    mirrorFocus: boolean,
+    oneFocusOnly: boolean,
+    focusFirstStepImmediately: boolean,
+    mirrorData: boolean,
+    mirrorClick: boolean,
+    mirrorMove: boolean,
+    autoPilot: boolean,
+}
 
 export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
     scenarioData: {
-        [key in ScenarioName]?: RiesgosScenarioState
+        [key in ScenarioName]?: {
+            [key in Partition]?: RiesgosScenarioState
+        }
     };
     metaData: RiesgosScenarioMetadata[];
-    focusState: FocusState;
+    rules: Rules;
 }
 
 
@@ -113,8 +148,15 @@ export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {},
     metaData: [],
-    focusState: {
-        focusedStep: ''
+    rules: {
+        partition: true,
+        mirrorFocus: true,
+        oneFocusOnly: false,
+        focusFirstStepImmediately: false,
+        mirrorData: false,
+        mirrorClick: true,
+        mirrorMove: true,
+        autoPilot: true,
     }
 };
 

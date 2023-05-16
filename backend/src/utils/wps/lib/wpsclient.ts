@@ -253,11 +253,6 @@ export class WpsClient {
             responseType: 'text'
         });
 
-        // Side-effect to keep track of raw xml
-        const message2 = JSON.stringify({ type: 'GET', url });
-        if (this.verbose) console.log(message2);
-        paperTrail.push(message2);
-
         this.parseResponseForErrors(url, result.data, paperTrail);
         return result.data;
     }

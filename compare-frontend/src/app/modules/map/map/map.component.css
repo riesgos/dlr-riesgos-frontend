@@ -1,0 +1,29 @@
+
+.map {
+    height: 100%;
+    width: 100%;
+}
+
+
+.popup {
+    background: var(--gray-100);
+    padding: .5rem;
+    border-radius: .25rem;
+    outline-width: 1px;
+    outline-color: var(--gray-400);
+    outline-style: solid;
+}
+
+.closeIcon {
+    float: right;
+    cursor: default;
+    color: var(--gray-600);
+
+    /* increases clickable area */
+    padding: .5em;
+    margin: -.5em;
+}
+
+.closeIcon:hover {
+    color: var(--gray-1200);
+}

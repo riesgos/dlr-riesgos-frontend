@@ -27,7 +27,7 @@ import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json
 
 
 import { getFocussedProcessId } from 'src/app/focus/focus.selectors';
-import { getCurrentScenarioName, getProducts, getCurrentScenarioRiesgosState, getProductsWithValOrRef } from 'src/app/riesgos/riesgos.selectors';
+import { getCurrentScenarioName, getCurrentScenarioRiesgosState, getProductsWithValOrRef } from 'src/app/riesgos/riesgos.selectors';
 import { getSearchParamsHashRouting, updateSearchParamsHashRouting } from 'src/app/helpers/url.utils';
 import { interactionCompleted } from 'src/app/interactions/interactions.actions';
 import { InteractionState, initialInteractionState } from 'src/app/interactions/interactions.state';
@@ -37,7 +37,7 @@ import { initialRiesgosState, RiesgosProduct, RiesgosProductResolved, RiesgosSce
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 import { State } from 'src/app/ngrx_register';
 import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
-import { isMappableProduct, MappableProduct } from './mappable/mappable_products';
+import { MappableProduct } from './mappable/mappable_products';
 import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 
 

@@ -1,10 +1,8 @@
 import { Observable, of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Actions, EffectsModule } from '@ngrx/effects';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { Action, ActionReducerMap, ActionsSubject, ReducerManager, StateObservable, Store, StoreModule } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { EffectsModule } from '@ngrx/effects';
+import { ActionReducerMap, Store, StoreModule } from '@ngrx/store';
 import { API_Datum, API_ScenarioInfo, API_ScenarioState, BackendService } from '../services/backend/backend.service';
 import * as RiesgosActions from './riesgos.actions';
 import * as FocusActions from '../focus/focus.actions';

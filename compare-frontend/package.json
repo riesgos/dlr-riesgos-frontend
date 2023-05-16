@@ -1,12 +1,15 @@
 {
   "name": "compare-frontend",
-  "version": "0.0.0",
+  "version": "2.0.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+
+    "find-unused-code": "ts-prune | grep -v '(used in module)'",
+    "find-unused-deps": "depcheck"
   },
   "private": true,
   "dependencies": {
@@ -21,16 +24,26 @@
     "@ngrx/effects": "^15.3.0",
     "@ngrx/store": "^15.3.0",
     "@ngrx/store-devtools": "^15.3.0",
+    "d3-axis": "^3.0.0",
+    "d3-color": "^3.1.0",
+    "d3-scale": "^4.0.2",
+    "d3-selection": "^3.0.0",
     "ngrx-immer": "^2.0.1",
     "ol": "^7.3.0",
+    "ol-mapbox-style": "^10.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^15.1.2",
+    "@angular-devkit/build-angular": "^15.2.2",
     "@angular/cli": "~15.1.2",
     "@angular/compiler-cli": "^15.1.0",
+    "@types/d3-axis": "^3.0.2",
+    "@types/d3-color": "^3.1.0",
+    "@types/d3-scale": "^4.0.3",
+    "@types/d3-selection": "^3.0.5",
+    "@types/geojson": "^7946.0.10",
     "@types/jasmine": "~4.3.0",
     "jasmine-core": "~4.5.0",
     "karma": "~6.4.0",
@@ -38,6 +51,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "ts-prune": "^0.10.3",
     "typescript": "~4.9.4"
   }
 }

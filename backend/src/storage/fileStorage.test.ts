@@ -30,7 +30,7 @@ const requestProps: Props = {
 }
 
 test('testing cache', async () => {
-    const cache = new FileStorage<Props>(storeDir);
+    const cache = new FileStorage<Props>(storeDir, 60);
     
     const key = await cache.addData(requestData, requestProps);
     expect(key).toBeTruthy();

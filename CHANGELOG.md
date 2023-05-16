@@ -10,9 +10,22 @@
 - Integrate backend for content-redaction
 - Old frontend: modularize
 
+# [2.0.5] 
+    - Ongoing
+        - link click on eqSelection with form
+            - dropdown doesnt know which of the options the new value is
+                - add a `valueToKey` property to wizardComplex?
+        - new rule: focus on first step from beginning
+    - Upcoming
+        - create a docker-compose.yml for backend, frontends and monitor
+            - create a global config-file
+        - style layer differently on click
+        - translation service
+        - focus on eq-selection immediately
+        - steps: show errors
+        - auto-pilot: configurable start-strategy
 
-
-# [2.0.4]
+# [2.0.4](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.4) (May 16 2023) Created monitor and new frontend  
 ## Features
 - monitor: 
     - created service that regularly executes all riesgos-services
@@ -62,19 +75,6 @@
     - wizard expanded from beginning: did need to move `share` up in filter-obs
     - reducers: parseAPIScenariosIntoNewState: strict typing
     - openlayers now runs outside of angular-zone
-    - Ongoing
-        - link click on eqSelection with form
-            - dropdown doesnt know which of the options the new value is
-                - add a `valueToKey` property to wizardComplex?
-web        - new rule: focus on first step from beginning
-    - Upcoming
-        - style layer differently on click
-        - translation service
-        - focus on eq-selection immediately
-        - steps: show errors
-        - auto-pilot: configurable start-strategy
-
-
 
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  
 

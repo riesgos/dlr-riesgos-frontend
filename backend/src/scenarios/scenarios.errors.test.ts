@@ -61,9 +61,9 @@ fakeScenarioFactory.registerStep({
 })
 
 
-const sendMailOnError = true;
+const sendMailOnError = false;
 const http = axios.create();
-const port = 5001;
+const port = 5003;
 const logDir = './test-data/scenario-errors/logs';
 const storeDir = './test-data/scenario-errors/store';
 let app: Express;

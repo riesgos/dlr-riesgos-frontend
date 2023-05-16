@@ -1,11 +1,29 @@
 
-.mappage {
-   height: 100%;
-   position: relative;
+.page {
+    height: 100%;
+    position: relative;
 }
 
-.mappage .page-wizard {
+.maps {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.maps .page-map {
+    flex: 1 1 auto;
+}
+
+
+.page-wizard {
     position: absolute;
     top: 1rem;
+}
+
+.page-wizard.left {
     left: 1rem;
+}
+
+.page-wizard.right {
+    right: 1rem;
 }

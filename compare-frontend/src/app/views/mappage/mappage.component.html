@@ -1,6 +1,30 @@
-<div class="page">
-    <div class="mappage">
-        <app-map class="page-map"></app-map>
-        <app-wizard class="page-wizard"></app-wizard>
+
+<ng-container *ngIf="rules$ | async as rules">
+        <ng-container *ngIf="rules.partition; then twoMaps; else oneMap"></ng-container>
+</ng-container>
+
+
+<ng-template #oneMap>
+    <div *ngIf="scenario$ | async as scenario" class="page">
+        <ng-container *ngIf="focus$ | async as focus">
+            <div class="maps">
+                <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
+            </div>
+            <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
+        </ng-container>
     </div>
-</div>
+</ng-template>
+
+
+<ng-template #twoMaps>
+    <div *ngIf="scenario$ | async as scenario" class="page">
+        <ng-container *ngIf="focus$ | async as focus">
+            <div class="maps">
+                <app-map *ngIf="focus.left || !focus.right" [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
+                <app-map *ngIf="focus.right"                [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
+            </div>
+            <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
+            <app-wizard [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
+        </ng-container>
+    </div>
+</ng-template>

@@ -1,8 +1,6 @@
 {
     "allowedScenarios": [
-        "Peru",
-        "Chile",
-        "Ecuador"
+        "PeruShort"
     ],
     "production": false,
     "backendUrl": "http://localhost:8008",

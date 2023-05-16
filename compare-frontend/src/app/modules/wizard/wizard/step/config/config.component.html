@@ -1,0 +1,15 @@
+<form [formGroup]="formGroup">
+    <div class="formElement" *ngFor="let input of data.inputs">
+        <ng-container *ngIf="input.options">
+            <label [for]="input.label">{{ input.label }}</label>
+
+            <select *ngIf="input.formtype === 'string-select'" [formControlName]="input.productId" [name]="input.label" [id]="input.productId">
+                <option *ngFor="let option of input.options | keyvalue" [ngValue]="option.value" [selected]="isSelected(input.productId, option)">{{ option.key }}</option>
+            </select>
+
+            <input *ngIf="input.formtype === 'string'" [formControlName]="input.label" />
+            
+        </ng-container>
+    </div>
+    <button [disabled]="!allValuesSet()" (click)="execute()">Execute</button>
+</form>

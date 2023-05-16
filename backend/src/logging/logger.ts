@@ -1,7 +1,7 @@
 import { appendFileSync } from "fs"
 import { createFileSync, getFileAgeSync, renameFileSync } from "../utils/files";
 import { MailClient } from "../web/mailClient";
-import { config } from '../config';
+import config from "../config.json";
 import { inspect } from 'util';
 
 

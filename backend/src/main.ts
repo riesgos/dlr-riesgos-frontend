@@ -1,4 +1,4 @@
-import { config } from './config';
+import config from "./config.json";
 import cors from 'cors';
 import express from 'express';
 import { addScenarioApi } from './scenarios/scenario.interface';

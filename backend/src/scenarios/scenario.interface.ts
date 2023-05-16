@@ -4,7 +4,7 @@ import { ProcessPool } from './pool';
 import { DatumLinage, Scenario, ScenarioFactory, ScenarioState } from './scenarios';
 import { Logger } from '../logging/logger';
 import { FileStorage } from '../storage/fileStorage';
-import { config } from '../config';
+import { config } from '../../config';
 
 
 export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], storeDir: string, loggingDir: string, verbosity: 'verbose' | 'silent' = 'verbose', sendMailOnError = true) {

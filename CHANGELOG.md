@@ -9,6 +9,7 @@
 - Integrate new, comparison-based frontend
 - Integrate backend for content-redaction
 - Old frontend: modularize
+- Dockerize whole architecture, provide redundancy
 
 # [2.0.5] 
 

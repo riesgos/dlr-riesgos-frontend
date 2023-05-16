@@ -1,0 +1,53 @@
+services:
+  
+  backend:
+    build: ./backend
+    ports:
+      - ${backendPort}:${backendPort}
+    volumes:
+      - logs:data/logs
+      - store:data/store
+    environment:
+      maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
+      sendMail: ${sendMail}
+      adminEmail: ${adminEmail}
+      sourceEmail: ${sourceEmail}
+      port: ${backendPort}
+
+  monitor:
+    build: ./monitor
+    depends_on:
+      - backend
+    environment:
+      backendUrl: ${backendUrl}
+      backendPort: ${backendPort}
+      sendMail: ${sendMail}
+      adminEmail: ${adminEmail}
+      sourceEmail: ${sourceEmail}
+      testServiceEveryMinutes: ${testServiceEveryMinutes}
+  
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - 8000:80
+    envrionment:
+      backendUrl: ${backendUrl}
+      backendPort: ${backendPort}
+
+  compare-frontend:
+    build: ./compare-frontend
+    depends_on:
+      - backend
+    ports:
+      - 8001:80
+    environment:
+      backendUrl: ${backendUrl}
+      backendPort: ${backendPort}
+
+
+volumes:
+  logs: 
+  store:
+

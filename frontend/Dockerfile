@@ -2,32 +2,26 @@ FROM node:16 as buildLayer
 WORKDIR /app
 COPY . /app
 
+# config
+ARG subPath "/"
+ARG backendUrl "http://localhost"
+ARG backendPort "8008"
+RUN sed -i "s|backendUrlPlaceholder|${backendUrl}|" ./src/assets/config/config.prod.template.json
+RUN sed -i "s|backendPortPlaceholder|${backendPort}|" ./src/assets/config/config.prod.template.json
+RUN rm ./src/assets/config/config.prod.json
+RUN mov ./src/assets/config/config.prod.template.json ./src/assets/config/config.prod.json
+
+
 # settings for slower network connections
 RUN npm config set fetch-retries 3
 RUN npm config set fetch-retry-mintimeout 60000
 RUN npm config set fetch-retry-maxtimeout 120000
 # more memory for faster build
-ARG MAX_OLD_SPACE_SIZE=8192
-ENV NODE_OPTIONS=--max-old-space-size=${MAX_OLD_SPACE_SIZE}
-
+ENV NODE_OPTIONS=--max-old-space-size=8192
 
 # building
-ARG LOCAL_ARTIFACTS
-# re-use old node_modules if already present on host-machine
-RUN if [ "$LOCAL_ARTIFACTS" = "TRUE" ] && [ -d /app/node_modules ]; then \
-    echo "node_modules already copied from host-machine. no need for npm ci"; \
-  else \
-    npm ci --no-progress --loglevel=error --audit=false; \
-  fi
-# re-use old dist/riesgos if already present on host-machine
-RUN if [ "$LOCAL_ARTIFACTS" = "TRUE" ] && [ -d /app/dist/riesgos ]; then \
-    echo "dist/riesgos already copied from host-machine. no need for npm run build:prod"; \
-  else \
-    npm run build:prod; \
-    rm -rf node_modules; \
-  fi
-
-
+RUN npm ci
+RUN ng build --configuration production --baseHref=${subPath}
 
 FROM nginx as host
 WORKDIR /app

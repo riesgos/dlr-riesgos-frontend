@@ -11,7 +11,7 @@ services:
       port: ${backendPort}
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
       sendMail: ${sendMail}
-      adminEmail: ${adminEmail}
+      adminEmails: ${adminEmails}
       sourceEmail: ${sourceEmail}
 
   monitor:

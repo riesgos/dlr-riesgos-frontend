@@ -8,9 +8,12 @@ RUN npm run build:prod
 # config
 ENV maxStoreLifeTimeMinutes "1440"
 ENV sendMail "true"
-ENV adminEmail 
+# adminEmails: comma separated list
+ENV adminEmails ""
 ENV sourceEmail "info@test.com"
-ENV port "8080"
+ENV port "8008"
+
 
 # running
-CMD ['npm', 'run', 'run']
+EXPOSE ${port}
+CMD ["node",  "dist/main.js"]

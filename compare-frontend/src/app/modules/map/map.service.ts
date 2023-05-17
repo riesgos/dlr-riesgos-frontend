@@ -31,11 +31,13 @@ export class MapService {
 
 
     /**
-                       ┌───► mapState ──────────────────────────────┐
-                       │                                            └► fullState
-    state ────► changedState────► resolvedData─┐                     ┌►
-                       │                       │                     │
-                       └──────────────────────►└─► layerComposites───┘
+     * ```
+     *                     ┌───► mapState ──────────────────────────────┐
+     *                     │                                            └► fullState
+     *  state ────► changedState────► resolvedData─┐                     ┌►
+     *                     │                       │                     │
+     *                     └──────────────────────►└─► layerComposites───┘
+     * ```
      */
     public getMapState(scenario: ScenarioName, partition: Partition): Observable<MapState> {
 
@@ -64,17 +66,7 @@ export class MapService {
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
             map(([_, current]) => current),
-            // changedState$ is being siphoned off from mapState, resolvedData, and layerComposites. 
-            // To prevent this block from being called thrice, we make it shared (aka. "hot").
-            // Since downstream observables pull data from ubstream observables,
-            // not sharing would mean causing three (!) ui-updates with every one state-change.
-            share(),
-            tap(v => console.log(`map-svc: getting state ${v.map.center}`))
         );
-
-        const mapState$ = changedState$.pipe(map(scenarioState => {
-                return scenarioState.map;
-        }));
 
         const resolvedData$ = changedState$.pipe(switchMap(state => {
             const currentSteps = state.steps.filter(s => state.focus.focusedSteps.includes(s.step.id));
@@ -98,12 +90,20 @@ export class MapService {
             })
         );
 
-        const fullState$ = combineLatest([mapState$, layerComposites$]).pipe(map(([mapState, layerComposites]) => { console.log(`map-svc: providing state ${mapState.center}`)
-            return {
-                ...mapState,
-                layerComposites: layerComposites.flat()
-            }
+
+        const mapState$ = changedState$.pipe(map(scenarioState => {
+            return scenarioState.map;
         }));
+
+        const fullState$ = layerComposites$.pipe(
+            withLatestFrom(mapState$),
+            map(([layerComposites,mapState]) => { 
+                return {
+                    ...mapState,
+                    layerComposites: layerComposites.flat()
+                }
+            }
+        ));
 
         return fullState$;
     }
@@ -121,6 +121,10 @@ export class MapService {
       }
 
 
+      /**
+       * deprecated. kept in code only as a reference while i'm busy building 
+       * converters for all steps.
+       */
     private toOlLayers(scenario: ScenarioName, step: string, product: RiesgosProductResolved): Observable<Layer[]> {
         if (scenario === 'PeruShort') {
 

@@ -20,7 +20,7 @@ services:
     environment:
       backendUrl: ${backendUrl}
       backendPort: ${backendPort}
-      adminEmails: ${adminEmail}
+      adminEmails: ${adminEmails}
       sourceEmail: ${sourceEmail}
       testServiceEveryMinutes: ${testServiceEveryMinutes}
   
@@ -30,21 +30,21 @@ services:
       - backend
     ports:
       - 8000:80
-    args:
+    environment:
       subPath: ${frontendSubPath}
       backendUrl: ${backendUrl}
       backendPort: ${backendPort}
 
-  compare-frontend:
-    build: ./compare-frontend
-    depends_on:
-      - backend
-    ports:
-      - 8001:80
-    args:
-      subPath: ${compareFrontendSubPath}
-      backendUrl: ${backendUrl}
-      backendPort: ${backendPort}
+  # compare-frontend:
+  #   build: ./compare-frontend
+  #   depends_on:
+  #     - backend
+  #   ports:
+  #     - 8001:80
+  #   environment:
+  #     subPath: ${compareFrontendSubPath}
+  #     backendUrl: ${backendUrl}
+  #     backendPort: ${backendPort}
 
 
 volumes:

@@ -78,6 +78,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const zoom = this.map.getView().getZoom()!;
         const centerCoord = this.map.getView().getCenter()!;
         const center = [centerCoord[0], centerCoord[1]];
+        
+        // center == [0, 0]: comes from map-initialization. no need to handle this.
+        if (center[0] === 0 && center[1] === 0) return;
+
         console.log(`map moved manually to ${center}`)
         this.mapSvc.mapMove(this.scenario, this.partition, zoom, center);
       };
@@ -99,7 +103,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
        *********************************************************************/
 
       const mapStateSub = this.mapSvc.getMapState(this.scenario, this.partition).subscribe(mapState => {
-        console.log(`got map-state ${mapState.center}`)
+console.log(`got map-state ${mapState.center}`)
           this.handleMove(mapState);
           this.handleLayers(mapState);
           this.handleClick(mapState);
@@ -114,7 +118,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
 
   private handleMove(state: MapState) {
-    console.log(`handling move to ${state.center}`)
+console.log(`handling move to ${state.center}`)
     if (
       this.map.getView().getZoom() !== state.zoom ||
       this.map.getView().getCenter()![0] !== state.center[0] ||

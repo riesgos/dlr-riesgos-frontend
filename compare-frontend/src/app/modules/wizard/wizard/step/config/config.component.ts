@@ -4,6 +4,7 @@ import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
 import { WizardComposite } from '../../../wizard.service';
+import { act } from '@ngrx/effects';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class ConfigComponent implements OnInit {
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
+    console.log(`Config init`)
     for (const input of this.data.inputs) {
       if (input.options) {
         const existingValue = input.currentValue;
@@ -54,8 +56,9 @@ export class ConfigComponent implements OnInit {
   public isSelected(productId: string, option: {key: string, value: any}) {
     const triedValue = option.value;
     const actualValue = this.formGroup.controls[productId].value;
-    const matches = JSON.stringify(triedValue) === JSON.stringify(actualValue);
-    // console.log(`isselected: `, productId, option, matches)
+    // if (this.data.inputs.find(i => i.productId === productId).matchesCurrentValue(triedValue)) return true;
+    const matches = triedValue === actualValue || JSON.stringify(triedValue) === actualValue || triedValue === JSON.stringify(actualValue) || JSON.stringify(triedValue) === JSON.stringify(actualValue);
+    return matches;
   }
 
 }

@@ -61,14 +61,17 @@ export class EqSelection implements Converter {
                                 });
                             },
                     }),
-                    popup: () => ({
-                      component: StringPopupComponent,
-                      args: {
-                        "title": "title",
-                        "subTitle": "subTitle",
-                        "body": "body"
-                      }  
-                    }),
+                    popup: (location, features) => {
+                        if (features.length === 0) return undefined;
+                        return {
+                            component: StringPopupComponent,
+                            args: {
+                              "title": "title",
+                              "subTitle": "subTitle",
+                              "body": "body"
+                            }  
+                        };
+                    },
                     onClick(location: number[], features: Feature[]) {
                         if (features.length === 0) return;
                         const olFeature = features[0];

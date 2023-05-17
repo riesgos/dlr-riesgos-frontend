@@ -22,7 +22,6 @@ export class ConfigComponent implements OnInit {
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
-    console.log(`Config init`)
     for (const input of this.data.inputs) {
       if (input.options) {
         const existingValue = input.currentValue;

@@ -17,17 +17,12 @@
 - Overall:
     - all components of architecture now dockerized
 - Compare frontend
+    - link click on eqSelection with form
     - Ongoing
-        - link click on eqSelection with form
-            - dropdown doesnt know which of the options the new value is
-                - add a `valueToKey` property to wizardComplex?
-        - new rule: focus on first step from beginning
+        - style layer differently on click
     - Upcoming
         - create a docker-compose.yml for backend, frontends and monitor
-            - create a global config-file
-        - style layer differently on click
         - translation service
-        - focus on eq-selection immediately
         - steps: show errors
         - auto-pilot: configurable start-strategy
 

@@ -103,7 +103,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
        *********************************************************************/
 
       const mapStateSub = this.mapSvc.getMapState(this.scenario, this.partition).subscribe(mapState => {
-console.log(`got map-state ${mapState.center}`)
           this.handleMove(mapState);
           this.handleLayers(mapState);
           this.handleClick(mapState);

@@ -25,6 +25,9 @@
         - translation service
         - steps: show errors
         - auto-pilot: configurable start-strategy
+        - click on eq in map is shown in both maps, even though data not mirrored.
+            - that's because clicks are mirrored. And 1_eqselect reacts to clicks with a dispatch(config).
+            - suggestion: create rule `mirrorClickExcept`
 
 ## Bug fixes
 - Compare frontend

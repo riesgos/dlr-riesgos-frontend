@@ -14,7 +14,7 @@ export class RuleService {
             partition: true,
             mirrorFocus: true,
             oneFocusOnly: true,
-            focusFirstStepImmediately: false,
+            focusFirstStepImmediately: true,
             mirrorData: false,
             mirrorClick: true,
             mirrorMove: true,

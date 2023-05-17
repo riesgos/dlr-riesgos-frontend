@@ -43,7 +43,7 @@ export class ConfigComponent implements OnInit {
   public select(productId: string, value: any) {
     const newValues = {
       ... this.formGroup.value,
-      productId: value
+      [productId]: value
     };
 
     this.store.dispatch(AppActions.stepConfig({

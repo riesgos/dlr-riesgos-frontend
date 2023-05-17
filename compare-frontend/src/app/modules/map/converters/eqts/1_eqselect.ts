@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Converter, LayerComposite } from "../../converter.service";
-import { Observable, of } from "rxjs";
-import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
+import { BehaviorSubject, Observable, of } from "rxjs";
+import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, Rules, ScenarioName, StepStateTypes } from "src/app/state/state";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
@@ -14,10 +14,11 @@ import Fill from "ol/style/Fill";
 import Feature, { FeatureLike } from "ol/Feature";
 import { Store } from "@ngrx/store";
 import { stepConfig } from "src/app/state/actions";
+import { createKeyValueTableHtml } from "src/app/helpers/others";
 
 @Injectable()
 export class EqSelection implements Converter {
-
+    
     constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
@@ -66,9 +67,9 @@ export class EqSelection implements Converter {
                         return {
                             component: StringPopupComponent,
                             args: {
-                              "title": "title",
-                              "subTitle": "subTitle",
-                              "body": "body"
+                              "title": "AvailableEqs",
+                              "subTitle": "",
+                              "body": createKeyValueTableHtml("Properties", features[0].getProperties(), "medium")
                             }  
                         };
                     },

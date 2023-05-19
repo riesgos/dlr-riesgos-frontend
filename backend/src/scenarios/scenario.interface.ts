@@ -69,6 +69,10 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
     app.get('/files/:hash', async (req, res) => {
         const hash = req.params.hash;
         const cachedData = await fs.getDataByKey(hash);
+        if (!cachedData) {
+            console.error(`No such file: ${hash}`);
+            res.statusCode = 404;
+        }
         res.send(cachedData);
     });
 

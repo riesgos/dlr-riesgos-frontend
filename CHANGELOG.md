@@ -21,6 +21,7 @@
     - mirrorClick rule now allows `include` and `exclude` of `compositeId`s
     - styles feature differently on click
     - Custom converter for wizard/eqSim
+    - exposure now displayed
     - Ongoing
     - Upcoming
         - create a docker-compose.yml for backend, frontends and monitor

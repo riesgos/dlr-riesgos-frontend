@@ -31,28 +31,29 @@ export const converterToken = new InjectionToken<Converter>('WizardConverter');
 
 
 export class DefaultConverter implements Converter {
-    private step: string = "";
-
+    
+    private __lastInspectedStep: string = "";
     applies(scenario: ScenarioName, step: string): boolean {
-        console.warn(`Wizard module: couln't find a converter for ${scenario}/${step}. Falling back to default-converter.`);
-        // Sneaky hack: setting step so when a call to `getInfo` comes next, we know what data to fetch.
-        this.step = step;
+        console.warn(`Wizard module: couldn't find a converter for ${scenario}/${step}. Falling back to default-converter.`);
+        // Sneaky hack: setting __lastInspectedStep so when a call to `getInfo` comes next, we know what data to fetch.
+        this.__lastInspectedStep = step;
         return true;
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
-        const step = state.steps.find(s => s.step.id === this.step)!;
+        const step = state.steps.find(s => s.step.id === this.__lastInspectedStep)!;
         const inputs = step.step.inputs;
 
         const inputOptions: WizardComposite["inputs"] = [];
         for (const input of inputs) {
-            const inputValue = data.find(d => d.id === input.id);
+            const product = state.products.find(p => p.id === input.id);
+            const inputValue = product?.value || product?.reference;
             inputOptions.push({
                 productId: input.id,
                 label: input.id,
                 formtype: input.options ? 'string-select' : 'string',
                 currentValue: inputValue,
-                options: input.options
+                options: Object.fromEntries(input.options?.map(o => [JSON.stringify(o), o]) || [])
             });
         }
 

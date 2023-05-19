@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import TileWMS from 'ol/source/TileWMS';
 import VectorSource from 'ol/source/Vector';
-import { combineLatest, debounceTime, defaultIfEmpty, filter, forkJoin, map, merge, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
+import { defaultIfEmpty, filter, forkJoin, map, Observable, of, OperatorFunction, scan, switchMap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -149,13 +149,6 @@ export class MapService {
                         opacity: 0.4
                     })]);
 
-
-                case 'exposure':
-                    return of([new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(product.value)
-                        })
-                    })]);
 
                 case 'eqDamageWms':
                     const fullUrl1 = new URL(product.value);

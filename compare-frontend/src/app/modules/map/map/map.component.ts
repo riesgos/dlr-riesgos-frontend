@@ -14,6 +14,7 @@ import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
 import { Subscription } from 'rxjs';
 import { maybeArraysEqual } from 'src/app/state/helpers';
+import { FeatureLike } from 'ol/Feature';
 
 
 @Component({
@@ -163,32 +164,41 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     const pixel = this.map.getPixelFromCoordinate(location);
-    const features = this.map.getFeaturesAtPixel(pixel, {
-      layerFilter: layer => !this.baseLayers.includes(layer)
+    let clickedFeature: FeatureLike | undefined;
+    let compositeId: string | undefined;
+    this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
+      if (this.baseLayers.includes(layer)) return false;
+      clickedFeature = feature;
+      compositeId = layer.get("compositeId");
+      return true;
     });
 
     // popup
     let madePopup = false;
-    for (const composite of mapState.layerComposites) {
-      if (composite.visible) {
-        const popup = composite.popup(location, features);
-        if (!popup) break;
-        else madePopup = true;
-        const { component, args } = popup;
-        this.popupContainer.clear();
-        const componentRef = this.popupContainer.createComponent(component, { index: 0 });
-        for (const key in args) {
-          componentRef.instance[key] = args[key];
+    if (clickedFeature && compositeId) {
+      for (const composite of mapState.layerComposites) {
+        if (composite.visible && composite.id === compositeId) {
+          const popup = composite.popup(location, [clickedFeature]);
+          if (!popup) break;
+          else madePopup = true;
+          const { component, args } = popup;
+          this.popupContainer.clear();
+          const componentRef = this.popupContainer.createComponent(component, { index: 0 });
+          for (const key in args) {
+            componentRef.instance[key] = args[key];
+          }
+          break;
         }
-        break;
       }
     }
     if (!madePopup) this.closePopup();
 
     // further click handling
-    for (const composite of mapState.layerComposites) {
-      if (composite.visible) {
-        composite.onClick(location, features);
+    if (clickedFeature) {
+      for (const composite of mapState.layerComposites) {
+        if (composite.visible) {
+          composite.onClick(location, [clickedFeature]);
+        }
       }
     }
   }

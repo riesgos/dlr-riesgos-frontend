@@ -111,7 +111,7 @@ export class EqSelection implements Converter {
                         prnt.selectedFeature = olFeature;
 
                         const converter = new GeoJSON();
-                        const feature = converter.writeFeature(olFeature);
+                        const feature = JSON.parse(converter.writeFeature(olFeature));
                         _store.dispatch(stepConfig({ partition: state.partition, scenario: state.scenario, stepId: "selectEq", values: { userChoice: feature } }));
                     },
                     onHover() {},

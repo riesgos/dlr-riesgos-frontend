@@ -19,11 +19,8 @@
 - Compare frontend
     - link click on eqSelection with form
     - mirrorClick rule now allows `include` and `exclude` of `compositeId`s
+    - styles feature differently on click
     - Ongoing
-        - style layer differently on click
-            - new style not applied
-                - that's because layers are build anew when click is handled
-                    - Suggestion: make class `EqSelection` stateful and remember which features have been clicked?
     - Upcoming
         - create a docker-compose.yml for backend, frontends and monitor
         - translation service

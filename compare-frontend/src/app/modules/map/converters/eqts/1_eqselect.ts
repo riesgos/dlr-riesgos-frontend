@@ -18,6 +18,8 @@ import { createKeyValueTableHtml } from "src/app/helpers/others";
 
 @Injectable()
 export class EqSelection implements Converter {
+
+    private selectedFeature: Feature | undefined;
     
     constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
@@ -26,6 +28,7 @@ export class EqSelection implements Converter {
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {
+        const prnt = this;
         const layers: LayerComposite[] = [];
         const stepState = state.steps.find(s => s.step.id === "selectEq")?.state.type;
 
@@ -67,14 +70,26 @@ export class EqSelection implements Converter {
                     return newStyle;
                 }
 
+                const layer = new VectorLayer({
+                    source: new VectorSource({
+                        features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
+                    }),
+                    style: defaultStyle
+                });
+
+                if (this.selectedFeature !== undefined) {
+                    layer.getSource()?.forEachFeature(f => {
+                        if (f.getId() === this.selectedFeature?.getId()) {
+                            f.setStyle(selectedStyle(f, 0));
+                        }
+                    });
+                }
+
+
+
                 layers.push({
                     id: "userChoiceLayer",
-                    layer: new VectorLayer({
-                            source: new VectorSource({
-                                features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
-                            }),
-                            style: defaultStyle
-                    }),
+                    layer: layer,
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
                         return {
@@ -87,18 +102,13 @@ export class EqSelection implements Converter {
                         };
                     },
                     onClick(location: number[], features: Feature[]) {
-                        if (features.length === 0) return;
-                        const olFeature = features[0];
-                        console.log("layer onClick");
+                        if (features.length === 0) {
+                            prnt.selectedFeature = undefined;
+                            return;
+                        }
 
-                        // reset old styles
-                        (this.layer as VectorLayer<VectorSource>).getSource()?.getFeatures().forEach(feature => {
-                            feature.setStyle();
-                        })
-                        // set selected style for newly selected feature
-                        olFeature.setStyle(selectedStyle(olFeature, 0));
-                        olFeature.changed();
-                        this.layer.changed();
+                        const olFeature = features[0];
+                        prnt.selectedFeature = olFeature;
 
                         const converter = new GeoJSON();
                         const feature = converter.writeFeature(olFeature);

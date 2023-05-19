@@ -20,7 +20,10 @@
     - link click on eqSelection with form
     - mirrorClick rule now allows `include` and `exclude` of `compositeId`s
     - styles feature differently on click
+    - Custom converter for wizard/eqSim
     - Ongoing
+        - eqSim
+            - selectedFeature was sent to backend as a string, not as a GeoJSON-feature.
     - Upcoming
         - create a docker-compose.yml for backend, frontends and monitor
         - translation service

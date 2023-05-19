@@ -34,6 +34,7 @@ export class DefaultConverter implements Converter {
     private step: string = "";
 
     applies(scenario: ScenarioName, step: string): boolean {
+        console.warn(`Wizard module: couln't find a converter for ${scenario}/${step}. Falling back to default-converter.`);
         // Sneaky hack: setting step so when a call to `getInfo` comes next, we know what data to fetch.
         this.step = step;
         return true;

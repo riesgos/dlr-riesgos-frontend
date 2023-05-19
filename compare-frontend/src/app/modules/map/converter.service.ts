@@ -43,6 +43,7 @@ export interface LayerComposite {
 
 export class DefaultConverter implements Converter {
     public applies(scenario: ScenarioName, step: string): boolean {
+        console.warn(`Map module: couln't find a converter for ${scenario}/${step}. Falling back to default-converter.`);
         return true;
     }
 

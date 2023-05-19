@@ -22,6 +22,6 @@ export const autoPilotEnqueue = createAction('Auto-pilot: enqueing', props<{ sce
 export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ scenario: ScenarioName, partition: Partition, step: string }>());
 
 export const mapMove = createAction('Map move', props<{ scenario: ScenarioName, partition: Partition, zoom: number, center: number[] }>());
-export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: Partition, location: number[] | undefined, clickedFeature?: {compositeId: string, feature: any} }>());
+export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: Partition, location: number[] | undefined, clickedFeature?: {compositeId: string} }>());
 
 export const togglePartition = createAction('Toggling partition', props<{ scenario: ScenarioName, partition: Partition }>());

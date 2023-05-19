@@ -96,9 +96,9 @@ export class EqSelection implements Converter {
                             feature.setStyle();
                         })
                         // set selected style for newly selected feature
-                        // olFeature.setStyle(selectedStyle(olFeature, 0));
-                        // olFeature.changed();
-                        // this.layer.changed();
+                        olFeature.setStyle(selectedStyle(olFeature, 0));
+                        olFeature.changed();
+                        this.layer.changed();
 
                         const converter = new GeoJSON();
                         const feature = converter.writeFeature(olFeature);

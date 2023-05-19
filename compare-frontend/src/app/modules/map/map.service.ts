@@ -112,7 +112,7 @@ export class MapService {
         if (!clickedFeature) {
             this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location }));
         } else {
-            this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location, clickedFeature }));
+            this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location, clickedFeature: {compositeId: clickedFeature.compositeId} }));
         }
     }
 

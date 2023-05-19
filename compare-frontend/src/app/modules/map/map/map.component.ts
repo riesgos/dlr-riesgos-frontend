@@ -86,8 +86,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       };
       
       const clickHandler = (evt: any) => {
+
         const location = evt.coordinate;
-        this.mapSvc.mapClick(this.scenario, this.partition, location);
+        const pixel = this.map.getPixelFromCoordinate(location);
+        let clickedFeature: { compositeId: string, feature: any } | undefined = undefined;
+        this.map.forEachFeatureAtPixel(pixel, (feature, layer, geometry) => {
+          clickedFeature = { compositeId: layer.get("compositeId"), feature };
+          return true;
+        });
+
+        this.mapSvc.mapClick(this.scenario, this.partition, location, clickedFeature);
       }
 
       // no need to run this outside of zone

@@ -18,16 +18,17 @@
     - all components of architecture now dockerized
 - Compare frontend
     - link click on eqSelection with form
+    - mirrorClick rule now allows `include` and `exclude` of `compositeId`s
     - Ongoing
         - style layer differently on click
+            - new style not applied
+                - that's because layers are build anew when click is handled
+                    - Suggestion: make class `EqSelection` stateful and remember which features have been clicked?
     - Upcoming
         - create a docker-compose.yml for backend, frontends and monitor
         - translation service
         - steps: show errors
         - auto-pilot: configurable start-strategy
-        - click on eq in map is shown in both maps, even though data not mirrored.
-            - that's because clicks are mirrored. And 1_eqselect reacts to clicks with a dispatch(config).
-            - suggestion: create rule `mirrorClickExcept`
 
 ## Bug fixes
 - Compare frontend

@@ -108,8 +108,12 @@ export class MapService {
         return fullState$;
     }
 
-    public mapClick(scenario: ScenarioName, partition: Partition, location: number[]) {
-        this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location }));
+    public mapClick(scenario: ScenarioName, partition: Partition, location: number[], clickedFeature?: {compositeId: string, feature: any} ) {
+        if (!clickedFeature) {
+            this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location }));
+        } else {
+            this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location, clickedFeature }));
+        }
     }
 
     public mapMove(scenario: ScenarioName, partition: Partition, zoom: any, center: any) {

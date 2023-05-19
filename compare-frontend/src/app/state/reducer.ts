@@ -230,12 +230,26 @@ export const reducer = createReducer(
 
     partitionData.map.clickLocation = action.location;
 
-    if (state.rules.mirrorClick) {
+    const doMirror = () => {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioState)) {
         if (otherPartition !== action.partition) {
-          otherPartitionData.map.clickLocation = action.location;
+            otherPartitionData.map.clickLocation = action.location;
         }
       }
+    }
+
+    if (typeof state.rules.mirrorClick === "boolean") {
+      if (state.rules.mirrorClick) {
+        doMirror();
+      }
+    } 
+    
+    else {
+      const allowed = state.rules.mirrorClick.include || [];
+      const disallowed = state.rules.mirrorClick.exclude || [];
+      const compositeId = action.clickedFeature?.compositeId || "";
+      if (allowed.includes(compositeId)) doMirror();
+      if (allowed.length === 0 && !disallowed.includes(compositeId)) doMirror();
     }
 
     return state;

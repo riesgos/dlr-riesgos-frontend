@@ -34,33 +34,46 @@ export class EqSelection implements Converter {
             const _store = this.store;
 
             if (availableEqs) {
+                const defaultStyle = (feature: FeatureLike, resolution: number) => {
+                    const props = feature.getProperties();
+                    const magnitude = props['magnitude.mag.value'];
+                    const depth = props['origin.depth.value'];
+    
+                    let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
+                    const [r, g, b] = yellowRedRange(100, 0, depth);
+    
+                    return new Style({
+                        image: new Circle({
+                            radius: radius,
+                            fill: new Fill({
+                                color: [r, g, b, 0.5]
+                            }),
+                            stroke: new Stroke({
+                                color: [r, g, b, 1]
+                            })
+                        }),
+                    });
+                }
+
+                const selectedStyle = (feature: FeatureLike, resolution: number) => {
+                    const oldStyle = defaultStyle(feature, resolution).getImage() as Circle;
+                    const newStyle = new Style({
+                        image: new Circle({
+                            radius: oldStyle.getRadius() + 5,
+                            fill: oldStyle.getFill(),
+                            stroke: oldStyle.getStroke()
+                        })
+                    })
+                    return newStyle;
+                }
+
                 layers.push({
                     id: "userChoiceLayer",
                     layer: new VectorLayer({
                             source: new VectorSource({
                                 features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
                             }),
-                            style: (feature: FeatureLike, resolution: number) => {
-        
-                                const props = feature.getProperties();
-                                const magnitude = props['magnitude.mag.value'];
-                                const depth = props['origin.depth.value'];
-                
-                                let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
-                                const [r, g, b] = yellowRedRange(100, 0, depth);
-                
-                                return new Style({
-                                    image: new Circle({
-                                        radius: radius,
-                                        fill: new Fill({
-                                            color: [r, g, b, 0.5]
-                                        }),
-                                        stroke: new Stroke({
-                                            color: [r, g, b, 1]
-                                        })
-                                    }),
-                                });
-                            },
+                            style: defaultStyle
                     }),
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
@@ -76,6 +89,17 @@ export class EqSelection implements Converter {
                     onClick(location: number[], features: Feature[]) {
                         if (features.length === 0) return;
                         const olFeature = features[0];
+                        console.log("layer onClick");
+
+                        // reset old styles
+                        (this.layer as VectorLayer<VectorSource>).getSource()?.getFeatures().forEach(feature => {
+                            feature.setStyle();
+                        })
+                        // set selected style for newly selected feature
+                        // olFeature.setStyle(selectedStyle(olFeature, 0));
+                        // olFeature.changed();
+                        // this.layer.changed();
+
                         const converter = new GeoJSON();
                         const feature = converter.writeFeature(olFeature);
                         _store.dispatch(stepConfig({ partition: state.partition, scenario: state.scenario, stepId: "selectEq", values: { userChoice: feature } }));

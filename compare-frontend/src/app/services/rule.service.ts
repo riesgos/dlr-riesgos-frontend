@@ -16,7 +16,7 @@ export class RuleService {
             oneFocusOnly: true,
             focusFirstStepImmediately: true,
             mirrorData: false,
-            mirrorClick: true,
+            mirrorClick: { exclude: ['userChoiceLayer'] },
             mirrorMove: true,
             autoPilot: true
         };

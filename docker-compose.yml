@@ -4,9 +4,9 @@ services:
     build: ./backend
     ports:
       - ${backendPort}:${backendPort}
-    # volumes:
-    #   - logs:data/logs
-    #   - store:data/store
+    volumes:
+      - logs:/backend/data/logs
+      - store:/backend/data/store
     environment:
       port: ${backendPort}
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}

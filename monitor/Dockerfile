@@ -1,5 +1,7 @@
 FROM node:16
 
+WORKDIR /monitor
+
 # install and build
 COPY . .
 RUN npm ci

@@ -21,7 +21,7 @@ ENV NODE_OPTIONS=--max-old-space-size=8192
 
 # building
 RUN npm ci
-RUN ng build --configuration production --baseHref=${subPath}
+RUN npx ng build --configuration production --base-href=${subPath}
 
 FROM nginx as host
 WORKDIR /app

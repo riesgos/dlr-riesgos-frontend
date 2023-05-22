@@ -1,15 +1,8 @@
 FROM node:16 as buildLayer
-WORKDIR /app
-COPY . /app
 
-# config (ARG, not ENV: is done once at build-time.)
-ARG subPath "/"
-ARG backendUrl "http://localhost"
-ARG backendPort "8008"
-RUN sed -i "s|backendUrlPlaceholder|${backendUrl}|" ./src/assets/config/config.prod.template.json
-RUN sed -i "s|backendPortPlaceholder|${backendPort}|" ./src/assets/config/config.prod.template.json
-RUN rm ./src/assets/config/config.prod.json
-RUN mov ./src/assets/config/config.prod.template.json ./src/assets/config/config.prod.json
+WORKDIR /app
+
+COPY . /app
 
 
 # settings for slower network connections
@@ -21,10 +14,23 @@ ENV NODE_OPTIONS=--max-old-space-size=8192
 
 # building
 RUN npm ci
-RUN ng build --configuration production --baseHref=${subPath}
+RUN npx ng build --configuration=production --base-href=BaseHrefPlaceholder
 
+
+
+# hosting
 FROM nginx as host
+
 WORKDIR /app
-COPY --from=buildLayer /app/dist/riesgos /usr/share/nginx/html
+
+ARG sourceDir=/usr/share/nginx/html
+ENV sourceDir=${sourceDir}
+
+COPY --from=buildLayer /app/dist/compare-frontend /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./containerInit.sh /app
+RUN chmod +x ./containerInit.sh
+
 EXPOSE 80
+
+CMD [ "/app/containerInit.sh" ]

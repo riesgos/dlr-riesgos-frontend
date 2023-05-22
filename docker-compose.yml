@@ -5,8 +5,8 @@ services:
     ports:
       - ${backendPort}:${backendPort}
     volumes:
-      - logs:data/logs
-      - store:data/store
+      - logs:/backend/data/logs
+      - store:/backend/data/store
     environment:
       port: ${backendPort}
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
@@ -18,7 +18,8 @@ services:
     depends_on:
       - backend
     environment:
-      backendUrl: ${backendUrl}
+      # This url is called inside of docker-network, so "http://backend" gets resolved to the actual IP
+      backendUrl: "http://backend"
       backendPort: ${backendPort}
       adminEmails: ${adminEmails}
       sourceEmail: ${sourceEmail}
@@ -35,16 +36,16 @@ services:
       backendUrl: ${backendUrl}
       backendPort: ${backendPort}
 
-  # compare-frontend:
-  #   build: ./compare-frontend
-  #   depends_on:
-  #     - backend
-  #   ports:
-  #     - 8001:80
-  #   environment:
-  #     subPath: ${compareFrontendSubPath}
-  #     backendUrl: ${backendUrl}
-  #     backendPort: ${backendPort}
+  compare-frontend:
+    build: ./compare-frontend
+    depends_on:
+      - backend
+    ports:
+      - 8001:80
+    environment:
+      subPath: ${compareFrontendSubPath}
+      backendUrl: ${backendUrl}
+      backendPort: ${backendPort}
 
 
 volumes:

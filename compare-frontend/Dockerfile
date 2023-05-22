@@ -26,7 +26,7 @@ WORKDIR /app
 ARG sourceDir=/usr/share/nginx/html
 ENV sourceDir=${sourceDir}
 
-COPY --from=buildLayer /app/dist/riesgos /usr/share/nginx/html
+COPY --from=buildLayer /app/dist/compare-frontend /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./containerInit.sh /app
 RUN chmod +x ./containerInit.sh

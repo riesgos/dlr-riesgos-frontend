@@ -14,6 +14,7 @@ import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
 import { Subscription } from 'rxjs';
 import { maybeArraysEqual } from 'src/app/state/helpers';
+import { FeatureLike } from 'ol/Feature';
 
 
 @Component({
@@ -78,13 +79,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const zoom = this.map.getView().getZoom()!;
         const centerCoord = this.map.getView().getCenter()!;
         const center = [centerCoord[0], centerCoord[1]];
-        console.log(`map moved manually to ${center}`)
+        
+        // center == [0, 0]: comes from map-initialization. no need to handle this.
+        if (center[0] === 0 && center[1] === 0) return;
+
         this.mapSvc.mapMove(this.scenario, this.partition, zoom, center);
       };
       
       const clickHandler = (evt: any) => {
+
         const location = evt.coordinate;
-        this.mapSvc.mapClick(this.scenario, this.partition, location);
+        const pixel = this.map.getPixelFromCoordinate(location);
+        let clickedFeature: { compositeId: string, feature: any } | undefined = undefined;
+        this.map.forEachFeatureAtPixel(pixel, (feature, layer, geometry) => {
+          clickedFeature = { compositeId: layer.get("compositeId"), feature };
+          return true;
+        });
+
+        this.mapSvc.mapClick(this.scenario, this.partition, location, clickedFeature);
       }
 
       // no need to run this outside of zone
@@ -99,7 +111,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
        *********************************************************************/
 
       const mapStateSub = this.mapSvc.getMapState(this.scenario, this.partition).subscribe(mapState => {
-        console.log(`got map-state ${mapState.center}`)
           this.handleMove(mapState);
           this.handleLayers(mapState);
           this.handleClick(mapState);
@@ -114,7 +125,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
 
   private handleMove(state: MapState) {
-    console.log(`handling move to ${state.center}`)
     if (
       this.map.getView().getZoom() !== state.zoom ||
       this.map.getView().getCenter()![0] !== state.center[0] ||
@@ -154,29 +164,41 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     const pixel = this.map.getPixelFromCoordinate(location);
-    const features = this.map.getFeaturesAtPixel(pixel, {
-      layerFilter: layer => !this.baseLayers.includes(layer)
+    let clickedFeature: FeatureLike | undefined;
+    let compositeId: string | undefined;
+    this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
+      if (this.baseLayers.includes(layer)) return false;
+      clickedFeature = feature;
+      compositeId = layer.get("compositeId");
+      return true;
     });
 
     // popup
-    for (const composite of mapState.layerComposites) {
-      if (composite.visible) {
-        const popup = composite.popup(location, features);
-        if (!popup) return;
-        const { component, args } = popup;
-        this.popupContainer.clear();
-        const componentRef = this.popupContainer.createComponent(component, { index: 0 });
-        for (const key in args) {
-          componentRef.instance[key] = args[key];
+    let madePopup = false;
+    if (clickedFeature && compositeId) {
+      for (const composite of mapState.layerComposites) {
+        if (composite.visible && composite.id === compositeId) {
+          const popup = composite.popup(location, [clickedFeature]);
+          if (!popup) break;
+          else madePopup = true;
+          const { component, args } = popup;
+          this.popupContainer.clear();
+          const componentRef = this.popupContainer.createComponent(component, { index: 0 });
+          for (const key in args) {
+            componentRef.instance[key] = args[key];
+          }
+          break;
         }
-        break;
       }
     }
+    if (!madePopup) this.closePopup();
 
     // further click handling
-    for (const composite of mapState.layerComposites) {
-      if (composite.visible) {
-        composite.onClick(location, features);
+    if (clickedFeature) {
+      for (const composite of mapState.layerComposites) {
+        if (composite.visible) {
+          composite.onClick(location, [clickedFeature]);
+        }
       }
     }
   }

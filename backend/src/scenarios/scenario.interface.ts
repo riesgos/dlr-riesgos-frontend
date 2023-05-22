@@ -4,10 +4,19 @@ import { ProcessPool } from './pool';
 import { DatumLinage, Scenario, ScenarioFactory, ScenarioState } from './scenarios';
 import { Logger } from '../logging/logger';
 import { FileStorage } from '../storage/fileStorage';
-import { config } from '../config';
 
 
-export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], storeDir: string, loggingDir: string, verbosity: 'verbose' | 'silent' = 'verbose', sendMailOnError = true) {
+export interface ScenarioAPIConfig {
+    sendMailTo: string[];
+    sender: string;
+    maxLogAgeMinutes: number | undefined;
+    storeDir: string;
+    logDir: string;
+    verbosity: 'verbose' | 'silent';
+    maxStoreLifeTimeMinutes: number;
+}
+
+export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], config: ScenarioAPIConfig) {
     app.use(express.json({
         limit: '50mb'  // required because exposure objects can become pretty big
     }));
@@ -17,9 +26,9 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
     });
 
     const pool = new ProcessPool();
-    const fs = new FileStorage<DatumLinage>(storeDir, config.maxStoreLifeTimeMinutes * 60);
+    const fs = new FileStorage<DatumLinage>(config.storeDir, config.maxStoreLifeTimeMinutes);
     const scenarios = scenarioFactories.map(sf => sf.createScenario(fs));
-    const logger = new Logger(loggingDir, verbosity, undefined, sendMailOnError);
+    const logger = new Logger(config.logDir, config.sendMailTo, config.sender, config.verbosity, config.maxLogAgeMinutes);
     logger.monkeyPatch();
 
 
@@ -60,6 +69,10 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
     app.get('/files/:hash', async (req, res) => {
         const hash = req.params.hash;
         const cachedData = await fs.getDataByKey(hash);
+        if (!cachedData) {
+            console.error(`No such file: ${hash}`);
+            res.statusCode = 404;
+        }
         res.send(cachedData);
     });
 

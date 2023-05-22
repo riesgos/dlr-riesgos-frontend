@@ -127,7 +127,7 @@ export interface Rules {
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
     mirrorData: boolean,
-    mirrorClick: boolean,
+    mirrorClick: boolean | { include?: string[], exclude?: string[] },
     mirrorMove: boolean,
     autoPilot: boolean,
 }

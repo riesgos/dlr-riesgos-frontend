@@ -26,6 +26,7 @@ export class FileStorage<Properties extends {}> {
         try {
             const age = await getFileLastChange(fullFilePath);
             if (age > this.maxCacheLifetimeSeconds) {
+                console.log(`Store: deleted file (too old): ${key}`);
                 await deleteFile(fullFilePath);
                 return undefined;
             }

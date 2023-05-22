@@ -1,7 +1,7 @@
 import express from 'express';
 import axios, { AxiosResponse } from 'axios';
 import { Server } from 'http';
-import { addScenarioApi } from '../../scenarios/scenario.interface';
+import { ScenarioAPIConfig, addScenarioApi } from '../../scenarios/scenario.interface';
 import { peruFactory } from './peru';
 import { createDirIfNotExists, deleteFile } from '../../utils/files';
 import { Datum, DatumReference, ScenarioState } from '../../scenarios/scenarios';
@@ -9,21 +9,28 @@ import { sleep } from '../../utils/async';
 
 
 const port = 1413;
-const logDir = `./test-data/peru/logs/`; // server-logs
-const storeDir = `./test-data/peru/store/`;
+const config: ScenarioAPIConfig = {
+    logDir: `./test-data/peru/logs/`,
+    storeDir: `./test-data/peru/store/`,
+    maxLogAgeMinutes: 60,
+    maxStoreLifeTimeMinutes: 60,
+    sender: "",
+    sendMailTo: [],
+    verbosity: 'silent'
+}
 
 let server: Server;
 beforeAll(async () => {
-    await deleteFile(logDir);
-    await deleteFile(storeDir);
-    await createDirIfNotExists(logDir);
-    await createDirIfNotExists(storeDir);
+    await deleteFile(config.logDir);
+    await deleteFile(config.storeDir);
+    await createDirIfNotExists(config.logDir);
+    await createDirIfNotExists(config.storeDir);
 
     const app = express();
     app.use(express.json());
     const scenarioFactories = [peruFactory];
     
-    addScenarioApi(app, scenarioFactories, storeDir, storeDir, 'silent', false);
+    addScenarioApi(app, scenarioFactories, config);
     server = app.listen(port);
 })
 

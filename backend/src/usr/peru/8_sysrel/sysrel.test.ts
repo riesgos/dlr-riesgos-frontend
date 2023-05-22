@@ -1,7 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import { Server } from 'http';
-import { addScenarioApi } from '../../../scenarios/scenario.interface';
+import { ScenarioAPIConfig, addScenarioApi } from '../../../scenarios/scenario.interface';
 import { peruFactory } from '../peru';
 import { DatumReference, ScenarioState } from '../../../scenarios/scenarios';
 import { sleep } from '../../../utils/async';
@@ -11,20 +11,27 @@ import { eqSimXmlTestData } from '../testdata/eqSimXml';
 
 
 const port = 1418;
-const logDir = `./test-data/peru-sysrel/logs/`;
-const storeDir = `./test-data/peru-sysrel/store/`;  
+const config: ScenarioAPIConfig = {
+    logDir: `./test-data/peru-sysrel/logs/`,
+    storeDir: `./test-data/peru-sysrel/store/`,
+    sendMailTo: [],
+    maxLogAgeMinutes: 60,
+    maxStoreLifeTimeMinutes: 60,
+    sender: "",
+    verbosity: "silent"
+};
 
 let server: Server;
 beforeAll(async () => {
-    await deleteFile(logDir);
-    await deleteFile(storeDir);
-    await createDirIfNotExists(logDir);
-    await createDirIfNotExists(storeDir);
+    await deleteFile(config.logDir);
+    await deleteFile(config.storeDir);
+    await createDirIfNotExists(config.logDir);
+    await createDirIfNotExists(config.storeDir);
 
     const app = express();
     const scenarioFactories = [peruFactory];
 
-    addScenarioApi(app, scenarioFactories, storeDir, logDir, 'silent', false);
+    addScenarioApi(app, scenarioFactories, config);
     server = app.listen(port, () => console.log(`app listening on port ${port}`));
 })
 

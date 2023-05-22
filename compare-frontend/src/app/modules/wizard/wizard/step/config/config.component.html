@@ -3,8 +3,13 @@
         <ng-container *ngIf="input.options">
             <label [for]="input.label">{{ input.label }}</label>
 
-            <select *ngIf="input.formtype === 'string-select'" [formControlName]="input.productId" [name]="input.label" [id]="input.productId">
-                <option *ngFor="let option of input.options | keyvalue" [ngValue]="option.value" [selected]="isSelected(input.productId, option)">{{ option.key }}</option>
+            <!-- 
+                Removed binding to form-control. Instead using (click)="select". 
+                Reason: must be able to set value from outside of form.
+            -->
+            <select *ngIf="input.formtype === 'string-select'" >
+                <option (click)="select(input.productId, undefined)"></option>
+                <option *ngFor="let option of input.options | keyvalue" (click)="select(input.productId, option.value)" [selected]="isSelected(input.productId, option)">{{ option.key }}</option>
             </select>
 
             <input *ngIf="input.formtype === 'string'" [formControlName]="input.label" />

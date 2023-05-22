@@ -1,13 +1,13 @@
 {
   "name": "scenarios",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "",
   "scripts": {
     "build:prod": "tsc --build",
     "build:watch": "tsc -w",
     "start": "ts-node-dev --respawn src/main.ts",
-    "test": "jest --runInBand",
-    "test:watch": "jest --watch",
+    "test": "jest --runInBand --bail",
+    "test:watch": "jest --watch --bail",
     "run": "node dist/main.js"
   },
   "keywords": [

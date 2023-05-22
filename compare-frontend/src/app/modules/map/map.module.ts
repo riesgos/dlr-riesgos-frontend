@@ -7,6 +7,7 @@ import { EqSimulation } from './converters/eqts/2_eqsim';
 import { ConverterService, DefaultConverter, converterToken } from './converter.service';
 import { StringPopupComponent } from './popups/string-popup/string-popup.component';
 import { UtilsModule } from '../utils/utils.module';
+import { Exposure } from './converters/eqts/3_exposure';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { UtilsModule } from '../utils/utils.module';
     ConverterService,
     { provide: converterToken, useClass: EqSelection, multi: true },
     { provide: converterToken, useClass: EqSimulation, multi: true },
+    { provide: converterToken, useClass: Exposure, multi: true },
     { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })

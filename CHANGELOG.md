@@ -9,21 +9,29 @@
 - Integrate new, comparison-based frontend
 - Integrate backend for content-redaction
 - Old frontend: modularize
+- Dockerize whole architecture, provide redundancy
 
 # [2.0.5] 
+
+## Features
+- Overall:
+    - all components of architecture now dockerized
+- Compare frontend
+    - link click on eqSelection with form
+    - mirrorClick rule now allows `include` and `exclude` of `compositeId`s
+    - styles feature differently on click
+    - Custom converter for wizard/eqSim
+    - exposure now displayed
     - Ongoing
-        - link click on eqSelection with form
-            - dropdown doesnt know which of the options the new value is
-                - add a `valueToKey` property to wizardComplex?
-        - new rule: focus on first step from beginning
     - Upcoming
         - create a docker-compose.yml for backend, frontends and monitor
-            - create a global config-file
-        - style layer differently on click
         - translation service
-        - focus on eq-selection immediately
         - steps: show errors
         - auto-pilot: configurable start-strategy
+
+## Bug fixes
+- Compare frontend
+    - Map zooms in to first available step right after selecting a scenario
 
 # [2.0.4](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.4) (May 16 2023) Created monitor and new frontend  
 ## Features
@@ -34,15 +42,10 @@
     - tickets now stay alive for a certain time after they've been fetched
     - added `execute?skipCache=true` option for execute-requests
     - added `runall.ts` which runs all steps once every hour.
-    - fix: logging threw error on circular objects.
     - added `expires` headers
 - frontend: 
     - now allows multiple (dynamic) legends for one layer at the same time. Applied to eq-catalogue.
     - now has circle-legend
-    - fix: race condition in making post-eq-damage mapable.
-    - fix: wrong style and legend for chile-damage.
-    - fix: *should* have fixed NS_BINDING_ABORTED.
-    - fix: error in one process does not stop processing of other processes.
 - Compare frontend
     - all code now in modules
     - map allows per-step data-converters which are semi-automatically injected
@@ -68,9 +71,7 @@
     - insideOne ruleset: data now mirrored
     - auto-pilot only started when rules allow it
     - legends now displayed - if present
-    - fix: layer- and wizard-services no longer cause multiple ui-updates on every state-change (reason: base-observable now shared)
     - popup: increased close button clickable area
-    - fix: click on map only fires click-handler *once*.
     - dropdown now selects value when clicked on map
     - wizard expanded from beginning: did need to move `share` up in filter-obs
     - reducers: parseAPIScenariosIntoNewState: strict typing
@@ -79,9 +80,16 @@
 # [2.0.3](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.3) (Mar. 9 2023) Bug fixes  
 
 ## Bug fixes
+- layer- and wizard-services no longer cause multiple ui-updates on every state-change (reason: base-observable now shared)
+- click on map only fires click-handler *once*.
 - removed superfluous console-logs
 - literal parameters of eq-catalog were not accepted
     - because no `userDataProvided` action triggered when user edits literal values
+- logging threw error on circular objects.
+- race condition in making post-eq-damage mapable.
+- wrong style and legend for chile-damage.
+- *should* have fixed NS_BINDING_ABORTED (happend in Firefox, presumably because too many posts at the same time).
+- error in one process does not stop processing of other processes.
 
 
 

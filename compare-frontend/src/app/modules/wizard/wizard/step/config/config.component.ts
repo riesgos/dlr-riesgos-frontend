@@ -4,6 +4,7 @@ import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
 import { WizardComposite } from '../../../wizard.service';
+import { act } from '@ngrx/effects';
 
 
 @Component({
@@ -39,6 +40,20 @@ export class ConfigComponent implements OnInit {
 
   }
 
+  public select(productId: string, value: any) {
+    const newValues = {
+      ... this.formGroup.value,
+      [productId]: value
+    };
+
+    this.store.dispatch(AppActions.stepConfig({
+      scenario: this.scenario,
+      partition: this.partition,
+      stepId: this.data.step.step.id,
+      values: newValues
+  }));
+  }
+
   public execute() {
     this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, partition: this.partition, step: this.data.step.step.id }));
   }
@@ -54,8 +69,9 @@ export class ConfigComponent implements OnInit {
   public isSelected(productId: string, option: {key: string, value: any}) {
     const triedValue = option.value;
     const actualValue = this.formGroup.controls[productId].value;
-    const matches = JSON.stringify(triedValue) === JSON.stringify(actualValue);
-    // console.log(`isselected: `, productId, option, matches)
+    // if (this.data.inputs.find(i => i.productId === productId).valueToKey() === option.key) return true;
+    const matches = triedValue === actualValue || JSON.stringify(triedValue) === actualValue || triedValue === JSON.stringify(actualValue) || JSON.stringify(triedValue) === JSON.stringify(actualValue);
+    return matches;
   }
 
 }

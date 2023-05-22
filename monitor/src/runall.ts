@@ -1,21 +1,24 @@
 import axios from 'axios';
-import { config } from './config';
 import { MailClient } from './mailClient';
 
+const backendUrl = process.env.backendUrl || "http://localhost";
+const backendPort = parseInt(process.env.backendPort || "8008");
+const adminEmails = (process.env.adminEmails || "").split(",");
+const sourceEmail = process.env.sourceEmail || "info@test.com";
+const testServiceEveryMinutes = parseInt(process.env.testServiceEveryMinutes || "120");
+
+main(backendUrl, backendPort, testServiceEveryMinutes, sourceEmail, adminEmails);
 
 
-main(`http://localhost`, config.port, 120);
 
-
-
-async function main(serverUrl: string, port: number, minutes: number) {
+async function main(serverUrl: string, port: number, minutes: number, sourceEmail: string, adminEmails: string[]) {
     const mailClient = new MailClient();
     try {
         await testAndRepeat(serverUrl, port, minutes);
     } catch (error) {
         console.log(`Monitor has detected a problem: `, error);
-        mailClient.sendMail([config.adminEmail], `Monitor has detected a problem`, JSON.stringify(error));
-        setTimeout(() => main(serverUrl, port, minutes), minutes * 60 * 1000);
+        mailClient.sendMail(sourceEmail, adminEmails, `Monitor has detected a problem`, JSON.stringify(error));
+        setTimeout(() => main(serverUrl, port, minutes, sourceEmail, adminEmails), minutes * 60 * 1000);
     }
 }
 

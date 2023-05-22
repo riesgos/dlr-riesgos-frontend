@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Converter, LayerComposite } from "../../converter.service";
-import { Observable, of } from "rxjs";
-import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
+import { BehaviorSubject, Observable, of } from "rxjs";
+import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, Rules, ScenarioName, StepStateTypes } from "src/app/state/state";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
@@ -14,10 +14,13 @@ import Fill from "ol/style/Fill";
 import Feature, { FeatureLike } from "ol/Feature";
 import { Store } from "@ngrx/store";
 import { stepConfig } from "src/app/state/actions";
+import { createKeyValueTableHtml } from "src/app/helpers/others";
 
 @Injectable()
 export class EqSelection implements Converter {
 
+    private selectedFeature: Feature | undefined;
+    
     constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
@@ -25,6 +28,7 @@ export class EqSelection implements Converter {
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {
+        const prnt = this;
         const layers: LayerComposite[] = [];
         const stepState = state.steps.find(s => s.step.id === "selectEq")?.state.type;
 
@@ -33,47 +37,81 @@ export class EqSelection implements Converter {
             const _store = this.store;
 
             if (availableEqs) {
+                const defaultStyle = (feature: FeatureLike, resolution: number) => {
+                    const props = feature.getProperties();
+                    const magnitude = props['magnitude.mag.value'];
+                    const depth = props['origin.depth.value'];
+    
+                    let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
+                    const [r, g, b] = yellowRedRange(100, 0, depth);
+    
+                    return new Style({
+                        image: new Circle({
+                            radius: radius,
+                            fill: new Fill({
+                                color: [r, g, b, 0.5]
+                            }),
+                            stroke: new Stroke({
+                                color: [r, g, b, 1]
+                            })
+                        }),
+                    });
+                }
+
+                const selectedStyle = (feature: FeatureLike, resolution: number) => {
+                    const oldStyle = defaultStyle(feature, resolution).getImage() as Circle;
+                    const newStyle = new Style({
+                        image: new Circle({
+                            radius: oldStyle.getRadius() + 5,
+                            fill: oldStyle.getFill(),
+                            stroke: oldStyle.getStroke()
+                        })
+                    })
+                    return newStyle;
+                }
+
+                const layer = new VectorLayer({
+                    source: new VectorSource({
+                        features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
+                    }),
+                    style: defaultStyle
+                });
+
+                if (this.selectedFeature !== undefined) {
+                    layer.getSource()?.forEachFeature(f => {
+                        if (f.getId() === this.selectedFeature?.getId()) {
+                            f.setStyle(selectedStyle(f, 0));
+                        }
+                    });
+                }
+
+
+
                 layers.push({
                     id: "userChoiceLayer",
-                    layer: new VectorLayer({
-                            source: new VectorSource({
-                                features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
-                            }),
-                            style: (feature: FeatureLike, resolution: number) => {
-        
-                                const props = feature.getProperties();
-                                const magnitude = props['magnitude.mag.value'];
-                                const depth = props['origin.depth.value'];
-                
-                                let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
-                                const [r, g, b] = yellowRedRange(100, 0, depth);
-                
-                                return new Style({
-                                    image: new Circle({
-                                        radius: radius,
-                                        fill: new Fill({
-                                            color: [r, g, b, 0.5]
-                                        }),
-                                        stroke: new Stroke({
-                                            color: [r, g, b, 1]
-                                        })
-                                    }),
-                                });
-                            },
-                    }),
-                    popup: () => ({
-                      component: StringPopupComponent,
-                      args: {
-                        "title": "title",
-                        "subTitle": "subTitle",
-                        "body": "body"
-                      }  
-                    }),
+                    layer: layer,
+                    popup: (location, features) => {
+                        if (features.length === 0) return undefined;
+                        return {
+                            component: StringPopupComponent,
+                            args: {
+                              "title": "AvailableEqs",
+                              "subTitle": "",
+                              "body": createKeyValueTableHtml("Properties", features[0].getProperties(), "medium")
+                            }  
+                        };
+                    },
                     onClick(location: number[], features: Feature[]) {
-                        if (features.length === 0) return;
+                        if (features.length === 0) {
+                            prnt.selectedFeature = undefined;
+                            return;
+                        }
+
                         const olFeature = features[0];
+                        prnt.selectedFeature = olFeature;
+
                         const converter = new GeoJSON();
-                        const feature = converter.writeFeature(olFeature);
+                        const feature = JSON.parse(converter.writeFeature(olFeature));
                         _store.dispatch(stepConfig({ partition: state.partition, scenario: state.scenario, stepId: "selectEq", values: { userChoice: feature } }));
                     },
                     onHover() {},

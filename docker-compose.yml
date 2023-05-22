@@ -25,15 +25,16 @@ services:
       testServiceEveryMinutes: ${testServiceEveryMinutes}
   
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        subPath: ${frontendSubPath}
+        backendUrl: ${backendUrl}
+        backendPort: ${backendPort}
     depends_on:
       - backend
     ports:
       - 8000:80
-    environment:
-      subPath: ${frontendSubPath}
-      backendUrl: ${backendUrl}
-      backendPort: ${backendPort}
 
   # compare-frontend:
   #   build: ./compare-frontend

@@ -6,6 +6,9 @@ COPY . /app
 ARG subPath "/"
 ARG backendUrl "http://localhost"
 ARG backendPort "8008"
+RUN test -n "$subPath"
+RUN test -n "$backendUrl"
+RUN test -n "$backendPort"
 RUN sed -i "s|backendUrlPlaceholder|${backendUrl}|" ./src/assets/config/config.prod.template.json
 RUN sed -i "s|backendPortPlaceholder|${backendPort}|" ./src/assets/config/config.prod.template.json
 RUN rm ./src/assets/config/config.prod.json

@@ -14,6 +14,10 @@ if [[ -z "${sourceDir}" ]]; then
     echo "sourceDir not given"
     exit 1
 fi
+if [[ -z "${subPath}" ]]; then
+    echo "subPath not given"
+    exit 1
+fi
 if [[ -z "${backendUrl}" ]]; then
     echo "backendUrl not given"
     exit 1
@@ -25,6 +29,7 @@ fi
 
 sed -i "s|backendUrlPlaceholder|${backendUrl}|" ${sourceDir}/assets/config/config.prod.template.json
 sed -i "s|backendPortPlaceholder|${backendPort}|" ${sourceDir}/assets/config/config.prod.template.json
+sed -i "s|BaseHrefPlaceholder|${subPath}" ${sourceDir}/index.html
 rm ${sourceDir}/assets/config/config.prod.json
 mv ${sourceDir}/assets/config/config.prod.template.json ${sourceDir}/assets/config/config.prod.json
 

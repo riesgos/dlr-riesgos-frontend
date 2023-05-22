@@ -4,9 +4,6 @@ WORKDIR /app
 
 COPY . /app
 
-# config (ARG, not ENV: is done once at build-time.)
-ARG subPath "/"
-RUN test -n "$subPath"
 
 # settings for slower network connections
 RUN npm config set fetch-retries 3
@@ -17,7 +14,7 @@ ENV NODE_OPTIONS=--max-old-space-size=8192
 
 # building
 RUN npm ci
-RUN npx ng build --configuration production --base-href=${subPath}
+RUN npx ng build --configuration=production --base-href=BaseHrefPlaceholder
 
 
 

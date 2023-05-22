@@ -26,10 +26,7 @@ services:
       testServiceEveryMinutes: ${testServiceEveryMinutes}
   
   frontend:
-    build: 
-      context: ./frontend
-      args:
-        subPath: ${frontendSubPath}
+    build: ./frontend
     depends_on:
       - backend
     ports:

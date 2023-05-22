@@ -20,6 +20,7 @@ import { DownloadComponent } from './tabComponents/download/download.component';
 import { LayersComponent } from './tabComponents/layers/layers.component';
 import { LegendsComponent } from './tabComponents/legends/legends.component';
 import { ErrorComponent } from './tabComponents/error/error.component';
+import { EqSimulation } from './converters/eqts/2_eqsim';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { ErrorComponent } from './tabComponents/error/error.component';
     WizardService,
     ConverterService,
     { provide: converterToken, useClass: EqSelection, multi: true },
+    { provide: converterToken, useClass: EqSimulation, multi: true },
     { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })

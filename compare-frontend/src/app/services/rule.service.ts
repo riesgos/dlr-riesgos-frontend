@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Rules } from "../state/state";
 
 
-export type RuleSetName = 'selectOneScenario' | 'compareScenario' | 'compareIdentical' | 'compareAdvanced';
+export type RuleSetName = 'selectOneScenario' | 'compareScenario' | 'compareIdentical' | 'compareAdvanced' | 'classic';
 
 @Injectable({
     providedIn: 'root'
@@ -14,9 +14,9 @@ export class RuleService {
             partition: true,
             mirrorFocus: true,
             oneFocusOnly: true,
-            focusFirstStepImmediately: false,
+            focusFirstStepImmediately: true,
             mirrorData: false,
-            mirrorClick: true,
+            mirrorClick: { exclude: ['userChoiceLayer'] },
             mirrorMove: true,
             autoPilot: true
         };
@@ -42,6 +42,11 @@ export class RuleService {
                 rules.mirrorFocus = false;
                 rules.mirrorMove = false;
                 rules.mirrorClick = false;
+                rules.autoPilot = false;
+                break;
+            case 'classic':
+                rules.partition = false;
+                rules.oneFocusOnly = false;
                 rules.autoPilot = false;
                 break;
         }

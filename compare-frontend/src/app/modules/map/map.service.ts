@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import TileWMS from 'ol/source/TileWMS';
 import VectorSource from 'ol/source/Vector';
-import { combineLatest, debounceTime, defaultIfEmpty, filter, forkJoin, map, merge, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
+import { defaultIfEmpty, filter, forkJoin, map, Observable, of, OperatorFunction, scan, switchMap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -31,11 +31,13 @@ export class MapService {
 
 
     /**
-                       ┌───► mapState ──────────────────────────────┐
-                       │                                            └► fullState
-    state ────► changedState────► resolvedData─┐                     ┌►
-                       │                       │                     │
-                       └──────────────────────►└─► layerComposites───┘
+     * ```
+     *                     ┌───► mapState ──────────────────────────────┐
+     *                     │                                            └► fullState
+     *  state ────► changedState────► resolvedData─┐                     ┌►
+     *                     │                       │                     │
+     *                     └──────────────────────►└─► layerComposites───┘
+     * ```
      */
     public getMapState(scenario: ScenarioName, partition: Partition): Observable<MapState> {
 
@@ -64,17 +66,7 @@ export class MapService {
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
             map(([_, current]) => current),
-            // changedState$ is being siphoned off from mapState, resolvedData, and layerComposites. 
-            // To prevent this block from being called thrice, we make it shared (aka. "hot").
-            // Since downstream observables pull data from ubstream observables,
-            // not sharing would mean causing three (!) ui-updates with every one state-change.
-            share(),
-            tap(v => console.log(`map-svc: getting state ${v.map.center}`))
         );
-
-        const mapState$ = changedState$.pipe(map(scenarioState => {
-                return scenarioState.map;
-        }));
 
         const resolvedData$ = changedState$.pipe(switchMap(state => {
             const currentSteps = state.steps.filter(s => state.focus.focusedSteps.includes(s.step.id));
@@ -98,18 +90,30 @@ export class MapService {
             })
         );
 
-        const fullState$ = combineLatest([mapState$, layerComposites$]).pipe(map(([mapState, layerComposites]) => { console.log(`map-svc: providing state ${mapState.center}`)
-            return {
-                ...mapState,
-                layerComposites: layerComposites.flat()
-            }
+
+        const mapState$ = changedState$.pipe(map(scenarioState => {
+            return scenarioState.map;
         }));
+
+        const fullState$ = layerComposites$.pipe(
+            withLatestFrom(mapState$),
+            map(([layerComposites,mapState]) => { 
+                return {
+                    ...mapState,
+                    layerComposites: layerComposites.flat()
+                }
+            }
+        ));
 
         return fullState$;
     }
 
-    public mapClick(scenario: ScenarioName, partition: Partition, location: number[]) {
-        this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location }));
+    public mapClick(scenario: ScenarioName, partition: Partition, location: number[], clickedFeature?: {compositeId: string, feature: any} ) {
+        if (!clickedFeature) {
+            this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location }));
+        } else {
+            this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location, clickedFeature: {compositeId: clickedFeature.compositeId} }));
+        }
     }
 
     public mapMove(scenario: ScenarioName, partition: Partition, zoom: any, center: any) {
@@ -121,6 +125,10 @@ export class MapService {
       }
 
 
+      /**
+       * deprecated. kept in code only as a reference while i'm busy building 
+       * converters for all steps.
+       */
     private toOlLayers(scenario: ScenarioName, step: string, product: RiesgosProductResolved): Observable<Layer[]> {
         if (scenario === 'PeruShort') {
 
@@ -141,13 +149,6 @@ export class MapService {
                         opacity: 0.4
                     })]);
 
-
-                case 'exposure':
-                    return of([new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(product.value)
-                        })
-                    })]);
 
                 case 'eqDamageWms':
                     const fullUrl1 = new URL(product.value);

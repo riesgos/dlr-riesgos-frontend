@@ -19,7 +19,7 @@ function externalFunction() {
 
 test("Logs are written to file", async () => {
 
-    const logger = new Logger(logDir)
+    const logger = new Logger(logDir, [])
     logger.monkeyPatch();
 
     externalFunction();

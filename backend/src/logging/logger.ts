@@ -1,7 +1,6 @@
 import { appendFileSync } from "fs"
 import { createFileSync, getFileAgeSync, renameFileSync } from "../utils/files";
 import { MailClient } from "../web/mailClient";
-import { config } from '../config';
 import { inspect } from 'util';
 
 
@@ -11,9 +10,10 @@ export class Logger {
 
     constructor(
         private loggingDir: string,
+        private sendMailTo: string[] = [],
+        private sender: string = "info@test.com",
         private verbosity: 'verbose' | 'silent' = 'verbose',
-        private maxLogAge = 24 * 60 * 60,
-        private sendMailOnError = true
+        private maxLogAgeMinutes = 24 * 60,
     ) {
         this.loggingDir = loggingDir.replace(/\/+$/, '');
     }
@@ -53,7 +53,7 @@ export class Logger {
         const fullErrorString = time.toISOString() + "---" + messageString + "\n" + additionalText + "\n";
         appendFileSync(`${this.loggingDir}/errors.txt`, fullErrorString);
 
-        if (this.sendMailOnError) this.mailClient.sendMail([config.adminEmail], 'RIESGOS 2.0: an error has occured', fullErrorString);
+        if (this.sendMailTo.length > 0) this.mailClient.sendMail(this.sender, this.sendMailTo, 'RIESGOS 2.0: an error has occured', fullErrorString);
     }
 
     private messageToString(message: any) {
@@ -75,7 +75,7 @@ export class Logger {
         if (fileAgeSecs === -1) {
             createFileSync(filePath);
         }
-        if (fileAgeSecs > this.maxLogAge) {
+        if (fileAgeSecs > this.maxLogAgeMinutes * 60) {
             renameFileSync(filePath, `${filePath}_${new Date().toISOString()}.txt`);
             createFileSync(filePath);
         }

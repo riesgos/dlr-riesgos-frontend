@@ -36,16 +36,16 @@ services:
       backendUrl: ${backendUrl}
       backendPort: ${backendPort}
 
-  # compare-frontend:
-  #   build: ./compare-frontend
-  #   depends_on:
-  #     - backend
-  #   ports:
-  #     - 8001:80
-  #   environment:
-  #     subPath: ${compareFrontendSubPath}
-  #     backendUrl: ${backendUrl}
-  #     backendPort: ${backendPort}
+  compare-frontend:
+    build: ./compare-frontend
+    depends_on:
+      - backend
+    ports:
+      - 8001:80
+    environment:
+      subPath: ${compareFrontendSubPath}
+      backendUrl: ${backendUrl}
+      backendPort: ${backendPort}
 
 
 volumes:

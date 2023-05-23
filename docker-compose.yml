@@ -12,6 +12,17 @@ services:
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
       sendMailTo: ${sendMailTo}
       sourceEmail: ${sourceEmail}
+      EqCatalogUrl: ${EqCatalogUrl}
+      EqSimUrl: ${EqSimUrl}
+      FragilityUrl: ${FragilityUrl}
+      ExposureUrl: ${ExposureUrl}
+      DeusUrl: ${DeusUrl}
+      NeptunusUrl: ${NeptunusUrl}
+      VolcanusUrl: ${VolcanusUrl}
+      TsunamiUrl: ${TsunamiUrl}
+      SysrelUrl: ${SysrelUrl}
+      SysrelEcuadorUrl: ${SysrelEcuadorUrl}
+      LaharUrl: ${LaharUrl}
 
   monitor:
     build: ./monitor

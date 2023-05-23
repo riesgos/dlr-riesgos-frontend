@@ -28,13 +28,11 @@ vars[SysrelUrl]="https://riesgos.52north.org/javaps/service"
 vars[SysrelEcuadorUrl]="https://riesgos.52north.org/javaps/service"
 vars[LaharUrl]="https://riesgos.52north.org/geoserver/ows"
 
-
 for variableName in "${!vars[@]}"; do 
-    echo "Working on $variableName"
 
     if [[ -z $(printenv "$variableName") ]]; then
         variableVal="${vars[$variableName]}"
-        # echo "Using default value for $variableName: $variableVal"
+        echo "Using default value for $variableName: $variableVal"
     else
         variableVal=$(printenv "$variableName")
         echo "Setting value for $variableName: $variableVal"
@@ -47,6 +45,6 @@ done
 rm -f ./dist/config.json
 mv ./dist/config.template.json ./dist/config.json
 echo "Successfully created config-file"
-# cat ./dist/config.json
+cat ./dist/config.json
 
-# node dist/main.js
+node dist/main.js

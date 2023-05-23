@@ -1,5 +1,6 @@
 import { Feature, FeatureCollection, Point } from "geojson";
 import { WpsClient, WpsInput, WpsOutputDescription } from "../utils/wps/public-api";
+import config from "../config.json";
 
 
 const wpsClient1 = new WpsClient('1.0.0');
@@ -18,8 +19,8 @@ export interface Bbox {
 
 export async function getAvailableEqs(catalogType: CatalogType, bbox: Bbox, mmin?: string, mmax?: string, zmin?: string, zmax?: string, p?: string) {
 
-    const url = `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`;
-    const processId = 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess';
+    const url = config.services.EqCatalog.url;
+    const processId = config.services.EqCatalog.id;
 
     const inputs: WpsInput[] = [{
         description: {
@@ -108,8 +109,8 @@ export type Gmpe = 'MontalvaEtAl2016SInter' | 'GhofraniAtkinson2014' | 'Abrahams
  */
 export async function getEqSim(gmpe: Gmpe, vsgrid: Vsgrid, selectedEq: any) {
 
-    const url = `https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService`;
-    const processId = 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess';
+    const url = config.services.EqSim.url;
+    const processId = config.services.EqSim.id;
 
     const wpsInputs: WpsInput[] = [{
         description: {
@@ -166,8 +167,8 @@ export type Schema = "SARA_v1.0" | "HAZUS_v1.0" | "SUPPASRI2013_v2.0" | "Mavroul
  */
 export async function getFragility(schemaName: Schema) {
 
-    const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
-    const processId = "org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess";
+    const url = config.services.Fragility.url;
+    const processId = config.services.Fragility.id;
 
     const inputs: WpsInput[] = [{
         description: {
@@ -221,8 +222,8 @@ export type ExposureModel = "ValpCVTBayesian" | "ValpCommuna" | "ValpRegularOrig
  */
 export async function getExposureModel(modelName: ExposureModel, schemaName: Schema, bbox: Bbox) {
 
-    const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
-    const processId = "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess";
+    const url = config.services.Exposure.url;
+    const processId = config.services.Exposure.id;
 
 
     // bounding box: covering all study-areas (Chile, Ecuador, Peru)
@@ -318,8 +319,8 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
  */
 export async function getDamage(schemaName: Schema, fragilityRef: string, intensityXMLRef: string, exposureRef: string) {
 
-    const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
-    const processId = "org.n52.gfz.riesgos.algorithm.impl.DeusProcess";
+    const url = config.services.Deus.url;
+    const processId = config.services.Deus.id;
 
     const inputs: WpsInput[] = [{
         description: {
@@ -384,8 +385,8 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
 
 export async function getDamageJson(schemaName: Schema, fragilityRef: string, intensityXMLRef: string, exposureRef: string) {
 
-    const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
-    const processId = "org.n52.gfz.riesgos.algorithm.impl.DeusProcess";
+    const url = config.services.Deus.url;
+    const processId = config.services.Deus.id;
 
     const inputs: WpsInput[] = [{
         description: {
@@ -450,8 +451,8 @@ export async function getDamageJson(schemaName: Schema, fragilityRef: string, in
 
 export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef: string, intensityGeotiffUrl: string, updatedExposureRef: string) {
 
-    const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService";
-    const processId = "org.n52.gfz.riesgos.algorithm.impl.NeptunusProcess";
+    const url = config.services.Neptunus.url;
+    const processId = config.services.Neptunus.id;
 
     const inputs: WpsInput[] = [{
         description: {
@@ -524,8 +525,9 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
 
 
 export async function getVolcanusAshfallDamage(intensityValue: FeatureCollection<Point, any>, exposureRef: string, vulnerabilityRef: string) {
-    const url = 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService';
-    const processId = 'org.n52.gfz.riesgos.algorithm.impl.VolcanusProcess';
+
+    const url = config.services.Volcanus.url;
+    const processId = config.services.Volcanus.id;
 
     const intensity: WpsInput = {
         description: {
@@ -601,8 +603,8 @@ export async function getVolcanusAshfallDamage(intensityValue: FeatureCollection
 
 export async function getTsunami(selectedEq: Feature<Point, any>) {
 
-    const url = "https://riesgos.52north.org/wps";
-    const processId = "get_scenario";
+    const url = config.services.Tsunami.url;
+    const processId = config.services.Tsunami.id;
 
     const lat: WpsInput = {
         description: {
@@ -650,8 +652,8 @@ export async function getTsunami(selectedEq: Feature<Point, any>) {
 
 export async function getSystemReliability(countryName: 'peru' | 'chile' | 'ecuador', intensityRef: string) {
 
-    const url = 'https://riesgos.52north.org/javaps/service';
-    const processId = 'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess';
+    const url = config.services.Sysrel.url;
+    const processId = config.services.Sysrel.id;
 
     const country: WpsInput = {
         description: {
@@ -708,8 +710,8 @@ export async function getSystemReliability(countryName: 'peru' | 'chile' | 'ecua
 
 export async function getSystemReliabilityEcuador(heightXmlRef: string, velocityXmlRef: string) {
 
-    const url = 'https://riesgos.52north.org/javaps/service';
-    const processId = 'org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess';
+    const url = config.services.SysrelEcuador.url;
+    const processId = config.services.SysrelEcuador.id;
 
     const country: WpsInput = {
         description: {
@@ -773,8 +775,9 @@ export type LaharDirection = 'North' | 'South';
 export type LaharParameter = 'MaxHeight' | 'MaxVelocity' | 'MaxPressure' | 'MaxErosion' | 'Deposition';
 
 export async function getLahar(directionValue: LaharDirection, veiValue: number) {
-    const url = 'https://riesgos.52north.org/geoserver/ows';
-    const processId = 'gs:LaharModel';
+
+    const url = config.services.Lahar.url;
+    const processId = config.services.Lahar.id;
 
     const direction: WpsInput = {
         description: {

@@ -10,7 +10,7 @@ services:
     environment:
       port: ${backendPort}
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
-      adminEmails: ${adminEmails}
+      sendMailTo: ${sendMailTo}
       sourceEmail: ${sourceEmail}
 
   monitor:
@@ -21,7 +21,7 @@ services:
       # This url is called inside of docker-network, so "http://backend" gets resolved to the actual IP
       backendUrl: "http://backend"
       backendPort: ${backendPort}
-      adminEmails: ${adminEmails}
+      sendMailTo: ${sendMailTo}
       sourceEmail: ${sourceEmail}
       testServiceEveryMinutes: ${testServiceEveryMinutes}
   

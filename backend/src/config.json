@@ -1,0 +1,56 @@
+{
+    "port": "8008",
+    "logDir": "./data/logs",
+    "storeDir": "./data/store",
+    "maxStoreLifeTimeMinutes": "60",
+    "sender": "info@test.com",
+    "sendMailTo": "",
+    "maxLogAgeMinutes": "1440",
+    "verbosity": "verbose",
+    "services": {
+        "EqCatalog": {
+            "url": "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess"
+        },
+        "EqSim": {
+            "url": "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess"
+        },
+        "Fragility": {
+            "url": "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess"
+        },
+        "Exposure": {
+            "url": "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess"
+        },
+        "Deus": {
+            "url": "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.DeusProcess"
+        },
+        "Neptunus": {
+            "url": "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.NeptunusProcess"
+        },
+        "Volcanus": {
+            "url": "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.VolcanusProcess"
+        },
+        "Tsunami": {
+            "url": "https://riesgos.52north.org/wps",
+            "id": "get_scenario"
+        },
+        "Sysrel": {
+            "url": "https://riesgos.52north.org/javaps/service",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess"
+        },
+        "SysrelEcuador": {
+            "url": "https://riesgos.52north.org/javaps/service",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess"
+        },
+        "Lahar": {
+            "url": "https://riesgos.52north.org/geoserver/ows",
+            "id": "gs:LaharModel"
+        }
+    }
+}

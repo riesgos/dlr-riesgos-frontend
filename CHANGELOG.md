@@ -23,6 +23,7 @@
     - Custom converter for wizard/eqSim
     - exposure now displayed
     - exposure wizard now configurable
+    - exposure legend and styling
     - Ongoing
         - exposure: popup
         - exposure: update style on select

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Rules } from "../state/state";
 
 
-export type RuleSetName = 'selectOneScenario' | 'compareScenario' | 'compareIdentical' | 'compareAdvanced' | 'classic';
+export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIdentical' | 'compareAdvanced' | 'classic';
 
 @Injectable({
     providedIn: 'root'
@@ -30,7 +30,7 @@ export class RuleService {
                 rules.partition = false;
                 rules.autoPilot = true;
                 break;
-            case 'compareScenario':
+            case 'compareScenarios':
                 break;
             case 'compareIdentical':
                 rules.oneFocusOnly = false;

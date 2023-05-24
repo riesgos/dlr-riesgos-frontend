@@ -21,6 +21,7 @@ import { LayersComponent } from './tabComponents/layers/layers.component';
 import { LegendsComponent } from './tabComponents/legends/legends.component';
 import { ErrorComponent } from './tabComponents/error/error.component';
 import { EqSimulation } from './converters/eqts/2_eqsim';
+import { Exposure } from './converters/eqts/3_exposure';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { EqSimulation } from './converters/eqts/2_eqsim';
     ConverterService,
     { provide: converterToken, useClass: EqSelection, multi: true },
     { provide: converterToken, useClass: EqSimulation, multi: true },
+    { provide: converterToken, useClass: Exposure, multi: true },
     { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })

@@ -22,12 +22,13 @@
     - styles feature differently on click
     - Custom converter for wizard/eqSim
     - exposure now displayed
+    - exposure wizard now configurable
     - Ongoing
+        - exposure: popup
+        - exposure: update style on select
     - Upcoming
-        - create a docker-compose.yml for backend, frontends and monitor
         - translation service
         - steps: show errors
-        - auto-pilot: configurable start-strategy
 
 ## Bug fixes
 - Compare frontend

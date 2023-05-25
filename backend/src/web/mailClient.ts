@@ -22,7 +22,7 @@ export class MailClient {
               warn: console.warn,
               error: console.error
             },
-            silent: false,
+            silent: true,
             // dkim: { // Default: False
             //   privateKey: fs.readFileSync('./dkim-private.pem', 'utf8'),
             //   keySelector: 'mydomainkey'

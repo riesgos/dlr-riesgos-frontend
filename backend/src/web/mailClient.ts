@@ -17,9 +17,9 @@ export class MailClient {
     constructor() {
         this.mailClient = sendmail({
             logger: {
-              debug: console.log,
-              info: console.info,
-              warn: console.warn,
+              // debug: console.log,
+              // info: console.info,
+              // warn: console.warn,
               error: console.error
             },
             silent: true,

@@ -16,6 +16,17 @@ export interface ScenarioAPIConfig {
     maxStoreLifeTimeMinutes: number;
 }
 
+
+export async function verifyAllFulfilled(scenarioFactories: ScenarioFactory[]) {
+    for (const factory of scenarioFactories) {
+        const result = await factory.verifyConditions();
+        if (result !== true) return result;
+    }
+    return true;
+}
+
+
+
 export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], config: ScenarioAPIConfig) {
     app.use(express.json({
         limit: '50mb'  // required because exposure objects can become pretty big

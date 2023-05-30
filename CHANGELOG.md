@@ -16,6 +16,8 @@
 ## Features
 - Overall:
     - all components of architecture now dockerized
+- Backend
+    - all ScenarioFactories can now register async conditions which must be fulfilled before the scenario may be used.
 - Compare frontend
     - link click on eqSelection with form
     - mirrorClick rule now allows `include` and `exclude` of `compositeId`s

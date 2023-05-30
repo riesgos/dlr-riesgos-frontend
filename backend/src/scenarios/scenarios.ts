@@ -200,6 +200,7 @@ export class Scenario {
 export class ScenarioFactory {
 
     private steps: Step[] = [];
+    private conditions: (() => Promise<true | string>)[] = [];
 
     constructor(public id: string, public description: string, public imageUrl?: string) {}
 
@@ -211,7 +212,20 @@ export class ScenarioFactory {
         this.steps.push(step);
     }
 
+    public registerCondition(condition: () => Promise<true | string>) {
+        this.conditions.push(condition);
+    }
+
+    public async verifyConditions() {
+        for(const condition of this.conditions) {
+            const fulfilled = await condition();
+            if (fulfilled !== true) return fulfilled;
+        }
+        return true;
+    }
+
     public createScenario(store: FileStorage<DatumLinage>) {
         return new Scenario(this.id, this.description, this.steps, store, this.imageUrl);
     }
+
 }

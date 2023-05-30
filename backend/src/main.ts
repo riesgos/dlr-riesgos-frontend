@@ -22,12 +22,23 @@ const configuration: ScenarioAPIConfig = {
 }
 
 async function main() {
+    // Setting up express
     const app = express();
     app.use(cors());
     
     // const scenarioFactories = await parseCode(scriptDir);
     const scenarioFactories = [chileFactory, ecuadorFactory, peruFactory, peruShortFactory];
 
+    // Checking that all scenarios are ready
+    for (const factory of scenarioFactories) {
+        let ready: boolean | string = false;
+        while (ready !== true) {
+            ready = await factory.verifyConditions();
+            if (ready !== true) console.error(`ScenarioFactory "${factory.id}" not yet ready: ${ready}`);
+        }
+    }
+
+    // Adding API-endpoints to express app
     addScenarioApi(app, scenarioFactories, configuration);
     const server = app.listen(port, () => console.log(`app now listening on port ${port}`));
 }

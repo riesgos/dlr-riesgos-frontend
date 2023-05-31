@@ -52,6 +52,23 @@ export const reducer = createReducer(
       }
     }
 
+
+    if (state.rules.focusFirstStepImmediately) {
+      for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+    
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+            if ("include" in state.rules.allowConfiguration) {
+              const configurable = state.rules.allowConfiguration.include;
+              const nonConfigurable = partitionData.products.map(p => p.id).filter(id => !configurable.includes(id));
+              setValuesToDefaults(partitionData, nonConfigurable);
+            } else if (state.rules.allowConfiguration.exclude?.length > 0) {
+              setValuesToDefaults(partitionData, state.rules.allowConfiguration.exclude);
+            }
+          }
+      }
+    }
+
+
     state.currentScenario = action.scenario;
     return state;
   }),
@@ -238,18 +255,13 @@ export const reducer = createReducer(
       }
     }
 
-    if (typeof state.rules.mirrorClick === "boolean") {
-      if (state.rules.mirrorClick) {
-        doMirror();
-      }
-    } 
-    
-    else {
-      const allowed = state.rules.mirrorClick.include || [];
-      const disallowed = state.rules.mirrorClick.exclude || [];
-      const compositeId = action.clickedFeature?.compositeId || "";
+    const compositeId = action.clickedFeature?.compositeId || "";
+    if ("exclude" in state.rules.mirrorClick) {
+      const disallowed = state.rules.mirrorClick.exclude;
+      if (!disallowed.includes(compositeId)) doMirror();
+    } else {
+      const allowed = state.rules.mirrorClick.include;
       if (allowed.includes(compositeId)) doMirror();
-      if (allowed.length === 0 && !disallowed.includes(compositeId)) doMirror();
     }
 
     return state;
@@ -387,5 +399,26 @@ function deriveState(state: WritableDraft<RiesgosState>) {
     }
     }
   return state;
+}
+
+function setValuesToDefaults(partitionData: WritableDraft<RiesgosScenarioState>, ids: string[]) {
+  for (const id of ids) {
+    const product = partitionData.products.find(p => p.id === id);
+    const stepInput = partitionData.steps.map(s => s.step.inputs).flat().find(i => i.id === id);
+    if (product?.value) {
+      product.options = [product.value];
+      stepInput!.options = product.options;
+      if (stepInput && stepInput.options) stepInput.options = [product.value];
+    } else if (product?.reference) {
+      product.options = [product.reference];
+      stepInput!.options = product.options;
+      if (stepInput && stepInput.options) stepInput.options = [product.reference];
+    } else if (product?.options) {
+      product.value = product.options[0];
+      product.options = [product.options[0]];
+      stepInput!.options = product.options;
+    }
+
+  }
 }
 

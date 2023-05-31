@@ -127,9 +127,10 @@ export interface Rules {
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
     mirrorData: boolean,
-    mirrorClick: boolean | { include?: string[], exclude?: string[] },
+    mirrorClick: { include: string[] } | { exclude: string[] },
     mirrorMove: boolean,
     autoPilot: boolean,
+    allowConfiguration: { include: string[] } | { exclude: string[] }
 }
 
 export interface RiesgosState {
@@ -154,9 +155,10 @@ export const initialRiesgosState: RiesgosState = {
         oneFocusOnly: false,
         focusFirstStepImmediately: false,
         mirrorData: false,
-        mirrorClick: true,
+        mirrorClick: { exclude: [] },
         mirrorMove: true,
         autoPilot: true,
+        allowConfiguration: { exclude: [] }
     }
 };
 

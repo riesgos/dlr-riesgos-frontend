@@ -27,6 +27,7 @@
     - exposure wizard now configurable
     - exposure legend and styling
     - Ongoing
+        - whitelist and blacklist of configurable parameters
         - exposure: popup
         - exposure: update style on select
     - Upcoming

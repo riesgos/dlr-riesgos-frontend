@@ -7,10 +7,15 @@
                 Removed binding to form-control. Instead using (click)="select". 
                 Reason: must be able to set value from outside of form.
             -->
-            <select *ngIf="input.formtype === 'string-select'" >
-                <option (click)="select(input.productId, undefined)"></option>
-                <option *ngFor="let option of input.options | keyvalue" (click)="select(input.productId, option.value)" [selected]="isSelected(input.productId, option)">{{ option.key }}</option>
-            </select>
+            <div *ngIf="input.formtype === 'string-select'">
+                <select *ngIf="(input.options | keyvalue).length > 1" >
+                    <option (click)="select(input.productId, undefined)"></option>
+                    <option *ngFor="let option of input.options | keyvalue" (click)="select(input.productId, option.value)" [selected]="isSelected(input.productId, option)">{{ option.key }}</option>
+                </select>
+                <select *ngIf="(input.options | keyvalue).length === 1" >
+                    <option *ngFor="let option of input.options | keyvalue" (click)="select(input.productId, option.value)" [selected]="true">{{ option.key }}</option>
+                </select>
+            </div>
 
             <input *ngIf="input.formtype === 'string'" [formControlName]="input.label" />
             

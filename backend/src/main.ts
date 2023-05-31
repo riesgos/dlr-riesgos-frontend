@@ -7,6 +7,7 @@ import { peruShortFactory } from './usr/peru_short/peru';
 import { chileFactory } from './usr/chile/chile';
 import { ecuadorFactory } from './usr/ecuador/ecuador';
 import config from "./config.json";
+import { sleep } from './utils/async';
 
 
 const port = config.port;
@@ -34,7 +35,10 @@ async function main() {
         let ready: boolean | string = false;
         while (ready !== true) {
             ready = await factory.verifyConditions();
-            if (ready !== true) console.error(`ScenarioFactory "${factory.id}" not yet ready: ${ready}`);
+            if (ready !== true) {
+                console.error(`ScenarioFactory "${factory.id}" not yet ready: ${ready}`);
+                sleep(1000);
+            }
         }
     }
 

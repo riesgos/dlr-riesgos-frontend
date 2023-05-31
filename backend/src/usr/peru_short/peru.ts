@@ -19,7 +19,7 @@ peruShortFactory.registerCondition(async () => {
     for (const [key, val] of Object.entries(config.services)) {
         const url = val.url;
         const procId = val.id;
-        const request = `${url}?service=WPS&request=DescribeProcess&identifier=${procId}&version=1.0.0`;
+        const request = `${url}?service=WPS&request=DescribeProcess&identifier=${procId}&version=2.0.0`;
         try {
             const response = await axios.get(request);
         } catch (error) {

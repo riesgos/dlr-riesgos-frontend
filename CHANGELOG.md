@@ -11,7 +11,7 @@
 - Old frontend: modularize
 - Dockerize whole architecture, provide redundancy
 
-# [2.0.5] 
+# [2.0.5]
 
 ## Features
 - Overall:
@@ -26,10 +26,15 @@
     - exposure now displayed
     - exposure wizard now configurable
     - exposure legend and styling
+    - errors displayed in ui
     - Ongoing
-        - whitelist and blacklist of configurable parameters
-        - exposure: popup
-        - exposure: update style on select
+        - why request aborted?
+        - eq-dmg: popup
+        - eq-dmg: legend
+        - rules: useAutoPilot { include: exclude: }
+            - if a step is auto-piloted, no execute button should be visible
+            - if a step is auto-piloted, no parameter choice should be possible
+            - if a step is auto-piloted, the step should not be shown as `available`
     - Upcoming
         - translation service
         - steps: show errors

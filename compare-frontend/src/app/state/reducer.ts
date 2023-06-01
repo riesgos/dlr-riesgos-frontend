@@ -169,7 +169,7 @@ export const reducer = createReducer(
     const scenarioData = state.scenarioData[action.scenario]!;
     const partitionData = scenarioData[action.partition]!;
     const step = partitionData.steps.find(s => s.step.id === action.step)!;
-    step.state = new StepStateError(action.error);
+    step.state = new StepStateError(action.error.error);
     return state;
   }),
 

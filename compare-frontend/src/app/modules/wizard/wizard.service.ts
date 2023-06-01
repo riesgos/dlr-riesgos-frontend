@@ -1,7 +1,7 @@
 import { defaultIfEmpty, filter, map, mergeMap, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
-import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
+import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
 import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
 import { Injectable, Type } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -67,6 +67,7 @@ export class WizardService {
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
+                if (!arraysEqual(last.steps.map(s => s.state.type), current.steps.map(s => s.state.type))) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
             map(([_, current]) => current),

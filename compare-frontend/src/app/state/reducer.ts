@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotStart, autoPilotStop, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotStart, autoPilotStop, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, getMapPositionForStep } from './helpers';
 
@@ -169,7 +169,15 @@ export const reducer = createReducer(
     const scenarioData = state.scenarioData[action.scenario]!;
     const partitionData = scenarioData[action.partition]!;
     const step = partitionData.steps.find(s => s.step.id === action.step)!;
-    step.state = new StepStateError(action.error.error);
+    step.state = new StepStateError(action.error);
+    return state;
+  }),
+
+  immerOn(stepReset, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const partitionData = scenarioData[action.partition]!;
+    const step = partitionData.steps.find(s => s.step.id === action.stepId)!;
+    step.state = new StepStateAvailable();
     return state;
   }),
 

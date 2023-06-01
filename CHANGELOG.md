@@ -27,6 +27,18 @@
     - exposure wizard now configurable
     - exposure legend and styling
     - errors displayed in ui
+    - on error: retry
+        - effects don't notice action (though reducer does)
+            - Hypothesis: pipe is broken once an error is thrown (even though it's caught later!)
+            - Approach 1: mergeMap to async/await function?
+            - Approach 2: have backendClient not throw Error, but return a Maybe?
+            - Reason that effects stop working:
+                - https://medium.com/city-pantry/handling-errors-in-ngrx-effects-a95d918490d9
+                - catchError completes.
+                - when error is caught, the old stream is replaced with the output of catch-error.
+                - the old stream is then no longer allowed to emmit any values - so now there's radio silence.
+                - for this reason, catches must always happen in a switchMap or mergeMap
+                - ... or we avoid errors and use Maybes. Way better.
     - Ongoing
         - why request aborted?
         - eq-dmg: popup

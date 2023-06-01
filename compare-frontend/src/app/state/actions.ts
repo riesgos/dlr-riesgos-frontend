@@ -15,6 +15,7 @@ export const stepConfig = createAction('Step config', props<{ scenario: Scenario
 export const stepExecStart = createAction('Step exec start', props<{ scenario: ScenarioName, partition: Partition, step: string }>());
 export const stepExecSuccess = createAction('Step exec success', props<{ scenario: ScenarioName, partition: Partition, step: string, newData: RiesgosProduct[] }>());
 export const stepExecFailure = createAction('Step exec failure', props<{ scenario: ScenarioName, partition: Partition, step: string, error: any }>());
+export const stepReset = createAction('Step reset', props<{ scenario: ScenarioName, partition: Partition, stepId: string }>());
 
 export const autoPilotStart = createAction('Auto-pilot: Starting', props<{ scenario: ScenarioName, partition: Partition }>());
 export const autoPilotStop = createAction('Auto-pilot: Stopping', props<{ scenario: ScenarioName, partition: Partition }>());

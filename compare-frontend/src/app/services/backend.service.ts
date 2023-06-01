@@ -48,6 +48,17 @@ export interface API_ScenarioState {
     data: (API_Datum | API_DatumReference)[]
 }
 
+export interface ExecError {
+    error: any,
+    scenarioId: ScenarioName,
+    stepId: string,
+    state: API_ScenarioState
+}
+
+export function isExecError(data: any): data is ExecError {
+    return data.error && data.scenarioId && data.stepId && data.state;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -79,7 +90,7 @@ export class BackendService {
         );
     }
 
-    execute(scenarioId: string, stepId: string, state: API_ScenarioState): Observable<API_ScenarioState> {
+    execute(scenarioId: string, stepId: string, state: API_ScenarioState): Observable<API_ScenarioState | ExecError> {
         console.log(`be-service: executing ${stepId}`)
         const url = this.configService.getConfig().backendUrl;
         const post$ = this.http.post<{ ticket: string }>(
@@ -98,12 +109,13 @@ export class BackendService {
             }),
             map(response => {
                 if (response.error) {
-                    throw {
+                    const error: ExecError = {
                         error: response.error,
-                        scenarioId: scenarioId,
+                        scenarioId: scenarioId as ScenarioName,
                         stepId: stepId,
                         state: state
                     };
+                    return error;
                 }
                 return response.results!;
             })

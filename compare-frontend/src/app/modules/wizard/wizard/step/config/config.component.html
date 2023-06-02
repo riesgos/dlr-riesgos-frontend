@@ -18,7 +18,7 @@
                     <option *ngFor="let option of input.options | keyvalue" (click)="select(input.productId, option.value)" [selected]="true">{{ option.key }}</option>
                 </select>
 
-                <p *ngIf="autoPilot" style="color: var(--gray-600)">{{ input.currentValue || "Not set yet" }}</p>
+                <p *ngIf="autoPilot" style="color: var(--gray-1000)">{{ input.currentValue || "Not set yet" }}</p>
 
             </div>
 

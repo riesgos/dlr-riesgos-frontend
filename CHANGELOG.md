@@ -36,6 +36,8 @@
         - eq-dmg: popup
         - eq-dmg: legend
         - why request aborted?
+            - race-condition due to polling-rate in /backend?
+            - try to reproduce with postman. if that fails, reproduce with marble-test in /backend
     - Upcoming
         - translation service
 

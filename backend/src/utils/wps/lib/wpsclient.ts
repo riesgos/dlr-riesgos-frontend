@@ -81,7 +81,6 @@ export class WpsClient {
         let currentState = await this.executeAsyncBasic(url, processId, inputs, outputs, paperTrail);
         let noResultsYet = currentState.status !== 'Succeeded';
         while (noResultsYet) {
-            await sleep(pollingRate);
             currentState = await this.getNextState(currentState, url, processId, inputs, outputs, paperTrail);
             if (currentState.status === 'Failed') {
                 throw new Error(`Error during execution of process ${processId}: \n ${currentState.statusLocation || currentState.jobID} \n ${paperTrail.join('\n')}`);
@@ -90,6 +89,7 @@ export class WpsClient {
                 tapFunction(currentState, paperTrail);
             }
             noResultsYet = currentState.status !== 'Succeeded';
+            if (noResultsYet) await sleep(pollingRate);
         }
 
         // fetch results

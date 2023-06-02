@@ -8,6 +8,8 @@
     "start": "ts-node-dev --respawn src/main.ts",
     "test": "jest --runInBand --bail",
     "test:watch": "jest --watch --bail",
+    "test:oneFile": "jest --runInBand --bail src/usr/peru_short/4_exposure",
+    "test:oneTest": "jest --runInBand --bail --testNamePattern 'Peru-short: Testing eq-simulation'",
     "run": "node dist/main.js"
   },
   "keywords": [

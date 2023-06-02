@@ -6,10 +6,9 @@
     Reason: d3 cannot handle dom-nodes that dont exist yet.
     For the new d3-graphs we need a dynamicPopupComponent.
     And for a dynamicPopupComponent we need to return a ProductCustomLayer, not a VectorLayerProduct.
-- Integrate new, comparison-based frontend
 - Integrate backend for content-redaction
 - Old frontend: modularize
-- Dockerize whole architecture, provide redundancy
+- Cache: move from file-cache to geoserver-cache
 
 # [2.0.5]
 
@@ -34,13 +33,11 @@
         - can define on per-step-basis if autopilot required
     - auto-piloted steps are no longer interactive
     - Ongoing:
-        - why does expo-model in compare-scenarios not have default value set initially?
         - eq-dmg: popup
         - eq-dmg: legend
         - why request aborted?
     - Upcoming
         - translation service
-        - steps: show errors
 
 ## Bug fixes
 - Compare frontend

@@ -4,7 +4,7 @@ import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata, Rules } from './state';
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { allParasSet, getMapPositionForStep } from './helpers';
+import { allParasSet, calcAutoPilotableSteps, getMapPositionForStep } from './helpers';
 
 
 
@@ -368,19 +368,6 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
 
   return state;
 }
-
-function calcAutoPilotableSteps(rules: Rules, steps: RiesgosStep[]) {
-  let autoPilotableSteps: string[] = [];
-  if ("include" in rules.autoPilot) {
-    autoPilotableSteps = rules.autoPilot.include;
-  } else {
-    const excluded = rules.autoPilot.exclude;
-    const autoPilotable = steps.map(s => s.step.id).filter(i => !excluded.includes(i));
-    autoPilotableSteps = autoPilotable;
-  }
-  return autoPilotableSteps;
-}
-
 
 
 function deriveState(state: WritableDraft<RiesgosState>) {

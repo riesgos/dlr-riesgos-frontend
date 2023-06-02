@@ -1,8 +1,8 @@
-import { defaultIfEmpty, filter, map, mergeMap, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
+import { filter, map, Observable, of, OperatorFunction, scan, share, switchMap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
-import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
-import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { allProductsEqual, arraysEqual, calcAutoPilotableSteps, maybeArraysEqual } from 'src/app/state/helpers';
+import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, Rules, ScenarioName } from 'src/app/state/state';
 import { Injectable, Type } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ConverterService } from './converter.service';
@@ -18,7 +18,8 @@ export interface WizardComposite {
         currentValue?: any,
         label: string,
     }[],
-    hasFocus: boolean
+    hasFocus: boolean,
+    isAutoPiloted?: boolean
 }
 
 export interface WizardState {
@@ -43,7 +44,11 @@ export class WizardService {
      */
     public getWizardState(scenario: ScenarioName, partition: Partition): Observable<WizardState> {
 
+        // Silly little hack. We should probably just have rules on the scenario-level of state, not the root-level.
+        let rules: Rules; 
+
         const scenarioState$ = this.store.select(state => {
+            rules = state.riesgos.rules;
             const scenarioStates = state.riesgos.scenarioData[scenario];
             if (!scenarioStates) return undefined;
             const scenarioState = scenarioStates[partition];
@@ -84,23 +89,26 @@ export class WizardService {
         const wizardState$ = resolvedData$.pipe(
             withLatestFrom(changedState$),
             map(([resolvedData, state]) => {
-                const steps: WizardComposite[] = [];
+                const wizardSteps: WizardComposite[] = [];
+                const autoPilotables = calcAutoPilotableSteps(rules, state.steps);
                 for (const step of state.steps) {
                     let stepData: WizardComposite;
                     if (state.focus.focusedSteps.includes(step.step.id)) {
                         const converter = this.converterSvc.getConverter(scenario, step.step.id);
                         stepData = converter.getInfo(state, resolvedData);
                         stepData.hasFocus = true;
+                        stepData.isAutoPiloted = autoPilotables.includes(step.step.id);
                     } else {
                         stepData = {
-                            hasFocus: false,
                             step: step,
-                            inputs: []
+                            inputs: [],
+                            hasFocus: false,
+                            isAutoPiloted: autoPilotables.includes(step.step.id)
                         }
                     }
-                    steps.push(stepData);
+                    wizardSteps.push(stepData);
                 }
-                return { stepData: steps };
+                return { stepData: wizardSteps };
             })
         );
 

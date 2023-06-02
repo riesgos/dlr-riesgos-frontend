@@ -11,6 +11,11 @@
     background-color: var(--accent-color-100);
 }
 
+.step-header-available.autoPilot {
+    color: var(--gray-400);
+    background-color: var(--gray-100);
+}
+
 .step-header-running {
     color: var(--notice-dark);
     background-color: var(--notice-light);

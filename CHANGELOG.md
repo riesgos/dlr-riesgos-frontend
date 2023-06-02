@@ -29,14 +29,12 @@
     - errors displayed in ui
     - on error: retry
     - simplified error-handling: backend-client retuns a Maybe, doesn't throw.
-    - update autopilot-effect: 
+    - update autopilot:
         - needs not use that "first-step" condition anymore
         - can define on per-step-basis if autopilot required
+    - auto-piloted steps are no longer interactive
     - Ongoing:
-        - rules: useAutoPilot { include: exclude: }
-            - if a step is auto-piloted, no execute button should be visible
-            - if a step is auto-piloted, no parameter choice should be possible
-            - if a step is auto-piloted, the step should not be shown as `available`
+        - why does expo-model in compare-scenarios not have default value set initially?
         - eq-dmg: popup
         - eq-dmg: legend
         - why request aborted?

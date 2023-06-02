@@ -1,7 +1,18 @@
 import { API_ScenarioState, API_Datum, API_DatumReference, isApiDatum } from "../services/backend.service";
-import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, Partition, RiesgosProduct, RiesgosStep, ScenarioName } from "./state";
+import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, Partition, RiesgosProduct, RiesgosStep, Rules, ScenarioName } from "./state";
 
 
+export function calcAutoPilotableSteps(rules: Rules, steps: RiesgosStep[]) {
+    let autoPilotableSteps: string[] = [];
+    if ("include" in rules.autoPilot) {
+      autoPilotableSteps = rules.autoPilot.include;
+    } else {
+      const excluded = rules.autoPilot.exclude;
+      const autoPilotable = steps.map(s => s.step.id).filter(i => !excluded.includes(i));
+      autoPilotableSteps = autoPilotable;
+    }
+    return autoPilotableSteps;
+  }
 
 export function maybeArraysEqual(a1: any[] | undefined, a2: any[] | undefined) {
     if (a1 === undefined && a2 === undefined) return true;

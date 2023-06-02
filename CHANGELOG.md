@@ -28,25 +28,18 @@
     - exposure legend and styling
     - errors displayed in ui
     - on error: retry
-        - effects don't notice action (though reducer does)
-            - Hypothesis: pipe is broken once an error is thrown (even though it's caught later!)
-            - Approach 1: mergeMap to async/await function?
-            - Approach 2: have backendClient not throw Error, but return a Maybe?
-            - Reason that effects stop working:
-                - https://medium.com/city-pantry/handling-errors-in-ngrx-effects-a95d918490d9
-                - catchError completes.
-                - when error is caught, the old stream is replaced with the output of catch-error.
-                - the old stream is then no longer allowed to emmit any values - so now there's radio silence.
-                - for this reason, catches must always happen in a switchMap or mergeMap
-                - ... or we avoid errors and use Maybes. Way better.
-    - Ongoing
-        - why request aborted?
-        - eq-dmg: popup
-        - eq-dmg: legend
+    - simplified error-handling: backend-client retuns a Maybe, doesn't throw.
+    - update autopilot-effect: 
+        - needs not use that "first-step" condition anymore
+        - can define on per-step-basis if autopilot required
+    - Ongoing:
         - rules: useAutoPilot { include: exclude: }
             - if a step is auto-piloted, no execute button should be visible
             - if a step is auto-piloted, no parameter choice should be possible
             - if a step is auto-piloted, the step should not be shown as `available`
+        - eq-dmg: popup
+        - eq-dmg: legend
+        - why request aborted?
     - Upcoming
         - translation service
         - steps: show errors

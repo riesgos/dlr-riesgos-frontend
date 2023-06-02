@@ -22,7 +22,8 @@ export class ErrorComponent implements OnInit {
     if (this.data.step.state.type === 'error') {
       let message = (this.data.step.state as StepStateError).message;
       if (typeof message === "string") {
-        message.replace("\n", "<br/>");
+        message = message.replace(String.raw`\n`, "<br/>");
+        message = message.replace(String.raw`\\`, "");
       }
       if (typeof message !== "string") {
         message = JSON.parse(message);

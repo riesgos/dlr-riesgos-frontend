@@ -18,7 +18,7 @@ export class RuleService {
             mirrorData: false,
             mirrorClick: { exclude: ['userChoiceLayer'] },
             mirrorMove: true,
-            autoPilot: true,
+            autoPilot: { exclude: ["selectEq"] },
             allowConfiguration: { exclude: [] }
         };
 
@@ -29,7 +29,6 @@ export class RuleService {
                 rules.oneFocusOnly = false;
                 rules.focusFirstStepImmediately = true;
                 rules.partition = false;
-                rules.autoPilot = true;
                 rules.allowConfiguration = { include: ["userChoice"] };
                 break;
             case 'compareScenarios':
@@ -45,12 +44,12 @@ export class RuleService {
                 rules.mirrorFocus = false;
                 rules.mirrorMove = false;
                 rules.mirrorClick = { include: [] };
-                rules.autoPilot = false;
+                rules.autoPilot = { include: [] };
                 break;
             case 'classic':
                 rules.partition = false;
                 rules.oneFocusOnly = false;
-                rules.autoPilot = false;
+                rules.autoPilot = { include: [] };
                 break;
         }
 

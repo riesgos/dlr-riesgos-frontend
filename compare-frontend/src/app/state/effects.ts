@@ -89,10 +89,6 @@ export class Effects {
      * AUTO-PILOT (AP)
      * 
                      ┌──────────────┐
-                     │AP Start      │
-                     └───────┬──────┘
-                             │
-                     ┌───────▼──────┐
                ┌────►│AP Enqueue    │       state: queue ++
                │     └───────┬──────┘
                │             │
@@ -113,21 +109,9 @@ check if more  │     └───────┬──────┘
      * 
      */
 
-    // Automatically activate autopilot after selecting EQ paras
-    private startAutoPilot$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.stepExecSuccess),
-        filter(action => action.scenario === 'PeruShort' && action.step === 'selectEq'),
-        map(action => AppActions.autoPilotStart({ scenario: action.scenario, partition: action.partition }))
-    ));
-
     private autoPilotFillQueue$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.autoPilotStart),
+        ofType(AppActions.stepExecSuccess),  // @TODO: or of type: scenario selected
         withLatestFrom(this.store$.select(state => state.riesgos)),
-        filter(([action, state]) => {
-            const scenarioData = state.scenarioData[action.scenario]!;
-            const partitionData = scenarioData[action.partition]!;
-            return partitionData.autoPilot.useAutoPilot;
-        }),
         map(([action, state]) => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
     ));
 
@@ -153,20 +137,8 @@ check if more  │     └───────┬──────┘
         ofType(AppActions.stepExecStart),
         withLatestFrom(this.store$.select(state => state.riesgos)),
         map(([action, state]) => state.scenarioData[action.scenario]![action.partition]!),
-        filter(state => state.autoPilot.useAutoPilot && state.autoPilot.queue.length > 0),
+        filter(state => state.autoPilot.queue.length > 0),
         map(state => AppActions.autoPilotDequeue({ scenario: state.scenario, partition: state.partition, step: state.autoPilot.queue[0] }))
-    ));
-
-    private updateAutoPilotOnSuccess$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.stepExecSuccess),
-        withLatestFrom(this.store$.select(state => state.riesgos)),
-        filter(([action, state]) => {
-            const scenarioData = state.scenarioData[action.scenario]!;
-            const partitionData = scenarioData[action.partition]!;
-            return partitionData.autoPilot.useAutoPilot;
-        }),
-        // filter(([action, state]) => action.scenario !== 'PeruShort' || action.step !== 'selectEq'),  // except if this is the AP-start-condition - because that's already been called.
-        map(([action, state]) => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
     ));
 
     

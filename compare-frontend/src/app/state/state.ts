@@ -86,7 +86,6 @@ export interface FocusState {
 }
 
 export interface AutoPilotState {
-    useAutoPilot: boolean;
     queue: string[];
 };
 
@@ -129,7 +128,7 @@ export interface Rules {
     mirrorData: boolean,
     mirrorClick: { include: string[] } | { exclude: string[] },
     mirrorMove: boolean,
-    autoPilot: boolean,
+    autoPilot: { include: string[] } | { exclude: string[] },
     allowConfiguration: { include: string[] } | { exclude: string[] }
 }
 
@@ -157,7 +156,7 @@ export const initialRiesgosState: RiesgosState = {
         mirrorData: false,
         mirrorClick: { exclude: [] },
         mirrorMove: true,
-        autoPilot: true,
+        autoPilot: { include: [] },
         allowConfiguration: { exclude: [] }
     }
 };

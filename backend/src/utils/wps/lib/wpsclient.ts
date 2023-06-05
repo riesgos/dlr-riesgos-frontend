@@ -8,9 +8,6 @@ import { OWS_2_0 } from './jsonix/OWS_2_0';
 import { WPS_1_0_0 } from './jsonix/WPS_1_0_0';
 import { WPS_2_0 } from './jsonix/WPS_2_0';
 import { Jsonix } from './jsonix/jsonix';
-import axios from 'axios';
-import axiosBetterStacktrace from 'axios-better-stacktrace';
-axiosBetterStacktrace(axios);
 import { sleep, toPromise } from '../../async';
 
 
@@ -29,7 +26,6 @@ export class WpsClient {
     readonly xmlMarshaller: any;
     readonly xmlUnmarshaller: any;
     readonly wpsMarshaller: WpsMarshaller;
-    private webClient = axios;
 
     constructor(
         version: WpsVersion = '1.0.0',
@@ -221,23 +217,21 @@ export class WpsClient {
         if (this.verbose) console.log(message);
         paperTrail.push(message);
 
-        const result = await this.webClient.post(url, xmlBody, {
+        const result = await (await fetch(url, {
+            body: xmlBody,
             headers: {
                 'Content-Type': 'text/xml',
                 'Accept': 'text/xml, application/xml'
-            },
-            responseType: 'text',
-            // maxContentLength: Infinity,   // exposure is often very large 
-            // maxBodyLength: Infinity       // exposure is often very large
-        });
+            }
+        })).text();
 
         // Side-effect to keep track of raw xml
-        const message2 = JSON.stringify({ type: 'POST-response', url, result: result.data });
+        const message2 = JSON.stringify({ type: 'POST-response', url, result: result });
         if (this.verbose) console.log(message2);
         paperTrail.push(message2);
 
-        this.parseResponseForErrors(url, result.data, paperTrail);
-        return result.data;
+        this.parseResponseForErrors(url, result, paperTrail);
+        return result;
     }
 
     async getRaw(url: string, paperTrail: string[] = []): Promise<string> {
@@ -246,15 +240,14 @@ export class WpsClient {
         if (this.verbose) console.log(message);
         paperTrail.push(message);
 
-        const result = await this.webClient.get(url, {
+        const result = await (await fetch(url, {
             headers: {
                 'Accept': 'text/xml, application/xml'
             },
-            responseType: 'text'
-        });
+        })).text();
 
-        this.parseResponseForErrors(url, result.data, paperTrail);
-        return result.data;
+        this.parseResponseForErrors(url, result, paperTrail);
+        return result;
     }
 
     private parseResponseForErrors(url: string, response: string, paperTrail: string[]): void {

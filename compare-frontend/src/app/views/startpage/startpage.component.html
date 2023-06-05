@@ -1,22 +1,28 @@
 <div class="page">
-    <div class="studyareas" *ngIf="studyAreas$ | async as studyAreas">
-        <div class="studyarea" *ngFor="let studyArea of studyAreas">
+    <div class="studyAreas" *ngIf="studyAreas$ | async as studyAreas">
+        <div class="studyArea box hasShadow" *ngFor="let studyArea of studyAreas">
     
-            <div class="card box hasShadow">
-                <div class="cardBody">
-                    <img [src]="studyArea.preview">
+            <div class="studyAreaDescription">
+
+                <img [src]="studyArea.preview">
+                <h4>{{ studyArea.id }}</h4>
+                <p>{{ studyArea.description }}</p>
+
+                <div class="modeSelector">
+                    <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'selectOneScenario' )">
+                        <div class="cardBody">selectOneScenario</div>
+                    </div>
+                    <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'compareScenarios' )">
+                        <div class="cardBody">compareScenarios</div>
+                    </div>
+                    <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'compareIdentical' )">
+                        <div class="cardBody">compareIdentical</div>
+                    </div>
+                    <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'classic' )">
+                        <div class="cardBody">classic</div>
+                    </div>
                 </div>
-                <div class="cardFooter">
-                    <h4>{{ studyArea.id }}</h4>
-                    <p>{{ studyArea.description }}</p>
-                    <ul>
-                        <li><a (click)="ruleSetPicked( studyArea.id, 'selectOneScenario' )">selectOneScenario</a></li>
-                        <li><a (click)="ruleSetPicked( studyArea.id, 'compareScenarios' )">compareScenarios</a></li>
-                        <li><a (click)="ruleSetPicked( studyArea.id, 'compareIdentical' )">compareIdentical</a></li>
-                        <!-- <li><a (click)="ruleSetPicked( studyArea.id, 'compareAdvanced' )">compareAdvanced</a></li> -->
-                        <li><a (click)="ruleSetPicked( studyArea.id, 'classic' )">classic</a></li>
-                    </ul>
-                </div>
+
             </div>
     
         </div>

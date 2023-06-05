@@ -222,7 +222,8 @@ export class WpsClient {
             headers: {
                 'Content-Type': 'text/xml',
                 'Accept': 'text/xml, application/xml'
-            }
+            },
+            method: 'POST'
         })).text();
 
         // Side-effect to keep track of raw xml

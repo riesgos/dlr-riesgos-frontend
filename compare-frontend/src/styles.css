@@ -33,6 +33,7 @@ body {
 
 h1, h2, h3, h4, ul {
     margin: 0.125rem;
+    color: var(--gray-1200);
 }
 
 

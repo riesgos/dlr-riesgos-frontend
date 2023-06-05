@@ -20,11 +20,11 @@ body {
     --gray-600: #a3a5a6;
     --gray-1000: #858787;
     --gray-1200: #3d3d3d;
-    --accent-color-100: #dee9ff;
-    --accent-color-200: #84a5eb;
-    --accent-color-800: #647fba;
-    --accent-color-1200: #3d4c6e;
-    --accent-color-1400: #2c3851;
+    --accent-color-100: #e0eaf8;
+    --accent-color-200: #8da8e4;
+    --accent-color-800: #6d82b0;
+    --accent-color-1200: #485064;
+    --accent-color-1400: #080b13;
     margin: 0px;
     font-family: Roboto, Arial, Helvetica, sans-serif;
     box-sizing: border-box;

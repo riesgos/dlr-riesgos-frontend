@@ -6,6 +6,7 @@ import { EqSelection } from './converters/eqts/1_eqselect';
 import { EqSimulation } from './converters/eqts/2_eqsim';
 import { ConverterService, DefaultConverter, converterToken } from './converter.service';
 import { StringPopupComponent } from './popups/string-popup/string-popup.component';
+import { BarchartComponent } from './popups/barchart/barchart.component';
 import { UtilsModule } from '../utils/utils.module';
 import { Exposure } from './converters/eqts/3_exposure';
 import { EqDmg } from './converters/eqts/4_eq_dmg';
@@ -14,7 +15,8 @@ import { EqDmg } from './converters/eqts/4_eq_dmg';
 @NgModule({
   declarations: [
     MapComponent,
-    StringPopupComponent
+    StringPopupComponent,
+    BarchartComponent
   ],
   imports: [
     CommonModule,

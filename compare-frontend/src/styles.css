@@ -2,16 +2,31 @@
 :root {
 }
 
+@font-face {
+    font-family: 'Roboto';
+    src: url('assets/fonts/Roboto/Roboto-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto-Bold';
+    src: url('assets/fonts/Roboto/Roboto-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('assets/fonts/Nunito/Nunito-VariableFont_wght.ttf');
+}
+
 
 body {
     --white: #fbfbfb;
-    --success-light: #a9f6e9;
+    --success-light: #c4fdf3;
     --notice-light: #f6eebd;
     --warning-light: #df9b9b;
-    --success: #89f7e5;
+    --success: #76e8d5;
     --notice: #eddd96;
     --warning: #c06767;
-    --success-dark: #59c3b2;
+    --success-dark: #4abeab;
     --notice-dark: #b7a659;
     --warning-dark: #8c3535;
     --gray-10: #f0f0f4;
@@ -28,12 +43,43 @@ body {
     margin: 0px;
     font-family: Roboto, Arial, Helvetica, sans-serif;
     box-sizing: border-box;
+    color: var(--gray-1200);
 }
 
 
-h1, h2, h3, h4, ul {
+h1, h2, h3, h4 {
+    font-family: Roboto-Bold;
+    font-weight: normal;
     margin: 0.125rem;
     color: var(--gray-1200);
+}
+
+button {
+    background: var(--accent-color-800);
+    border-style: none;
+    border-radius: 0.5rem;
+    padding: 0.3rem;
+    color: var(--accent-color-100);
+}
+button:disabled {
+    color: var(--gray-100);
+    background: var(--gray-400);
+    cursor: not-allowed;
+}
+
+select {
+    border: none;
+    padding: 0.25rem;
+    background: var(--gray-10);
+}
+
+ul {
+    margin: 0.125rem;
+    color: var(--gray-1200);
+}
+
+a {
+    text-decoration: none;
 }
 
 
@@ -88,21 +134,6 @@ main
 
 
 
-button {
-    background: var(--accent-color-800);
-    border-style: none;
-    border-radius: 0.5rem;
-    padding: 0.3rem;
-    color: var(--accent-color-100);
-}
-button:disabled {
-    color: var(--gray-100);
-    background: var(--gray-400);
-    cursor: not-allowed;
-}
-
-
-
 .box {
     background: var(--gray-10);
     padding: 1rem;
@@ -118,8 +149,3 @@ button:disabled {
 }
 
 
-select {
-    border: none;
-    padding: 0.25rem;
-    background: var(--gray-10);
-}

@@ -1,5 +1,9 @@
 <div class="step">
-    <div [class]="['step-header', 'step-header-' + data.step.state.type]" [class.autoPilot]="data.isAutoPiloted" (click)="toggleFocus()">
+    <div 
+        [class]="['step-header', 'step-header-' + data.step.state.type]"
+        [class.autoPilot]="data.isAutoPiloted"
+        [class.focus]="data.hasFocus"
+        (click)="toggleFocus()">
         <h4>{{ data.step.step.title }}</h4>
     </div>
     <div class="step-body" *ngIf="data.hasFocus">

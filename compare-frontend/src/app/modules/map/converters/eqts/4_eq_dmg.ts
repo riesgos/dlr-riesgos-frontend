@@ -17,13 +17,17 @@ export class EqDmg implements Converter {
         const summaryProduct = data.find(d => d.id === "eqDamageSummary");
         if (!summaryProduct) return of([]);
 
+        const wms = new URL(wmsProduct.value);
+
         const dmgLayer: LayerComposite = {
             id: "EqDamage-WMS-damage",
             layer: new TileLayer({
                 source: new TileWMS({
                     params: {
-                        "LAYERS": wmsProduct.value,
-                        "STYLE": "style-peru-plasma"
+                        "LAYERS": wms.searchParams.get('layers'),
+                        "FORMAT": wms.searchParams.get('format'),
+                        "VERSION": wms.searchParams.get('Version'),
+                        "STYLE": "style-peru-plasma",
                     }
                 })
             }),
@@ -40,7 +44,9 @@ export class EqDmg implements Converter {
             layer: new TileLayer({
                 source: new TileWMS({
                     params: {
-                        "LAYERS": wmsProduct.value,
+                        "LAYERS": wms.searchParams.get('layers'),
+                        "FORMAT": wms.searchParams.get('format'),
+                        "VERSION": wms.searchParams.get('Version'),
                         "STYLE": "style-cum-loss-peru-plasma"
                     }
                 })

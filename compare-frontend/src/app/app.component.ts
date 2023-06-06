@@ -1,4 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { RiesgosState } from './state/state';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'compare-frontend';
+  
+  constructor(private router: Router, private store: Store<RiesgosState>) {
+  }
 }

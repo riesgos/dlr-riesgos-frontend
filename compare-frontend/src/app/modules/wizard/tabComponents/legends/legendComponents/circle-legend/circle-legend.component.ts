@@ -29,7 +29,7 @@ export class CircleLegendComponent implements OnInit {
       for (const entry of this.entries) {
         translatedEntries.push({
           ... entry,
-          label: this.translator.syncTranslate(entry.label)
+          label: this.translator.translate(entry.label)
         });
       }
 

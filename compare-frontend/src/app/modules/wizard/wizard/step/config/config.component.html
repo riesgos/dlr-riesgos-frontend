@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup">
     <div class="formElement" *ngFor="let input of data.inputs">
         <ng-container *ngIf="input.options">
-            <label [for]="input.label">{{ input.label }}:</label>
+            <label [for]="input.label">{{ input.label | translate }}:</label>
 
             <!-- 
                 Removed binding to form-control. Instead using (click)="select". 
@@ -26,5 +26,5 @@
             
         </ng-container>
     </div>
-    <button *ngIf="!autoPilot" [disabled]="!allValuesSet()" (click)="execute()">Execute</button>
+    <button *ngIf="!autoPilot" [disabled]="!allValuesSet()" (click)="execute()">{{ 'Execute' | translate }}</button>
 </form>

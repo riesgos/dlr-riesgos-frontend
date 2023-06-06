@@ -31,7 +31,7 @@
     color: var(--accent-color-1200);
 }
 .step-header-available.autoPilot h4 {
-    color: var(--gray-400);
+    color: var(--gray-100);
 }
 
 

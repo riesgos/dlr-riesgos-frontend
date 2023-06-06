@@ -72,6 +72,7 @@ export class TranslationService {
         currentPart += currentLetter;
       }
     }
+    if (currentPart !== "") parts.push(currentPart);
 
     return parts;
   }

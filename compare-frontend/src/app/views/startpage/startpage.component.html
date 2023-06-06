@@ -5,21 +5,21 @@
             <div class="studyAreaDescription">
 
                 <img [src]="studyArea.preview">
-                <h4>{{ studyArea.id }}</h4>
-                <p>{{ studyArea.description }}</p>
+                <h4>{{ studyArea.id | translate }}</h4>
+                <p>{{ studyArea.description | translate }}</p>
 
                 <div class="modeSelector">
                     <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'selectOneScenario' )">
-                        <div class="cardBody">selectOneScenario</div>
+                        <div class="cardBody">{{ 'selectOneScenario'  | translate }}</div>
                     </div>
                     <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'compareScenarios' )">
-                        <div class="cardBody">compareScenarios</div>
+                        <div class="cardBody">{{ 'compareScenarios'  | translate }}</div>
                     </div>
                     <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'compareIdentical' )">
-                        <div class="cardBody">compareIdentical</div>
+                        <div class="cardBody">{{ 'compareIdentical'  | translate }}</div>
                     </div>
                     <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'classic' )">
-                        <div class="cardBody">classic</div>
+                        <div class="cardBody">{{ 'classic'  | translate }}</div>
                     </div>
                 </div>
 

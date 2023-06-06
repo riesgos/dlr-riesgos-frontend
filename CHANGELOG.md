@@ -9,6 +9,14 @@
 - Integrate backend for content-redaction
 - Old frontend: modularize
 - Cache: move from file-cache to geoserver-cache
+- Backend: known race-condition
+    - backend is being sent some state for an execute-request
+    - that state contains a reference to data that has by now expired
+    - so the backend can't resolve that data
+    - Solution:
+        - backtrack: from the data-reference, find out what state was used to create the data, and reproduce it
+        - do this recursively
+        - requires database with metadata about the references
 
 # [2.0.5]
 
@@ -17,6 +25,7 @@
     - all components of architecture now dockerized
 - Backend
     - all ScenarioFactories can now register async conditions which must be fulfilled before the scenario may be used.
+    - Execute: failing fast if data is outdated.
 - Compare frontend
     - link click on eqSelection with form
     - mirrorClick rule now allows `include` and `exclude` of `compositeId`s

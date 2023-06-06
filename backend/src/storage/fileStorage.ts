@@ -21,19 +21,14 @@ export class FileStorage<Properties extends {}> {
         return hash;
     }
 
-    public async getDataByKey<T>(key: string, returnOutdatedDataToo = false): Promise<T | undefined> {
+    public async getDataByKey<T>(key: string): Promise<T | undefined> {
         const fullFilePath = pathJoin([this.filePath, key]);
         try {
             const age = await getFileLastChange(fullFilePath);
             if (age > this.maxCacheLifetimeSeconds) {
-                let returnValue = undefined;
-                if (returnOutdatedDataToo) {
-                    console.warn(`Store returning potentially outdated data for ${key}`);
-                    returnValue = await readJsonFile(fullFilePath);        
-                }
                 await deleteFile(fullFilePath);
                 console.log(`Store: deleted file (too old): ${key}`);
-                return returnValue;
+                return undefined;
             }
 
             const contents = await readJsonFile(fullFilePath);

@@ -17,11 +17,11 @@
 
 .tabs .tabs-list li a {
     text-decoration: none;
-    color: var(--accent-color-1200);
+    color: var(--gray-1000);
 }
 
 .tabs .tabs-list li.active a {
-    color: var(--accent-color-1400);
+    color: var(--gray-1200);
 }
 
 .tabs .tabs-list li.active {

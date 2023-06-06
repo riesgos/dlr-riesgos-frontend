@@ -56,7 +56,7 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
         res.send(summary);
     });
 
-    app.post('/scenarios/:scenarioId/steps/:stepId/execute', async (req, res) => {
+    app.post('/scenarios/:scenarioId/steps/:stepId/execute', async (req, res) => {  // console.log("Got execute request")
         const scenarioId = req.params.scenarioId;
         const scenario = scenarios.find(s => s.id === scenarioId);
         if (!scenario) return [];
@@ -66,7 +66,7 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
         const key = objectHash({scenarioId, stepId, state});
         pool.scheduleTask(key, async () => await scenario.execute(stepId, state, skipCache));
         // send user a ticket for polling
-        res.setHeader('Expires', new Date(Date.now() +  1 * 1000).toUTCString());
+        res.setHeader('Expires', new Date(Date.now() +  1 * 100).toUTCString());
         res.send({ ticket: key });
     });
 
@@ -74,7 +74,7 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
         const key = req.params.ticket;
         const response = pool.poll(key);
         res.setHeader('Expires', new Date(Date.now() +  1 * 1000).toUTCString());
-        res.send(response);
+        res.send(response);   // console.log(`Got poll for ticket: ${key}. Responding with ${JSON.stringify(response)}`)
     });
 
     app.get('/files/:hash', async (req, res) => {
@@ -84,7 +84,7 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
             console.error(`No such file: ${hash}`);
             res.statusCode = 404;
         }
-        res.send(cachedData);
+        res.send(cachedData);   // console.log(`Got request for file ${hash}. Responding with ${cachedData}.`)
     });
 
 }

@@ -125,7 +125,7 @@ export class Scenario {
         if (!entry) return toPromise({ id, value: undefined });
         if (isResolvedDatum(entry)) return entry;
         if (isDatumReference(entry)) {
-            const value = await this.store.getDataByKey(entry.reference);
+            const value = await this.store.getDataByKey(entry.reference, true);
             const datum: Datum = { id, value };
             return datum;
         }

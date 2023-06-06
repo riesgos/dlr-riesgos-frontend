@@ -2,7 +2,7 @@
     "port": "8008",
     "logDir": "./data/logs",
     "storeDir": "./data/store",
-    "maxStoreLifeTimeMinutes": "60",
+    "maxStoreLifeTimeMinutes": "5",
     "sender": "info@test.com",
     "sendMailTo": "",
     "maxLogAgeMinutes": "1440",

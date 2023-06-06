@@ -1,4 +1,9 @@
 {
+    "AvailableEqs": "Available earthquakes",
+    "ChosenEq": "Chosen earthquake",
+    "Layers": "Layers",
+    "Legend": "Legend",
+    "Download": "Download",
     "Modes": "Modes",
     "PeruShort": "Metropolitan Lima and Callao",
     "Peru Scenario Description": "Simulation of an earthquake close to the cost of Lima which causes a tsunami and subsequent damage to critical infrastructure.",

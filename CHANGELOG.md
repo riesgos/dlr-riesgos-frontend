@@ -42,12 +42,14 @@
         - can define on per-step-basis if autopilot required
     - auto-piloted steps are no longer interactive
     - Icons
+    - translation service
     - Ongoing:
         - eq-dmg: show
         - eq-dmg: popup
         - eq-dmg: legend
-    - Upcoming
-        - translation service
+    - Upcoming:
+        - layer control
+        - redo-button
 
 ## Bug fixes
 - Compare frontend

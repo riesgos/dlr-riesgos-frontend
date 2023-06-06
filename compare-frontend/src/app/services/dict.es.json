@@ -1,4 +1,9 @@
 {
+    "AvailableEqs": "Terremotos disponibles",
+    "ChosenEq": "Terremoto elegido",
+    "Layers": "Capas",
+    "Legend": "Leyenda",
+    "Download": "Descargar",
     "Modes": "Modos",
     "PeruShort": "Lima Metropolitana y Callao",
     "Peru Scenario Description": "Simulación de un sismo cercano a la costa de Lima que provoca un tsunami y consecuente daño a infraestructura crítica.",

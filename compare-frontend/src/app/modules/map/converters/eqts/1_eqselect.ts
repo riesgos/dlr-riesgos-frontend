@@ -92,12 +92,16 @@ export class EqSelection implements Converter {
                     layer: layer,
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
+                        const props = features[0].getProperties();
                         return {
                             component: StringPopupComponent,
                             args: {
                               "title": "AvailableEqs",
                               "subTitle": "",
-                              "body": createKeyValueTableHtml("Properties", features[0].getProperties(), "medium")
+                              "body": createKeyValueTableHtml({
+                                "Depth": props["origin.depth.value"],
+                                "Magnitude": props["magnitude.mag.value"]
+                              }, "medium")
                             }  
                         };
                     },
@@ -127,14 +131,25 @@ export class EqSelection implements Converter {
                 layers.push({
                     id: "selectedEqLayer",
                     layer: new VectorLayer({
-                            source: new VectorSource({
-                                features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(selectedEq.value)
-                            }),
+                        source: new VectorSource({
+                            features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(selectedEq.value)
                         }),
-                    popup: (location: number[]) => ({
-                        component: StringPopupComponent,
-                        args: {}  
-                      }),
+                    }),
+                    popup: (location, features) => {
+                        if (features.length === 0) return undefined;
+                        const props = features[0].getProperties();
+                        return {
+                            component: StringPopupComponent,
+                            args: {
+                                "title": "ChosenEq",
+                                "subTitle": "",
+                                "body": createKeyValueTableHtml({
+                                    "Depth": props["origin.depth.value"],
+                                    "Magnitude": props["magnitude.mag.value"]
+                                }, "medium")
+                            }   
+                        }
+                    },
                     onClick: () => {},
                     onHover: () => {},
                     visible: true

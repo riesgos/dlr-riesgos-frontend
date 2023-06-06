@@ -41,7 +41,7 @@ body {
     --accent-color-1200: #485064;
     --accent-color-1400: #080b13;
     margin: 0px;
-    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-family: Nunito, Arial, Helvetica, sans-serif;
     box-sizing: border-box;
     color: var(--gray-1200);
 }
@@ -81,6 +81,30 @@ ul {
 a {
     text-decoration: none;
 }
+
+table {
+    border-collapse: collapse;
+    font-size: 0.9em;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+}
+thead tr {
+    background-color: var(--accent-color-100);
+    text-align: left;
+}
+table th, table td {
+    padding: 5px 15px;
+}
+table tbody tr {
+    background-color: var(--white);
+    border-bottom: 1px solid var(--gray-100);
+}
+/* table tbody tr:nth-of-type(even) {
+    background-color: var(--gray-10);
+} */
+/* table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+} */
+
 
 
 /*

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
+import { TranslationService } from 'src/app/services/translation.service';
 
 @Component({
   selector: 'app-barchart',
@@ -12,12 +13,12 @@ export class BarchartComponent implements OnInit, AfterViewInit {
   @Input() width = 600;
   @Input() height = 400;
   @Input() title = '';
-  @Input() xLabel = 'xLabel'; // @TODO: translate
+  @Input() xLabel = 'xLabel';
   @Input() yLabel = 'yLabel';
   @Input() noData = 'NoData';
   @ViewChild('container') container!: ElementRef<HTMLDivElement>;
 
-  constructor() { }
+  constructor(private translate: TranslationService) { }
 
   ngOnInit(): void {
   }
@@ -28,7 +29,7 @@ export class BarchartComponent implements OnInit, AfterViewInit {
     const translatedData = this.data.map(entry => {
       return {
         ... entry,
-        hoverText: entry.label
+        hoverText: this.translate.translate(entry.label)
       }
     });
 
@@ -37,9 +38,9 @@ export class BarchartComponent implements OnInit, AfterViewInit {
       translatedData, 
       this.width, 
       this.height, 
-      this.xLabel,
-      this.yLabel,
-      this.noData
+      this.translate.translate(this.xLabel),
+      this.translate.translate(this.yLabel),
+      this.translate.translate(this.noData)
     );
   }
 }

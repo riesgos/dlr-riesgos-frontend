@@ -77,3 +77,9 @@
 .step-header-error.focus h4 {
     color: var(--warning-dark);
 }
+
+
+.step-body {
+    margin-bottom: 1rem;
+    border-bottom: solid 1px var(--gray-100);
+}

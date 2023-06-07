@@ -61,6 +61,7 @@ export class DefaultConverter implements Converter {
             hasFocus: false,
             step: step,
             inputs: inputOptions,
+            layerControlables: []
         }
     }
 

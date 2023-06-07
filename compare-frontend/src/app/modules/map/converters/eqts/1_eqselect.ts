@@ -119,7 +119,7 @@ export class EqSelection implements Converter {
                         _store.dispatch(stepConfig({ partition: state.partition, scenario: state.scenario, stepId: "selectEq", values: { userChoice: feature } }));
                     },
                     onHover() {},
-                    visible: true
+                    opacity: 1.0
                 });
             }
         }
@@ -152,7 +152,7 @@ export class EqSelection implements Converter {
                     },
                     onClick: () => {},
                     onHover: () => {},
-                    visible: true
+                    opacity: 1.0
                 });
             }
         }

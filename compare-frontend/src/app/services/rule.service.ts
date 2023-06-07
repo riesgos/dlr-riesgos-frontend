@@ -26,7 +26,7 @@ export class RuleService {
         // Might want to use an inference-engine.
         switch (ruleSet) {
             case 'selectOneScenario':
-                rules.oneFocusOnly = false;
+                // rules.oneFocusOnly = false;
                 rules.focusFirstStepImmediately = true;
                 rules.partition = false;
                 rules.allowConfiguration = { include: ["userChoice"] };

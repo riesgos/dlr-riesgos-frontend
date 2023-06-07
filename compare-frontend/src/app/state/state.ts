@@ -78,7 +78,8 @@ export function isRiesgosUnresolvedRefProduct(prod: RiesgosProduct): prod is Rie
 export interface RiesgosScenarioMapState {
     zoom: number,
     center: number[],
-    clickLocation: number[] | undefined
+    clickLocation: number[] | undefined,
+    layerVisibility: { layerCompositeId: string, opacity: number }[]
 }
 
 export interface FocusState {

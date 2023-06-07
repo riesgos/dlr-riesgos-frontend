@@ -19,7 +19,8 @@ export interface WizardComposite {
         label: string,
     }[],
     hasFocus: boolean,
-    isAutoPiloted?: boolean
+    isAutoPiloted?: boolean,
+    layerControlables: { layerCompositeId: string, opacity: number }[]
 }
 
 export interface WizardState {
@@ -72,6 +73,7 @@ export class WizardService {
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
+                if (!arraysEqual(last.map.layerVisibility, current.map.layerVisibility)) return true;
                 if (!arraysEqual(last.steps.map(s => s.state.type), current.steps.map(s => s.state.type))) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
@@ -96,14 +98,22 @@ export class WizardService {
                     if (state.focus.focusedSteps.includes(step.step.id)) {
                         const converter = this.converterSvc.getConverter(scenario, step.step.id);
                         stepData = converter.getInfo(state, resolvedData);
+
+                        // updating WizardComposite with current state
                         stepData.hasFocus = true;
                         stepData.isAutoPiloted = autoPilotables.includes(step.step.id);
+                        for (const layerControl of stepData.layerControlables) {
+                            const currentOpacity = state.map.layerVisibility.find(lv => lv.layerCompositeId === layerControl.layerCompositeId);
+                            if (currentOpacity) layerControl.opacity = currentOpacity.opacity;
+                        }
+
                     } else {
                         stepData = {
                             step: step,
                             inputs: [],
                             hasFocus: false,
-                            isAutoPiloted: autoPilotables.includes(step.step.id)
+                            isAutoPiloted: autoPilotables.includes(step.step.id),
+                            layerControlables: []
                         }
                     }
                     wizardSteps.push(stepData);

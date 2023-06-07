@@ -28,6 +28,6 @@
     border-top-left-radius: 0.2rem;
     border-top-right-radius: 0.2rem;
     background-color: var(--white);
-    border: 1px solid var(--gray-600);
+    border: 1px solid var(--gray-100);
     border-bottom: none;
 }

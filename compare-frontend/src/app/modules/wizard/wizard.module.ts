@@ -23,6 +23,7 @@ import { ErrorComponent } from './tabComponents/error/error.component';
 import { EqSimulation } from './converters/eqts/2_eqsim';
 import { Exposure } from './converters/eqts/3_exposure';
 import { EqDmg } from './converters/eqts/4_eq_dmg';
+import { LayerComponent } from './tabComponents/layers/layer/layer.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { EqDmg } from './converters/eqts/4_eq_dmg';
     DescriptionComponent,
     DownloadComponent,
     LegendsComponent,
-    ErrorComponent
+    ErrorComponent,
+    LayerComponent
   ],
   imports: [
     CommonModule,

@@ -18,6 +18,7 @@
 .page-wizard {
     position: absolute;
     top: 1rem;
+    width: 275px;
 }
 
 .page-wizard.left {

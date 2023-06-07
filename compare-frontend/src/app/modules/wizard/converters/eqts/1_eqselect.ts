@@ -15,7 +15,7 @@ export class EqSelection implements Converter {
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
         const step = state.steps.find(s => s.step.id === "selectEq")!;
         const inputProd = state.products.find(p => p.id === "userChoice");
-        if (!inputProd) return { hasFocus: false, inputs: [], step };
+        if (!inputProd) return { hasFocus: false, inputs: [], step, layerControlables: [] };
 
         const outputProd = state.products.find(p => p.id === "selectedEq");
 
@@ -77,6 +77,7 @@ export class EqSelection implements Converter {
                     }]
                 }
             }),
+            layerControlables: []
         }    
     }
 }

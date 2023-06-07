@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata, Rules } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerOpacity } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, calcAutoPilotableSteps, getMapPositionForStep } from './helpers';
 
@@ -264,6 +264,14 @@ export const reducer = createReducer(
     return state;
   }),
 
+  immerOn(mapLayerOpacity, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]!;
+    const partitionData = scenarioState[action.partition]!;
+
+    const foundEntry = partitionData.map.layerVisibility.find(entry => entry.layerCompositeId === action.layerCompositeId);
+    if (foundEntry) foundEntry.opacity = action.opacity;
+    else partitionData.map.layerVisibility.push({ layerCompositeId: action.layerCompositeId, opacity: action.opacity });
+  }),
 
   immerOn(togglePartition, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
@@ -334,7 +342,8 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
         map: {
           center: [-30, -70],
           zoom: 7,
-          clickLocation: undefined
+          clickLocation: undefined,
+          layerVisibility: []
         },
         products: newProducts,
         steps: newSteps

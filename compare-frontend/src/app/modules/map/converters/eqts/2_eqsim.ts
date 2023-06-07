@@ -45,7 +45,7 @@ export class EqSimulation implements Converter {
                     }),
                     onClick: () => {},
                     onHover: () => {},
-                    visible: true
+                    opacity: 1.0
                 }
             ]);
 

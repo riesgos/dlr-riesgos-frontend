@@ -41,14 +41,13 @@
         - needs not use that "first-step" condition anymore
         - can define on per-step-basis if autopilot required
     - auto-piloted steps are no longer interactive
+    - layer control, syncing visibility between wizard and map
     - Icons
     - translation service
     - Ongoing:
-        - eq-dmg: show
         - eq-dmg: popup
         - eq-dmg: legend
     - Upcoming:
-        - layer control
         - redo-button
 
 ## Bug fixes

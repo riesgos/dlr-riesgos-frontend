@@ -55,7 +55,7 @@ export class Exposure implements Converter {
 
         return of([{
             id: "exposureLayer",
-            visible: true,
+            opacity:  1.0,
             layer: new VectorLayer({
                 source: new VectorSource({
                     features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(resolvedData.value)

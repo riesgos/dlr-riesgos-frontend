@@ -23,9 +23,9 @@
             <app-tab [tabTitle]="'Description'" *ngIf="data.info">
                 <app-description [scenario]="scenario" [partition]="partition" [data]="data"></app-description>
             </app-tab>
-            <app-tab [tabTitle]="'Download'" *ngIf="data.step.state.type === 'completed'">
+            <!-- <app-tab [tabTitle]="'Download'" *ngIf="data.step.state.type === 'completed'">
                 <app-download [scenario]="scenario" [partition]="partition" [data]="data"></app-download>
-            </app-tab>
+            </app-tab> -->
         </app-tabs>
     </div>
 </div>

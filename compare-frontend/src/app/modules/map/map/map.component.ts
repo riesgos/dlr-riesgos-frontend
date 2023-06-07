@@ -143,6 +143,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const id = c.id;
       const layer = c.layer;
       layer.set("compositeId", id);
+      layer.setOpacity(c.opacity);
       return layer;
     });
     this.map.setLayers([...this.baseLayers, ...layers]);
@@ -177,7 +178,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     let madePopup = false;
     if (clickedFeature && compositeId) {
       for (const composite of mapState.layerComposites) {
-        if (composite.visible && composite.id === compositeId) {
+        if (composite.opacity > 0.0 && composite.id === compositeId) {
           const popup = composite.popup(location, [clickedFeature]);
           if (!popup) break;
           else madePopup = true;
@@ -196,7 +197,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // further click handling
     if (clickedFeature) {
       for (const composite of mapState.layerComposites) {
-        if (composite.visible) {
+        if (composite.opacity > 0.0) {
           composite.onClick(location, [clickedFeature]);
         }
       }

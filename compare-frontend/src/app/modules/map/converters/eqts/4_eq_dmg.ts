@@ -23,6 +23,7 @@ export class EqDmg implements Converter {
             id: "EqDamage-WMS-damage",
             layer: new TileLayer({
                 source: new TileWMS({
+                    url: `${wms.origin}/${wms.pathname}`,
                     params: {
                         "LAYERS": wms.searchParams.get('layers'),
                         "FORMAT": wms.searchParams.get('format'),
@@ -36,13 +37,14 @@ export class EqDmg implements Converter {
             popup: (location, features) => {
                 return undefined;
             },
-            visible: true,
+            opacity:  1.0,
         };
 
         const econLayer: LayerComposite = {
             id: "EqDamage-WMS-econ",
             layer: new TileLayer({
                 source: new TileWMS({
+                    url: `${wms.origin}/${wms.pathname}`,
                     params: {
                         "LAYERS": wms.searchParams.get('layers'),
                         "FORMAT": wms.searchParams.get('format'),
@@ -56,7 +58,7 @@ export class EqDmg implements Converter {
             popup: (location, features) => {
                 return undefined;
             },
-            visible: true,
+            opacity: 1.0,
         };
 
         return of([dmgLayer, econLayer]);

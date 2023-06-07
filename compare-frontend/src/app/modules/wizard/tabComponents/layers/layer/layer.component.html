@@ -1,0 +1,18 @@
+<div class="layerContainer">
+
+    <app-svg *ngIf="layerOpacity > 0.0"
+        class="layerEye"
+        (click)="hideLayer()"
+        [path]="'assets/icons/eye.svg'"
+    ></app-svg>
+
+    <app-svg *ngIf="layerOpacity === 0.0"
+        class="layerEye"
+        (click)="showLayer()"
+        [path]="'assets/icons/eye-closed.svg'"
+    ></app-svg>
+
+    <div class="layerTitle">
+        {{ layerCompositeId }}
+    </div>
+</div>

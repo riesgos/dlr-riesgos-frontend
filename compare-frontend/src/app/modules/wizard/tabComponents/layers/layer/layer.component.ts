@@ -8,7 +8,7 @@ import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
   templateUrl: './layer.component.html',
   styleUrls: ['./layer.component.css']
 })
-export class LayerComponent implements OnInit {
+export class LayerComponent {
 
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
@@ -16,10 +16,6 @@ export class LayerComponent implements OnInit {
   @Input() layerOpacity!: number;
 
   constructor(private store: Store<RiesgosState>) {}
-
-  ngOnInit(): void {
-    console.log(`Layer control: ${this.layerCompositeId}, ${this.layerOpacity}`)
-  }
 
   showLayer() {
     this.store.dispatch(mapLayerOpacity({ scenario: this.scenario, partition: this.partition, layerCompositeId: this.layerCompositeId, opacity: 1.0 }));

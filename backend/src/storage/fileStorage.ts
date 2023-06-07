@@ -7,7 +7,7 @@ export class FileStorage<Properties extends {}> {
 
     constructor(
         private filePath: string,
-        private maxCacheLifetimeSeconds: number
+        private maxCacheLifetimeMinutes: number
     ) {
         // @TODO: also store props in a database.
         // This way users can query files by only parts of the props-object,
@@ -24,8 +24,8 @@ export class FileStorage<Properties extends {}> {
     public async getDataByKey<T>(key: string): Promise<T | undefined> {
         const fullFilePath = pathJoin([this.filePath, key]);
         try {
-            const age = await getFileLastChange(fullFilePath);
-            if (age > this.maxCacheLifetimeSeconds) {
+            const ageMinutes = (await getFileLastChange(fullFilePath)) / 60.0;
+            if (ageMinutes > this.maxCacheLifetimeMinutes) {
                 await deleteFile(fullFilePath);
                 console.log(`Store: deleted file (too old): ${key}`);
                 return undefined;

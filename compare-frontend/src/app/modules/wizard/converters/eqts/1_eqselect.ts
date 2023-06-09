@@ -53,7 +53,7 @@ export class EqSelection implements Converter {
                             }],
                             continuous: true,
                             height: 100,
-                            width: 150
+                            width: 100
                         }
                     }, {
                         component: CircleLegendComponent,

@@ -15,7 +15,10 @@ export class EqDmg implements Converter {
             isAutoPiloted: false, // doesn't matter what we set here - will be overridden by wizard-svc
             inputs: [],
             step,
-            layerControlables: [{ layerCompositeId: "EqDamage-WMS-damage", opacity: 1.0 }, { layerCompositeId: "EqDamage-WMS-econ", opacity: 1.0 }]
+            layerControlables: [
+                { layerCompositeId: "EqDamage-WMS-damage", opacity: 1.0 },
+                { layerCompositeId: "EqDamage-WMS-econ", opacity: 1.0 }
+            ]
             // legend: () => ({
             //     component: LegendComponent,
             //     args: {

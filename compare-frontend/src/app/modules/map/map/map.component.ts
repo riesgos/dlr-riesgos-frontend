@@ -1,20 +1,17 @@
 import { Map as OlMap, Overlay, View } from 'ol';
-import { applyStyle } from 'ol-mapbox-style';
-import MVT from 'ol/format/MVT';
 import Layer from 'ol/layer/Layer';
 import TileLayer from 'ol/layer/Tile';
-import VectorTileLayer from 'ol/layer/VectorTile';
 import OSM from 'ol/source/OSM';
-import VectorTile from 'ol/source/VectorTile';
-import { createXYZ } from 'ol/tilegrid';
+import GeoJSON from 'ol/format/GeoJSON';
 import { Partition, ScenarioName } from 'src/app/state/state';
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
-import greyScale from '../data/open-map-style.Positron.json';
 import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { maybeArraysEqual } from 'src/app/state/helpers';
 import { FeatureLike } from 'ol/Feature';
+import { TileWMS } from 'ol/source';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -39,7 +36,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private mapSvc: MapService,
-    private zone: NgZone
+    private zone: NgZone,
+    private http: HttpClient
   ) {
       // no need to run this outside of zone
       this.map = new OlMap({
@@ -110,10 +108,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
        *   HANDLING EVENTS FROM STATE-MGMT
        *********************************************************************/
 
-      const mapStateSub = this.mapSvc.getMapState(this.scenario, this.partition).subscribe(mapState => {
+      const mapStateSub = this.mapSvc.getMapState(this.scenario, this.partition).subscribe(async mapState => {
           this.handleMove(mapState);
           this.handleLayers(mapState);
-          this.handleClick(mapState);
+          await this.handleClick(mapState);
       });
       this.subs.push(mapStateSub);
     }
@@ -152,7 +150,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
 
   private _lastClickLocation: number[] | undefined;
-  private handleClick(mapState: MapState) {
+  private async handleClick(mapState: MapState) {
     
     const location = mapState.clickLocation;
     this.overlay.setPosition(location); 
@@ -167,12 +165,38 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const pixel = this.map.getPixelFromCoordinate(location);
     let clickedFeature: FeatureLike | undefined;
     let compositeId: string | undefined;
+
+    // trying to get clicked feature from vector-layers ...
     this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
       if (this.baseLayers.includes(layer)) return false;
       clickedFeature = feature;
       compositeId = layer.get("compositeId");
       return true;
     });
+
+    // ... trying to get feature from raster layers.
+    if (!clickedFeature) {
+      for (const layer of this.map.getAllLayers()) {
+        if ((layer.getOpacity() <= 0.0) || this.baseLayers.includes(layer)) continue;
+        const source = layer.getSource();
+        if (source instanceof TileWMS) {
+          const view = this.map.getView();
+          const url = source.getFeatureInfoUrl(location, view.getResolution() || 10_000, view.getProjection(), { 'INFO_FORMAT': 'application/json' });
+          if (url) {
+            const result = await firstValueFrom(this.http.get(url));
+            if (result) {
+              // clickedFeature = new Feature();
+              // clickedFeature.setGeometry(new Point(location));
+              // clickedFeature.setProperties(result);
+              const resultFeatures = new GeoJSON().readFeatures(result);
+              clickedFeature = resultFeatures[0];
+              compositeId = layer.get("compositeId");
+              break;
+            }
+          }
+        }
+      }
+    }
 
     // popup
     let madePopup = false;
@@ -211,20 +235,6 @@ function getBaseLayers() {
   const osmBase = new TileLayer({
     source: new OSM()
   });
-
-  // const vectorTileBase = new VectorTileLayer({
-  //   declutter: true,
-  //   source: new VectorTile({
-  //       format: new MVT(),
-  //       tileGrid: createXYZ({
-  //           minZoom: 0,
-  //           maxZoom: 12
-  //       }),
-  //       url: 'https://{a-d}.tiles.geoservice.dlr.de/service/tms/1.0.0/planet_eoc@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?flipy=true'
-  //   }),
-  //   renderMode: 'hybrid'
-  // });
-  // applyStyle(vectorTileBase, greyScale, 'planet0-12');
 
   return [osmBase];
 }

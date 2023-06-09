@@ -4,6 +4,9 @@ import { Converter, LayerComposite } from "../../converter.service";
 import TileLayer from "ol/layer/Tile";
 import TileSource from "ol/source/Tile";
 import TileWMS from "ol/source/TileWMS";
+import { GroupedBarChartComponent, Grouping } from "../../popups/grouped-bar-chart/grouped-bar-chart.component";
+import { GroupedBarChartData } from "../../popups/grouped-bar-chart/groupedChart";
+import { DamagePopupComponent } from "../../popups/damage-popup/damage-popup.component";
 
 export class EqDmg implements Converter {
 
@@ -35,7 +38,19 @@ export class EqDmg implements Converter {
             onClick: (location, features) => undefined,
             onHover: (location, features) => undefined,
             popup: (location, features) => {
-                return undefined;
+
+                return {
+                    component: DamagePopupComponent,
+                    args: {
+                        feature: features[0],
+                        metaData: summaryProduct.value,
+                        xLabel: 'damage',
+                        yLabel: 'Nr_buildings',
+                        schema: 'SARA_v1.0',
+                        heading: 'earthquake_damage_classification',
+                        additionalText: 'DamageStatesSara'
+                    }
+                };
             },
             opacity:  1.0,
         };

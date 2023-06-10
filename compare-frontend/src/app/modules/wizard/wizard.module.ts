@@ -24,6 +24,7 @@ import { EqSimulation } from './converters/eqts/2_eqsim';
 import { Exposure } from './converters/eqts/3_exposure';
 import { EqDmg } from './converters/eqts/4_eq_dmg';
 import { LayerComponent } from './tabComponents/layers/layer/layer.component';
+import { TranslatedImageComponent } from './tabComponents/legends/translated-image/translated-image.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { LayerComponent } from './tabComponents/layers/layer/layer.component';
     DownloadComponent,
     LegendsComponent,
     ErrorComponent,
-    LayerComponent
+    LayerComponent,
+    TranslatedImageComponent
   ],
   imports: [
     CommonModule,

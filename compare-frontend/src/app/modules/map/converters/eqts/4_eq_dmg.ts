@@ -2,11 +2,9 @@ import { Observable, of } from "rxjs";
 import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved } from "src/app/state/state";
 import { Converter, LayerComposite } from "../../converter.service";
 import TileLayer from "ol/layer/Tile";
-import TileSource from "ol/source/Tile";
 import TileWMS from "ol/source/TileWMS";
-import { GroupedBarChartComponent, Grouping } from "../../popups/grouped-bar-chart/grouped-bar-chart.component";
-import { GroupedBarChartData } from "../../popups/grouped-bar-chart/groupedChart";
 import { DamagePopupComponent } from "../../popups/damage-popup/damage-popup.component";
+import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
 
 export class EqDmg implements Converter {
 
@@ -31,7 +29,7 @@ export class EqDmg implements Converter {
                         "LAYERS": wms.searchParams.get('layers'),
                         "FORMAT": wms.searchParams.get('format'),
                         "VERSION": wms.searchParams.get('Version'),
-                        "STYLE": "style-peru-plasma",
+                        "STYLES": "style-damagestate-sara-plasma",
                     }
                 })
             }),
@@ -64,14 +62,19 @@ export class EqDmg implements Converter {
                         "LAYERS": wms.searchParams.get('layers'),
                         "FORMAT": wms.searchParams.get('format'),
                         "VERSION": wms.searchParams.get('Version'),
-                        "STYLE": "style-cum-loss-peru-plasma"
+                        "STYLES": "style-cum-loss-peru-plasma"
                     }
                 })
             }),
             onClick: (location, features) => undefined,
             onHover: (location, features) => undefined,
             popup: (location, features) => {
-                return undefined;
+                return {
+                    component: StringPopupComponent,
+                    args: {
+                        title: "I'm a placeholder"
+                    }
+                };
             },
             opacity: 1.0,
         };

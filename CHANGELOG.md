@@ -17,6 +17,10 @@
         - backtrack: from the data-reference, find out what state was used to create the data, and reproduce it
         - do this recursively
         - requires database with metadata about the references
+- Compare frontend:
+    - Problem: user needs to define order of composites the same in wizard-converter and in map-converter.
+    - Otherwise the top layer on map is not the top layer in layercontrol
+    - That's because map-converters and wizard-converters are completele independent.
 
 # [2.0.5]
 
@@ -44,9 +48,9 @@
     - layer control, syncing visibility between wizard and map
     - Icons
     - translation service
+    - Map component: manually triggering change detection after adding dynamic component
     - Ongoing:
-        - eq-dmg: popup
-        - eq-dmg: legend
+        - eq dmg econ popup
     - Upcoming:
         - redo-button
 

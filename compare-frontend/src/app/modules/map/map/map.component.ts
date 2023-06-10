@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
 import { Subscription, firstValueFrom } from 'rxjs';
@@ -36,6 +36,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private mapSvc: MapService,
+    private changeDetector: ChangeDetectorRef,
     private zone: NgZone,
     private http: HttpClient
   ) {
@@ -144,6 +145,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       layer.setOpacity(c.opacity);
       return layer;
     });
+    console.log("Adding layers", layers.map(l => l.get("compositeId")))
     this.map.setLayers([...this.baseLayers, ...layers]);
     // @TODO: set visibility from last time
   }
@@ -151,7 +153,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private _lastClickLocation: number[] | undefined;
   private async handleClick(mapState: MapState) {
-    
     const location = mapState.clickLocation;
     this.overlay.setPosition(location); 
 
@@ -177,7 +178,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // ... trying to get feature from raster layers.
     if (!clickedFeature) {
       for (const layer of this.map.getAllLayers()) {
-        if ((layer.getOpacity() <= 0.0) || this.baseLayers.includes(layer)) continue;
+        if (!layer.getVisible() || (layer.getOpacity() <= 0.0) || this.baseLayers.includes(layer)) continue;
         const source = layer.getSource();
         if (source instanceof TileWMS) {
           const view = this.map.getView();
@@ -212,6 +213,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           for (const key in args) {
             componentRef.instance[key] = args[key];
           }
+          this.changeDetector.detectChanges();
+          console.log("Created popup ", compositeId)
           break;
         }
       }

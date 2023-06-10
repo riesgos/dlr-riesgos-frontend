@@ -50,7 +50,9 @@
     - translation service
     - Map component: manually triggering change detection after adding dynamic component
     - Ongoing:
+        - compare two: popups close while other side is loading
         - eq dmg econ popup
+        - make sure that compare stuff is going well
     - Upcoming:
         - redo-button
 

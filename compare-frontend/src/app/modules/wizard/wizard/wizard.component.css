@@ -1,5 +1,6 @@
 .wizard {
     padding: 0;
+    width: 275px;
 }
 
 .wizard.unfocussed {

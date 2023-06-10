@@ -14,11 +14,14 @@
     flex: 1 1 auto;
 }
 
+.maps .page-map.right {
+    border-left: 1px solid var(--accent-color-800);
+}
+
 
 .page-wizard {
     position: absolute;
     top: 1rem;
-    width: 275px;
 }
 
 .page-wizard.left {

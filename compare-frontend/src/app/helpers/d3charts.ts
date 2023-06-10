@@ -158,7 +158,7 @@ export function createBigBarChart(
             .style('padding', '3px');
         const infoboxP = infobox.append('p');
     
-        bars.on('mouseenter', (evt, datum) => {console.log("mouseenter")
+        bars.on('mouseenter', (evt, datum) => {
           const text = datum.hoverText ? datum.hoverText : `${yLabel}: ${datum.value}`;
           infoboxP.html(text);
           const positionInsideSvg = pointer(evt, svg.node());  // doesnt seem to work in popup
@@ -176,16 +176,16 @@ export function createBigBarChart(
             .style('top', `${y}px`);
           infobox.style('visibility', 'visible');
     
-          bars.select('rect').attr('fill', 'lightgray');
-          select(evt.target).select('rect').attr('fill', colorScale(datum.label));
-          xAxis.selectAll('text').attr('color', 'lightgray');
+          bars.select('rect').style('fill', 'lightgray');
+          select(evt.target).select('rect').style('fill', colorScale(datum.label));
+          xAxis.selectAll('text').style('fill', 'lightgray');
           const n = xAxis.selectAll<SVGTextElement, unknown>('text').nodes().find(n => n.innerHTML === datum.label);
-          if (n) select(n).attr('color', 'black');
+          if (n) select(n).style('fill', 'black');
         })
         
-        bars.on('mouseout', (evt, datum) => {console.log("mouseleave")
+        bars.on('mouseout', (evt, datum) => {
           infobox.style('visibility', 'hidden');
-          bars.selectAll<SVGRectElement, BarData>('rect').attr('fill', d => colorScale(d.label));
-          xAxis.selectAll('text').attr('color', 'currentColor'); // 'hsl(198deg, 0%, 40%)'); // = --clr-global-font-color
+          bars.selectAll<SVGRectElement, BarData>('rect').style('fill', d => colorScale(d.label));
+          xAxis.selectAll('text').style('fill', 'lightgray'); // 'hsl(198deg, 0%, 40%)'); // = --clr-global-font-color
         });
   }

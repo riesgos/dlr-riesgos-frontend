@@ -5,6 +5,7 @@
         [class.focus]="data.hasFocus"
         (click)="toggleFocus()">
         <h4>{{ data.step.step.title | translate }}</h4>
+        <div *ngIf="data.step.state.type === 'running'" class="progressBar"></div>
     </div>
     <div class="step-body" *ngIf="data.hasFocus">
         <app-tabs>

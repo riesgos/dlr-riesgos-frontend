@@ -278,9 +278,9 @@ export class RearrangingGroupedBarChart {
             .attr('fill', (d: SubGroupData) => subGroupColorScale(d.key));
         this.selectors.barGroups
             .selectAll('.barSubGroup').selectAll('text')
-            .attr('fill', (d: SubGroupData) => subGroupColorScale(d.key));
+            .style('fill', (d: SubGroupData) => subGroupColorScale(d.key));
         this.selectors.legendEntriesG.selectAll('text')
-            .attr('fill', (d: any) => d.val);
+            .style('fill', (d: any) => d.val);
         this.selectors.legendEntriesG.selectAll('rect')
             .attr('fill', (d: any) => d.val);
     }
@@ -294,12 +294,12 @@ export class RearrangingGroupedBarChart {
             });
         this.selectors.barGroups
             .selectAll('.barSubGroup').selectAll('text')
-            .attr('fill', (d: SubGroupData) => {
+            .style('fill', (d: SubGroupData) => {
                 if (d.key === datum.key) return subGroupColorScale(d.key);
                 else return this.grayColor;
             });
         this.selectors.legendEntriesG.selectAll('text')
-            .attr('fill', (d: any) => {
+            .style('fill', (d: any) => {
                 if (d.key === datum.key) return d.val;
                 else return this.grayColor;
             });

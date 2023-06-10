@@ -49,6 +49,17 @@
     color: var(--notice-dark);
 }
 
+.progressBar {
+    margin: 0 0 -4px -4px;
+    width: 102%;
+    height: 3px;
+    background: linear-gradient(var(--notice) 0 0) 0/0% no-repeat var(--notice-light);
+    animation: progressBarAnimation 2s infinite linear;
+}
+@keyframes progressBarAnimation {
+    100% {background-size:100%}
+}
+
 
 .step-header-completed {
     background-color: var(--success-light);

@@ -214,7 +214,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
     }
-    if (!madePopup) this.closePopup();
+    
+    // <-- not going over state-mgmt here. otherwise no popup showing up in `compare-two-scenarios` if second not already there.
+    if (!madePopup) this.overlay.setPosition(undefined); // this.closePopup(); 
 
     // further click handling
     if (clickedFeature) {

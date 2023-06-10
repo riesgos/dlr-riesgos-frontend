@@ -52,8 +52,8 @@
     - Exposure barchart: fixed hover effect
     - Wizard: progress bar
     - Fix: Popups in `compare-two-scenarios`: if one side cannot create a popup, a `closePopup` action is no longer dispatched to global
+    - eq dmg econ popup
     - Ongoing:
-        - eq dmg econ popup
 
     - Upcoming:
         - redo-button

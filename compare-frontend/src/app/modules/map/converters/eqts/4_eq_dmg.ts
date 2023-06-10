@@ -5,6 +5,7 @@ import TileLayer from "ol/layer/Tile";
 import TileWMS from "ol/source/TileWMS";
 import { DamagePopupComponent } from "../../popups/damage-popup/damage-popup.component";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
+import { createTableHtml } from "src/app/helpers/others";
 
 export class EqDmg implements Converter {
 
@@ -69,10 +70,18 @@ export class EqDmg implements Converter {
             onClick: (location, features) => undefined,
             onHover: (location, features) => undefined,
             popup: (location, features) => {
+
+                let loss = 'no_data';
+                if (features.length > 0) {
+                    const props = features[0].getProperties();
+                    loss = +(props['cum_loss'] / 1_000_000).toFixed(3) + 'MUSD';
+                }
+
                 return {
                     component: StringPopupComponent,
                     args: {
-                        title: "I'm a placeholder"
+                        title: "eq-economic-loss-title",
+                        body: createTableHtml([[loss]])
                     }
                 };
             },

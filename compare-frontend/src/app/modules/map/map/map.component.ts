@@ -145,7 +145,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       layer.setOpacity(c.opacity);
       return layer;
     });
-    console.log("Adding layers", layers.map(l => l.get("compositeId")))
     this.map.setLayers([...this.baseLayers, ...layers]);
     // @TODO: set visibility from last time
   }

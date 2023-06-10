@@ -411,18 +411,19 @@ function setValuesToDefaults(partitionData: WritableDraft<RiesgosScenarioState>,
   for (const id of ids) {
     const product = partitionData.products.find(p => p.id === id);
     const stepInput = partitionData.steps.map(s => s.step.inputs).flat().find(i => i.id === id);
+    if (!stepInput) continue;
     if (product?.value) {
       product.options = [product.value];
-      stepInput!.options = product.options;
+      stepInput.options = product.options;
       if (stepInput && stepInput.options) stepInput.options = [product.value];
     } else if (product?.reference) {
       product.options = [product.reference];
-      stepInput!.options = product.options;
+      stepInput.options = product.options;
       if (stepInput && stepInput.options) stepInput.options = [product.reference];
     } else if (product?.options) {
       product.value = product.options[0];
       product.options = [product.options[0]];
-      stepInput!.options = product.options;
+      stepInput.options = product.options;
     }
 
   }

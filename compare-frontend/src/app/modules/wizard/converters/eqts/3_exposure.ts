@@ -35,7 +35,8 @@ export class Exposure implements Converter {
                     text: 'NoData',
                     color: '#c1c1c1'
                     }],
-                    height: 50
+                    height: 50,
+                    width: 130
                 }
             }),
             layerControlables: [{ layerCompositeId: "exposureLayer", opacity: 1.0 }]

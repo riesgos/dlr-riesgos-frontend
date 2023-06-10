@@ -1,5 +1,5 @@
 <div class="head" *ngIf="title !== '' && title !== undefined">{{ title | translate }}</div>
 <div [style]="{display: direction == 'horizontal' ? null : 'flex' }">
-    <svg #legendAnchor></svg>
+    <svg #legendAnchor [style]="{flex: direction == 'horizontal' ? null : '1 0 auto' }"></svg>
     <p style="margin-top: 0;" *ngIf="text !== '' && text !== undefined">{{ text | translate }}</p>
 </div>

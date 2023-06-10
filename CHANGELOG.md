@@ -51,24 +51,11 @@
     - Map component: manually triggering change detection after adding dynamic component
     - Exposure barchart: fixed hover effect
     - Wizard: progress bar
+    - Fix: Popups in `compare-two-scenarios`: if one side cannot create a popup, a `closePopup` action is no longer dispatched to global
     - Ongoing:
-        - compare two: eq-dmg popup closes 
-            Observations:
-                compare two: eq-dmg popup closes
-                works fine if both already there
-            Hypothesis 1: because of other side loading?
-                No, continues even if other isnt activated
-            Hypothesis 2: because of change detection?
-                No, continues even without change detection
-            Hypothesis 3: something to do with mode?
-                Does it persist in expert mode?
-            Hypothesis 4: 
-                click on left map -> state + click-location
-                mirror action
-                click on right map -> no data -> state - click-location
+        - eq dmg econ popup
 
     - Upcoming:
-        - eq dmg econ popup
         - redo-button
 
 ## Bug fixes

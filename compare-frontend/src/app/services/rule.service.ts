@@ -26,7 +26,6 @@ export class RuleService {
         // Might want to use an inference-engine.
         switch (ruleSet) {
             case 'selectOneScenario':
-                // rules.oneFocusOnly = false;
                 rules.focusFirstStepImmediately = true;
                 rules.partition = false;
                 rules.allowConfiguration = { include: ["userChoice"] };
@@ -34,7 +33,6 @@ export class RuleService {
             case 'compareScenarios':
                 break;
             case 'compareIdentical':
-                rules.oneFocusOnly = false;
                 rules.focusFirstStepImmediately = true;
                 rules.mirrorData = true;
                 rules.mirrorFocus = false;

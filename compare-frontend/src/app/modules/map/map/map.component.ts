@@ -155,11 +155,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const location = mapState.clickLocation;
     this.overlay.setPosition(location); 
 
-    if (!location || maybeArraysEqual(this._lastClickLocation, location)) {
-      this._lastClickLocation = location;
+    this._lastClickLocation = location;
+    if (!location) {
       return;
-    } else {
-      this._lastClickLocation = location;
     }
 
     const pixel = this.map.getPixelFromCoordinate(location);
@@ -214,9 +212,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
     }
-    
+
+    // if (!madePopup) this.closePopup();
     // <-- not going over state-mgmt here. otherwise no popup showing up in `compare-two-scenarios` if second not already there.
-    if (!madePopup) this.overlay.setPosition(undefined); // this.closePopup(); 
+    if (!madePopup) this.overlay.setPosition(undefined);
 
     // further click handling
     if (clickedFeature) {

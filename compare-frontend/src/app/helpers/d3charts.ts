@@ -158,8 +158,7 @@ export function createBigBarChart(
             .style('padding', '3px');
         const infoboxP = infobox.append('p');
     
-        bars.on('mouseover', (evt, datum) => {console.log("mouseenter")
-          infobox.style('visibility', 'visible');
+        bars.on('mouseenter', (evt, datum) => {console.log("mouseenter")
           const text = datum.hoverText ? datum.hoverText : `${yLabel}: ${datum.value}`;
           infoboxP.html(text);
           const positionInsideSvg = pointer(evt, svg.node());  // doesnt seem to work in popup
@@ -167,11 +166,15 @@ export function createBigBarChart(
           let x = Math.min(positionInsideSvg[0], positionInLayer[0]);
           if (x > centerWidth / 2) {
             x -= maxWidthHoverText;
+            x -= 20;  // safety-distance so popup doesn't touch mouse (which would trigger a `mouseout` event)
+          } else {
+            x += 20; // safety-distance so popup doesn't touch mouse (which would trigger a `mouseout` event)
           }
           const y = Math.min(positionInsideSvg[1], positionInLayer[1]);
           infobox
             .style('left', `${x}px`)
             .style('top', `${y}px`);
+          infobox.style('visibility', 'visible');
     
           bars.select('rect').attr('fill', 'lightgray');
           select(evt.target).select('rect').attr('fill', colorScale(datum.label));

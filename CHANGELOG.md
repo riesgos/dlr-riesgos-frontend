@@ -50,10 +50,19 @@
     - translation service
     - Map component: manually triggering change detection after adding dynamic component
     - Ongoing:
-        - compare two: popups close while other side is loading
-        - eq dmg econ popup
-        - make sure that compare stuff is going well
+        - compare two: eq-dmg popup closes 
+            Hypothesis 1: because of other side loading?
+                No, continues even if other isnt activated
+            Hypothesis 2: because of change detection?
+                No, continues even without change detection
+            Hypothesis 3: something to do with mode?
+                Does it persist in expert mode?
+            Hypothesis 4: 
+        - Exposure popup weird hitbox
+            Observations:
+                popup window never goes out of "hidden" state
     - Upcoming:
+        - eq dmg econ popup
         - redo-button
 
 ## Bug fixes

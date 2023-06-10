@@ -61,7 +61,6 @@ fakeScenarioFactory.registerStep({
 
 
 const sendMailOnError = false;
-const http = axios.create();
 const port = 5003;
 const config: ScenarioAPIConfig = {
     logDir: './test-data/scenario-errors/logs',
@@ -95,24 +94,23 @@ afterAll(async () => {
 describe('Scenarios - test error handling', () => {
 
     test(`Ensure that 400 error in WPS is passed down to user`, async () => {
-        // axios.post.mockImplementation()
 
       // request 1: start execution
         const state: ScenarioState = { data: [] };
-        const response3 = await http.post(`http://localhost:${port}/scenarios/FakeScenario/steps/WpsService/execute`, state);
-        const { ticket } = response3.data;
+        const response3 = await fetch(`http://localhost:${port}/scenarios/FakeScenario/steps/WpsService/execute`, { body: JSON.stringify(state), method: 'POST' });
+        const { ticket } = await response3.json();
         expect(ticket).toBeTruthy();
 
         // request 2: first poll ...
-        const response4 = await http.get(`http://localhost:${port}/scenarios/FakeScenario/steps/WpsService/execute/poll/${ticket}`);
+        const response4 = await (await fetch(`http://localhost:${port}/scenarios/FakeScenario/steps/WpsService/execute/poll/${ticket}`)).json();
         expect(response4.data.ticket).toBeTruthy();
 
         // give time to send request, which will fail ...
         await sleep(3000);
 
         // request 3: second poll.
-        const response5 = await http.get(`http://localhost:${port}/scenarios/FakeScenario/steps/WpsService/execute/poll/${ticket}`);
-        const { error } = response5.data;
+        const response5 = await fetch(`http://localhost:${port}/scenarios/FakeScenario/steps/WpsService/execute/poll/${ticket}`);
+        const { error } = await response5.json();
         expect(error).toBeTruthy();
 
     }, 15_000);

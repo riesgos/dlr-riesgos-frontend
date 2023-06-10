@@ -158,7 +158,7 @@ export function createBigBarChart(
             .style('padding', '3px');
         const infoboxP = infobox.append('p');
     
-        bars.on('mouseenter', (evt, datum) => {
+        bars.on('mouseover', (evt, datum) => {console.log("mouseenter")
           infobox.style('visibility', 'visible');
           const text = datum.hoverText ? datum.hoverText : `${yLabel}: ${datum.value}`;
           infoboxP.html(text);
@@ -179,7 +179,8 @@ export function createBigBarChart(
           const n = xAxis.selectAll<SVGTextElement, unknown>('text').nodes().find(n => n.innerHTML === datum.label);
           if (n) select(n).attr('color', 'black');
         })
-        .on('mouseleave', (evt, datum) => {
+        
+        bars.on('mouseout', (evt, datum) => {console.log("mouseleave")
           infobox.style('visibility', 'hidden');
           bars.selectAll<SVGRectElement, BarData>('rect').attr('fill', d => colorScale(d.label));
           xAxis.selectAll('text').attr('color', 'currentColor'); // 'hsl(198deg, 0%, 40%)'); // = --clr-global-font-color

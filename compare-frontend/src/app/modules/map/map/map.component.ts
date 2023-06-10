@@ -185,9 +185,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           if (url) {
             const result = await firstValueFrom(this.http.get(url));
             if (result) {
-              // clickedFeature = new Feature();
-              // clickedFeature.setGeometry(new Point(location));
-              // clickedFeature.setProperties(result);
               const resultFeatures = new GeoJSON().readFeatures(result);
               clickedFeature = resultFeatures[0];
               compositeId = layer.get("compositeId");
@@ -213,7 +210,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             componentRef.instance[key] = args[key];
           }
           this.changeDetector.detectChanges();
-          console.log("Created popup ", compositeId)
           break;
         }
       }

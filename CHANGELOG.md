@@ -53,8 +53,9 @@
     - Wizard: progress bar
     - Fix: Popups in `compare-two-scenarios`: if one side cannot create a popup, a `closePopup` action is no longer dispatched to global
     - eq dmg econ popup
+    - eq sim popup and legend
     - Ongoing:
-
+        legends and layers in same tab
     - Upcoming:
         - redo-button
 

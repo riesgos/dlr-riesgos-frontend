@@ -22,7 +22,18 @@
     - Otherwise the top layer on map is not the top layer in layercontrol
     - That's because map-converters and wizard-converters are completele independent.
 
-# [2.0.5]
+
+# [2.0.6]
+
+- Ongoing:
+    
+- Upcoming:
+    - hide right side under modal unil available
+    - legends and layers in same tab
+    - redo-button
+
+
+# [2.0.5](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.5) (Jun 11 2023) Compare prototype working 
 
 ## Features
 - Overall:
@@ -54,10 +65,6 @@
     - Fix: Popups in `compare-two-scenarios`: if one side cannot create a popup, a `closePopup` action is no longer dispatched to global
     - eq dmg econ popup
     - eq sim popup and legend
-    - Ongoing:
-        legends and layers in same tab
-    - Upcoming:
-        - redo-button
 
 ## Bug fixes
 - Compare frontend

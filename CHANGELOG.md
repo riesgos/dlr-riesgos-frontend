@@ -23,7 +23,7 @@
     - That's because map-converters and wizard-converters are completele independent.
 
 
-# [2.0.6]
+# [2.0.7]
 
 - Ongoing:
     
@@ -33,7 +33,7 @@
     - redo-button
 
 
-# [2.0.5](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.5) (Jun 11 2023) Compare prototype working 
+# [2.0.6](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.5) (Jun 11 2023) Compare prototype working 
 
 ## Features
 - Overall:

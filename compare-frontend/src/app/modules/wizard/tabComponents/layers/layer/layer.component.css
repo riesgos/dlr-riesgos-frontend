@@ -1,0 +1,12 @@
+.layerContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.layerEye {
+    height: 0.9rem; 
+    width: 0.9rem; 
+    background-color: var(--gray-1000);
+    margin-right: 0.5rem;
+}

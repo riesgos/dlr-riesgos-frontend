@@ -1,5 +1,4 @@
 import express from 'express';
-import axios from 'axios';
 import { Server } from 'http';
 import { ScenarioAPIConfig, addScenarioApi } from '../../../scenarios/scenario.interface';
 import { peruFactory } from '../peru';
@@ -49,14 +48,14 @@ test('Testing eq-catalog', async () => {
         }]
     };
 
-    const response = await axios.post(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute`, state);
-    const ticket = response.data.ticket;
+    const response = await fetch(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute`, {body: JSON.stringify(state), method: 'POST'});
+    const ticket = (await response.json()).ticket;
 
     let poll: any;
     do {
         await sleep(100);
-        poll = await axios.get(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute/poll/${ticket}`);
-    } while (poll.data.ticket);
+        poll = await (await fetch(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute/poll/${ticket}`)).json();
+    } while (poll.ticket);
     const results = poll.data.results;
 
     expect(results).toBeTruthy();
@@ -65,8 +64,8 @@ test('Testing eq-catalog', async () => {
     const avEqs = results.data.find((d: any) => d.id === 'availableEqs');
     expect(avEqs.reference);
 
-    const fileResponse = await axios.get(`http://localhost:${port}/files/${avEqs.reference}`);
-    const data = fileResponse.data;
+    const fileResponse = await fetch(`http://localhost:${port}/files/${avEqs.reference}`);
+    const data = await fileResponse.json();
     expect(data).toBeTruthy();
 });
 

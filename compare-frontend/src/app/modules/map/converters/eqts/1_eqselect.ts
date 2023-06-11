@@ -32,43 +32,45 @@ export class EqSelection implements Converter {
         const layers: LayerComposite[] = [];
         const stepState = state.steps.find(s => s.step.id === "selectEq")?.state.type;
 
+
+        const defaultStyle = (feature: FeatureLike, resolution: number) => {
+            const props = feature.getProperties();
+            const magnitude = props['magnitude.mag.value'];
+            const depth = props['origin.depth.value'];
+
+            let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
+            const [r, g, b] = yellowRedRange(100, 0, depth);
+
+            return new Style({
+                image: new Circle({
+                    radius: radius,
+                    fill: new Fill({
+                        color: [r, g, b, 0.5]
+                    }),
+                    stroke: new Stroke({
+                        color: [r, g, b, 1]
+                    })
+                }),
+            });
+        }
+
+        const selectedStyle = (feature: FeatureLike, resolution: number) => {
+            const oldStyle = defaultStyle(feature, resolution).getImage() as Circle;
+            const newStyle = new Style({
+                image: new Circle({
+                    radius: oldStyle.getRadius() + 5,
+                    fill: oldStyle.getFill(),
+                    stroke: oldStyle.getStroke()
+                })
+            })
+            return newStyle;
+        }
+
         if (stepState === StepStateTypes.available) {
             const availableEqs = state.products.find(p => p.id === "userChoice");
             const _store = this.store;
 
             if (availableEqs) {
-                const defaultStyle = (feature: FeatureLike, resolution: number) => {
-                    const props = feature.getProperties();
-                    const magnitude = props['magnitude.mag.value'];
-                    const depth = props['origin.depth.value'];
-    
-                    let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
-                    const [r, g, b] = yellowRedRange(100, 0, depth);
-    
-                    return new Style({
-                        image: new Circle({
-                            radius: radius,
-                            fill: new Fill({
-                                color: [r, g, b, 0.5]
-                            }),
-                            stroke: new Stroke({
-                                color: [r, g, b, 1]
-                            })
-                        }),
-                    });
-                }
-
-                const selectedStyle = (feature: FeatureLike, resolution: number) => {
-                    const oldStyle = defaultStyle(feature, resolution).getImage() as Circle;
-                    const newStyle = new Style({
-                        image: new Circle({
-                            radius: oldStyle.getRadius() + 5,
-                            fill: oldStyle.getFill(),
-                            stroke: oldStyle.getStroke()
-                        })
-                    })
-                    return newStyle;
-                }
 
                 const layer = new VectorLayer({
                     source: new VectorSource({
@@ -85,19 +87,21 @@ export class EqSelection implements Converter {
                     });
                 }
 
-
-
                 layers.push({
                     id: "userChoiceLayer",
                     layer: layer,
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
+                        const props = features[0].getProperties();
                         return {
                             component: StringPopupComponent,
                             args: {
                               "title": "AvailableEqs",
                               "subTitle": "",
-                              "body": createKeyValueTableHtml("Properties", features[0].getProperties(), "medium")
+                              "body": createKeyValueTableHtml({
+                                "Depth": props["origin.depth.value"],
+                                "Magnitude": props["magnitude.mag.value"]
+                              }, "medium")
                             }  
                         };
                     },
@@ -115,7 +119,7 @@ export class EqSelection implements Converter {
                         _store.dispatch(stepConfig({ partition: state.partition, scenario: state.scenario, stepId: "selectEq", values: { userChoice: feature } }));
                     },
                     onHover() {},
-                    visible: true
+                    opacity: 1.0
                 });
             }
         }
@@ -127,17 +131,29 @@ export class EqSelection implements Converter {
                 layers.push({
                     id: "selectedEqLayer",
                     layer: new VectorLayer({
-                            source: new VectorSource({
-                                features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(selectedEq.value)
-                            }),
+                        source: new VectorSource({
+                            features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(selectedEq.value)
                         }),
-                    popup: (location: number[]) => ({
-                        component: StringPopupComponent,
-                        args: {}  
-                      }),
+                        style: defaultStyle
+                    }),
+                    popup: (location, features) => {
+                        if (features.length === 0) return undefined;
+                        const props = features[0].getProperties();
+                        return {
+                            component: StringPopupComponent,
+                            args: {
+                                "title": "ChosenEq",
+                                "subTitle": "",
+                                "body": createKeyValueTableHtml({
+                                    "Depth": props["origin.depth.value"],
+                                    "Magnitude": props["magnitude.mag.value"]
+                                }, "medium")
+                            }   
+                        }
+                    },
                     onClick: () => {},
                     onHover: () => {},
-                    visible: true
+                    opacity: 1.0
                 });
             }
         }

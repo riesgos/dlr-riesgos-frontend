@@ -17,6 +17,7 @@ export class ConfigComponent implements OnInit {
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
   @Input() data!: WizardComposite;
+  @Input() autoPilot!: boolean | undefined;
   public formGroup: FormGroup = new FormGroup({});
 
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}

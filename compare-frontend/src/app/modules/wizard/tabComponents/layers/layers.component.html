@@ -1,5 +1,3 @@
 <div class="layers">
-    <ul>
-        <li *ngFor="let output of data.step.step.outputs">{{ output.id }}</li>
-    </ul>
+        <app-layer *ngFor="let output of data.layerControlables" [scenario]="scenario" [partition]="partition" [layerCompositeId]="output.layerCompositeId" [layerOpacity]="output.opacity"></app-layer>
 </div>

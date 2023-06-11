@@ -21,6 +21,10 @@ import { LayersComponent } from './tabComponents/layers/layers.component';
 import { LegendsComponent } from './tabComponents/legends/legends.component';
 import { ErrorComponent } from './tabComponents/error/error.component';
 import { EqSimulation } from './converters/eqts/2_eqsim';
+import { Exposure } from './converters/eqts/3_exposure';
+import { EqDmg } from './converters/eqts/4_eq_dmg';
+import { LayerComponent } from './tabComponents/layers/layer/layer.component';
+import { TranslatedImageComponent } from './tabComponents/legends/translated-image/translated-image.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +41,9 @@ import { EqSimulation } from './converters/eqts/2_eqsim';
     DescriptionComponent,
     DownloadComponent,
     LegendsComponent,
-    ErrorComponent
+    ErrorComponent,
+    LayerComponent,
+    TranslatedImageComponent
   ],
   imports: [
     CommonModule,
@@ -52,6 +58,8 @@ import { EqSimulation } from './converters/eqts/2_eqsim';
     ConverterService,
     { provide: converterToken, useClass: EqSelection, multi: true },
     { provide: converterToken, useClass: EqSimulation, multi: true },
+    { provide: converterToken, useClass: Exposure, multi: true },
+    { provide: converterToken, useClass: EqDmg, multi: true },
     { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })

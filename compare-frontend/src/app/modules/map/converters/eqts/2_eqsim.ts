@@ -5,6 +5,9 @@ import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved, StepStateCo
 import TileLayer from "ol/layer/Tile";
 import TileWMS from "ol/source/TileWMS";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
+import { FeatureLike } from "ol/Feature";
+import { createTableHtml } from "src/app/helpers/others";
+import { toDecimalPlaces } from "src/app/helpers/colorhelpers";
 
 
 
@@ -39,13 +42,20 @@ export class EqSimulation implements Converter {
                         }),
                         opacity: 0.4
                     }),
-                    popup: (location: number[]) => ({
-                        component: StringPopupComponent,
-                        args: {}  
-                    }),
+                    popup: (location: number[], features: FeatureLike[]) => {
+                        const props = features[0].getProperties();
+                        const entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} g`;
+                        return {
+                            component: StringPopupComponent,
+                            args: {
+                                title: `Ground_acceleration_PGA`,
+                                body: createTableHtml([[entry]])
+                            }  
+                        };
+                    },
                     onClick: () => {},
                     onHover: () => {},
-                    visible: true
+                    opacity: 1.0
                 }
             ]);
 

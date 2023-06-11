@@ -50,14 +50,14 @@ test('Testing sysrel', async () => {
         }]
     };
 
-    const response = await axios.post(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute`, state);
+    const response = await axios.post(`http://localhost:${port}/scenarios/PeruShort/steps/${stepId}/execute`, state);
     const ticket = response.data.ticket;
 
     let poll: any;
     do {
         await sleep(1000);
         console.log('polling ...');
-        poll = await axios.get(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute/poll/${ticket}`);
+        poll = await axios.get(`http://localhost:${port}/scenarios/PeruShort/steps/${stepId}/execute/poll/${ticket}`);
     } while (poll.data.ticket);
     const results = poll.data.results;
 

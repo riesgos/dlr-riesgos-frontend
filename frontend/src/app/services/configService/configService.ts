@@ -44,7 +44,11 @@ export class ConfigService {
             if (targetUrl.startsWith('./') || targetUrl.startsWith('/')) return false;
             if (targetUrl.includes('assets/')) return false;
             
-            if (targetUrl.startsWith('http://')) return true;
+            if (targetUrl.startsWith('http://')) {
+                const urlObj = new URL(targetUrl);
+                if (urlObj.host === window.location.hostname) return false;
+                return true;
+            };
         };
         return false;
     }

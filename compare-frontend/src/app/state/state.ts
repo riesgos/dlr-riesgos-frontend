@@ -78,7 +78,8 @@ export function isRiesgosUnresolvedRefProduct(prod: RiesgosProduct): prod is Rie
 export interface RiesgosScenarioMapState {
     zoom: number,
     center: number[],
-    clickLocation: number[] | undefined
+    clickLocation: number[] | undefined,
+    layerVisibility: { layerCompositeId: string, opacity: number }[]
 }
 
 export interface FocusState {
@@ -86,7 +87,6 @@ export interface FocusState {
 }
 
 export interface AutoPilotState {
-    useAutoPilot: boolean;
     queue: string[];
 };
 
@@ -127,9 +127,10 @@ export interface Rules {
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
     mirrorData: boolean,
-    mirrorClick: boolean | { include?: string[], exclude?: string[] },
+    mirrorClick: { include: string[] } | { exclude: string[] },
     mirrorMove: boolean,
-    autoPilot: boolean,
+    autoPilot: { include: string[] } | { exclude: string[] },
+    allowConfiguration: { include: string[] } | { exclude: string[] }
 }
 
 export interface RiesgosState {
@@ -154,9 +155,10 @@ export const initialRiesgosState: RiesgosState = {
         oneFocusOnly: false,
         focusFirstStepImmediately: false,
         mirrorData: false,
-        mirrorClick: true,
+        mirrorClick: { exclude: [] },
         mirrorMove: true,
-        autoPilot: true,
+        autoPilot: { include: [] },
+        allowConfiguration: { exclude: [] }
     }
 };
 

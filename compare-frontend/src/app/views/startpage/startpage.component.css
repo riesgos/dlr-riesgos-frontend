@@ -1,17 +1,29 @@
-.studyareas {
+.studyAreas {
     display: flex;
     flex-direction: row;
 }
 
-.studyarea {
+.studyArea {
     margin: 1rem; 
 }
 
 .card {
+    padding: 1rem;
 }
 
 .card:hover {
     outline-style: solid;
     outline-width: 1px;
     outline-color: var(--accent-color-800);
+}
+
+
+.modeSelector {
+    display: grid;
+    grid-template-columns: 50fr 50fr;
+    gap: 15px;
+}
+
+.mode {
+
 }

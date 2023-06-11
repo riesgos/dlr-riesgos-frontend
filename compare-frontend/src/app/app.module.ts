@@ -17,6 +17,7 @@ import { Effects } from './state/effects';
 import { reducer } from './state/reducer';
 import { StartpageComponent } from './views/startpage/startpage.component';
 import { MappageComponent } from './views/mappage/mappage.component';
+import { UtilsModule } from './modules/utils/utils.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { MappageComponent } from './views/mappage/mappage.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    UtilsModule,
     MapModule,
     WizardModule,
     WikiModule,

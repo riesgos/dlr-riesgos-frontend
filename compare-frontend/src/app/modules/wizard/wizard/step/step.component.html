@@ -1,6 +1,11 @@
 <div class="step">
-    <div [class]="['step-header', 'step-header-' + data.step.state.type]" (click)="toggleFocus()">
-        <h4>{{ data.step.step.title }}</h4>
+    <div 
+        [class]="['step-header', 'step-header-' + data.step.state.type]"
+        [class.autoPilot]="data.isAutoPiloted"
+        [class.focus]="data.hasFocus"
+        (click)="toggleFocus()">
+        <h4>{{ data.step.step.title | translate }}</h4>
+        <div *ngIf="data.step.state.type === 'running'" class="progressBar"></div>
     </div>
     <div class="step-body" *ngIf="data.hasFocus">
         <app-tabs>
@@ -8,20 +13,20 @@
                 <app-error [scenario]="scenario" [partition]="partition" [data]="data"></app-error>
             </app-tab>
             <app-tab [tabTitle]="'Configuration'" *ngIf="data.step.state.type === 'available'">
-                <app-config [scenario]="scenario" [partition]="partition" [data]="data"></app-config>
+                <app-config [scenario]="scenario" [partition]="partition" [data]="data" [autoPilot]="data.isAutoPiloted"></app-config>
             </app-tab>
-            <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed'">
+            <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed' && data.layerControlables.length > 0">
                 <app-layers [scenario]="scenario" [partition]="partition" [data]="data"></app-layers>
             </app-tab>
-            <app-tab [tabTitle]="'Legend'" *ngIf="data.legend">
+            <app-tab [tabTitle]="'Legend'" *ngIf="data.legend && data.step.state.type === 'completed'">
                 <app-legends [scenario]="scenario" [partition]="partition" [data]="data"></app-legends>
             </app-tab>
             <app-tab [tabTitle]="'Description'" *ngIf="data.info">
                 <app-description [scenario]="scenario" [partition]="partition" [data]="data"></app-description>
             </app-tab>
-            <app-tab [tabTitle]="'Download'" *ngIf="data.step.state.type === 'completed'">
+            <!-- <app-tab [tabTitle]="'Download'" *ngIf="data.step.state.type === 'completed'">
                 <app-download [scenario]="scenario" [partition]="partition" [data]="data"></app-download>
-            </app-tab>
+            </app-tab> -->
         </app-tabs>
     </div>
 </div>

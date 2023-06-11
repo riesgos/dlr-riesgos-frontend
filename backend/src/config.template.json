@@ -1,0 +1,56 @@
+{
+    "port": "portPlaceholder",
+    "logDir": "logDirPlaceholder",
+    "storeDir": "storeDirPlaceholder",
+    "maxStoreLifeTimeMinutes": "maxStoreLifeTimeMinutesPlaceholder",
+    "sender": "senderPlaceholder",
+    "sendMailTo": "sendMailToPlaceholder",
+    "maxLogAgeMinutes": "maxLogAgeMinutesPlaceholder",
+    "verbosity": "verbosityPlaceholder",
+    "services": {
+        "EqCatalog": {
+            "url": "EqCatalogUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess"
+        },
+        "EqSim": {
+            "url": "EqSimUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess"
+        },
+        "Fragility": {
+            "url": "FragilityUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess"
+        },
+        "Exposure": {
+            "url": "ExposureUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess"
+        },
+        "Deus": {
+            "url": "DeusUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.DeusProcess"
+        },
+        "Neptunus": {
+            "url": "NeptunusUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.NeptunusProcess"
+        },
+        "Volcanus": {
+            "url": "VolcanusUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.VolcanusProcess"
+        },
+        "Tsunami": {
+            "url": "TsunamiUrlPlaceholder",
+            "id": "get_scenario"
+        },
+        "Sysrel": {
+            "url": "SysrelUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess"
+        },
+        "SysrelEcuador": {
+            "url": "SysrelEcuadorUrlPlaceholder",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess"
+        },
+        "Lahar": {
+            "url": "LaharUrlPlaceholder",
+            "id": "gs:LaharModel"
+        }
+    }
+}

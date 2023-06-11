@@ -1,5 +1,4 @@
 import express from 'express';
-import axios from 'axios';
 import { Server } from 'http';
 import { ScenarioAPIConfig, addScenarioApi } from '../../../scenarios/scenario.interface';
 import { peruShortFactory } from '../peru';
@@ -55,15 +54,18 @@ test('Testing eq-simulation', async () => {
         }]
     };
 
-    const response = await axios.post(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute`, state);
-    const ticket = response.data.ticket;
+    const response = await fetch(`http://localhost:${port}/scenarios/PeruShort/steps/${stepId}/execute`, {
+        body: JSON.stringify(state),
+        method: 'POST'
+    });
+    const ticket = (await response.json()).ticket;
 
     let poll: any;
     do {
         await sleep(1000);
-        poll = await axios.get(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute/poll/${ticket}`);
+        poll = await fetch(`http://localhost:${port}/scenarios/PeruShort/steps/${stepId}/execute/poll/${ticket}`);
     } while (poll.data.ticket);
-    const results = poll.data.results;
+    const results = (await poll.json()).results;
 
     expect(results).toBeTruthy();
     expect(results.data).toBeTruthy();
@@ -72,15 +74,15 @@ test('Testing eq-simulation', async () => {
     const wmsResult = results.data.find((r: DatumReference) => r.id === 'eqSimWms')
     expect(wmsResult.reference);
     
-    const wmsFile = await axios.get(`http://localhost:${port}/files/${wmsResult.reference}`);
-    const wmsData = wmsFile.data;
+    const wmsFile = await fetch(`http://localhost:${port}/files/${wmsResult.reference}`);
+    const wmsData = await wmsFile.text();
     expect(wmsData).toBeTruthy();
 
     const xmlResult = results.data.find((r: DatumReference) => r.id === 'eqSimXml');
     expect(xmlResult.reference);
     
-    const xmlFile = await axios.get(`http://localhost:${port}/files/${xmlResult.reference}`);
-    const xmlData = xmlFile.data;
+    const xmlFile = await fetch(`http://localhost:${port}/files/${xmlResult.reference}`);
+    const xmlData = await xmlFile.text();
     expect(xmlData).toBeTruthy();
 
 }, 300000);

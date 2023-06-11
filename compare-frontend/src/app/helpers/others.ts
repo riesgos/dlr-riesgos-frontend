@@ -46,7 +46,7 @@ export function deepCopy<T>(obj: T, callStacksize = 0): T | undefined {
 
 export type TableType = 'small' | 'medium';
 
-export function createKeyValueTableHtml(header: string, data: {[key: string]: any}, type: TableType = 'small'): string {
+export function createKeyValueTableHtml(data: {[key: string]: any}, type: TableType = 'small'): string {
     const rows: {key: string, val: string}[] = [];
     for (const key in data) {
         rows.push({key: key, val: data[key]});
@@ -56,13 +56,7 @@ export function createKeyValueTableHtml(header: string, data: {[key: string]: an
         return `<tr><td>${row.key}</td><td>${row.val}</td></tr>`;
     });
 
-    let headerFormatted = '';
-    if (header !== '') {
-        headerFormatted = `<h4>${header}</h4>`;
-    }
-
     return `
-        ${headerFormatted}
         <table class="table table-${type}">
             <tbody>${htmlRows.join(' ')}</tbody>
         </table>

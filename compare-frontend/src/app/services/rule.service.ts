@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Rules } from "../state/state";
 
 
-export type RuleSetName = 'selectOneScenario' | 'compareScenario' | 'compareIdentical' | 'compareAdvanced' | 'classic';
+export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIdentical' | 'compareAdvanced' | 'classic';
 
 @Injectable({
     providedIn: 'root'
@@ -18,36 +18,36 @@ export class RuleService {
             mirrorData: false,
             mirrorClick: { exclude: ['userChoiceLayer'] },
             mirrorMove: true,
-            autoPilot: true
+            autoPilot: { exclude: ["selectEq"] },
+            allowConfiguration: { exclude: [] }
         };
 
         // This could become arbitrarily complicated. 
         // Might want to use an inference-engine.
         switch (ruleSet) {
             case 'selectOneScenario':
-                rules.oneFocusOnly = false;
                 rules.focusFirstStepImmediately = true;
                 rules.partition = false;
-                rules.autoPilot = true;
+                rules.allowConfiguration = { include: ["userChoice"] };
                 break;
-            case 'compareScenario':
+            case 'compareScenarios':
                 break;
             case 'compareIdentical':
-                rules.oneFocusOnly = false;
                 rules.focusFirstStepImmediately = true;
                 rules.mirrorData = true;
                 rules.mirrorFocus = false;
+                rules.allowConfiguration = { include: ["userChoice"] };
                 break;
             case 'compareAdvanced':
                 rules.mirrorFocus = false;
                 rules.mirrorMove = false;
-                rules.mirrorClick = false;
-                rules.autoPilot = false;
+                rules.mirrorClick = { include: [] };
+                rules.autoPilot = { include: [] };
                 break;
             case 'classic':
                 rules.partition = false;
                 rules.oneFocusOnly = false;
-                rules.autoPilot = false;
+                rules.autoPilot = { include: [] };
                 break;
         }
 

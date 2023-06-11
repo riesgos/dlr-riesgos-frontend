@@ -27,12 +27,16 @@ export class Logger {
     monkeyPatch() {
         const consoleLog = console.log;
         console.log = (message, ...optionalParas) => {
-            this.log(message, ...optionalParas);
+            try {
+                this.log(message, ...optionalParas);
+            } catch {}
             if (this.verbosity === 'verbose') consoleLog(message, ...optionalParas);
         }
         const consoleError = console.error;
         console.error = (message, ...optionalParas) => {
-            this.error(message, ...optionalParas);
+            try {
+                this.error(message, ...optionalParas);
+            } catch {}
             consoleError(message, ...optionalParas);
         }
     }

@@ -8,10 +8,10 @@ RUN npm ci
 RUN npm run build:prod
 
 # config
-# adminEmails: comma separated list
+# sendMailTo: comma separated list
 ENV backendUrl "http://localhost"
 ENV backendPort "8008"
-ENV adminEmails ""
+ENV sendMailTo ""
 ENV sourceEmail "info@test.com"
 ENV testServiceEveryMinutes "120"
 

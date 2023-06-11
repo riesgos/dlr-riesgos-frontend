@@ -6,32 +6,44 @@ import { peruFactory } from './usr/peru/peru';
 import { peruShortFactory } from './usr/peru_short/peru';
 import { chileFactory } from './usr/chile/chile';
 import { ecuadorFactory } from './usr/ecuador/ecuador';
+import config from "./config.json";
+import { sleep } from './utils/async';
 
 
-const port = parseInt(process.env.port || "8008");
-const logDir = `./data/logs/`;   // server-logs
-const storeDir = `./data/store/`;  // files that must be available to outside
-const scriptDir = './data/scenarios';  // user-defined logic
+const port = config.port;
 
-
-const config: ScenarioAPIConfig = {
-    logDir: logDir,
-    maxStoreLifeTimeMinutes: parseInt(process.env.maxStoreLifetimeMinutes || "60"),
-    sender: process.env.sourceEmail || "info@test.com",
-    sendMailTo: (process.env.adminEmails || "").split(","),
-    maxLogAgeMinutes: 24 * 60,
-    storeDir: storeDir,
-    verbosity: 'verbose'   
+const configuration: ScenarioAPIConfig = {
+    logDir: config.logDir,
+    storeDir: config.storeDir,
+    maxStoreLifeTimeMinutes: parseInt(config.maxStoreLifeTimeMinutes),
+    sender: config.sender || "info@test.com",
+    sendMailTo: config.sendMailTo.split(","),
+    maxLogAgeMinutes: parseInt(config.maxLogAgeMinutes),
+    verbosity: config.verbosity === "silent" ? "silent" : "verbose"
 }
 
 async function main() {
+    // Setting up express
     const app = express();
     app.use(cors());
     
     // const scenarioFactories = await parseCode(scriptDir);
     const scenarioFactories = [chileFactory, ecuadorFactory, peruFactory, peruShortFactory];
 
-    addScenarioApi(app, scenarioFactories, config);
+    // Checking that all scenarios are ready
+    for (const factory of scenarioFactories) {
+        let ready: boolean | string = false;
+        while (ready !== true) {
+            ready = await factory.verifyConditions();
+            if (ready !== true) {
+                console.error(`ScenarioFactory "${factory.id}" not yet ready: ${ready}`);
+                sleep(1000);
+            }
+        }
+    }
+
+    // Adding API-endpoints to express app
+    addScenarioApi(app, scenarioFactories, configuration);
     const server = app.listen(port, () => console.log(`app now listening on port ${port}`));
 }
 

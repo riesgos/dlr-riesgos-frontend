@@ -27,11 +27,11 @@ if [[ -z "${backendPort}" ]]; then
     exit 1
 fi
 
-sed -i "s|backendUrlPlaceholder|${backendUrl}|" "${sourceDir}"/assets/config/config.prod.template.json
-sed -i "s|backendPortPlaceholder|${backendPort}|" "${sourceDir}"/assets/config/config.prod.template.json
-sed -i "s|BaseHrefPlaceholder|${subPath}|" "${sourceDir}"/index.html
 rm "${sourceDir}"/assets/config/config.prod.json
-mv "${sourceDir}"/assets/config/config.prod.template.json "${sourceDir}"/assets/config/config.prod.json
+cp "${sourceDir}"/assets/config/config.prod.template.json "${sourceDir}"/assets/config/config.prod.json
+sed -i "s|backendUrlPlaceholder|${backendUrl}|" "${sourceDir}"/assets/config/config.prod.json
+sed -i "s|backendPortPlaceholder|${backendPort}|" "${sourceDir}"/assets/config/config.prod.json
+sed -i "s|BaseHrefPlaceholder|${subPath}|" "${sourceDir}"/index.html
 
 echo "Successfully created config-file"
 cat "${sourceDir}"/assets/config/config.prod.json

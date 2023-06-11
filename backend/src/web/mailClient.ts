@@ -16,13 +16,7 @@ export class MailClient {
 
     constructor() {
         this.mailClient = sendmail({
-            logger: {
-              debug: console.log,
-              info: console.info,
-              warn: console.warn,
-              error: console.error
-            },
-            silent: false,
+            silent: true,
             // dkim: { // Default: False
             //   privateKey: fs.readFileSync('./dkim-private.pem', 'utf8'),
             //   keySelector: 'mydomainkey'

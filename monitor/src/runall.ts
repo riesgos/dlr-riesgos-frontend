@@ -3,22 +3,22 @@ import { MailClient } from './mailClient';
 
 const backendUrl = process.env.backendUrl || "http://localhost";
 const backendPort = parseInt(process.env.backendPort || "8008");
-const adminEmails = (process.env.adminEmails || "").split(",");
+const sendMailTo = (process.env.sendMailTo || "").split(",");
 const sourceEmail = process.env.sourceEmail || "info@test.com";
 const testServiceEveryMinutes = parseInt(process.env.testServiceEveryMinutes || "120");
 
-main(backendUrl, backendPort, testServiceEveryMinutes, sourceEmail, adminEmails);
+main(backendUrl, backendPort, testServiceEveryMinutes, sourceEmail, sendMailTo);
 
 
 
-async function main(serverUrl: string, port: number, minutes: number, sourceEmail: string, adminEmails: string[]) {
+async function main(serverUrl: string, port: number, minutes: number, sourceEmail: string, sendMailTo: string[]) {
     const mailClient = new MailClient();
     try {
         await testAndRepeat(serverUrl, port, minutes);
     } catch (error) {
         console.log(`Monitor has detected a problem: `, error);
-        mailClient.sendMail(sourceEmail, adminEmails, `Monitor has detected a problem`, JSON.stringify(error));
-        setTimeout(() => main(serverUrl, port, minutes, sourceEmail, adminEmails), minutes * 60 * 1000);
+        mailClient.sendMail(sourceEmail, sendMailTo, `Monitor has detected a problem`, JSON.stringify(error));
+        setTimeout(() => main(serverUrl, port, minutes, sourceEmail, sendMailTo), minutes * 60 * 1000);
     }
 }
 

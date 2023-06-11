@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { forkJoin, of } from "rxjs";
-import { catchError, delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
-import { BackendService } from "../services/backend.service";
+import { delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
+import { BackendService, isExecError } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { ResolverService } from "../services/resolver.service";
 import * as AppActions from "./actions";
@@ -57,37 +56,31 @@ export class Effects {
             // must be *merge*-map for multiple requests in parallel to not interfer with one another
             mergeMap(({action, apiState}) => {                        
                 return this.backendSvc.execute(action.scenario, action.step, apiState).pipe(
-
-                    // instrumenting results with the action that started the execution
-                    map(apiScenarioState => ({ action, apiScenarioState })),
-
-                    tap(({action}) => console.log(`Execute success: ${action.scenario}/${action.partition}/${action.step}`)),
-
-                    // instrumenting potential errors with the action that started the execution
-                    catchError((err, caught) => {
-                        throw new ExecutionError(err, action.scenario, action.partition, action.step);
+                    map(result => {
+                        if (isExecError(result)) {
+                            // instrumenting results with the action that started the execution
+                            return new ExecutionError(JSON.stringify(result.error), action.scenario, action.partition, action.step);
+                        }
+                        console.log(`Execute success: ${action.scenario}/${action.partition}/${action.step}`);
+                        return {action, state: result};
                     })
-
-                    // NOTE: instrumenting this pipe with an action that is only used far down the line seems inelegant. 
-                    // Maybe add the action to a zone instead?
                 );
             })
         );
 
-        const convertedResults$ = executeResults$.pipe(map(({action, apiScenarioState}) => ({
-            newData: convertApiDataToRiesgosData(apiScenarioState.data),
-            action: action
-        })));
-
-        const successAction$ = convertedResults$.pipe(map(({newData, action}) => AppActions.stepExecSuccess({ scenario: action.scenario, partition: action.partition, step: action.step, newData })));
-
-        const caughtAction$ = successAction$.pipe(
-            catchError((err: ExecutionError, caught) => {
-                return of(AppActions.stepExecFailure({ scenario: err.scenario, partition: err.partition, step: err.step, error: err.initialError }));
+        const convertedResults$ = executeResults$.pipe(
+            map(result => {
+                if (isExecutionError(result)) {
+                    return AppActions.stepExecFailure({ scenario: result.scenario, partition: result.partition, step: result.step, error: result.initialError });
+                } else {
+                    const newData = convertApiDataToRiesgosData(result.state.data);
+                    return AppActions.stepExecSuccess({ scenario: result.action.scenario, partition: result.action.partition, step: result.action.step, newData });
+                }
             })
         );
 
-        return caughtAction$;
+
+        return convertedResults$;
     });
 
 
@@ -96,10 +89,6 @@ export class Effects {
      * AUTO-PILOT (AP)
      * 
                      ┌──────────────┐
-                     │AP Start      │
-                     └───────┬──────┘
-                             │
-                     ┌───────▼──────┐
                ┌────►│AP Enqueue    │       state: queue ++
                │     └───────┬──────┘
                │             │
@@ -120,21 +109,9 @@ check if more  │     └───────┬──────┘
      * 
      */
 
-    // Automatically activate autopilot after selecting EQ paras
-    private startAutoPilot$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.stepExecSuccess),
-        filter(action => action.scenario === 'PeruShort' && action.step === 'selectEq'),
-        map(action => AppActions.autoPilotStart({ scenario: action.scenario, partition: action.partition }))
-    ));
-
     private autoPilotFillQueue$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.autoPilotStart),
+        ofType(AppActions.stepExecSuccess),  // @TODO: or of type: scenario selected
         withLatestFrom(this.store$.select(state => state.riesgos)),
-        filter(([action, state]) => {
-            const scenarioData = state.scenarioData[action.scenario]!;
-            const partitionData = scenarioData[action.partition]!;
-            return partitionData.autoPilot.useAutoPilot;
-        }),
         map(([action, state]) => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
     ));
 
@@ -160,20 +137,8 @@ check if more  │     └───────┬──────┘
         ofType(AppActions.stepExecStart),
         withLatestFrom(this.store$.select(state => state.riesgos)),
         map(([action, state]) => state.scenarioData[action.scenario]![action.partition]!),
-        filter(state => state.autoPilot.useAutoPilot && state.autoPilot.queue.length > 0),
+        filter(state => state.autoPilot.queue.length > 0),
         map(state => AppActions.autoPilotDequeue({ scenario: state.scenario, partition: state.partition, step: state.autoPilot.queue[0] }))
-    ));
-
-    private updateAutoPilotOnSuccess$ = createEffect(() => this.actions$.pipe(
-        ofType(AppActions.stepExecSuccess),
-        withLatestFrom(this.store$.select(state => state.riesgos)),
-        filter(([action, state]) => {
-            const scenarioData = state.scenarioData[action.scenario]!;
-            const partitionData = scenarioData[action.partition]!;
-            return partitionData.autoPilot.useAutoPilot;
-        }),
-        // filter(([action, state]) => action.scenario !== 'PeruShort' || action.step !== 'selectEq'),  // except if this is the AP-start-condition - because that's already been called.
-        map(([action, state]) => AppActions.autoPilotEnqueue({ scenario: action.scenario, partition: action.partition }))
     ));
 
     
@@ -189,10 +154,14 @@ check if more  │     └───────┬──────┘
 
 class ExecutionError extends Error {
     constructor(
-        public initialError: Error, 
+        public initialError: string, 
         public scenario: ScenarioName, 
         public partition: Partition, 
         public step: string) {
-            super("Error during execution: " + initialError.message);
+            super("Error during execution: " + initialError);
         }
+}
+
+function isExecutionError(data: any): data is ExecutionError {
+    return data.initialError && data.scenario && data.partition && data.step;
 }

@@ -62,6 +62,7 @@ export class MapService {
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (last.map.zoom !== current.map.zoom) return true;
                 if (!arraysEqual(last.map.center, current.map.center)) return true;
+                if (!arraysEqual(last.map.layerVisibility, current.map.layerVisibility)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
@@ -97,10 +98,19 @@ export class MapService {
 
         const fullState$ = layerComposites$.pipe(
             withLatestFrom(mapState$),
-            map(([layerComposites,mapState]) => { 
+            map(([layerComposites, mapState]) => { 
+
+                const composites = layerComposites.flat();
+                for (const customOpacitySetting of mapState.layerVisibility) {
+                    const composite = composites.find(c => c.id === customOpacitySetting.layerCompositeId);
+                    if (composite) {
+                        composite.opacity = customOpacitySetting.opacity;
+                    }
+                }
+
                 return {
                     ...mapState,
-                    layerComposites: layerComposites.flat()
+                    layerComposites: composites
                 }
             }
         ));

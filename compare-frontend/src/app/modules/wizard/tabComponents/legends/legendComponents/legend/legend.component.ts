@@ -32,7 +32,7 @@ export class LegendComponent implements OnInit {
       for (const entry of this.entries) {
         translatedEntries.push({
           ... entry,
-          text: this.translator.syncTranslate(entry.text)
+          text: this.translator.translate(entry.text)
         });
       }
 

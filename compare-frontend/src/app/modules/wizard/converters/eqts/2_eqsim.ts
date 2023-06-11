@@ -1,6 +1,7 @@
-import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved } from "src/app/state/state";
+import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved, StepStateTypes } from "src/app/state/state";
 import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
+import { TranslatedImageComponent } from "../../tabComponents/legends/translated-image/translated-image.component";
 
 export class EqSimulation implements Converter {
     
@@ -29,6 +30,16 @@ export class EqSimulation implements Converter {
                 options: Object.fromEntries(gmpe.options!.map(v => [v, v])),
                 currentValue: gmpe?.value || gmpe?.reference
             }],
+            layerControlables: [{ layerCompositeId: "eqSimWmsLayer", opacity: 1.0 }],
+            legend: () => ({
+                component: TranslatedImageComponent,
+                args: {
+                    languageImageMap: {
+                        'EN': 'assets/images/shakemap_pga_legend_labeled.svg',
+                        'ES': 'assets/images/shakemap_pga_legend_labeled.svg'
+                    }
+                }
+            })
         };
     }
 

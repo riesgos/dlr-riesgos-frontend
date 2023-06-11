@@ -1,8 +1,8 @@
-import { defaultIfEmpty, filter, map, mergeMap, Observable, of, OperatorFunction, scan, share, switchMap, tap, withLatestFrom } from 'rxjs';
+import { filter, map, Observable, of, OperatorFunction, scan, share, switchMap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
-import { allProductsEqual, maybeArraysEqual } from 'src/app/state/helpers';
-import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { allProductsEqual, arraysEqual, calcAutoPilotableSteps, maybeArraysEqual } from 'src/app/state/helpers';
+import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, Rules, ScenarioName } from 'src/app/state/state';
 import { Injectable, Type } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ConverterService } from './converter.service';
@@ -18,7 +18,9 @@ export interface WizardComposite {
         currentValue?: any,
         label: string,
     }[],
-    hasFocus: boolean
+    hasFocus: boolean,
+    isAutoPiloted?: boolean,
+    layerControlables: { layerCompositeId: string, opacity: number }[]
 }
 
 export interface WizardState {
@@ -43,7 +45,11 @@ export class WizardService {
      */
     public getWizardState(scenario: ScenarioName, partition: Partition): Observable<WizardState> {
 
+        // Silly little hack. We should probably just have rules on the scenario-level of state, not the root-level.
+        let rules: Rules; 
+
         const scenarioState$ = this.store.select(state => {
+            rules = state.riesgos.rules;
             const scenarioStates = state.riesgos.scenarioData[scenario];
             if (!scenarioStates) return undefined;
             const scenarioState = scenarioStates[partition];
@@ -67,6 +73,8 @@ export class WizardService {
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
+                if (!arraysEqual(last.map.layerVisibility, current.map.layerVisibility)) return true;
+                if (!arraysEqual(last.steps.map(s => s.state.type), current.steps.map(s => s.state.type))) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
             map(([_, current]) => current),
@@ -83,23 +91,34 @@ export class WizardService {
         const wizardState$ = resolvedData$.pipe(
             withLatestFrom(changedState$),
             map(([resolvedData, state]) => {
-                const steps: WizardComposite[] = [];
+                const wizardSteps: WizardComposite[] = [];
+                const autoPilotables = calcAutoPilotableSteps(rules, state.steps);
                 for (const step of state.steps) {
                     let stepData: WizardComposite;
                     if (state.focus.focusedSteps.includes(step.step.id)) {
                         const converter = this.converterSvc.getConverter(scenario, step.step.id);
                         stepData = converter.getInfo(state, resolvedData);
+
+                        // updating WizardComposite with current state
                         stepData.hasFocus = true;
+                        stepData.isAutoPiloted = autoPilotables.includes(step.step.id);
+                        for (const layerControl of stepData.layerControlables) {
+                            const currentOpacity = state.map.layerVisibility.find(lv => lv.layerCompositeId === layerControl.layerCompositeId);
+                            if (currentOpacity) layerControl.opacity = currentOpacity.opacity;
+                        }
+
                     } else {
                         stepData = {
-                            hasFocus: false,
                             step: step,
-                            inputs: []
+                            inputs: [],
+                            hasFocus: false,
+                            isAutoPiloted: autoPilotables.includes(step.step.id),
+                            layerControlables: []
                         }
                     }
-                    steps.push(stepData);
+                    wizardSteps.push(stepData);
                 }
-                return { stepData: steps };
+                return { stepData: wizardSteps };
             })
         );
 

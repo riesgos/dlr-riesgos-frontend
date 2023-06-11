@@ -1,11 +1,11 @@
 import express from 'express';
-import axios from 'axios';
 import { Server } from 'http';
 import { ScenarioAPIConfig, addScenarioApi } from '../../../scenarios/scenario.interface';
 import { peruShortFactory } from '../peru';
 import { DatumReference, ScenarioState } from '../../../scenarios/scenarios';
 import { sleep } from '../../../utils/async';
 import { createDirIfNotExists, deleteFile } from '../../../utils/files';
+import { Bbox, getExposureModel } from '../../wpsServices';
 
 
 const port = 1416;
@@ -38,7 +38,7 @@ afterAll(async () => {
 });
 
 
-test('Testing eq-simulation', async () => {
+test('Peru-short: Testing exposure', async () => {
     const stepId = 'Exposure';
 
     const state: ScenarioState = {
@@ -47,14 +47,16 @@ test('Testing eq-simulation', async () => {
             value: 'LimaCVT1_PD30_TI70_5000'
         }]
     };
-
-    const response = await axios.post(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute`, state);
-    const ticket = response.data.ticket;
+    const response = await fetch(`http://localhost:${port}/scenarios/PeruShort/steps/${stepId}/execute?skipCache=true`, {
+        body: JSON.stringify(state),
+        method: 'POST'
+    });
+    const ticket = (await response.json()).ticket;
 
     let poll: any;
     do {
         await sleep(1000);
-        poll = await axios.get(`http://localhost:${port}/scenarios/Peru/steps/${stepId}/execute/poll/${ticket}`);
+        poll = await fetch(`http://localhost:${port}/scenarios/PeruShort/steps/${stepId}/execute/poll/${ticket}`);
     } while (poll.data.ticket);
     const results = poll.data.results;
 
@@ -65,8 +67,8 @@ test('Testing eq-simulation', async () => {
     const result = results.data.find((r: DatumReference) => r.id === 'exposure')
     expect(result.reference);
     
-    const fileResponse = await axios.get(`http://localhost:${port}/files/${result.reference}`);
-    const data = fileResponse.data;
+    const fileResponse = await fetch(`http://localhost:${port}/files/${result.reference}`);
+    const data = await fileResponse.json();
     expect(data).toBeTruthy();
     expect(data.type).toBe('FeatureCollection');
     expect(data.features[0]);
@@ -75,4 +77,57 @@ test('Testing eq-simulation', async () => {
     expect(data.features[0].geometry);
     expect(data.features[0].properties);
 }, 30000);
+
+
+test('Peru-short: calling exposure directly', async () => {
+
+    const bbox: Bbox = {
+        crs: 'EPSG:4326',
+        lllon: -80.8,
+        urlon:  -71.4,
+        lllat: -20.2,
+        urlat: -10.0
+    }
+
+    const { exposureModel, exposureRef } = await getExposureModel('LimaCVT1_PD30_TI70_5000', 'SARA_v1.0', bbox);
+
+    expect(exposureModel);
+    expect(exposureRef);
+});
+
+
+test('Peru-short: calling exposure even more directly', async () => {
+
+    const url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?service=WPS&request=Execute&version=1.0.0&identifier=org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess"
+    const xmlBody = `<wps:Execute xmlns:wps="http://www.opengis.net/wps/1.0.0" service="WPS" version="1.0.0"><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess</p0:Identifier><wps:DataInputs><wps:Input><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">model</p0:Identifier><p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">model</p0:Title><p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract><wps:Data><wps:LiteralData>LimaCVT1_PD30_TI70_5000</wps:LiteralData></wps:Data></wps:Input><wps:Input><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">schema</p0:Identifier><p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">schema</p0:Title><p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract><wps:Data><wps:LiteralData>SARA_v1.0</wps:LiteralData></wps:Data></wps:Input><wps:Input><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">lonmin</p0:Identifier><p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">lonmin</p0:Title><p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract><wps:Data><wps:LiteralData>-80.8</wps:LiteralData></wps:Data></wps:Input><wps:Input><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">lonmax</p0:Identifier><p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">lonmax</p0:Title><p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract><wps:Data><wps:LiteralData>-71.4</wps:LiteralData></wps:Data></wps:Input><wps:Input><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">latmin</p0:Identifier><p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">latmin</p0:Title><p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract><wps:Data><wps:LiteralData>-20.2</wps:LiteralData></wps:Data></wps:Input><wps:Input><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">latmax</p0:Identifier><p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">latmax</p0:Title><p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract><wps:Data><wps:LiteralData>-10</wps:LiteralData></wps:Data></wps:Input><wps:Input><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">assettype</p0:Identifier><p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">assettype</p0:Title><p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract><wps:Data><wps:LiteralData>res</wps:LiteralData></wps:Data></wps:Input><wps:Input><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">querymode</p0:Identifier><p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">querymode</p0:Title><p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract><wps:Data><wps:LiteralData>intersects</wps:LiteralData></wps:Data></wps:Input></wps:DataInputs><wps:ResponseForm><wps:ResponseDocument storeExecuteResponse="true" status="true"><wps:Output mimeType="application/json" asReference="false"><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">selectedRowsGeoJson</p0:Identifier></wps:Output><wps:Output mimeType="application/json" asReference="true"><p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">selectedRowsGeoJson</p0:Identifier></wps:Output></wps:ResponseDocument></wps:ResponseForm></wps:Execute>`
+
+
+    const postResponse = await (await fetch(url, {
+        body: JSON.stringify(xmlBody),
+        headers: {
+            'Content-Type': 'text/xml',
+            'Accept': 'text/xml, application/xml'
+        },
+    })).text();
+
+    expect(postResponse);
+
+    let stateUrl = postResponse.match(/statusLocation=\\*"([a-zA-Z0-9:/\-\.?=]*)\\*"/)![1];
+    let results: any = undefined;
+    while (!results) {
+
+        console.log("Polling ", stateUrl);
+        const pollResponse = await (await fetch(stateUrl, {
+            headers: {
+                'Accept': 'text/xml, application/xml'
+            },
+        })).text();
+        stateUrl = pollResponse.match(/statusLocation=\\*"([a-zA-Z0-9:/\-\.?=]*)\\*"/)![1];
+        if (pollResponse.includes("ComplexData")) results = pollResponse;
+        else await sleep(100);
+    }
+
+    expect(results);
+
+}, 30_000);
 

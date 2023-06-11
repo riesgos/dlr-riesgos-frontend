@@ -17,17 +17,17 @@
 
 .tabs .tabs-list li a {
     text-decoration: none;
-    color: var(--accent-color-1200);
+    color: var(--gray-1000);
 }
 
 .tabs .tabs-list li.active a {
-    color: var(--accent-color-1400);
+    color: var(--gray-1200);
 }
 
 .tabs .tabs-list li.active {
     border-top-left-radius: 0.2rem;
     border-top-right-radius: 0.2rem;
     background-color: var(--white);
-    border: 1px solid var(--gray-600);
+    border: 1px solid var(--gray-100);
     border-bottom: none;
 }

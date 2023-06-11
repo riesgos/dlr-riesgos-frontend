@@ -1,13 +1,12 @@
 {
   "name": "compare-frontend",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-
     "find-unused-code": "ts-prune | grep -v '(used in module)'",
     "find-unused-deps": "depcheck"
   },
@@ -26,7 +25,9 @@
     "@ngrx/store-devtools": "^15.3.0",
     "d3-axis": "^3.0.0",
     "d3-color": "^3.1.0",
+    "d3-format": "^3.1.0",
     "d3-scale": "^4.0.2",
+    "d3-scale-chromatic": "^3.0.0",
     "d3-selection": "^3.0.0",
     "ngrx-immer": "^2.0.1",
     "ol": "^7.3.0",
@@ -41,7 +42,9 @@
     "@angular/compiler-cli": "^15.1.0",
     "@types/d3-axis": "^3.0.2",
     "@types/d3-color": "^3.1.0",
+    "@types/d3-format": "^3.0.1",
     "@types/d3-scale": "^4.0.3",
+    "@types/d3-scale-chromatic": "^3.0.0",
     "@types/d3-selection": "^3.0.5",
     "@types/geojson": "^7946.0.10",
     "@types/jasmine": "~4.3.0",

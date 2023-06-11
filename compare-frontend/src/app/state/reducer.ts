@@ -1,22 +1,18 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotStart, autoPilotStop, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition } from './actions';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata, Rules } from './state';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerOpacity } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { allParasSet, getMapPositionForStep } from './helpers';
-
+import { allParasSet, calcAutoPilotableSteps, getMapPositionForStep } from './helpers';
 
 
 
 export const reducer = createReducer(
   initialRiesgosState,
 
-  on(ruleSetPicked, (state, action) => {
-    return {
-      ... state,
-      rules: action.rules
-    };
+  immerOn(ruleSetPicked, (state, action) => {
+    state.rules = action.rules;
   }),
 
   on(scenarioLoadStart, (state, action) => {
@@ -51,6 +47,23 @@ export const reducer = createReducer(
         }
       }
     }
+
+
+    if (state.rules.focusFirstStepImmediately) {
+      for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+    
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+            if ("include" in state.rules.allowConfiguration) {
+              const configurable = state.rules.allowConfiguration.include;
+              const nonConfigurable = partitionData.products.map(p => p.id).filter(id => !configurable.includes(id));
+              setValuesToDefaults(partitionData, nonConfigurable);
+            } else if (state.rules.allowConfiguration.exclude?.length > 0) {
+              setValuesToDefaults(partitionData, state.rules.allowConfiguration.exclude);
+            }
+          }
+      }
+    }
+
 
     state.currentScenario = action.scenario;
     return state;
@@ -156,29 +169,37 @@ export const reducer = createReducer(
     return state;
   }),
 
-  immerOn(autoPilotStart, (state, action) => {
-    const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
-    if (state.rules.autoPilot) {
-      scenarioState.autoPilot.useAutoPilot = true;
-    }
+  immerOn(stepReset, (state, action) => {
+    const scenarioData = state.scenarioData[action.scenario]!;
+    const partitionData = scenarioData[action.partition]!;
+    const step = partitionData.steps.find(s => s.step.id === action.stepId)!;
+    step.state = new StepStateAvailable();
     return state;
   }),
 
   immerOn(autoPilotEnqueue, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
+
+    // set default values for auto-pilotable steps
+    const autoPilotable = calcAutoPilotableSteps(state.rules, scenarioState.steps);
     for (const step of scenarioState.steps) {
-      for (const input of step.step.inputs) {
-        const product = scenarioState.products.find(p => p.id === input.id)!;
-        const productValue = product.value;
-        const defaultValue = input.default;
-        if (productValue) continue;
-        if (defaultValue) product.value = defaultValue;
+      if (autoPilotable.includes(step.step.id)) {
+        for (const input of step.step.inputs) {
+          const product = scenarioState.products.find(p => p.id === input.id)!;
+          const productValue = product.value;
+          const defaultValue = input.default;
+          if (productValue) continue;
+          if (defaultValue) product.value = defaultValue;
+        }
       }
     }
+
     const newState = deriveState(state);
     const newScenarioState = newState.scenarioData[action.scenario]![action.partition]!;
+
+    // enqueue auto-pilotable steps
     for (const step of newScenarioState.steps) {
-      if (step.state.type === "available") {
+      if (step.state.type === "available" && autoPilotable.includes(step.step.id)) {
         if (allParasSet(step, newScenarioState.products)) {
           if (! newScenarioState.autoPilot.queue.includes(step.step.id)) {
             newScenarioState.autoPilot.queue.push(step.step.id);
@@ -186,7 +207,8 @@ export const reducer = createReducer(
         }
       }
     }
-    console.log(`Auto-pilot enqueued. Queue now contains ${scenarioState.autoPilot.queue}`)
+    console.log(`Auto-pilot enqueued. Queue now contains ${scenarioState.autoPilot.queue}`);
+
     return newState;
   }),
 
@@ -196,14 +218,6 @@ export const reducer = createReducer(
     console.log(`Auto-pilot dequeued ${action.step}. Queue now contains ${scenarioState.autoPilot.queue}`)
     return state;
   }),
-
-  on(autoPilotStop, (state, action) => {
-    return {
-      ...state,
-      useAutoPilot: false
-    }
-  }),
-
 
   immerOn(mapMove, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
@@ -238,23 +252,26 @@ export const reducer = createReducer(
       }
     }
 
-    if (typeof state.rules.mirrorClick === "boolean") {
-      if (state.rules.mirrorClick) {
-        doMirror();
-      }
-    } 
-    
-    else {
-      const allowed = state.rules.mirrorClick.include || [];
-      const disallowed = state.rules.mirrorClick.exclude || [];
-      const compositeId = action.clickedFeature?.compositeId || "";
+    const compositeId = action.clickedFeature?.compositeId || "";
+    if ("exclude" in state.rules.mirrorClick) {
+      const disallowed = state.rules.mirrorClick.exclude;
+      if (!disallowed.includes(compositeId)) doMirror();
+    } else {
+      const allowed = state.rules.mirrorClick.include;
       if (allowed.includes(compositeId)) doMirror();
-      if (allowed.length === 0 && !disallowed.includes(compositeId)) doMirror();
     }
 
     return state;
   }),
 
+  immerOn(mapLayerOpacity, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]!;
+    const partitionData = scenarioState[action.partition]!;
+
+    const foundEntry = partitionData.map.layerVisibility.find(entry => entry.layerCompositeId === action.layerCompositeId);
+    if (foundEntry) foundEntry.opacity = action.opacity;
+    else partitionData.map.layerVisibility.push({ layerCompositeId: action.layerCompositeId, opacity: action.opacity });
+  }),
 
   immerOn(togglePartition, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
@@ -277,32 +294,12 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
     if (!currentScenarioData) currentScenarioData = {};
 
     for (const partition of ['left', 'right'] as Partition[]) {
-      let currentPartitionData = currentScenarioData[partition];
-      if (!currentPartitionData) currentPartitionData = {
-        partition: partition,
-        scenario: apiScenario.id,
-        active: false,
-        autoPilot: {
-          queue: [],
-          useAutoPilot: false
-        },
-        focus: {
-          focusedSteps: []
-        },
-        map: {
-          center: [-30, -70],
-          zoom: 7,
-          clickLocation: undefined
-        },
-        products: [],
-        steps: []
-      };
 
       const newSteps: RiesgosStep[] = [];
       const newProducts: RiesgosProduct[] = [];
-
   
       for (const step of apiScenario.steps) {
+
         newSteps.push({
           step: step,
           state: new StepStateUnavailable()
@@ -320,6 +317,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
             product.options = input.options;
           }
         }
+
         for (const output of step.outputs) {
           if (!newProducts.find(p => p.id === output.id)) {
             newProducts.push({
@@ -327,8 +325,30 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
             });
           }
         }
+
       }
   
+      let currentPartitionData = currentScenarioData[partition];
+      if (!currentPartitionData) currentPartitionData = {
+        partition: partition,
+        scenario: apiScenario.id,
+        active: false,
+        autoPilot: {
+          queue: [],
+        },
+        focus: {
+          focusedSteps: []
+        },
+        map: {
+          center: [-30, -70],
+          zoom: 7,
+          clickLocation: undefined,
+          layerVisibility: []
+        },
+        products: newProducts,
+        steps: newSteps
+      };
+      
       const newPartitionData: RiesgosScenarioState = {
         ... currentPartitionData,
         products: newProducts,
@@ -359,8 +379,6 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
 }
 
 
-
-
 function deriveState(state: WritableDraft<RiesgosState>) {
   for (const scenarioName in state.scenarioData) {
     const scenarioData = state.scenarioData[scenarioName as ScenarioName];
@@ -387,5 +405,27 @@ function deriveState(state: WritableDraft<RiesgosState>) {
     }
     }
   return state;
+}
+
+function setValuesToDefaults(partitionData: WritableDraft<RiesgosScenarioState>, ids: string[]) {
+  for (const id of ids) {
+    const product = partitionData.products.find(p => p.id === id);
+    const stepInput = partitionData.steps.map(s => s.step.inputs).flat().find(i => i.id === id);
+    if (!stepInput) continue;
+    if (product?.value) {
+      product.options = [product.value];
+      stepInput.options = product.options;
+      if (stepInput && stepInput.options) stepInput.options = [product.value];
+    } else if (product?.reference) {
+      product.options = [product.reference];
+      stepInput.options = product.options;
+      if (stepInput && stepInput.options) stepInput.options = [product.reference];
+    } else if (product?.options) {
+      product.value = product.options[0];
+      product.options = [product.options[0]];
+      stepInput.options = product.options;
+    }
+
+  }
 }
 

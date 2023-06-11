@@ -10,8 +10,19 @@ services:
     environment:
       port: ${backendPort}
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
-      adminEmails: ${adminEmails}
+      sendMailTo: ${sendMailTo}
       sourceEmail: ${sourceEmail}
+      EqCatalogUrl: ${EqCatalogUrl}
+      EqSimUrl: ${EqSimUrl}
+      FragilityUrl: ${FragilityUrl}
+      ExposureUrl: ${ExposureUrl}
+      DeusUrl: ${DeusUrl}
+      NeptunusUrl: ${NeptunusUrl}
+      VolcanusUrl: ${VolcanusUrl}
+      TsunamiUrl: ${TsunamiUrl}
+      SysrelUrl: ${SysrelUrl}
+      SysrelEcuadorUrl: ${SysrelEcuadorUrl}
+      LaharUrl: ${LaharUrl}
 
   monitor:
     build: ./monitor
@@ -21,7 +32,7 @@ services:
       # This url is called inside of docker-network, so "http://backend" gets resolved to the actual IP
       backendUrl: "http://backend"
       backendPort: ${backendPort}
-      adminEmails: ${adminEmails}
+      sendMailTo: ${sendMailTo}
       sourceEmail: ${sourceEmail}
       testServiceEveryMinutes: ${testServiceEveryMinutes}
   

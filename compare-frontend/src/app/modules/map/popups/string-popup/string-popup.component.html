@@ -1,5 +1,5 @@
 <div>
-    <h3 *ngIf="title">{{ title }}</h3>
-    <h5 *ngIf="subTitle">{{ subTitle }}</h5>
+    <h5 *ngIf="title">{{ title | translate }}</h5>
+    <p *ngIf="subTitle">{{ subTitle | translate }}</p>
     <p *ngIf="body" [innerHTML]="body"></p>
 </div>

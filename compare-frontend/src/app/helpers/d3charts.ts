@@ -80,14 +80,14 @@ export function createBigBarChart(
             .attr('text-anchor', 'start')
             .attr('transform', (datum, index, elements) => {
               const element = elements[index];
-              const deltaX = xScale(datum);
+              const deltaX = xScale(datum as string);
               const rotation = 60;
               const transform = `translate(${letterSize / 2}, ${letterSize / 2}) rotate(${rotation})`;
               return transform;
             })
         }
-        const xAxis = graph.select('.xAxis');
-        const xAxisSize = xAxis.node().getBBox();
+        const xAxis = graph.select<SVGGElement>('.xAxis')!;
+        const xAxisSize = xAxis.node()!.getBBox();
     
     
         // y-axis
@@ -103,8 +103,8 @@ export function createBigBarChart(
         graph.append('g')
             .attr('class', 'yAxis')
             .call(yAxisGenerator);
-        const yAxis = graph.select('.yAxis');
-        const yAxisSize = yAxis.node().getBBox();
+        const yAxis = graph.select<SVGGElement>('.yAxis')!;
+        const yAxisSize = yAxis.node()!.getBBox();
         
         xAxis.attr('transform', `translate(${yAxisSize.width}, ${height - xAxisSize.height})`);
         yAxis.attr('transform', `translate(${yAxisSize.width}, 0)`);
@@ -122,7 +122,7 @@ export function createBigBarChart(
     
     
         const barColors: string[] = data.map(d => d.color ? d.color : getBuildingClassColor(d.label));
-        const colorScale = scaleOrdinal()
+        const colorScale = scaleOrdinal<string>()
           .domain(barNames)
           .range(barColors);
     
@@ -159,7 +159,6 @@ export function createBigBarChart(
         const infoboxP = infobox.append('p');
     
         bars.on('mouseenter', (evt, datum) => {
-          infobox.style('visibility', 'visible');
           const text = datum.hoverText ? datum.hoverText : `${yLabel}: ${datum.value}`;
           infoboxP.html(text);
           const positionInsideSvg = pointer(evt, svg.node());  // doesnt seem to work in popup
@@ -167,21 +166,26 @@ export function createBigBarChart(
           let x = Math.min(positionInsideSvg[0], positionInLayer[0]);
           if (x > centerWidth / 2) {
             x -= maxWidthHoverText;
+            x -= 20;  // safety-distance so popup doesn't touch mouse (which would trigger a `mouseout` event)
+          } else {
+            x += 20; // safety-distance so popup doesn't touch mouse (which would trigger a `mouseout` event)
           }
           const y = Math.min(positionInsideSvg[1], positionInLayer[1]);
           infobox
             .style('left', `${x}px`)
             .style('top', `${y}px`);
+          infobox.style('visibility', 'visible');
     
-          bars.select('rect').attr('fill', 'lightgray');
-          select(evt.target).select('rect').attr('fill', colorScale(datum.label));
-          xAxis.selectAll('text').attr('color', 'lightgray');
-          const n = xAxis.selectAll('text').nodes().find(n => n.innerHTML === datum.label);
-          select(n).attr('color', 'black');
+          bars.select('rect').style('fill', 'lightgray');
+          select(evt.target).select('rect').style('fill', colorScale(datum.label));
+          xAxis.selectAll('text').style('fill', 'lightgray');
+          const n = xAxis.selectAll<SVGTextElement, unknown>('text').nodes().find(n => n.innerHTML === datum.label);
+          if (n) select(n).style('fill', 'black');
         })
-        .on('mouseleave', (evt, datum) => {
+        
+        bars.on('mouseout', (evt, datum) => {
           infobox.style('visibility', 'hidden');
-          bars.selectAll('rect').attr('fill', d => colorScale(d.label));
-          xAxis.selectAll('text').attr('color', 'currentColor'); // 'hsl(198deg, 0%, 40%)'); // = --clr-global-font-color
+          bars.selectAll<SVGRectElement, BarData>('rect').style('fill', d => colorScale(d.label));
+          xAxis.selectAll('text').style('fill', 'lightgray'); // 'hsl(198deg, 0%, 40%)'); // = --clr-global-font-color
         });
   }

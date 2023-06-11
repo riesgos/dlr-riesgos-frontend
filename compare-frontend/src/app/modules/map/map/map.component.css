@@ -6,7 +6,7 @@
 
 
 .popup {
-    background: var(--gray-100);
+    background: var(--gray-10);
     padding: .5rem;
     border-radius: .25rem;
     outline-width: 1px;

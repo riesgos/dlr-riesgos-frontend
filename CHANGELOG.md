@@ -6,28 +6,65 @@
     Reason: d3 cannot handle dom-nodes that dont exist yet.
     For the new d3-graphs we need a dynamicPopupComponent.
     And for a dynamicPopupComponent we need to return a ProductCustomLayer, not a VectorLayerProduct.
-- Integrate new, comparison-based frontend
 - Integrate backend for content-redaction
 - Old frontend: modularize
-- Dockerize whole architecture, provide redundancy
+- Cache: move from file-cache to geoserver-cache
+- Backend: known race-condition
+    - backend is being sent some state for an execute-request
+    - that state contains a reference to data that has by now expired
+    - so the backend can't resolve that data
+    - Solution:
+        - backtrack: from the data-reference, find out what state was used to create the data, and reproduce it
+        - do this recursively
+        - requires database with metadata about the references
+- Compare frontend:
+    - Problem: user needs to define order of composites the same in wizard-converter and in map-converter.
+    - Otherwise the top layer on map is not the top layer in layercontrol
+    - That's because map-converters and wizard-converters are completele independent.
 
-# [2.0.5] 
+
+# [2.0.7]
+
+- Ongoing:
+    
+- Upcoming:
+    - hide right side under modal unil available
+    - legends and layers in same tab
+    - redo-button
+
+
+# [2.0.6](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.5) (Jun 11 2023) Compare prototype working 
 
 ## Features
 - Overall:
     - all components of architecture now dockerized
+- Backend
+    - all ScenarioFactories can now register async conditions which must be fulfilled before the scenario may be used.
+    - Execute: failing fast if data is outdated.
 - Compare frontend
     - link click on eqSelection with form
     - mirrorClick rule now allows `include` and `exclude` of `compositeId`s
     - styles feature differently on click
     - Custom converter for wizard/eqSim
     - exposure now displayed
-    - Ongoing
-    - Upcoming
-        - create a docker-compose.yml for backend, frontends and monitor
-        - translation service
-        - steps: show errors
-        - auto-pilot: configurable start-strategy
+    - exposure wizard now configurable
+    - exposure legend and styling
+    - errors displayed in ui
+    - on error: retry
+    - simplified error-handling: backend-client retuns a Maybe, doesn't throw.
+    - update autopilot:
+        - needs not use that "first-step" condition anymore
+        - can define on per-step-basis if autopilot required
+    - auto-piloted steps are no longer interactive
+    - layer control, syncing visibility between wizard and map
+    - Icons
+    - translation service
+    - Map component: manually triggering change detection after adding dynamic component
+    - Exposure barchart: fixed hover effect
+    - Wizard: progress bar
+    - Fix: Popups in `compare-two-scenarios`: if one side cannot create a popup, a `closePopup` action is no longer dispatched to global
+    - eq dmg econ popup
+    - eq sim popup and legend
 
 ## Bug fixes
 - Compare frontend

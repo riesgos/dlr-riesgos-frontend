@@ -1,27 +1,96 @@
 .step-header {
     padding: 0.2rem 0 0.2rem 0.2rem;
+    border: 1px solid transparent;
 }
 
-.step-header-unavailable {
+.step-header-unavailable h4 {
+    color: var(--gray-100);
+}
+.step-header-unavailable.focus {
+    border-top: solid 1px var(--gray-400);
+}
+.step-header-unavailable.focus h4 {
     color: var(--gray-400);
 }
 
+
 .step-header-available {
-    color: var(--accent-color-1200);
     background-color: var(--accent-color-100);
 }
-
-.step-header-running {
-    color: var(--notice-dark);
-    background-color: var(--notice-light);
+.step-header-available.focus {
+    background-color: var(--accent-color-100);
+    border-top: solid 1px var(--accent-color-200);
+}
+.step-header-available.autoPilot {
+    background-color: var(--gray-10);
+}
+.step-header-available h4 {
+    color: var(--accent-color-800);
+}
+.step-header-available.focus h4 {
+    color: var(--accent-color-1200);
+}
+.step-header-available.autoPilot h4 {
+    color: var(--gray-100);
 }
 
+
+.step-header-running {
+    background-color: var(--notice-light);
+}
+.step-header-running h4 {
+    color: var(--notice);
+}
+.step-header-running.focus {
+    background-color: var(--notice-light);
+    border-top: solid 1px var(--notice);
+}
+.step-header-running.focus h4 {
+    color: var(--notice-dark);
+}
+
+.progressBar {
+    margin: 0 0 -4px -4px;
+    width: 102%;
+    height: 3px;
+    background: linear-gradient(var(--notice) 0 0) 0/0% no-repeat var(--notice-light);
+    animation: progressBarAnimation 2s infinite linear;
+}
+@keyframes progressBarAnimation {
+    100% {background-size:100%}
+}
+
+
 .step-header-completed {
-    color: var(--success-dark);
     background-color: var(--success-light);
+}
+.step-header-completed h4 {
+    color: var(--success);
+}
+.step-header-completed.focus {
+    background-color: var(--success-light);
+    border-top: solid 1px var(--success);
+}
+.step-header-completed.focus h4 {
+    color: var(--success-dark);
 }
 
 .step-header-error {
-    color: var(--warning-dark);
     background-color: var(--warning-light);
+}
+.step-header-error h4 {
+    color: var(--warning);
+}
+.step-header-error.focus {
+    background-color: var(--warning-light);
+    border-top: solid 1px var(--warning);
+}
+.step-header-error.focus h4 {
+    color: var(--warning-dark);
+}
+
+
+.step-body {
+    margin-bottom: 1rem;
+    border-bottom: solid 1px var(--gray-100);
 }

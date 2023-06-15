@@ -16,7 +16,6 @@ export class AppComponent {
   constructor(private router: Router, private store: Store<RiesgosState>) {
     this.currentScenario$ = this.store.select(state => state.currentScenario).pipe(
       map(v => v === undefined ? 'none' : v),
-      tap(v => console.log(v))
     );
   }
 }

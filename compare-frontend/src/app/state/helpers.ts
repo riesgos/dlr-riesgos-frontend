@@ -1,5 +1,6 @@
 import { API_ScenarioState, API_Datum, API_DatumReference, isApiDatum } from "../services/backend.service";
-import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, Partition, RiesgosProduct, RiesgosStep, Rules, ScenarioName } from "./state";
+import { Rules } from "./rules";
+import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, Partition, RiesgosProduct, RiesgosStep, ScenarioName } from "./state";
 
 
 export function calcAutoPilotableSteps(rules: Rules, steps: RiesgosStep[]) {

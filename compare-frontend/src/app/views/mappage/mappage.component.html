@@ -7,10 +7,12 @@
 <ng-template #oneMap>
     <div *ngIf="scenario$ | async as scenario" class="page">
         <ng-container *ngIf="focus$ | async as focus">
-            <div class="maps">
-                <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
-            </div>
-            <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
+            <!-- <ng-container *ngIf="modals$ | async as modals"> -->
+                <div class="maps">
+                    <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
+                </div>
+                <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
+            <!-- </ng-container> -->
         </ng-container>
     </div>
 </ng-template>
@@ -19,12 +21,24 @@
 <ng-template #twoMaps>
     <div *ngIf="scenario$ | async as scenario" class="page">
         <ng-container *ngIf="focus$ | async as focus">
-            <div class="maps">
-                <app-map *ngIf="focus.left || !focus.right" [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
-                <app-map *ngIf="focus.right"                [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
-            </div>
-            <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
-            <app-wizard [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
+            <ng-container *ngIf="modals$ | async as modals">
+
+                <div class="maps">
+                    <app-map *ngIf="focus.left || !focus.right" [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
+                    <app-map *ngIf="focus.right"                [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
+                </div>
+
+                <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
+                <app-wizard [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
+                
+                <div *ngIf="modals['left'].visible" class="modal left">
+                    <app-modal [scenario]="scenario" [partition]="'left'"  [data]="modals['left']" ></app-modal>
+                </div>
+                <div *ngIf="modals['right'].visible" class="modal right">
+                    <app-modal [scenario]="scenario" [partition]="'right'" [data]="modals['right']"></app-modal>
+                </div>
+
+            </ng-container>
         </ng-container>
     </div>
 </ng-template>

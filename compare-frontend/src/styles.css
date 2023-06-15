@@ -59,7 +59,7 @@ text {
 }
 
 button {
-    background: var(--accent-color-800);
+    background: var(--accent-color-200);
     border-style: none;
     border-radius: 0.5rem;
     padding: 0.3rem;
@@ -69,6 +69,12 @@ button:disabled {
     color: var(--gray-100);
     background: var(--gray-400);
     cursor: not-allowed;
+}
+button:hover {
+    background: var(--accent-color-800);
+}
+button:focus {
+    background-color: var(--accent-color-1200);
 }
 
 select {

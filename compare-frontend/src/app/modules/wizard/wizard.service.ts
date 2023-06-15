@@ -2,10 +2,11 @@ import { filter, map, Observable, of, OperatorFunction, scan, share, switchMap, 
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, arraysEqual, calcAutoPilotableSteps, maybeArraysEqual } from 'src/app/state/helpers';
-import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, Rules, ScenarioName } from 'src/app/state/state';
+import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
 import { Injectable, Type } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ConverterService } from './converter.service';
+import { getRules, Rules } from 'src/app/state/rules';
 
 export interface WizardComposite {
     step: RiesgosStep,
@@ -49,7 +50,7 @@ export class WizardService {
         let rules: Rules; 
 
         const scenarioState$ = this.store.select(state => {
-            rules = state.riesgos.rules;
+            rules = getRules(state.riesgos.rules);
             const scenarioStates = state.riesgos.scenarioData[scenario];
             if (!scenarioStates) return undefined;
             const scenarioState = scenarioStates[partition];

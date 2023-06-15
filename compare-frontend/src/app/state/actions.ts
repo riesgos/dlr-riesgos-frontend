@@ -1,9 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { Partition, RiesgosProduct, Rules, ScenarioName } from './state';
+import { Partition, RiesgosProduct, ScenarioName } from './state';
+import { RuleSetName } from './rules';
 
 
-export const ruleSetPicked = createAction('Rule-set picked', props<{ rules: Rules }>());
+export const ruleSetPicked = createAction('Rule-set picked', props<{ rules: RuleSetName }>());
 
 export const scenarioLoadStart = createAction('Scenario load start');
 export const scenarioLoadSuccess = createAction('Scenario load success', props<{ scenarios: API_ScenarioInfo[] }>());

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Converter, LayerComposite } from "../../converter.service";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, Rules, ScenarioName, StepStateTypes } from "src/app/state/state";
+import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";

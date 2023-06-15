@@ -1,18 +1,18 @@
 <div class="wizard box" *ngIf="focus">
     <div *ngIf="partition === 'left'" class="wizard-header">
         <h4 style="color: var(--gray-600)">{{ 'Wizard' | translate }}</h4>
-        <app-svg
+        <!-- <app-svg
             (click)="toggleFocus()"
             style="height: 1rem; width: 1rem; background-color: var(--gray-1000);"
             [path]="'assets/icons/double_caret_left.svg'">
-        </app-svg>
+        </app-svg> -->
     </div>
     <div *ngIf="partition === 'right'" class="wizard-header">
-        <app-svg
+        <!-- <app-svg
             (click)="toggleFocus()"
             style="height: 1rem; width: 1rem; background-color: var(--gray-1000);"
             [path]="'assets/icons/double_caret_right.svg'">
-        </app-svg>
+        </app-svg> -->
         <h4 style="color: var(--gray-600)">{{ 'Wizard' | translate }}</h4>
     </div>
 
@@ -24,7 +24,7 @@
 
 </div>
 
-<div class="wizard box" style="width: 2.5rem; height: 2.5rem;" *ngIf="focus === false">
+<!-- <div class="wizard box" style="width: 2.5rem; height: 2.5rem;" *ngIf="focus === false">
     <app-svg  *ngIf="partition === 'right'"
         (click)="toggleFocus()"
         style="display: block; margin: 0.75rem; height: 1rem; width: 1rem; background-color: var(--gray-1000);"
@@ -35,4 +35,4 @@
         style="display: block; margin: 0.75rem; height: 1rem; width: 1rem; background-color: var(--gray-1000);"
         [path]="'assets/icons/double_caret_right.svg'">
     </app-svg>
-</div>
+</div> -->

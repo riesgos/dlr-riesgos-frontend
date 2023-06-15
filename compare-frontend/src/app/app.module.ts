@@ -18,12 +18,14 @@ import { reducer } from './state/reducer';
 import { StartpageComponent } from './views/startpage/startpage.component';
 import { MappageComponent } from './views/mappage/mappage.component';
 import { UtilsModule } from './modules/utils/utils.module';
+import { ModalComponent } from './views/mappage/modal/modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     StartpageComponent,
-    MappageComponent
+    MappageComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,

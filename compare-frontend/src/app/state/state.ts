@@ -1,5 +1,5 @@
-import { Store } from "@ngrx/store";
 import { API_Step } from "../services/backend.service";
+import { RuleSetName } from "./rules";
 
 
 
@@ -90,6 +90,11 @@ export interface AutoPilotState {
     queue: string[];
 };
 
+export interface ModalState {
+    data: object | undefined,
+    visible: boolean
+}
+
 export interface RiesgosScenarioState {
     scenario: ScenarioName;
     steps: RiesgosStep[];
@@ -98,7 +103,8 @@ export interface RiesgosScenarioState {
     partition: Partition,
     active: boolean,
     map: RiesgosScenarioMapState,
-    focus: FocusState
+    focus: FocusState,
+    modal: ModalState
 }
 
 
@@ -121,17 +127,7 @@ export interface RiesgosScenarioMetadata {
 export type Partition = 'left' | 'right' | 'top' | 'bottom';
 
 
-export interface Rules {
-    partition: boolean,
-    mirrorFocus: boolean,
-    oneFocusOnly: boolean,
-    focusFirstStepImmediately: boolean,
-    mirrorData: boolean,
-    mirrorClick: { include: string[] } | { exclude: string[] },
-    mirrorMove: boolean,
-    autoPilot: { include: string[] } | { exclude: string[] },
-    allowConfiguration: { include: string[] } | { exclude: string[] }
-}
+
 
 export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
@@ -141,7 +137,7 @@ export interface RiesgosState {
         }
     };
     metaData: RiesgosScenarioMetadata[];
-    rules: Rules;
+    rules: RuleSetName;
 }
 
 
@@ -149,16 +145,6 @@ export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {},
     metaData: [],
-    rules: {
-        partition: true,
-        mirrorFocus: true,
-        oneFocusOnly: false,
-        focusFirstStepImmediately: false,
-        mirrorData: false,
-        mirrorClick: { exclude: [] },
-        mirrorMove: true,
-        autoPilot: { include: [] },
-        allowConfiguration: { exclude: [] }
-    }
+    rules: 'selectOneScenario'
 };
 

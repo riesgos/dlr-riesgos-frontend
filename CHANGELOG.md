@@ -26,9 +26,13 @@
 # [2.0.7]
 
 - Ongoing:
+    - hide right side under modal unil available
+        - if modal on right is shown depends on state on left
+        - modal evaluation should get inputs: full state, target side
+    - cleanup rules:
+        - those {include exclude} objects can become functions, too.
     
 - Upcoming:
-    - hide right side under modal unil available
     - legends and layers in same tab
     - redo-button
 

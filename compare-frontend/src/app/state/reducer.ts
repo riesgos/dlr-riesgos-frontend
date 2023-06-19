@@ -4,7 +4,7 @@ import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerOpacity } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { allParasSet, calcAutoPilotableSteps, getMapPositionForStep } from './helpers';
+import { allParasSet, getMapPositionForStep } from './helpers';
 import { getRules } from './rules';
 
 
@@ -54,16 +54,11 @@ export const reducer = createReducer(
 
     if (rules.focusFirstStepImmediately) {
       for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
-    
         for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-            if ("include" in rules.allowConfiguration) {
-              const configurable = rules.allowConfiguration.include;
-              const nonConfigurable = partitionData.products.map(p => p.id).filter(id => !configurable.includes(id));
-              setValuesToDefaults(partitionData, nonConfigurable);
-            } else if (rules.allowConfiguration.exclude?.length > 0) {
-              setValuesToDefaults(partitionData, rules.allowConfiguration.exclude);
-            }
-          }
+          const configurable = partitionData.products.map(p => p.id).filter(id => rules.allowConfiguration(id));
+          const nonConfigurable = partitionData.products.map(p => p.id).filter(id => !configurable.includes(id));
+          setValuesToDefaults(partitionData, nonConfigurable);
+        }
       }
     }
 
@@ -203,7 +198,7 @@ export const reducer = createReducer(
     const rules = getRules(state.rules);
 
     // set default values for auto-pilotable steps
-    const autoPilotable = calcAutoPilotableSteps(rules, scenarioState.steps);
+    let autoPilotable = scenarioState.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));
     for (const step of scenarioState.steps) {
       if (autoPilotable.includes(step.step.id)) {
         for (const input of step.step.inputs) {
@@ -277,13 +272,7 @@ export const reducer = createReducer(
     }
 
     const compositeId = action.clickedFeature?.compositeId || "";
-    if ("exclude" in rules.mirrorClick) {
-      const disallowed = rules.mirrorClick.exclude;
-      if (!disallowed.includes(compositeId)) doMirror();
-    } else {
-      const allowed = rules.mirrorClick.include;
-      if (allowed.includes(compositeId)) doMirror();
-    }
+    if (rules.mirrorClick(compositeId)) doMirror();
 
     return state;
   }),

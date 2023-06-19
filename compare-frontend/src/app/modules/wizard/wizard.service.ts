@@ -1,7 +1,7 @@
 import { filter, map, Observable, of, OperatorFunction, scan, share, switchMap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
-import { allProductsEqual, arraysEqual, calcAutoPilotableSteps, maybeArraysEqual } from 'src/app/state/helpers';
+import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
 import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
 import { Injectable, Type } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -93,7 +93,7 @@ export class WizardService {
             withLatestFrom(changedState$),
             map(([resolvedData, state]) => {
                 const wizardSteps: WizardComposite[] = [];
-                const autoPilotables = calcAutoPilotableSteps(rules, state.steps);
+                const autoPilotables = state.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));
                 for (const step of state.steps) {
                     let stepData: WizardComposite;
                     if (state.focus.focusedSteps.includes(step.step.id)) {

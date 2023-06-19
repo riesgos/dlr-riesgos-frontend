@@ -8,10 +8,10 @@ export interface Rules {
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
     mirrorData: boolean,
-    mirrorClick: { include: string[] } | { exclude: string[] },
+    mirrorClick: (compositeId: string) => boolean,
     mirrorMove: boolean,
-    autoPilot: { include: string[] } | { exclude: string[] },
-    allowConfiguration: { include: string[] } | { exclude: string[] },
+    autoPilot: (stepId: string) => boolean,
+    allowConfiguration: (productId: string) => boolean,
     modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) => ModalState
 }
 
@@ -22,10 +22,10 @@ export function getRules(ruleSet: RuleSetName): Rules {
         oneFocusOnly: true,
         focusFirstStepImmediately: true,
         mirrorData: false,
-        mirrorClick: { exclude: ['userChoiceLayer'] },
+        mirrorClick: (compositeId: string) => compositeId !== 'userChoiceLayer',
         mirrorMove: true,
-        autoPilot: { exclude: ["selectEq"] },
-        allowConfiguration: { exclude: [] },
+        autoPilot: (stepId: string) => stepId !== "selectEq",
+        allowConfiguration: () => true,
         modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) =>  ({ visible: false, data: undefined })
     };
 
@@ -35,7 +35,7 @@ export function getRules(ruleSet: RuleSetName): Rules {
         case 'selectOneScenario':
             rules.focusFirstStepImmediately = true;
             rules.partition = false;
-            rules.allowConfiguration = { include: ["userChoice"] };
+            rules.allowConfiguration = (productId: string) => productId === "userChoice";
             break;
         case 'compareScenarios':
             rules.modal = (state, scenario, partition) => {
@@ -48,7 +48,7 @@ export function getRules(ruleSet: RuleSetName): Rules {
             rules.focusFirstStepImmediately = true;
             rules.mirrorData = true;
             rules.mirrorFocus = false;
-            rules.allowConfiguration = { include: ["userChoice"] };
+            rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.modal = (state, scenario, partition) => {
                 console.log("evaluating", scenario, partition)
                 if (partition === "right") return { visible: true, data: {text: "hidden"} }
@@ -58,13 +58,13 @@ export function getRules(ruleSet: RuleSetName): Rules {
         case 'compareAdvanced':
             rules.mirrorFocus = false;
             rules.mirrorMove = false;
-            rules.mirrorClick = { include: [] };
-            rules.autoPilot = { include: [] };
+            rules.mirrorClick = (compositeId: string) => false;
+            rules.autoPilot = () => false;
             break;
         case 'classic':
             rules.partition = false;
             rules.oneFocusOnly = false;
-            rules.autoPilot = { include: [] };
+            rules.autoPilot = () => false;
             break;
     }
 

@@ -28,11 +28,10 @@
 - Ongoing:
     - hide right side under modal unil available
         - if modal on right is shown depends on state on left
-        - modal evaluation should get inputs: full state, target side
-    - cleanup rules:
-        - those {include exclude} objects can become functions, too.
-    
+        - modal evaluation should get inputs: full state, target side    
 - Upcoming:
+    - remaining translations:
+        - in html tables
     - legends and layers in same tab
     - redo-button
 

@@ -15,7 +15,7 @@ export interface Rules {
     modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) => ModalState
 }
 
-export function getRules(ruleSet: RuleSetName): Rules {
+export function getRules(ruleSet: RuleSetName | undefined): Rules {
     let rules: Rules = {
         partition: true,
         mirrorFocus: true,

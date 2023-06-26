@@ -10,6 +10,7 @@ export const scenarioLoadStart = createAction('Scenario load start');
 export const scenarioLoadSuccess = createAction('Scenario load success', props<{ scenarios: API_ScenarioInfo[] }>());
 export const scenarioLoadFailure = createAction('Scenario load failure', props<{ error: any }>());
 export const scenarioPicked = createAction('Scenario picked', props<{ scenario: ScenarioName }>());
+export const movingBackToMenu = createAction('Move back');
 
 export const stepSetFocus = createAction('Step select', props<{ scenario: ScenarioName, partition: Partition, stepId: string, focus: boolean }>());
 export const stepConfig = createAction('Step config', props<{ scenario: ScenarioName, partition: Partition, stepId: string, values: {[key: string]: any } }>());

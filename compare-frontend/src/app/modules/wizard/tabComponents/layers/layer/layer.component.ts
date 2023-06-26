@@ -15,7 +15,7 @@ export class LayerComponent {
   @Input() layerCompositeId!: string;
   @Input() layerOpacity!: number;
 
-  constructor(private store: Store<RiesgosState>) {}
+  constructor(private store: Store<{riesgos: RiesgosState}>) {}
 
   showLayer() {
     this.store.dispatch(mapLayerOpacity({ scenario: this.scenario, partition: this.partition, layerCompositeId: this.layerCompositeId, opacity: 1.0 }));

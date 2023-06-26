@@ -137,7 +137,7 @@ export interface RiesgosState {
         }
     };
     metaData: RiesgosScenarioMetadata[];
-    rules: RuleSetName;
+    rules: RuleSetName | undefined;
 }
 
 
@@ -145,6 +145,6 @@ export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {},
     metaData: [],
-    rules: 'selectOneScenario'
+    rules: undefined
 };
 

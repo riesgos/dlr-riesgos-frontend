@@ -54,7 +54,7 @@ export class MappageComponent {
       for (const [partitionName, partitionData] of Object.entries(currentScenarioData)) {
         modals[partitionName] = partitionData.modal;
       }
-      console.log("modals", modals);
+      // console.log("modals", modals);
       return modals;
     })
   )

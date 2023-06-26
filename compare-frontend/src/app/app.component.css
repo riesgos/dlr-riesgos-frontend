@@ -6,9 +6,15 @@
 .header .nav-item {
     padding: 1.9rem;
     color: var(--accent-color-200);
+    cursor: pointer;
+}
+
+.header .nav-item:hover {
+    background-color: var(--accent-color-800);
 }
 
 .header .nav-item.active {
     background-color: var(--accent-color-1200);
+    cursor: default;
 }
 

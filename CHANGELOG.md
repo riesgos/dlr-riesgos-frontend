@@ -25,6 +25,11 @@
 
 # [2.0.7]
 
+## Features
+- icons for diferent modes
+- showing version number
+- showing mode upon selection
+
 - Ongoing:
     - tsunami sim
     - tsunami damage 

@@ -1,0 +1,8 @@
+<ng-container *ngIf="title$ | async as title; else defaultTitle">
+    <h4 style="color: var(--gray-600)">{{ title }}</h4> 
+</ng-container>
+
+
+<ng-template #defaultTitle>
+    <h4 style="color: var(--gray-600)">{{ "Wizard" | translate }}</h4> 
+</ng-template>

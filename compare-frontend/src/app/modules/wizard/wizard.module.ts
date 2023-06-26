@@ -25,6 +25,7 @@ import { Exposure } from './converters/eqts/3_exposure';
 import { EqDmg } from './converters/eqts/4_eq_dmg';
 import { LayerComponent } from './tabComponents/layers/layer/layer.component';
 import { TranslatedImageComponent } from './tabComponents/legends/translated-image/translated-image.component';
+import { InfoComponent } from './wizard/info/info.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { TranslatedImageComponent } from './tabComponents/legends/translated-ima
     LegendsComponent,
     ErrorComponent,
     LayerComponent,
-    TranslatedImageComponent
+    TranslatedImageComponent,
+    InfoComponent
   ],
   imports: [
     CommonModule,

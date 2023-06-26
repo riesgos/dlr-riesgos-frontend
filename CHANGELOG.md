@@ -29,14 +29,15 @@
 - icons for diferent modes
 - showing version number
 - showing mode upon selection
+- activate right side once left all completed
+- showing currently selected eq in config-bar
 
 - Ongoing:
     - tsunami sim
+        - wizard
     - tsunami damage 
     - sysrel 
-    - hide right side under modal unil available
-        - if modal on right is shown depends on state on left
-        - modal evaluation should get inputs: full state, target side    
+
 - Upcoming:
     - remaining translations:
         - in html tables

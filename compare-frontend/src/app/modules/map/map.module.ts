@@ -10,6 +10,7 @@ import { BarchartComponent } from './popups/barchart/barchart.component';
 import { UtilsModule } from '../utils/utils.module';
 import { Exposure } from './converters/eqts/3_exposure';
 import { EqDmg } from './converters/eqts/4_eq_dmg';
+import { TsSim } from './converters/eqts/5_tssim';
 import { GroupedBarChartComponent } from './popups/grouped-bar-chart/grouped-bar-chart.component';
 import { DamagePopupComponent } from './popups/damage-popup/damage-popup.component';
 import { LinkPopupComponent } from './popups/link-popup/link-popup.component';
@@ -38,6 +39,7 @@ import { LinkPopupComponent } from './popups/link-popup/link-popup.component';
     { provide: converterToken, useClass: EqSimulation, multi: true },
     { provide: converterToken, useClass: Exposure, multi: true },
     { provide: converterToken, useClass: EqDmg, multi: true },
+    { provide: converterToken, useClass: TsSim, multi: true },
     { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })

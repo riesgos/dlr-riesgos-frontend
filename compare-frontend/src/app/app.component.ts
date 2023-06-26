@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { RiesgosState } from './state/state';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { RuleSetName } from './state/rules';
 import { movingBackToMenu } from './state/actions';
 
@@ -17,8 +17,7 @@ export class AppComponent {
   
   constructor(private router: Router, private store: Store<{riesgos: RiesgosState}>) {
     this.ruleSet$ = this.store.select(state => state.riesgos.rules).pipe(
-      map(v => v === undefined ? 'none' : v),
-      tap(v => console.log(`mode: ${v}`))
+      map(v => v === undefined ? 'none' : v)
     );
   }
 

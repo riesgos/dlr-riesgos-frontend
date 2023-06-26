@@ -1,4 +1,4 @@
-import { RiesgosState, ScenarioName, Partition, ModalState } from "./state";
+import { RiesgosState, ScenarioName, Partition, ModalState, StepStateTypes } from "./state";
 
 export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIdentical' | 'compareAdvanced' | 'classic';
 
@@ -39,8 +39,10 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             break;
         case 'compareScenarios':
             rules.modal = (state, scenario, partition) => {
-                console.log("evaluating", scenario, partition)
-                if (partition === "right") return { visible: true, data: {text: "hidden"} }
+                if (partition === "right") {
+                    if (allStepsCompleted(state, scenario, "left")) return { visible: false, data: undefined };
+                    return { visible: true, data: {text: "hidden"} }
+                }
                 return { visible: false, data: undefined }
             }
             break;
@@ -50,8 +52,10 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.mirrorFocus = false;
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.modal = (state, scenario, partition) => {
-                console.log("evaluating", scenario, partition)
-                if (partition === "right") return { visible: true, data: {text: "hidden"} }
+                if (partition === "right") {
+                    if (allStepsCompleted(state, scenario, "left")) return { visible: false, data: undefined };
+                    return { visible: true, data: {text: "hidden"} }
+                }
                 return { visible: false, data: undefined }
             }
             break;
@@ -69,4 +73,18 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
     }
 
     return rules;
+}
+
+
+function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partition: Partition) {
+    const scenarioData = state.scenarioData[scenario];
+    if (!scenarioData) return false;
+    const partitionData = scenarioData[partition];
+    if (!partitionData) return false;
+    const steps = partitionData.steps;
+    const states = steps.map(s => s.state.type);
+    for (const state of states) {
+        if (state !== StepStateTypes.completed) return false;
+    }
+    return true;
 }

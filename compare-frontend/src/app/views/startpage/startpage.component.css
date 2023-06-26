@@ -9,6 +9,12 @@
 
 .card {
     padding: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+    justify-content: center;
+    align-items: center;
 }
 
 .card:hover {

@@ -26,6 +26,9 @@
 # [2.0.7]
 
 - Ongoing:
+    - tsunami sim
+    - tsunami damage 
+    - sysrel 
     - hide right side under modal unil available
         - if modal on right is shown depends on state on left
         - modal evaluation should get inputs: full state, target side    

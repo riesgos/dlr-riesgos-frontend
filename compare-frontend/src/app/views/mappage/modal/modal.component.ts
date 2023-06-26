@@ -9,7 +9,7 @@ import { Partition, ScenarioName } from 'src/app/state/state';
 export class ModalComponent {
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
-  @Input() data!: object;
+  @Input() data!: any;
 
   constructor() {
     console.log("Creating modal for ", this.partition);

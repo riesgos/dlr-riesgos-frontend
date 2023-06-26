@@ -1,4 +1,8 @@
 <div class="page">
+
+    <app-svg class="backgroundSvg" style="display: block; width: 100%; height: 100%; background-color: var(--white);" [path]="'assets/icons/riesgos.svg'"></app-svg>
+
+
     <div class="studyAreas" *ngIf="studyAreas$ | async as studyAreas">
         <div class="studyArea box hasShadow" *ngFor="let studyArea of studyAreas">
     

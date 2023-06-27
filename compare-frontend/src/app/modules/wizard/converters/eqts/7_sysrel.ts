@@ -1,6 +1,7 @@
 import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved } from "src/app/state/state";
 import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
+import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
 
 export class SysRel implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
@@ -18,9 +19,28 @@ export class SysRel implements Converter {
             inputs: [],
             step,
             layerControlables: [{
-                layerCompositeId: "damage_consumer_areas",
+                layerCompositeId: "Productname_system_reliability_vector",
                 opacity: 1.0
             }],
+            legend: () => {
+                return {
+                    component: LegendComponent,
+                    args: {
+                        entries: [{
+                            text: 'Prob. 0.1',
+                            color: '#96fd7d'
+                          }, {
+                            text: 'Prob. 0.5',
+                            color: '#fdfd7d'
+                          }, {
+                            text: 'Prob. 0.9',
+                            color: '#fd967d'
+                        }],
+                        continuous: true,
+                        height: 90
+                    }
+                }
+            }
         }
     }
 

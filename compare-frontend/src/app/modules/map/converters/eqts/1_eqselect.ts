@@ -99,8 +99,8 @@ export class EqSelection implements Converter {
                               "title": "AvailableEqs",
                               "subTitle": "",
                               "body": createKeyValueTableHtml({
-                                "Depth": props["origin.depth.value"],
-                                "Magnitude": props["magnitude.mag.value"]
+                                "Magnitude": props["magnitude.mag.value"],
+                                "Depth": props["origin.depth.value"] + " km",
                               }, "medium")
                             }  
                         };
@@ -145,8 +145,8 @@ export class EqSelection implements Converter {
                                 "title": "ChosenEq",
                                 "subTitle": "",
                                 "body": createKeyValueTableHtml({
-                                    "Depth": props["origin.depth.value"],
-                                    "Magnitude": props["magnitude.mag.value"]
+                                    "Magnitude": props["magnitude.mag.value"],
+                                    "Depth": props["origin.depth.value"] + " km",
                                 }, "medium")
                             }   
                         }

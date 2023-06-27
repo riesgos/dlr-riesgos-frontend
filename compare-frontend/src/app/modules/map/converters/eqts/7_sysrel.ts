@@ -21,7 +21,7 @@ export class SysRel implements Converter {
         if (!datum) return of([]);
 
         const layer: LayerComposite = {
-            id: "damage_consumer_areas",
+            id: "Productname_system_reliability_vector",
             layer: new VectorLayer({
                 source: new Vector({
                     features: new GeoJSON().readFeatures(datum.value)

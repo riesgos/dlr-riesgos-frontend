@@ -14,6 +14,8 @@ import { TsSim } from './converters/eqts/5_tssim';
 import { GroupedBarChartComponent } from './popups/grouped-bar-chart/grouped-bar-chart.component';
 import { DamagePopupComponent } from './popups/damage-popup/damage-popup.component';
 import { LinkPopupComponent } from './popups/link-popup/link-popup.component';
+import { TSDmg } from './converters/eqts/6_ts_dmg';
+import { SysRel } from './converters/eqts/7_sysrel';
 
 
 @NgModule({
@@ -40,6 +42,8 @@ import { LinkPopupComponent } from './popups/link-popup/link-popup.component';
     { provide: converterToken, useClass: Exposure, multi: true },
     { provide: converterToken, useClass: EqDmg, multi: true },
     { provide: converterToken, useClass: TsSim, multi: true },
+    { provide: converterToken, useClass: TSDmg, multi: true },
+    { provide: converterToken, useClass: SysRel, multi: true },
     { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })

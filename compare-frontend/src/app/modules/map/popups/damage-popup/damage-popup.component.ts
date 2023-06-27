@@ -88,28 +88,28 @@ export class DamagePopupComponent implements OnInit {
         id: 'SARA_base',
         label: () => this.translateSvc.translate('bundled'),
         xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantity'),
+        yLabel: () => this.translateSvc.translate('quantityBuildings'),
         coloringFunction: getBuildingClassColor,
         groupingFunction: allIntoOneGrouping
       }, {
         id: 'SARA_material',
         label: () => this.translateSvc.translate('material'),
         xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantity'),
+        yLabel: () => this.translateSvc.translate('quantityBuildings'),
         coloringFunction: getBuildingClassColor,
         groupingFunction: saraGroupingMaterial
       }, {
         id: 'SARA_height',
         label: () => this.translateSvc.translate('height'),
         xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantity'),
+        yLabel: () => this.translateSvc.translate('quantityBuildings'),
         coloringFunction: getBuildingClassColor,
         groupingFunction: saraGroupingHeight
       }, {
         id: 'SARA_all',
         label: () => this.translateSvc.translate('all classes'),
         xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantity'),
+        yLabel: () => this.translateSvc.translate('quantityBuildings'),
         coloringFunction: getBuildingClassColor,
         groupingFunction: data => data
       }],
@@ -118,7 +118,7 @@ export class DamagePopupComponent implements OnInit {
         id: 'suppasri_base',
         label: () => this.translateSvc.translate('type'),
         xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantity'),
+        yLabel: () => this.translateSvc.translate('quantityBuildings'),
         coloringFunction: getBuildingClassColor,
         groupingFunction: simpleGrouping
       }],
@@ -127,7 +127,7 @@ export class DamagePopupComponent implements OnInit {
         id: 'medina_base',
         label: () => this.translateSvc.translate('type'),
         xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantity'),
+        yLabel: () => this.translateSvc.translate('quantityBuildings'),
         coloringFunction: getBuildingClassColor,
         groupingFunction: simpleGrouping
       }]

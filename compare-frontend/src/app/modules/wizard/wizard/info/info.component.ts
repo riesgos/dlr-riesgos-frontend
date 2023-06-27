@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, map } from 'rxjs';
+import { TranslationService } from 'src/app/services/translation.service';
 import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
 
 @Component({
@@ -13,7 +14,7 @@ export class InfoComponent {
   @Input() partition!: Partition;
   public title$: Observable<string>;
 
-  constructor(private store: Store<{riesgos: RiesgosState}>) {
+  constructor(private store: Store<{riesgos: RiesgosState}>, private translate: TranslationService) {
     
     this.title$ = store.select(state => state.riesgos).pipe(
 
@@ -29,7 +30,7 @@ export class InfoComponent {
       }),
 
       map(data => {
-        if (data === undefined) return "Wizard";
+        if (data === undefined) return this.translate.translate("Wizard");
         const id = data["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
         const depth = data["properties"]["origin.depth.value"];
         const mag = data["properties"]["magnitude.mag.value"];

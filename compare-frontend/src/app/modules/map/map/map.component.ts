@@ -3,6 +3,7 @@ import Layer from 'ol/layer/Layer';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import GeoJSON from 'ol/format/GeoJSON';
+import MVT from "ol/format/MVT";
 import { Partition, ScenarioName } from 'src/app/state/state';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { MapService, MapState } from '../map.service';
@@ -10,9 +11,14 @@ import BaseEvent from 'ol/events/Event';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { maybeArraysEqual } from 'src/app/state/helpers';
 import { FeatureLike } from 'ol/Feature';
-import { TileWMS } from 'ol/source';
+import { TileWMS, VectorTile, XYZ } from 'ol/source';
 import { HttpClient } from '@angular/common/http';
-
+import VectorTileLayer from 'ol/layer/VectorTile';
+import { applyStyle } from 'ol-mapbox-style';
+import greyScale from "../data/open-map-style.Positron.json";
+import Style from 'ol/style/Style';
+import Fill from 'ol/style/Fill';
+import Stroke from 'ol/style/Stroke';
 
 @Component({
   selector: 'app-map',
@@ -233,6 +239,37 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 function getBaseLayers() {
   const osmBase = new TileLayer({
     source: new OSM()
+  });
+
+  const waterStyle = new Style({
+    fill: new Fill({
+      color: '#9db9e8',
+    }),
+  });
+
+  const buildingStyle = new Style({
+    fill: new Fill({
+      color: '#666',
+    }),
+    stroke: new Stroke({
+      color: '#444',
+      width: 1,
+    }),
+  });
+
+  const tileBase = new VectorTileLayer({
+    source: new VectorTile({
+      url: "https://tiles.geoservice.dlr.de/service/tms/1.0.0/eoc:basemap@EPSG:4326@pbf/{z}/{x}/{y}.pbf?flipy=true",
+      format: new MVT(),
+      projection: "EPSG:4326"
+    }),
+    style: (feature, resolution) => {
+      console.log(feature.get('layer'))
+      const layer = feature.get('layer');
+      if (layer.includes('water') || layer.includes('ocean')) return waterStyle;
+      if (layer.includes('building') || layer.includes('urban')) return buildingStyle;
+      return undefined;
+    }
   });
 
   return [osmBase];

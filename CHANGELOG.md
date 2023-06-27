@@ -34,15 +34,25 @@
 - eq labels formatted
 
 - Ongoing:
+    - tsunami damage
+        - wizard
+            - info
+            - legends (with correct schema and sytling)
     - tsunami sim
         - wizard
-    - tsunami damage
-    - sysrel 
+            - legends
+    - sysrel
+        - map
+            - popup: translation
+        - wiard: 
+            - legend
 
 - Upcoming:
+    - map: don't rebuild all layers on every update
     - remaining translations:
         - in html tables
     - legends and layers in same tab
+        - or hide those legends of invisible layers
     - redo-button
 
 

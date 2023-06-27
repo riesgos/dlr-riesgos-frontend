@@ -27,6 +27,8 @@ import { LayerComponent } from './tabComponents/layers/layer/layer.component';
 import { TranslatedImageComponent } from './tabComponents/legends/translated-image/translated-image.component';
 import { InfoComponent } from './wizard/info/info.component';
 import { TsSim } from './converters/eqts/5_tssim';
+import { TsDmg } from './converters/eqts/6_ts_dmg';
+import { SysRel } from './converters/eqts/7_sysrel';
 
 @NgModule({
   declarations: [
@@ -64,6 +66,8 @@ import { TsSim } from './converters/eqts/5_tssim';
     { provide: converterToken, useClass: Exposure, multi: true },
     { provide: converterToken, useClass: EqDmg, multi: true },
     { provide: converterToken, useClass: TsSim, multi: true },
+    { provide: converterToken, useClass: TsDmg, multi: true },
+    { provide: converterToken, useClass: SysRel, multi: true },
     { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })

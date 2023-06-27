@@ -1,4 +1,7 @@
 {
+    "selectOneScenarioHelp": "Seleccione un conjunto de parámetros de terremotos y vea cómo afectan a la ciudad.",
+    "compareScenariosHelp": "Como el primer modo, pero permite comparar un conjunto diferente de parámetros en el lado.",
+    "compareIdenticalHelp": "Como el primer modo, pero mantiene una segunda ventana con los mismos datos abierta a un lado, para que pueda inspeccionar diferentes aspectos de un escenario al mismo tiempo.",
     "startRight": "Puede comenzar a trabajar en esta ventana",
     "compareEqWithLeft": "Elige otro conjunto de parámetros de terremotos y compáralos con los datos del lado izquierdo.",
     "windowAvailable": "Esta ventana ahora está lista",

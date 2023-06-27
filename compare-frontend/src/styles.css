@@ -19,12 +19,12 @@
 
 
 body {
-    --success-light: #c4fdf3;
-    --success:       #76e8d5;
-    --success-dark:  #4abeab;
-    --notice-light:  #f6eebd;
-    --notice:        #eddd96;
-    --notice-dark:   #b7a659;
+    --success-light: #c0ffab;
+    --success:       #b5e9a3;
+    --success-dark:  #92bd84;
+    --notice-light:  #fdffbb;
+    --notice:        #F2F5A9;
+    --notice-dark:   #d3d592;
     --warning-light: #df9b9b;
     --warning:       #c06767;
     --warning-dark:  #8c3535;

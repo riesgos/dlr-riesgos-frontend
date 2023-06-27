@@ -34,13 +34,16 @@
 - eq labels formatted
 - users can now close popups 
 - popups contain helpful info
+- ? icon for each mode
 
 - Ongoing:
-    new features:
-        ? icon for each mode
-            show info and tutorial
 
     - translate html tables
+
+    - click: popup remains open: doesn't stay in exactly the same spot
+        click on dmg-post ts
+        activate dmg-post eq
+        move back to dmg-post-ts
 
     - tsunami damage
         - wizard

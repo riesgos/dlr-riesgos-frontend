@@ -1,4 +1,7 @@
 {
+    "selectOneScenarioHelp": "Select a set of earthquake parameters and see how they affect the city.",
+    "compareScenariosHelp": "Like the first mode, but allows to compare a different set of parameters on the side.",
+    "compareIdenticalHelp": "Like the first mode, but keeps a second window with the same data open to the side, so that you can inspect different aspects of one scenario at the same time.",
     "startRight": "You can now start working on this window",
     "compareEqWithLeft": "Pick another set of earthquake parameters and compare them with the data on the left hand side.",
     "windowAvailable": "This window is now ready",

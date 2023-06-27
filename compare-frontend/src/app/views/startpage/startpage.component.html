@@ -14,20 +14,33 @@
 
                 <div class="modeSelector">
                     <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'selectOneScenario' )">
-                        <img style="height: 80px; width: 80px; " src="assets/icons/simple.svg" />
                         <div class="cardBody">{{ 'selectOneScenario'  | translate }}</div>
+                        <img style="height: 80px; width: 80px; " src="assets/icons/simple.svg" />
+                        <div class="cardInfo">
+                            <app-svg class="cardInfoSvg" [path]="'assets/icons/questionmark.svg'"></app-svg>
+                            {{ 'selectOneScenarioHelp' | translate }}
+                        </div>
                     </div>
                     <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'compareScenarios' )">
-                        <img style="height: 80px; width: 80px; " src="assets/icons/compare.svg" />
                         <div class="cardBody">{{ 'compareScenarios'  | translate }}</div>
+                        <img style="height: 80px; width: 80px; " src="assets/icons/compare.svg" />
+                        <div class="cardInfo">
+                            <app-svg class="cardInfoSvg" [path]="'assets/icons/questionmark.svg'"></app-svg>
+                            {{ 'compareScenariosHelp' | translate }}
+                        </div>
                     </div>
                     <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'compareIdentical' )">
-                        <img style="height: 80px; width: 80px; " src="assets/icons/compare_internal.svg" />
                         <div class="cardBody">{{ 'compareIdentical'  | translate }}</div>
+                        <img style="height: 80px; width: 80px; " src="assets/icons/compare_internal.svg" />
+                        <div class="cardInfo">
+                            <app-svg class="cardInfoSvg" [path]="'assets/icons/questionmark.svg'"></app-svg>
+                            {{ 'compareIdenticalHelp' | translate }}
+                        </div>
                     </div>
                     <!-- <div class="mode card box " (click)="ruleSetPicked( studyArea.id, 'classic' )">
-                        <img style="height: 80px; width: 80px; " src="assets/icons/advanced.svg" />
                         <div class="cardBody">{{ 'classic'  | translate }}</div>
+                        <img style="height: 80px; width: 80px; " src="assets/icons/advanced.svg" />
+                        <div class="cardInfo">{{ 'classicHelp' | translate }}</div>
                     </div> -->
                 </div>
 

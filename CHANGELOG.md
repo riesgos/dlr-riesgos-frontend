@@ -32,8 +32,16 @@
 - activate right side once left all completed
 - showing currently selected eq in config-bar
 - eq labels formatted
+- users can now close popups 
+- popups contain helpful info
 
 - Ongoing:
+    new features:
+        ? icon for each mode
+            show info and tutorial
+
+    - translate html tables
+
     - tsunami damage
         - wizard
             - info

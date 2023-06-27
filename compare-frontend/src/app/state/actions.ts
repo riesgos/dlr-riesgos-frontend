@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { Partition, RiesgosProduct, ScenarioName } from './state';
+import { ModalState, Partition, RiesgosProduct, ScenarioName } from './state';
 import { RuleSetName } from './rules';
 
 
@@ -27,3 +27,6 @@ export const mapClick = createAction('Map click', props<{ scenario: ScenarioName
 export const mapLayerOpacity = createAction('Map layer opacity', props<{ scenario: ScenarioName, partition: Partition, layerCompositeId: string, opacity: number }>());
 
 export const togglePartition = createAction('Toggling partition', props<{ scenario: ScenarioName, partition: Partition }>());
+
+export const openModal = createAction('Opening modal', props<{ scenario: ScenarioName, partition: Partition, args: ModalState['args'] }>());
+export const closeModal = createAction('Closing modal', props<{ scenario: ScenarioName, partition: Partition }>());

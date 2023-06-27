@@ -1,4 +1,8 @@
 {
+    "startRight": "Puede comenzar a trabajar en esta ventana",
+    "compareEqWithLeft": "Elige otro conjunto de parámetros de terremotos y compáralos con los datos del lado izquierdo.",
+    "windowAvailable": "Esta ventana ahora está lista",
+    "compareIdenticalWithLeft": "Puede usar esta ventana para inspeccionar otros pasos del mismo escenario que el de la izquierda.",
     "awaitingCompletion": "En espera de finalización",
     "willActivateOnceLeftDone": "Esta página se activará una vez que se hayan completado los processos en el lado izquierdo.",
     "eqSimWmsLayer": "Aceleración máxima del suelo",

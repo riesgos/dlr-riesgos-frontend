@@ -31,11 +31,17 @@
                 <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
                 <app-wizard [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
                 
-                <div *ngIf="modals['left'].visible" class="modal left">
-                    <app-modal [scenario]="scenario" [partition]="'left'"  [data]="modals['left']" ></app-modal>
+                <div *ngIf="modals['left'].args" class="modal left">
+                    <app-modal [scenario]="scenario" [partition]="'left'" 
+                            [title]="modals['left'].args.title"  [subtitle]="modals['left'].args.subtitle"  
+                            [body]="modals['left'].args.body"  [closable]="modals['left'].args.closable"  >
+                    </app-modal>
                 </div>
-                <div *ngIf="modals['right'].visible" class="modal right">
-                    <app-modal [scenario]="scenario" [partition]="'right'" [data]="modals['right']"></app-modal>
+                <div *ngIf="modals['right'].args" class="modal right">
+                    <app-modal [scenario]="scenario" [partition]="'right'"
+                            [title]="modals['right'].args.title" [subtitle]="modals['right'].args.subtitle" 
+                            [body]="modals['right'].args.body" [closable]="modals['right'].args.closable" >
+                    </app-modal>
                 </div>
 
             </ng-container>

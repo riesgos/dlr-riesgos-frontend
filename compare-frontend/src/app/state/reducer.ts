@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerOpacity, movingBackToMenu } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerOpacity, movingBackToMenu, openModal, closeModal } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, getMapPositionForStep } from './helpers';
 import { getRules } from './rules';
@@ -61,14 +61,6 @@ export const reducer = createReducer(
         }
       }
     }
-
-    // update modal ... potentially based on other partitions, too
-    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
-      for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-        partitionData.modal = rules.modal(state, scenarioName as ScenarioName, partitionName as Partition);
-      }
-    }
-
 
     state.currentScenario = action.scenario;
     return state;
@@ -169,13 +161,6 @@ export const reducer = createReducer(
       }
     } else {
       updateProducts(partitionData, action);
-    }
-
-    // update modal ... potentially based on other partitions, too
-    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
-      for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-        partitionData.modal = rules.modal(state, scenarioName as ScenarioName, partitionName as Partition);
-      }
     }
 
     const newState = deriveState(state);
@@ -295,6 +280,16 @@ export const reducer = createReducer(
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
     partitionData.active = !partitionData.active;
     return state;
+  }),
+
+  immerOn(openModal, (state, action) => {
+    const partitionData = state.scenarioData[action.scenario]![action.partition]!;
+    partitionData.modal.args = action.args
+  }),
+
+  immerOn(closeModal, (state, action) => {
+    const partitionData = state.scenarioData[action.scenario]![action.partition]!;
+    partitionData.modal.args = undefined;
   })
 );
 
@@ -366,8 +361,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
         products: newProducts,
         steps: newSteps,
         modal: {
-          data: undefined,
-          visible: false
+          args: undefined,
         }
       };
       

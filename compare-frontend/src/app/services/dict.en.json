@@ -1,4 +1,8 @@
 {
+    "startRight": "You can now start working on this window",
+    "compareEqWithLeft": "Pick another set of earthquake parameters and compare them with the data on the left hand side.",
+    "windowAvailable": "This window is now ready",
+    "compareIdenticalWithLeft": "You can use this window to inspect other steps of the same scenario as on the left.",
     "awaitingCompletion": "Awaiting completion",
     "willActivateOnceLeftDone": "This page will become available once all the processes on the left have been completed.",
     "eqSimWmsLayer": "Maximum ground acceleration",

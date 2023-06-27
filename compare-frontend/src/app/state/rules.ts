@@ -26,7 +26,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         mirrorMove: true,
         autoPilot: (stepId: string) => stepId !== "selectEq",
         allowConfiguration: () => true,
-        modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) =>  ({ visible: false, data: undefined })
+        modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) =>  ({ args: undefined })
     };
 
     // This could become arbitrarily complicated. 
@@ -40,10 +40,10 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         case 'compareScenarios':
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
-                    if (allStepsCompleted(state, scenario, "left")) return { visible: false, data: undefined };
-                    return { visible: true, data: "<h4>En espera de finalización</h4><p>Esta página se activará una vez que se haya completado el lado izquierdo.</p>" }
+                    if (allStepsCompleted(state, scenario, "left")) return { args: {title: "startRight", subtitle: "", body: "compareEqWithLeft", closable: true} };
+                    return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
-                return { visible: false, data: undefined }
+                return { args: undefined };
             }
             break;
         case 'compareIdentical':
@@ -53,10 +53,10 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
-                    if (allStepsCompleted(state, scenario, "left")) return { visible: false, data: undefined };
-                    return { visible: true, data: "<h4>En espera de finalización</h4><p>Esta página se activará una vez que se haya completado el lado izquierdo.</p>" }
+                    if (allStepsCompleted(state, scenario, "left")) return { args: {title: "windowAvailable", subtitle: "", body: "compareIdenticalWithLeft", closable: true} };
+                    return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
-                return { visible: false, data: undefined }
+                return { args: undefined }
             }
             break;
         case 'compareAdvanced':

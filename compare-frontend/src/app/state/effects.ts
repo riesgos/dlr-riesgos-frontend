@@ -7,7 +7,8 @@ import { ConfigService } from "../services/config.service";
 import { ResolverService } from "../services/resolver.service";
 import * as AppActions from "./actions";
 import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
-import { Partition, RiesgosState, ScenarioName } from "./state";
+import { ModalState, Partition, RiesgosState, ScenarioName } from "./state";
+import { getRules } from "./rules";
 
 
 @Injectable()
@@ -140,6 +141,36 @@ check if more  │     └───────┬──────┘
         filter(state => state.autoPilot.queue.length > 0),
         map(state => AppActions.autoPilotDequeue({ scenario: state.scenario, partition: state.partition, step: state.autoPilot.queue[0] }))
     ));
+
+
+
+    private openModal$ = createEffect(() => this.actions$.pipe(
+        filter(action => action.type === 'Rule-set picked' || action.type === 'Step exec success'),
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        map(([action, state]) => {
+            const modalData: {scenario: ScenarioName, partition: Partition, modal: ModalState}[] = [];
+
+            const rules = getRules(state.rules);
+
+            for (const [scenario, scenarioData] of Object.entries(state.scenarioData)) {
+                for (const [partition, partitionData] of Object.entries(scenarioData)) {
+                    const modal = rules.modal(state, scenario as ScenarioName, partition as Partition);
+                    if (modal.args) modalData.push({scenario: scenario as ScenarioName, partition: partition as Partition, modal});
+                }
+            }
+
+            return modalData;
+        }),
+            
+        switchMap(modalData => {
+            return modalData.map(m => AppActions.openModal({ 
+                scenario: m.scenario, 
+                partition: m.partition, 
+                args: m.modal.args
+            }))
+        })
+    ));
+
 
     
     constructor(

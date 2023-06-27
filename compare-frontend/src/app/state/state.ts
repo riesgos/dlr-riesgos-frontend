@@ -91,8 +91,7 @@ export interface AutoPilotState {
 };
 
 export interface ModalState {
-    data: any | undefined,
-    visible: boolean
+    args?: { title: string, subtitle: string, body: string, closable: boolean }
 }
 
 export interface RiesgosScenarioState {

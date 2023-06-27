@@ -80,7 +80,7 @@ export class TsSim implements Converter {
             onClick: (location, features) => undefined,
             onHover: (location, features) => undefined,
             popup: (location, features) => undefined,
-            opacity: 1.0,
+            opacity: 0.5,
         }];
 
 

@@ -33,7 +33,7 @@ export class InfoComponent {
         const id = data["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
         const depth = data["properties"]["origin.depth.value"];
         const mag = data["properties"]["magnitude.mag.value"];
-        return `Eq. ${id}, mag. ${mag}`;
+        return `Eq. ${id}, mag. ${mag}, ${depth}km`;
       })
     )
   }

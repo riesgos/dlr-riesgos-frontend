@@ -91,7 +91,7 @@ export interface AutoPilotState {
 };
 
 export interface ModalState {
-    data: object | undefined,
+    data: any | undefined,
     visible: boolean
 }
 

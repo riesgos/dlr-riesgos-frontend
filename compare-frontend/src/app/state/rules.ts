@@ -41,7 +41,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
                     if (allStepsCompleted(state, scenario, "left")) return { visible: false, data: undefined };
-                    return { visible: true, data: {text: "hidden"} }
+                    return { visible: true, data: "<h4>En espera de finalización</h4><p>Esta página se activará una vez que se haya completado el lado izquierdo.</p>" }
                 }
                 return { visible: false, data: undefined }
             }
@@ -54,7 +54,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
                     if (allStepsCompleted(state, scenario, "left")) return { visible: false, data: undefined };
-                    return { visible: true, data: {text: "hidden"} }
+                    return { visible: true, data: "<h4>En espera de finalización</h4><p>Esta página se activará una vez que se haya completado el lado izquierdo.</p>" }
                 }
                 return { visible: false, data: undefined }
             }

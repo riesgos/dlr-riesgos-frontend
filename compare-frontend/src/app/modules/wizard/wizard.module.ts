@@ -26,6 +26,7 @@ import { EqDmg } from './converters/eqts/4_eq_dmg';
 import { LayerComponent } from './tabComponents/layers/layer/layer.component';
 import { TranslatedImageComponent } from './tabComponents/legends/translated-image/translated-image.component';
 import { InfoComponent } from './wizard/info/info.component';
+import { TsSim } from './converters/eqts/5_tssim';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { InfoComponent } from './wizard/info/info.component';
     { provide: converterToken, useClass: EqSimulation, multi: true },
     { provide: converterToken, useClass: Exposure, multi: true },
     { provide: converterToken, useClass: EqDmg, multi: true },
+    { provide: converterToken, useClass: TsSim, multi: true },
     { provide: converterToken, useClass: DefaultConverter, multi: true },
   ]
 })

@@ -31,11 +31,12 @@
 - showing mode upon selection
 - activate right side once left all completed
 - showing currently selected eq in config-bar
+- eq labels formatted
 
 - Ongoing:
     - tsunami sim
         - wizard
-    - tsunami damage 
+    - tsunami damage
     - sysrel 
 
 - Upcoming:

@@ -19,7 +19,14 @@ export class EqSelection implements Converter {
 
         const outputProd = state.products.find(p => p.id === "selectedEq");
 
-        const options = Object.fromEntries(inputProd.options!.map(v => [v.id, v]));
+        function eqToLabel(eq: any) {
+            const id = eq["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
+            const mag = eq["properties"]["magnitude.mag.value"];
+            const depth = eq["properties"]["origin.depth.value"];
+            return `${id} (mag. ${mag}, ${depth}km)`;
+        }
+
+        const options = Object.fromEntries(inputProd.options!.map(v => [eqToLabel(v), v]));
 
         return {
             hasFocus: false,

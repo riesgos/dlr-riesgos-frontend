@@ -9,4 +9,5 @@
     width: 0.9rem; 
     background-color: var(--gray-1000);
     margin-right: 0.5rem;
+    flex: 0 0 auto;
 }

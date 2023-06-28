@@ -144,15 +144,49 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private handleLayers(mapState: MapState) {
-    const layers = mapState.layerComposites.map(c => {
+
+    const oldLayers = this.map.getAllLayers();
+
+    const newLayers = mapState.layerComposites.map(c => {
       const id = c.id;
       const layer = c.layer;
       layer.set("compositeId", id);
       layer.setOpacity(c.opacity);
       return layer;
     });
-    this.map.setLayers([...this.baseLayers, ...layers]);
+
+    const newLayerIds = newLayers.map(nl => nl.get("compositeId"));
+    const oldLayerIds = oldLayers.map(nl => nl.get("compositeId"));
+
+    const toRemove = oldLayers.filter(ol => !newLayerIds.includes(ol.get("compositeId")));
+    const toUpdate = newLayers.filter(nl =>  oldLayerIds.includes(nl.get("compositeId")));
+    const toAdd    = newLayers.filter(nl => !oldLayerIds.includes(nl.get("compositeId")));
+
+    for (const layer of toRemove) {
+      this.map.removeLayer(layer);
+    }
+    for (const layer of toUpdate) {
+      const oldLayer = oldLayers.find(l => l.get("compositeId") === layer.get("compositeId"));
+      if (!oldLayer) this.map.addLayer(layer);
+      else {
+        if (this.different(oldLayer, layer)) {
+          if (oldLayer) this.map.removeLayer(oldLayer);
+          this.map.addLayer(layer);
+        }
+      }
+    }
+    for (const layer of toAdd) {
+      this.map.addLayer(layer);
+    }
+
     // @TODO: set visibility from last time
+  }
+
+  private different(oldLayer: Layer, newLayer: Layer): boolean {
+    if (oldLayer.getOpacity() !== newLayer.getOpacity()) return true;
+    // @TODO: compare features if VectorLayer, rasterSource if TileLayer
+    // style if VectorLayer, GET-params if TileLayer
+    return false;
   }
 
 

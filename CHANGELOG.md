@@ -35,6 +35,7 @@
 - users can now close popups 
 - popups contain helpful info
 - ? icon for each mode
+- map-component: layers only re-built if they have actually changed
 
 - Ongoing:
 

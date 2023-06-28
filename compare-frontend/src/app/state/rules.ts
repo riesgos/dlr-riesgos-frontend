@@ -43,7 +43,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
                     if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
                 if (partition === "middle") {
-                    if (allStepsCompleted(state, scenario, "left")) return { args: {title: "startRight", subtitle: "", body: "compareEqWithLeft", closable: true} };
+                    if (allStepsCompleted(state, scenario, "left") && noStepsStarted(state, scenario, "right")) return { args: {title: "startRight", subtitle: "", body: "compareEqWithLeft", closable: true} };
                 }
                 return { args: undefined };
             }
@@ -89,6 +89,20 @@ function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partitio
     const states = steps.map(s => s.state.type);
     for (const state of states) {
         if (state !== StepStateTypes.completed) return false;
+    }
+    return true;
+}
+
+
+function noStepsStarted(state: RiesgosState, scenario: ScenarioName, partition: Partition) {
+    const scenarioData = state.scenarioData[scenario];
+    if (!scenarioData) return true;
+    const partitionData = scenarioData[partition];
+    if (!partitionData) return true;
+    const steps = partitionData.steps;
+    const states = steps.map(s => s.state.type);
+    for (const state of states) {
+        if (state === StepStateTypes.completed || state === StepStateTypes.running) return false;
     }
     return true;
 }

@@ -123,7 +123,7 @@ export interface RiesgosScenarioMetadata {
 }
 
 
-export type Partition = 'left' | 'right' | 'top' | 'bottom';
+export type Partition = 'left' | 'right' | 'top' | 'bottom' | 'middle';
 
 
 

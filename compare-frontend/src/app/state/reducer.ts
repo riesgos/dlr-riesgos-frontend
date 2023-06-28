@@ -306,7 +306,8 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
     let currentScenarioData = currentState.scenarioData[apiScenario.id];
     if (!currentScenarioData) currentScenarioData = {};
 
-    for (const partition of ['left', 'right'] as Partition[]) {
+    for (const partition of ['left', 'right', 'middle'] as Partition[]) {
+      // @TODO: middle partition doesnt need all that data ... only needs modal
 
       const newSteps: RiesgosStep[] = [];
       const newProducts: RiesgosProduct[] = [];

@@ -38,6 +38,9 @@
 
 - Ongoing:
 
+    - parseAPIScenariosIntoNewState
+        - middle partition doesnt need all that data ... only needs modal
+
     - translate html tables
 
     - click: popup remains open: doesn't stay in exactly the same spot

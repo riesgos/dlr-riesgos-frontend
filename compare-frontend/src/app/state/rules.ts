@@ -40,8 +40,10 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         case 'compareScenarios':
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
+                    if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
+                }
+                if (partition === "middle") {
                     if (allStepsCompleted(state, scenario, "left")) return { args: {title: "startRight", subtitle: "", body: "compareEqWithLeft", closable: true} };
-                    return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
                 return { args: undefined };
             }
@@ -53,8 +55,10 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
+                    if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
+                }
+                if (partition === "middle") {
                     if (allStepsCompleted(state, scenario, "left")) return { args: {title: "windowAvailable", subtitle: "", body: "compareIdenticalWithLeft", closable: true} };
-                    return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
                 return { args: undefined }
             }

@@ -16,7 +16,6 @@
     display: flex;
     flex-direction: column;
     align-content: space-between;
-    justify-content: center;
     align-items: center;
 }
 
@@ -35,7 +34,6 @@
 .cardInfo {
     display: flex;
     flex-direction: row;
-    align-items: center;
     margin: 1.5rem 2rem 1.5rem 2rem;
     border: 1px dashed var(--gray-400);
 }

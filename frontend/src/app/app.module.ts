@@ -66,7 +66,6 @@ import { DisclaimerService } from './components/disclaimer/disclaimer.service';
 // other
 import { DndDirective } from './components/helperButtons/dnd/dnd.directive';
 import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
-import { ProxyInterceptor } from './services/interceptors/ProxyInterceptor';
 import { PostSpreadInterceptor } from './services/interceptors/PostSpreadInterceptor';
 import { reducers, effects } from './ngrx_register';
 import { RegexTranslatePipe } from './services/simplifiedTranslation/regex-translate.pipe';
@@ -177,7 +176,6 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
       },
       multi: true
     },
-    { provide: HTTP_INTERCEPTORS, useClass: ProxyInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: PostSpreadInterceptor, multi: true },
     AlertService,
     DisclaimerService,

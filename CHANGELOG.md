@@ -39,10 +39,10 @@
 
 - Ongoing:
 
+    - translate html tables
+
     - parseAPIScenariosIntoNewState
         - middle partition doesnt need all that data ... only needs modal
-
-    - translate html tables
 
     - click: popup remains open: doesn't stay in exactly the same spot
         click on dmg-post ts
@@ -63,9 +63,6 @@
             - legend
 
 - Upcoming:
-    - map: don't rebuild all layers on every update
-    - remaining translations:
-        - in html tables
     - legends and layers in same tab
         - or hide those legends of invisible layers
     - redo-button

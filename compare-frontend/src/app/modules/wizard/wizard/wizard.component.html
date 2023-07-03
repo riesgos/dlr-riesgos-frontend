@@ -1,13 +1,10 @@
 <div class="wizard box" *ngIf="focus">
-    <div *ngIf="partition === 'left'" class="wizard-header">
-        <app-info [scenario]="scenario" [partition]="partition"></app-info>
-    </div>
-    <div *ngIf="partition === 'right'" class="wizard-header">
+    <div class="wizard-header">
         <app-info [scenario]="scenario" [partition]="partition"></app-info>
     </div>
 
     <div class="wizard-content" *ngIf="state$ | async as state">
-        <div class="step" *ngFor="let datum of state.stepData">
+        <div class="step" *ngFor="let datum of state.stepData; trackBy: trackByFn">
             <app-step [scenario]="scenario" [partition]="partition" [data]="datum"></app-step>
         </div>
     </div>

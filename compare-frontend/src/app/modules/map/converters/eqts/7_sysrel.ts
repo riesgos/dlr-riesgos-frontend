@@ -10,8 +10,15 @@ import Style from "ol/style/Style";
 import { greenYellowRedRange } from "src/app/helpers/colorhelpers";
 import { createKeyValueTableHtml } from "src/app/helpers/others";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
+import { TranslationService } from "src/app/services/translation.service";
+import { Injectable } from "@angular/core";
 
+
+@Injectable()
 export class SysRel implements Converter {
+
+    constructor(private translate: TranslationService) {}
+
     applies(scenario: ScenarioName, step: string): boolean {
         return step === "SysRel";
     }
@@ -49,10 +56,9 @@ export class SysRel implements Converter {
             popup: (location, features) => {
                 const feature = features[0];
                 const props = feature.getProperties();
-                const selectedProps = {
-                    'Area': props['Area'],
-                    '{{ Prob_Interuption }}': props['Prob_Disruption'],
-                };
+                const selectedProps: any = {};
+                selectedProps[this.translate.translate('Area')] = (+props['Area']).toFixed(2);
+                selectedProps[this.translate.translate('Prob_Interuption')] = props['Prob_Disruption'];
                 const table = createKeyValueTableHtml(selectedProps);
 
                 return {

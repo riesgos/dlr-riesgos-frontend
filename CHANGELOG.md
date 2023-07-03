@@ -26,7 +26,7 @@
 # [2.0.7]
 
 ## Features
-- icons for diferent modes
+- icons for different modes
 - showing version number
 - showing mode upon selection
 - activate right side once left all completed
@@ -36,23 +36,23 @@
 - popups contain helpful info
 - ? icon for each mode
 - map-component: layers only re-built if they have actually changed
+- eqLegend: closer together
+- popups:
+    - correct popup shown when multiple layers at same time
 
 - Ongoing:
 
     - translate html tables
-
     - parseAPIScenariosIntoNewState
         - middle partition doesnt need all that data ... only needs modal
-
     - click: popup remains open: doesn't stay in exactly the same spot
         click on dmg-post ts
         activate dmg-post eq
         move back to dmg-post-ts
-
     - tsunami damage
         - wizard
             - info
-            - legends (with correct schema and sytling)
+            - legends (with correct schema and styling)
     - tsunami sim
         - wizard
             - legends

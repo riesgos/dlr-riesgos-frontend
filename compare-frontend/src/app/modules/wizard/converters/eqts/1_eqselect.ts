@@ -79,7 +79,8 @@ export class EqSelection implements Converter {
                                 label: 'Mag. 9.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 9.0),
                             }],
-                            height: 100
+                            height: 100,
+                            width: 100
                         }
                     }]
                 }

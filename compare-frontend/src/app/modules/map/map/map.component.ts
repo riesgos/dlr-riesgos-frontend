@@ -214,7 +214,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // ... trying to get feature from raster layers.
     if (!clickedFeature) {
-      for (const layer of this.map.getAllLayers()) {
+      for (const layer of this.map.getAllLayers().reverse()) {  // needs reverse, because ol returns layers not in painter's order.
         if (!layer.getVisible() || (layer.getOpacity() <= 0.0) || this.baseLayers.includes(layer)) continue;
         const source = layer.getSource();
         if (source instanceof TileWMS) {

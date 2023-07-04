@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration=production --base-href=/light",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "find-unused-code": "ts-prune | grep -v '(used in module)'",

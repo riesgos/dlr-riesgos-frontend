@@ -1,4 +1,5 @@
 import express from 'express';
+import axios from 'axios';
 import { Server } from 'http';
 import { ScenarioAPIConfig, addScenarioApi } from '../../scenarios/scenario.interface';
 import { peruShortFactory } from './peru';
@@ -43,10 +44,10 @@ describe('Testing peru-scenario', () => {
 
     test('Testing that all run through', async () => {
 
-        const scenarioInfo: any = await (await fetch(`http://localhost:${port}/scenarios/Peru`)).json();
+        const scenarioInfo: any = await axios.get(`http://localhost:${port}/scenarios/Peru`);
         expect(scenarioInfo).toBeTruthy();
 
-        const steps = scenarioInfo.steps;
+        const steps = scenarioInfo.data.steps;
         expect(steps.length > 0);
 
         for (const step of steps) {

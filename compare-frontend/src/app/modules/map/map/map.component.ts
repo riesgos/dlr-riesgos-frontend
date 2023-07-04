@@ -156,6 +156,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     });
 
     const newLayerIds = newLayers.map(nl => nl.get("compositeId"));
+    newLayerIds.push("baseLayer");
     const oldLayerIds = oldLayers.map(nl => nl.get("compositeId"));
 
     const toRemove = oldLayers.filter(ol => !newLayerIds.includes(ol.get("compositeId")));
@@ -274,37 +275,38 @@ function getBaseLayers() {
   const osmBase = new TileLayer({
     source: new OSM()
   });
+  osmBase.set("compositeId", "baseLayer");
 
-  const waterStyle = new Style({
-    fill: new Fill({
-      color: '#9db9e8',
-    }),
-  });
+  // const waterStyle = new Style({
+  //   fill: new Fill({
+  //     color: '#9db9e8',
+  //   }),
+  // });
 
-  const buildingStyle = new Style({
-    fill: new Fill({
-      color: '#666',
-    }),
-    stroke: new Stroke({
-      color: '#444',
-      width: 1,
-    }),
-  });
+  // const buildingStyle = new Style({
+  //   fill: new Fill({
+  //     color: '#666',
+  //   }),
+  //   stroke: new Stroke({
+  //     color: '#444',
+  //     width: 1,
+  //   }),
+  // });
 
-  const tileBase = new VectorTileLayer({
-    source: new VectorTile({
-      url: "https://tiles.geoservice.dlr.de/service/tms/1.0.0/eoc:basemap@EPSG:4326@pbf/{z}/{x}/{y}.pbf?flipy=true",
-      format: new MVT(),
-      projection: "EPSG:4326"
-    }),
-    style: (feature, resolution) => {
-      console.log(feature.get('layer'))
-      const layer = feature.get('layer');
-      if (layer.includes('water') || layer.includes('ocean')) return waterStyle;
-      if (layer.includes('building') || layer.includes('urban')) return buildingStyle;
-      return undefined;
-    }
-  });
+  // const tileBase = new VectorTileLayer({
+  //   source: new VectorTile({
+  //     url: "https://tiles.geoservice.dlr.de/service/tms/1.0.0/eoc:basemap@EPSG:4326@pbf/{z}/{x}/{y}.pbf?flipy=true",
+  //     format: new MVT(),
+  //     projection: "EPSG:4326"
+  //   }),
+  //   style: (feature, resolution) => {
+  //     console.log(feature.get('layer'))
+  //     const layer = feature.get('layer');
+  //     if (layer.includes('water') || layer.includes('ocean')) return waterStyle;
+  //     if (layer.includes('building') || layer.includes('urban')) return buildingStyle;
+  //     return undefined;
+  //   }
+  // });
 
   return [osmBase];
 }

@@ -19,11 +19,14 @@ export class WizardComponent implements OnInit {
 
   constructor(
     private wizardSvc: WizardService,
-    private cd: ChangeDetectorRef
+    // private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.state$ = this.wizardSvc.getWizardState(this.scenario, this.partition);
+    // .pipe(tap(() => {
+    //   if (environment.type === "prod") setTimeout(() => this.cd.detectChanges(), 1);
+    // }))
   }
 
   public toggleFocus() {
@@ -31,6 +34,7 @@ export class WizardComponent implements OnInit {
   }
 
   public trackByFn(index: number, item: WizardComposite) {
-    return `${item.step.step.id}-${item.step.state.type}-${JSON.stringify(item.inputs)}`;
+    const key = `${item.step.step.id}-${item.step.state.type}-${JSON.stringify(item.inputs)}`;
+    return key;
   }
 }

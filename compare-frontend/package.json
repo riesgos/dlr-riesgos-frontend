@@ -6,8 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --configuration=production --base-href=/light/",
+    "build:dev": "ng build --configuration=development --base-href=/light/",
     "serve:prod": "rm -rf ./dist && ng build --configuration=production --base-href=/light/ && mv ./dist/compare-frontend ./dist/light && serve ./dist",
-    "watch": "ng build --watch --configuration development",
+    "serve:dev": "rm -rf ./dist && ng build --configuration=development --base-href=/light/ && mv ./dist/compare-frontend ./dist/light && serve ./dist",
+    "watch": "ng build --watch --configuration development",    
     "test": "ng test",
     "find-unused-code": "ts-prune | grep -v '(used in module)'",
     "find-unused-deps": "depcheck"

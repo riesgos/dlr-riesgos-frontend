@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { CollapsableComponent } from './collapsable/collapsable.component';
 import { TabComponent } from './tabs/tab.component';
@@ -52,7 +51,6 @@ import { SysRel } from './converters/eqts/7_sysrel';
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     UtilsModule
   ],
   exports: [

@@ -24,6 +24,7 @@ export class ConfigComponent implements OnInit {
     for (const input of this.data.inputs) {
       this.allValues[input.productId] = input.currentValue;
     }
+    // if (environment.type === "prod") setTimeout(() => this.cd.detectChanges(), 1);
   }
 
   public select(productId: string, value: any) {

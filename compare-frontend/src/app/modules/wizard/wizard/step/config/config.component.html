@@ -1,14 +1,9 @@
-<form [formGroup]="formGroup">
+<form>
     <div class="formElement" *ngFor="let input of data.inputs">
         <ng-container *ngIf="input.options">
             <label [for]="input.label">{{ input.label | translate }}:</label>
 
-            <!-- 
-                Removed binding to form-control. Instead using (click)="select". 
-                Reason: must be able to set value from outside of form.
-            -->
             <div *ngIf="input.formtype === 'string-select'">
-
                 <select *ngIf="(input.options | keyvalue).length > 1 && !autoPilot" >
                     <option (click)="select(input.productId, undefined)"></option>
                     <option *ngFor="let option of input.options | keyvalue" (click)="select(input.productId, option.value)" [selected]="isSelected(input.productId, option)">{{ option.key }}</option>
@@ -19,10 +14,11 @@
                 </select>
 
                 <p *ngIf="autoPilot" style="color: var(--gray-1000)">{{ input.currentValue || "Not set yet" }}</p>
-
             </div>
 
-            <input *ngIf="input.formtype === 'string'" [formControlName]="input.label" />
+
+            <input *ngIf="input.formtype === 'string'" (keyup)="onKey(input.productId, $event)"/>
+            
             
         </ng-container>
     </div>

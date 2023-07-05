@@ -1,7 +1,7 @@
-import { Observable, scan } from 'rxjs';
+import { Observable, scan, tap } from 'rxjs';
 import { Partition, ScenarioName } from 'src/app/state/state';
 
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 
 import { WizardComposite, WizardService, WizardState } from '../wizard.service';
 
@@ -18,7 +18,8 @@ export class WizardComponent implements OnInit {
   public state$!: Observable<WizardState>;
 
   constructor(
-    private wizardSvc: WizardService
+    private wizardSvc: WizardService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {

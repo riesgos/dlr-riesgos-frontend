@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { TranslationService } from 'src/app/services/translation.service';
 import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-info',
@@ -14,8 +15,8 @@ export class InfoComponent {
   @Input() partition!: Partition;
   public title$: Observable<string>;
 
-  constructor(private store: Store<{riesgos: RiesgosState}>, private translate: TranslationService) {
-    
+  constructor(private store: Store<{riesgos: RiesgosState}>, private translate: TranslationService, private cd: ChangeDetectorRef) {
+
     this.title$ = store.select(state => state.riesgos).pipe(
 
       map(riesgosState => {
@@ -35,7 +36,16 @@ export class InfoComponent {
         const depth = data["properties"]["origin.depth.value"];
         const mag = data["properties"]["magnitude.mag.value"];
         return `Mag. ${mag}, ${depth}km (${id})`;
-      })
-    )
+      }),
+
+      // // for some weird reason title is not being updated in compiled version
+      // tap(() => {
+      //   if (environment.type === "prod") {
+      //     setTimeout(() => {
+      //       this.cd.detectChanges();
+      //     }, 1)
+      //   }
+      // })
+    );
   }
 }

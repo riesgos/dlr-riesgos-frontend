@@ -1,6 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
-import { WritableDraft } from 'immer/dist/internal';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerOpacity, movingBackToMenu, openModal, closeModal } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
@@ -403,7 +402,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
 }
 
 
-function deriveState(state: WritableDraft<RiesgosState>) {
+function deriveState(state: RiesgosState) {
   for (const scenarioName in state.scenarioData) {
     const scenarioData = state.scenarioData[scenarioName as ScenarioName];
     for (const scenario of [scenarioData?.left, scenarioData?.right]) {
@@ -431,7 +430,7 @@ function deriveState(state: WritableDraft<RiesgosState>) {
   return state;
 }
 
-function setValuesToDefaults(partitionData: WritableDraft<RiesgosScenarioState>, ids: string[]) {
+function setValuesToDefaults(partitionData: RiesgosScenarioState, ids: string[]) {
   for (const id of ids) {
     const product = partitionData.products.find(p => p.id === id);
     const stepInput = partitionData.steps.map(s => s.step.inputs).flat().find(i => i.id === id);

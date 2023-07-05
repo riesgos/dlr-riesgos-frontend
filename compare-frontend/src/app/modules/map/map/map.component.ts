@@ -196,8 +196,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const location = mapState.clickLocation;
     this.overlay.setPosition(location); 
 
-    this._lastClickLocation = location;
     if (!location) {
+      this._lastClickLocation = location;
       return;
     }
 
@@ -259,13 +259,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (!madePopup) this.overlay.setPosition(undefined);
 
     // further click handling
-    if (clickedFeature) {
+    // but check if last click was already in same location to prevent loop
+    if (clickedFeature && !maybeArraysEqual(location, this._lastClickLocation)) {
       for (const composite of mapState.layerComposites) {
         if (composite.opacity > 0.0) {
           composite.onClick(location, [clickedFeature]);
         }
       }
     }
+
+    this._lastClickLocation = location;
   }
 
 }

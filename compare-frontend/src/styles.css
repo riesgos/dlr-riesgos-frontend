@@ -68,6 +68,7 @@ button {
     border-radius: 0.5rem;
     padding: 0.3rem;
     color: var(--accent-color-100);
+    cursor: pointer;
 }
 button:disabled {
     color: var(--gray-100);

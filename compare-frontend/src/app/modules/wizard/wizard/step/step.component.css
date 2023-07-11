@@ -1,6 +1,11 @@
 .step-header {
     padding: 0.2rem 0 0.2rem 0.2rem;
     border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.step-header:hover {
+  border-left: 1px solid var(--gray-400);
 }
 
 .step-header-unavailable h4 {

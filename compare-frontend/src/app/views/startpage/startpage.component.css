@@ -7,11 +7,12 @@
 }
 
 .studyArea {
-    margin: 1rem; 
+    margin: 1rem;
 }
 
 .card {
     padding: 1rem;
+    cursor: pointer;
 
     display: flex;
     flex-direction: column;
@@ -39,10 +40,10 @@
 }
 
 .cardInfoSvg {
-    background: var(--gray-600); 
-    width: 0.7rem; 
-    height: 0.7rem; 
-    display: block; 
+    background: var(--gray-600);
+    width: 0.7rem;
+    height: 0.7rem;
+    display: block;
     padding: 0.5rem;
     flex: 0 0 auto;
 }

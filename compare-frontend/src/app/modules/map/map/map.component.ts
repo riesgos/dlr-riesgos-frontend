@@ -55,7 +55,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           zoom: 0
         }),
         controls: [],
-        overlays: [this.overlay]    
+        overlays: [this.overlay]
       });
   }
 
@@ -68,7 +68,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (this.mapContainer && this.popupContainer) {
-  
+
       // needs to be outside of zone: only place where ol attaches to event-handlers
       this.zone.runOutsideAngular(() => {
         this.map.setTarget(this.mapContainer.nativeElement);
@@ -84,13 +84,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const zoom = this.map.getView().getZoom()!;
         const centerCoord = this.map.getView().getCenter()!;
         const center = [centerCoord[0], centerCoord[1]];
-        
+
         // center == [0, 0]: comes from map-initialization. no need to handle this.
         if (center[0] === 0 && center[1] === 0) return;
 
-        this.mapSvc.mapMove(this.scenario, this.partition, zoom, center);
+        // explicitly inside zone - otherwise issues with ngrx(-devtools) ... wouldn't update selected eq.
+        this.zone.run(() => this.mapSvc.mapMove(this.scenario, this.partition, zoom, center));
       };
-      
+
       const clickHandler = (evt: any) => {
 
         const location = evt.coordinate;
@@ -101,7 +102,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           return true;
         });
 
-        this.mapSvc.mapClick(this.scenario, this.partition, location, clickedFeature);
+        this.zone.run(() => this.mapSvc.mapClick(this.scenario, this.partition, location, clickedFeature));
       }
 
       // no need to run this outside of zone
@@ -125,7 +126,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   public closePopup() {
-    this.mapSvc.closePopup(this.scenario, this.partition);
+    this.zone.run(() => this.mapSvc.closePopup(this.scenario, this.partition));
   }
 
 
@@ -194,7 +195,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private _lastClickLocation: number[] | undefined;
   private async handleClick(mapState: MapState) {
     const location = mapState.clickLocation;
-    this.overlay.setPosition(location); 
+    this.overlay.setPosition(location);
 
     if (!location) {
       this._lastClickLocation = location;

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100"
+   height="100"
+   version="1.1"
+   id="svg9"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <g id="hourglass" >
+    <path
+       id="path930"
+       style="fill:#b3b3b3;stroke-width:0;stroke-linejoin:round;stroke-dashoffset:3.9;paint-order:fill markers stroke"
+       d="m 31.222656,19.972656 c 0.01431,8.532216 5.779449,23.982137 14.035156,26.136719 -8.255005,2.154397 -14.019965,17.603277 -14.035156,26.134766 17.838938,-0.166496 22.871994,-0.06514 37.554688,0 -0.002,-8.51977 -5.739898,-23.970404 -13.976563,-26.148438 8.227546,-2.175611 13.963075,-17.612723 13.976563,-26.123047 -15.754392,0.03294 -19.2626,0.204572 -37.554688,0 z"
+       sodipodi:nodetypes="ccccccc" />
+    <rect
+       style="fill:#999999;stroke-width:0;stroke-linejoin:round;stroke-dashoffset:3.9;paint-order:fill markers stroke"
+       id="rect1304"
+       width="42.561447"
+       height="3.9337506"
+       x="28.719276"
+       y="17.327606"
+       rx="1.1846172" />
+    <rect
+       style="fill:#999999;stroke-width:0;stroke-linejoin:round;stroke-dashoffset:3.9;paint-order:fill markers stroke"
+       id="rect1304-1"
+       width="42.561447"
+       height="3.9337506"
+       x="28.719276"
+       y="70.744003"
+       rx="1.1846172" />
+  </g>
+  <style type="text/css">
+   @keyframes rt {
+      0%   { transform: rotate(  0deg); }
+      100% { transform: rotate(180deg); }
+   }
+   #svg9 {
+      transform-origin: center;
+   }
+   #hourglass {
+      transform-origin: 50% 46%;
+      animation-name: rt;
+      animation-duration: 1s;
+      animation-timing-function: ease-in-out;
+      animation-direction: alternate;
+      -o-animation-iteration-count: infinite;
+   }
+  </style>
+</svg>

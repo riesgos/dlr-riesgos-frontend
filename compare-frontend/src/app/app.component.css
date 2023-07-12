@@ -18,3 +18,21 @@
     cursor: default;
 }
 
+
+.header .logoSection {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    right: 1rem;
+}
+
+.header .logoSection .logoLink {
+    padding: 0.45rem 0.25rem 0.25rem 0.5rem;
+}
+.header .logoSection .logoLink img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+}
+

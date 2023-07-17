@@ -38,7 +38,8 @@ export interface LayerComposite {
     popup(location: number[], features: FeatureLike[]): { component: Type<any>, args: {[key: string]: any} } | undefined
     onClick(location: number[], features: FeatureLike[]): void
     onHover(location: number[], features: FeatureLike[]): void
-    opacity: number
+    visible: boolean,
+    opacity?: number,
 }
 
 export class DefaultConverter implements Converter {

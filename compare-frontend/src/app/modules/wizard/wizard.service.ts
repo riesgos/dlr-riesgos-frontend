@@ -21,7 +21,7 @@ export interface WizardComposite {
     }[],
     hasFocus: boolean,
     isAutoPiloted?: boolean,
-    layerControlables: { layerCompositeId: string, opacity: number }[]
+    layerControlables: { layerCompositeId: string, visible: boolean }[]
 }
 
 export interface WizardState {
@@ -74,7 +74,7 @@ export class WizardService {
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
-                if (!arraysEqual(last.map.layerVisibility, current.map.layerVisibility)) return true;
+                if (!arraysEqual(last.map.layers, current.map.layers)) return true;
                 if (!arraysEqual(last.steps.map(s => s.state.type), current.steps.map(s => s.state.type))) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
@@ -104,8 +104,8 @@ export class WizardService {
                         stepData.hasFocus = true;
                         stepData.isAutoPiloted = autoPilotables.includes(step.step.id);
                         for (const layerControl of stepData.layerControlables) {
-                            const currentOpacity = state.map.layerVisibility.find(lv => lv.layerCompositeId === layerControl.layerCompositeId);
-                            if (currentOpacity) layerControl.opacity = currentOpacity.opacity;
+                            const currentOpacity = state.map.layers.find(lv => lv.layerCompositeId === layerControl.layerCompositeId);
+                            if (currentOpacity) layerControl.visible = currentOpacity.visible;
                         }
 
                     } else {

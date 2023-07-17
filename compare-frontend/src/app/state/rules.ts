@@ -5,6 +5,7 @@ export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIde
 export interface Rules {
     partition: boolean,
     mirrorFocus: boolean,
+    mirrorOpacity: boolean,
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
     mirrorData: boolean,
@@ -19,6 +20,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
     let rules: Rules = {
         partition: true,
         mirrorFocus: true,
+        mirrorOpacity: true,
         oneFocusOnly: true,
         focusFirstStepImmediately: true,
         mirrorData: false,

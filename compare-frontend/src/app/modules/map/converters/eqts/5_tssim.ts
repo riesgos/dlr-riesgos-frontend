@@ -39,6 +39,7 @@ export class TsSim implements Converter {
             onHover: (location, features) => undefined,
             popup: (location, features) => undefined,
             opacity: 1.0,
+            visible: true
         }, {
             id: "mwhLand_global",
             layer: new TileLayer({
@@ -53,6 +54,7 @@ export class TsSim implements Converter {
             onHover: (location, features) => undefined,
             popup: (location, features) => undefined,
             opacity: 1.0,
+            visible: true
         }, {
             id: "mwhLand_local",
             layer: new TileLayer({
@@ -67,6 +69,7 @@ export class TsSim implements Converter {
             onHover: (location, features) => undefined,
             popup: (location, features) => undefined,
             opacity: 1.0,
+            visible: true
         }, {
             id: "arrivalTimes",
             layer: new TileLayer({
@@ -81,6 +84,7 @@ export class TsSim implements Converter {
             onHover: (location, features) => undefined,
             popup: (location, features) => undefined,
             opacity: 0.5,
+            visible: true
         }];
 
 
@@ -125,7 +129,7 @@ export class TsSim implements Converter {
                     onClick: (location, features) => undefined,
                     onHover: (location, features) => undefined,
                     popup: (location, features) => undefined,
-                    opacity: 1.0,
+                    visible: true,
                 })
             }
 

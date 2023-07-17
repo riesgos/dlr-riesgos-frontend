@@ -13,6 +13,7 @@ import { movingBackToMenu } from './state/actions';
 })
 export class AppComponent {
 
+
   public ruleSet$: Observable<RuleSetName | 'none'>;
   
   constructor(private router: Router, private store: Store<{riesgos: RiesgosState}>) {
@@ -24,5 +25,10 @@ export class AppComponent {
   clickOnModes() {
     this.store.dispatch(movingBackToMenu());
     this.router.navigateByUrl("/");
+  }
+
+  clickOnImpres() {
+    this.store.dispatch(movingBackToMenu());
+    this.router.navigateByUrl("/impressum");
   }
 }

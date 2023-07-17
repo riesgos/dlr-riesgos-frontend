@@ -39,7 +39,7 @@ export class Exposure implements Converter {
                     width: 130
                 }
             }),
-            layerControlables: [{ layerCompositeId: "exposureLayer", opacity: 1.0 }]
+            layerControlables: [{ layerCompositeId: "exposureLayer", visible: true }]
         }
     }
 

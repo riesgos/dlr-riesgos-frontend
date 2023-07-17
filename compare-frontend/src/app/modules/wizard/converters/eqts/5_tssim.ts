@@ -19,10 +19,10 @@ export class TsSim implements Converter {
             inputs: [],
             step: step,
             layerControlables: [
-                {layerCompositeId: "mwh", opacity: 1.0 },
-                {layerCompositeId: "mwhLand_global", opacity: 1.0 },
-                {layerCompositeId: "mwhLand_local", opacity: 1.0 },
-                {layerCompositeId: "arrivalTimes", opacity: 0.5 },
+                {layerCompositeId: "mwh", visible: true },
+                {layerCompositeId: "mwhLand_global", visible: true },
+                {layerCompositeId: "mwhLand_local", visible: true },
+                {layerCompositeId: "arrivalTimes", visible: true },
             ]
         };
     }

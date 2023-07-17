@@ -15,13 +15,17 @@ import Feature, { FeatureLike } from "ol/Feature";
 import { Store } from "@ngrx/store";
 import { stepConfig } from "src/app/state/actions";
 import { createKeyValueTableHtml } from "src/app/helpers/others";
+import { TranslationService } from "src/app/services/translation.service";
 
 @Injectable()
 export class EqSelection implements Converter {
 
     private selectedFeature: Feature | undefined;
     
-    constructor(private store: Store<{ riesgos: RiesgosState }>) {}
+    constructor(
+        private store: Store<{ riesgos: RiesgosState }>,
+        private translate: TranslationService,
+    ) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
         return step === "selectEq";
@@ -69,6 +73,7 @@ export class EqSelection implements Converter {
         if (stepState === StepStateTypes.available) {
             const availableEqs = state.products.find(p => p.id === "userChoice");
             const _store = this.store;
+            const _trslt = this.translate;
 
             if (availableEqs) {
 
@@ -93,15 +98,16 @@ export class EqSelection implements Converter {
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
                         const props = features[0].getProperties();
+                        const tableFields: any = {};
+                        tableFields[_trslt.translate("Magnitude")] = props["magnitude.mag.value"];
+                        tableFields[_trslt.translate("Depth")] = props["origin.depth.value"] + " km";
+                        const popupBody = createKeyValueTableHtml(tableFields, "medium");
                         return {
                             component: StringPopupComponent,
                             args: {
                               "title": "AvailableEqs",
                               "subTitle": "",
-                              "body": createKeyValueTableHtml({
-                                "Magnitude": props["magnitude.mag.value"],
-                                "Depth": props["origin.depth.value"] + " km",
-                              }, "medium")
+                              "body": popupBody
                             }  
                         };
                     },
@@ -119,13 +125,15 @@ export class EqSelection implements Converter {
                         _store.dispatch(stepConfig({ partition: state.partition, scenario: state.scenario, stepId: "selectEq", values: { userChoice: feature } }));
                     },
                     onHover() {},
-                    opacity: 1.0
+                    opacity: 1.0,
+                    visible: true
                 });
             }
         }
 
         if (stepState === StepStateTypes.completed) {
             const selectedEq = data.find(d => d.id === "selectedEq");
+            const _trslt = this.translate;
 
             if (selectedEq) {
                 layers.push({
@@ -139,21 +147,23 @@ export class EqSelection implements Converter {
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
                         const props = features[0].getProperties();
+                        const tableFields: any = {};
+                        tableFields[_trslt.translate("Magnitude")] = props["magnitude.mag.value"];
+                        tableFields[_trslt.translate("Depth")] = props["origin.depth.value"] + " km";
+                        const popupBody = createKeyValueTableHtml(tableFields, "medium");
                         return {
                             component: StringPopupComponent,
                             args: {
                                 "title": "ChosenEq",
                                 "subTitle": "",
-                                "body": createKeyValueTableHtml({
-                                    "Magnitude": props["magnitude.mag.value"],
-                                    "Depth": props["origin.depth.value"] + " km",
-                                }, "medium")
+                                "body": popupBody
                             }   
                         }
                     },
                     onClick: () => {},
                     onHover: () => {},
-                    opacity: 1.0
+                    opacity: 1.0,
+                    visible: true
                 });
             }
         }

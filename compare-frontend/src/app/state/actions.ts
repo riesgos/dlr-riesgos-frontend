@@ -24,7 +24,7 @@ export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ sc
 
 export const mapMove = createAction('Map move', props<{ scenario: ScenarioName, partition: Partition, zoom: number, center: number[] }>());
 export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: Partition, location: number[] | undefined, clickedFeature?: {compositeId: string} }>());
-export const mapLayerOpacity = createAction('Map layer opacity', props<{ scenario: ScenarioName, partition: Partition, layerCompositeId: string, opacity: number }>());
+export const mapLayerVisibility = createAction('Map layer visibility', props<{ scenario: ScenarioName, partition: Partition, layerCompositeId: string, visible: boolean }>());
 
 export const togglePartition = createAction('Toggling partition', props<{ scenario: ScenarioName, partition: Partition }>());
 

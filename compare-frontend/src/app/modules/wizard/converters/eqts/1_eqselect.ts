@@ -23,7 +23,7 @@ export class EqSelection implements Converter {
             const id = eq["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
             const mag = eq["properties"]["magnitude.mag.value"];
             const depth = eq["properties"]["origin.depth.value"];
-            return `${id} (mag. ${mag}, ${depth}km)`;
+            return `Mag. ${mag}, ${depth}km (${id})`;
         }
 
         const options = Object.fromEntries(inputProd.options!.map(v => [eqToLabel(v), v]));
@@ -32,7 +32,7 @@ export class EqSelection implements Converter {
             hasFocus: false,
             inputs: [{
                 productId: 'userChoice',
-                label: 'eq',
+                label: 'eqSelectLabel',
                 formtype: 'string-select',
                 options: options,
                 currentValue: inputProd?.value

@@ -33,8 +33,8 @@ export class TsDmg implements Converter {
             }],
             step,
             layerControlables: [
-                { layerCompositeId: "TsDamage-WMS-econ", opacity: 1.0 },
-                { layerCompositeId: "TsDamage-WMS-damage", opacity: 1.0 },
+                { layerCompositeId: "TsDamage-WMS-econ", visible: true },
+                { layerCompositeId: "TsDamage-WMS-damage", visible: true },
             ],
             legend: () => ({
                 component: MultiLegendComponent,

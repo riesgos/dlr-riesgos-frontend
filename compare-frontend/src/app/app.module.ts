@@ -19,13 +19,15 @@ import { StartpageComponent } from './views/startpage/startpage.component';
 import { MappageComponent } from './views/mappage/mappage.component';
 import { UtilsModule } from './modules/utils/utils.module';
 import { ModalComponent } from './views/mappage/modal/modal.component';
+import { ImpressumComponent } from './views/impressum/impressum.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     StartpageComponent,
     MappageComponent,
-    ModalComponent
+    ModalComponent,
+    ImpressumComponent
   ],
   imports: [
     BrowserModule,

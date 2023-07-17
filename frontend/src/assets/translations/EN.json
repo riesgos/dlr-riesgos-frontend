@@ -86,6 +86,7 @@
     "eq-economic-loss-title": "Probable costs / Earthquake",
     "eq-exposure": "Exposure and damage / Earthquake",
     "eq-selection: boundingbox": "Boundingbox",
+    "eqSelectLabel": "Earthquake (magnitude, depth):",
     "eq-transition": "Damage transitions / Earthquake",
     "EqCatalogue": "Catalogue",
     "EqSimulation": "Ground motion",

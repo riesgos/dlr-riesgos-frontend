@@ -25,8 +25,8 @@ export class EqDmg implements Converter {
             inputs: [],
             step,
             layerControlables: [
-                { layerCompositeId: "EqDamage-WMS-econ", opacity: 1.0 },
-                { layerCompositeId: "EqDamage-WMS-damage", opacity: 1.0 },
+                { layerCompositeId: "EqDamage-WMS-econ", visible: true },
+                { layerCompositeId: "EqDamage-WMS-damage", visible: true },
             ],
             legend: () => ({
                 component: MultiLegendComponent,

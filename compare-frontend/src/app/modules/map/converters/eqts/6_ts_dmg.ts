@@ -53,7 +53,7 @@ export class TSDmg implements Converter {
                     }
                 };
             },
-            opacity:  1.0,
+            visible: true,
         };
 
         const econLayer: LayerComposite = {
@@ -87,7 +87,7 @@ export class TSDmg implements Converter {
                     }
                 };
             },
-            opacity: 1.0,
+            visible: true,
         };
 
         return of([dmgLayer, econLayer]);

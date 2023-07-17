@@ -42,6 +42,11 @@
 
 - Ongoing:
 
+    - mapState.layers <-  shouldn't be optional
+    - for some steps, only one layer visible at the same time
+    - update eq style upon dropdown select
+        - through update in state.map.layers.selected (new feature in layerComposite)
+
     - translate html tables
     - parseAPIScenariosIntoNewState
         - middle partition doesnt need all that data ... only needs modal

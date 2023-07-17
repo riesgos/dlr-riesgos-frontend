@@ -10,6 +10,9 @@
 }
 
 
+.step-header-unavailable {
+    cursor: default;
+}
 .step-header-unavailable h4 {
     color: var(--gray-100);
 }
@@ -25,8 +28,7 @@
     background-color: var(--accent-color-100);
 }
 .step-header-available:hover {
-    border-left: 1px solid var(--accent-color-200);
-    border-right: 1px solid var(--accent-color-200);
+    border: 1px solid var(--accent-color-200);
 }
 .step-header-available.focus {
     background-color: var(--accent-color-100);
@@ -50,8 +52,7 @@
     background-color: var(--notice-light);
 }
 .step-header-running:hover {
-    border-left: 1px solid var(--notice);
-    border-right: 1px solid var(--notice);
+    border: 1px solid var(--notice);
 }
 .step-header-running h4 {
     color: var(--notice);
@@ -80,8 +81,7 @@
     background-color: var(--success-light);
 }
 .step-header-completed:hover {
-    border-left: 1px solid var(--success);
-    border-right: 1px solid var(--success);
+    border: 1px solid var(--success);
 }
 .step-header-completed h4 {
     color: var(--success);
@@ -98,8 +98,7 @@
     background-color: var(--warning-light);
 }
 .step-header-error:hover {
-    border-left: 1px solid var(--warning);
-    border-right: 1px solid var(--warning);
+    border: 1px solid var(--warning);
 }
 .step-header-error h4 {
     color: var(--warning);

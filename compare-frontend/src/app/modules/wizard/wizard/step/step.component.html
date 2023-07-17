@@ -22,7 +22,7 @@
             <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed' && data.layerControlables.length > 0">
                 <app-layers [scenario]="scenario" [partition]="partition" [data]="data"></app-layers>
             </app-tab>
-            <app-tab [tabTitle]="'Legend'" *ngIf="data.legend && data.step.state.type === 'completed'">
+            <app-tab [tabTitle]="'Legend'" *ngIf="data.legend && data.step.state.type === 'completed' || data.step.step.id === 'selectEq'">
                 <app-legends [scenario]="scenario" [partition]="partition" [data]="data"></app-legends>
             </app-tab>
             <app-tab [tabTitle]="'Description'" *ngIf="data.info">

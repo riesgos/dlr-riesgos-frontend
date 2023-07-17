@@ -24,7 +24,7 @@
     outline-style: solid;
     outline-width: 1px;
     outline-color: var(--accent-color-800);
-    box-shadow:  0 0rem 1.0rem 0.1rem var(--gray-400);
+    box-shadow: inset 0 0 20px #d9e3e9;
 }
 
 
@@ -89,6 +89,7 @@
 
 .consortium-logos img {
     width: 90%;
+    opacity: 0.8;
 }
 
 .consortium-logos .first img {

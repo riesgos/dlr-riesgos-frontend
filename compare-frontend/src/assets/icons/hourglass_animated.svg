@@ -35,8 +35,9 @@
   </g>
   <style type="text/css">
    @keyframes rt {
-      0%   { transform: rotate(  0deg); }
-      100% { transform: rotate(180deg); }
+      0%    { transform: rotate(  0deg); }
+      50%   { transform: rotate(180deg); }
+      100%  { transform: rotate(360deg); }
    }
    #svg9 {
       transform-origin: center;
@@ -44,10 +45,10 @@
    #hourglass {
       transform-origin: 50% 46%;
       animation-name: rt;
-      animation-duration: 1s;
-      animation-timing-function: ease-in-out;
-      animation-direction: alternate;
-      -o-animation-iteration-count: infinite;
+      animation-duration: 4s;
+      animation-timing-function: ease;
+      animation-direction: forward;
+      animation-iteration-count: infinite;
    }
   </style>
 </svg>

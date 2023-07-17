@@ -1,4 +1,6 @@
 {
+    "eqSelectLabel": "Earthquake (magnitude, depth)",
+    "Impressum": "Imprint",
     "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015",
     "acceleration": "Acceleration",
     "AdditionalLayers": "Additional layers",
@@ -366,7 +368,7 @@
     "P_R": "Clay tile roofs supported on wood. Regular construction quality",
     "p1": "Peru",
     "Parish": "Parish",
-    "Peru Scenario Description": "Simulation of an earthquake close to the cost of Lima which causes a tsunami and subsequent damage to critical infrastructure.",
+    "Peru Scenario Description": "Simulation of an earthquake close to the cost of Lima and Callao which causes a tsunami and damages to buildings and the electricity net.",
     "peru_administrative": "Administrative layers",
     "peru_departamentos": "Departments",
     "peru_distritos": "Districts",

@@ -20,7 +20,7 @@ export class SysRel implements Converter {
             step,
             layerControlables: [{
                 layerCompositeId: "Productname_system_reliability_vector",
-                opacity: 1.0
+                visible: true
             }],
             legend: () => {
                 return {

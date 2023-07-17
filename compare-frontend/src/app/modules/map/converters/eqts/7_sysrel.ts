@@ -71,7 +71,7 @@ export class SysRel implements Converter {
             },
             onClick: () => undefined,
             onHover: () => undefined,
-            opacity: 1.0
+            visible: true
         };
 
         return of([layer]);

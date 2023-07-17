@@ -130,6 +130,7 @@
     "eq-economic-loss-title": "Costo probable / Terremoto",
     "eq-exposure": "Exposición y daño / Terremoto",
     "eq-selection: boundingbox": "Cuadro delimitador",
+    "eqSelectLabel": "Terremoto (magnitud, profundidad):",
     "eq-transition": "Transiciones de daños / Terremoto",
     "EqCatalogue": "Catálogo",
     "EqSimulation": "Movimiento de tierra",

@@ -30,7 +30,7 @@ export class EqSimulation implements Converter {
                 options: Object.fromEntries(gmpe.options!.map(v => [v, v])),
                 currentValue: gmpe?.value || gmpe?.reference
             }],
-            layerControlables: [{ layerCompositeId: "eqSimWmsLayer", opacity: 1.0 }],
+            layerControlables: [{ layerCompositeId: "eqSimWmsLayer", visible: true }],
             legend: () => ({
                 component: TranslatedImageComponent,
                 args: {

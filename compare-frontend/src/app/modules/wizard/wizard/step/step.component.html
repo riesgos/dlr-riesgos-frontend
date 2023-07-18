@@ -1,36 +1,32 @@
 <div class="step">
     <div 
-        [class]="['step-header', 'step-header-' + data.step.state.type]"
+        [class]="['step-header', 'step-header-' + data.state]"
         [class.autoPilot]="data.isAutoPiloted"
         [class.focus]="data.hasFocus"
         (click)="toggleFocus()">
-        <h4>{{ data.step.step.title | translate }}</h4>
+        <h4>{{ data.title | translate }}</h4>
 
-        <img *ngIf="data.step.state.type === 'running'" style="height: 20px; width: 20px; " src="assets/icons/hourglass_animated.svg" />
-        <img *ngIf="data.step.state.type === 'completed'" style="height: 16px; width: 16px; opacity: 0.7;" src="assets/icons/checkmark_animated.svg" />
-        <!-- <div *ngIf="data.step.state.type === 'running'" class="progressBar"></div> -->
+        <img *ngIf="data.state === 'running'" style="height: 20px; width: 20px; " src="assets/icons/hourglass_animated.svg" />
+        <img *ngIf="data.state === 'completed'" style="height: 16px; width: 16px; opacity: 0.7;" src="assets/icons/checkmark_animated.svg" />
 
     </div>
     <div class="step-body" *ngIf="data.hasFocus">
         <app-tabs>
-            <app-tab [tabTitle]="'Error'" *ngIf="data.step.state.type === 'error'">
-                <app-error [scenario]="scenario" [partition]="partition" [data]="data"></app-error>
+            <app-tab [tabTitle]="'Error'" *ngIf="data.state === 'error' && data.error">
+                <app-error [scenario]="scenario" [partition]="partition" [stepId]="data.stepId" [data]="data.error"></app-error>
             </app-tab>
-            <app-tab [tabTitle]="'Configuration'" *ngIf="data.step.state.type === 'available'">
-                <app-config [scenario]="scenario" [partition]="partition" [data]="data" [autoPilot]="data.isAutoPiloted"></app-config>
+            <app-tab [tabTitle]="'Configuration'" *ngIf="data.state === 'available'">
+                <app-config [scenario]="scenario" [partition]="partition" [stepId]="data.stepId" [data]="data.configs" [autoPilot]="data.isAutoPiloted"></app-config>
             </app-tab>
-            <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed' && data.layerControlables.length > 0">
-                <app-layers [scenario]="scenario" [partition]="partition" [data]="data"></app-layers>
+            <app-tab [tabTitle]="'Layers'" *ngIf="data.state === 'completed' && data.layers.length > 0">
+                <app-layers [scenario]="scenario" [partition]="partition" [data]="data.layers"></app-layers>
             </app-tab>
-            <app-tab [tabTitle]="'Legend'" *ngIf="data.legend && data.step.state.type === 'completed' || data.step.step.id === 'selectEq'">
-                <app-legends [scenario]="scenario" [partition]="partition" [data]="data"></app-legends>
+            <app-tab [tabTitle]="'Legend'" *ngIf="data.legend && data.state === 'completed' || data.stepId === 'selectEq'">
+                <app-legends [scenario]="scenario" [partition]="partition" [data]="data.legend!"></app-legends>
             </app-tab>
             <app-tab [tabTitle]="'Description'" *ngIf="data.info">
-                <app-description [scenario]="scenario" [partition]="partition" [data]="data"></app-description>
+                <app-description [scenario]="scenario" [partition]="partition" [data]="data.info"></app-description>
             </app-tab>
-            <!-- <app-tab [tabTitle]="'Download'" *ngIf="data.step.state.type === 'completed'">
-                <app-download [scenario]="scenario" [partition]="partition" [data]="data"></app-download>
-            </app-tab> -->
         </app-tabs>
     </div>
 </div>

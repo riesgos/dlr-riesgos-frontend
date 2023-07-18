@@ -1,18 +1,19 @@
 import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { isApiDatum } from 'src/app/services/backend.service';
 import { TranslationService } from 'src/app/services/translation.service';
-import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
-import { environment } from 'src/environments/environment';
+import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
+
 
 @Component({
-  selector: 'app-info',
-  templateUrl: './info.component.html',
-  styleUrls: ['./info.component.css']
+  selector: 'app-title',
+  templateUrl: './title.component.html',
+  styleUrls: ['./title.component.css']
 })
-export class InfoComponent {
+export class TitleComponent {
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   public title$: Observable<string>;
 
   constructor(private store: Store<{riesgos: RiesgosState}>, private translate: TranslationService, private cd: ChangeDetectorRef) {
@@ -24,10 +25,11 @@ export class InfoComponent {
         if (!scenarioData) return undefined;
         const partitionData = scenarioData[this.partition];
         if (!partitionData) return undefined;
-        const products = partitionData.products;
+        const products = partitionData.apiData.data;
         const eqProd = products.find(p => p.id === "userChoice");
         if (!eqProd) return undefined;
-        return eqProd.value;
+        if (!isApiDatum(eqProd)) return undefined;
+        return JSON.parse(eqProd.value);
       }),
 
       map(data => {
@@ -38,14 +40,6 @@ export class InfoComponent {
         return `Mag. ${mag}, ${depth}km (${id})`;
       }),
 
-      // // for some weird reason title is not being updated in compiled version
-      // tap(() => {
-      //   if (environment.type === "prod") {
-      //     setTimeout(() => {
-      //       this.cd.detectChanges();
-      //     }, 1)
-      //   }
-      // })
     );
   }
 }

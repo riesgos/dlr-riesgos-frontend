@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { defaultIfEmpty, map, tap } from 'rxjs/operators';
-import { isRiesgosUnresolvedRefProduct, isRiesgosResolvedRefProduct, RiesgosProduct, RiesgosProductResolved, isRiesgosValueProduct } from 'src/app/state/state';
 import { ConfigService } from './config.service';
+import { API_Datum, API_DatumReference, isApiDatum } from './backend.service';
 
 
 
@@ -27,29 +27,26 @@ export class ResolverService {
     private config: ConfigService
   ) { }
 
-  resolveReferences(products: RiesgosProduct[]): Observable<RiesgosProductResolved[]> {
+  resolveReferences(products: (API_Datum | API_DatumReference)[]): Observable<API_Datum[]> {
     const pendingRequests$ = products.map(p => this.resolveReference(p));
     return forkJoin(pendingRequests$).pipe(defaultIfEmpty([]));   // observable won't fire without defaultIfEmpty
   }
 
-  resolveReference(product: RiesgosProduct): Observable<RiesgosProductResolved> {
-    if (isRiesgosValueProduct(product) || isRiesgosResolvedRefProduct(product)) {
+  resolveReference(product: API_Datum | API_DatumReference): Observable<API_Datum> {
+    if (isApiDatum(product)) {
       return of(product);
-    } else if (isRiesgosUnresolvedRefProduct(product)) {
+    } else {
       const link = product.reference;
       const value$ = this.fetchFromLink(link);
       return value$.pipe(
         map(v => {
-          const resolvedProduct: RiesgosProductResolved = {
+          const resolvedProduct: API_Datum = {
             id: product.id,
-            reference: link, // resolved products maintain their reference, so that they can be sent back to the backend easily
             value: v
           };
           return resolvedProduct;
         })
       );
-    } else {
-      throw Error(`Unexpected state: ${product} is neither a resolved nor an unresolved RiesgosProduct`);
     }
   }
 

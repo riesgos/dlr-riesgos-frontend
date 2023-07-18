@@ -1,24 +1,18 @@
 <form>
-    <div class="formElement" *ngFor="let input of data.inputs">
+    <div class="formElement" *ngFor="let input of data">
         <ng-container *ngIf="input.options">
             <label [for]="input.label">{{ input.label | translate }}:</label>
 
-            <div *ngIf="input.formtype === 'string-select'">
-                <select *ngIf="(input.options | keyvalue).length > 1 && !autoPilot" >
-                    <option (click)="select(input.productId, undefined)"></option>
-                    <option *ngFor="let option of input.options | keyvalue" (click)="select(input.productId, option.value)" [selected]="isSelected(input.productId, option)">{{ option.key }}</option>
-                </select>
+            <select *ngIf="(input.options | keyvalue).length > 1 && !autoPilot" >
+                <option (click)="select(input.id, undefined)"></option>
+                <option *ngFor="let option of input.options | keyvalue" (click)="select(input.id, option.value)" [selected]="isSelected(input.id, option)">{{ option.key }}</option>
+            </select>
 
-                <select *ngIf="(input.options | keyvalue).length === 1 && !autoPilot" >
-                    <option *ngFor="let option of input.options | keyvalue" (click)="select(input.productId, option.value)" [selected]="true">{{ option.key }}</option>
-                </select>
+            <select *ngIf="(input.options | keyvalue).length === 1 && !autoPilot" >
+                <option *ngFor="let option of input.options | keyvalue" (click)="select(input.id, option.value)" [selected]="true">{{ option.key }}</option>
+            </select>
 
-                <p *ngIf="autoPilot" style="color: var(--gray-1000)">{{ input.currentValue || "Not set yet" }}</p>
-            </div>
-
-
-            <input *ngIf="input.formtype === 'string'" (keyup)="onKey(input.productId, $event)"/>
-            
+            <p *ngIf="autoPilot" style="color: var(--gray-1000)">{{ input.selected || "Not set yet" }}</p>
             
         </ng-container>
     </div>

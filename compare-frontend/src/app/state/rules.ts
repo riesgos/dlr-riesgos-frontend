@@ -1,4 +1,4 @@
-import { RiesgosState, ScenarioName, Partition, ModalState, StepStateTypes } from "./state";
+import { RiesgosState, ScenarioName, PartitionName, ModalState, StepStateTypes } from "./state";
 
 export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIdentical' | 'compareAdvanced' | 'classic';
 
@@ -13,7 +13,7 @@ export interface Rules {
     mirrorMove: boolean,
     autoPilot: (stepId: string) => boolean,
     allowConfiguration: (productId: string) => boolean,
-    modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) => ModalState
+    modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) => ModalState
 }
 
 export function getRules(ruleSet: RuleSetName | undefined): Rules {
@@ -28,7 +28,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         mirrorMove: true,
         autoPilot: (stepId: string) => stepId !== "selectEq",
         allowConfiguration: () => true,
-        modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) =>  ({ args: undefined })
+        modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) =>  ({ args: undefined })
     };
 
     // This could become arbitrarily complicated. 
@@ -82,29 +82,29 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
 }
 
 
-function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partition: Partition) {
+function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partition: PartitionName) {
     const scenarioData = state.scenarioData[scenario];
     if (!scenarioData) return false;
     const partitionData = scenarioData[partition];
     if (!partitionData) return false;
-    const steps = partitionData.steps;
-    const states = steps.map(s => s.state.type);
+    const steps = partitionData.controls;
+    const states = steps.map(s => s.state);
     for (const state of states) {
-        if (state !== StepStateTypes.completed) return false;
+        if (state !== 'completed') return false;
     }
     return true;
 }
 
 
-function noStepsStarted(state: RiesgosState, scenario: ScenarioName, partition: Partition) {
+function noStepsStarted(state: RiesgosState, scenario: ScenarioName, partition: PartitionName) {
     const scenarioData = state.scenarioData[scenario];
     if (!scenarioData) return true;
     const partitionData = scenarioData[partition];
     if (!partitionData) return true;
-    const steps = partitionData.steps;
-    const states = steps.map(s => s.state.type);
+    const steps = partitionData.controls;
+    const states = steps.map(s => s.state);
     for (const state of states) {
-        if (state === StepStateTypes.completed || state === StepStateTypes.running) return false;
+        if (state === 'completed' || state === 'running') return false;
     }
     return true;
 }

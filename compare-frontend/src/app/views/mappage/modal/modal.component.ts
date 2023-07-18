@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { closeModal } from 'src/app/state/actions';
-import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
 
 @Component({
   selector: 'app-modal',
@@ -11,7 +11,7 @@ import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
 export class ModalComponent {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!:  Partition;
+  @Input() partition!:  PartitionName;
   @Input() title: string = "";
   @Input() subtitle: string = "";
   @Input() body: string = "";

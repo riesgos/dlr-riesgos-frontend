@@ -1,9 +1,11 @@
-import { Observable, scan, tap } from 'rxjs';
-import { Partition, ScenarioName } from 'src/app/state/state';
+import { Observable, OperatorFunction, filter, map } from 'rxjs';
+import { PartitionName, RiesgosScenarioState, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { Component, Input, OnInit } from '@angular/core';
+import { WizardState, StepState } from './wizard.types';
+import { Store } from '@ngrx/store';
 
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 
-import { WizardComposite, WizardService, WizardState } from '../wizard.service';
+
 
 @Component({
   selector: 'app-wizard',
@@ -13,28 +15,47 @@ import { WizardComposite, WizardService, WizardState } from '../wizard.service';
 export class WizardComponent implements OnInit {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() focus!: boolean;
   public state$!: Observable<WizardState>;
 
   constructor(
-    private wizardSvc: WizardService,
-    // private cd: ChangeDetectorRef
+    private store: Store<{riesgos: RiesgosState}>
   ) {}
 
   ngOnInit(): void {
-    this.state$ = this.wizardSvc.getWizardState(this.scenario, this.partition);
-    // .pipe(tap(() => {
-    //   if (environment.type === "prod") setTimeout(() => this.cd.detectChanges(), 1);
-    // }))
+    this.state$ = this.store.select(s => s.riesgos).pipe(
+
+      map(s => {
+        const scenarioData = s.scenarioData[this.scenario];
+        if (!scenarioData) return undefined;
+        const partitionData = scenarioData[this.partition];
+        if (!partitionData) return undefined;
+        return partitionData;
+      }),
+
+      filter(v => v !== undefined) as OperatorFunction<RiesgosScenarioState | undefined, RiesgosScenarioState>,
+
+      map((partitionData: RiesgosScenarioState) => {
+        const stepData: StepState[] = [];
+        for (const control of partitionData.controls) {
+          stepData.push({
+            ...control,
+            // info: getInfo(control.stepId),
+            // legend: getLegend(control.stepId),            
+            // error: getError(control.stepId),
+          })
+        }
+        const wizardState: WizardState = { stepData };
+        return wizardState;
+      })
+
+    );
   }
 
   public toggleFocus() {
-    this.wizardSvc.toggleFocus(this.scenario, this.partition);
+    throw new Error('undefined');
   }
 
-  public trackByFn(index: number, item: WizardComposite) {
-    const key = `${item.step.step.id}-${item.step.state.type}-${JSON.stringify(item.inputs)}`;
-    return key;
-  }
+
 }

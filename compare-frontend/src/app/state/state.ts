@@ -1,4 +1,4 @@
-import { API_Step } from "../services/backend.service";
+import { API_Datum, API_DatumReference, API_ScenarioInfo, API_ScenarioState, API_Step } from "../services/backend.service";
 import { RuleSetName } from "./rules";
 
 
@@ -9,81 +9,47 @@ export function scenarioNameIsNotNone(name: ScenarioNameOrNone): name is Scenari
     return name !== 'none';
 }
 
-export enum StepStateTypes {
-    unavailable = 'unavailable',
-    available = 'available',
-    running = 'running',
-    completed = 'completed',
-    error = 'error',
-}
-export class StepStateUnavailable {
-    type: string = StepStateTypes.unavailable;
-}
-export class StepStateAvailable {
-    type: string = StepStateTypes.available;
-}
-export class StepStateRunning {
-    type: string = StepStateTypes.running;
-}
-export class StepStateCompleted {
-    type: string = StepStateTypes.completed;
-}
-export class StepStateError {
-    type: string = StepStateTypes.error;
-    constructor(public message: string) {}
-}
-export type StepState = StepStateUnavailable | StepStateAvailable |
-                        StepStateRunning | StepStateCompleted | StepStateError;
+export type PartitionName = 'left' | 'right' | 'top' | 'bottom' | 'middle';
 
+export type StepStateTypes = 'unavailable' | 'available' | 'running' | 'completed' | 'error';
 
-export interface RiesgosStep {
-    step: API_Step,
-    state: StepState
+export interface Layer {
+    layerCompositeId: string,
+    visible: boolean,
+    opacity: number,
+    type: 'raster' | 'vector',
+    data: API_Datum | API_DatumReference
 }
-
-export interface RiesgosProduct {
-    id: string,
-    options?: any[],
-    value?: any,
-    reference?: string,
-};
-
-export interface RiesgosProductRef extends RiesgosProduct {
-    reference: string
-}
-
-export interface RiesgosProductResolved extends RiesgosProduct {
-    reference: string,
-    value: any
-}
-
-export function isRiesgosValueOnlyProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
-    return 'value' in prod && !('reference' in prod);
-}
-
-export function isRiesgosValueProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
-    return 'value' in prod;
-}
-
-export function isRiesgosResolvedRefProduct(prod: RiesgosProduct): prod is RiesgosProductResolved {
-    return 'value' in prod && 'reference' in prod && 
-        prod.value !== undefined && prod.reference !== undefined;
-}
-
-export function isRiesgosUnresolvedRefProduct(prod: RiesgosProduct): prod is RiesgosProductRef {
-    return ('reference' in prod) && !('value' in prod) && prod.reference !== undefined;
-}
-
 
 export interface RiesgosScenarioMapState {
     zoom: number,
     center: number[],
     clickLocation: number[] | undefined,
-    layers: { layerCompositeId: string, visible: boolean }[]
+    layers: Layer[]
 }
 
-export interface FocusState {
-    focusedSteps: string[]
+export interface ParameterConfiguration {
+    id: string,
+    label: string,
+    options: {[key: string]: any},
+    selected: string | undefined,
+    default?: string
+}
+
+export interface RiesgosScenarioControlState {
+    stepId: string,
+    title: string,
+    hasFocus: boolean,
+    isAutoPiloted: boolean,
+    state: StepStateTypes,
+    configs: ParameterConfiguration[],
+    layers: Layer[],
+    errorMessage?: string
+}
+
+export interface RiesgosScenarioPopupState {
+    componentType: string,
+    data: {[key: string]: any}
 }
 
 export interface AutoPilotState {
@@ -96,13 +62,14 @@ export interface ModalState {
 
 export interface RiesgosScenarioState {
     scenario: ScenarioName;
-    steps: RiesgosStep[];
-    products: RiesgosProduct[];
+    apiSteps: API_ScenarioInfo,
+    apiData: API_ScenarioState,
     autoPilot: AutoPilotState,
-    partition: Partition,
+    partition: PartitionName,
     active: boolean,
     map: RiesgosScenarioMapState,
-    focus: FocusState,
+    popup: RiesgosScenarioPopupState,
+    controls: RiesgosScenarioControlState[],
     modal: ModalState
 }
 
@@ -122,17 +89,11 @@ export interface RiesgosScenarioMetadata {
     preview: string;
 }
 
-
-export type Partition = 'left' | 'right' | 'top' | 'bottom' | 'middle';
-
-
-
-
 export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
     scenarioData: {
         [key in ScenarioName]?: {
-            [key in Partition]?: RiesgosScenarioState
+            [key in PartitionName]?: RiesgosScenarioState
         }
     };
     metaData: RiesgosScenarioMetadata[];

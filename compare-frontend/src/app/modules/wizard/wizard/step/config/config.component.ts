@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosState, ScenarioName, ParameterConfiguration } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
-import { WizardComposite } from '../../../wizard.service';
+
 
 
 @Component({
@@ -13,18 +13,18 @@ import { WizardComposite } from '../../../wizard.service';
 export class ConfigComponent implements OnInit {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
-  @Input() data!: WizardComposite;
+  @Input() partition!: PartitionName;
+  @Input() stepId!: string;
+  @Input() data!: ParameterConfiguration[];
   @Input() autoPilot!: boolean | undefined;
   private allValues: { [key: string]: any } = {}
 
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
-    for (const input of this.data.inputs) {
-      this.allValues[input.productId] = input.currentValue;
+    for (const input of this.data) {
+      this.allValues[input.id] = input.selected;
     }
-    // if (environment.type === "prod") setTimeout(() => this.cd.detectChanges(), 1);
   }
 
   public select(productId: string, value: any) {
@@ -33,13 +33,13 @@ export class ConfigComponent implements OnInit {
     this.store.dispatch(AppActions.stepConfig({
       scenario: this.scenario,
       partition: this.partition,
-      stepId: this.data.step.step.id,
+      stepId: this.stepId,
       values: this.allValues
   }));
   }
 
   public execute() {
-    this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, partition: this.partition, step: this.data.step.step.id }));
+    this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, partition: this.partition, step: this.stepId }));
   }
 
   public allValuesSet(): boolean {

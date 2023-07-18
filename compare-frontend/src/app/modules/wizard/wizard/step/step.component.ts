@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Partition, ScenarioName } from 'src/app/state/state';
-import { WizardComposite, WizardService } from '../../wizard.service';
+import { PartitionName, ScenarioName } from 'src/app/state/state';
+import { StepState } from '../wizard.types';
 
 @Component({
   selector: 'app-step',
@@ -10,12 +10,12 @@ import { WizardComposite, WizardService } from '../../wizard.service';
 export class StepComponent {
   
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
-  @Input() data!: WizardComposite;
+  @Input() partition!: PartitionName;
+  @Input() data!: StepState;
 
-  constructor(private wizardSvc: WizardService) {}
+  constructor() {}
 
   public toggleFocus() {
-    this.wizardSvc.setStepFocus(this.scenario, this.partition, this.data.step.step.id, !this.data.hasFocus);
+    throw new Error('undefinf');
   }
 }

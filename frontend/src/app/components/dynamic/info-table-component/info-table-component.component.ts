@@ -7,7 +7,7 @@ export interface TableEntry {
 
 
 @Component({
-  selector: 'app-info-table-component',
+  selector: 'app-title-table-component',
   templateUrl: './info-table-component.component.html',
   styleUrls: ['./info-table-component.component.scss']
 })

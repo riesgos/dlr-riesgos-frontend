@@ -1,5 +1,5 @@
 import { Type } from "@angular/core"
-import { ParameterConfiguration, Layer, RiesgosScenarioControlState } from "src/app/state/state"
+import { RiesgosScenarioControlState } from "src/app/state/state"
 
 
 export interface Info {

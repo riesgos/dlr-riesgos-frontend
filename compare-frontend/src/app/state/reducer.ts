@@ -1,10 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
-import { RiesgosState, initialRiesgosState, ScenarioName, PartitionName, RiesgosScenarioState, RiesgosScenarioControlState, Layer } from './state';
+import { RiesgosState, initialRiesgosState, ScenarioName, PartitionName, RiesgosScenarioState, RiesgosScenarioControlState, LayerDescription } from './state';
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal } from './actions';
 import { API_ScenarioInfo, API_ScenarioState, isApiDatum } from '../services/backend.service';
 import { allParasSet } from './helpers';
 import { getRules } from './rules';
+import { findControlConverter, findLayerConverter, getMapCenter, getMapZoom } from './augmenters';
 
 
 
@@ -41,13 +42,32 @@ export const reducer = createReducer(
           active: true,
           autoPilot: {queue: []},
           controls: updateControlsFromInfo(scenarioInfo.id, partitionName, scenarioInfo, []),
-          map: {center: [0, 0], zoom: 0, clickLocation: undefined, layers: []},
+          map: {
+            center: getMapCenter(scenarioInfo.id),
+            zoom: getMapZoom(scenarioInfo.id),
+            clickLocation: undefined,
+            layers: getLayersFromInfo(scenarioInfo.id, partitionName, scenarioInfo)
+          },
           modal: {},
           popup: {componentType: '', data: {}},
         };
         partitionData[partitionName] = partitionDatum;
       }
       state.scenarioData[scenarioInfo.id] = partitionData;
+    }
+
+    state = updateState(state);
+
+    const rules = getRules(state.rules);
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+        for (const control of partitionData.controls) {
+          if (rules.autoPilot(control.stepId)) control.isAutoPiloted = true;
+        }
+        if (rules.focusFirstStepImmediately) {
+          partitionData.controls[0].hasFocus = true;
+        }
+      }
     }
 
     return state;
@@ -301,7 +321,7 @@ export const reducer = createReducer(
 
 
 
-function updateControlsFromInfo(scenarioName: ScenarioName, partition: PartitionName, newData: API_ScenarioInfo, controls: RiesgosScenarioControlState[]): RiesgosScenarioControlState[] {
+function updateControlsFromInfo(scenario: ScenarioName, partition: PartitionName, newData: API_ScenarioInfo, controls: RiesgosScenarioControlState[]): RiesgosScenarioControlState[] {
   for (const stepInfo of newData.steps) {
     let control = controls.find(c => c.stepId === stepInfo.id);
     if (!control) {
@@ -315,8 +335,10 @@ function updateControlsFromInfo(scenarioName: ScenarioName, partition: Partition
         control.configs.push(config);
       }
       if (inputInfo.options) {
+        const cc = findControlConverter(scenario, partition, stepInfo.id);
         for (const option of inputInfo.options) {
-          config.options[option] = option;  // @TODO: Backend.options: any[]. Frontend.options: {[key: string]: any}. Should I adjust backend, or frontend, or both?
+          if (cc) config.options[cc.optionToKey(inputInfo.id, option)] = option;
+          else config.options[JSON.stringify(option)] = option;
         }
       }
     }
@@ -324,10 +346,10 @@ function updateControlsFromInfo(scenarioName: ScenarioName, partition: Partition
   return controls;
 }
 
-function deriveLayersFromData(scenario: ScenarioName, partition: PartitionName, stepId: string, newData: API_ScenarioState, layers: Layer[]): Layer[] {
+function deriveLayersFromData(scenario: ScenarioName, partition: PartitionName, stepId: string, newData: API_ScenarioState, layers: LayerDescription[]): LayerDescription[] {
   const layerConverter = findLayerConverter(scenario, partition, stepId);
   if (!layerConverter) return [];
-  const newLayers = layerConverter.convert(newData, layers);
+  const newLayers = layerConverter.fromProducts(newData, layers);
   return newLayers;
 }
 
@@ -375,14 +397,6 @@ function updateState(state: RiesgosState) {
 }
 
 
-function findLayerConverter(scenario: ScenarioName, partition: PartitionName, stepId: string): LayerConverter | undefined {
-  return undefined;
-}
-
-interface LayerConverter {
-  convert(newData: API_ScenarioState, oldLayers: Layer[]): Layer[]
-}
-
 function apiStateFromApiInfo(scenarioInfo: API_ScenarioInfo): API_ScenarioState {
   const state: API_ScenarioState = {data: []};
   const seenIds: string[] = [];
@@ -402,3 +416,15 @@ function apiStateFromApiInfo(scenarioInfo: API_ScenarioInfo): API_ScenarioState 
   }
   return state;
 }
+
+function getLayersFromInfo(scenario: ScenarioName, partition: PartitionName, scenarioInfo: API_ScenarioInfo): LayerDescription[] {
+  let layers: LayerDescription[] = [];
+  for (const step of scenarioInfo.steps) {
+    const layerConverter = findLayerConverter(scenario, partition, step.id);
+    if (!layerConverter) continue;
+    const newLayers = layerConverter.fromInfo(step);
+    layers = layers.concat(...newLayers);
+  }
+  return layers;
+}
+

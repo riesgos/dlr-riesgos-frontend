@@ -29,6 +29,7 @@ export class TitleComponent {
         const eqProd = products.find(p => p.id === "userChoice");
         if (!eqProd) return undefined;
         if (!isApiDatum(eqProd)) return undefined;
+        if (!eqProd.value) return undefined;
         return JSON.parse(eqProd.value);
       }),
 

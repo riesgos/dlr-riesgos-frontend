@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Layer, PartitionName, ScenarioName } from 'src/app/state/state';
+import { LayerDescription, PartitionName, ScenarioName } from 'src/app/state/state';
 
 
 @Component({
@@ -11,6 +11,6 @@ export class LayersComponent {
 
   @Input() scenario!: ScenarioName;
   @Input() partition!: PartitionName;
-  @Input() data!: Layer[];
+  @Input() data!: LayerDescription[];
 
 }

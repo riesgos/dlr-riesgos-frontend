@@ -3,24 +3,27 @@ import Layer from 'ol/layer/Layer';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import GeoJSON from 'ol/format/GeoJSON';
-import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { LayerDescription, PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import BaseEvent from 'ol/events/Event';
-import { Observable, Subscription, firstValueFrom } from 'rxjs';
-import { maybeArraysEqual } from 'src/app/state/helpers';
+import { Observable, Subscription, firstValueFrom, map } from 'rxjs';
 import { FeatureLike } from 'ol/Feature';
 import { TileWMS } from 'ol/source';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import * as Actions from '../../../state/actions';
-import { RiesgosScenarioMapState as MapState, Layer as StateLayer } from '../../../state/state';
+import { RiesgosScenarioMapState as MapState } from '../../../state/state';
+import VectorSource from 'ol/source/Vector';
+import { ResolverService } from 'src/app/services/resolver.service';
+import VectorLayer from 'ol/layer/Vector';
 
 
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  styleUrls: ['./map.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
 
@@ -38,10 +41,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
 
   constructor(
-    private changeDetector: ChangeDetectorRef,
     private zone: NgZone,
     private http: HttpClient,
-    private store: Store<{riesgos: RiesgosState}>
+    private store: Store<{riesgos: RiesgosState}>,
+    private resolver: ResolverService
   ) {
       // no need to run this outside of zone
       this.map = new OlMap({
@@ -143,50 +146,77 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private handleLayers(mapState: MapState) {
 
-    const oldLayers = this.map.getAllLayers();
-
-    const newLayers = mapState.layers.map(c => {
-      const id = c.layerCompositeId;
-      const layer = getOlLayer(c);
-      layer.set("compositeId", id);
-      layer.setOpacity(c.opacity);
-      layer.setVisible(c.visible);
-      return layer;
-    });
-
-    const newLayerIds = newLayers.map(nl => nl.get("compositeId"));
+    const oldLayerIds = this.map.getAllLayers().map(l => l.get("compositeId"));
+    const newLayerIds = mapState.layers.map(l => l.layerCompositeId);
     newLayerIds.push("baseLayer");
-    const oldLayerIds = oldLayers.map(nl => nl.get("compositeId"));
 
-    const toRemove = oldLayers.filter(ol => !newLayerIds.includes(ol.get("compositeId")));
-    const toUpdate = newLayers.filter(nl =>  oldLayerIds.includes(nl.get("compositeId")));
-    const toAdd    = newLayers.filter(nl => !oldLayerIds.includes(nl.get("compositeId")));
+    const toRemove = oldLayerIds.filter(ol => !newLayerIds.includes(ol));
+    const toUpdate = newLayerIds.filter(nl =>  oldLayerIds.includes(nl));
+    const toAdd    = newLayerIds.filter(nl => !oldLayerIds.includes(nl));
 
-    for (const layer of toRemove) {
-      this.map.removeLayer(layer);
+    // 1. remove 
+    for (const layerId of toRemove) {
+      const layer = this.map.getAllLayers().find(l => l.get('compositeId') === layerId);
+      if (layer) this.map.removeLayer(layer);
     }
-    for (const layer of toUpdate) {
-      const oldLayer = oldLayers.find(l => l.get("compositeId") === layer.get("compositeId"));
-      if (!oldLayer) this.map.addLayer(layer);
-      else {
-        if (this.different(oldLayer, layer)) {
-          if (oldLayer) this.map.removeLayer(oldLayer);
-          this.map.addLayer(layer);
-        }
+
+    // 2. update
+    for (const layerId of toUpdate) {
+      const oldLayer = this.map.getAllLayers().find(l => l.get("compositeId") === layerId);
+      const newLayerDescription = mapState.layers.find(l => l.layerCompositeId === layerId);
+      if (!oldLayer || !newLayerDescription) continue;
+      const oldLayerDescription = oldLayer.get("description");
+      if (different(oldLayerDescription, newLayerDescription)) {
+        this.map.removeLayer(oldLayer);
+        this.toOlLayer(newLayerDescription).subscribe(newLayer => {
+          this.map.addLayer(newLayer);
+        });
       }
     }
-    for (const layer of toAdd) {
-      this.map.addLayer(layer);
+
+    // 3. add
+    for (const layerId of toAdd) {
+      const layerDescription = mapState.layers.find(l => l.layerCompositeId === layerId);
+      if (layerDescription) {
+        this.toOlLayer(layerDescription).subscribe(layer => {
+          this.map.addLayer(layer);
+        });
+      }
     }
 
-    // @TODO: set visibility from last time
+    
+    // const newLayers = mapState.layers.map(c => {
+    //   const id = c.layerCompositeId;
+    //   const layer = getOlLayer(c);
+    //   layer.set("compositeId", id);
+    //   layer.setOpacity(c.opacity);
+    //   layer.setVisible(c.visible);
+    //   return layer;
+    // });
+
   }
 
-  private different(oldLayer: Layer, newLayer: Layer): boolean {
-    if (oldLayer.getOpacity() !== newLayer.getOpacity()) return true;
-    // @TODO: compare features if VectorLayer, rasterSource if TileLayer
-    // style if VectorLayer, GET-params if TileLayer
-    return false;
+  private toOlLayer(layerDescription: LayerDescription): Observable<Layer> {
+    const data$ = this.resolver.resolveReference(layerDescription.data);
+    const layer$ = data$.pipe(
+      map(data => {
+        if (layerDescription.type === 'raster') {
+          return new TileLayer({
+            source: new TileWMS({
+              url: data.value,
+              params: {}
+            })
+          });
+        } else {
+          return new VectorLayer({
+            source: new VectorSource({
+              features: new GeoJSON().readFeatures(data.value)
+            })
+          })
+        }
+      })
+    );
+    return layer$;
   }
 
 
@@ -239,6 +269,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 }
 
 
+
+
+function different(oldLayer: LayerDescription, newLayer: LayerDescription): boolean {
+  if (oldLayer.layerCompositeId !== newLayer.layerCompositeId) return true;
+  if (JSON.stringify(oldLayer.data) !== JSON.stringify(newLayer.data)) return true;
+  return false;
+}
+
 function getBaseLayers() {
   const osmBase = new TileLayer({
     source: new OSM(),
@@ -250,6 +288,3 @@ function getBaseLayers() {
 }
 
 
-function getOlLayer(layer: StateLayer): Layer {
-  throw new Error(`undefined`)
-}

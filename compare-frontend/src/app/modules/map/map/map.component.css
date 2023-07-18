@@ -5,6 +5,11 @@
 }
 
 
+.gray {
+    filter: grayscale(0.8);
+}
+
+
 .popup {
     background: var(--gray-10);
     padding: .5rem;

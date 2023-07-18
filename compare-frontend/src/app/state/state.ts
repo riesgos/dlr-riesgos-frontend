@@ -13,7 +13,7 @@ export type PartitionName = 'left' | 'right' | 'top' | 'bottom' | 'middle';
 
 export type StepStateTypes = 'unavailable' | 'available' | 'running' | 'completed' | 'error';
 
-export interface Layer {
+export interface LayerDescription {
     layerCompositeId: string,
     visible: boolean,
     opacity: number,
@@ -25,7 +25,7 @@ export interface RiesgosScenarioMapState {
     zoom: number,
     center: number[],
     clickLocation: number[] | undefined,
-    layers: Layer[]
+    layers: LayerDescription[]
 }
 
 export interface ParameterConfiguration {
@@ -43,7 +43,7 @@ export interface RiesgosScenarioControlState {
     isAutoPiloted: boolean,
     state: StepStateTypes,
     configs: ParameterConfiguration[],
-    layers: Layer[],
+    layers: LayerDescription[],
     errorMessage?: string
 }
 

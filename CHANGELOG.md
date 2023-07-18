@@ -23,33 +23,21 @@
     - That's because map-converters and wizard-converters are completele independent.
 
 
-# [2.0.7]
+# [2.0.8]
 
-## Features
-- icons for different modes
-- showing version number
-- showing mode upon selection
-- activate right side once left all completed
-- showing currently selected eq in config-bar
-- eq labels formatted
-- users can now close popups 
-- popups contain helpful info
-- ? icon for each mode
-- map-component: layers only re-built if they have actually changed
-- eqLegend: closer together
-- popups:
-    - correct popup shown when multiple layers at same time
+- Refactoring:
+    - layers and their properties now part of global state
+    - layers and their properties only changed through redux
+- Restored functionality after refactoring
+    - display eqs
 
 - Ongoing:
 
-    - mapState.layers <-  shouldn't be optional
+
     - for some steps, only one layer visible at the same time
     - update eq style upon dropdown select
-        - through update in state.map.layers.selected (new feature in layerComposite)
-
     - translate html tables
-    - parseAPIScenariosIntoNewState
-        - middle partition doesnt need all that data ... only needs modal
+    - middle partition doesnt need all that data ... only needs modal
     - click: popup remains open: doesn't stay in exactly the same spot
         click on dmg-post ts
         activate dmg-post eq
@@ -71,6 +59,25 @@
     - legends and layers in same tab
         - or hide those legends of invisible layers
     - redo-button
+
+
+
+# [2.0.7] (July 18 2023) Cosmetic changes
+
+## Features
+- icons for different modes
+- showing version number
+- showing mode upon selection
+- activate right side once left all completed
+- showing currently selected eq in config-bar
+- eq labels formatted
+- users can now close popups 
+- popups contain helpful info
+- ? icon for each mode
+- map-component: layers only re-built if they have actually changed
+- eqLegend: closer together
+- popups:
+    - correct popup shown when multiple layers at same time
 
 
 # [2.0.6](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.5) (Jun 11 2023) Compare prototype working 

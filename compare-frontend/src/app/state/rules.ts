@@ -9,7 +9,7 @@ export interface Rules {
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
     mirrorData: boolean,
-    mirrorClick: (compositeId: string) => boolean,
+    mirrorClick: boolean,
     mirrorMove: boolean,
     autoPilot: (stepId: string) => boolean,
     allowConfiguration: (productId: string) => boolean,
@@ -24,7 +24,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         oneFocusOnly: true,
         focusFirstStepImmediately: true,
         mirrorData: false,
-        mirrorClick: (compositeId: string) => compositeId !== 'userChoiceLayer',
+        mirrorClick: true,
         mirrorMove: true,
         autoPilot: (stepId: string) => stepId !== "selectEq",
         allowConfiguration: () => true,
@@ -68,7 +68,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         case 'compareAdvanced':
             rules.mirrorFocus = false;
             rules.mirrorMove = false;
-            rules.mirrorClick = (compositeId: string) => false;
+            rules.mirrorClick = false;
             rules.autoPilot = () => false;
             break;
         case 'classic':

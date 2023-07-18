@@ -8,13 +8,14 @@ import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChi
 import BaseEvent from 'ol/events/Event';
 import { Observable, Subscription, firstValueFrom, map } from 'rxjs';
 import { FeatureLike } from 'ol/Feature';
-import { TileWMS } from 'ol/source';
+import { Raster, TileWMS } from 'ol/source';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import * as Actions from '../../../state/actions';
 import { RiesgosScenarioMapState as MapState } from '../../../state/state';
 import { ResolverService } from 'src/app/services/resolver.service';
-import { OlLayerFactory, findOlLayerFactory } from 'src/app/state/augmenters';
+import { OlLayerFactory, findClickHandler, findOlLayerFactory } from 'src/app/state/augmenters';
+import { maybeArraysEqual } from 'src/app/state/helpers';
 
 
 
@@ -91,14 +92,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.zone.run(() => this.store.dispatch(Actions.mapMove({scenario: this.scenario, partition: this.partition, zoom, center})));
       };
 
-      const clickHandler = async (evt: any) => {
-
+      const clickHandler = (evt: any) => {
         const location = evt.coordinate;
-        const result = await this.getFeatureAt(location);
-        if (!result) return;
-        const {clickedFeature, compositeId} = result;
-
-        this.zone.run(() => this.store.dispatch(Actions.mapClick({scenario: this.scenario, partition: this.partition, location, clickedFeature, compositeId })));
+        this.zone.run(() => this.store.dispatch(Actions.mapClick({scenario: this.scenario, partition: this.partition, location })));
       }
 
       // no need to run this outside of zone
@@ -115,7 +111,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const mapStateSub = this.store.select(s => s.riesgos.scenarioData[this.scenario]![this.partition]!.map).subscribe(async mapState => {
           this.updateLocation(mapState);
           this.updateLayers(mapState);
-          this.updatePopup(mapState);
+          this.handleClick(mapState);
       });
       this.subs.push(mapStateSub);
     }
@@ -142,8 +138,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private updateLayers(mapState: MapState) {
 
-    const oldLayerIds = this.map.getAllLayers().map(l => l.get("description").layerCompositeId);
-    const newLayerIds = mapState.layers.map(l => l.layerCompositeId);
+    const oldLayerIds = this.map.getAllLayers().map(l => l.get("description").layerId);
+    const newLayerIds = mapState.layers.map(l => l.layerId);
     newLayerIds.push("baseLayer");
 
     const toRemove = oldLayerIds.filter(ol => !newLayerIds.includes(ol));
@@ -152,14 +148,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // 1. remove 
     for (const layerId of toRemove) {
-      const layer = this.map.getAllLayers().find(l => l.get('compositeId') === layerId);
+      const layer = this.map.getAllLayers().find(l => l.get("description").layerId === layerId);
       if (layer) this.map.removeLayer(layer);
     }
 
     // 2. update
     for (const layerId of toUpdate) {
-      const oldLayer = this.map.getAllLayers().find(l => l.get("description").layerCompositeId === layerId);
-      const newLayerDescription = mapState.layers.find(l => l.layerCompositeId === layerId);
+      const oldLayer = this.map.getAllLayers().find(l => l.get("description").layerId === layerId);
+      const newLayerDescription = mapState.layers.find(l => l.layerId === layerId);
       if (!oldLayer || !newLayerDescription) continue;
       const oldLayerDescription = oldLayer.get("description");
       const layerF = findOlLayerFactory(this.scenario, this.partition, layerId);
@@ -173,7 +169,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // 3. add
     for (const layerId of toAdd) {
-      const layerDescription = mapState.layers.find(l => l.layerCompositeId === layerId);
+      const layerDescription = mapState.layers.find(l => l.layerId === layerId);
       const layerF = findOlLayerFactory(this.scenario, this.partition, layerId);
       if (layerF && layerDescription) {
         this.toOlLayer(layerDescription, layerF).subscribe(layer => {
@@ -191,6 +187,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       map(data => layerFactory.toOlLayer(data, layerDescription)),
       map(layer => {
         layer.set("description", layerDescription);
+        layer.setVisible(layerDescription.visible);
+        layer.setOpacity(layerDescription.opacity);
         return layer;
       })
     );
@@ -198,28 +196,41 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
 
-  private async updatePopup(mapState: MapState) {
+  private _lastLocation: number[] | undefined = undefined;
+  private async handleClick(mapState: MapState) {
     const location = mapState.clickLocation;
+    if (maybeArraysEqual(location, this._lastLocation)) return;  // prevents loops
+
     this.overlay.setPosition(location);
 
-    if (!location) {
-      return;
+    if (location) {
+      const result = await this.getFeatureAt(location);
+      if (result) {
+        const {clickedFeature, layerId} = result;
+        const clickHandler = findClickHandler(this.scenario, this.partition, location, layerId!, clickedFeature);
+        const layerDescription = this.map.getAllLayers().find(l => l.get("description").layerId === layerId)?.get("description");
+        if (clickHandler && layerDescription) {
+            const actions = clickHandler.handleClick(this.scenario, this.partition, layerDescription, clickedFeature);
+            if (actions.length > 0) {
+              actions.map(action => this.store.dispatch(action));
+            }
+        }
+      }
     }
 
-   
-
+    this._lastLocation = location;
   }
 
   private async getFeatureAt(location: number[]) {
     const pixel = this.map.getPixelFromCoordinate(location);
     let clickedFeature: FeatureLike | undefined;
-    let compositeId: string | undefined;
+    let layerId: string | undefined;
 
     // trying to get clicked feature from vector-layers ...
     this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
       if (this.baseLayers.includes(layer)) return false;
       clickedFeature = feature;
-      compositeId = layer.get("description").layerCompositeId;
+      layerId = layer.get("description").layerId;
       return true;
     });
 
@@ -236,7 +247,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             if (result) {
               const resultFeatures = new GeoJSON().readFeatures(result);
               clickedFeature = resultFeatures[0];
-              compositeId = layer.get("description").layerCompositeId;
+              layerId = layer.get("description").layerId;
               break;
             }
           }
@@ -244,7 +255,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       }
     }
 
-    if (clickedFeature) return {clickedFeature, compositeId};
+    if (clickedFeature) return {clickedFeature, layerId};
     return undefined;
   }
 
@@ -254,7 +265,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
 
 function different(oldLayer: LayerDescription, newLayer: LayerDescription): boolean {
-  if (oldLayer.layerCompositeId !== newLayer.layerCompositeId) return true;
+  if (oldLayer.layerId !== newLayer.layerId) return true;
   if (JSON.stringify(oldLayer.data) !== JSON.stringify(newLayer.data)) return true;
   return false;
 }
@@ -264,7 +275,14 @@ function getBaseLayers() {
     source: new OSM(),
     className: 'gray'
   });
-  osmBase.set("compositeId", "baseLayer");
+  const baseLayerDescription: LayerDescription = {
+    layerId: "baseLayer",
+    data: { id: "", value: undefined },
+    opacity: 1.0,
+    type: "raster",
+    visible: true
+  };
+  osmBase.set("description", baseLayerDescription);
 
   return [osmBase];
 }

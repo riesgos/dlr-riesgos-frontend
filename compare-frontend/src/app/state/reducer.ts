@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { RiesgosState, initialRiesgosState, ScenarioName, PartitionName, RiesgosScenarioState, RiesgosScenarioControlState, LayerDescription } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, layerUpdate } from './actions';
 import { API_ScenarioInfo, API_ScenarioState, isApiDatum } from '../services/backend.service';
 import { allParasSet } from './helpers';
 import { getRules } from './rules';
@@ -269,8 +269,7 @@ export const reducer = createReducer(
 
     partitionData.map.clickLocation = action.location;
 
-    const compositeId = action.compositeId || "";
-    if (rules.mirrorClick(compositeId)) {
+    if (rules.mirrorClick) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioState)) {
         if (otherPartition !== action.partition) {
             otherPartitionData.map.clickLocation = action.location;
@@ -281,17 +280,29 @@ export const reducer = createReducer(
     return state;
   }),
 
+  immerOn(layerUpdate, (state, action) => {
+    const scenarioState = state.scenarioData[action.scenario]!;
+    const partitionData = scenarioState[action.partition]!;
+    const layers = partitionData.map.layers;
+    for (let i = 0; i < layers.length; i++) {
+      if (layers[i].layerId === action.layer.layerId) {
+        layers[i] = action.layer;
+      }
+    }    
+    return state;
+  }),
+
   immerOn(mapLayerVisibility, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
     const rules = getRules(state.rules);
 
     for (const [partition, partitionData] of Object.entries(scenarioState)) {
       if (partition === action.partition) {
-        const foundEntry = partitionData.map.layers.find(entry => entry.layerCompositeId === action.layerCompositeId);
+        const foundEntry = partitionData.map.layers.find(entry => entry.layerId === action.layerId);
         if (foundEntry) foundEntry.visible = action.visible;
       }
       else if (rules.mirrorOpacity) {
-        const foundEntry = partitionData.map.layers.find(entry => entry.layerCompositeId === action.layerCompositeId);
+        const foundEntry = partitionData.map.layers.find(entry => entry.layerId === action.layerId);
         if (foundEntry) foundEntry.visible = action.visible;
       }
     }

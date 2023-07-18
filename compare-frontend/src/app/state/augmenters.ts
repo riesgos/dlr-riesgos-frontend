@@ -1,6 +1,7 @@
 import { Layer } from "ol/layer";
-import { API_Datum, API_ScenarioState, API_Step } from "../services/backend.service";
+import { API_Datum, API_ScenarioState, API_Step, isApiDatumReference } from "../services/backend.service";
 import { LayerDescription, PartitionName, ScenarioName } from "./state";
+import * as AppActions from './actions';
 import LayerRenderer from "ol/renderer/Layer";
 import { Source } from "ol/source";
 import VectorLayer from "ol/layer/Vector";
@@ -8,14 +9,16 @@ import VectorSource from "ol/source/Vector";
 import { linInterpolateXY, yellowRedRange } from "../helpers/colorhelpers";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import GeoJSON from "ol/format/GeoJSON";
+import { Action } from "@ngrx/store";
+import Feature, { FeatureLike } from "ol/Feature";
 
 
 export function getMapCenter(id: ScenarioName): number[] {
-    return [-77.15, -12];
+    return [-77.6, -12.3];
 }
 
 export function getMapZoom(id: ScenarioName): number {
-    return 10;
+    return 9;
 }
 
 
@@ -33,6 +36,21 @@ export interface OlLayerFactory {
     toOlLayer(data: API_Datum, layerDescription: LayerDescription): Layer
 }
 
+export interface ClickHandler {
+    handleClick(scenario: ScenarioName, partition: PartitionName, layer: LayerDescription, feature: FeatureLike): Action[]
+}
+
+// @TODO: move into MapModule
+export function findClickHandler(scenario: ScenarioName, partition: PartitionName, location: number[], layerId: string, feature: FeatureLike): ClickHandler | undefined {
+    if (scenario === "PeruShort") {
+        if (layerId === "userChoice") {
+            return new UserChoiceClickHandler();
+        }
+    }
+    return undefined;
+}
+
+// @TODO: move into MapModule
 export function findOlLayerFactory(scenario: ScenarioName, partition: PartitionName, layerId: string): OlLayerFactory | undefined {
     if (scenario === 'PeruShort') {
         if (layerId === 'userChoice') {
@@ -43,6 +61,8 @@ export function findOlLayerFactory(scenario: ScenarioName, partition: PartitionN
     return undefined;
 }
 
+
+// @TODO: move into WizardModule
 export function findControlFactory(scenario: ScenarioName, partition: PartitionName, stepId: string): ControlFactory | undefined {
     if (scenario === 'PeruShort') {
         if (stepId === 'selectEq') {
@@ -65,7 +85,27 @@ export function findLayerDescriptionFactory(scenario: ScenarioName, partition: P
 
 
 
+class UserChoiceClickHandler implements ClickHandler {
+    handleClick(scenario: ScenarioName, partition: PartitionName, layer: LayerDescription, clickedFeature: FeatureLike): Action[] {
+        const newLayer = structuredClone(layer);
+        if (isApiDatumReference(newLayer.data)) return [];
+        const clickedFeatureId = clickedFeature.getProperties()["publicID"];
+        let clickedFeatureJson = JSON.parse(new GeoJSON().writeFeature(clickedFeature as Feature));
+        for (const feature of newLayer.data.value.features) {
+            const featureId = feature.properties.publicID;
+            if (featureId === clickedFeatureId) {
+                feature.properties["selected"] = true;
+            } else {
+                feature.properties["selected"] = false;
+            }
+        }
+        return [
+            AppActions.layerUpdate({scenario, partition, layer: newLayer}),
+            AppActions.stepConfig({ scenario, partition, stepId: "selectEq",  values: { userChoice: clickedFeatureJson } })
+        ]
+    }
 
+}
 
 class UserChoiceOlLayerConverter implements OlLayerFactory {
     toOlLayer(data: API_Datum, layerDescription: LayerDescription): Layer<Source, LayerRenderer<any>> {
@@ -111,7 +151,7 @@ class UserChoiceLayerConverter implements LayerDescriptionFactory {
             opacity: 0.8,
             type: 'vector',
             visible: true,
-            layerCompositeId: input.id
+            layerId: input.id
         }];
     }
     fromProducts(newData: API_ScenarioState, oldLayers: LayerDescription[]): LayerDescription[] {

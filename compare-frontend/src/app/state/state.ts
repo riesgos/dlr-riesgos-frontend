@@ -14,7 +14,7 @@ export type PartitionName = 'left' | 'right' | 'top' | 'bottom' | 'middle';
 export type StepStateTypes = 'unavailable' | 'available' | 'running' | 'completed' | 'error';
 
 export interface LayerDescription {
-    layerCompositeId: string,
+    layerId: string,
     visible: boolean,
     opacity: number,
     type: 'raster' | 'vector',

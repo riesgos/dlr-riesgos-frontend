@@ -5,7 +5,7 @@ import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFail
 import { API_ScenarioInfo, API_ScenarioState, isApiDatum } from '../services/backend.service';
 import { allParasSet } from './helpers';
 import { getRules } from './rules';
-import { findControlConverter, findLayerConverter, getMapCenter, getMapZoom } from './augmenters';
+import { findControlFactory, findLayerDescriptionFactory, getMapCenter, getMapZoom } from './augmenters';
 
 
 
@@ -269,16 +269,14 @@ export const reducer = createReducer(
 
     partitionData.map.clickLocation = action.location;
 
-    const doMirror = () => {
+    const compositeId = action.compositeId || "";
+    if (rules.mirrorClick(compositeId)) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioState)) {
         if (otherPartition !== action.partition) {
             otherPartitionData.map.clickLocation = action.location;
         }
       }
-    }
-
-    const compositeId = action.clickedFeature?.compositeId || "";
-    if (rules.mirrorClick(compositeId)) doMirror();
+    };
 
     return state;
   }),
@@ -335,7 +333,7 @@ function updateControlsFromInfo(scenario: ScenarioName, partition: PartitionName
         control.configs.push(config);
       }
       if (inputInfo.options) {
-        const cc = findControlConverter(scenario, partition, stepInfo.id);
+        const cc = findControlFactory(scenario, partition, stepInfo.id);
         for (const option of inputInfo.options) {
           if (cc) config.options[cc.optionToKey(inputInfo.id, option)] = option;
           else config.options[JSON.stringify(option)] = option;
@@ -347,7 +345,7 @@ function updateControlsFromInfo(scenario: ScenarioName, partition: PartitionName
 }
 
 function deriveLayersFromData(scenario: ScenarioName, partition: PartitionName, stepId: string, newData: API_ScenarioState, layers: LayerDescription[]): LayerDescription[] {
-  const layerConverter = findLayerConverter(scenario, partition, stepId);
+  const layerConverter = findLayerDescriptionFactory(scenario, partition, stepId);
   if (!layerConverter) return [];
   const newLayers = layerConverter.fromProducts(newData, layers);
   return newLayers;
@@ -420,7 +418,7 @@ function apiStateFromApiInfo(scenarioInfo: API_ScenarioInfo): API_ScenarioState 
 function getLayersFromInfo(scenario: ScenarioName, partition: PartitionName, scenarioInfo: API_ScenarioInfo): LayerDescription[] {
   let layers: LayerDescription[] = [];
   for (const step of scenarioInfo.steps) {
-    const layerConverter = findLayerConverter(scenario, partition, step.id);
+    const layerConverter = findLayerDescriptionFactory(scenario, partition, step.id);
     if (!layerConverter) continue;
     const newLayers = layerConverter.fromInfo(step);
     layers = layers.concat(...newLayers);

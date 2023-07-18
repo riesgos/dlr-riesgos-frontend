@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { API_ScenarioInfo, API_ScenarioState } from '../services/backend.service';
 import { ModalState, PartitionName, ScenarioName } from './state';
 import { RuleSetName } from './rules';
+import { FeatureLike } from 'ol/Feature';
 
 
 export const ruleSetPicked = createAction('Rule-set picked', props<{ rules: RuleSetName }>());
@@ -23,7 +24,7 @@ export const autoPilotEnqueue = createAction('Auto-pilot: enqueing', props<{ sce
 export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ scenario: ScenarioName, partition: PartitionName, step: string }>());
 
 export const mapMove = createAction('Map move', props<{ scenario: ScenarioName, partition: PartitionName, zoom: number, center: number[] }>());
-export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: PartitionName, location: number[] | undefined, clickedFeature?: {compositeId: string} }>());
+export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: PartitionName, location: number[] | undefined, clickedFeature?: FeatureLike, compositeId?: string }>());
 export const mapLayerVisibility = createAction('Map layer visibility', props<{ scenario: ScenarioName, partition: PartitionName, layerCompositeId: string, visible: boolean }>());
 export const popupClose = createAction('Popup close', props<{ scenario: ScenarioName; partition: PartitionName }>());
 

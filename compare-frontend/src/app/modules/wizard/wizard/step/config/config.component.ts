@@ -49,7 +49,8 @@ export class ConfigComponent implements OnInit {
   }));
   }
 
-  public execute() {
+  public execute(event: Event) {
+    event.preventDefault();
     this.store.dispatch(AppActions.stepExecStart({ scenario: this.scenario, partition: this.partition, step: this.stepId }));
   }
 

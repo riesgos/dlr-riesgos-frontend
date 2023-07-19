@@ -70,6 +70,7 @@ export class Effects {
         const resultOrError$ = executeResults$.pipe(
             map(result => {
                 if (isExecutionError(result)) {
+                    console.log("failure", result)
                     return AppActions.stepExecFailure({ scenario: result.scenario, partition: result.partition, step: result.step, error: result.initialError });
                 } else {
                     return AppActions.stepExecSuccess({ scenario: result.action.scenario, partition: result.action.partition, step: result.action.step, newData: result.state });

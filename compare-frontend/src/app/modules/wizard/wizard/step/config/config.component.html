@@ -15,5 +15,5 @@
             <p *ngIf="autoPilot" style="color: var(--gray-1000)"> {{ formElement.value.selected }} </p>
             
     </div>
-    <button *ngIf="!autoPilot" [disabled]="!allValuesSet()" (click)="execute()">{{ 'Execute' | translate }}</button>
+    <button *ngIf="!autoPilot" [disabled]="!allValuesSet()" (click)="execute($event)">{{ 'Execute' | translate }}</button>
 </form>

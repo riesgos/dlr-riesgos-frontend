@@ -2,7 +2,17 @@ import { Component, Input, OnInit } from '@angular/core';
 import { PartitionName, RiesgosState, ScenarioName, ParameterConfiguration } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
+import { ControlFactory, findControlFactory } from '../../../wizard.augmenters';
 
+
+interface FormElementData {
+  options: string[],
+  selected: string | undefined
+}
+
+interface FormElements {
+  [elementId: string]: FormElementData
+}
 
 
 @Component({
@@ -17,24 +27,25 @@ export class ConfigComponent implements OnInit {
   @Input() stepId!: string;
   @Input() data!: ParameterConfiguration[];
   @Input() autoPilot!: boolean | undefined;
-  private allValues: { [key: string]: any } = {}
+  public formElements: FormElements = {};
+  
 
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
-    for (const input of this.data) {
-      this.allValues[input.id] = input.selected;
-    }
+    this.formElements = this.dataToFormElements(this.data);
   }
 
-  public select(productId: string, value: any) {
-    this.allValues[productId] = value;
+
+  public select(productId: string, value: string | undefined) {
+    this.formElements[productId].selected = value;
+    const dataDict = this.formElementsToDict(this.formElements, this.data);
 
     this.store.dispatch(AppActions.stepConfig({
       scenario: this.scenario,
       partition: this.partition,
       stepId: this.stepId,
-      values: this.allValues
+      values: dataDict
   }));
   }
 
@@ -43,22 +54,51 @@ export class ConfigComponent implements OnInit {
   }
 
   public allValuesSet(): boolean {
-    for (const [key, value] of Object.entries(this.allValues)) {
-      if (value === '' || value === undefined) return false;
+    for (const [parameterId, parameterData] of Object.entries(this.formElements)) {
+      if (parameterData.selected === undefined) return false;
     }
     return true;
   }
 
-  public isSelected(productId: string, option: {key: string, value: any}) {
-    const triedValue = option.value;
-    const actualValue = this.allValues[productId];
-    // if (this.data.inputs.find(i => i.productId === productId).valueToKey() === option.key) return true;
-    const matches = triedValue === actualValue || JSON.stringify(triedValue) === actualValue || triedValue === JSON.stringify(actualValue) || JSON.stringify(triedValue) === JSON.stringify(actualValue);
-    return matches;
+  public isSelected(productId: string, option: string) {
+    const triedValue = option;
+    const actualValue = this.formElements[productId].selected;
+    return triedValue === actualValue;
   }
 
-  public onKey(productId: string, event: any) {
-    console.error("config.component.onkey: Not yet implemented")
+
+
+  private dataToFormElements(data: ParameterConfiguration[]): FormElements {
+    const controlFactory = findControlFactory(this.scenario, this.partition, this.stepId)!;
+
+    const formElements: FormElements = {};
+    for (const input of data) {
+      const formElement: FormElementData = { options: [], selected: undefined };
+      for (const option of input.options) {
+        formElement.options.push(controlFactory.optionToKey(input.id, option));
+      }
+      if (input.selected) {
+        formElement.selected = controlFactory.optionToKey(input.id, input.selected);
+      }
+
+      formElements[input.id] = formElement;
+    }
+
+    return formElements;
+  }
+
+  private formElementsToDict(formElements: FormElements, data: ParameterConfiguration[]) {
+    const controlFactory = findControlFactory(this.scenario, this.partition, this.stepId)!;
+
+    const dict: {[parameterId: string]: any} = {};
+    for (const [parameterId, formData] of Object.entries(formElements)) {
+      const originalData = data.find(d => d.id === parameterId)!;
+      let pickedOption = undefined;
+      if (formData.selected !== undefined) pickedOption = controlFactory.keyToOption(formData.selected, originalData.options);
+      dict[parameterId] = pickedOption;
+    }
+
+    return dict;
   }
 
 }

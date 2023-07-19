@@ -30,7 +30,7 @@ export class TitleComponent {
         if (!eqProd) return undefined;
         if (!isApiDatum(eqProd)) return undefined;
         if (!eqProd.value) return undefined;
-        return JSON.parse(eqProd.value);
+        return eqProd.value;
       }),
 
       map(data => {

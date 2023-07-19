@@ -6,6 +6,7 @@
 
 
 .gray {
+    /* filter: grayscale(0.8) invert(); */
     filter: grayscale(0.8);
 }
 

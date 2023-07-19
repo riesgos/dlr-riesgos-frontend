@@ -1,20 +1,19 @@
 <form>
-    <div class="formElement" *ngFor="let input of data">
-        <ng-container *ngIf="input.options">
-            <label [for]="input.label">{{ input.label | translate }}:</label>
+    <div class="formElement" *ngFor="let formElement of formElements | keyvalue">
+        
+            <label [for]="formElement.key">{{ formElement.key | translate }}:</label>
 
-            <select *ngIf="(input.options | keyvalue).length > 1 && !autoPilot" >
-                <option (click)="select(input.id, undefined)"></option>
-                <option *ngFor="let option of input.options | keyvalue" (click)="select(input.id, option.value)" [selected]="isSelected(input.id, option)">{{ option.key }}</option>
+            <select *ngIf="formElement.value.options.length > 1 && !autoPilot" >
+                <option (click)="select(formElement.key, undefined)"></option>
+                <option *ngFor="let option of formElement.value.options" (click)="select(formElement.key, option)" [selected]="isSelected(formElement.key, option)">{{ option }}</option>
             </select>
 
-            <select *ngIf="(input.options | keyvalue).length === 1 && !autoPilot" >
-                <option *ngFor="let option of input.options | keyvalue" (click)="select(input.id, option.value)" [selected]="true">{{ option.key }}</option>
+            <select *ngIf="formElement.value.options.length === 1 && !autoPilot" >
+                <option *ngFor="let option of formElement.value.options" (click)="select(formElement.key, option)" [selected]="true">{{ option }}</option>
             </select>
 
-            <p *ngIf="autoPilot" style="color: var(--gray-1000)">{{ input.selected || "Not set yet" }}</p>
+            <p *ngIf="autoPilot" style="color: var(--gray-1000)"> {{ formElement.value.selected }} </p>
             
-        </ng-container>
     </div>
     <button *ngIf="!autoPilot" [disabled]="!allValuesSet()" (click)="execute()">{{ 'Execute' | translate }}</button>
 </form>

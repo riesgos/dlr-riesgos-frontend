@@ -31,8 +31,8 @@ export interface RiesgosScenarioMapState {
 export interface ParameterConfiguration {
     id: string,
     label: string,
-    options: {[key: string]: any},
-    selected: string | undefined,
+    options: any[],
+    selected: any | undefined,
     default?: string
 }
 
@@ -45,11 +45,6 @@ export interface RiesgosScenarioControlState {
     configs: ParameterConfiguration[],
     layers: LayerDescription[],
     errorMessage?: string
-}
-
-export interface RiesgosScenarioPopupState {
-    componentType: string,
-    data: {[key: string]: any}
 }
 
 export interface AutoPilotState {
@@ -68,7 +63,6 @@ export interface RiesgosScenarioState {
     partition: PartitionName,
     active: boolean,
     map: RiesgosScenarioMapState,
-    popup: RiesgosScenarioPopupState,
     controls: RiesgosScenarioControlState[],
     modal: ModalState
 }

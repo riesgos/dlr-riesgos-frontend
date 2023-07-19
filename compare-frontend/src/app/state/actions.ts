@@ -14,7 +14,7 @@ export const scenarioPicked = createAction('Scenario picked', props<{ scenario: 
 export const movingBackToMenu = createAction('Move back');
 
 export const stepSetFocus = createAction('Step select', props<{ scenario: ScenarioName, partition: PartitionName, stepId: string, focus: boolean }>());
-export const stepConfig = createAction('Step config', props<{ scenario: ScenarioName, partition: PartitionName, stepId: string, values: {[key: string]: string } }>());
+export const stepConfig = createAction('Step config', props<{ scenario: ScenarioName, partition: PartitionName, stepId: string, values: {[parameterId: string]: any | undefined } }>());
 export const stepExecStart = createAction('Step exec start', props<{ scenario: ScenarioName, partition: PartitionName, step: string }>());
 export const stepExecSuccess = createAction('Step exec success', props<{ scenario: ScenarioName, partition: PartitionName, step: string, newData: API_ScenarioState }>());
 export const stepExecFailure = createAction('Step exec failure', props<{ scenario: ScenarioName, partition: PartitionName, step: string, error: any }>());
@@ -27,7 +27,6 @@ export const mapMove = createAction('Map move', props<{ scenario: ScenarioName, 
 export const mapClick = createAction('Map click', props<{ scenario: ScenarioName, partition: PartitionName, location: number[] | undefined }>());
 export const mapLayerVisibility = createAction('Map layer visibility', props<{ scenario: ScenarioName, partition: PartitionName, layerId: string, visible: boolean }>());
 export const popupClose = createAction('Popup close', props<{ scenario: ScenarioName; partition: PartitionName }>());
-export const layerUpdate = createAction('Layer update', props<{ scenario: ScenarioName; partition: PartitionName, layer: LayerDescription }>());
 
 export const togglePartition = createAction('Toggling partition', props<{ scenario: ScenarioName, partition: PartitionName }>());
 

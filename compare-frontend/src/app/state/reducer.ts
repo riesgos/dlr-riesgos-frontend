@@ -1,11 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { RiesgosState, initialRiesgosState, ScenarioName, PartitionName, RiesgosScenarioState, RiesgosScenarioControlState, LayerDescription } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, layerUpdate } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, popupClose } from './actions';
 import { API_ScenarioInfo, API_ScenarioState, isApiDatum } from '../services/backend.service';
 import { allParasSet } from './helpers';
 import { getRules } from './rules';
-import { findControlFactory, findLayerDescriptionFactory, getMapCenter, getMapZoom } from './augmenters';
+import { findLayerDescriptionFactory, getMapCenter, getMapZoom } from './augmenters';
 
 
 
@@ -46,10 +46,9 @@ export const reducer = createReducer(
             center: getMapCenter(scenarioInfo.id),
             zoom: getMapZoom(scenarioInfo.id),
             clickLocation: undefined,
-            layers: getLayersFromInfo(scenarioInfo.id, partitionName, scenarioInfo)
+            layers: deriveLayersFromInfo(scenarioInfo.id, partitionName, scenarioInfo)
           },
           modal: {},
-          popup: {componentType: '', data: {}},
         };
         partitionData[partitionName] = partitionDatum;
       }
@@ -133,28 +132,22 @@ export const reducer = createReducer(
 
   immerOn(stepConfig, (state, action) => {
 
-    const scenarioData = state.scenarioData[action.scenario]!;
-    const partitionData = scenarioData[action.partition]!;
     const rules = getRules(state.rules);
 
-    function handle(pd: RiesgosScenarioState, action: ReturnType<typeof stepConfig>) {
-      const control = pd.controls.find(c => c.stepId === action.stepId);
-      if (!control) return;
-      for (const config of control.configs) {
-        const value = action.values[config.id];
-        if (value) config.selected = value;
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+          if (partitionName === action.partition || rules.mirrorData) { 
+            partitionData.apiData = updateApiDataFromSelection(action.stepId, action.values, partitionData.apiSteps, partitionData.apiData);
+            partitionData.map.layers = deriveLayersFromData(scenarioName, partitionName as PartitionName, action.stepId, partitionData.apiSteps, partitionData.apiData, partitionData.map.layers);
+            partitionData.controls = updateControlsFromData(scenarioName, partitionName as PartitionName, action.stepId, partitionData.apiData, partitionData.map.layers, partitionData.controls);
+          }
+        }
       }
     }
 
-    if (rules.mirrorData) {
-      for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
-        handle(otherPartitionData, action);
-      }
-    } else {
-      handle(partitionData, action);
-    }
-
-    return state;
+    const newState = updateState(state);
+    return newState;
   }),
 
   immerOn(stepExecStart, (state, action) => {
@@ -165,21 +158,18 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepExecSuccess, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]!;
     const rules = getRules(state.rules);
 
-    // update products ... potentially in other partitions, too
-    if (rules.mirrorData) {
-      for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
-        otherPartitionData.apiData = action.newData;
-        otherPartitionData.map.layers = deriveLayersFromData(action.scenario, otherPartition as PartitionName, action.step, action.newData, otherPartitionData.map.layers);
-        otherPartitionData.controls = updateControlsFromData(action.scenario, otherPartition as PartitionName, action.step, action.newData, otherPartitionData.controls);
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+          if (partitionName === action.partition || rules.mirrorData) {
+            partitionData.apiData = action.newData;
+            partitionData.map.layers = deriveLayersFromData(action.scenario, partitionName as PartitionName, action.step, partitionData.apiSteps, action.newData, partitionData.map.layers);
+            partitionData.controls = updateControlsFromData(action.scenario, partitionName as PartitionName, action.step, action.newData, partitionData.map.layers, partitionData.controls);
+          }
+        }
       }
-    } else {
-      const partitionData = scenarioData[action.partition]!;
-      partitionData.apiData = action.newData;
-      partitionData.map.layers = deriveLayersFromData(action.scenario, action.partition, action.step, action.newData, partitionData.map.layers);
-      partitionData.controls = updateControlsFromData(action.scenario, action.partition, action.step, action.newData, partitionData.controls);
     }
 
     const newState = updateState(state);
@@ -280,18 +270,6 @@ export const reducer = createReducer(
     return state;
   }),
 
-  immerOn(layerUpdate, (state, action) => {
-    const scenarioState = state.scenarioData[action.scenario]!;
-    const partitionData = scenarioState[action.partition]!;
-    const layers = partitionData.map.layers;
-    for (let i = 0; i < layers.length; i++) {
-      if (layers[i].layerId === action.layer.layerId) {
-        layers[i] = action.layer;
-      }
-    }    
-    return state;
-  }),
-
   immerOn(mapLayerVisibility, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
     const rules = getRules(state.rules);
@@ -307,6 +285,20 @@ export const reducer = createReducer(
       }
     }
 
+  }),
+
+  immerOn(popupClose, (state, action) => {
+    const rules = getRules(state.rules);
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+        if (scenarioName === action.scenario && partitionName === action.partition) {
+          partitionData.map.clickLocation = undefined;
+        }
+        else if (rules.mirrorClick) {
+          partitionData.map.clickLocation = undefined;
+        }
+      }
+    }
   }),
 
   immerOn(togglePartition, (state, action) => {
@@ -340,14 +332,12 @@ function updateControlsFromInfo(scenario: ScenarioName, partition: PartitionName
     for (const inputInfo of stepInfo.inputs) {
       let config = control.configs.find(c => c.id === inputInfo.id);
       if (!config) {
-        config = {id: inputInfo.id, label: inputInfo.id + '_label', options: {}, selected: undefined, default: inputInfo.default};
+        config = {id: inputInfo.id, label: inputInfo.id + '_label', options: [], selected: undefined, default: inputInfo.default};
         control.configs.push(config);
       }
       if (inputInfo.options) {
-        const cc = findControlFactory(scenario, partition, stepInfo.id);
         for (const option of inputInfo.options) {
-          if (cc) config.options[cc.optionToKey(inputInfo.id, option)] = option;
-          else config.options[JSON.stringify(option)] = option;
+          config.options.push(option);
         }
       }
     }
@@ -355,14 +345,23 @@ function updateControlsFromInfo(scenario: ScenarioName, partition: PartitionName
   return controls;
 }
 
-function deriveLayersFromData(scenario: ScenarioName, partition: PartitionName, stepId: string, newData: API_ScenarioState, layers: LayerDescription[]): LayerDescription[] {
+function deriveLayersFromData(scenario: ScenarioName, partition: PartitionName, stepId: string, apiSteps: API_ScenarioInfo, apiValues: API_ScenarioState, layers: LayerDescription[]): LayerDescription[] {
   const layerConverter = findLayerDescriptionFactory(scenario, partition, stepId);
   if (!layerConverter) return [];
-  const newLayers = layerConverter.fromProducts(newData, layers);
+  const newLayers = layerConverter.fromProducts(apiSteps, apiValues, layers);
   return newLayers;
 }
 
-function updateControlsFromData(scenario: ScenarioName, partition: PartitionName, stepId: string, newData: API_ScenarioState, controls: RiesgosScenarioControlState[]): RiesgosScenarioControlState[] {
+function deriveLayersFromInfo(scenario: ScenarioName, partition: PartitionName, apiSteps: API_ScenarioInfo): LayerDescription[] {
+  let layers: LayerDescription[] = [];
+  for (const step of apiSteps.steps) {
+    const newLayers = deriveLayersFromData(scenario, partition, step.id, apiSteps, {data: []}, []);
+    layers = layers.concat(...newLayers);
+  }
+  return layers;
+}
+
+function updateControlsFromData(scenario: ScenarioName, partition: PartitionName, stepId: string, newData: API_ScenarioState, layers: LayerDescription[], controls: RiesgosScenarioControlState[]): RiesgosScenarioControlState[] {
   const control = controls.find(c => c.stepId === stepId);
   if (!control) return controls;
   for (const datumInfo of newData.data) {
@@ -405,7 +404,6 @@ function updateState(state: RiesgosState) {
   return state;
 }
 
-
 function apiStateFromApiInfo(scenarioInfo: API_ScenarioInfo): API_ScenarioState {
   const state: API_ScenarioState = {data: []};
   const seenIds: string[] = [];
@@ -426,14 +424,19 @@ function apiStateFromApiInfo(scenarioInfo: API_ScenarioInfo): API_ScenarioState 
   return state;
 }
 
-function getLayersFromInfo(scenario: ScenarioName, partition: PartitionName, scenarioInfo: API_ScenarioInfo): LayerDescription[] {
-  let layers: LayerDescription[] = [];
-  for (const step of scenarioInfo.steps) {
-    const layerConverter = findLayerDescriptionFactory(scenario, partition, step.id);
-    if (!layerConverter) continue;
-    const newLayers = layerConverter.fromInfo(step);
-    layers = layers.concat(...newLayers);
+function updateApiDataFromSelection(stepId: string, selectedValues: { [parameterId: string]: any; }, apiSteps: API_ScenarioInfo, apiData: API_ScenarioState): API_ScenarioState {
+  // const stepInfo = apiSteps.steps.find(s => s.id === stepId);
+  // if (!stepInfo) return apiData;
+  const parameterIds = Object.keys(selectedValues);
+  for (let i = 0; i < apiData.data.length; i++) {
+    const datum = apiData.data[i];
+    if (parameterIds.includes(datum.id)) {
+      apiData.data[i] = {
+        id: datum.id,
+        value: selectedValues[datum.id]
+      }
+    }
   }
-  return layers;
+  return apiData;
 }
 

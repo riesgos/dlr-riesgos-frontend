@@ -14,8 +14,8 @@ import { Store } from '@ngrx/store';
 import * as Actions from '../../../state/actions';
 import { RiesgosScenarioMapState as MapState } from '../../../state/state';
 import { ResolverService } from 'src/app/services/resolver.service';
-import { OlLayerFactory, findClickHandler, findOlLayerFactory } from 'src/app/state/augmenters';
 import { maybeArraysEqual } from 'src/app/state/helpers';
+import { findOlLayerFactory, OlLayerFactory, findClickHandler, findPopupHandler } from '../map.augmenters';
 
 
 
@@ -206,16 +206,36 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (location) {
       const result = await this.getFeatureAt(location);
       if (result) {
+
+        // 0. Data at location
         const {clickedFeature, layerId} = result;
-        const clickHandler = findClickHandler(this.scenario, this.partition, location, layerId!, clickedFeature);
         const layerDescription = this.map.getAllLayers().find(l => l.get("description").layerId === layerId)?.get("description");
+
+        // 1. allow layers to react to click
+        const clickHandler = findClickHandler(this.scenario, this.partition, location, layerId!, clickedFeature);
         if (clickHandler && layerDescription) {
             const actions = clickHandler.handleClick(this.scenario, this.partition, layerDescription, clickedFeature);
             if (actions.length > 0) {
-              actions.map(action => this.store.dispatch(action));
+              actions.map(action => this.zone.run(() => this.store.dispatch(action)));
             }
         }
+
+        // 2. create popup 
+        const popupHandler = findPopupHandler(this.scenario, this.partition, location, layerId!, clickedFeature);
+        if (popupHandler && layerDescription) {
+          const popupData = popupHandler.createPopup(this.scenario, this.partition, layerDescription, clickedFeature);
+          // this.store.dispatch(Actions.popupCreate({scenario: this.scenario, partition: this.partition, popupData})); <-- not going through redux here, because popupData isn't serializable.
+          this.popupContainer.clear();
+          const componentRef = this.popupContainer.createComponent(popupData.component);
+          for (const [key, val] of Object.entries(popupData.args)) {
+            componentRef.instance[key] = val;
+          }
+        }
+      } else {  // if location == undefined, remove popup
+        this.zone.run(() => this.store.dispatch(Actions.popupClose({scenario: this.scenario, partition: this.partition})));
       }
+
+
     }
 
     this._lastLocation = location;

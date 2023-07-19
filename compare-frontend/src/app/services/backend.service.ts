@@ -8,8 +8,8 @@ import { pollUntil } from "./polling";
 
 export interface API_DatumDescription {
     id: string
-    options?: string[],
-    default?: string
+    options?: any[],
+    default?: any
 };
 
 export interface API_Datum {

@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { PartitionName, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
 import { StepState } from '../wizard.types';
+import { Store } from '@ngrx/store';
+import * as Actions from 'src/app/state/actions';
 
 @Component({
   selector: 'app-step',
@@ -13,9 +15,9 @@ export class StepComponent {
   @Input() partition!: PartitionName;
   @Input() data!: StepState;
 
-  constructor() {}
+  constructor(private store: Store<{riesgos: RiesgosState}>) {}
 
   public toggleFocus() {
-    throw new Error('undefinf');
+    this.store.dispatch(Actions.stepSetFocus({scenario: this.scenario, partition: this.partition, stepId: this.data.stepId, focus: !this.data.hasFocus }));
   }
 }

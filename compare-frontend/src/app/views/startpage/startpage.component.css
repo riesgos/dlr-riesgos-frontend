@@ -24,7 +24,8 @@
     outline-style: solid;
     outline-width: 1px;
     outline-color: var(--accent-color-800);
-    box-shadow: inset 0 0 20px #d9e3e9;
+    /* box-shadow: inset 0 0 20px #d9e3e9; */
+    background-color: var(--white);
 }
 
 

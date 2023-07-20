@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
-import { RiesgosState, initialRiesgosState, ScenarioName, PartitionName, RiesgosScenarioState, RiesgosScenarioControlState, LayerDescription } from './state';
+import { initialRiesgosState, ScenarioName, PartitionName, RiesgosScenarioState, RiesgosScenarioControlState, LayerDescription, StepStateTypes } from './state';
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, popupClose } from './actions';
 import { API_ScenarioInfo, API_ScenarioState, isApiDatum } from '../services/backend.service';
 import { allParasSet } from './helpers';
@@ -34,14 +34,18 @@ export const reducer = createReducer(
     for (const scenarioInfo of action.scenarios) {
       const partitionData: {[partitionName in PartitionName]?: RiesgosScenarioState} = {};
       for (const partitionName of ['left', 'right', 'middle'] as PartitionName[]) {
+
+        const apiData = apiStateFromApiInfo(scenarioInfo);
+        const controls = updateControlsFromInfo(scenarioInfo.id, partitionName, scenarioInfo, apiData, []);
+
         const partitionDatum: RiesgosScenarioState = {
           scenario: scenarioInfo.id,
           partition: partitionName,
-          apiData: apiStateFromApiInfo(scenarioInfo),
+          apiData: apiData,
           apiSteps: scenarioInfo,
           active: true,
           autoPilot: {queue: []},
-          controls: updateControlsFromInfo(scenarioInfo.id, partitionName, scenarioInfo, []),
+          controls: controls,
           map: {
             center: getMapCenter(scenarioInfo.id),
             zoom: getMapZoom(scenarioInfo.id),
@@ -54,8 +58,6 @@ export const reducer = createReducer(
       }
       state.scenarioData[scenarioInfo.id] = partitionData;
     }
-
-    state = updateControlState(state);
 
     const rules = getRules(state.rules);
     for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
@@ -104,28 +106,24 @@ export const reducer = createReducer(
   }),
 
   immerOn(stepSetFocus, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]!;
-    const partitionData = scenarioData[action.partition]!;
     const rules = getRules(state.rules);
 
-    function handle(pd: RiesgosScenarioState, action: ReturnType<typeof stepSetFocus>) {
-      const control = pd.controls.find(c => c.stepId === action.stepId);
-      if (!control) return;
-      if (action.focus === false) {
-        control.hasFocus = false;
-      } else {
-        control.hasFocus = true;
-        if (rules.oneFocusOnly) pd.controls.map(c => c.hasFocus = false);
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+          if (partitionName == action.partition || rules.mirrorFocus) {
+
+            const control = partitionData.controls.find(c => c.stepId === action.stepId);
+            if (!control) continue;
+            if (rules.oneFocusOnly) partitionData.controls.map(c => c.hasFocus = false);
+            control.hasFocus = action.focus;
+
+          }
+        }
       }
     }
 
-    if (rules.mirrorFocus) {
-      for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
-        handle(otherPartitionData, action);
-      }
-    } else {
-      handle(partitionData, action);
-    }
+
 
     return state;
   }),
@@ -140,14 +138,13 @@ export const reducer = createReducer(
           if (partitionName === action.partition || rules.mirrorData) { 
             partitionData.apiData = updateApiDataFromSelection(action.stepId, action.values, partitionData.apiSteps, partitionData.apiData);
             partitionData.map.layers = updateLayersFromData(scenarioName, partitionName as PartitionName, action.stepId, partitionData.apiSteps, partitionData.apiData, partitionData.map.layers);
-            partitionData.controls = updateControlsFromData(scenarioName, partitionName as PartitionName, partitionData.apiData, partitionData.map.layers, partitionData.controls);
+            partitionData.controls = updateControlsFromData(scenarioName, partitionName as PartitionName,                partitionData.apiSteps, partitionData.apiData, partitionData.map.layers, partitionData.controls);
           }
         }
       }
     }
 
-    const newState = updateControlState(state);
-    return newState;
+    return state;
   }),
 
   immerOn(stepExecStart, (state, action) => {
@@ -166,14 +163,13 @@ export const reducer = createReducer(
           if (partitionName === action.partition || rules.mirrorData) {
             partitionData.apiData = action.newData;
             partitionData.map.layers = updateLayersFromData(action.scenario, partitionName as PartitionName, action.step, partitionData.apiSteps, partitionData.apiData, partitionData.map.layers);
-            partitionData.controls = updateControlsFromData(action.scenario, partitionName as PartitionName, partitionData.apiData, partitionData.map.layers, partitionData.controls);
+            partitionData.controls = updateControlsFromData(action.scenario, partitionName as PartitionName,              partitionData.apiSteps, partitionData.apiData, partitionData.map.layers, partitionData.controls);
           }
         }
       }
     }
 
-    const newState = updateControlState(state);
-    return newState;
+    return state;
   }),
 
   immerOn(stepExecFailure, (state, action) => {
@@ -201,28 +197,27 @@ export const reducer = createReducer(
         for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
           if (partitionName === action.partition) {
             partitionData.apiData = updateApiDataFromDefaults(partitionData.apiSteps, partitionData.apiData);
-            // partitionData.map.layers = deriveLayersFromData(action.scenario, partitionName as PartitionName, action.step, partitionData.apiSteps, partitionData.apiData, partitionData.map.layers);
-            partitionData.controls = updateControlsFromData(scenarioName, partitionName, partitionData.apiData, partitionData.map.layers, partitionData.controls);
+            // partitionData.map.layers = deriveLayersFromData(action.scenario, partitionName, action.step, partitionData.apiSteps, partitionData.apiData, partitionData.map.layers);
+            partitionData.controls = updateControlsFromData(scenarioName, partitionName,                 partitionData.apiSteps, partitionData.apiData, partitionData.map.layers, partitionData.controls);
           }
         }
       }
     }
-    const newState = updateControlState(state);
 
     // enqueue auto-pilotable steps
-    const newScenarioState = newState.scenarioData[action.scenario]![action.partition]!;
-    for (const control of newScenarioState.controls) {
+    const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
+    for (const control of scenarioState.controls) {
       if (control.state === "available" && rules.autoPilot(control.stepId)) {
         if (allParasSet(control)) {
-          if (! newScenarioState.autoPilot.queue.includes(control.stepId)) {
-            newScenarioState.autoPilot.queue.push(control.stepId);
+          if (! scenarioState.autoPilot.queue.includes(control.stepId)) {
+            scenarioState.autoPilot.queue.push(control.stepId);
           }
         }
       }
     }
-    console.log(`Auto-pilot enqueued. Queue now contains ${newScenarioState.autoPilot.queue}`);
+    console.log(`Auto-pilot enqueued. Queue now contains ${scenarioState.autoPilot.queue}`);
 
-    return newState;
+    return state;
   }),
 
   immerOn(autoPilotDequeue, (state, action) => {
@@ -341,13 +336,15 @@ function apiStateFromApiInfo(scenarioInfo: API_ScenarioInfo): API_ScenarioState 
   return state;
 }
 
-function updateControlsFromInfo(scenario: ScenarioName, partition: PartitionName, newData: API_ScenarioInfo, controls: RiesgosScenarioControlState[]): RiesgosScenarioControlState[] {
-  for (const stepInfo of newData.steps) {
+function updateControlsFromInfo(scenario: ScenarioName, partition: PartitionName, apiSteps: API_ScenarioInfo, apiData: API_ScenarioState, controls: RiesgosScenarioControlState[]): RiesgosScenarioControlState[] {
+  for (const stepInfo of apiSteps.steps) {
+
     let control = controls.find(c => c.stepId === stepInfo.id);
     if (!control) {
-      control = { stepId: stepInfo.id, configs: [], hasFocus: false, isAutoPiloted: false, layers: [], state: "unavailable", title: stepInfo.title };
+      control = { stepId: stepInfo.id, configs: [], hasFocus: false, isAutoPiloted: false, layers: [], state: "available", title: stepInfo.title };
       controls.push(control);
     }
+
     for (const inputInfo of stepInfo.inputs) {
       let config = control.configs.find(c => c.id === inputInfo.id);
       if (!config) {
@@ -360,26 +357,61 @@ function updateControlsFromInfo(scenario: ScenarioName, partition: PartitionName
         }
       }
     }
+
+    control.state = getControlStateFromData(control, apiSteps, apiData);
   }
   return controls;
 }
 
-function updateControlsFromData(scenario: ScenarioName, partition: PartitionName, newData: API_ScenarioState, layers: LayerDescription[], controls: RiesgosScenarioControlState[]): RiesgosScenarioControlState[] {
+function updateControlsFromData(scenario: ScenarioName, partition: PartitionName, apiSteps: API_ScenarioInfo, apiData: API_ScenarioState, layers: LayerDescription[], controls: RiesgosScenarioControlState[]): RiesgosScenarioControlState[] {
   for (const control of controls) {
-    for (const datumInfo of newData.data) {
+    for (const datumInfo of apiData.data) {
+      const config = control.configs.find(c => c.id === datumInfo.id);
+      if (!config) continue;
       if (isApiDatum(datumInfo)) {
-        const config = control.configs.find(c => c.id === datumInfo.id);
-        if (!config) continue;
         config.selected = datumInfo.value;
+      } else {
+        // config.selected = datumInfo;
+        // @TODO: will this work?
+        // If it doesn't, we'll have to either:
+        //  1. make configs like layers in that we pass in not the final config, but rather instructions on how to create the final config based on the given API_Data | API_Reference. The reference will only be resolved inside the Wizard-Component, then.
+        //  2. create a resolve-workflow in redux to get those values. however, if we do that, the resolved data needs to be stored in the state ... which might become very big. Maybe this would be alright for individual references, but surely not for all. 
       }
-      // @TODO: what about isApiReference?
-      // <-- I don't think there are any config parameters that come as references.
-      // If there are, we'll have to either:
-      //  1. make configs like layers in that we pass in not the final config, but rather instructions on how to create the final config based on the given API_Data | API_Reference. The reference will only be resolved inside the Wizard-Component, then.
-      //  2. create a resolve-workflow in redux to get those values. however, if we do that, the resolved data needs to be stored in the state ... which might become very big. Maybe this would be alright for individual references, but surely not for all. 
     }
+    control.state = getControlStateFromData(control, apiSteps, apiData);
   }
+
+
   return controls;
+}
+
+function getControlStateFromData(control: RiesgosScenarioControlState, apiSteps: API_ScenarioInfo, apiData: API_ScenarioState): StepStateTypes {
+    // don't mess with manually set states
+    if (control.state === "running" || control.state === "error") return control.state;
+
+    const step = apiSteps.steps.find(s => s.id === control.stepId);
+    if (!step) return control.state;
+
+    const inputIds  = step.inputs.map(i => i.id);
+    const outputIds = step.outputs.map(i => i.id);
+    const inputValues  = apiData.data.filter(d => inputIds.includes(d.id));
+    const outputValues = apiData.data.filter(d => outputIds.includes(d.id));
+
+    const allOutputsSet = outputValues.find(o => isApiDatum(o) ? !!o.value : !!o.reference);
+    // const allInputsSet  = inputValues.find(i => isApiDatum(i) ? !!i.value : !!i.reference);
+    let allInputsSetable = true;
+    for (const inputId of inputIds) {
+      const inputConfig = step.inputs.find(i => i.id === inputId);
+      const inputValue = inputValues.find(i => i.id === inputId)!;
+      const hasValue = !!(isApiDatum(inputValue) ? inputValue.value : inputValue?.reference);
+      if (!inputConfig?.options && !hasValue) allInputsSetable = false;
+    }
+
+    if (allOutputsSet) return "completed";
+    else if (allInputsSetable) return "available";
+    else if (!allInputsSetable) return "unavailable";
+
+    return control.state;
 }
 
 function updateLayersFromData(scenario: ScenarioName, partition: PartitionName, stepId: string, apiSteps: API_ScenarioInfo, apiValues: API_ScenarioState, layers: LayerDescription[]): LayerDescription[] {
@@ -445,28 +477,5 @@ function updateApiDataFromDefaults(apiSteps: API_ScenarioInfo, apiData: API_Scen
   return apiData;
 }
 
-function updateControlState(state: RiesgosState) {
-  for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
-    for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-        for (const control of partitionData.controls) {
-  
-          // doesn't mess with manually-set states (Running, Error)
-          if (control.state === "running" || control.state === "error") continue;
-  
-          const inputValues = control.configs.map(c => c.selected);
-          const hasMissingInputs = !!inputValues.find(v => v === undefined);
-  
-          const apiStep = partitionData.apiSteps.steps.find(s => s.id === control.stepId)!;
-          const outputIds = apiStep.outputs.map(o => o.id);
-          const outputs = partitionData.apiData.data.filter(d => outputIds.includes(d.id));
-          const hasMissingOutputs = !!outputs.find(o => isApiDatum(o) ? !o.value : !o.reference);
-  
-          if (!hasMissingOutputs) control.state = "completed";
-          else if (hasMissingInputs) control.state = "unavailable";
-          else if (!hasMissingInputs) control.state = "available";
-        }
-      }
-    }
-  return state;
-}
+
 

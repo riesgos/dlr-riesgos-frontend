@@ -28,6 +28,8 @@ export function findLayerDescriptionFactory(scenario: ScenarioName, partition: P
 class UserChoiceLayerConverter implements LayerDescriptionFactory {
 
     fromProducts(apiSteps: API_ScenarioInfo, apiValues: API_ScenarioState, oldLayers: LayerDescription[]): LayerDescription[] {
+        // @TODO: if product.id === "selectedEq" already there, display that instead.
+
         const step = apiSteps.steps.find(s => s.id === "selectEq");
         if (!step) return [];
         const options = step.inputs.find(i => i.id === "userChoice")?.options;

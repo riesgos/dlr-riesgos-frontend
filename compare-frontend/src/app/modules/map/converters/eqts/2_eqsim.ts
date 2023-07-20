@@ -32,6 +32,7 @@ export class EqSimulation implements Converter {
             return of([
                 {
                     id: "eqSimWmsLayer",
+                    stepId: "EqSimulation",
                     layer: new TileLayer({
                         source: new TileWMS({
                             url: baseUrl,

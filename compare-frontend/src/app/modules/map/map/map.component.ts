@@ -5,7 +5,7 @@ import OSM from 'ol/source/OSM';
 import GeoJSON from 'ol/format/GeoJSON';
 import MVT from "ol/format/MVT";
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
 import { Subscription, firstValueFrom } from 'rxjs';
@@ -23,7 +23,8 @@ import Stroke from 'ol/style/Stroke';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  styleUrls: ['./map.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
 
@@ -278,7 +279,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
 function getBaseLayers() {
   const osmBase = new TileLayer({
-    source: new OSM()
+    source: new OSM(),
+    className: 'gray',
   });
   osmBase.set("compositeId", "baseLayer");
 

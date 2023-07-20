@@ -27,6 +27,7 @@ export class TsSim implements Converter {
 
         const layers: LayerComposite[] = [{
             id: "mwh",
+            stepId: "Tsunami",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: baseUrl,
@@ -42,6 +43,7 @@ export class TsSim implements Converter {
             visible: true
         }, {
             id: "mwhLand_global",
+            stepId: "Tsunami",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: baseUrl,
@@ -57,6 +59,7 @@ export class TsSim implements Converter {
             visible: true
         }, {
             id: "mwhLand_local",
+            stepId: "Tsunami",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: baseUrl,
@@ -72,6 +75,7 @@ export class TsSim implements Converter {
             visible: true
         }, {
             id: "arrivalTimes",
+            stepId: "Tsunami",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: baseUrl,
@@ -117,6 +121,7 @@ export class TsSim implements Converter {
             for (const layerDatum of layerData) {
                 layers.push({
                     id: layerDatum.layerName + "",
+                    stepId: "Tsunami",
                     layer: new TileLayer({
                         source: new TileWMS({
                             url: baseUrl,

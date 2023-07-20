@@ -55,6 +55,7 @@ export class Exposure implements Converter {
 
         return of([{
             id: "exposureLayer",
+            stepId: "Exposure",
             visible: true,
             layer: new VectorLayer({
                 source: new VectorSource({

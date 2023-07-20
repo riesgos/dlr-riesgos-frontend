@@ -29,6 +29,7 @@ export class SysRel implements Converter {
 
         const layer: LayerComposite = {
             id: "Productname_system_reliability_vector",
+            stepId: "SysRel",
             layer: new VectorLayer({
                 source: new Vector({
                     features: new GeoJSON().readFeatures(datum.value)

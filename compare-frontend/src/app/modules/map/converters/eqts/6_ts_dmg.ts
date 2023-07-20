@@ -25,6 +25,7 @@ export class TSDmg implements Converter {
 
         const dmgLayer: LayerComposite = {
             id: "TsDamage-WMS-damage",
+            stepId: "TsDamage",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,
@@ -58,6 +59,7 @@ export class TSDmg implements Converter {
 
         const econLayer: LayerComposite = {
             id: "TsDamage-WMS-econ",
+            stepId: "TsDamage",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,

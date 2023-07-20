@@ -16,12 +16,9 @@ export class SysRel implements Converter {
         return {
             hasFocus: false, // doesn't matter what we set here - will be overridden by wizard-svc
             isAutoPiloted: false, // doesn't matter what we set here - will be overridden by wizard-svc
+            layerControlables: [], // doesn't matter what we set here - will be overridden by wizard-svc
             inputs: [],
             step,
-            layerControlables: [{
-                layerCompositeId: "Productname_system_reliability_vector",
-                visible: true
-            }],
             legend: () => {
                 return {
                     component: LegendComponent,

@@ -24,6 +24,7 @@ export class TsDmg implements Converter {
         return {
             hasFocus: false, // doesn't matter what we set here - will be overridden by wizard-svc
             isAutoPiloted: false, // doesn't matter what we set here - will be overridden by wizard-svc
+            layerControlables: [],  // doesn't matter what we set here - will be overridden by wizard-svc
             inputs: [{
                 productId: "schemaTs",
                 formtype: "string-select",
@@ -32,10 +33,6 @@ export class TsDmg implements Converter {
                 currentValue: schemaProduct?.value
             }],
             step,
-            layerControlables: [
-                { layerCompositeId: "TsDamage-WMS-econ", visible: true },
-                { layerCompositeId: "TsDamage-WMS-damage", visible: true },
-            ],
             legend: () => ({
                 component: MultiLegendComponent,
                 args: {

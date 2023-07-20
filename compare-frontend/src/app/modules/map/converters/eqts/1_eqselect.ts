@@ -94,6 +94,7 @@ export class EqSelection implements Converter {
 
                 layers.push({
                     id: "userChoiceLayer",
+                    stepId: "selectEq",
                     layer: layer,
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
@@ -138,6 +139,7 @@ export class EqSelection implements Converter {
             if (selectedEq) {
                 layers.push({
                     id: "selectedEqLayer",
+                    stepId: "selectEq",
                     layer: new VectorLayer({
                         source: new VectorSource({
                             features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(selectedEq.value)

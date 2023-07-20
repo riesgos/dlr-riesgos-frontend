@@ -23,6 +23,7 @@ export class EqDmg implements Converter {
 
         const dmgLayer: LayerComposite = {
             id: "EqDamage-WMS-damage",
+            stepId: "EqDamage",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,
@@ -56,6 +57,7 @@ export class EqDmg implements Converter {
 
         const econLayer: LayerComposite = {
             id: "EqDamage-WMS-econ",
+            stepId: "EqDamage",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,

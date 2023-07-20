@@ -7,6 +7,8 @@ import { Injectable, Type } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ConverterService } from './converter.service';
 import { getRules, Rules } from 'src/app/state/rules';
+import { MapService } from '../map/map.service';
+import { LayerComposite } from '../map/converter.service';
 
 export interface WizardComposite {
     step: RiesgosStep,
@@ -21,7 +23,7 @@ export interface WizardComposite {
     }[],
     hasFocus: boolean,
     isAutoPiloted?: boolean,
-    layerControlables: { layerCompositeId: string, visible: boolean }[]
+    layerControlables: LayerComposite[]
 }
 
 export interface WizardState {
@@ -34,7 +36,8 @@ export class WizardService {
     constructor(
         private store: Store<{ riesgos: RiesgosState }>,
         private resolver: ResolverService,
-        private converterSvc: ConverterService
+        private converterSvc: ConverterService,
+        private mapService: MapService
     ) {}
 
 
@@ -43,6 +46,8 @@ export class WizardService {
      *                             │                           │
      *                             │                           ▼
      *                             └────────────────────────► wizardState$
+     *                                                        ▲
+     * map$ ──────────────────────────────────────────────────┘
      */
     public getWizardState(scenario: ScenarioName, partition: Partition): Observable<WizardState> {
 
@@ -89,27 +94,27 @@ export class WizardService {
             return this.resolver.resolveReferences(outputProducts);
         }));
 
+        const mapState$ = this.mapService.getMapState(scenario, partition);
+
         const wizardState$ = resolvedData$.pipe(
-            withLatestFrom(changedState$),
-            map(([resolvedData, state]) => {
-                const wizardSteps: WizardComposite[] = [];
+            withLatestFrom(changedState$, mapState$),
+            map(([resolvedData, state, mapState]) => {
+                const stepData: WizardComposite[] = [];
+
                 const autoPilotables = state.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));
                 for (const step of state.steps) {
-                    let stepData: WizardComposite;
+                    let stepDatum: WizardComposite;
                     if (state.focus.focusedSteps.includes(step.step.id)) {
                         const converter = this.converterSvc.getConverter(scenario, step.step.id);
-                        stepData = converter.getInfo(state, resolvedData);
+                        stepDatum = converter.getInfo(state, resolvedData);
 
                         // updating WizardComposite with current state
-                        stepData.hasFocus = true;
-                        stepData.isAutoPiloted = autoPilotables.includes(step.step.id);
-                        for (const layerControl of stepData.layerControlables) {
-                            const currentOpacity = state.map.layers.find(lv => lv.layerCompositeId === layerControl.layerCompositeId);
-                            if (currentOpacity) layerControl.visible = currentOpacity.visible;
-                        }
+                        stepDatum.hasFocus = true;
+                        stepDatum.isAutoPiloted = autoPilotables.includes(step.step.id);
+                        stepDatum.layerControlables = mapState.layerComposites.filter(l => l.stepId === stepDatum.step.step.id);
 
                     } else {
-                        stepData = {
+                        stepDatum = {
                             step: step,
                             inputs: [],
                             hasFocus: false,
@@ -117,9 +122,9 @@ export class WizardService {
                             layerControlables: []
                         }
                     }
-                    wizardSteps.push(stepData);
+                    stepData.push(stepDatum);
                 }
-                return { stepData: wizardSteps };
+                return { stepData: stepData };
             })
         );
 

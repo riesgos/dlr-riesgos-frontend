@@ -16,6 +16,7 @@ export class EqSimulation implements Converter {
 
         return {
             hasFocus: false,
+            layerControlables: [],
             step: step,
             inputs: [{
                 formtype: 'string-select',
@@ -30,7 +31,6 @@ export class EqSimulation implements Converter {
                 options: Object.fromEntries(gmpe.options!.map(v => [v, v])),
                 currentValue: gmpe?.value || gmpe?.reference
             }],
-            layerControlables: [{ layerCompositeId: "eqSimWmsLayer", visible: true }],
             legend: () => ({
                 component: TranslatedImageComponent,
                 args: {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, tap, OperatorFunction } from 'rxjs';
@@ -8,7 +8,7 @@ import { Partition, RiesgosState, RiesgosScenarioState, ScenarioName, scenarioNa
 @Component({
   selector: 'app-mappage',
   templateUrl: './mappage.component.html',
-  styleUrls: ['./mappage.component.css']
+  styleUrls: ['./mappage.component.css'],
 })
 export class MappageComponent {
 

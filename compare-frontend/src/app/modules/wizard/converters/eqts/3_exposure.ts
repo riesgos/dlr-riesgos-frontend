@@ -15,7 +15,8 @@ export class Exposure implements Converter {
         const currentValue = state.products.find(p => p.id === inputProd.id)?.value;
 
         return {
-            hasFocus: false,
+            hasFocus: false, 
+            layerControlables: [],
             inputs: [{
                 formtype: "string-select",
                 label: "exposure model",
@@ -39,7 +40,6 @@ export class Exposure implements Converter {
                     width: 130
                 }
             }),
-            layerControlables: [{ layerCompositeId: "exposureLayer", visible: true }]
         }
     }
 

@@ -17,6 +17,7 @@ export class EqSimulation implements Converter {
         return {
             hasFocus: false,
             layerControlables: [],
+            oneLayerOnly: true,
             step: step,
             inputs: [{
                 formtype: 'string-select',

@@ -6,5 +6,6 @@
         [stepId]="output.stepId"
         [layerCompositeId]="output.id"
         [layerVisibility]="output.visible"
+        (layerVisibilityChanged)="onLayerVisibilityChanged($event)"
     ></app-layer>
 </div>

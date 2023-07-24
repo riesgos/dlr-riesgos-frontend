@@ -13,7 +13,7 @@ export class EqDmg implements Converter {
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
         const step = state.steps.find(s => s.step.id === "EqDamage")!;
         const wmsProduct = data.find(p => p.id === "eqDamageWms");
-        if (!wmsProduct) return { hasFocus: false, inputs: [], layerControlables: [], step: step };
+        if (!wmsProduct) return { hasFocus: false, inputs: [], layerControlables: [], step: step, oneLayerOnly: true };
 
         const wms = new URL(wmsProduct.value);
         const baseLegendEcon = `${wms.origin}/${wms.pathname}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.1.1&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${wms.searchParams.get('layers')}&STYLES=default`;
@@ -23,6 +23,7 @@ export class EqDmg implements Converter {
             hasFocus: false, // doesn't matter what we set here - will be overridden by wizard-svc
             isAutoPiloted: false, // doesn't matter what we set here - will be overridden by wizard-svc
             layerControlables: [], // doesn't matter what we set here - will be overridden by wizard-svc
+            oneLayerOnly: true,
             inputs: [],
             step,
             legend: () => ({

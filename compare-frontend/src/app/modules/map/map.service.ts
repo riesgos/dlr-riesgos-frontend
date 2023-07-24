@@ -105,11 +105,8 @@ export class MapService {
             map(([layerComposites, mapState]) => { 
 
                 const composites = layerComposites.flat();
-                if (composites.length > 0 && rules.oneLayerOnly(composites[0].stepId)) {
-                    composites.map(c => c.visible = false);
-                    composites[0].visible = true;
-                }
 
+                // apply user defined visibility
                 for (const customLayerSetting of mapState.layerSettings) {
                     const composite = composites.find(c => c.id === customLayerSetting.layerCompositeId);
                     if (composite) {

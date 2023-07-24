@@ -17,6 +17,7 @@ export class Exposure implements Converter {
         return {
             hasFocus: false, 
             layerControlables: [],
+            oneLayerOnly: true,
             inputs: [{
                 formtype: "string-select",
                 label: "exposure model",

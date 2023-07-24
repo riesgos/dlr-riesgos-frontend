@@ -13,7 +13,7 @@ export class TsDmg implements Converter {
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
         const step = state.steps.find(s => s.step.id === "TsDamage")!;
         const wmsProduct = data.find(p => p.id === "tsDamageWms");
-        if (!wmsProduct) return { hasFocus: false, inputs: [], layerControlables: [], step: step };
+        if (!wmsProduct) return { hasFocus: false, inputs: [], layerControlables: [], step: step, oneLayerOnly: true };
 
         const schemaProduct = data.find(d => d.id === "schemaTs");
 
@@ -25,6 +25,7 @@ export class TsDmg implements Converter {
             hasFocus: false, // doesn't matter what we set here - will be overridden by wizard-svc
             isAutoPiloted: false, // doesn't matter what we set here - will be overridden by wizard-svc
             layerControlables: [],  // doesn't matter what we set here - will be overridden by wizard-svc
+            oneLayerOnly: true,
             inputs: [{
                 productId: "schemaTs",
                 formtype: "string-select",

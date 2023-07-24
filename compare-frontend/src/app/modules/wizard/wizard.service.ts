@@ -23,7 +23,8 @@ export interface WizardComposite {
     }[],
     hasFocus: boolean,
     isAutoPiloted?: boolean,
-    layerControlables: LayerComposite[]
+    layerControlables: LayerComposite[],
+    oneLayerOnly: boolean
 }
 
 export interface WizardState {
@@ -119,7 +120,8 @@ export class WizardService {
                             inputs: [],
                             hasFocus: false,
                             isAutoPiloted: autoPilotables.includes(step.step.id),
-                            layerControlables: []
+                            layerControlables: [],
+                            oneLayerOnly: false
                         }
                     }
                     stepData.push(stepDatum);

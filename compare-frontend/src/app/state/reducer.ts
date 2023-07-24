@@ -270,14 +270,11 @@ export const reducer = createReducer(
       if (scenarioName === action.scenario) {
         for (const [partition, partitionData] of Object.entries(scenarioData)) {
           if (partition === action.partition || rules.mirrorOpacity) {
-            const foundEntry = partitionData.map.layerSettings.find(entry => entry.layerCompositeId === action.layerCompositeId);
-            if (foundEntry) foundEntry.visible = action.visible;
-            else partitionData.map.layerSettings.push({ stepId: action.stepId, layerCompositeId: action.layerCompositeId, visible: action.visible });
-            // for (const setting of action.settings) {
-            //   const foundEntry = partitionData.map.layerSettings.find(entry => entry.layerCompositeId === setting.layerCompositeId);
-            //   if (foundEntry) foundEntry.visible = setting.visible;
-            //   else partitionData.map.layerSettings.push(setting);
-            // }
+            for (const setting of action.config) {
+              const foundEntry = partitionData.map.layerSettings.find(entry => entry.layerCompositeId === setting.layerCompositeId);
+              if (foundEntry) foundEntry.visible = setting.visible;
+              else partitionData.map.layerSettings.push(setting);
+            }
           }
         }
       }

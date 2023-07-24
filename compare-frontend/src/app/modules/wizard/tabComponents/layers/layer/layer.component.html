@@ -12,7 +12,7 @@
         [path]="'assets/icons/eye-closed.svg'"
     ></app-svg>
 
-    <div class="layerTitle">
+    <div class="layerTitle" [class.greyedOut]="layerVisibility === false">
         {{ layerCompositeId | translate }}
     </div>
 </div>

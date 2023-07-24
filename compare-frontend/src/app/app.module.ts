@@ -58,6 +58,7 @@ import { reducer } from './state/reducer';
 import { MappageComponent } from './views/mappage/mappage.component';
 import { ModalComponent } from './views/mappage/modal/modal.component';
 import { StartpageComponent } from './views/startpage/startpage.component';
+import { ImageLegendComponent } from './modules/wizard/tabComponents/legends/image-legend/image-legend.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import { StartpageComponent } from './views/startpage/startpage.component';
     ErrorComponent,
     LayerComponent,
     TranslatedImageComponent,
-    InfoComponent
+    InfoComponent,
+    ImageLegendComponent
   ],
   imports: [
     BrowserModule,

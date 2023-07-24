@@ -432,7 +432,7 @@
     "System reliability after EQ": "Power grid",
     "System reliability after Lahar": "Power grid",
     "taxonomy_DX": "Taxonomy/damage class",
-    "Taxonomy": "Taxonomy",
+    "Taxonomy": "Type of building",
     "Thickness": "Thickness",
     "Thickness10": "Thickness: < 10.0 mm",
     "Thickness100": "Thickness: > 75.0 mm",

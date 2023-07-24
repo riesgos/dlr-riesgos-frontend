@@ -35,27 +35,27 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     let data: BarDatum[] = [];
     data = [{
-      label: '0',
+      label: 'D0',
       value: 0,
       color: `rgb(${yellowRedRange(0, 4, 0).join(',')})`,
       hoverText: ``
     }, {
-      label: '1',
+      label: 'D1',
       value: 0,
       color: `rgb(${yellowRedRange(0, 4, 1).join(',')})`,
       hoverText: ``
     }, {
-      label: '2',
+      label: 'D2',
       value: 0,
       color: `rgb(${yellowRedRange(0, 4, 2).join(',')})`,
       hoverText: ``
     }, {
-      label: '3',
+      label: 'D3',
       value: 0,
       color: `rgb(${yellowRedRange(0, 4, 3).join(',')})`,
       hoverText: ``
     }, {
-      label: '4',
+      label: 'D4',
       value: 0,
       color: `rgb(${yellowRedRange(0, 4, 4).join(',')})`,
       hoverText: ``

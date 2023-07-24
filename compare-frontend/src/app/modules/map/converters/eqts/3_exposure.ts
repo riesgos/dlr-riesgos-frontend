@@ -9,7 +9,7 @@ import Fill from "ol/style/Fill";
 import Stroke from "ol/style/Stroke";
 import { FeatureLike } from "ol/Feature";
 import { BarchartComponent } from "../../popups/barchart/barchart.component";
-import { BarData } from "src/app/helpers/d3charts";
+import { BarDatum } from "src/app/helpers/d3charts";
 
 
 export class Exposure implements Converter {
@@ -72,7 +72,7 @@ export class Exposure implements Converter {
                 const props = features[0].getProperties();
                 const expo = props['expo'];
 
-                const data: BarData[] = [];
+                const data: BarDatum[] = [];
                 for (let i = 0; i < Object.values(expo.Taxonomy).length; i++) {
                     const tax = expo['Taxonomy'][i]; // .match(/^[a-zA-Z]*/)[0];
                     const bld = expo['Buildings'][i];

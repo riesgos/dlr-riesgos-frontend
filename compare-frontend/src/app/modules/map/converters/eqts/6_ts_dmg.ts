@@ -40,19 +40,28 @@ export class TSDmg implements Converter {
             onClick: (location, features) => undefined,
             onHover: (location, features) => undefined,
             popup: (location, features) => {
-
-                return {
-                    component: DamagePopupComponent,
-                    args: {
-                        feature: features[0],
-                        metaData: summaryProduct.value,
-                        xLabel: 'damage',
-                        yLabel: 'Nr_buildings',
-                        schema: schema,
-                        heading: 'earthquake_damage_classification',
-                        additionalText: schema === "Medina_2019" ? "DamageStatesSara" : "DamageStatesSuppasri"
+                if (features.length <= 0) {
+                    return {
+                        component: StringPopupComponent,
+                        args: {
+                            title: "damage_classification_tsunami",
+                            body: 'no_residential_buildings'
+                        }
                     }
-                };
+                } else {
+                    return {
+                        component: DamagePopupComponent,
+                        args: {
+                            feature: features[0],
+                            metaData: summaryProduct.value,
+                            xLabel: 'damage',
+                            yLabel: 'Nr_buildings',
+                            schema: 'SARA_v1.0',
+                            heading: 'damage_classification_tsunami',
+                            additionalText: schema === "Medina_2019" ? "DamageStatesSara" : "DamageStatesSuppasri"
+                        }
+                    };
+                }
             },
             visible: true,
         };

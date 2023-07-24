@@ -58,8 +58,8 @@ export class SysRel implements Converter {
                 const feature = features[0];
                 const props = feature.getProperties();
                 const selectedProps: any = {};
-                selectedProps[this.translate.translate('Area')] = (+props['Area']).toFixed(2);
-                selectedProps[this.translate.translate('Prob_Interuption')] = props['Prob_Disruption'];
+                // selectedProps[this.translate.translate('Area')] = (+props['Area']).toFixed(2);
+                selectedProps[this.translate.translate('Prob_Interuption')] = (+props['Prob_Disruption'] * 100).toFixed(2) + "%";
                 const table = createKeyValueTableHtml(selectedProps);
 
                 return {

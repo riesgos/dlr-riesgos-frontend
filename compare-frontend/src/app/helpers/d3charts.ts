@@ -5,7 +5,7 @@ import { axisBottom, axisLeft } from 'd3-axis';
 
 
 
-export interface BarData {
+export interface BarDatum {
     label: string;
     value: number;
     hoverText?: string;
@@ -13,7 +13,7 @@ export interface BarData {
 }
 
 export function createBigBarChart(
-    anchorSelector: any, data: BarData[], widthTotal: number, heightTotal: number, xLabel: string, yLabel: string, noDataString = 'No data') {
+    anchorSelector: any, data: BarDatum[], widthTotal: number, heightTotal: number, xLabel: string, yLabel: string, noDataString?: string) {
   
   
         const base = select(anchorSelector);
@@ -22,13 +22,13 @@ export function createBigBarChart(
         for (const dp of data) {
             dataLength += dp.value;
         }
-        if (dataLength === 0) {
+        if (dataLength === 0 && noDataString) {
             base.append('p').html(noDataString);
             return;
         }
         const barNames = data.map(d => d.label);
   
-        const margin = { top: 10, right: 10, bottom: 10, left: 20 };
+        const margin = { top: 10, right: 10, bottom: 20, left: 20 };
         const width = widthTotal - margin.left - margin.right;
         const height = heightTotal - margin.top - margin.bottom;
         
@@ -185,7 +185,7 @@ export function createBigBarChart(
         
         bars.on('mouseout', (evt, datum) => {
           infobox.style('visibility', 'hidden');
-          bars.selectAll<SVGRectElement, BarData>('rect').style('fill', d => colorScale(d.label));
+          bars.selectAll<SVGRectElement, BarDatum>('rect').style('fill', d => colorScale(d.label));
           xAxis.selectAll('text').style('fill', 'lightgray'); // 'hsl(198deg, 0%, 40%)'); // = --clr-global-font-color
         });
   }

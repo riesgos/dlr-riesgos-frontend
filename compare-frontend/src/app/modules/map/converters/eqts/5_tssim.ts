@@ -42,22 +42,6 @@ export class TsSim implements Converter {
             opacity: 1.0,
             visible: true
         }, {
-            id: "mwhLand_global",
-            stepId: "Tsunami",
-            layer: new TileLayer({
-                source: new TileWMS({
-                    url: baseUrl,
-                    params: {
-                        "LAYERS": `${layerNumber}_mwhLand_global`,
-                    }
-                })
-            }),
-            onClick: (location, features) => undefined,
-            onHover: (location, features) => undefined,
-            popup: (location, features) => undefined,
-            opacity: 1.0,
-            visible: true
-        }, {
             id: "mwhLand_local",
             stepId: "Tsunami",
             layer: new TileLayer({

@@ -1,61 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
-import { MapBrowserEvent } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import { TileWMS } from 'ol/source';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { getBuildingClassColor } from 'src/app/helpers/colorhelpers';
-import { DeusGetFeatureInfo, DeusMetaData } from './deusApi';
-import { GroupedBarChartData, GroupingFunction, SubGroupData } from '../grouped-bar-chart/groupedChart';
-import { createGrouping, simpleGrouping } from '../grouped-bar-chart/helpers';
-import { Grouping } from '../grouped-bar-chart/grouped-bar-chart.component';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { DeusMetaData } from './deusApi';
 import { TranslationService } from 'src/app/services/translation.service';
 import { FeatureLike } from 'ol/Feature';
-
-
-
-
-
-function saraGroupingMaterial(inputGroups: SubGroupData[]): SubGroupData[] {
-  return createGrouping(0)(inputGroups);
-}
-
-function createSubstringGrouping(labels: string[]): GroupingFunction {
-  return (oldGroups: SubGroupData[]): SubGroupData[] => {
-    
-    const newGroups: SubGroupData[] = [];
-    for (const newGroupKey of labels) {
-      const newGroup: SubGroupData = {
-        key: newGroupKey,
-        val: 0
-      };
-      for (const oldGroup of oldGroups) {
-        if (oldGroup.key.includes(newGroupKey)) {
-          newGroup.val += oldGroup.val;
-        }
-      }
-      newGroups.push(newGroup);
-    }
-    return newGroups;
-  }
-}
-
-function allIntoOneGrouping(oldGroups: SubGroupData[]): SubGroupData[] {
-  const newGroups: SubGroupData[] = [{
-    key: '',
-    val: 0
-  }];
-  for (const oldGroup of oldGroups) {
-    newGroups[0].val += oldGroup.val;
-  }
-  return newGroups;
-}
-
-const saraGroupingSubtype = createSubstringGrouping(['LDUAL', 'LFINF', 'LWAL', 'ETR', 'STDRE', 'STRUB', 'WBB', 'WHE', 'WLI', 'WS', 'WWD']);
-
-const saraGroupingHeight = createSubstringGrouping(['H1', 'H1-2', 'H1-3', 'H4-7', 'H8-19']);
-
+import { BarDatum, createBigBarChart } from 'src/app/helpers/d3charts';
+import { yellowPurpleRange, yellowRedRange } from 'src/app/helpers/colorhelpers';
 
 
 
@@ -66,119 +15,91 @@ type knownSchemas = 'SARA_v1.0' | 'SUPPASRI2013_v2.0' | 'Medina_2019';
   templateUrl: './damage-popup.component.html',
   styleUrls: ['./damage-popup.component.scss']
 })
-export class DamagePopupComponent implements OnInit {
+export class DamagePopupComponent implements OnInit, AfterViewInit {
 
   @Input() metaData!: DeusMetaData;
   @Input() feature!: FeatureLike;
   @Input() schema!: knownSchemas;
   @Input() additionalText?: string;
   @Input() heading?: string;
-  public width = 350;
-  public height = 350;
-  public groupings!: Grouping[];
-  public baseData!: GroupedBarChartData[];
+  @Input() xLabel!: string;
+  @Input() yLabel!: string;
+  public width = 300;
+  public height = 250;
+  public data: BarDatum[] = [];
+  @ViewChild('container', {static: true}) container!: ElementRef<HTMLDivElement>;
 
-  constructor(private http: HttpClient, private translateSvc: TranslationService) { }
 
+  constructor(private http: HttpClient, private translateSvc: TranslationService) {}
+  
   ngOnInit(): void {
+    let data: BarDatum[] = [];
+    data = [{
+      label: '0',
+      value: 0,
+      color: `rgb(${yellowRedRange(0, 4, 0).join(',')})`,
+      hoverText: ``
+    }, {
+      label: '1',
+      value: 0,
+      color: `rgb(${yellowRedRange(0, 4, 1).join(',')})`,
+      hoverText: ``
+    }, {
+      label: '2',
+      value: 0,
+      color: `rgb(${yellowRedRange(0, 4, 2).join(',')})`,
+      hoverText: ``
+    }, {
+      label: '3',
+      value: 0,
+      color: `rgb(${yellowRedRange(0, 4, 3).join(',')})`,
+      hoverText: ``
+    }, {
+      label: '4',
+      value: 0,
+      color: `rgb(${yellowRedRange(0, 4, 4).join(',')})`,
+      hoverText: ``
+    }];
 
-
-    const groupings: {[key: string]: Grouping[]} = {
-      'SARA_v1.0': [{
-        id: 'SARA_base',
-        label: () => this.translateSvc.translate('bundled'),
-        xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantityBuildings'),
-        coloringFunction: getBuildingClassColor,
-        groupingFunction: allIntoOneGrouping
-      }, {
-        id: 'SARA_material',
-        label: () => this.translateSvc.translate('material'),
-        xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantityBuildings'),
-        coloringFunction: getBuildingClassColor,
-        groupingFunction: saraGroupingMaterial
-      }, {
-        id: 'SARA_height',
-        label: () => this.translateSvc.translate('height'),
-        xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantityBuildings'),
-        coloringFunction: getBuildingClassColor,
-        groupingFunction: saraGroupingHeight
-      }, {
-        id: 'SARA_all',
-        label: () => this.translateSvc.translate('all classes'),
-        xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantityBuildings'),
-        coloringFunction: getBuildingClassColor,
-        groupingFunction: data => data
-      }],
-    
-      'SUPPASRI2013_v2.0': [{
-        id: 'suppasri_base',
-        label: () => this.translateSvc.translate('type'),
-        xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantityBuildings'),
-        coloringFunction: getBuildingClassColor,
-        groupingFunction: simpleGrouping
-      }],
-    
-      'Medina_2019': [{
-        id: 'medina_base',
-        label: () => this.translateSvc.translate('type'),
-        xLabel: () => this.translateSvc.translate('damage-class'),
-        yLabel: () => this.translateSvc.translate('quantityBuildings'),
-        coloringFunction: getBuildingClassColor,
-        groupingFunction: simpleGrouping
-      }]
-    };
-
-    this.groupings = groupings[this.schema];
-
-
-    const data = this.feature;
-    const props: DeusGetFeatureInfo = data.getProperties() as any;
-
-    const parsedData: GroupedBarChartData[] = [];
-    for (const key in props) {
-      if (key.match(/c\d+/)) {
-        const translation = this.metaData.custom_columns[key];
-        const taxonomyMatch = translation.match(/Buildings in (\S*) per damage state/);
-        if (taxonomyMatch && taxonomyMatch[1]) {
-          const taxonomy = taxonomyMatch[1];
-          // @ts-ignore
-          const damageCounts = props[key] === '' ? {} : JSON.parse(props[key]);
-          for (const damageClass in damageCounts) {
-            const count = damageCounts[damageClass];
-
-            let groupData = parsedData.find(p => p.groupName === damageClass);
-            if (!groupData) {
-              groupData = { groupName: damageClass, subGroups: [] };
-              parsedData.push(groupData);
-            }
-            let subGroup = groupData.subGroups.find(sg => sg.key === taxonomy);
-            if (!subGroup) {
-              subGroup = { key: taxonomy, val: 0 };
-              groupData.subGroups.push(subGroup);
-            }
-            subGroup.val += count;
+    const props = this.feature.getProperties();
+    for (const [key, value] of Object.entries(props)) {
+      if (['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22'].includes(key)) {
+        if (value !== undefined && value !== "") {
+          const classData = JSON.parse(value);
+          for (const [dmgClass, count] of Object.entries(classData)) {
+            const datum = data[+dmgClass];
+            datum.value += +(count as number);
           }
         }
       }
     }
 
-    this.baseData = parsedData;
+    let countTotal = 0;
+    for (const datum of data) {
+      datum.hoverText = "" + datum.value.toFixed(2) + " edificios";
+      countTotal += datum.value;
+    }
 
+    this.data = data;
+    if (countTotal <= 0) {
+      this.data = [];
+      this.width = 0;
+      this.height = 0;
+      this.additionalText = 'no_residential_buildings';
+    }
+  
+    createBigBarChart(
+      this.container.nativeElement, 
+      this.data, 
+      this.width, 
+      this.height, 
+      this.translateSvc.translate(this.xLabel),
+      this.translateSvc.translate(this.yLabel),
+      ''
+    );
   }
 
-  public containsData(parsedData: GroupedBarChartData[]) {
-    let count = 0;
-    for (const groupData of parsedData) {
-      for (const subGroupData of groupData.subGroups) {
-        count += subGroupData.val;
-      }
-    }
-    return count > 0.0;
+  ngAfterViewInit(): void {
   }
 
 }

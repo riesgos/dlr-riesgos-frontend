@@ -198,28 +198,30 @@ export class RearrangingGroupedBarChart {
         const colorData = subGroupNames.map((n, i) => ({key: n, val: subGroupColors[i]}));
         const I = subGroupNames.length;
         this.selectors.legend.selectAll('.legendEntry').remove();
-        const legendEntries = this.selectors.legend
-            .selectAll('.legendEntry')
-            .data(colorData, (d: any) => d.key);
-        const rectWidth = 14;
-        const rectHeight = 10;
-        const newLegendEntriesG = legendEntries
-            .enter()
-                .append('g')
-                    .attr('class',     'legendEntry'                                                    )
-                    .attr('transform', (d: any, i: number) => `translate(${(i - I / 2) * rectWidth}, 0)`);
-        newLegendEntriesG
-            .append('rect')
-                .attr('fill',   (d: any) => d.val )
-                .attr('width',  rectWidth         )
-                .attr('height', rectHeight        );
-        newLegendEntriesG
-            .append('text')
-                .text((d: any) => d.key                          )
-                .style('font-size', '.75em'                      )
-                .attr('fill',       (d: any) => d.val            )
-                .attr('transform', `translate(3, 15), rotate(90)`);
-        this.selectors.legendEntriesG = newLegendEntriesG;
+        if (I > 1) {  // no legend if only one entry
+            const legendEntries = this.selectors.legend
+                .selectAll('.legendEntry')
+                .data(colorData, (d: any) => d.key);
+            const rectWidth = 14;
+            const rectHeight = 10;
+            const newLegendEntriesG = legendEntries
+                .enter()
+                    .append('g')
+                        .attr('class',     'legendEntry'                                                    )
+                        .attr('transform', (d: any, i: number) => `translate(${(i - I / 2) * rectWidth}, 0)`);
+            newLegendEntriesG
+                .append('rect')
+                    .attr('fill',   (d: any) => d.val )
+                    .attr('width',  rectWidth         )
+                    .attr('height', rectHeight        );
+            newLegendEntriesG
+                .append('text')
+                    .text((d: any) => d.key                          )
+                    .style('font-size', '.75em'                      )
+                    .attr('fill',       (d: any) => d.val            )
+                    .attr('transform', `translate(3, 15), rotate(90)`);
+            this.selectors.legendEntriesG = newLegendEntriesG;
+        }
 
 
         // updating sub-groups
@@ -244,15 +246,15 @@ export class RearrangingGroupedBarChart {
                 .attr('fill',   (d: SubGroupData) => subGroupColorScale(d.key) )
                 .attr('y',      (d: SubGroupData) => yAxis(d.val)              )
                 .attr('height', (d: SubGroupData) => graphHeight - yAxis(d.val));
-        this.selectors.barGroups.selectAll('.barSubGroup')
-            .append('text')
-                .attr('x',             0                                                )
-                .attr('y',            (d: any) => yAxis(d.val)                          )
-                .style('font-size',   '0.75em'                                          )
-                .style('text-anchor', 'center'                                          )
-                .attr('fill',         (d: SubGroupData) => subGroupColorScale(d.key)    )
-                .attr('transform',    `translate(0, -3)`)
-                .text((d: SubGroupData) => d.val < 0.1 ? '' : d.val.toFixed(1) );
+        // this.selectors.barGroups.selectAll('.barSubGroup')
+        //     .append('text')
+        //         .attr('x',             0                                                )
+        //         .attr('y',            (d: any) => yAxis(d.val)                          )
+        //         .style('font-size',   '0.75em'                                          )
+        //         .style('text-anchor', 'center'                                          )
+        //         .attr('fill',         (d: SubGroupData) => subGroupColorScale(d.key)    )
+        //         .attr('transform',    `translate(0, -3)`)
+        //         .text((d: SubGroupData) => d.val < 0.1 ? '' : d.val.toFixed(1) );
 
 
         // on hover

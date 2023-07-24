@@ -187,7 +187,8 @@ function createLegendDiscrete(
       .attr('width',  d => direction === 'horizontal' ? d.scaledSize : graphicEntryWidth)
       .attr('height', d => direction === 'horizontal' ? graphicEntryHeight : d.scaledSize)
       .attr('fill',   d => d.color)
-      .attr('stroke', d => [... Object.values(ensureRgb(d.color).darker().rgb())] );
+      .attr('stroke', d => `rgb(${[... Object.values(ensureRgb(d.color).darker().rgb())]})` )
+      .attr('stroke-width', 1);
 
 
   const labels = legendGroup.selectAll('.label')

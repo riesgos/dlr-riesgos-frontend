@@ -55,7 +55,6 @@ import { WizardComponent } from './modules/wizard/wizard/wizard.component';
 import { ConfigService } from './services/config.service';
 import { Effects } from './state/effects';
 import { reducer } from './state/reducer';
-import { ImpressumComponent } from './views/impressum/impressum.component';
 import { MappageComponent } from './views/mappage/mappage.component';
 import { ModalComponent } from './views/mappage/modal/modal.component';
 import { StartpageComponent } from './views/startpage/startpage.component';
@@ -66,7 +65,6 @@ import { StartpageComponent } from './views/startpage/startpage.component';
     StartpageComponent,
     MappageComponent,
     ModalComponent,
-    ImpressumComponent,
     MapComponent,
     StringPopupComponent,
     BarchartComponent,

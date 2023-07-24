@@ -42,7 +42,11 @@
 
 - Ongoing:
 
+    - no longer jump to location
     - mapState.layers <-  shouldn't be optional
+        - A visible
+
+
     - for some steps, only one layer visible at the same time
     - update eq style upon dropdown select
         - through update in state.map.layers.selected (new feature in layerComposite)

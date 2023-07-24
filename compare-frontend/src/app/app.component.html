@@ -8,7 +8,6 @@
     <p style="margin: 1rem; color: var(--accent-color-800);">Version: 0.0.1</p>
 
     <nav *ngIf="ruleSet$ | async as ruleSet">
-      <a                            class="nav-item" [class.active]="false"              (click)="clickOnImpres()"  >{{ 'Impressum' | translate }}</a>
       <a                            class="nav-item" [class.active]="ruleSet === 'none'" (click)="clickOnModes()"   >{{ 'Modes' | translate }}</a>
       <a *ngIf="ruleSet !== 'none'" class="nav-item" [class.active]="true"                                          >{{ ruleSet | translate }}</a>
     </nav>

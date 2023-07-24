@@ -81,9 +81,6 @@ export const reducer = createReducer(
       } else {
         if (rules.oneFocusOnly) pd.focus.focusedSteps = [action.stepId];
         else if (!pd.focus.focusedSteps.includes(action.stepId)) pd.focus.focusedSteps.push(action.stepId);
-        const {center, zoom} = getMapPositionForStep(action.scenario, action.partition, action.stepId);
-        pd.map.center = center;
-        pd.map.zoom = zoom;
       }
     }
 
@@ -271,15 +268,9 @@ export const reducer = createReducer(
     const rules = getRules(state.rules);
 
     for (const [partition, partitionData] of Object.entries(scenarioState)) {
-      if (partition === action.partition) {
+      if (partition === action.partition || rules.mirrorOpacity) {
         const foundEntry = partitionData.map.layers.find(entry => entry.layerCompositeId === action.layerCompositeId);
         if (foundEntry) foundEntry.visible = action.visible;
-        else partitionData.map.layers.push({ layerCompositeId: action.layerCompositeId, visible: action.visible });
-      }
-      else if (rules.mirrorOpacity) {
-        const foundEntry = partitionData.map.layers.find(entry => entry.layerCompositeId === action.layerCompositeId);
-        if (foundEntry) foundEntry.visible = action.visible;
-        else partitionData.map.layers.push({ layerCompositeId: action.layerCompositeId, visible: action.visible });
       }
     }
 

@@ -27,8 +27,4 @@ export class AppComponent {
     this.router.navigateByUrl("/");
   }
 
-  clickOnImpres() {
-    this.store.dispatch(movingBackToMenu());
-    this.router.navigateByUrl("/impressum");
-  }
 }

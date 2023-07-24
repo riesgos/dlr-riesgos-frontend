@@ -74,6 +74,7 @@
 }
 
 .scenario-footer-first {
+    padding: 0.5rem;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -82,9 +83,22 @@
     /* max-width: 1000px; */
 }
 
+.scenario-footer-second {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    bottom: 17px;
+    position: relative;
+}
+
 .consortium-logos {
     flex: 1 1 auto;
     max-width: 100px;
+}
+.consortium-logos.first {
+    flex: 1.25 0 auto;
+    max-width: 150px;
 }
 
 .consortium-logos img {

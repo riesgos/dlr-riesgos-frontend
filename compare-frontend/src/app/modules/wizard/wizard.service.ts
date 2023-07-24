@@ -100,9 +100,8 @@ export class WizardService {
         const mapState$ = this.mapService.getMapState(scenario, partition);
 
 
-        const wizardState$ = combineLatest([resolvedData$, mapState$]).pipe(
-            withLatestFrom(changedState$),
-            map(([[resolvedData, mapState], state]) => {
+        const wizardState$ = combineLatest([resolvedData$, mapState$, changedState$]).pipe(
+            map(([resolvedData, mapState, state]) => {
                 const stepData: WizardComposite[] = [];
 
                 const autoPilotables = state.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));

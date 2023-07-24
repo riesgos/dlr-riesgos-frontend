@@ -8,12 +8,16 @@ import { Injectable } from "@angular/core";
 import { toDecimalPlaces } from "src/app/helpers/colorhelpers";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
 import { createTableHtml } from "src/app/helpers/others";
+import { TranslationService } from "src/app/services/translation.service";
 
 
 @Injectable()
 export class TsSim implements Converter {
 
-    constructor(private http: HttpClient) {}
+    constructor(
+        private http: HttpClient,
+        private translation: TranslationService
+    ) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
         return step === 'Tsunami';
@@ -43,7 +47,8 @@ export class TsSim implements Converter {
             onHover: (location, features) => undefined,
             popup: (location, features) => {
                 const props = features[0].getProperties();
-                const entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} g`;
+                let entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} m`;
+                if (props['GRAY_INDEX'] > 1000) entry = this.translation.translate('no_data');
                 return {
                     component: StringPopupComponent,
                     args: {
@@ -69,7 +74,8 @@ export class TsSim implements Converter {
             onHover: (location, features) => undefined,
             popup: (location, features) => {
                 const props = features[0].getProperties();
-                const entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} g`;
+                let entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} m`;
+                if (props['GRAY_INDEX'] > 1000) entry = this.translation.translate('no_data');
                 return {
                     component: StringPopupComponent,
                     args: {

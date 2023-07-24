@@ -79,7 +79,7 @@ export class WizardService {
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
-                if (!arraysEqual(last.map.layers, current.map.layers)) return true;
+                if (!arraysEqual(last.map.layerSettings, current.map.layerSettings)) return true;
                 if (!arraysEqual(last.steps.map(s => s.state.type), current.steps.map(s => s.state.type))) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,

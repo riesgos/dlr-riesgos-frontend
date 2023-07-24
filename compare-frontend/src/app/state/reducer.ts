@@ -269,8 +269,9 @@ export const reducer = createReducer(
 
     for (const [partition, partitionData] of Object.entries(scenarioState)) {
       if (partition === action.partition || rules.mirrorOpacity) {
-        const foundEntry = partitionData.map.layers.find(entry => entry.layerCompositeId === action.layerCompositeId);
+        const foundEntry = partitionData.map.layerSettings.find(entry => entry.layerCompositeId === action.layerCompositeId);
         if (foundEntry) foundEntry.visible = action.visible;
+        else partitionData.map.layerSettings.push({ layerCompositeId: action.layerCompositeId, visible: action.visible });
       }
     }
 
@@ -357,7 +358,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
           center: [-30, -70],
           zoom: 7,
           clickLocation: undefined,
-          layers: []
+          layerSettings: []
         },
         products: newProducts,
         steps: newSteps,

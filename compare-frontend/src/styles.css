@@ -20,14 +20,14 @@
 
 body {
     --success-light: #DDF9C0;
-    --success:       #bdde9a;
-    --success-dark:  #8ba471;
+    --success:       #b4d491;
+    --success-dark:  #7b9164;
     --notice-light:  #F5F6CE;
-    --notice:        #d8d9b3;
-    --notice-dark:   #abac93;
+    --notice:        #c4c5a1;
+    --notice-dark:   #93947d;
     --warning-light: #df9b9b;
-    --warning:       #c06767;
-    --warning-dark:  #8c3535;
+    --warning:       #b25e5e;
+    --warning-dark:  #742c2c;
     --white:     #fbfbfb;
     --gray-10:   #f8f8fa;
     --gray-100:  #e9eaee;

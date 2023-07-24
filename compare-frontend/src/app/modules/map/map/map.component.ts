@@ -169,6 +169,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     for (const layer of toRemove) {
       this.map.removeLayer(layer);
     }
+
     for (const layer of toUpdate) {
       const oldLayer = oldLayers.find(l => l.get("compositeId") === layer.get("compositeId"));
       if (!oldLayer) this.map.addLayer(layer);
@@ -179,15 +180,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }
     }
+
     for (const layer of toAdd) {
       this.map.addLayer(layer);
     }
 
-    // @TODO: set visibility from last time
   }
 
   private different(oldLayer: Layer, newLayer: Layer): boolean {
     if (oldLayer.getOpacity() !== newLayer.getOpacity()) return true;
+    if (oldLayer.getVisible() !== newLayer.getVisible()) return true;
     // @TODO: compare features if VectorLayer, rasterSource if TileLayer
     // style if VectorLayer, GET-params if TileLayer
     return false;

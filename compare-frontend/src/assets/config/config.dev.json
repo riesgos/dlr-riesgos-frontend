@@ -3,6 +3,6 @@
         "PeruShort"
     ],
     "production": false,
-    "backendUrl": "https://riesgos.dlr.de/backend",
-    "proxyUrl": "https://riesgos.dlr.de/proxy"
+    "backendUrl": "http://localhost:8008",
+    "proxyUrl": ""
 }

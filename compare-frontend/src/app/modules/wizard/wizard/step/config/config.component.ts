@@ -24,7 +24,6 @@ export class ConfigComponent implements OnInit {
     for (const input of this.data.inputs) {
       this.allValues[input.productId] = input.currentValue;
     }
-    // if (environment.type === "prod") setTimeout(() => this.cd.detectChanges(), 1);
   }
 
   public select(productId: string, value: any) {
@@ -52,6 +51,9 @@ export class ConfigComponent implements OnInit {
   public isSelected(productId: string, option: {key: string, value: any}) {
     const triedValue = option.value;
     const actualValue = this.allValues[productId];
+    if (triedValue.id && actualValue?.id) {
+      return triedValue.id === actualValue.id;
+    }
     // if (this.data.inputs.find(i => i.productId === productId).valueToKey() === option.key) return true;
     const matches = triedValue === actualValue || JSON.stringify(triedValue) === actualValue || triedValue === JSON.stringify(actualValue) || JSON.stringify(triedValue) === JSON.stringify(actualValue);
     return matches;

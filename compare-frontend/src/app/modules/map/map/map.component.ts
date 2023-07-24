@@ -19,6 +19,8 @@ import greyScale from "../data/open-map-style.Positron.json";
 import Style from 'ol/style/Style';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
+import TileSource from 'ol/source/Tile';
+import VectorSource from 'ol/source/Vector';
 
 @Component({
   selector: 'app-map',
@@ -175,8 +177,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       if (!oldLayer) this.map.addLayer(layer);
       else {
         if (this.different(oldLayer, layer)) {
-          if (oldLayer) this.map.removeLayer(oldLayer);
-          this.map.addLayer(layer);
+          // making sure we inject the updated layer at the same position as the old layer
+          const oldIndex = this.map.getAllLayers().map((l, i) => [l.get("compositeId"), i]).find(([compId, i]) => compId === layer.get("compositeId"));
+          this.map.removeLayer(oldLayer);
+          if (oldIndex) {
+            this.map.getLayers().insertAt(oldIndex[1], layer);
+          } else {
+            this.map.addLayer(layer);
+          }
         }
       }
     }
@@ -188,10 +196,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private different(oldLayer: Layer, newLayer: Layer): boolean {
+    // return true;  // I think its cheaper to just replace the layer always than to compare the data-content of the layers
     if (oldLayer.getOpacity() !== newLayer.getOpacity()) return true;
     if (oldLayer.getVisible() !== newLayer.getVisible()) return true;
-    // @TODO: compare features if VectorLayer, rasterSource if TileLayer
-    // style if VectorLayer, GET-params if TileLayer
+    const oldSource = oldLayer.getSource();
+    const newSource = newLayer.getSource();
+    if (oldSource instanceof VectorSource && newSource instanceof VectorSource) {
+      const reader = new GeoJSON();
+      const oldData = reader.writeFeatures(oldSource.getFeatures());
+      const newData = reader.writeFeatures(newSource.getFeatures());
+      if (oldData !== newData) return true;
+    }
     return false;
   }
 

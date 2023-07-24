@@ -19,7 +19,7 @@
             <app-tab [tabTitle]="'Configuration'" *ngIf="data.step.state.type === 'available'">
                 <app-config [scenario]="scenario" [partition]="partition" [data]="data" [autoPilot]="data.isAutoPiloted"></app-config>
             </app-tab>
-            <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed' && data.layerControlables.length > 0">
+            <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed'">
                 <app-layers [scenario]="scenario" [partition]="partition" [data]="data"></app-layers>
             </app-tab>
             <app-tab [tabTitle]="'Legend'" *ngIf="data.legend && data.step.state.type === 'completed' || data.step.step.id === 'selectEq'">

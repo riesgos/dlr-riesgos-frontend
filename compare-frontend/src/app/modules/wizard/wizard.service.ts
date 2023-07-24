@@ -67,7 +67,7 @@ export class WizardService {
         const changedState$ = scenarioState$.pipe(
             // changedState is siphoned off by resolvedData and wizardState.
             // To prevent running this block twice - and causing ui updates twice - it's turned hot here.
-            share(),
+            // share(),
 
             // filtering to prevent rebuilding ui on insignificant changes.
             scan((acc: (RiesgosScenarioState | undefined)[], cur: RiesgosScenarioState) => [acc[1], cur], [undefined, undefined]),
@@ -124,6 +124,7 @@ export class WizardService {
                     }
                     stepData.push(stepDatum);
                 }
+
                 return { stepData: stepData };
             })
         );

@@ -14,6 +14,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { ConverterService, LayerComposite } from './converter.service';
+import { getRules, Rules } from 'src/app/state/rules';
 
 export interface MapState extends RiesgosScenarioMapState {
     layerComposites: LayerComposite[],
@@ -41,7 +42,10 @@ export class MapService {
      */
     public getMapState(scenario: ScenarioName, partition: Partition): Observable<MapState> {
 
+        let rules: Rules;
+
         const scenarioState$ = this.store.select(state => {
+            rules = getRules(state.riesgos.rules);
             const riesgosState = state.riesgos;
             const scenarioState = riesgosState.scenarioData[scenario];
             if (!scenarioState) return undefined;
@@ -101,6 +105,11 @@ export class MapService {
             map(([layerComposites, mapState]) => { 
 
                 const composites = layerComposites.flat();
+                if (composites.length > 0 && rules.oneLayerOnly(composites[0].stepId)) {
+                    composites.map(c => c.visible = false);
+                    composites[0].visible = true;
+                }
+
                 for (const customLayerSetting of mapState.layerSettings) {
                     const composite = composites.find(c => c.id === customLayerSetting.layerCompositeId);
                     if (composite) {

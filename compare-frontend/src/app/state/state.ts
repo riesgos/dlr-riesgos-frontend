@@ -79,7 +79,7 @@ export interface RiesgosScenarioMapState {
     zoom: number,
     center: number[],
     clickLocation: number[] | undefined,
-    layerSettings: { layerCompositeId: string, visible: boolean }[]
+    layerSettings: { stepId: string, layerCompositeId: string, visible: boolean }[]
 }
 
 export interface FocusState {

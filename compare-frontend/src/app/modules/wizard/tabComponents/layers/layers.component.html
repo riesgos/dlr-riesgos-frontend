@@ -3,6 +3,7 @@
         *ngFor="let output of data.layerControlables"
         [scenario]="scenario"
         [partition]="partition"
+        [stepId]="output.stepId"
         [layerCompositeId]="output.id"
         [layerVisibility]="output.visible"
     ></app-layer>

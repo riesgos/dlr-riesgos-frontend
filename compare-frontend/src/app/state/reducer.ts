@@ -264,17 +264,25 @@ export const reducer = createReducer(
   }),
 
   immerOn(mapLayerVisibility, (state, action) => {
-    const scenarioState = state.scenarioData[action.scenario]!;
     const rules = getRules(state.rules);
 
-    for (const [partition, partitionData] of Object.entries(scenarioState)) {
-      if (partition === action.partition || rules.mirrorOpacity) {
-        const foundEntry = partitionData.map.layerSettings.find(entry => entry.layerCompositeId === action.layerCompositeId);
-        if (foundEntry) foundEntry.visible = action.visible;
-        else partitionData.map.layerSettings.push({ layerCompositeId: action.layerCompositeId, visible: action.visible });
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partition, partitionData] of Object.entries(scenarioData)) {
+          if (partition === action.partition || rules.mirrorOpacity) {
+            const foundEntry = partitionData.map.layerSettings.find(entry => entry.layerCompositeId === action.layerCompositeId);
+            if (foundEntry) foundEntry.visible = action.visible;
+            else partitionData.map.layerSettings.push({ stepId: action.stepId, layerCompositeId: action.layerCompositeId, visible: action.visible });
+            // for (const setting of action.settings) {
+            //   const foundEntry = partitionData.map.layerSettings.find(entry => entry.layerCompositeId === setting.layerCompositeId);
+            //   if (foundEntry) foundEntry.visible = setting.visible;
+            //   else partitionData.map.layerSettings.push(setting);
+            // }
+          }
+        }
       }
     }
-
+    return state;
   }),
 
   immerOn(togglePartition, (state, action) => {
@@ -286,11 +294,13 @@ export const reducer = createReducer(
   immerOn(openModal, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
     partitionData.modal.args = action.args
+    return state;
   }),
 
   immerOn(closeModal, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
     partitionData.modal.args = undefined;
+    return state;
   })
 );
 

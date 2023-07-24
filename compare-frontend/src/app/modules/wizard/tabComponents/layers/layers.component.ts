@@ -19,10 +19,9 @@ export class LayersComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.data.oneLayerOnly) {
-      const nrLayerControlables = this.data.layerControlables.length;
       const nrLayersVisible = this.data.layerControlables.filter(lc => lc.visible).length;
-      if (nrLayersVisible > 1 || nrLayerControlables <= 0) {
-        const firstCompositeId = this.data.layerControlables[0]?.id;
+      if (nrLayersVisible > 1) {
+        const firstCompositeId = this.data.layerControlables[0].id;
         this.onLayerVisibilityChanged({layerCompositeId: firstCompositeId, visible: true});
       }
     }
@@ -30,7 +29,7 @@ export class LayersComponent implements AfterViewInit {
 
 
 
-  public onLayerVisibilityChanged($event: {layerCompositeId: string | undefined, visible: boolean}) {
+  public onLayerVisibilityChanged($event: {layerCompositeId: string, visible: boolean}) {
     const configs: RiesgosScenarioMapState["layerSettings"] = this.data.layerControlables.map(d => {
 
       let visible = d.visible;

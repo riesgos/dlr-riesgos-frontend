@@ -1,4 +1,4 @@
-import { filter, map, Observable, of, OperatorFunction, scan, share, switchMap, withLatestFrom } from 'rxjs';
+import { combineLatest, filter, map, Observable, of, OperatorFunction, scan, share, switchMap, withLatestFrom } from 'rxjs';
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
@@ -99,9 +99,10 @@ export class WizardService {
 
         const mapState$ = this.mapService.getMapState(scenario, partition);
 
-        const wizardState$ = resolvedData$.pipe(
-            withLatestFrom(changedState$, mapState$),
-            map(([resolvedData, state, mapState]) => {
+
+        const wizardState$ = combineLatest([resolvedData$, mapState$]).pipe(
+            withLatestFrom(changedState$),
+            map(([[resolvedData, mapState], state]) => {
                 const stepData: WizardComposite[] = [];
 
                 const autoPilotables = state.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));

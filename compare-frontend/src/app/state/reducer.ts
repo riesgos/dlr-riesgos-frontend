@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, getMapPositionForStep } from './helpers';
 import { getRules } from './rules';
@@ -288,6 +288,21 @@ export const reducer = createReducer(
     return state;
   }),
 
+  immerOn(toggleWizard, (state, action) => {
+    const rules = getRules(state.rules);
+
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partition, partitionData] of Object.entries(scenarioData)) {
+          if (partition === action.partition || rules.mirrorWizard) {
+            partitionData.controlExpanded = action.expand;
+          }
+        }
+      }
+    }
+    return state;
+  }),
+
   immerOn(openModal, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
     partitionData.modal.args = action.args
@@ -371,7 +386,8 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
         steps: newSteps,
         modal: {
           args: undefined,
-        }
+        },
+        controlExpanded: true
       };
       
       const newPartitionData: RiesgosScenarioState = {

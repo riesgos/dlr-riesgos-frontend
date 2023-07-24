@@ -29,6 +29,7 @@ export interface WizardComposite {
 
 export interface WizardState {
     stepData: WizardComposite[],
+    wizardExpanded: boolean
 }
 
 @Injectable()
@@ -77,6 +78,7 @@ export class WizardService {
                 if (last === undefined) return true;
                 if (!current.active) return false;
                 if (last.active !== current.active) return true;
+                if (last.controlExpanded !== current.controlExpanded) return true;
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
@@ -127,7 +129,7 @@ export class WizardService {
                     stepData.push(stepDatum);
                 }
 
-                return { stepData: stepData };
+                return { stepData: stepData, wizardExpanded: state.controlExpanded };
             })
         );
 

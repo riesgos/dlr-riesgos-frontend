@@ -103,7 +103,8 @@ export interface RiesgosScenarioState {
     active: boolean,
     map: RiesgosScenarioMapState,
     focus: FocusState,
-    modal: ModalState
+    modal: ModalState,
+    controlExpanded: boolean
 }
 
 

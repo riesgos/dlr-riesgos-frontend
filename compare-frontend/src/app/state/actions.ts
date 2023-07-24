@@ -27,6 +27,7 @@ export const mapClick = createAction('Map click', props<{ scenario: ScenarioName
 export const mapLayerVisibility = createAction('Map layer visibility', props<{ scenario: ScenarioName, partition: Partition, stepId: string, config: RiesgosScenarioMapState["layerSettings"] }>());
 
 export const togglePartition = createAction('Toggling partition', props<{ scenario: ScenarioName, partition: Partition }>());
+export const toggleWizard = createAction('Toggle wizard', props<{ scenario: ScenarioName, partition: Partition, expand: boolean }>());
 
 export const openModal = createAction('Opening modal', props<{ scenario: ScenarioName, partition: Partition, args: ModalState['args'] }>());
 export const closeModal = createAction('Closing modal', props<{ scenario: ScenarioName, partition: Partition }>());

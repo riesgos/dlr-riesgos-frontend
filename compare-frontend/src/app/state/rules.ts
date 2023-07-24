@@ -11,6 +11,7 @@ export interface Rules {
     mirrorData: boolean,
     mirrorClick: (compositeId: string) => boolean,
     mirrorMove: boolean,
+    mirrorWizard: boolean,
     autoPilot: (stepId: string) => boolean,
     allowConfiguration: (productId: string) => boolean,
     modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) => ModalState
@@ -26,6 +27,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         mirrorData: false,
         mirrorClick: (compositeId: string) => compositeId !== 'userChoiceLayer',
         mirrorMove: true,
+        mirrorWizard: true,
         autoPilot: (stepId: string) => stepId !== "selectEq",
         allowConfiguration: () => true,
         modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) =>  ({ args: undefined })

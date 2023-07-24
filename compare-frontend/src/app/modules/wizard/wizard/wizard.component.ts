@@ -4,6 +4,8 @@ import { Partition, ScenarioName } from 'src/app/state/state';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 
 import { WizardComposite, WizardService, WizardState } from '../wizard.service';
+import { Store } from '@ngrx/store';
+import { toggleWizard } from 'src/app/state/actions';
 
 @Component({
   selector: 'app-wizard',
@@ -19,14 +21,11 @@ export class WizardComponent implements OnInit {
 
   constructor(
     private wizardSvc: WizardService,
-    // private cd: ChangeDetectorRef
+    private store: Store
   ) {}
 
   ngOnInit(): void {
     this.state$ = this.wizardSvc.getWizardState(this.scenario, this.partition);
-    // .pipe(tap(() => {
-    //   if (environment.type === "prod") setTimeout(() => this.cd.detectChanges(), 1);
-    // }))
   }
 
   public toggleFocus() {
@@ -36,5 +35,13 @@ export class WizardComponent implements OnInit {
   public trackByFn(index: number, item: WizardComposite) {
     const key = `${item.step.step.id}-${item.step.state.type}-${JSON.stringify(item.inputs)}`;
     return key;
+  }
+
+  public expandWizard() {
+    this.store.dispatch(toggleWizard({ scenario: this.scenario, partition: this.partition, expand: true }));
+  }
+
+  public hideWizard() {
+    this.store.dispatch(toggleWizard({ scenario: this.scenario, partition: this.partition, expand: false }));
   }
 }

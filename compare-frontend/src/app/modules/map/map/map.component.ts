@@ -242,8 +242,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           const view = this.map.getView();
           const url = source.getFeatureInfoUrl(location, view.getResolution() || 10_000, view.getProjection(), { 'INFO_FORMAT': 'application/json' });
           if (url) {
-            const result = await firstValueFrom(this.http.get(url));
-            if (result) {
+            const result = await firstValueFrom<any>(this.http.get(url));
+            if (result && result.features && result.features.length > 0) {
               const resultFeatures = new GeoJSON().readFeatures(result);
               clickedFeature = resultFeatures[0];
               compositeId = layer.get("compositeId");

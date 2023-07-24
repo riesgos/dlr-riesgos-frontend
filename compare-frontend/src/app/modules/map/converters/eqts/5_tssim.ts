@@ -5,6 +5,9 @@ import TileLayer from "ol/layer/Tile";
 import { TileWMS } from "ol/source";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { toDecimalPlaces } from "src/app/helpers/colorhelpers";
+import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
+import { createTableHtml } from "src/app/helpers/others";
 
 
 @Injectable()
@@ -38,7 +41,17 @@ export class TsSim implements Converter {
             }),
             onClick: (location, features) => undefined,
             onHover: (location, features) => undefined,
-            popup: (location, features) => undefined,
+            popup: (location, features) => {
+                const props = features[0].getProperties();
+                const entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} g`;
+                return {
+                    component: StringPopupComponent,
+                    args: {
+                        title: `mwh`,
+                        body: createTableHtml([[entry]])
+                    }  
+                };
+            },
             opacity: 1.0,
             visible: true
         }, {
@@ -54,7 +67,17 @@ export class TsSim implements Converter {
             }),
             onClick: (location, features) => undefined,
             onHover: (location, features) => undefined,
-            popup: (location, features) => undefined,
+            popup: (location, features) => {
+                const props = features[0].getProperties();
+                const entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} g`;
+                return {
+                    component: StringPopupComponent,
+                    args: {
+                        title: `mwhLand_local`,
+                        body: createTableHtml([[entry]])
+                    }  
+                };
+            },
             opacity: 1.0,
             visible: true
         }, {

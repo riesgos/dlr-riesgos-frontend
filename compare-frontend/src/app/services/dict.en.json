@@ -1,5 +1,6 @@
 {
     "eqSelectLabel": "Earthquake (magnitude, depth)",
+    "selectedEqLayer": "Selected parameters",
     "Impressum": "Imprint",
     "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015",
     "acceleration": "Acceleration",

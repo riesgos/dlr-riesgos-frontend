@@ -1,5 +1,6 @@
 {
     "Made with": "Hecho con",
+    "selectedEqLayer": "Parametros elegidos",
     "eqSelectLabel": "Terremoto (magnitud, profundidad)",
     "Impressum": "Mancheta",
     "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015",
@@ -65,7 +66,7 @@
     "Code licenses": "Licencias codigo",
     "Collapsed": "Colapsado",
     "compareEqWithLeft": "Elige otro conjunto de parámetros de terremotos y compáralos con los datos del lado izquierdo.",
-    "compareIdentical": "Inspeccionar diferentes pasos de un escenario",
+    "compareIdentical": "Comparar diferentes pasos de un escenario",
     "compareIdenticalHelp": "Como el primer modo, pero mantiene una segunda ventana con los mismos datos abierta a un lado, para que pueda inspeccionar diferentes aspectos de un escenario al mismo tiempo.",
     "compareIdenticalWithLeft": "Ahora puede utilizar ambas ventanas para comparar entre sí los pasos individuales del escenario seleccionado.",
     "compareScenarios": "Comparar dos escenarios",

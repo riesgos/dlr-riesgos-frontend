@@ -36,8 +36,8 @@ export class EqSimulation implements Converter {
                 component: TranslatedImageComponent,
                 args: {
                     languageImageMap: {
-                        'EN': 'assets/images/shakemap_pga_legend_labeled.svg',
-                        'ES': 'assets/images/shakemap_pga_legend_labeled.svg'
+                        'EN': 'assets/images/shakemap_pga_legend_labeled_en.svg',
+                        'ES': 'assets/images/shakemap_pga_legend_labeled_es.svg'
                     }
                 }
             })

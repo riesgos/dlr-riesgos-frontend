@@ -36,3 +36,11 @@
     opacity: 0.5;
 }
 
+.message {
+    position: absolute;
+    background-color: var(--accent-color-800);
+    color: var(--white);
+    width: 100%;
+    padding: 0.125rem 1rem 0.125rem 1rem;
+}
+

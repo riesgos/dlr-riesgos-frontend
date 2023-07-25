@@ -121,10 +121,14 @@
         </div>
 
         <div class="scenario-footer-second">
-            <a href="mailto:riesgos@dlr.de" style="display: flex; align-items: center; color: var(--accent-color-800);">
+            <a href="mailto:riesgos@dlr.de" style="display: flex; align-items: center; color: var(--accent-color-800); padding-left: 1rem; padding-right: 1rem;">
               <app-svg [path]="'assets/icons/envelope2.svg'" style="display: inline-block; width: 15px; height: 15px; background-color: var(--accent-color-800); margin-right: 0.25rem;"></app-svg>
-              riesgos@dlr.de
-            </a>  
+              {{'email' | translate}}
+            </a>
+            <a href="https://riesgos.de/es/" target="_blank" style="display: flex; align-items: center; color: var(--accent-color-800); padding-left: 1rem; padding-right: 1rem;">
+              <app-svg [path]="'assets/icons/pointerRight.svg'" style="display: inline-block; width: 15px; height: 15px; background-color: var(--accent-color-800); margin-right: 0.25rem;"></app-svg>
+              {{'website' | translate}}
+            </a>
         </div>
 
       </footer>

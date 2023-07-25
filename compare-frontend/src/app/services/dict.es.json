@@ -1,4 +1,6 @@
 {
+    "email": "Correo electrónico",
+    "website": "Página web",
     "no_residential_buildings": "Sin edificios residenciales",
     "Made with": "Hecho con",
     "selectedEqLayer": "Parametros elegidos",

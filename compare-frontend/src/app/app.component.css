@@ -41,6 +41,10 @@
     background-color: var(--accent-color-800);
     color: var(--white);
     width: 100%;
+}
+
+.message p {
     padding: 0.125rem 1rem 0.125rem 1rem;
+    margin: 0;
 }
 

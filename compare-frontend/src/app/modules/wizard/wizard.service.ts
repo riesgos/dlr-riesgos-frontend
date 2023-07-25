@@ -102,7 +102,7 @@ export class WizardService {
 
         const wizardState$ = combineLatest([resolvedData$, mapState$, changedState$]).pipe(
             map(([resolvedData, mapState, state]) => {
-                const stepData: WizardComposite[] = [];
+                const stepData: WizardComposite[] = [];  console.log(`new wizard data`)
 
                 const autoPilotables = state.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));
                 for (const step of state.steps) {

@@ -33,7 +33,7 @@ export class WizardComponent implements OnInit {
   }
 
   public trackByFn(index: number, item: WizardComposite) {
-    const key = `${item.step.step.id}-${item.step.state.type}-${JSON.stringify(item.inputs)}`;
+    const key = `${item.step.step.id}-${item.step.state.type}-${JSON.stringify(item.inputs)}-${item.layerControlables.filter(c => c.visible).length}`;
     return key;
   }
 

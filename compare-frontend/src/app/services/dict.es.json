@@ -103,6 +103,7 @@
     "damage-class": "clase de daño",
     "damage": "daño",
     "damages_calculated_from": "Daños calculado usando",
+    "DamageStatesGeneralized": "<ul> <li><b>D0</b>: Sin daño</li> <li><b>D1</b>: Daño leve</li> <li><b>D2</b>: Daño moderado</li> <li><b>D3</b>: Daño fuerte</li> <li><b>D4</b>: Daño severo</li> </ul>",
     "DamageStatesMavrouli": "<p>Clasificación según Mavrouli et al. 2014. (DOI 10.1007/s10064-014-0573-0)</p><ul><li> <b>D0</b>: Ausencia de daño</li><li> <b>D1</b>: Daño leve (no presente en este modelo)</li><li> <b>D2</b>: Daño moderado a elementos estructurales</li><li> <b>D3</b>: Daño extenso a elementos estructurales</li><li> <b>D4</b>: Colapso </li></ul>",
     "DamageStatesSara": "<ul> <li><b>D0</b>: Sin daño</li> <li><b>D1</b>: Daño leve</li> <li><b>D2</b>: Daño moderado</li> <li><b>D3</b>: Daño extenso</li> <li><b>D4</b>: Colapso</li> </ul>",
     "DamageStatesSuppasri": "<ul> <li><b>D1</b>: Daño menor</li> <li><b>D2</b>: Daño moderado</li> <li><b>D3</b>: Daño mayor</li> <li><b>D4</b>: Daño completo</li> <li><b>D5</b>: Colapso</li> <li><b>D6</b>: Devastado</li> </ul>",

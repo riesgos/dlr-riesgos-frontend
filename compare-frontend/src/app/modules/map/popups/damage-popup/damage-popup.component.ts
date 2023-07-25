@@ -4,7 +4,7 @@ import { DeusMetaData } from './deusApi';
 import { TranslationService } from 'src/app/services/translation.service';
 import { FeatureLike } from 'ol/Feature';
 import { BarDatum, createBigBarChart } from 'src/app/helpers/d3charts';
-import { yellowPurpleRange, yellowRedRange } from 'src/app/helpers/colorhelpers';
+import { exposureDamageRange, yellowPurpleRange, yellowRedRange } from 'src/app/helpers/colorhelpers';
 
 
 
@@ -37,22 +37,22 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
     data = [{
       label: 'D0',
       value: 0,
-      color: `rgb(${yellowRedRange(0, 4, 0).join(',')})`,
+      color: `rgb(${exposureDamageRange(0, 4, 0).join(',')})`,
       hoverText: ``
     }, {
       label: 'D1',
       value: 0,
-      color: `rgb(${yellowRedRange(0, 4, 1).join(',')})`,
+      color: `rgb(${exposureDamageRange(0, 4, 1).join(',')})`,
       hoverText: ``
     }, {
       label: 'D2',
       value: 0,
-      color: `rgb(${yellowRedRange(0, 4, 2).join(',')})`,
+      color: `rgb(${exposureDamageRange(0, 4, 2).join(',')})`,
       hoverText: ``
     }, {
       label: 'D3',
       value: 0,
-      color: `rgb(${yellowRedRange(0, 4, 3).join(',')})`,
+      color: `rgb(${exposureDamageRange(0, 4, 3).join(',')})`,
       hoverText: ``
     }, {
       label: 'D4',

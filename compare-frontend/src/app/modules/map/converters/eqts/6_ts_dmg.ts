@@ -58,7 +58,7 @@ export class TSDmg implements Converter {
                             yLabel: 'Nr_buildings',
                             schema: 'SARA_v1.0',
                             heading: 'damage_classification_tsunami',
-                            additionalText: schema === "Medina_2019" ? "DamageStatesSara" : "DamageStatesSuppasri"
+                            additionalText: "DamageStatesGeneralized"
                         }
                     };
                 }

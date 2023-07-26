@@ -35,11 +35,11 @@ body {
     --gray-600:  #a3a5a6;
     --gray-1000: #858787;
     --gray-1200: #3d3d3d;
-    --accent-color-100:  #e0eaf8;
-    --accent-color-200:  #8da8e4;
-    --accent-color-800:  #6d82b0;
-    --accent-color-1200: #485064;
-    --accent-color-1400: #080b13;
+    --accent-color-100:  #e0eef8;
+    --accent-color-200:  #5aa4d9;
+    --accent-color-800:  #467aaa;
+    --accent-color-1200: #2a465c;
+    --accent-color-1400: #070e16;
     margin: 0px;
     font-family: Nunito, Arial, Helvetica, sans-serif;
     box-sizing: border-box;
@@ -81,6 +81,18 @@ button:hover {
 button:focus {
     background-color: var(--accent-color-1200);
 }
+
+button.clearButton {
+    color: var(--accent-color-800);
+    background: none;
+    outline: 1px solid var(--accent-color-800);
+}
+button.clearButton:hover {
+    background: var(--accent-color-100);
+    outline: 1px solid var(--accent-color-1200);
+}
+
+
 
 select {
     border: none;

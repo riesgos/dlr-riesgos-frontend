@@ -18,6 +18,7 @@ export const stepExecStart = createAction('Step exec start', props<{ scenario: S
 export const stepExecSuccess = createAction('Step exec success', props<{ scenario: ScenarioName, partition: Partition, step: string, newData: RiesgosProduct[] }>());
 export const stepExecFailure = createAction('Step exec failure', props<{ scenario: ScenarioName, partition: Partition, step: string, error: any }>());
 export const stepReset = createAction('Step reset', props<{ scenario: ScenarioName, partition: Partition, stepId: string }>());
+export const stepResetAll = createAction('Step reset', props<{ scenario: ScenarioName, partition: Partition }>());
 
 export const autoPilotEnqueue = createAction('Auto-pilot: enqueing', props<{ scenario: ScenarioName, partition: Partition }>());
 export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ scenario: ScenarioName, partition: Partition, step: string }>());
@@ -31,3 +32,6 @@ export const toggleWizard = createAction('Toggle wizard', props<{ scenario: Scen
 
 export const openModal = createAction('Opening modal', props<{ scenario: ScenarioName, partition: Partition, args: ModalState['args'] }>());
 export const closeModal = createAction('Closing modal', props<{ scenario: ScenarioName, partition: Partition }>());
+
+export const setZoomToStep = createAction('Setting zoom-to-step behaviour', props<{ scenario: ScenarioName; partition: Partition; zoomToStep: boolean; }>());
+

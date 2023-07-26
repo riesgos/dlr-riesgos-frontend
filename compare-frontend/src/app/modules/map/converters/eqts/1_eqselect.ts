@@ -66,7 +66,7 @@ export class EqSelection implements Converter {
             
                         let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
                         const [r, g, b] = yellowRedRange(100, 0, depth);
-                        const alpha = selected ? 1.0 : 0.5;
+                        const alpha = selected ? 0.8 : 0.5;
             
                         return new Style({
                             image: new Circle({
@@ -75,7 +75,8 @@ export class EqSelection implements Converter {
                                     color: [r, g, b, alpha]
                                 }),
                                 stroke: new Stroke({
-                                    color: [r, g, b, 1]
+                                    color: [r, g, b, 1],
+                                    width: selected ? 2 : 1
                                 })
                             }),
                         });
@@ -91,13 +92,13 @@ export class EqSelection implements Converter {
                         if (features.length === 0) return undefined;
                         const props = features[0].getProperties();
                         const tableFields: any = {};
-                        tableFields[_trslt.translate("Magnitude")] = props["magnitude.mag.value"];
+                        tableFields[_trslt.translate("Magnitude")] = "Mw " + props["magnitude.mag.value"];
                         tableFields[_trslt.translate("Depth")] = props["origin.depth.value"] + " km";
                         const popupBody = createKeyValueTableHtml(tableFields, "medium");
                         return {
                             component: StringPopupComponent,
                             args: {
-                              "title": "AvailableEqs",
+                              "title": "Earthquake",
                               "subTitle": "",
                               "body": popupBody
                             }  
@@ -158,7 +159,7 @@ export class EqSelection implements Converter {
                         if (features.length === 0) return undefined;
                         const props = features[0].getProperties();
                         const tableFields: any = {};
-                        tableFields[_trslt.translate("Magnitude")] = props["magnitude.mag.value"];
+                        tableFields[_trslt.translate("Magnitude")] = "Mw " + props["magnitude.mag.value"];
                         tableFields[_trslt.translate("Depth")] = props["origin.depth.value"] + " km";
                         const popupBody = createKeyValueTableHtml(tableFields, "medium");
                         return {

@@ -15,3 +15,12 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+
+.wizard-settings {
+    display: flex;
+    flex-direction: row;
+    margin: 0.5rem;
+    align-items: center;
+    justify-content: space-evenly;
+}

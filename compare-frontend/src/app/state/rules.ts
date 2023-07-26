@@ -12,6 +12,7 @@ export interface Rules {
     mirrorClick: (compositeId: string) => boolean,
     mirrorMove: boolean,
     mirrorWizard: boolean,
+    mirrorReset: boolean,
     autoPilot: (stepId: string) => boolean,
     allowConfiguration: (productId: string) => boolean,
     modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) => ModalState
@@ -27,7 +28,8 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         mirrorData: false,
         mirrorClick: (compositeId: string) => compositeId !== 'userChoiceLayer',
         mirrorMove: true,
-        mirrorWizard: true,
+        mirrorWizard: false,
+        mirrorReset: false,
         autoPilot: (stepId: string) => stepId !== "selectEq",
         allowConfiguration: () => true,
         modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) =>  ({ args: undefined })
@@ -44,7 +46,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         case 'compareScenarios':
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
-                    if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
+                    if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
                 if (partition === "middle") {
                     if (allStepsCompleted(state, scenario, "left") && noStepsStarted(state, scenario, "right")) return { args: {title: "startRight", subtitle: "", body: "compareEqWithLeft", closable: true} };
@@ -59,7 +61,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
-                    if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "awaitingCompletion", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
+                    if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
                 if (partition === "middle") {
                     if (allStepsCompleted(state, scenario, "left")) return { args: {title: "windowAvailable", subtitle: "", body: "compareIdenticalWithLeft", closable: true} };

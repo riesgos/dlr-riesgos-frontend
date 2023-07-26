@@ -35,7 +35,7 @@ export class InfoComponent {
         const id = data["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
         const depth = data["properties"]["origin.depth.value"];
         const mag = data["properties"]["magnitude.mag.value"];
-        return `Mag. ${mag}, ${depth}km (${id})`;
+        return `Mw ${mag}, ${depth}km (${id})`;
       }),
 
       // // for some weird reason title is not being updated in compiled version

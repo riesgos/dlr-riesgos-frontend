@@ -24,12 +24,13 @@ export interface WizardComposite {
     hasFocus: boolean,
     isAutoPiloted?: boolean,
     layerControlables: LayerComposite[],
-    oneLayerOnly: boolean
+    oneLayerOnly: boolean,
 }
 
 export interface WizardState {
     stepData: WizardComposite[],
-    wizardExpanded: boolean
+    wizardExpanded: boolean,
+    zoomingToSelectedStep: boolean,
 }
 
 @Injectable()
@@ -79,6 +80,7 @@ export class WizardService {
                 if (!current.active) return false;
                 if (last.active !== current.active) return true;
                 if (last.controlExpanded !== current.controlExpanded) return true;
+                if (last.zoomToSelectedStep !== current.zoomToSelectedStep) return true;
                 if (!maybeArraysEqual(last.focus.focusedSteps, current.focus.focusedSteps)) return true;
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
@@ -129,7 +131,7 @@ export class WizardService {
                     stepData.push(stepDatum);
                 }
 
-                return { stepData: stepData, wizardExpanded: state.controlExpanded };
+                return { stepData: stepData, wizardExpanded: state.controlExpanded, zoomingToSelectedStep: state.zoomToSelectedStep };
             })
         );
 

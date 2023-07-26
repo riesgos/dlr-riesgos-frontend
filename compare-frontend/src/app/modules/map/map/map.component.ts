@@ -12,6 +12,8 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { maybeArraysEqual } from 'src/app/state/helpers';
 import { FeatureLike } from 'ol/Feature';
 import { TileWMS, VectorTile, XYZ } from 'ol/source';
+// import Attribution from 'ol/control/Attribution';
+import {defaults} from 'ol/control';
 import { HttpClient } from '@angular/common/http';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { applyStyle } from 'ol-mapbox-style';
@@ -57,7 +59,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           center: [0, 0],
           zoom: 0
         }),
-        controls: [],
+        controls: defaults({ attribution: true, rotate: false, zoom: false }),
         overlays: [this.overlay]
       });
   }

@@ -28,9 +28,9 @@
      inkscape:zoom="3.6233469"
      inkscape:cx="55.887555"
      inkscape:cy="68.031024"
-     inkscape:window-width="1920"
+     inkscape:window-width="1872"
      inkscape:window-height="1136"
-     inkscape:window-x="0"
+     inkscape:window-x="1920"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
@@ -42,7 +42,7 @@
      id="layer1">
     <g
        id="g4373"
-       transform="translate(0.31933593,0.54597118)">
+       transform="matrix(0.84133919,0,0,0.84133919,2.36762,2.5582972)">
       <rect
          style="fill:#ececec;stroke:#3c3c3c;stroke-width:0.264583;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.9;stroke-opacity:1"
          id="rect870"

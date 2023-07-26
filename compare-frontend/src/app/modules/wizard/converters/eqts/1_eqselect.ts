@@ -23,7 +23,7 @@ export class EqSelection implements Converter {
             const id = eq["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
             const mag = eq["properties"]["magnitude.mag.value"];
             const depth = eq["properties"]["origin.depth.value"];
-            return `Mag. ${mag}, ${depth}km (${id})`;
+            return `Mw ${mag}, ${depth}km (${id})`;
         }
 
         const options = Object.fromEntries(inputProd.options!.map(v => [eqToLabel(v), v]));
@@ -68,16 +68,16 @@ export class EqSelection implements Converter {
                         args: {
                             title: 'Magnitude',
                             entries: [{
-                                label: 'Mag. 6.0',
+                                label: 'Mw 6.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 6.0),
                             }, {
-                                label: 'Mag. 7.0',
+                                label: 'Mw 7.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 7.0),
                             }, {
-                                label: 'Mag. 8.0',
+                                label: 'Mw 8.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 8.0),
                             }, {
-                                label: 'Mag. 9.0',
+                                label: 'Mw 9.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 9.0),
                             }],
                             height: 100,

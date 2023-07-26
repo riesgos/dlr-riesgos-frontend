@@ -104,7 +104,8 @@ export interface RiesgosScenarioState {
     map: RiesgosScenarioMapState,
     focus: FocusState,
     modal: ModalState,
-    controlExpanded: boolean
+    controlExpanded: boolean,
+    zoomToSelectedStep: boolean
 }
 
 

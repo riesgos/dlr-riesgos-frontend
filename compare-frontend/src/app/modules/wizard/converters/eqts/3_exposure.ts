@@ -2,6 +2,7 @@ import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved } from "src/
 import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
 import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
+import { TextComponent } from "../../tabComponents/legends/text/text.component";
 
 
 export class Exposure implements Converter {
@@ -26,19 +27,10 @@ export class Exposure implements Converter {
                 currentValue: currentValue
             }],
             step: step,
-            legend: () => ({
-                component: LegendComponent,
+            info: () => ({
+                component: TextComponent,
                 args: {
-                    text: 'exposureLegend',
-                    entries: [{
-                    text: 'Exposure',
-                    color: '#fdfdfd'
-                    }, {
-                    text: 'NoData',
-                    color: '#c1c1c1'
-                    }],
-                    height: 50,
-                    width: 130
+                    body: 'exposureLegend',
                 }
             }),
         }

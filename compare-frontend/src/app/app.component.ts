@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { RiesgosState } from './state/state';
 import { Observable, map } from 'rxjs';
 import { RuleSetName } from './state/rules';
-import { movingBackToMenu } from './state/actions';
+import { movingBackToMenu } from './state/actions'; import GeoJSON from 'ol/format/GeoJSON';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +12,6 @@ import { movingBackToMenu } from './state/actions';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-
 
   public ruleSet$: Observable<RuleSetName | 'none'>;
   

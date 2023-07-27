@@ -1,6 +1,6 @@
 <div class="layers">
      <app-layer 
-        *ngFor="let output of data.layerControlables"
+        *ngFor="let output of data.layerControlables.slice().reverse()"
         [scenario]="scenario"
         [partition]="partition"
         [stepId]="output.stepId"

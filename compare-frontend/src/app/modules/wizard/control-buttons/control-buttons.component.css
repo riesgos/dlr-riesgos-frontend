@@ -1,0 +1,12 @@
+
+.wizard-settings {
+    display: flex;
+    flex-direction: row;
+    margin: 0.5rem;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.clearButton {
+    height: 1.5rem;
+}

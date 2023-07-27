@@ -79,7 +79,7 @@ export function yellowRedRange(startVal: number, endVal: number, currentVal: num
 
 export function exposureDamageRange(startVal: number, endVal: number, currentVal: number): [number, number, number] {
   const degree = fraction(currentVal, startVal, endVal);
-  const rgb = scaleInterpolation(exposureDamageScale, degree);
+  const rgb = scaleInterpolation(exposureDamageScale, degree, false);
   return rgb;
 }
 
@@ -89,10 +89,10 @@ export interface Scale {
 
 export const exposureDamageScale: Scale = {
   0.0: [125, 125, 125],
-  0.24: [236, 234, 197],
-  0.49: [218, 179, 155],
-  0.74: [195, 139, 136],
-  0.99: [163, 125, 137]
+  0.25: [236, 234, 197],
+  0.5: [218, 179, 155],
+  0.75: [195, 139, 136],
+  1.0: [163, 125, 137]
 };
 
 export const yellowRedScale: Scale = {

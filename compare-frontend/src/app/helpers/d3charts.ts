@@ -28,7 +28,7 @@ export function createBigBarChart(
         }
         const barNames = data.map(d => d.label);
   
-        const margin = { top: 10, right: 10, bottom: 20, left: 20 };
+        const margin = { top: 10, right: 10, bottom: 30, left: 40 };
         const width = widthTotal - margin.left - margin.right;
         const height = heightTotal - margin.top - margin.bottom;
         
@@ -44,7 +44,7 @@ export function createBigBarChart(
         const xLabelContainer = svg.append('text')
             .attr('class', 'xLabel')
             .style('text-anchor', 'middle')
-            .attr('transform', `translate(${widthTotal / 2}, ${heightTotal - margin.bottom / 2})`)
+            .attr('transform', `translate(${widthTotal / 2}, ${heightTotal - margin.bottom / 4})`)
             .text(xLabel);
         
         // y-label

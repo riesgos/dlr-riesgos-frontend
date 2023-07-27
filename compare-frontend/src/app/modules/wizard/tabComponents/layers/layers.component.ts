@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Partition, RiesgosScenarioMapState, RiesgosState, ScenarioName } from 'src/app/state/state';
 import { WizardComposite } from '../../wizard.service';
 import { Store } from '@ngrx/store';
@@ -9,13 +9,16 @@ import { mapLayerVisibility } from 'src/app/state/actions';
   templateUrl: './layers.component.html',
   styleUrls: ['./layers.component.css']
 })
-export class LayersComponent implements AfterViewInit {
+export class LayersComponent implements AfterViewInit, OnInit {
 
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
   @Input() data!: WizardComposite;
 
   constructor(private store: Store<{riesgos: RiesgosState}>) {}
+
+  ngOnInit(): void {
+  }
 
   ngAfterViewInit(): void {
     if (this.data.oneLayerOnly) {

@@ -25,14 +25,14 @@ export class SysRel implements Converter {
                     component: LegendComponent,
                     args: {
                         entries: [{
-                            text: 'Prob. 0.1',
-                            color: '#96fd7d'
+                            text: 'Prob. 0.0',
+                            color: '#00ff00'
                           }, {
                             text: 'Prob. 0.5',
                             color: '#fdfd7d'
                           }, {
-                            text: 'Prob. 0.9',
-                            color: '#fd967d'
+                            text: 'Prob. 1.0',
+                            color: '#ff0000'
                         }],
                         continuous: true,
                         height: 90

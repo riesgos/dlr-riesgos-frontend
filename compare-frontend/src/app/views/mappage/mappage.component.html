@@ -7,12 +7,11 @@
 <ng-template #oneMap>
     <div *ngIf="scenario$ | async as scenario" class="page">
         <ng-container *ngIf="focus$ | async as focus">
-            <!-- <ng-container *ngIf="modals$ | async as modals"> -->
                 <div class="maps">
                     <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
                 </div>
-                <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
-            <!-- </ng-container> -->
+                <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
+                <app-control-buttons [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-control-buttons box left"></app-control-buttons>
         </ng-container>
     </div>
 </ng-template>
@@ -28,8 +27,10 @@
                     <app-map *ngIf="focus.right"                [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
                 </div>
 
-                <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
-                <app-wizard [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
+                <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
+                <app-control-buttons [scenario]="scenario" [partition]="'left'"  [focus]="focus.left" class="page-control-buttons box left"></app-control-buttons>
+                <app-wizard          [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
+                <app-control-buttons [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-control-buttons box right"></app-control-buttons>
                 
 
                 <div *ngIf="modals['left'].args" class="modal left">

@@ -17,7 +17,6 @@ type knownSchemas = 'SARA_v1.0' | 'SUPPASRI2013_v2.0' | 'Medina_2019';
 })
 export class DamagePopupComponent implements OnInit, AfterViewInit {
 
-  @Input() metaData!: DeusMetaData;
   @Input() feature!: FeatureLike;
   @Input() schema!: knownSchemas;
   @Input() additionalText?: string;
@@ -57,7 +56,7 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
     }, {
       label: 'D4',
       value: 0,
-      color: `rgb(${yellowRedRange(0, 4, 4).join(',')})`,
+      color: `rgb(${exposureDamageRange(0, 4, 4).join(',')})`,
       hoverText: ``
     }];
 
@@ -76,7 +75,7 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
 
     let countTotal = 0;
     for (const datum of data) {
-      datum.hoverText = "" + datum.value.toFixed(2) + " edificios";
+      datum.hoverText = "" + Math.round(datum.value) + " edificios";
       countTotal += datum.value;
     }
 

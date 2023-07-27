@@ -18,7 +18,6 @@ export class WizardComponent implements OnInit {
   @Input() partition!: Partition;
   @Input() focus!: boolean;
   public state$!: Observable<WizardState>;
-  public zoomingToStep = false;
 
   constructor(
     private wizardSvc: WizardService,
@@ -26,7 +25,7 @@ export class WizardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.state$ = this.wizardSvc.getWizardState(this.scenario, this.partition).pipe(tap(v => this.zoomingToStep = v.zoomingToSelectedStep));
+    this.state$ = this.wizardSvc.getWizardState(this.scenario, this.partition);
   }
 
   public toggleFocus() {
@@ -46,12 +45,4 @@ export class WizardComponent implements OnInit {
     this.store.dispatch(Actions.toggleWizard({ scenario: this.scenario, partition: this.partition, expand: false }));
   }
 
-  public refreshClicked() {
-    this.store.dispatch(Actions.stepResetAll({scenario: this.scenario, partition: this.partition}));
-  }
-
-  public zoomClicked(evt: Event) {
-    evt.preventDefault();
-    this.store.dispatch(Actions.setZoomToStep({scenario: this.scenario, partition: this.partition, zoomToStep: !this.zoomingToStep}));
-  }
 }

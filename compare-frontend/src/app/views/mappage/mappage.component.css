@@ -36,6 +36,28 @@
 
 
 
+
+.page-control-buttons {
+    padding: 0.125rem;
+    width: 225px;
+
+    position: absolute;
+    bottom: 1rem;
+}
+
+.page-control-buttons.left {
+    left: 1rem;
+}
+
+.page-control-buttons.right {
+    right: 1rem;
+}
+
+
+
+
+
+
 .modal.left {
     position: absolute;
     top: 0px;

@@ -59,6 +59,8 @@ import { MappageComponent } from './views/mappage/mappage.component';
 import { ModalComponent } from './views/mappage/modal/modal.component';
 import { StartpageComponent } from './views/startpage/startpage.component';
 import { ImageLegendComponent } from './modules/wizard/tabComponents/legends/image-legend/image-legend.component';
+import { TextComponent } from './modules/wizard/tabComponents/legends/text/text.component';
+import { ControlButtonsComponent } from './modules/wizard/control-buttons/control-buttons.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +91,9 @@ import { ImageLegendComponent } from './modules/wizard/tabComponents/legends/ima
     LayerComponent,
     TranslatedImageComponent,
     InfoComponent,
-    ImageLegendComponent
+    ImageLegendComponent,
+    TextComponent,
+    ControlButtonsComponent
   ],
   imports: [
     BrowserModule,

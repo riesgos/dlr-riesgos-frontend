@@ -10,6 +10,7 @@ import Stroke from "ol/style/Stroke";
 import { FeatureLike } from "ol/Feature";
 import { BarchartComponent } from "../../popups/barchart/barchart.component";
 import { BarDatum } from "src/app/helpers/d3charts";
+import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
 
 
 export class Exposure implements Converter {
@@ -85,6 +86,15 @@ export class Exposure implements Converter {
                     } else {
                         const datum = data.find(dp => dp.label === tax);
                         if (datum) datum.value += bld;
+                    }
+                }
+
+                if (data.length >= 0) {
+                    return {
+                        component: StringPopupComponent,
+                        args: {
+                            body: 'no_residential_buildings'
+                        }
                     }
                 }
 

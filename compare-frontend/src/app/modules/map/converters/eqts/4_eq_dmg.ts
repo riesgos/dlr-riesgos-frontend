@@ -52,7 +52,7 @@ export class EqDmg implements Converter {
                         args: {
                             feature: features[0],
                             metaData: summaryProduct.value,
-                            xLabel: 'damage',
+                            xLabel: 'Damage',
                             yLabel: 'Nr_buildings',
                             schema: 'SARA_v1.0',
                             heading: 'earthquake_damage_classification',
@@ -82,10 +82,12 @@ export class EqDmg implements Converter {
             onHover: (location, features) => undefined,
             popup: (location, features) => {
 
-                let loss = 'no_data';
+                let loss = 'no_residential_buildings';
                 if (features.length > 0) {
                     const props = features[0].getProperties();
-                    loss = +(props['cum_loss'] / 1_000_000).toFixed(3) + 'MUSD';
+                    if (props["buildings"] && props["buildings"] > 0) {
+                        loss = +(props['cum_loss'] / 1_000_000).toFixed(3) + ' MUSD';
+                    }
                 }
 
                 return {

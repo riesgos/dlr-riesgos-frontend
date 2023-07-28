@@ -96,7 +96,7 @@ export class TSDmg implements Converter {
                     component: StringPopupComponent,
                     args: {
                         title: "ts-economic-loss-title",
-                        body: createTableHtml([[loss]])
+                        body: loss
                     }
                 };
             },

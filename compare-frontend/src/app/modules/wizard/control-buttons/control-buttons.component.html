@@ -5,12 +5,12 @@
         <app-svg [path]="'assets/icons/refresh.svg'" style="display: inline-block; background-color: var(--accent-color-800); width:15px; height: 15px; padding-left: 0.25rem;"></app-svg>
     </button>
     <button (click)="zoomClicked($event)" class="clearButton" style="display: flex; font-size: small; flex-direction: row; align-items: center; justify-content: center;">
-        {{ 'AdjustExtent' | translate }}
+        {{ 'FixedExtent' | translate }}
         <ng-container *ngIf="zoomingToStep$ | async; else crossedOutBlock">
-            <div style="padding-left: 0.25rem;">&check;</div>
+            <div style="padding-left: 0.25rem;">&cross;</div>
         </ng-container>
         <ng-template #crossedOutBlock>
-            <div style="padding-left: 0.25rem;">&cross;</div>
+            <div style="padding-left: 0.25rem;">&check;</div>
         </ng-template>
     </button>
 </div>

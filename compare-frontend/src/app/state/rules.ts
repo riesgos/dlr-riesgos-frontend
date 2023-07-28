@@ -58,6 +58,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.focusFirstStepImmediately = true;
             rules.mirrorData = true;
             rules.mirrorFocus = false;
+            rules.mirrorMove = false;
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {

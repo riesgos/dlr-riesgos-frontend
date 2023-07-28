@@ -89,7 +89,7 @@ export class Exposure implements Converter {
                     }
                 }
 
-                if (data.length >= 0) {
+                if (data.length <= 0) {
                     return {
                         component: StringPopupComponent,
                         args: {

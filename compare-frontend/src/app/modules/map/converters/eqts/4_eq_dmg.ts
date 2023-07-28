@@ -94,7 +94,7 @@ export class EqDmg implements Converter {
                     component: StringPopupComponent,
                     args: {
                         title: "eq-economic-loss-title",
-                        body: createTableHtml([[loss]])
+                        body: loss
                     }
                 };
             },

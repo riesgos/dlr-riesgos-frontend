@@ -94,7 +94,7 @@ export function createBigBarChart(
         const minVal = data.reduce((c, v) => Math.min(c, v.value), Infinity);
         const maxVal = data.reduce((c, v) => Math.max(c, v.value), -Infinity);
         const padding = 0.1 * (maxVal - minVal);
-        const startVal = minVal === 0.0 ? minVal : minVal - padding;
+        const startVal = minVal >= 0.0 ? 0 : minVal - padding;
         const endVal = maxVal + padding;
         const yScale = scaleLinear()
             .domain([startVal, endVal])

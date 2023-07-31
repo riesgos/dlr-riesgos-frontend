@@ -106,7 +106,8 @@ export class Exposure implements Converter {
                         height: 300,
                         xLabel: `Taxonomy`,
                         yLabel: `Buildings`,
-                        title: `Exposure`
+                        title: `Exposure`,
+                        smallPrint: `popupHoverForInfo`
                     }
                 }
              }

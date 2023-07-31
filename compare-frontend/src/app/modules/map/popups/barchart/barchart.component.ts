@@ -15,6 +15,7 @@ export class BarchartComponent implements OnInit, AfterViewInit {
   @Input() title = '';
   @Input() xLabel = 'xLabel';
   @Input() yLabel = 'yLabel';
+  @Input() smallPrint = '';
   @Input() noData = 'NoData';
   @ViewChild('container') container!: ElementRef<HTMLDivElement>;
 

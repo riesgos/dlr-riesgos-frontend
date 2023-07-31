@@ -48,11 +48,15 @@
 .page-control-buttons.left {
     left: 1rem;
 }
-
 .page-control-buttons.right {
     right: 1rem;
 }
-
+.page-control-buttons.left-middle {
+    right: calc(50% + 1rem);
+}
+.page-control-buttons.right-middle {
+    left: calc(50% + 1rem);
+}
 
 
 

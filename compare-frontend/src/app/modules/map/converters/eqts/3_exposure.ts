@@ -11,9 +11,14 @@ import { FeatureLike } from "ol/Feature";
 import { BarchartComponent } from "../../popups/barchart/barchart.component";
 import { BarDatum } from "src/app/helpers/d3charts";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
+import { TranslationService } from "src/app/services/translation.service";
+import { Injectable } from "@angular/core";
 
 
+@Injectable()
 export class Exposure implements Converter {
+
+    constructor(private translator: TranslationService) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
         return step === "Exposure";
@@ -98,16 +103,22 @@ export class Exposure implements Converter {
                     }
                 }
 
+                // return {
+                //     component: BarchartComponent,
+                //     args: {
+                //         data: data,
+                //         width: 350,
+                //         height: 300,
+                //         xLabel: `Taxonomy`,
+                //         yLabel: `Buildings`,
+                //         title: `Exposure`,
+                //         smallPrint: `popupHoverForInfo`
+                //     }
+                // }
                 return {
-                    component: BarchartComponent,
+                    component: StringPopupComponent,
                     args: {
-                        data: data,
-                        width: 350,
-                        height: 300,
-                        xLabel: `Taxonomy`,
-                        yLabel: `Buildings`,
-                        title: `Exposure`,
-                        smallPrint: `popupHoverForInfo`
+                        body: this.translator.translate('Buildings') + `: ` + Math.round(data.reduce((last, curr) => curr.value + last, 0))
                     }
                 }
              }

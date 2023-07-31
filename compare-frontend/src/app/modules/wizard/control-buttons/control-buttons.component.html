@@ -1,6 +1,6 @@
 
 <div class="wizard-settings">
-    <button (click)="refreshClicked()" [tooltip]="'Danger!'" class="clearButton" style="display: flex; font-size: small; flex-direction: row; align-items: center; justify-content: center;">
+    <button (click)="refreshClicked()" [tooltip]="'Danger!' | translate" class="clearButton" style="display: flex; font-size: small; flex-direction: row; align-items: center; justify-content: center;">
         {{ 'Reset' | translate }}
         <app-svg [path]="'assets/icons/refresh.svg'" style="display: inline-block; background-color: var(--accent-color-800); width:15px; height: 15px; padding-left: 0.25rem;"></app-svg>
     </button>

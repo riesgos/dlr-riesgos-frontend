@@ -34,8 +34,7 @@ export class TooltipDirective {
   private setTooltipComponentProperties() {
     if (this.componentRef !== null) {
       this.componentRef.instance.tooltip = this.tooltip;
-      const {left, right, bottom} = 		  	
-            this.elementRef.nativeElement.getBoundingClientRect();
+      const {left, right, bottom} = this.elementRef.nativeElement.getBoundingClientRect();
       this.componentRef.instance.left = (right - left) / 2 + left;
       this.componentRef.instance.top = bottom;
     }

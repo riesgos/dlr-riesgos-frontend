@@ -53,10 +53,11 @@ export class EqSimulation implements Converter {
                     ],
                     continuous: true,
                     direction: 'horizontal',
-                    height: 100,
                     labelAngle: 60,
                     width: 180,
-                    margin: 30
+                    height: 80,
+                    margin: 30,
+                    svgContainerStyle: "margin-bottom: -2rem; margin-top: -1rem;"
                 }
             })
         };

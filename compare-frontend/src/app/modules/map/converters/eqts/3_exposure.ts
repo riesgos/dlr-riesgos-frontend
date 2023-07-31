@@ -118,7 +118,7 @@ export class Exposure implements Converter {
                 return {
                     component: StringPopupComponent,
                     args: {
-                        body: this.translator.translate('Buildings') + `: ` + Math.round(data.reduce((last, curr) => curr.value + last, 0))
+                        body: this.translator.translate('ResidentialBuildings') + `: ` + Math.round(data.reduce((last, curr) => curr.value + last, 0))
                     }
                 }
              }

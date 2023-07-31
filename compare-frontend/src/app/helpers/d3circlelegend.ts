@@ -15,7 +15,11 @@ export function drawLegend(
     orientation: Orientation,
     legendWidth = 150,
     legendHeight = 150,
+    margin: number = 10
 ) {
+
+    svg.attr('width', legendWidth);
+    svg.attr('height', legendHeight);
 
     const letterLength = 10;
     const textAngle = 45;
@@ -31,7 +35,10 @@ export function drawLegend(
         .padding(0.2);
 
     // Create a group element for the legend
-    const baseGroup = svg.append("g");
+    const baseGroup = svg
+        .attr('width', legendWidth + (2 * margin))
+        .attr('height', legendHeight + (2 * margin))
+        .append("g");
     
     if (orientation === "vertical") {
         baseGroup.attr(`transform`, `translate(${maxRadius + 10}, ${10})`);
@@ -74,18 +81,20 @@ export function drawLegend(
 
 
 export function circleLegendComponent() {
+    let _margin = 10;
     let _width = 150;
     let _height = 150;
     let _orientation: Orientation = "vertical";
     let _data: LegendEntry[] = [];
 
     function legend(selection: Selection<SVGSVGElement, any, any, any>) {
-        drawLegend(selection, _data, _orientation, _width, _height);
+        drawLegend(selection, _data, _orientation, _width, _height, _margin);
     }
 
-    legend.width       = (width: number)            => {_width = width;             return legend;}      
-    legend.height      = (height: number)           => {_height = height;           return legend;}      
-    legend.orientation = (orientation: Orientation) => {_orientation = orientation; return legend;}              
+    legend.width       = (width: number)            => {_width = width;             return legend;}
+    legend.height      = (height: number)           => {_height = height;           return legend;}
+    legend.margin      = (margin: number)           => {_margin = margin;           return legend;}  
+    legend.orientation = (orientation: Orientation) => {_orientation = orientation; return legend;}
     legend.data        = (data: LegendEntry[])      => {_data = data;               return legend;}
 
     return legend;

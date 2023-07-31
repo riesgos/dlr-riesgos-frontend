@@ -21,6 +21,7 @@ export class LegendComponent implements OnInit {
   @Input() margin = 10;
   @Input() continuous = false;
   @Input() entries: LegendEntry[] = [];
+  @Input() svgContainerStyle = "";
   @ViewChild('legendAnchor', {static: true}) div!: ElementRef;
 
 

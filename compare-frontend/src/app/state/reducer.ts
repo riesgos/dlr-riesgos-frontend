@@ -3,7 +3,7 @@ import { immerOn } from 'ngrx-immer/store';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setZoomToStep } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { allParasSet, getMapPositionForStep } from './helpers';
+import { allParasSet, getMapPositionForStep, offsetCenterForPartition } from './helpers';
 import { getRules } from './rules';
 
 
@@ -262,7 +262,7 @@ export const reducer = createReducer(
     if (rules.mirrorMove) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioState)) {
         if (otherPartition !== action.partition) {
-          otherPartitionData.map.center = action.center;
+          otherPartitionData.map.center = offsetCenterForPartition(action.center, action.zoom, action.partition, otherPartition as Partition);
           otherPartitionData.map.zoom = action.zoom;
         }
       }
@@ -525,4 +525,3 @@ function setValuesToDefaults(partitionData: RiesgosScenarioState, ids: string[])
 
   }
 }
-

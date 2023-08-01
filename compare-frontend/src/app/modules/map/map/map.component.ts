@@ -124,7 +124,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const mapStateSub = this.mapSvc.getMapState(this.scenario, this.partition).subscribe(async mapState => {
           this.handleMove(mapState);
           this.handleLayers(mapState);
-          await this.handleClick(mapState);
+          setTimeout(async () => await this.handleClick(mapState), 10); // allowing a little time for layers to be drawn to map before handling this.
       });
       this.subs.push(mapStateSub);
     }

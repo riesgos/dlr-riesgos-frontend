@@ -1,8 +1,27 @@
 import { API_ScenarioState, API_Datum, API_DatumReference, isApiDatum } from "../services/backend.service";
-import { Rules } from "./rules";
 import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, Partition, RiesgosProduct, RiesgosStep, ScenarioName } from "./state";
 
 
+
+export function offsetCenterForPartition(center: number[], zoom: number, sourcePartition: Partition, targetPartition: Partition): number[] {
+    /**
+     * If Lima is far right in the left window, we want it to be a bit further left in the right window, 
+     * so that the most interesting areas are closer to each other.
+     * Values are just the result of some manual tweaking.
+     */
+    let newCenter = [...center];
+    if (sourcePartition === 'left') {
+        if (targetPartition === 'right') {
+            newCenter[0] += 0.9 * (14 - zoom) / 14;
+        }
+    } else if (sourcePartition === 'right') {
+        if (targetPartition === 'left') {
+            newCenter[0] -= 0.9 * (14 - zoom) / 14;
+        }
+    }
+    return newCenter;
+  }
+  
 
 export function maybeArraysEqual(a1: any[] | undefined, a2: any[] | undefined) {
     if (a1 === undefined && a2 === undefined) return true;

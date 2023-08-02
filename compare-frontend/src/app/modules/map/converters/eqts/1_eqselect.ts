@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Converter, LayerComposite } from "../../converter.service";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, Rules, ScenarioName, StepStateTypes } from "src/app/state/state";
+import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
@@ -15,13 +15,15 @@ import Feature, { FeatureLike } from "ol/Feature";
 import { Store } from "@ngrx/store";
 import { stepConfig } from "src/app/state/actions";
 import { createKeyValueTableHtml } from "src/app/helpers/others";
+import { TranslationService } from "src/app/services/translation.service";
 
 @Injectable()
 export class EqSelection implements Converter {
-
-    private selectedFeature: Feature | undefined;
     
-    constructor(private store: Store<{ riesgos: RiesgosState }>) {}
+    constructor(
+        private store: Store<{ riesgos: RiesgosState }>,
+        private translate: TranslationService,
+    ) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
         return step === "selectEq";
@@ -33,127 +35,146 @@ export class EqSelection implements Converter {
         const stepState = state.steps.find(s => s.step.id === "selectEq")?.state.type;
 
 
-        const defaultStyle = (feature: FeatureLike, resolution: number) => {
-            const props = feature.getProperties();
-            const magnitude = props['magnitude.mag.value'];
-            const depth = props['origin.depth.value'];
-
-            let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
-            const [r, g, b] = yellowRedRange(100, 0, depth);
-
-            return new Style({
-                image: new Circle({
-                    radius: radius,
-                    fill: new Fill({
-                        color: [r, g, b, 0.5]
-                    }),
-                    stroke: new Stroke({
-                        color: [r, g, b, 1]
-                    })
-                }),
-            });
-        }
-
-        const selectedStyle = (feature: FeatureLike, resolution: number) => {
-            const oldStyle = defaultStyle(feature, resolution).getImage() as Circle;
-            const newStyle = new Style({
-                image: new Circle({
-                    radius: oldStyle.getRadius() + 5,
-                    fill: oldStyle.getFill(),
-                    stroke: oldStyle.getStroke()
-                })
-            })
-            return newStyle;
-        }
-
         if (stepState === StepStateTypes.available) {
             const availableEqs = state.products.find(p => p.id === "userChoice");
+
             const _store = this.store;
+            const _trslt = this.translate;
 
             if (availableEqs) {
+                const availableEqOptions = structuredClone(availableEqs.options);
+                const pickedEqId = availableEqs.value?.properties["publicID"];
+                if (availableEqOptions) {
+                    for (const option of availableEqOptions) {
+                        if (option.properties["publicID"] === pickedEqId) {
+                            option.properties["selected"] = true;
+                        } else {
+                            option.properties["selected"] = false;
+                        }
+                    }
+                }
 
                 const layer = new VectorLayer({
                     source: new VectorSource({
-                        features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqs.options })
+                        features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: availableEqOptions })
                     }),
-                    style: defaultStyle
+                    style: (feature: FeatureLike, resolution: number) => {
+                        const props = feature.getProperties();
+                        const magnitude = props['magnitude.mag.value'];
+                        const depth = props['origin.depth.value'];
+                        const selected = props['selected'];
+            
+                        let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
+                        const [r, g, b] = yellowRedRange(100, 0, depth);
+                        const alpha = selected ? 0.8 : 0.5;
+            
+                        return new Style({
+                            image: new Circle({
+                                radius: radius,
+                                fill: new Fill({
+                                    color: [r, g, b, alpha]
+                                }),
+                                stroke: new Stroke({
+                                    color: [r, g, b, 1],
+                                    width: selected ? 2 : 1
+                                })
+                            }),
+                        });
+                    }
                 });
 
-                if (this.selectedFeature !== undefined) {
-                    layer.getSource()?.forEachFeature(f => {
-                        if (f.getId() === this.selectedFeature?.getId()) {
-                            f.setStyle(selectedStyle(f, 0));
-                        }
-                    });
-                }
 
                 layers.push({
                     id: "userChoiceLayer",
+                    stepId: "selectEq",
                     layer: layer,
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
                         const props = features[0].getProperties();
+                        const tableFields: any = {};
+                        tableFields[_trslt.translate("Magnitude")] = "Mw " + props["magnitude.mag.value"];
+                        tableFields[_trslt.translate("Depth")] = props["origin.depth.value"] + " km";
+                        const popupBody = createKeyValueTableHtml(tableFields, "medium");
                         return {
                             component: StringPopupComponent,
                             args: {
-                              "title": "AvailableEqs",
+                              "title": "Earthquake",
                               "subTitle": "",
-                              "body": createKeyValueTableHtml({
-                                "Depth": props["origin.depth.value"],
-                                "Magnitude": props["magnitude.mag.value"]
-                              }, "medium")
+                              "body": popupBody
                             }  
                         };
                     },
                     onClick(location: number[], features: Feature[]) {
                         if (features.length === 0) {
-                            prnt.selectedFeature = undefined;
                             return;
                         }
 
                         const olFeature = features[0];
-                        prnt.selectedFeature = olFeature;
 
                         const converter = new GeoJSON();
                         const feature = JSON.parse(converter.writeFeature(olFeature));
                         _store.dispatch(stepConfig({ partition: state.partition, scenario: state.scenario, stepId: "selectEq", values: { userChoice: feature } }));
                     },
                     onHover() {},
-                    opacity: 1.0
+                    opacity: 1.0,
+                    visible: true
                 });
             }
         }
 
         if (stepState === StepStateTypes.completed) {
             const selectedEq = data.find(d => d.id === "selectedEq");
+            const _trslt = this.translate;
 
             if (selectedEq) {
                 layers.push({
                     id: "selectedEqLayer",
+                    stepId: "selectEq",
                     layer: new VectorLayer({
                         source: new VectorSource({
                             features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(selectedEq.value)
                         }),
-                        style: defaultStyle
+                        style: (feature: FeatureLike, resolution: number) => {
+                            const props = feature.getProperties();
+                            const magnitude = props['magnitude.mag.value'];
+                            const depth = props['origin.depth.value'];
+                
+                            let radius = linInterpolateXY(5, 5, 10, 20, magnitude);
+                            const [r, g, b] = yellowRedRange(100, 0, depth);
+                
+                            return new Style({
+                                image: new Circle({
+                                    radius: radius,
+                                    fill: new Fill({
+                                        color: [r, g, b, 0.5]
+                                    }),
+                                    stroke: new Stroke({
+                                        color: [r, g, b, 1]
+                                    })
+                                }),
+                            });
+                        }
                     }),
                     popup: (location, features) => {
                         if (features.length === 0) return undefined;
                         const props = features[0].getProperties();
+                        const tableFields: any = {};
+                        tableFields[_trslt.translate("Magnitude")] = "Mw " + props["magnitude.mag.value"];
+                        tableFields[_trslt.translate("Depth")] = props["origin.depth.value"] + " km";
+                        const popupBody = createKeyValueTableHtml(tableFields, "medium");
                         return {
                             component: StringPopupComponent,
                             args: {
                                 "title": "ChosenEq",
                                 "subTitle": "",
-                                "body": createKeyValueTableHtml({
-                                    "Depth": props["origin.depth.value"],
-                                    "Magnitude": props["magnitude.mag.value"]
-                                }, "medium")
+                                "body": popupBody
                             }   
                         }
                     },
                     onClick: () => {},
                     onHover: () => {},
-                    opacity: 1.0
+                    opacity: 1.0,
+                    visible: true
                 });
             }
         }

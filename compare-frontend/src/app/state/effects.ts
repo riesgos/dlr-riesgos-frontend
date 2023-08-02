@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
+import { Action, Store } from "@ngrx/store";
 import { delay, filter, map, mergeMap, switchMap, tap, withLatestFrom } from "rxjs/operators";
 import { BackendService, isExecError } from "../services/backend.service";
 import { ConfigService } from "../services/config.service";
 import { ResolverService } from "../services/resolver.service";
 import * as AppActions from "./actions";
 import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
-import { Partition, RiesgosState, ScenarioName } from "./state";
+import { ModalState, Partition, RiesgosState, ScenarioName } from "./state";
+import { getRules } from "./rules";
 
 
 @Injectable()
@@ -140,6 +141,34 @@ check if more  │     └───────┬──────┘
         filter(state => state.autoPilot.queue.length > 0),
         map(state => AppActions.autoPilotDequeue({ scenario: state.scenario, partition: state.partition, step: state.autoPilot.queue[0] }))
     ));
+
+
+
+    private openModal$ = createEffect(() => this.actions$.pipe(
+        filter(action => action.type === 'Rule-set picked' || action.type === 'Step exec success'),
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        switchMap(([action, state]) => {
+            const actions: Action[] = [];
+
+            const rules = getRules(state.rules);
+
+            for (const [scenario, scenarioData] of Object.entries(state.scenarioData)) {
+                for (const [partition, partitionData] of Object.entries(scenarioData)) {
+                    const modal = rules.modal(state, scenario as ScenarioName, partition as Partition);
+                    if (modal.args) {  // There should be a modal ...
+                        actions.push(AppActions.openModal({scenario: scenario as ScenarioName, partition: partition as Partition, args: modal.args }));
+                    } else { // There should not be one ...
+                        if (partitionData.modal.args) { // ... but there is one:
+                            actions.push(AppActions.closeModal({scenario: scenario as ScenarioName, partition: partition as Partition}));
+                        }
+                    }
+                }
+            }
+
+            return actions;
+        })  
+    ));
+
 
     
     constructor(

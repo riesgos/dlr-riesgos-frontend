@@ -1,0 +1,8 @@
+<div class="backdrop">
+    <dialog open class="dialog hasShadow">
+        <h4 *ngIf="title !== ''">{{ title | translate }}</h4>
+        <h6 *ngIf="subtitle !== ''">{{ subtitle | translate }}</h6>
+        <p>{{ body | translate }}</p>
+        <button *ngIf="closable" (click)="clickOnCloseButton()">OK</button>
+    </dialog>
+</div>

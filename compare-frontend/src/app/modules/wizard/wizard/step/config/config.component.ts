@@ -1,10 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
 import { WizardComposite } from '../../../wizard.service';
-import { act } from '@ngrx/effects';
 
 
 @Component({
@@ -18,40 +16,24 @@ export class ConfigComponent implements OnInit {
   @Input() partition!: Partition;
   @Input() data!: WizardComposite;
   @Input() autoPilot!: boolean | undefined;
-  public formGroup: FormGroup = new FormGroup({});
+  private allValues: { [key: string]: any } = {}
 
   constructor(private store: Store<{ riesgos: RiesgosState }>) {}
 
   ngOnInit(): void {
     for (const input of this.data.inputs) {
-      if (input.options) {
-        const existingValue = input.currentValue;
-        this.formGroup.addControl(input.productId, new FormControl(existingValue || ''));
-      }
+      this.allValues[input.productId] = input.currentValue;
     }
-
-    this.formGroup.valueChanges.subscribe(newVal => {
-      this.store.dispatch(AppActions.stepConfig({
-          scenario: this.scenario,
-          partition: this.partition,
-          stepId: this.data.step.step.id,
-          values: newVal
-      }));
-    });
-
   }
 
   public select(productId: string, value: any) {
-    const newValues = {
-      ... this.formGroup.value,
-      [productId]: value
-    };
+    this.allValues[productId] = value;
 
     this.store.dispatch(AppActions.stepConfig({
       scenario: this.scenario,
       partition: this.partition,
       stepId: this.data.step.step.id,
-      values: newValues
+      values: this.allValues
   }));
   }
 
@@ -60,8 +42,7 @@ export class ConfigComponent implements OnInit {
   }
 
   public allValuesSet(): boolean {
-    for (const key in this.formGroup.value) {
-      const value = this.formGroup.value[key];
+    for (const [key, value] of Object.entries(this.allValues)) {
       if (value === '' || value === undefined) return false;
     }
     return true;
@@ -69,10 +50,17 @@ export class ConfigComponent implements OnInit {
 
   public isSelected(productId: string, option: {key: string, value: any}) {
     const triedValue = option.value;
-    const actualValue = this.formGroup.controls[productId].value;
+    const actualValue = this.allValues[productId];
+    if (triedValue.id && actualValue?.id) {
+      return triedValue.id === actualValue.id;
+    }
     // if (this.data.inputs.find(i => i.productId === productId).valueToKey() === option.key) return true;
     const matches = triedValue === actualValue || JSON.stringify(triedValue) === actualValue || triedValue === JSON.stringify(actualValue) || JSON.stringify(triedValue) === JSON.stringify(actualValue);
     return matches;
+  }
+
+  public onKey(productId: string, event: any) {
+    console.error("config.component.onkey: Not yet implemented")
   }
 
 }

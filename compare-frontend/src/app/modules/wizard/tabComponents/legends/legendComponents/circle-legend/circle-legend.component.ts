@@ -14,6 +14,7 @@ export class CircleLegendComponent implements OnInit {
   @Input() text: string = '';
   @Input() width: number = 250;
   @Input() height: number = 250;
+  @Input() margin: number = 10;
   @Input() orientation: Orientation = 'vertical';
   @Input() entries: LegendEntry[] = [];
   @ViewChild('legendAnchor', {static: true}) div!: ElementRef;
@@ -34,7 +35,8 @@ export class CircleLegendComponent implements OnInit {
       }
 
       const legend = circleLegendComponent()
-        .width(this.width).height(this.height).orientation(this.orientation)
+        .width(this.width).height(this.height)
+        .margin(this.margin).orientation(this.orientation)
         .data(translatedEntries);
 
       const selection = select(this.div.nativeElement);

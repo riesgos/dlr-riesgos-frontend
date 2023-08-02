@@ -60,11 +60,8 @@ async function testAll(serverUrl: string, port: number) {
 
             // 1. set inputs and outputs
             for (const input of step.inputs) {
-                if (input.options && input.options.length > 0) {
-                    state.data.push({
-                        id: input.id,
-                        value: input.options[Math.floor(Math.random() * input.options.length)]
-                    });
+                if (isDatumWithOptions(input)) {
+                    state.data.push(pickRandomOption(input));
                 } 
                 else if ((state.data.find(p => p.id === input.id) as Datum | undefined)?.value) {
                     state.data.push({
@@ -111,6 +108,17 @@ async function testAll(serverUrl: string, port: number) {
     }
 }
 
+function pickRandomOption(input: DatumWithOptions) {
+    if (input.id === 'exposureModelName') return {
+        id: input.id,
+        value: input.options.filter(o => o !== 'LimaBlocks')[Math.floor(Math.random() * input.options.length)]
+    }
+
+    return {
+        id: input.id,
+        value: input.options[Math.floor(Math.random() * input.options.length)]
+    };
+}
 
 
 function getDefaultValue(scenarioId: string, stepId: string, paraId: string, currentState: ScenarioState) {
@@ -169,8 +177,14 @@ function getDefaultValue(scenarioId: string, stepId: string, paraId: string, cur
 
 interface Datum {
     id: string,
-    value: any
+    value: any,
 };
+interface DatumWithOptions extends Datum {
+    options: string[]
+}
+function isDatumWithOptions(datum: Datum): datum is DatumWithOptions {
+    return datum.hasOwnProperty('options') && (datum as DatumWithOptions).options.length > 0;
+}
 interface DatumReference {
     id: string,
     reference: string

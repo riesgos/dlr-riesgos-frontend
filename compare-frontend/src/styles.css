@@ -19,27 +19,27 @@
 
 
 body {
-    --success-light: #c4fdf3;
-    --success:       #76e8d5;
-    --success-dark:  #4abeab;
-    --notice-light:  #f6eebd;
-    --notice:        #eddd96;
-    --notice-dark:   #b7a659;
+    --success-light: #DDF9C0;
+    --success:       #b4d491;
+    --success-dark:  #7b9164;
+    --notice-light:  #F5F6CE;
+    --notice:        #c4c5a1;
+    --notice-dark:   #93947d;
     --warning-light: #df9b9b;
-    --warning:       #c06767;
-    --warning-dark:  #8c3535;
+    --warning:       #b25e5e;
+    --warning-dark:  #742c2c;
     --white:     #fbfbfb;
-    --gray-10:   #f0f0f4;
+    --gray-10:   #f8f8fa;
     --gray-100:  #e9eaee;
     --gray-400:  #c3c3c3;
     --gray-600:  #a3a5a6;
     --gray-1000: #858787;
     --gray-1200: #3d3d3d;
-    --accent-color-100:  #e0eaf8;
-    --accent-color-200:  #8da8e4;
-    --accent-color-800:  #6d82b0;
-    --accent-color-1200: #485064;
-    --accent-color-1400: #080b13;
+    --accent-color-100:  #e0eef8;
+    --accent-color-200:  #5aa4d9;
+    --accent-color-800:  #467aaa;
+    --accent-color-1200: #2a465c;
+    --accent-color-1400: #070e16;
     margin: 0px;
     font-family: Nunito, Arial, Helvetica, sans-serif;
     box-sizing: border-box;
@@ -54,22 +54,45 @@ h1, h2, h3, h4 {
     color: var(--gray-1200);
 }
 
+h1 {
+    font-size: large;
+}
+
 text {
     fill: var(--gray-1000);
 }
 
 button {
-    background: var(--accent-color-800);
+    background: var(--accent-color-200);
     border-style: none;
     border-radius: 0.5rem;
     padding: 0.3rem;
     color: var(--accent-color-100);
+    cursor: pointer;
 }
 button:disabled {
     color: var(--gray-100);
     background: var(--gray-400);
     cursor: not-allowed;
 }
+button:hover {
+    background: var(--accent-color-800);
+}
+button:focus {
+    background-color: var(--accent-color-1200);
+}
+
+button.clearButton {
+    color: var(--accent-color-800);
+    background: none;
+    outline: 1px solid var(--accent-color-800);
+}
+button.clearButton:hover {
+    background: var(--accent-color-100);
+    outline: 1px solid var(--accent-color-1200);
+}
+
+
 
 select {
     border: none;
@@ -111,6 +134,10 @@ table tbody tr {
 } */
 
 
+p {
+    margin: 0px;
+}
+
 
 /*
 main
@@ -150,15 +177,6 @@ main
 }
 
 
-.main .content {
-    position: relative;
-    height: calc(100vh - 3rem);
-}
-
-.main .content .page {
-    height: 100%;
-    background-color: var(--gray-100);
-}
 
 
 

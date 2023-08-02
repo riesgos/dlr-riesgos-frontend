@@ -4,6 +4,10 @@
     width: 100%;
 }
 
+.gray {
+    /* filter: grayscale(0.8); */
+}
+
 
 .popup {
     background: var(--gray-10);

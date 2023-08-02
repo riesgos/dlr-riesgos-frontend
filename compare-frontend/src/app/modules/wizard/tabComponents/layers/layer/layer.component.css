@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    cursor: pointer;
 }
 
 .layerEye {
@@ -9,4 +10,9 @@
     width: 0.9rem; 
     background-color: var(--gray-1000);
     margin-right: 0.5rem;
+    flex: 0 0 auto;
+}
+
+.layerTitle.greyedOut {
+    color: var(--gray-600);
 }

@@ -1,5 +1,5 @@
 .container {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    // justify-content: space-around;  <-- needs to be off so multi-legend works on small screens
 }

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { RiesgosState, ScenarioNameOrNone } from './state/state';
-import { Observable, map, tap } from 'rxjs';
+import { RiesgosState } from './state/state';
+import { Observable, map } from 'rxjs';
+import { RuleSetName } from './state/rules';
+import { movingBackToMenu } from './state/actions'; import GeoJSON from 'ol/format/GeoJSON';
 
 @Component({
   selector: 'app-root',
@@ -11,12 +13,17 @@ import { Observable, map, tap } from 'rxjs';
 })
 export class AppComponent {
 
-  public currentScenario$: Observable<ScenarioNameOrNone>;
+  public ruleSet$: Observable<RuleSetName | 'none'>;
   
-  constructor(private router: Router, private store: Store<RiesgosState>) {
-    this.currentScenario$ = this.store.select(state => state.currentScenario).pipe(
-      map(v => v === undefined ? 'none' : v),
-      tap(v => console.log(v))
+  constructor(private router: Router, private store: Store<{riesgos: RiesgosState}>) {
+    this.ruleSet$ = this.store.select(state => state.riesgos.rules).pipe(
+      map(v => v === undefined ? 'none' : v)
     );
   }
+
+  clickOnModes() {
+    this.store.dispatch(movingBackToMenu());
+    this.router.navigateByUrl("/");
+  }
+
 }

@@ -16,7 +16,7 @@ export class ErrorComponent implements OnInit {
   @Input() data!: WizardComposite;
   public message = "";
 
-  constructor(private store: Store<RiesgosState>) {}
+  constructor(private store: Store<{riesgos: RiesgosState}>) {}
 
   ngOnInit(): void {
     if (this.data.step.state.type === 'error') {

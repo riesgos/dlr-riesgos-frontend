@@ -36,33 +36,4 @@ export class ConfigService {
         return this.config;
     }
 
-    public needsProxy(targetUrl: string): boolean {
-        if (this.config.proxyUrl) {
-            if (targetUrl.includes('localhost')) return false;
-            if (targetUrl.includes(window.location.hostname)) return false;
-            if (targetUrl.startsWith('https://')) return false;
-            if (targetUrl.startsWith('./') || targetUrl.startsWith('/')) return false;
-            if (targetUrl.includes('assets/')) return false;
-            
-            if (targetUrl.startsWith('http://')) {
-                const urlObj = new URL(targetUrl);
-                if (urlObj.host === window.location.hostname) return false;
-                return true;
-            };
-        };
-        return false;
-    }
-
-    public proxify(targetUrl: string): string {
-        if (!this.needsProxy(targetUrl)) return targetUrl;
-
-        const proxyUrl = this.config.proxyUrl;
-
-        if (targetUrl.match(/^http:\/\/(\w|-|\.)+:\d+/)) {
-            return `${proxyUrl}/${targetUrl}`;
-        } else {
-            return `${this.config.proxyUrl}/${targetUrl}`;
-        }
-
-    }
 }

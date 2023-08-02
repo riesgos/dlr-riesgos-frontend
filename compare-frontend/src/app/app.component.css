@@ -3,12 +3,53 @@
     padding: 0 1rem 0 1rem;
 }
 
+
+.header .title {
+  cursor: pointer;  
+}
+
 .header .nav-item {
-    padding: 1.9rem;
+    padding: 1.9rem 1.9rem 0.8rem 1.9rem;
     color: var(--accent-color-200);
+    cursor: pointer;
+}
+
+.header .nav-item:hover {
+    background-color: var(--accent-color-800);
 }
 
 .header .nav-item.active {
     background-color: var(--accent-color-1200);
+    cursor: default;
+}
+
+
+.header .logoSection {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    right: 1rem;
+}
+
+.header .logoSection .logoLink {
+    padding: 0.45rem 0.25rem 0.25rem 0.5rem;
+}
+.header .logoSection .logoLink img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+}
+
+.message {
+    /* position: absolute; */
+    background-color: var(--accent-color-800);
+    color: var(--white);
+    width: 100%;
+}
+
+.message p {
+    padding: 0.125rem 1rem 0.125rem 1rem;
+    margin: 0;
 }
 

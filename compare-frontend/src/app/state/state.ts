@@ -1,5 +1,5 @@
-import { Store } from "@ngrx/store";
 import { API_Step } from "../services/backend.service";
+import { RuleSetName } from "./rules";
 
 
 
@@ -79,7 +79,7 @@ export interface RiesgosScenarioMapState {
     zoom: number,
     center: number[],
     clickLocation: number[] | undefined,
-    layerVisibility: { layerCompositeId: string, opacity: number }[]
+    layerSettings: { stepId: string, layerCompositeId: string, visible: boolean }[]
 }
 
 export interface FocusState {
@@ -90,6 +90,10 @@ export interface AutoPilotState {
     queue: string[];
 };
 
+export interface ModalState {
+    args?: { title: string, subtitle: string, body: string, closable: boolean }
+}
+
 export interface RiesgosScenarioState {
     scenario: ScenarioName;
     steps: RiesgosStep[];
@@ -98,7 +102,10 @@ export interface RiesgosScenarioState {
     partition: Partition,
     active: boolean,
     map: RiesgosScenarioMapState,
-    focus: FocusState
+    focus: FocusState,
+    modal: ModalState,
+    controlExpanded: boolean,
+    zoomToSelectedStep: boolean
 }
 
 
@@ -118,20 +125,10 @@ export interface RiesgosScenarioMetadata {
 }
 
 
-export type Partition = 'left' | 'right' | 'top' | 'bottom';
+export type Partition = 'left' | 'right' | 'top' | 'bottom' | 'middle';
 
 
-export interface Rules {
-    partition: boolean,
-    mirrorFocus: boolean,
-    oneFocusOnly: boolean,
-    focusFirstStepImmediately: boolean,
-    mirrorData: boolean,
-    mirrorClick: { include: string[] } | { exclude: string[] },
-    mirrorMove: boolean,
-    autoPilot: { include: string[] } | { exclude: string[] },
-    allowConfiguration: { include: string[] } | { exclude: string[] }
-}
+
 
 export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
@@ -141,7 +138,7 @@ export interface RiesgosState {
         }
     };
     metaData: RiesgosScenarioMetadata[];
-    rules: Rules;
+    rules: RuleSetName | undefined;
 }
 
 
@@ -149,16 +146,6 @@ export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {},
     metaData: [],
-    rules: {
-        partition: true,
-        mirrorFocus: true,
-        oneFocusOnly: false,
-        focusFirstStepImmediately: false,
-        mirrorData: false,
-        mirrorClick: { exclude: [] },
-        mirrorMove: true,
-        autoPilot: { include: [] },
-        allowConfiguration: { exclude: [] }
-    }
+    rules: undefined
 };
 

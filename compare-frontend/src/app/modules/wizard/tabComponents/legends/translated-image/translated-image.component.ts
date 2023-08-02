@@ -11,6 +11,7 @@ import { TranslationService } from 'src/app/services/translation.service';
 export class TranslatedImageComponent implements OnInit {
   
   image$!: Observable<string>;
+  @Input() title?: string;
   @Input() languageImageMap: {[lang: string]: string} = {};
 
   constructor(private translator: TranslationService) { }

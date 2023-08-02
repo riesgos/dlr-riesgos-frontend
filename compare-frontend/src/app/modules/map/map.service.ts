@@ -14,6 +14,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { ConverterService, LayerComposite } from './converter.service';
+import { getRules, Rules } from 'src/app/state/rules';
 
 export interface MapState extends RiesgosScenarioMapState {
     layerComposites: LayerComposite[],
@@ -41,7 +42,10 @@ export class MapService {
      */
     public getMapState(scenario: ScenarioName, partition: Partition): Observable<MapState> {
 
+        let rules: Rules;
+
         const scenarioState$ = this.store.select(state => {
+            rules = getRules(state.riesgos.rules);
             const riesgosState = state.riesgos;
             const scenarioState = riesgosState.scenarioData[scenario];
             if (!scenarioState) return undefined;
@@ -62,7 +66,7 @@ export class MapService {
                 if (!allProductsEqual(last.products, current.products)) return true;
                 if (last.map.zoom !== current.map.zoom) return true;
                 if (!arraysEqual(last.map.center, current.map.center)) return true;
-                if (!arraysEqual(last.map.layerVisibility, current.map.layerVisibility)) return true;
+                if (!arraysEqual(last.map.layerSettings, current.map.layerSettings)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
@@ -101,10 +105,16 @@ export class MapService {
             map(([layerComposites, mapState]) => { 
 
                 const composites = layerComposites.flat();
-                for (const customOpacitySetting of mapState.layerVisibility) {
-                    const composite = composites.find(c => c.id === customOpacitySetting.layerCompositeId);
+
+                for (const composite of composites) {
+                    composite.opacity = 0.75;
+                }
+
+                // apply user defined visibility
+                for (const customLayerSetting of mapState.layerSettings) {
+                    const composite = composites.find(c => c.id === customLayerSetting.layerCompositeId);
                     if (composite) {
-                        composite.opacity = customOpacitySetting.opacity;
+                        composite.visible = customLayerSetting.visible;
                     }
                 }
 
@@ -134,88 +144,6 @@ export class MapService {
         this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: undefined }));
       }
 
-
-      /**
-       * deprecated. kept in code only as a reference while i'm busy building 
-       * converters for all steps.
-       */
-    private toOlLayers(scenario: ScenarioName, step: string, product: RiesgosProductResolved): Observable<Layer[]> {
-        if (scenario === 'PeruShort') {
-
-            switch (product.id) {
-
-                case 'eqSimWms':
-                    const fullUrl = new URL(product.value);
-                    const baseUrl = fullUrl.origin + fullUrl.pathname;
-                    const layers = fullUrl.searchParams.get("layers");
-                    return of([new TileLayer({
-                        source: new TileWMS({
-                            url: baseUrl,
-                            params: {
-                                "LAYERS": layers,
-                                "STYLES": "shakemap-pga"
-                            }
-                        }),
-                        opacity: 0.4
-                    })]);
-
-
-                case 'eqDamageWms':
-                    const fullUrl1 = new URL(product.value);
-                    const baseUrl1 = fullUrl1.origin + fullUrl1.pathname;
-                    const layers1 = fullUrl1.searchParams.get("layers");
-                    return of([new TileLayer({
-                        source: new TileWMS({
-                            url: baseUrl1,
-                            params: {
-                                "LAYERS": layers1,
-                                "STYLES": "style-cum-loss-peru-plasma"
-                            }
-                        }),
-                        opacity: 0.9
-                    })]);
-
-                case 'tsWms':
-                    const fullUrl3 = new URL(product.value);
-                    const baseUrl3 = fullUrl3.origin + fullUrl3.pathname;
-                    const layers3 = fullUrl3.pathname.match(/(\d+)/)![0] + '_mwh';
-                    return of([new TileLayer({
-                        source: new TileWMS({
-                            url: baseUrl3,
-                            params: {
-                                layers: layers3
-                            }
-                        }),
-                        opacity: 0.9
-                    })]);
-
-                case 'tsDamageWms':
-                    const fullUrl2 = new URL(product.value);
-                    const baseUrl2 = fullUrl2.origin + fullUrl2.pathname;
-                    const layers2 = fullUrl2.searchParams.get("layers");
-                    return of([new TileLayer({
-                        source: new TileWMS({
-                            url: baseUrl2,
-                            params: {
-                                "LAYERS": layers2,
-                                "STYLES": "style-cum-loss-peru-plasma"
-                            }
-                        }),
-                        opacity: 0.9
-                    })]);
-
-                case 'sysRel':
-                    return of([new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(product.value)
-                        })
-                    })]);
-                default:
-                    console.log(`Don't know how to render product: `, product);
-            }
-        }
-        return of([]);
-    }
 
 }
 

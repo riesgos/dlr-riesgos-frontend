@@ -3,21 +3,32 @@ import Layer from 'ol/layer/Layer';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import GeoJSON from 'ol/format/GeoJSON';
+import MVT from "ol/format/MVT";
 import { Partition, ScenarioName } from 'src/app/state/state';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { maybeArraysEqual } from 'src/app/state/helpers';
 import { FeatureLike } from 'ol/Feature';
-import { TileWMS } from 'ol/source';
+import { TileWMS, VectorTile, XYZ } from 'ol/source';
+// import Attribution from 'ol/control/Attribution';
+import {defaults} from 'ol/control';
 import { HttpClient } from '@angular/common/http';
-
+import VectorTileLayer from 'ol/layer/VectorTile';
+import { applyStyle } from 'ol-mapbox-style';
+import greyScale from "../data/open-map-style.Positron.json";
+import Style from 'ol/style/Style';
+import Fill from 'ol/style/Fill';
+import Stroke from 'ol/style/Stroke';
+import TileSource from 'ol/source/Tile';
+import VectorSource from 'ol/source/Vector';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  styleUrls: ['./map.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MapComponent implements AfterViewInit, OnDestroy {
 
@@ -48,8 +59,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           center: [0, 0],
           zoom: 0
         }),
-        controls: [],
-        overlays: [this.overlay]    
+        controls: defaults({ attribution: true, rotate: false, zoom: false }),
+        overlays: [this.overlay]
       });
   }
 
@@ -62,7 +73,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (this.mapContainer && this.popupContainer) {
-  
+
       // needs to be outside of zone: only place where ol attaches to event-handlers
       this.zone.runOutsideAngular(() => {
         this.map.setTarget(this.mapContainer.nativeElement);
@@ -78,13 +89,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const zoom = this.map.getView().getZoom()!;
         const centerCoord = this.map.getView().getCenter()!;
         const center = [centerCoord[0], centerCoord[1]];
-        
+
         // center == [0, 0]: comes from map-initialization. no need to handle this.
         if (center[0] === 0 && center[1] === 0) return;
 
-        this.mapSvc.mapMove(this.scenario, this.partition, zoom, center);
+        // explicitly inside zone - otherwise issues with ngrx(-devtools) ... wouldn't update selected eq.
+        this.zone.run(() => this.mapSvc.mapMove(this.scenario, this.partition, zoom, center));
       };
-      
+
       const clickHandler = (evt: any) => {
 
         const location = evt.coordinate;
@@ -95,7 +107,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           return true;
         });
 
-        this.mapSvc.mapClick(this.scenario, this.partition, location, clickedFeature);
+        this.zone.run(() => this.mapSvc.mapClick(this.scenario, this.partition, location, clickedFeature));
       }
 
       // no need to run this outside of zone
@@ -112,14 +124,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const mapStateSub = this.mapSvc.getMapState(this.scenario, this.partition).subscribe(async mapState => {
           this.handleMove(mapState);
           this.handleLayers(mapState);
-          await this.handleClick(mapState);
+          setTimeout(async () => await this.handleClick(mapState), 10); // allowing a little time for layers to be drawn to map before handling this.
       });
       this.subs.push(mapStateSub);
     }
   }
 
   public closePopup() {
-    this.mapSvc.closePopup(this.scenario, this.partition);
+    this.zone.run(() => this.mapSvc.closePopup(this.scenario, this.partition));
   }
 
 
@@ -138,25 +150,76 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private handleLayers(mapState: MapState) {
-    const layers = mapState.layerComposites.map(c => {
+
+    const oldLayers = this.map.getAllLayers();
+
+    const newLayers = mapState.layerComposites.map(c => {
       const id = c.id;
       const layer = c.layer;
       layer.set("compositeId", id);
-      layer.setOpacity(c.opacity);
+      if (c.opacity) layer.setOpacity(c.opacity);
+      layer.setVisible(c.visible);
       return layer;
     });
-    this.map.setLayers([...this.baseLayers, ...layers]);
-    // @TODO: set visibility from last time
+
+    const newLayerIds = newLayers.map(nl => nl.get("compositeId"));
+    newLayerIds.push("baseLayer");
+    const oldLayerIds = oldLayers.map(nl => nl.get("compositeId"));
+
+    const toRemove = oldLayers.filter(ol => !newLayerIds.includes(ol.get("compositeId")));
+    const toUpdate = newLayers.filter(nl =>  oldLayerIds.includes(nl.get("compositeId")));
+    const toAdd    = newLayers.filter(nl => !oldLayerIds.includes(nl.get("compositeId")));
+
+    for (const layer of toRemove) {
+      this.map.removeLayer(layer);
+    }
+
+    for (const layer of toUpdate) {
+      const oldLayer = oldLayers.find(l => l.get("compositeId") === layer.get("compositeId"));
+      if (!oldLayer) this.map.addLayer(layer);
+      else {
+        if (this.different(oldLayer, layer)) {
+          // making sure we inject the updated layer at the same position as the old layer
+          const oldIndex = this.map.getAllLayers().map((l, i) => [l.get("compositeId"), i]).find(([compId, i]) => compId === layer.get("compositeId"));
+          this.map.removeLayer(oldLayer);
+          if (oldIndex) {
+            this.map.getLayers().insertAt(oldIndex[1], layer);
+          } else {
+            this.map.addLayer(layer);
+          }
+        }
+      }
+    }
+
+    for (const layer of toAdd) {
+      this.map.addLayer(layer);
+    }
+
+  }
+
+  private different(oldLayer: Layer, newLayer: Layer): boolean {
+    // return true;  // I think its cheaper to just replace the layer always than to compare the data-content of the layers
+    if (oldLayer.getOpacity() !== newLayer.getOpacity()) return true;
+    if (oldLayer.getVisible() !== newLayer.getVisible()) return true;
+    const oldSource = oldLayer.getSource();
+    const newSource = newLayer.getSource();
+    if (oldSource instanceof VectorSource && newSource instanceof VectorSource) {
+      const reader = new GeoJSON();
+      const oldData = reader.writeFeatures(oldSource.getFeatures());
+      const newData = reader.writeFeatures(newSource.getFeatures());
+      if (oldData !== newData) return true;
+    }
+    return false;
   }
 
 
   private _lastClickLocation: number[] | undefined;
   private async handleClick(mapState: MapState) {
     const location = mapState.clickLocation;
-    this.overlay.setPosition(location); 
+    this.overlay.setPosition(location);
 
-    this._lastClickLocation = location;
     if (!location) {
+      this._lastClickLocation = location;
       return;
     }
 
@@ -174,15 +237,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // ... trying to get feature from raster layers.
     if (!clickedFeature) {
-      for (const layer of this.map.getAllLayers()) {
+      for (const layer of this.map.getAllLayers().reverse()) {  // needs reverse, because ol returns layers not in painter's order.
         if (!layer.getVisible() || (layer.getOpacity() <= 0.0) || this.baseLayers.includes(layer)) continue;
         const source = layer.getSource();
         if (source instanceof TileWMS) {
           const view = this.map.getView();
           const url = source.getFeatureInfoUrl(location, view.getResolution() || 10_000, view.getProjection(), { 'INFO_FORMAT': 'application/json' });
           if (url) {
-            const result = await firstValueFrom(this.http.get(url));
-            if (result) {
+            const result = await firstValueFrom<any>(this.http.get(url));
+            if (result && result.features && result.features.length > 0 && result.features[0].properties && Object.keys(result.features[0].properties).length > 0) {
               const resultFeatures = new GeoJSON().readFeatures(result);
               clickedFeature = resultFeatures[0];
               compositeId = layer.get("compositeId");
@@ -197,7 +260,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     let madePopup = false;
     if (clickedFeature && compositeId) {
       for (const composite of mapState.layerComposites) {
-        if (composite.opacity > 0.0 && composite.id === compositeId) {
+        if (composite.visible && composite.id === compositeId) {
           const popup = composite.popup(location, [clickedFeature]);
           if (!popup) break;
           else madePopup = true;
@@ -218,13 +281,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (!madePopup) this.overlay.setPosition(undefined);
 
     // further click handling
-    if (clickedFeature) {
+    // but check if last click was already in same location to prevent loop
+    if (clickedFeature && !maybeArraysEqual(location, this._lastClickLocation)) {
       for (const composite of mapState.layerComposites) {
-        if (composite.opacity > 0.0) {
+        if (composite.visible) {
           composite.onClick(location, [clickedFeature]);
         }
       }
     }
+
+    this._lastClickLocation = location;
   }
 
 }
@@ -232,8 +298,41 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
 function getBaseLayers() {
   const osmBase = new TileLayer({
-    source: new OSM()
+    source: new OSM(),
+    className: 'gray',
   });
+  osmBase.set("compositeId", "baseLayer");
+
+  // const waterStyle = new Style({
+  //   fill: new Fill({
+  //     color: '#9db9e8',
+  //   }),
+  // });
+
+  // const buildingStyle = new Style({
+  //   fill: new Fill({
+  //     color: '#666',
+  //   }),
+  //   stroke: new Stroke({
+  //     color: '#444',
+  //     width: 1,
+  //   }),
+  // });
+
+  // const tileBase = new VectorTileLayer({
+  //   source: new VectorTile({
+  //     url: "https://tiles.geoservice.dlr.de/service/tms/1.0.0/eoc:basemap@EPSG:4326@pbf/{z}/{x}/{y}.pbf?flipy=true",
+  //     format: new MVT(),
+  //     projection: "EPSG:4326"
+  //   }),
+  //   style: (feature, resolution) => {
+  //     console.log(feature.get('layer'))
+  //     const layer = feature.get('layer');
+  //     if (layer.includes('water') || layer.includes('ocean')) return waterStyle;
+  //     if (layer.includes('building') || layer.includes('urban')) return buildingStyle;
+  //     return undefined;
+  //   }
+  // });
 
   return [osmBase];
 }

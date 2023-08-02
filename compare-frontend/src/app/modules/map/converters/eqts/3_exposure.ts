@@ -9,10 +9,16 @@ import Fill from "ol/style/Fill";
 import Stroke from "ol/style/Stroke";
 import { FeatureLike } from "ol/Feature";
 import { BarchartComponent } from "../../popups/barchart/barchart.component";
-import { BarData } from "src/app/helpers/d3charts";
+import { BarDatum } from "src/app/helpers/d3charts";
+import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
+import { TranslationService } from "src/app/services/translation.service";
+import { Injectable } from "@angular/core";
 
 
+@Injectable()
 export class Exposure implements Converter {
+
+    constructor(private translator: TranslationService) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
         return step === "Exposure";
@@ -55,7 +61,8 @@ export class Exposure implements Converter {
 
         return of([{
             id: "exposureLayer",
-            opacity:  1.0,
+            stepId: "Exposure",
+            visible: true,
             layer: new VectorLayer({
                 source: new VectorSource({
                     features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(resolvedData.value)
@@ -71,7 +78,7 @@ export class Exposure implements Converter {
                 const props = features[0].getProperties();
                 const expo = props['expo'];
 
-                const data: BarData[] = [];
+                const data: BarDatum[] = [];
                 for (let i = 0; i < Object.values(expo.Taxonomy).length; i++) {
                     const tax = expo['Taxonomy'][i]; // .match(/^[a-zA-Z]*/)[0];
                     const bld = expo['Buildings'][i];
@@ -87,15 +94,31 @@ export class Exposure implements Converter {
                     }
                 }
 
+                if (data.length <= 0) {
+                    return {
+                        component: StringPopupComponent,
+                        args: {
+                            body: 'no_residential_buildings'
+                        }
+                    }
+                }
+
+                // return {
+                //     component: BarchartComponent,
+                //     args: {
+                //         data: data,
+                //         width: 350,
+                //         height: 300,
+                //         xLabel: `Taxonomy`,
+                //         yLabel: `Buildings`,
+                //         title: `Exposure`,
+                //         smallPrint: `popupHoverForInfo`
+                //     }
+                // }
                 return {
-                    component: BarchartComponent,
+                    component: StringPopupComponent,
                     args: {
-                        data: data,
-                        width: 350,
-                        height: 300,
-                        xLabel: `Taxonomy`,
-                        yLabel: `Buildings`,
-                        title: `Exposure`
+                        body: this.translator.translate('ResidentialBuildings') + `: ` + Math.round(data.reduce((last, curr) => curr.value + last, 0))
                     }
                 }
              }

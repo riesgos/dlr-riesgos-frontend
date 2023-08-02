@@ -509,10 +509,6 @@ export class LayerMarshaller  {
             if (paras) {
 
                 let wmsUrl = `${paras.origin}${paras.path}`;
-                if (this.configService.needsProxy(wmsUrl)) {
-                    wmsUrl = `${this.configService.proxify(paras.origin)}${paras.path}`;   
-                    console.log(`Proxified ${wmsUrl}`);
-                }
 
                 for (const layerName of paras.layers) {
                     // @TODO: convert all search-parameter names to uppercase

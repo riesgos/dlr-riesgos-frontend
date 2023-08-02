@@ -1,18 +1,18 @@
-<div class="layerContainer">
+<div class="layerContainer" (click)="toggleVisibility()">
 
-    <app-svg *ngIf="layerOpacity > 0.0"
+    <app-svg *ngIf="layerVisibility === true"
         class="layerEye"
         (click)="hideLayer()"
         [path]="'assets/icons/eye.svg'"
     ></app-svg>
 
-    <app-svg *ngIf="layerOpacity === 0.0"
+    <app-svg *ngIf="layerVisibility === false"
         class="layerEye"
         (click)="showLayer()"
         [path]="'assets/icons/eye-closed.svg'"
     ></app-svg>
 
-    <div class="layerTitle">
+    <div class="layerTitle" [class.greyedOut]="layerVisibility === false">
         {{ layerCompositeId | translate }}
     </div>
 </div>

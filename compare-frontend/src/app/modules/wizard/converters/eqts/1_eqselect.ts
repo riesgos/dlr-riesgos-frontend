@@ -15,17 +15,25 @@ export class EqSelection implements Converter {
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
         const step = state.steps.find(s => s.step.id === "selectEq")!;
         const inputProd = state.products.find(p => p.id === "userChoice");
-        if (!inputProd) return { hasFocus: false, inputs: [], step, layerControlables: [] };
+        if (!inputProd) return { hasFocus: false, inputs: [], step, layerControlables: [], oneLayerOnly: true };
 
         const outputProd = state.products.find(p => p.id === "selectedEq");
 
-        const options = Object.fromEntries(inputProd.options!.map(v => [v.id, v]));
+        function eqToLabel(eq: any) {
+            const id = eq["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
+            const mag = eq["properties"]["magnitude.mag.value"];
+            const depth = eq["properties"]["origin.depth.value"];
+            return `Mw ${mag}, ${depth} km (${id})`;
+        }
+
+        const options = Object.fromEntries(inputProd.options!.map(v => [eqToLabel(v), v]));
 
         return {
             hasFocus: false,
+            oneLayerOnly: true,
             inputs: [{
                 productId: 'userChoice',
-                label: 'eq',
+                label: 'eqSelectLabel',
                 formtype: 'string-select',
                 options: options,
                 currentValue: inputProd?.value
@@ -39,16 +47,16 @@ export class EqSelection implements Converter {
                         args: {
                             title: 'Depth',
                             entries: [{
-                                text: '0km',
+                                text: '0 km',
                                 color: `rgb(${yellowRedRange(100, 0, 0).join(', ')})`,
                             }, {
-                                text: '30km',
+                                text: '30 km',
                                 color: `rgb(${yellowRedRange(100, 0, 30).join(', ')})`,
                             }, {
-                                text: '60km',
+                                text: '60 km',
                                 color: `rgb(${yellowRedRange(100, 0, 60).join(', ')})`,
                             }, {
-                                text: '100km',
+                                text: '100 km',
                                 color: `rgb(${yellowRedRange(100, 0, 100).join(', ')})`,
                             }],
                             continuous: true,
@@ -60,19 +68,20 @@ export class EqSelection implements Converter {
                         args: {
                             title: 'Magnitude',
                             entries: [{
-                                label: 'Mag. 6.0',
+                                label: 'Mw 6.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 6.0),
                             }, {
-                                label: 'Mag. 7.0',
+                                label: 'Mw 7.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 7.0),
                             }, {
-                                label: 'Mag. 8.0',
+                                label: 'Mw 8.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 8.0),
                             }, {
-                                label: 'Mag. 9.0',
+                                label: 'Mw 9.0',
                                 radius: linInterpolateXY(5, 5, 10, 20, 9.0),
                             }],
-                            height: 100
+                            height: 100,
+                            width: 100
                         }
                     }]
                 }

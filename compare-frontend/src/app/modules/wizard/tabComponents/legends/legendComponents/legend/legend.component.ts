@@ -15,11 +15,13 @@ export class LegendComponent implements OnInit {
   @Input() id: string = 'GradientNr' + Math.floor(Math.random() * 1000) + '';
   @Input() width: number = 250;
   @Input() height: number = 250;
+  @Input() labelAngle: number = 0;
   @Input() direction: LegendDirection = 'vertical';
   @Input() fractionGraphic = this.direction === 'vertical' ? 0.125 : 0.5;
   @Input() margin = 10;
   @Input() continuous = false;
   @Input() entries: LegendEntry[] = [];
+  @Input() svgContainerStyle = "";
   @ViewChild('legendAnchor', {static: true}) div!: ElementRef;
 
 
@@ -38,7 +40,7 @@ export class LegendComponent implements OnInit {
 
       const legend = legendComponent()
         .id(this.id)
-        .width(this.width).height(this.height).direction(this.direction)
+        .width(this.width).height(this.height).direction(this.direction).angle(this.labelAngle)
         .fractionGraphic(this.fractionGraphic).margin(this.margin)
         .continuous(this.continuous)
         .entries(translatedEntries);

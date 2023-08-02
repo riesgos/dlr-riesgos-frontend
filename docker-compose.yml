@@ -2,6 +2,7 @@ services:
   
   backend:
     build: ./backend
+    image: dlrriesgos/backend
     ports:
       - ${backendPort}:${backendPort}
     volumes:
@@ -26,6 +27,7 @@ services:
 
   monitor:
     build: ./monitor
+    image: dlrriesgos/monitor
     depends_on:
       - backend
     environment:
@@ -38,6 +40,7 @@ services:
   
   frontend:
     build: ./frontend
+    image: dlrriesgos/frontend
     depends_on:
       - backend
     ports:
@@ -49,6 +52,7 @@ services:
 
   compare-frontend:
     build: ./compare-frontend
+    image: dlrriesgos/compare-frontend
     depends_on:
       - backend
     ports:

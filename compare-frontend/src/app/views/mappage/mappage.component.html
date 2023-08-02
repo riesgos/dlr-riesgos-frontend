@@ -7,10 +7,11 @@
 <ng-template #oneMap>
     <div *ngIf="scenario$ | async as scenario" class="page">
         <ng-container *ngIf="focus$ | async as focus">
-            <div class="maps">
-                <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
-            </div>
-            <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
+                <div class="maps">
+                    <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
+                </div>
+                <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
+                <app-control-buttons [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-control-buttons box right"></app-control-buttons>
         </ng-container>
     </div>
 </ng-template>
@@ -19,12 +20,39 @@
 <ng-template #twoMaps>
     <div *ngIf="scenario$ | async as scenario" class="page">
         <ng-container *ngIf="focus$ | async as focus">
-            <div class="maps">
-                <app-map *ngIf="focus.left || !focus.right" [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
-                <app-map *ngIf="focus.right"                [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
-            </div>
-            <app-wizard [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
-            <app-wizard [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
+            <ng-container *ngIf="modals$ | async as modals">
+
+                <div class="maps">
+                    <app-map *ngIf="focus.left || !focus.right" [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
+                    <app-map *ngIf="focus.right"                [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
+                </div>
+
+                <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
+                <app-control-buttons [scenario]="scenario" [partition]="'left'"  [focus]="focus.left" class="page-control-buttons box left-middle"></app-control-buttons>
+                <app-wizard          [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
+                <app-control-buttons [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-control-buttons box right-middle"></app-control-buttons>
+                
+
+                <div *ngIf="modals['left'].args" class="modal left">
+                    <app-modal [scenario]="scenario" [partition]="'left'" 
+                            [title]="modals['left'].args.title"  [subtitle]="modals['left'].args.subtitle"  
+                            [body]="modals['left'].args.body"  [closable]="modals['left'].args.closable"  >
+                    </app-modal>
+                </div>
+                <div *ngIf="modals['right'].args" class="modal right">
+                    <app-modal [scenario]="scenario" [partition]="'right'"
+                            [title]="modals['right'].args.title" [subtitle]="modals['right'].args.subtitle" 
+                            [body]="modals['right'].args.body" [closable]="modals['right'].args.closable" >
+                    </app-modal>
+                </div>
+                <div *ngIf="modals['middle'].args" class="modal middle">
+                    <app-modal [scenario]="scenario" [partition]="'middle'"
+                            [title]="modals['middle'].args.title" [subtitle]="modals['middle'].args.subtitle" 
+                            [body]="modals['middle'].args.body" [closable]="modals['middle'].args.closable" >
+                    </app-modal>
+                </div>
+
+            </ng-container>
         </ng-container>
     </div>
 </ng-template>

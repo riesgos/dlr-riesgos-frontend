@@ -32,6 +32,7 @@ export class EqSimulation implements Converter {
             return of([
                 {
                     id: "eqSimWmsLayer",
+                    stepId: "EqSimulation",
                     layer: new TileLayer({
                         source: new TileWMS({
                             url: baseUrl,
@@ -40,7 +41,8 @@ export class EqSimulation implements Converter {
                                 "STYLES": "shakemap-pga"
                             }
                         }),
-                        opacity: 0.4
+                        opacity: 0.4,
+                        visible: true
                     }),
                     popup: (location: number[], features: FeatureLike[]) => {
                         const props = features[0].getProperties();
@@ -55,7 +57,8 @@ export class EqSimulation implements Converter {
                     },
                     onClick: () => {},
                     onHover: () => {},
-                    opacity: 1.0
+                    opacity: 1.0,
+                    visible: true
                 }
             ]);
 

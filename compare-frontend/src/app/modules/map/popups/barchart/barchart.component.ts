@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { BarData, createBigBarChart } from 'src/app/helpers/d3charts';
+import { BarDatum, createBigBarChart } from 'src/app/helpers/d3charts';
 import { TranslationService } from 'src/app/services/translation.service';
 
 @Component({
@@ -9,12 +9,13 @@ import { TranslationService } from 'src/app/services/translation.service';
 })
 export class BarchartComponent implements OnInit, AfterViewInit {
 
-  @Input() data: BarData[] = [];
+  @Input() data: BarDatum[] = [];
   @Input() width = 600;
   @Input() height = 400;
   @Input() title = '';
   @Input() xLabel = 'xLabel';
   @Input() yLabel = 'yLabel';
+  @Input() smallPrint = '';
   @Input() noData = 'NoData';
   @ViewChild('container') container!: ElementRef<HTMLDivElement>;
 

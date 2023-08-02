@@ -5,7 +5,11 @@
         [class.focus]="data.hasFocus"
         (click)="toggleFocus()">
         <h4>{{ data.step.step.title | translate }}</h4>
-        <div *ngIf="data.step.state.type === 'running'" class="progressBar"></div>
+
+        <img *ngIf="data.step.state.type === 'running'" style="height: 20px; width: 20px; " src="assets/icons/hourglass_animated.svg" />
+        <img *ngIf="data.step.state.type === 'completed'" style="height: 16px; width: 16px; opacity: 0.7;" src="assets/icons/checkmark_animated.svg" />
+        <!-- <div *ngIf="data.step.state.type === 'running'" class="progressBar"></div> -->
+
     </div>
     <div class="step-body" *ngIf="data.hasFocus">
         <app-tabs>
@@ -15,10 +19,10 @@
             <app-tab [tabTitle]="'Configuration'" *ngIf="data.step.state.type === 'available'">
                 <app-config [scenario]="scenario" [partition]="partition" [data]="data" [autoPilot]="data.isAutoPiloted"></app-config>
             </app-tab>
-            <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed' && data.layerControlables.length > 0">
+            <app-tab [tabTitle]="'Layers'" *ngIf="data.step.state.type === 'completed'">
                 <app-layers [scenario]="scenario" [partition]="partition" [data]="data"></app-layers>
             </app-tab>
-            <app-tab [tabTitle]="'Legend'" *ngIf="data.legend && data.step.state.type === 'completed'">
+            <app-tab [tabTitle]="'Legend'" *ngIf="data.legend && data.step.state.type === 'completed' || data.step.step.id === 'selectEq'">
                 <app-legends [scenario]="scenario" [partition]="partition" [data]="data"></app-legends>
             </app-tab>
             <app-tab [tabTitle]="'Description'" *ngIf="data.info">

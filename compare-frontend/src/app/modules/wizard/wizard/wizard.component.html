@@ -1,38 +1,20 @@
 <div class="wizard box" *ngIf="focus">
-    <div *ngIf="partition === 'left'" class="wizard-header">
-        <h4 style="color: var(--gray-600)">{{ 'Wizard' | translate }}</h4>
-        <app-svg
-            (click)="toggleFocus()"
-            style="height: 1rem; width: 1rem; background-color: var(--gray-1000);"
-            [path]="'assets/icons/double_caret_left.svg'">
-        </app-svg>
-    </div>
-    <div *ngIf="partition === 'right'" class="wizard-header">
-        <app-svg
-            (click)="toggleFocus()"
-            style="height: 1rem; width: 1rem; background-color: var(--gray-1000);"
-            [path]="'assets/icons/double_caret_right.svg'">
-        </app-svg>
-        <h4 style="color: var(--gray-600)">{{ 'Wizard' | translate }}</h4>
-    </div>
+    <ng-container *ngIf="state$ | async as state">
 
-    <div class="wizard-content" *ngIf="state$ | async as state">
-        <div class="step" *ngFor="let datum of state.stepData">
-            <app-step [scenario]="scenario" [partition]="partition" [data]="datum"></app-step>
+        <div class="wizard-header">
+            <app-svg *ngIf="partition === 'right' && state.wizardExpanded"  (click)="hideWizard()"   [path]="'assets/icons/double_caret_up.svg'" style="width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
+            <app-svg *ngIf="partition === 'right' && !state.wizardExpanded" (click)="expandWizard()" [path]="'assets/icons/double_caret_down.svg'" style="width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
+            <app-info [scenario]="scenario" [partition]="partition"></app-info>
+            <app-svg *ngIf="partition === 'left' && state.wizardExpanded"  (click)="hideWizard()"   [path]="'assets/icons/double_caret_up.svg'" style="width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
+            <app-svg *ngIf="partition === 'left' && !state.wizardExpanded" (click)="expandWizard()" [path]="'assets/icons/double_caret_down.svg'" style="width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
         </div>
-    </div>
+    
+        <div class="wizard-content" *ngIf="state.wizardExpanded">
+            <div class="step" *ngFor="let datum of state.stepData; trackBy: trackByFn">
+                <app-step [scenario]="scenario" [partition]="partition" [data]="datum"></app-step>
+            </div>
+        </div>
 
+    </ng-container>
 </div>
 
-<div class="wizard box" style="width: 2.5rem; height: 2.5rem;" *ngIf="focus === false">
-    <app-svg  *ngIf="partition === 'right'"
-        (click)="toggleFocus()"
-        style="display: block; margin: 0.75rem; height: 1rem; width: 1rem; background-color: var(--gray-1000);"
-        [path]="'assets/icons/double_caret_left.svg'">
-    </app-svg>
-    <app-svg *ngIf="partition === 'left'"
-        (click)="toggleFocus()"
-        style="display: block; margin: 0.75rem; height: 1rem; width: 1rem; background-color: var(--gray-1000);"
-        [path]="'assets/icons/double_caret_right.svg'">
-    </app-svg>
-</div>

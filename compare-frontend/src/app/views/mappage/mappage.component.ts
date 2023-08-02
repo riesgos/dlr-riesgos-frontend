@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, tap, OperatorFunction } from 'rxjs';
-import { Partition, RiesgosState, RiesgosScenarioState, ScenarioName, scenarioNameIsNotNone } from 'src/app/state/state';
+import { getRules } from 'src/app/state/rules';
+import { Partition, RiesgosState, RiesgosScenarioState, ScenarioName, scenarioNameIsNotNone, ModalState } from 'src/app/state/state';
 
 @Component({
   selector: 'app-mappage',
   templateUrl: './mappage.component.html',
-  styleUrls: ['./mappage.component.css']
+  styleUrls: ['./mappage.component.css'],
 })
 export class MappageComponent {
 
@@ -41,8 +42,21 @@ export class MappageComponent {
   );
 
   public rules$ = this.store.select(state => state.riesgos).pipe(
-    map(state => state.rules)
+    map(state => getRules(state.rules))
   );
+
+  public modals$ = this.store.select(state => state.riesgos).pipe(
+    filter(state => scenarioNameIsNotNone(state.currentScenario)),
+    map(state => {
+      const currentScenario = state.currentScenario as ScenarioName;
+      const currentScenarioData = state.scenarioData[currentScenario]!;
+      const modals: {[partition: string]: ModalState} = {};
+      for (const [partitionName, partitionData] of Object.entries(currentScenarioData)) {
+        modals[partitionName] = partitionData.modal;
+      }
+      return modals;
+    })
+  )
 
   constructor(
     private store: Store<{ riesgos: RiesgosState }>,

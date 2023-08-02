@@ -1,10 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
-import { WritableDraft } from 'immer/dist/internal';
-import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata, Rules } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerOpacity } from './actions';
+import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, Partition, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setZoomToStep } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
-import { allParasSet, calcAutoPilotableSteps, getMapPositionForStep } from './helpers';
+import { allParasSet, getMapPositionForStep, offsetCenterForPartition } from './helpers';
+import { getRules } from './rules';
 
 
 
@@ -12,6 +12,7 @@ export const reducer = createReducer(
   initialRiesgosState,
 
   immerOn(ruleSetPicked, (state, action) => {
+    const rules = getRules(state.rules);
     state.rules = action.rules;
   }),
 
@@ -36,7 +37,8 @@ export const reducer = createReducer(
       partitionData.active = true;
     }
 
-    if (state.rules.focusFirstStepImmediately) {
+    const rules = getRules(state.rules);
+    if (rules.focusFirstStepImmediately) {
       for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
         for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
           const firstStep = partitionData.steps[0].step.id;
@@ -49,48 +51,59 @@ export const reducer = createReducer(
     }
 
 
-    if (state.rules.focusFirstStepImmediately) {
+    if (rules.focusFirstStepImmediately) {
       for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
-    
         for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-            if ("include" in state.rules.allowConfiguration) {
-              const configurable = state.rules.allowConfiguration.include;
-              const nonConfigurable = partitionData.products.map(p => p.id).filter(id => !configurable.includes(id));
-              setValuesToDefaults(partitionData, nonConfigurable);
-            } else if (state.rules.allowConfiguration.exclude?.length > 0) {
-              setValuesToDefaults(partitionData, state.rules.allowConfiguration.exclude);
-            }
-          }
+          const configurable = partitionData.products.map(p => p.id).filter(id => rules.allowConfiguration(id));
+          const nonConfigurable = partitionData.products.map(p => p.id).filter(id => !configurable.includes(id));
+          setValuesToDefaults(partitionData, nonConfigurable);
+        }
       }
     }
-
 
     state.currentScenario = action.scenario;
     return state;
   }),
 
+  immerOn(movingBackToMenu, (state, action) => {
+    state.rules = undefined;
+    state.currentScenario = 'none';
+  }),
+
   immerOn(stepSetFocus, (state, action) => {
     const scenarioData = state.scenarioData[action.scenario]!;
     const partitionData = scenarioData[action.partition]!;
+    const rules = getRules(state.rules);
 
     function handle(pd: RiesgosScenarioState, action: ReturnType<typeof stepSetFocus>) {
       if (action.focus === false) {
         pd.focus.focusedSteps = pd.focus.focusedSteps.filter(s => s !== action.stepId);
       } else {
-        if (state.rules.oneFocusOnly) pd.focus.focusedSteps = [action.stepId];
+        if (rules.oneFocusOnly) pd.focus.focusedSteps = [action.stepId];
         else if (!pd.focus.focusedSteps.includes(action.stepId)) pd.focus.focusedSteps.push(action.stepId);
-        const {center, zoom} = getMapPositionForStep(action.scenario, action.partition, action.stepId);
-        pd.map.center = center;
-        pd.map.zoom = zoom;
       }
     }
 
-    if (state.rules.mirrorFocus) {
+    if (rules.mirrorFocus) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
         handle(otherPartitionData, action);
       }
     } else {
       handle(partitionData, action);
+    }
+
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+          if (partitionName === action.partition) {
+            if (partitionData.zoomToSelectedStep) {
+              const {center, zoom} = getMapPositionForStep(action.scenario, partitionName as any, action.stepId);
+              partitionData.map.center = center;
+              partitionData.map.zoom = zoom;
+            }
+          }
+        }
+      }
     }
 
     return state;
@@ -100,6 +113,7 @@ export const reducer = createReducer(
 
     const scenarioData = state.scenarioData[action.scenario]!;
     const partitionData = scenarioData[action.partition]!;
+    const rules = getRules(state.rules);
 
     function handle(pd: RiesgosScenarioState, action: ReturnType<typeof stepConfig>) {
       for (const [productId, productValue] of Object.entries(action.values)) {
@@ -111,7 +125,7 @@ export const reducer = createReducer(
       }
     }
 
-    if (state.rules.mirrorData) {
+    if (rules.mirrorData) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
         handle(otherPartitionData, action);
       }
@@ -132,6 +146,7 @@ export const reducer = createReducer(
   immerOn(stepExecSuccess, (state, action) => {
     const scenarioData = state.scenarioData[action.scenario]!;
     const partitionData = scenarioData[action.partition]!;
+    const rules = getRules(state.rules);
 
     function updateProducts(partitionData: RiesgosScenarioState, action: ReturnType<typeof stepExecSuccess>) {
       const step = partitionData.steps.find(s => s.step.id === action.step)!;
@@ -149,7 +164,8 @@ export const reducer = createReducer(
       }
     }
 
-    if (state.rules.mirrorData) {
+    // update products ... potentially in other partitions, too
+    if (rules.mirrorData) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioData)) {
         updateProducts(otherPartitionData, action);
       }
@@ -169,19 +185,35 @@ export const reducer = createReducer(
     return state;
   }),
 
-  immerOn(stepReset, (state, action) => {
-    const scenarioData = state.scenarioData[action.scenario]!;
-    const partitionData = scenarioData[action.partition]!;
-    const step = partitionData.steps.find(s => s.step.id === action.stepId)!;
-    step.state = new StepStateAvailable();
+  immerOn(stepResetAll, (state, action) => {
+    const rules = getRules(state.rules);
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+          if (partitionName === action.partition || rules.mirrorReset) {
+            for (const step of partitionData.steps) {
+              for (const output of step.step.outputs) {
+                const product = partitionData.products.find(p => p.id === output.id);
+                if (product) {
+                  if (product.value) product.value = undefined;
+                  if (product.reference) product.reference = undefined;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    state = deriveState(state);
     return state;
   }),
 
   immerOn(autoPilotEnqueue, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]![action.partition]!;
+    const rules = getRules(state.rules);
 
     // set default values for auto-pilotable steps
-    const autoPilotable = calcAutoPilotableSteps(state.rules, scenarioState.steps);
+    let autoPilotable = scenarioState.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));
     for (const step of scenarioState.steps) {
       if (autoPilotable.includes(step.step.id)) {
         for (const input of step.step.inputs) {
@@ -222,14 +254,15 @@ export const reducer = createReducer(
   immerOn(mapMove, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
     const partitionData = scenarioState[action.partition]!;
+    const rules = getRules(state.rules);
 
     partitionData.map.center = action.center;
     partitionData.map.zoom = action.zoom;
 
-    if (state.rules.mirrorMove) {
+    if (rules.mirrorMove) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioState)) {
         if (otherPartition !== action.partition) {
-          otherPartitionData.map.center = action.center;
+          otherPartitionData.map.center = offsetCenterForPartition(action.center, action.zoom, action.partition, otherPartition as Partition);
           otherPartitionData.map.zoom = action.zoom;
         }
       }
@@ -241,6 +274,7 @@ export const reducer = createReducer(
   immerOn(mapClick, (state, action) => {
     const scenarioState = state.scenarioData[action.scenario]!;
     const partitionData = scenarioState[action.partition]!;
+    const rules = getRules(state.rules);
 
     partitionData.map.clickLocation = action.location;
 
@@ -253,29 +287,79 @@ export const reducer = createReducer(
     }
 
     const compositeId = action.clickedFeature?.compositeId || "";
-    if ("exclude" in state.rules.mirrorClick) {
-      const disallowed = state.rules.mirrorClick.exclude;
-      if (!disallowed.includes(compositeId)) doMirror();
-    } else {
-      const allowed = state.rules.mirrorClick.include;
-      if (allowed.includes(compositeId)) doMirror();
-    }
+    if (rules.mirrorClick(compositeId)) doMirror();
 
     return state;
   }),
 
-  immerOn(mapLayerOpacity, (state, action) => {
-    const scenarioState = state.scenarioData[action.scenario]!;
-    const partitionData = scenarioState[action.partition]!;
+  immerOn(mapLayerVisibility, (state, action) => {
+    const rules = getRules(state.rules);
 
-    const foundEntry = partitionData.map.layerVisibility.find(entry => entry.layerCompositeId === action.layerCompositeId);
-    if (foundEntry) foundEntry.opacity = action.opacity;
-    else partitionData.map.layerVisibility.push({ layerCompositeId: action.layerCompositeId, opacity: action.opacity });
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partition, partitionData] of Object.entries(scenarioData)) {
+          if (partition === action.partition || rules.mirrorOpacity) {
+            for (const setting of action.config) {
+              const foundEntry = partitionData.map.layerSettings.find(entry => entry.layerCompositeId === setting.layerCompositeId);
+              if (foundEntry) foundEntry.visible = setting.visible;
+              else partitionData.map.layerSettings.push(setting);
+            }
+          }
+        }
+      }
+    }
+    return state;
   }),
 
   immerOn(togglePartition, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
     partitionData.active = !partitionData.active;
+    return state;
+  }),
+
+  immerOn(toggleWizard, (state, action) => {
+    const rules = getRules(state.rules);
+
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partition, partitionData] of Object.entries(scenarioData)) {
+          if (partition === action.partition || rules.mirrorWizard) {
+            partitionData.controlExpanded = action.expand;
+          }
+        }
+      }
+    }
+    return state;
+  }),
+
+  immerOn(openModal, (state, action) => {
+    const partitionData = state.scenarioData[action.scenario]![action.partition]!;
+    partitionData.modal.args = action.args
+    return state;
+  }),
+
+  immerOn(closeModal, (state, action) => {
+    const partitionData = state.scenarioData[action.scenario]![action.partition]!;
+    partitionData.modal.args = undefined;
+    return state;
+  }),
+
+  immerOn(setZoomToStep, (state, action) => {
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partition, partitionData] of Object.entries(scenarioData)) {
+          if (partition === action.partition) {
+            partitionData.zoomToSelectedStep = action.zoomToStep;
+            if (partitionData.focus.focusedSteps.length > 0) {
+              const firstOpenStepId = partitionData.focus.focusedSteps[0];
+              const {center, zoom} = getMapPositionForStep(scenarioName, partition, firstOpenStepId);
+              partitionData.map.center = center;
+              partitionData.map.zoom = zoom;
+            }
+          }
+        }
+      }
+    }
     return state;
   })
 );
@@ -293,7 +377,8 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
     let currentScenarioData = currentState.scenarioData[apiScenario.id];
     if (!currentScenarioData) currentScenarioData = {};
 
-    for (const partition of ['left', 'right'] as Partition[]) {
+    for (const partition of ['left', 'right', 'middle'] as Partition[]) {
+      // @TODO: middle partition doesnt need all that data ... only needs modal
 
       const newSteps: RiesgosStep[] = [];
       const newProducts: RiesgosProduct[] = [];
@@ -343,10 +428,15 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
           center: [-30, -70],
           zoom: 7,
           clickLocation: undefined,
-          layerVisibility: []
+          layerSettings: []
         },
         products: newProducts,
-        steps: newSteps
+        steps: newSteps,
+        modal: {
+          args: undefined,
+        },
+        controlExpanded: true,
+        zoomToSelectedStep: false
       };
       
       const newPartitionData: RiesgosScenarioState = {
@@ -375,11 +465,18 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
 
   const state = deriveState(newState);
 
+  const rules = getRules(state.rules);
+  for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+    for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+      partitionData.modal = rules.modal(state, scenarioName as ScenarioName, partitionName as Partition);
+    }
+  }
+
   return state;
 }
 
 
-function deriveState(state: WritableDraft<RiesgosState>) {
+function deriveState(state: RiesgosState) {
   for (const scenarioName in state.scenarioData) {
     const scenarioData = state.scenarioData[scenarioName as ScenarioName];
     for (const scenario of [scenarioData?.left, scenarioData?.right]) {
@@ -407,7 +504,7 @@ function deriveState(state: WritableDraft<RiesgosState>) {
   return state;
 }
 
-function setValuesToDefaults(partitionData: WritableDraft<RiesgosScenarioState>, ids: string[]) {
+function setValuesToDefaults(partitionData: RiesgosScenarioState, ids: string[]) {
   for (const id of ids) {
     const product = partitionData.products.find(p => p.id === id);
     const stepInput = partitionData.steps.map(s => s.step.inputs).flat().find(i => i.id === id);
@@ -428,4 +525,3 @@ function setValuesToDefaults(partitionData: WritableDraft<RiesgosScenarioState>,
 
   }
 }
-

@@ -23,6 +23,7 @@ export class EqDmg implements Converter {
 
         const dmgLayer: LayerComposite = {
             id: "EqDamage-WMS-damage",
+            stepId: "EqDamage",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,
@@ -37,25 +38,35 @@ export class EqDmg implements Converter {
             onClick: (location, features) => undefined,
             onHover: (location, features) => undefined,
             popup: (location, features) => {
-
-                return {
-                    component: DamagePopupComponent,
-                    args: {
-                        feature: features[0],
-                        metaData: summaryProduct.value,
-                        xLabel: 'damage',
-                        yLabel: 'Nr_buildings',
-                        schema: 'SARA_v1.0',
-                        heading: 'earthquake_damage_classification',
-                        additionalText: 'DamageStatesSara'
+                if (features.length <= 0) {
+                    return {
+                        component: StringPopupComponent,
+                        args: {
+                            title: "earthquake_damage_classification",
+                            body: 'no_residential_buildings'
+                        }
                     }
-                };
+                } else {
+                    return {
+                        component: DamagePopupComponent,
+                        args: {
+                            feature: features[0],
+                            metaData: summaryProduct.value,
+                            xLabel: 'Damage',
+                            yLabel: 'Nr_buildings',
+                            schema: 'SARA_v1.0',
+                            heading: 'earthquake_damage_classification',
+                            additionalText: 'DamageStatesGeneralized'
+                        }
+                    };
+                }
             },
-            opacity:  1.0,
+            visible: true,
         };
 
         const econLayer: LayerComposite = {
             id: "EqDamage-WMS-econ",
+            stepId: "EqDamage",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,
@@ -71,21 +82,24 @@ export class EqDmg implements Converter {
             onHover: (location, features) => undefined,
             popup: (location, features) => {
 
-                let loss = 'no_data';
+                let loss = 'no_residential_buildings';
                 if (features.length > 0) {
                     const props = features[0].getProperties();
-                    loss = +(props['cum_loss'] / 1_000_000).toFixed(3) + 'MUSD';
+                    if (props["buildings"] && props["buildings"] > 0) {
+                        loss = +(props['cum_loss'] / 1_000_000).toFixed(3) + ' MUSD';
+                    }
                 }
 
                 return {
                     component: StringPopupComponent,
                     args: {
                         title: "eq-economic-loss-title",
-                        body: createTableHtml([[loss]])
+                        body: loss
                     }
                 };
             },
             opacity: 1.0,
+            visible: true
         };
 
         return of([dmgLayer, econLayer]);

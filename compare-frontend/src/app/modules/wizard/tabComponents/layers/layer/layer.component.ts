@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { mapLayerOpacity } from 'src/app/state/actions';
+import { mapLayerVisibility } from 'src/app/state/actions';
 import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
 
 @Component({
@@ -12,17 +12,22 @@ export class LayerComponent {
 
   @Input() scenario!: ScenarioName;
   @Input() partition!: Partition;
+  @Input() stepId!: string;
   @Input() layerCompositeId!: string;
-  @Input() layerOpacity!: number;
+  @Input() layerVisibility!: boolean;
+  @Output() layerVisibilityChanged = new EventEmitter();
 
-  constructor(private store: Store<RiesgosState>) {}
+  constructor() {}
 
   showLayer() {
-    this.store.dispatch(mapLayerOpacity({ scenario: this.scenario, partition: this.partition, layerCompositeId: this.layerCompositeId, opacity: 1.0 }));
+    this.layerVisibilityChanged.emit({layerCompositeId: this.layerCompositeId, visible: true});
   }
 
   hideLayer() {
-    this.store.dispatch(mapLayerOpacity({ scenario: this.scenario, partition: this.partition, layerCompositeId: this.layerCompositeId, opacity: 0.0 }));
+    this.layerVisibilityChanged.emit({layerCompositeId: this.layerCompositeId, visible: false});
   }
 
+  toggleVisibility() {
+    this.layerVisibilityChanged.emit({layerCompositeId: this.layerCompositeId, visible: !this.layerVisibility });
+  }
 }

@@ -133,7 +133,8 @@ function createLegendDiscrete(
   direction: LegendDirection,
   entries: LegendEntryDiscrete[],
   fractionGraphic: number = 0.5,
-  margin: number = 10
+  margin: number = 10,
+  labelAngle: number = 0
 ) {
 
   // layouting
@@ -187,7 +188,8 @@ function createLegendDiscrete(
       .attr('width',  d => direction === 'horizontal' ? d.scaledSize : graphicEntryWidth)
       .attr('height', d => direction === 'horizontal' ? graphicEntryHeight : d.scaledSize)
       .attr('fill',   d => d.color)
-      .attr('stroke', d => [... Object.values(ensureRgb(d.color).darker().rgb())] );
+      .attr('stroke', d => `rgb(${[... Object.values(ensureRgb(d.color).darker().rgb())]})` )
+      .attr('stroke-width', 1);
 
 
   const labels = legendGroup.selectAll('.label')
@@ -196,8 +198,8 @@ function createLegendDiscrete(
     .append('g')
       .attr('class', 'label')
       .attr('transform', d => direction === 'horizontal' ?
-                                            `translate(${d.textPos}, ${graphicHeight + 10})` :
-                                            `translate(${graphicWidth + 10}, ${d.textPos})`)
+                                            `rotate(${labelAngle}) translate(${d.textPos}, ${graphicHeight + 10})` :
+                                            `rotate(${labelAngle}) translate(${graphicWidth + 10}, ${d.textPos})`)
     .append('text')
       .text(d => d.text)
       .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left')
@@ -220,7 +222,8 @@ function createLegendContinuous(
   direction: LegendDirection,
   entries: LegendEntryContinuous[],
   fractionGraphic: number = 0.5,
-  margin: number = 10
+  margin: number = 10,
+  labelAngle: number = 0
 ) {
 
   // layouting
@@ -289,11 +292,12 @@ function createLegendContinuous(
       .attr('class', 'label')
       .attr('transform', (d: LegendEntryContinuous) => direction === 'horizontal' ?
         `translate(${placementScale(d.position)}, ${graphicHeight + 15})` :
-        `translate(${graphicWidth + 10}, ${placementScale(d.position)})`)
+        `translate(${graphicWidth + 10}, ${placementScale(d.position)} )`)
     .append('text')
       .text((d: LegendEntryContinuous) => d.text)
-      .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left')
-      .style('dominant-baseline', 'middle');
+      // .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left')
+      .style('dominant-baseline', 'middle')
+      .attr('transform', direction === 'horizontal' ? `rotate(${labelAngle})` : `rotate(${labelAngle})`);
 
 }
 
@@ -342,6 +346,7 @@ export function legendComponent() {
   let _id = 'myLegendGradient';
   let _width = 300;
   let _height = 100;
+  let _angle = 0;
   let _direction: LegendDirection = 'horizontal';
   let _fractionGraphic = 0.5;
   let _continuous = false;
@@ -363,7 +368,7 @@ export function legendComponent() {
         });
         p += delta;
       }
-      createLegendContinuous(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin);
+      createLegendContinuous(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin, _angle);
 
     } else {
       
@@ -376,13 +381,14 @@ export function legendComponent() {
           size: size
         })
       }
-      createLegendDiscrete(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin);
+      createLegendDiscrete(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin, _angle);
     }
   }
 
   legend.id              = (id: string)                       => { _id = id; return legend; }
   legend.width           = (width: number)                    => { _width = width; return legend; }
   legend.height          = (height: number)                   => { _height = height; return legend; }
+  legend.angle           = (angle: number)                    => { _angle = angle; return legend; }
   legend.fractionGraphic = (fractionGraphic: number)          => { _fractionGraphic = fractionGraphic; return legend; }
   legend.margin          = (margin: number)                   => { _margin = margin; return legend; }
   legend.direction       = (direction: LegendDirection)       => { _direction = direction; return legend; }

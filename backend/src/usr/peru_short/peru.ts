@@ -7,6 +7,7 @@ import { step as tsSim } from './6_tssim/tssim';
 import { step as tsDmg } from './7_tsdamage/tsdamage';
 import { step as sysRel } from './8_sysrel/sysrel';
 import config from "../../config.json";
+import axios from "axios";
 
 
 export const peruShortFactory = new ScenarioFactory(
@@ -20,7 +21,7 @@ peruShortFactory.registerCondition(async () => {
         const procId = val.id;
         const request = `${url}?service=WPS&request=DescribeProcess&identifier=${procId}&version=2.0.0`;
         try {
-            const response = await fetch(request);
+            const response = await axios.get(request);
         } catch (error) {
             return `Error in attempting to access ${url} for process ${key} (id=${procId}): ${error}`;
         }
@@ -32,6 +33,6 @@ peruShortFactory.registerStep(select);
 peruShortFactory.registerStep(eqSim);
 peruShortFactory.registerStep(exposure);
 peruShortFactory.registerStep(eqDmg);
-// peruShortFactory.registerStep(tsSim);
-// peruShortFactory.registerStep(tsDmg);
-// peruShortFactory.registerStep(sysRel);
+peruShortFactory.registerStep(tsSim);
+peruShortFactory.registerStep(tsDmg);
+peruShortFactory.registerStep(sysRel);

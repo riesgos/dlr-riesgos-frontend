@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Server } from 'http';
 import express, { Express } from 'express';
 import { ScenarioAPIConfig, addScenarioApi } from './scenario.interface';

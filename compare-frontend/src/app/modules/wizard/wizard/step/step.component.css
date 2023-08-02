@@ -1,8 +1,18 @@
 .step-header {
-    padding: 0.2rem 0 0.2rem 0.2rem;
+    padding: 0.2rem 0.2rem 0.2rem 0.2rem;
     border: 1px solid transparent;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
+
+.step-header-unavailable {
+    cursor: default;
+}
 .step-header-unavailable h4 {
     color: var(--gray-100);
 }
@@ -16,6 +26,9 @@
 
 .step-header-available {
     background-color: var(--accent-color-100);
+}
+.step-header-available:hover {
+    border: 1px solid var(--accent-color-200);
 }
 .step-header-available.focus {
     background-color: var(--accent-color-100);
@@ -37,6 +50,9 @@
 
 .step-header-running {
     background-color: var(--notice-light);
+}
+.step-header-running:hover {
+    border: 1px solid var(--notice);
 }
 .step-header-running h4 {
     color: var(--notice);
@@ -64,6 +80,9 @@
 .step-header-completed {
     background-color: var(--success-light);
 }
+.step-header-completed:hover {
+    border: 1px solid var(--success);
+}
 .step-header-completed h4 {
     color: var(--success);
 }
@@ -77,6 +96,9 @@
 
 .step-header-error {
     background-color: var(--warning-light);
+}
+.step-header-error:hover {
+    border: 1px solid var(--warning);
 }
 .step-header-error h4 {
     color: var(--warning);

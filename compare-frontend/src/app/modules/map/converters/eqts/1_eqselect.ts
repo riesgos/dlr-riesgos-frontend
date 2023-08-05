@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Converter, LayerComposite } from "../../converter.service";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { BehaviorSubject, Observable, of, partition } from "rxjs";
 import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -16,6 +16,7 @@ import { Store } from "@ngrx/store";
 import { stepConfig } from "src/app/state/actions";
 import { createKeyValueTableHtml } from "src/app/helpers/others";
 import { TranslationService } from "src/app/services/translation.service";
+import { ResolverService } from "src/app/services/resolver.service";
 
 @Injectable()
 export class EqSelection implements Converter {
@@ -23,6 +24,7 @@ export class EqSelection implements Converter {
     constructor(
         private store: Store<{ riesgos: RiesgosState }>,
         private translate: TranslationService,
+        private resolver: ResolverService
     ) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
@@ -117,7 +119,28 @@ export class EqSelection implements Converter {
                     },
                     onHover() {},
                     opacity: 1.0,
-                    visible: true
+                    visible: true,
+                    modifyBasedOnPartition: (state, partition) => {
+                        if (partition === "right") {
+                            const leftState = state.scenarioData.PeruShort?.left;
+                            if (!leftState) return;
+                            const leftSelected = leftState.products.find(p => p.id === "selectedEq");
+                            if (!leftSelected) return;
+                            if (!leftSelected.value && !leftSelected.reference) return;
+                            this.resolver.resolveReference(leftSelected).subscribe(leftProduct => {
+                                const leftSelectedValue = leftProduct.value;
+                                if (!leftSelectedValue.features) return;
+                                const rightFeatures = layer.getSource()?.getFeatures();
+                                if (!rightFeatures) return;
+                                const rightFeaturesJson = JSON.parse(new GeoJSON().writeFeatures(rightFeatures));
+                                if (!rightFeaturesJson.features) return;
+                                const rightFeaturesJsonFiltered = rightFeaturesJson.features.filter((f: any) => f.id !== leftSelectedValue.features[0].id);
+                                layer.setSource(new VectorSource({
+                                    features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: rightFeaturesJsonFiltered })
+                                }));
+                            });
+                        }
+                    }
                 });
             }
         }

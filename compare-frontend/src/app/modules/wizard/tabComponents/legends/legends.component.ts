@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ScenarioName, Partition } from 'src/app/state/state';
+import { ScenarioName, PartitionName } from 'src/app/state/state';
 import { WizardComposite } from '../../wizard.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { WizardComposite } from '../../wizard.service';
 export class LegendsComponent implements OnInit {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() data!: WizardComposite;
 
   @ViewChild('legendAnchor', { read: ViewContainerRef, static: true }) anchor!: ViewContainerRef;

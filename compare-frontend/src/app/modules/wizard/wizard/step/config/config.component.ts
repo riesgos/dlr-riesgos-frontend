@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
 import * as AppActions from 'src/app/state/actions';
 import { Store } from '@ngrx/store';
 import { WizardComposite } from '../../../wizard.service';
@@ -13,7 +13,7 @@ import { WizardComposite } from '../../../wizard.service';
 export class ConfigComponent implements OnInit {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() data!: WizardComposite;
   @Input() autoPilot!: boolean | undefined;
   private allValues: { [key: string]: any } = {}

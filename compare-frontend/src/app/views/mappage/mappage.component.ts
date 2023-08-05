@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, tap, OperatorFunction } from 'rxjs';
 import { getRules } from 'src/app/state/rules';
-import { Partition, RiesgosState, RiesgosScenarioState, ScenarioName, scenarioNameIsNotNone, ModalState } from 'src/app/state/state';
+import { PartitionName, RiesgosState, RiesgosScenarioState, ScenarioName, scenarioNameIsNotNone, ModalState } from 'src/app/state/state';
 
 @Component({
   selector: 'app-mappage',
@@ -32,7 +32,7 @@ export class MappageComponent {
       if (!data.left) return false;
       if (!data.right) return false;
       return true;
-    }) as OperatorFunction<{[key in Partition]?: RiesgosScenarioState} | undefined, {[key in Partition]?: RiesgosScenarioState}>,
+    }) as OperatorFunction<{[key in PartitionName]?: RiesgosScenarioState} | undefined, {[key in PartitionName]?: RiesgosScenarioState}>,
     map(currentScenarioData => {
       return {
         left: currentScenarioData.left?.active || false, 

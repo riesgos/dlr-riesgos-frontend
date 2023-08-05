@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { mapLayerVisibility } from 'src/app/state/actions';
-import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
 
 @Component({
   selector: 'app-layer',
@@ -11,7 +11,7 @@ import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
 export class LayerComponent {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() stepId!: string;
   @Input() layerCompositeId!: string;
   @Input() layerVisibility!: boolean;

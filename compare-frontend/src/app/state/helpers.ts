@@ -1,9 +1,9 @@
 import { API_ScenarioState, API_Datum, API_DatumReference, isApiDatum } from "../services/backend.service";
-import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, Partition, RiesgosProduct, RiesgosStep, ScenarioName } from "./state";
+import { isRiesgosResolvedRefProduct, isRiesgosUnresolvedRefProduct, PartitionName, RiesgosProduct, RiesgosStep, ScenarioName } from "./state";
 
 
 
-export function offsetCenterForPartition(center: number[], zoom: number, sourcePartition: Partition, targetPartition: Partition): number[] {
+export function offsetCenterForPartition(center: number[], zoom: number, sourcePartition: PartitionName, targetPartition: PartitionName): number[] {
     /**
      * If Lima is far right in the left window, we want it to be a bit further left in the right window, 
      * so that the most interesting areas are closer to each other.
@@ -146,7 +146,7 @@ export function convertApiDataToRiesgosData(apiData: (API_Datum | API_DatumRefer
 }
 
 
-export function getMapPositionForStep(scenario: ScenarioName, partition: Partition, stepId: string): {center: number[], zoom: number} {
+export function getMapPositionForStep(scenario: ScenarioName, partition: PartitionName, stepId: string): {center: number[], zoom: number} {
     if (scenario === 'PeruShort') {
         switch (stepId) {
             case 'selectEq':

@@ -31,12 +31,12 @@ export class TsSim implements Converter {
                             title: 'mwhLand_local',
                             url: 'https://riesgos.52north.org/tsuna_geoserver/70000011/ows?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.3.0&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=70000011_mwhLand_local&STYLES=default',
                         }
-                    }, {
-                        component: ImageLegendComponent,
-                        args: {
-                            title: 'mwh',
-                            url: 'https://riesgos.52north.org/tsuna_geoserver/70000011/ows?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.3.0&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=70000011_mwh&STYLES=default',
-                        }
+                    // }, {
+                    //     component: ImageLegendComponent,
+                    //     args: {
+                    //         title: 'mwh',
+                    //         url: 'https://riesgos.52north.org/tsuna_geoserver/70000011/ows?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.3.0&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=70000011_mwh&STYLES=default',
+                    //     }
                     }]
                 }
             })

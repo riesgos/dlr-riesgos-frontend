@@ -1,5 +1,5 @@
 import { Observable, tap } from 'rxjs';
-import { Partition, ScenarioName } from 'src/app/state/state';
+import { PartitionName, ScenarioName } from 'src/app/state/state';
 
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -15,7 +15,7 @@ import * as Actions from 'src/app/state/actions';
 export class WizardComponent implements OnInit {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() focus!: boolean;
   public state$!: Observable<WizardState>;
 

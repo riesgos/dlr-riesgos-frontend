@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { Partition, RiesgosScenarioMapState, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosScenarioMapState, RiesgosState, ScenarioName } from 'src/app/state/state';
 import { WizardComposite } from '../../wizard.service';
 import { Store } from '@ngrx/store';
 import { mapLayerVisibility } from 'src/app/state/actions';
@@ -12,7 +12,7 @@ import { mapLayerVisibility } from 'src/app/state/actions';
 export class LayersComponent implements AfterViewInit, OnInit {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() data!: WizardComposite;
 
   constructor(private store: Store<{riesgos: RiesgosState}>) {}

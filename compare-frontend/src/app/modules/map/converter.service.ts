@@ -2,7 +2,7 @@ import { Inject, Injectable, InjectionToken, Type } from "@angular/core";
 import { FeatureLike } from "ol/Feature";
 import Layer from "ol/layer/Layer";
 import { Observable, of } from "rxjs";
-import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName, StepStateTypes } from "src/app/state/state";
+import { PartitionName, RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
 
 
 @Injectable()
@@ -41,6 +41,7 @@ export interface LayerComposite {
     onHover(location: number[], features: FeatureLike[]): void
     visible: boolean,
     opacity?: number,
+    modifyBasedOnPartition?: (state: RiesgosState, partition: PartitionName) => void
 }
 
 export class DefaultConverter implements Converter {

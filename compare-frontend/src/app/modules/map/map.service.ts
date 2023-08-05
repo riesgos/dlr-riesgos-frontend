@@ -8,7 +8,7 @@ import { defaultIfEmpty, filter, forkJoin, map, Observable, of, OperatorFunction
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
-import { Partition, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosScenarioState, RiesgosState, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosProductResolved, RiesgosScenarioMapState, RiesgosScenarioState, RiesgosState, ScenarioName } from 'src/app/state/state';
 
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -40,7 +40,7 @@ export class MapService {
      *                     └──────────────────────►└─► layerComposites───┘
      * ```
      */
-    public getMapState(scenario: ScenarioName, partition: Partition): Observable<MapState> {
+    public getMapState(scenario: ScenarioName, partition: PartitionName): Observable<MapState> {
 
         let rules: Rules;
 
@@ -128,7 +128,7 @@ export class MapService {
         return fullState$;
     }
 
-    public mapClick(scenario: ScenarioName, partition: Partition, location: number[], clickedFeature?: {compositeId: string, feature: any} ) {
+    public mapClick(scenario: ScenarioName, partition: PartitionName, location: number[], clickedFeature?: {compositeId: string, feature: any} ) {
         if (!clickedFeature) {
             this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: location }));
         } else {
@@ -136,11 +136,11 @@ export class MapService {
         }
     }
 
-    public mapMove(scenario: ScenarioName, partition: Partition, zoom: any, center: any) {
+    public mapMove(scenario: ScenarioName, partition: PartitionName, zoom: any, center: any) {
         this.store.dispatch(AppActions.mapMove({ scenario: scenario, partition: partition, zoom, center }))
     }
 
-    public closePopup(scenario: ScenarioName, partition: Partition) {
+    public closePopup(scenario: ScenarioName, partition: PartitionName) {
         this.store.dispatch(AppActions.mapClick({ scenario: scenario, partition: partition, location: undefined }));
       }
 

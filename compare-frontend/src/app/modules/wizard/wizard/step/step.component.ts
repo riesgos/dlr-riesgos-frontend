@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Partition, ScenarioName } from 'src/app/state/state';
+import { PartitionName, ScenarioName } from 'src/app/state/state';
 import { WizardComposite, WizardService } from '../../wizard.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { WizardComposite, WizardService } from '../../wizard.service';
 export class StepComponent {
   
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() data!: WizardComposite;
 
   constructor(private wizardSvc: WizardService) {}

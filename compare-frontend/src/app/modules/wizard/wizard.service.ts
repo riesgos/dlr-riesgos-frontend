@@ -2,7 +2,7 @@ import { combineLatest, filter, map, Observable, of, OperatorFunction, scan, sha
 import { ResolverService } from 'src/app/services/resolver.service';
 import * as AppActions from 'src/app/state/actions';
 import { allProductsEqual, arraysEqual, maybeArraysEqual } from 'src/app/state/helpers';
-import { Partition, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosScenarioState, RiesgosState, RiesgosStep, ScenarioName } from 'src/app/state/state';
 import { Injectable, Type } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ConverterService } from './converter.service';
@@ -52,7 +52,7 @@ export class WizardService {
      *                                                        ▲
      * map$ ──────────────────────────────────────────────────┘
      */
-    public getWizardState(scenario: ScenarioName, partition: Partition): Observable<WizardState> {
+    public getWizardState(scenario: ScenarioName, partition: PartitionName): Observable<WizardState> {
 
         // Silly little hack. We should probably just have rules on the scenario-level of state, not the root-level.
         let rules: Rules; 
@@ -138,11 +138,11 @@ export class WizardService {
         return wizardState$;
     }
 
-    public toggleFocus(scenario: ScenarioName, partition: Partition) {
+    public toggleFocus(scenario: ScenarioName, partition: PartitionName) {
         this.store.dispatch(AppActions.togglePartition({ scenario, partition }));
     }
 
-    public setStepFocus(scenario: ScenarioName, partition: Partition, stepId: string, focus: boolean) {
+    public setStepFocus(scenario: ScenarioName, partition: PartitionName, stepId: string, focus: boolean) {
         this.store.dispatch(AppActions.stepSetFocus({ scenario, partition, stepId, focus }));
     }
 }

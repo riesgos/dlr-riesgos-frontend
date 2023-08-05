@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { ScenarioName, Partition } from 'src/app/state/state';
+import { ScenarioName, PartitionName } from 'src/app/state/state';
 import { WizardComposite } from '../../wizard.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { WizardComposite } from '../../wizard.service';
 })
 export class DescriptionComponent {
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() data!: WizardComposite;
 
   @ViewChild('descriptionAnchor', { read: ViewContainerRef, static: true }) anchor!: ViewContainerRef;

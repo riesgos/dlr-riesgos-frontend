@@ -4,11 +4,11 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import GeoJSON from 'ol/format/GeoJSON';
 import MVT from "ol/format/MVT";
-import { Partition, ScenarioName } from 'src/app/state/state';
+import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { MapService, MapState } from '../map.service';
 import BaseEvent from 'ol/events/Event';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
 import { maybeArraysEqual } from 'src/app/state/helpers';
 import { FeatureLike } from 'ol/Feature';
 import { TileWMS, VectorTile, XYZ } from 'ol/source';
@@ -24,6 +24,7 @@ import Stroke from 'ol/style/Stroke';
 import TileSource from 'ol/source/Tile';
 import VectorSource from 'ol/source/Vector';
 import { Positioning } from 'ol/Overlay';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-map',
@@ -34,7 +35,7 @@ import { Positioning } from 'ol/Overlay';
 export class MapComponent implements AfterViewInit, OnDestroy {
 
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @ViewChild('mapContainer') mapContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('popup') popup!: ElementRef<HTMLDivElement>;
   @ViewChild('popupBody', { read: ViewContainerRef, static: true }) popupContainer!: ViewContainerRef;
@@ -46,7 +47,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private olSubs: Map<'moveend' | 'click', (event: BaseEvent | Event) => unknown> = new Map();
   private subs: Subscription[] = [];
 
+  private __currentRiesgosState = new BehaviorSubject<RiesgosState | undefined>(undefined);
+
   constructor(
+    private store: Store<{riesgos: RiesgosState}>,
     private mapSvc: MapService,
     private changeDetector: ChangeDetectorRef,
     private zone: NgZone,
@@ -63,6 +67,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         controls: defaults({ attribution: true, rotate: false, zoom: false }),
         overlays: [this.overlay]
       });
+
+
+      this.store.select(s => s.riesgos).subscribe(this.__currentRiesgosState);
   }
 
   ngOnDestroy(): void {
@@ -160,6 +167,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       layer.set("compositeId", id);
       if (c.opacity) layer.setOpacity(c.opacity);
       layer.setVisible(c.visible);
+      if (c.modifyBasedOnPartition && this.__currentRiesgosState.value) {
+        c.modifyBasedOnPartition(this.__currentRiesgosState.value, this.partition);
+      }
       return layer;
     });
 

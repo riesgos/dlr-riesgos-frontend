@@ -99,7 +99,7 @@ export interface RiesgosScenarioState {
     steps: RiesgosStep[];
     products: RiesgosProduct[];
     autoPilot: AutoPilotState,
-    partition: Partition,
+    partition: PartitionName,
     active: boolean,
     map: RiesgosScenarioMapState,
     focus: FocusState,
@@ -125,7 +125,7 @@ export interface RiesgosScenarioMetadata {
 }
 
 
-export type Partition = 'left' | 'right' | 'top' | 'bottom' | 'middle';
+export type PartitionName = 'left' | 'right' | 'top' | 'bottom' | 'middle';
 
 
 
@@ -134,11 +134,12 @@ export interface RiesgosState {
     currentScenario: ScenarioNameOrNone;
     scenarioData: {
         [key in ScenarioName]?: {
-            [key in Partition]?: RiesgosScenarioState
+            [key in PartitionName]?: RiesgosScenarioState
         }
     };
     metaData: RiesgosScenarioMetadata[];
     rules: RuleSetName | undefined;
+    userChoiceLinkMapViews: boolean;
 }
 
 
@@ -146,6 +147,7 @@ export const initialRiesgosState: RiesgosState = {
     currentScenario: 'none',
     scenarioData: {},
     metaData: [],
-    rules: undefined
+    rules: undefined,
+    userChoiceLinkMapViews: true
 };
 

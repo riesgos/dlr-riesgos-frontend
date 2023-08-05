@@ -7,7 +7,7 @@ import { ConfigService } from "../services/config.service";
 import { ResolverService } from "../services/resolver.service";
 import * as AppActions from "./actions";
 import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
-import { ModalState, Partition, RiesgosState, ScenarioName } from "./state";
+import { ModalState, PartitionName, RiesgosState, ScenarioName } from "./state";
 import { getRules } from "./rules";
 
 
@@ -154,12 +154,12 @@ check if more  │     └───────┬──────┘
 
             for (const [scenario, scenarioData] of Object.entries(state.scenarioData)) {
                 for (const [partition, partitionData] of Object.entries(scenarioData)) {
-                    const modal = rules.modal(state, scenario as ScenarioName, partition as Partition);
+                    const modal = rules.modal(state, scenario as ScenarioName, partition as PartitionName);
                     if (modal.args) {  // There should be a modal ...
-                        actions.push(AppActions.openModal({scenario: scenario as ScenarioName, partition: partition as Partition, args: modal.args }));
+                        actions.push(AppActions.openModal({scenario: scenario as ScenarioName, partition: partition as PartitionName, args: modal.args }));
                     } else { // There should not be one ...
                         if (partitionData.modal.args) { // ... but there is one:
-                            actions.push(AppActions.closeModal({scenario: scenario as ScenarioName, partition: partition as Partition}));
+                            actions.push(AppActions.closeModal({scenario: scenario as ScenarioName, partition: partition as PartitionName}));
                         }
                     }
                 }
@@ -167,6 +167,31 @@ check if more  │     └───────┬──────┘
 
             return actions;
         })  
+    ));
+
+
+    private linkingMapViews$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.setLinkMapViews),
+        filter(a => a.linkMapViews === true),
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        map(([action, state]) => {
+            const currentScenario = state.currentScenario;
+            const scenarioData = state.scenarioData[currentScenario as ScenarioName]!.left!;
+            const center = scenarioData.map.center;
+            const zoom = scenarioData.map.zoom;
+            return AppActions.mapMove({partition: 'left', scenario: state.currentScenario as ScenarioName, center, zoom });
+        })
+    ));
+
+    private modalClosed$ = createEffect(() => this.actions$.pipe(
+        ofType(AppActions.closeModal),
+        withLatestFrom(this.store$.select(state => state.riesgos)),
+        map(([action, state]) => {
+            const currentScenario = state.currentScenario;
+            const scenarioData = state.scenarioData[currentScenario as ScenarioName]!.left!;
+            const location = scenarioData.map.clickLocation;
+            return AppActions.mapClick({ scenario: action.scenario, partition: action.partition, location });
+        })
     ));
 
 
@@ -185,7 +210,7 @@ class ExecutionError extends Error {
     constructor(
         public initialError: string, 
         public scenario: ScenarioName, 
-        public partition: Partition, 
+        public partition: PartitionName, 
         public step: string) {
             super("Error during execution: " + initialError);
         }

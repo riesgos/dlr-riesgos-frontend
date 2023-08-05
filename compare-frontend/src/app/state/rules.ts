@@ -1,38 +1,41 @@
-import { RiesgosState, ScenarioName, Partition, ModalState, StepStateTypes } from "./state";
+import { partition } from "rxjs";
+import { RiesgosState, ScenarioName, PartitionName, ModalState, StepStateTypes } from "./state";
 
 export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIdentical' | 'compareAdvanced' | 'classic';
 
 export interface Rules {
     partition: boolean,
-    mirrorFocus: boolean,
-    mirrorOpacity: boolean,
+    mirrorStepFocus: (userChoiceMapsLinked: boolean) => boolean,
+    mirrorOpacity: (userChoiceMapsLinked: boolean) => boolean,
+    mirrorClick: (userChoiceMapsLinked: boolean, compositeId: string) => boolean,
+    mirrorMove: (userChoiceMapsLinked: boolean) => boolean,
+    mirrorWizard:  boolean,
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
     mirrorData: boolean,
-    mirrorClick: (compositeId: string) => boolean,
-    mirrorMove: boolean,
-    mirrorWizard: boolean,
+    allowReset: (partition: PartitionName) => boolean,
     mirrorReset: boolean,
     autoPilot: (stepId: string) => boolean,
     allowConfiguration: (productId: string) => boolean,
-    modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) => ModalState
+    modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) => ModalState,
 }
 
 export function getRules(ruleSet: RuleSetName | undefined): Rules {
     let rules: Rules = {
         partition: true,
-        mirrorFocus: true,
-        mirrorOpacity: true,
+        mirrorStepFocus: (userChoiceMapsLinked) => userChoiceMapsLinked,
+        mirrorOpacity: (userChoiceMapsLinked) => userChoiceMapsLinked,
         oneFocusOnly: true,
         focusFirstStepImmediately: true,
         mirrorData: false,
-        mirrorClick: (compositeId: string) => compositeId !== 'userChoiceLayer',
-        mirrorMove: true,
+        mirrorClick: (userChoiceMapsLinked: boolean, compositeId: string) => userChoiceMapsLinked && compositeId !== 'userChoiceLayer',
+        mirrorMove: userChoiceMapsLinked => userChoiceMapsLinked,
         mirrorWizard: false,
         mirrorReset: false,
+        allowReset: partition => true,
         autoPilot: (stepId: string) => stepId !== "selectEq",
         allowConfiguration: () => true,
-        modal: (state: RiesgosState, scenarioName: ScenarioName, partition: Partition) =>  ({ args: undefined })
+        modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) =>  ({ args: undefined }),
     };
 
     // This could become arbitrarily complicated. 
@@ -57,10 +60,12 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         case 'compareIdentical':
             rules.focusFirstStepImmediately = true;
             rules.mirrorData = true;
-            rules.mirrorFocus = false;
-            rules.mirrorMove = false;
-            rules.mirrorClick = () => false;
+            rules.mirrorStepFocus = userChoiceMapsLinked => userChoiceMapsLinked;
+            rules.mirrorMove = userChoiceMapsLinked => userChoiceMapsLinked;
+            rules.mirrorClick = userChoiceMapsLinked => userChoiceMapsLinked;
+            rules.mirrorReset = true;
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
+            rules.allowReset = partition => partition === 'left';
             rules.modal = (state, scenario, partition) => {
                 if (partition === "right") {
                     if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
@@ -72,9 +77,9 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             }
             break;
         case 'compareAdvanced':
-            rules.mirrorFocus = false;
-            rules.mirrorMove = false;
-            rules.mirrorClick = (compositeId: string) => false;
+            rules.mirrorStepFocus = userChoiceMapsLinked => userChoiceMapsLinked;
+            rules.mirrorMove = userChoiceMapsLinked => userChoiceMapsLinked;
+            rules.mirrorClick = (userChoiceMapsLinked: boolean, compositeId: string) => false;
             rules.autoPilot = () => false;
             break;
         case 'classic':
@@ -88,7 +93,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
 }
 
 
-function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partition: Partition) {
+function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partition: PartitionName) {
     const scenarioData = state.scenarioData[scenario];
     if (!scenarioData) return false;
     const partitionData = scenarioData[partition];
@@ -102,7 +107,7 @@ function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partitio
 }
 
 
-function noStepsStarted(state: RiesgosState, scenario: ScenarioName, partition: Partition) {
+function noStepsStarted(state: RiesgosState, scenario: ScenarioName, partition: PartitionName) {
     const scenarioData = state.scenarioData[scenario];
     if (!scenarioData) return true;
     const partitionData = scenarioData[partition];

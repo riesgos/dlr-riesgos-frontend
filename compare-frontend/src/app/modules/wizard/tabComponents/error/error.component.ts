@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ScenarioName, Partition, RiesgosState } from 'src/app/state/state';
+import { ScenarioName, PartitionName, RiesgosState } from 'src/app/state/state';
 import { WizardComposite } from '../../wizard.service';
 import { StepStateError } from 'src/app/state/state';
 import { Store } from '@ngrx/store';
@@ -12,7 +12,7 @@ import { stepReset } from 'src/app/state/actions';
 })
 export class ErrorComponent implements OnInit {
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   @Input() data!: WizardComposite;
   public message = "";
 

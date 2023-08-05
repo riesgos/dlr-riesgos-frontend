@@ -29,7 +29,6 @@
 
                 <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
                 <app-wizard          [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
-                <app-app-control     [showLink]="true" [showFix]="true"  class="control-center"></app-app-control>
 
                 <div *ngIf="modals['left'].args" class="modal left">
                     <app-modal [scenario]="scenario" [partition]="'left'" 
@@ -49,6 +48,8 @@
                             [body]="modals['middle'].args.body" [closable]="modals['middle'].args.closable" >
                     </app-modal>
                 </div>
+
+                <app-app-control     [showLink]="true" [showFix]="true"  class="control-center"></app-app-control>
 
             </ng-container>
         </ng-container>

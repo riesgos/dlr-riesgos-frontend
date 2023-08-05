@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, map, tap } from 'rxjs';
 import { TranslationService } from 'src/app/services/translation.service';
-import { Partition, RiesgosState, ScenarioName } from 'src/app/state/state';
-import { environment } from 'src/environments/environment';
+import { getRules } from 'src/app/state/rules';
+import { PartitionName, RiesgosState, ScenarioName, StepStateTypes } from 'src/app/state/state';
+import * as AppActions from 'src/app/state/actions';
 
 @Component({
   selector: 'app-info',
@@ -11,13 +12,19 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./info.component.css']
 })
 export class InfoComponent {
+
+
   @Input() scenario!: ScenarioName;
-  @Input() partition!: Partition;
+  @Input() partition!: PartitionName;
   public title$: Observable<string>;
+  public allowsReset$: Observable<boolean>;
 
-  constructor(private store: Store<{riesgos: RiesgosState}>, private translate: TranslationService, private cd: ChangeDetectorRef) {
+  constructor(
+    private store: Store<{riesgos: RiesgosState}>, 
+    private translate: TranslationService
+  ) {
 
-    this.title$ = store.select(state => state.riesgos).pipe(
+    this.title$ = this.store.select(state => state.riesgos).pipe(
 
       map(riesgosState => {
         const scenarioData = riesgosState.scenarioData[this.scenario];
@@ -36,16 +43,25 @@ export class InfoComponent {
         const depth = data["properties"]["origin.depth.value"];
         const mag = data["properties"]["magnitude.mag.value"];
         return `Mw ${mag}, ${depth} km (${id})`;
-      }),
-
-      // // for some weird reason title is not being updated in compiled version
-      // tap(() => {
-      //   if (environment.type === "prod") {
-      //     setTimeout(() => {
-      //       this.cd.detectChanges();
-      //     }, 1)
-      //   }
-      // })
+      })
     );
+
+    this.allowsReset$ = this.store.select(state => state.riesgos).pipe(
+      map(riesgosState => {
+        const partitionData = riesgosState.scenarioData[this.scenario]![this.partition]!;
+        const allowsReset = getRules(riesgosState.rules).allowReset(this.partition);
+        const queue = partitionData.autoPilot.queue;
+        const runningProcesses = partitionData?.steps.filter(s => s.state.type === StepStateTypes.running);
+        const completedProcesses = partitionData?.steps.filter(s => s.state.type === StepStateTypes.completed);
+        return allowsReset && queue?.length <= 0 && runningProcesses.length === 0 && completedProcesses.length > 0;
+      }),
+    );
+
+
   }
+
+  reset() {
+    this.store.dispatch(AppActions.stepResetAll({ scenario: this.scenario, partition: this.partition }));
+  }
+
 }

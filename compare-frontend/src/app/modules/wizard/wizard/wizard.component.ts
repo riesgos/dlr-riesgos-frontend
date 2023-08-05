@@ -1,5 +1,5 @@
-import { Observable, tap } from 'rxjs';
-import { PartitionName, ScenarioName } from 'src/app/state/state';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
 
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -18,14 +18,22 @@ export class WizardComponent implements OnInit {
   @Input() partition!: PartitionName;
   @Input() focus!: boolean;
   public state$!: Observable<WizardState>;
+  private __currentRiesgosState = new BehaviorSubject<RiesgosState | undefined>(undefined);
+
 
   constructor(
     private wizardSvc: WizardService,
-    private store: Store
-  ) {}
+    private store: Store<{riesgos: RiesgosState}>
+  ) {
+    this.store.select(s => s.riesgos).subscribe(this.__currentRiesgosState);
+  }
 
   ngOnInit(): void {
-    this.state$ = this.wizardSvc.getWizardState(this.scenario, this.partition);
+    this.state$ = this.wizardSvc.getWizardState(this.scenario, this.partition).pipe(
+      map(state => {
+        return state;
+      })
+    );
   }
 
   public toggleFocus() {

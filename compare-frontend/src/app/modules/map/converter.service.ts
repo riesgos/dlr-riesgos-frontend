@@ -26,7 +26,7 @@ export class ConverterService {
 
 export interface Converter {
     applies(scenario: ScenarioName, step: string): boolean
-    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]>
+    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[], partition: PartitionName): Observable<LayerComposite[]>
 }
 
 export const converterToken = new InjectionToken<Converter>('MapConverter');
@@ -41,7 +41,6 @@ export interface LayerComposite {
     onHover(location: number[], features: FeatureLike[]): void
     visible: boolean,
     opacity?: number,
-    modifyBasedOnPartition?: (state: RiesgosState, partition: PartitionName) => void
 }
 
 export class DefaultConverter implements Converter {

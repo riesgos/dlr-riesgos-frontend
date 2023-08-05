@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { API_ScenarioInfo } from '../services/backend.service';
+import { API_ScenarioInfo, API_Step } from '../services/backend.service';
 import { ModalState, PartitionName, RiesgosProduct, RiesgosScenarioMapState, ScenarioName } from './state';
 import { RuleSetName } from './rules';
 
@@ -19,6 +19,7 @@ export const stepExecSuccess = createAction('Step exec success', props<{ scenari
 export const stepExecFailure = createAction('Step exec failure', props<{ scenario: ScenarioName, partition: PartitionName, step: string, error: any }>());
 export const stepReset = createAction('Step reset', props<{ scenario: ScenarioName, partition: PartitionName, stepId: string }>());
 export const stepResetAll = createAction('Step reset', props<{ scenario: ScenarioName, partition: PartitionName }>());
+export const stepChange = createAction('(Hack) Step update settings', props<{ scenario: ScenarioName, partition: PartitionName, stepId: string, newData: API_Step }>());
 
 export const autoPilotEnqueue = createAction('Auto-pilot: enqueing', props<{ scenario: ScenarioName, partition: PartitionName }>());
 export const autoPilotDequeue = createAction('Auto-pilot: dequeuing', props<{ scenario: ScenarioName, partition: PartitionName, step: string }>());

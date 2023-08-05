@@ -1,5 +1,5 @@
 import { Injectable, Inject, InjectionToken } from "@angular/core";
-import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from "src/app/state/state";
+import { PartitionName, RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName } from "src/app/state/state";
 import { WizardComposite } from "./wizard.service";
 
 
@@ -24,7 +24,7 @@ export class ConverterService {
 
 export interface Converter {
     applies(scenario: ScenarioName, step: string): boolean
-    getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite
+    getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[], partition: PartitionName): WizardComposite
 }
 
 export const converterToken = new InjectionToken<Converter>('WizardConverter');

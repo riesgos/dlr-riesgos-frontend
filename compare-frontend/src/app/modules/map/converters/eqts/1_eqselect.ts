@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Converter, LayerComposite } from "../../converter.service";
-import { BehaviorSubject, Observable, of, partition } from "rxjs";
-import { RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
+import { BehaviorSubject, Observable, filter, map, of, partition, switchMap } from "rxjs";
+import { PartitionName, RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName, StepStateTypes } from "src/app/state/state";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
@@ -21,17 +21,34 @@ import { ResolverService } from "src/app/services/resolver.service";
 @Injectable()
 export class EqSelection implements Converter {
     
+    private riesgosState$ = new BehaviorSubject<RiesgosState | undefined>(undefined);
+    private leftEqSelect$ = new BehaviorSubject<RiesgosProductResolved | undefined>(undefined);
+
     constructor(
         private store: Store<{ riesgos: RiesgosState }>,
         private translate: TranslationService,
         private resolver: ResolverService
-    ) {}
+    ) {
+        store.select(state => state.riesgos).subscribe(this.riesgosState$);
+        this.riesgosState$.pipe(
+            filter(state => !!state),
+            map(state => {
+                const leftScenarioData = state!.scenarioData.PeruShort!.left!;
+                const eqProduct = leftScenarioData.products.find(p => p.id === "selectedEq")!;
+                return eqProduct;
+            }),
+            filter(product => product.value || product.reference),
+            switchMap(product => {
+                return this.resolver.resolveReference(product)
+            })
+        ).subscribe(this.leftEqSelect$);
+    }
 
     applies(scenario: ScenarioName, step: string): boolean {
         return step === "selectEq";
     }
 
-    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {
+    makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[], partition: PartitionName): Observable<LayerComposite[]> {
         const prnt = this;
         const layers: LayerComposite[] = [];
         const stepState = state.steps.find(s => s.step.id === "selectEq")?.state.type;
@@ -44,7 +61,7 @@ export class EqSelection implements Converter {
             const _trslt = this.translate;
 
             if (availableEqs) {
-                const availableEqOptions = structuredClone(availableEqs.options);
+                let availableEqOptions = structuredClone(availableEqs.options);
                 const pickedEqId = availableEqs.value?.properties["publicID"];
                 if (availableEqOptions) {
                     for (const option of availableEqOptions) {
@@ -53,6 +70,14 @@ export class EqSelection implements Converter {
                         } else {
                             option.properties["selected"] = false;
                         }
+                    }
+                }
+
+                if (partition === "right") {
+                    const leftValue = this.leftEqSelect$.value;
+                    if (leftValue && leftValue.value && leftValue.value.features && leftValue.value.features[0]) {
+                        const pickedIdLeft = leftValue.value.features[0].id;
+                        availableEqOptions = availableEqOptions?.filter((o: any) => o.id !== pickedIdLeft);
                     }
                 }
 
@@ -120,27 +145,6 @@ export class EqSelection implements Converter {
                     onHover() {},
                     opacity: 1.0,
                     visible: true,
-                    modifyBasedOnPartition: (state, partition) => {
-                        if (partition === "right") {
-                            const leftState = state.scenarioData.PeruShort?.left;
-                            if (!leftState) return;
-                            const leftSelected = leftState.products.find(p => p.id === "selectedEq");
-                            if (!leftSelected) return;
-                            if (!leftSelected.value && !leftSelected.reference) return;
-                            this.resolver.resolveReference(leftSelected).subscribe(leftProduct => {
-                                const leftSelectedValue = leftProduct.value;
-                                if (!leftSelectedValue.features) return;
-                                const rightFeatures = layer.getSource()?.getFeatures();
-                                if (!rightFeatures) return;
-                                const rightFeaturesJson = JSON.parse(new GeoJSON().writeFeatures(rightFeatures));
-                                if (!rightFeaturesJson.features) return;
-                                const rightFeaturesJsonFiltered = rightFeaturesJson.features.filter((f: any) => f.id !== leftSelectedValue.features[0].id);
-                                layer.setSource(new VectorSource({
-                                    features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures({ type: "FeatureCollection", features: rightFeaturesJsonFiltered })
-                                }));
-                            });
-                        }
-                    }
                 });
             }
         }

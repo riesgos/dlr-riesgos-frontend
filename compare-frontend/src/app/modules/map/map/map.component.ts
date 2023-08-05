@@ -167,9 +167,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       layer.set("compositeId", id);
       if (c.opacity) layer.setOpacity(c.opacity);
       layer.setVisible(c.visible);
-      if (c.modifyBasedOnPartition && this.__currentRiesgosState.value) {
-        c.modifyBasedOnPartition(this.__currentRiesgosState.value, this.partition);
-      }
       return layer;
     });
 
@@ -298,7 +295,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (!madePopup) this.overlay.setPosition(undefined);
     else {
       const [pixelX, pixelY] = this.map.getPixelFromCoordinate(location);
-      const mapSize = this.map.getSize(); console.log(pixel, mapSize)
+      const mapSize = this.map.getSize();
       if (mapSize) {
         const [mapX, mapY] = mapSize;
         const horizontalPositioning = pixelX < (mapX/2) ? "left" : "right";

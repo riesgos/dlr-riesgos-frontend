@@ -102,8 +102,8 @@ export class WizardService {
         const mapState$ = this.mapService.getMapState(scenario, partition);
 
 
-        const wizardState$ = combineLatest([resolvedData$, mapState$, changedState$]).pipe(
-            map(([resolvedData, mapState, state]) => {
+        const wizardState$ = combineLatest([resolvedData$, mapState$, changedState$, this.store.select(s => s.riesgos)]).pipe(
+            map(([resolvedData, mapState, state, riesgosState]) => {
                 const stepData: WizardComposite[] = [];  console.log(`new wizard data`)
 
                 const autoPilotables = state.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));
@@ -111,7 +111,7 @@ export class WizardService {
                     let stepDatum: WizardComposite;
                     if (state.focus.focusedSteps.includes(step.step.id)) {
                         const converter = this.converterSvc.getConverter(scenario, step.step.id);
-                        stepDatum = converter.getInfo(state, resolvedData);
+                        stepDatum = converter.getInfo(state, resolvedData, partition);
 
                         // updating WizardComposite with current state
                         stepDatum.hasFocus = true;

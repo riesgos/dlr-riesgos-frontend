@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, PartitionName, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setZoomToStep, setLinkMapViews } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setZoomToStep, setLinkMapViews, stepChange } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, getMapPositionForStep, offsetCenterForPartition } from './helpers';
 import { getRules } from './rules';
@@ -135,6 +135,23 @@ export const reducer = createReducer(
       handle(partitionData, action);
     }
 
+    return state;
+  }),
+
+  immerOn(stepChange, (state, action) => {
+    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
+      if (scenarioName === action.scenario) {
+        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
+          if (partitionName === action.partition) {
+            for (const step of partitionData.steps) {
+              if (step.step.id === action.stepId) {
+                step.step = action.newData;
+              }
+            }
+          }
+        }
+      }
+    }
     return state;
   }),
 

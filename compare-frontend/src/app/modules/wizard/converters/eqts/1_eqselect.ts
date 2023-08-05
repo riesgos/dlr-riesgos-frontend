@@ -1,18 +1,48 @@
-import { RiesgosProductResolved, RiesgosScenarioState, ScenarioName } from "src/app/state/state";
+import { PartitionName, RiesgosProductResolved, RiesgosScenarioState, RiesgosState, ScenarioName } from "src/app/state/state";
 import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
 import { MultiLegendComponent } from "../../tabComponents/legends/legendComponents/multi-legend/multi-legend.component";
 import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
 import { yellowRedRange, linInterpolateXY } from "src/app/helpers/colorhelpers";
 import { CircleLegendComponent } from "../../tabComponents/legends/legendComponents/circle-legend/circle-legend.component";
+import { Injectable } from "@angular/core";
+import { ResolverService } from "src/app/services/resolver.service";
+import { BehaviorSubject, filter, map, switchMap } from "rxjs";
+import { Store } from "@ngrx/store";
 
 
+@Injectable()
 export class EqSelection implements Converter {
+
+    private riesgosState$ = new BehaviorSubject<RiesgosState | undefined>(undefined);
+    private leftEqSelect$ = new BehaviorSubject<RiesgosProductResolved | undefined>(undefined);
+
+    constructor(
+        private store: Store<{ riesgos: RiesgosState }>,
+        private resolver: ResolverService
+    ) {
+        this.store.select(state => state.riesgos).subscribe(this.riesgosState$);
+        this.riesgosState$.pipe(
+            filter(state => !!state),
+            map(state => {
+                const leftScenarioData = state!.scenarioData.PeruShort!.left!;
+                const eqProduct = leftScenarioData.products.find(p => p.id === "selectedEq")!;
+                return eqProduct;
+            }),
+            filter(product => product.value || product.reference),
+            switchMap(product => {
+                return this.resolver.resolveReference(product)
+            })
+        ).subscribe(this.leftEqSelect$);
+    }
+
+
     applies(scenario: ScenarioName, step: string): boolean {
         return step === "selectEq";
     }
 
-    getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
+    getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[], partition: PartitionName): WizardComposite {
+
         const step = state.steps.find(s => s.step.id === "selectEq")!;
         const inputProd = state.products.find(p => p.id === "userChoice");
         if (!inputProd) return { hasFocus: false, inputs: [], step, layerControlables: [], oneLayerOnly: true };
@@ -27,6 +57,16 @@ export class EqSelection implements Converter {
         }
 
         const options = Object.fromEntries(inputProd.options!.map(v => [eqToLabel(v), v]));
+        if (partition === "right") {
+            if (this.leftEqSelect$.value) {
+                const leftEqSelected = this.leftEqSelect$.value.value;
+                if (leftEqSelected.features && leftEqSelected.features[0] && leftEqSelected.features[0].properties) {
+                    const key = eqToLabel(leftEqSelected.features[0]);
+                    delete options[key];
+                    console.log('new options: ', options);
+                }
+            }
+        }
 
         return {
             hasFocus: false,
@@ -86,7 +126,7 @@ export class EqSelection implements Converter {
                     }]
                 }
             }),
-            layerControlables: []
+            layerControlables: [],
         }    
     }
 }

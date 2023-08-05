@@ -7,8 +7,9 @@ import { ConfigService } from "../services/config.service";
 import { ResolverService } from "../services/resolver.service";
 import * as AppActions from "./actions";
 import { convertFrontendDataToApiState, convertApiDataToRiesgosData } from "./helpers";
-import { ModalState, PartitionName, RiesgosState, ScenarioName } from "./state";
+import { ModalState, PartitionName, RiesgosState, ScenarioName, StepStateTypes } from "./state";
 import { getRules } from "./rules";
+import { combineLatest, firstValueFrom, forkJoin, merge, of } from "rxjs";
 
 
 @Injectable()
@@ -183,6 +184,7 @@ check if more  │     └───────┬──────┘
         })
     ));
 
+    // this action ensures that there is a map click on the right, causing a re-render, which we need for filtering the available eqs.
     private modalClosed$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.closeModal),
         withLatestFrom(this.store$.select(state => state.riesgos)),
@@ -195,13 +197,40 @@ check if more  │     └───────┬──────┘
     ));
 
 
+    // /**
+    //  * Ugly hack: if left eq is selected, we remove it from the options for eqs on the right
+    //  */
+    // private leftEqSelected$ = createEffect(() => this.actions$.pipe(
+    //     ofType(AppActions.stepExecSuccess),
+    //     filter(action => action.scenario === "PeruShort" && action.partition === "left" && action.step === "selectEq"),
+    //     withLatestFrom(this.store$.select(state => state.riesgos)),
+    //     filter(([action, state]) => {
+    //         const rightScenarioData = state.scenarioData.PeruShort?.right;
+    //         if (state.currentScenario !== "PeruShort" || !rightScenarioData) return false;
+    //         const rightEqSelectedStep = rightScenarioData.steps.find(s => s.step.id === "selectEq");
+    //         return rightEqSelectedStep?.state.type === StepStateTypes.available;
+    //     }),
+    //     switchMap(async ([action, state]) => {
+    //         const resolvedData = await firstValueFrom(this.resolver.resolveReference(action.newData.find(d => d.id === "selectedEq")!));
+    //         const pickedFeatureLeft = resolvedData.value.features[0].id;
+
+    //         const rightScenarioData = state.scenarioData.PeruShort!.right!;
+    //         const rightEqSelectedStep = rightScenarioData.steps.find(s => s.step.id === "selectEq")!;
+    //         const apiData = structuredClone(rightEqSelectedStep.step);
+    //         apiData.inputs[0].options = apiData.inputs[0].options!.filter((o: any) => o.id !== pickedFeatureLeft);
+
+    //         return AppActions.stepChange({ scenario: "PeruShort", partition: "right", stepId: "selectedEq", newData: apiData });
+    //     })
+    // ));
+
+
     
     constructor(
         private actions$: Actions,
         private store$: Store<{ riesgos: RiesgosState }>,
         private configSvc: ConfigService,
         private backendSvc: BackendService,
-        private dataSvc: ResolverService,
+        private resolver: ResolverService,
     ) {}
 }
 

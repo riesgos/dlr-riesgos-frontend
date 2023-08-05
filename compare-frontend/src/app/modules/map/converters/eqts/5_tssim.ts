@@ -33,37 +33,39 @@ export class TsSim implements Converter {
         const layerNumber = +url.pathname.replace("/tsuna_geoserver/", "").replace("/ows", "");
 
         const layers: LayerComposite[] = [{
-            id: "mwh",
-            stepId: "Tsunami",
-            layer: new TileLayer({
-                source: new TileWMS({
-                    url: baseUrl,
-                    params: {
-                        "LAYERS": `${layerNumber}_mwh`,
-                    }
-                })
-            }),
-            onClick: (location, features) => undefined,
-            onHover: (location, features) => undefined,
-            popup: (location, features) => {
-                const props = features[0].getProperties();
-                let entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} m`;
-                if (props['GRAY_INDEX'] > 1000) entry = this.translation.translate('no_data');
-                return {
-                    component: StringPopupComponent,
-                    args: {
-                        title: `mwh`,
-                        body: createTableHtml([[entry]])
-                    }  
-                };
-            },
-            opacity: 1.0,
-            visible: true
-        }, {
+        //     id: "mwh",
+        //     stepId: "Tsunami",
+        //     layer: new TileLayer({
+        //         source: new TileWMS({
+        //             crossOrigin: 'anonymous', // so that the layer can be checked for alpha when checking if popup should be shown
+        //             url: baseUrl,
+        //             params: {
+        //                 "LAYERS": `${layerNumber}_mwh`,
+        //             }
+        //         })
+        //     }),
+        //     onClick: (location, features) => undefined,
+        //     onHover: (location, features) => undefined,
+        //     popup: (location, features) => {
+        //         const props = features[0].getProperties();
+        //         let entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} m`;
+        //         if (props['GRAY_INDEX'] > 1000) entry = this.translation.translate('no_data');
+        //         return {
+        //             component: StringPopupComponent,
+        //             args: {
+        //                 title: `mwh`,
+        //                 body: createTableHtml([[entry]])
+        //             }  
+        //         };
+        //     },
+        //     opacity: 1.0,
+        //     visible: true
+        // }, {
             id: "mwhLand_local",
             stepId: "Tsunami",
             layer: new TileLayer({
                 source: new TileWMS({
+                    crossOrigin: 'anonymous', // so that the layer can be checked for alpha when checking if popup should be shown
                     url: baseUrl,
                     params: {
                         "LAYERS": `${layerNumber}_mwhLand_local`,

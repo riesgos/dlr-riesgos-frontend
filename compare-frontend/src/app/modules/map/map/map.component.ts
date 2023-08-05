@@ -23,6 +23,7 @@ import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import TileSource from 'ol/source/Tile';
 import VectorSource from 'ol/source/Vector';
+import { Positioning } from 'ol/Overlay';
 
 @Component({
   selector: 'app-map',
@@ -185,6 +186,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           if (oldIndex) {
             this.map.getLayers().insertAt(oldIndex[1], layer);
           } else {
+            // if (layer.getSource() instanceof TileWMS) (layer.getSource() as TileWMS).crossOrigin = 'anonymous'
             this.map.addLayer(layer);
           }
         }
@@ -216,10 +218,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private _lastClickLocation: number[] | undefined;
   private async handleClick(mapState: MapState) {
     const location = mapState.clickLocation;
-    this.overlay.setPosition(location);
-
+    
     if (!location) {
-      this._lastClickLocation = location;
+      this.overlay.setPosition(undefined);
+      this._lastClickLocation = undefined;
       return;
     }
 
@@ -242,8 +244,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const source = layer.getSource();
         if (source instanceof TileWMS) {
           const view = this.map.getView();
+          let alpha = 1.0;
+          if ((source as any).crossOrigin) { // if the source allows inspecting color ...
+            const color = layer.getData(pixel)?.buffer;
+            alpha = color ? new Uint8Array(color)[3] : 0;
+          }
           const url = source.getFeatureInfoUrl(location, view.getResolution() || 10_000, view.getProjection(), { 'INFO_FORMAT': 'application/json' });
-          if (url) {
+          if (url && alpha > 0) {
             const result = await firstValueFrom<any>(this.http.get(url));
             if (result && result.features && result.features.length > 0 && result.features[0].properties && Object.keys(result.features[0].properties).length > 0) {
               const resultFeatures = new GeoJSON().readFeatures(result);
@@ -279,6 +286,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     // if (!madePopup) this.closePopup();
     // <-- not going over state-mgmt here. otherwise no popup showing up in `compare-two-scenarios` if second not already there.
     if (!madePopup) this.overlay.setPosition(undefined);
+    else {
+      const [pixelX, pixelY] = this.map.getPixelFromCoordinate(location);
+      const mapSize = this.map.getSize(); console.log(pixel, mapSize)
+      if (mapSize) {
+        const [mapX, mapY] = mapSize;
+        const horizontalPositioning = pixelX < (mapX/2) ? "left" : "right";
+        const verticalPositioning   = pixelY < (mapY/2) ? "top" : "bottom";
+        const positioning: Positioning = `${verticalPositioning}-${horizontalPositioning}`;
+        this.overlay.setPositioning(positioning);
+      }
+      this.overlay.setPosition(location);
+    }
 
     // further click handling
     // but check if last click was already in same location to prevent loop

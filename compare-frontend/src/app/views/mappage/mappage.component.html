@@ -11,7 +11,7 @@
                     <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
                 </div>
                 <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
-                <app-control-buttons [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-control-buttons box right"></app-control-buttons>
+                <app-app-control     [showLink]="false" [showFix]="true" class="control-right"></app-app-control>
         </ng-container>
     </div>
 </ng-template>
@@ -28,10 +28,8 @@
                 </div>
 
                 <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
-                <app-control-buttons [scenario]="scenario" [partition]="'left'"  [focus]="focus.left" class="page-control-buttons box left-middle"></app-control-buttons>
                 <app-wizard          [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
-                <app-control-buttons [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-control-buttons box right-middle"></app-control-buttons>
-                
+                <app-app-control     [showLink]="true" [showFix]="true"  class="control-center"></app-app-control>
 
                 <div *ngIf="modals['left'].args" class="modal left">
                     <app-modal [scenario]="scenario" [partition]="'left'" 

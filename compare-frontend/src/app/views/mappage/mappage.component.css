@@ -84,3 +84,16 @@
     width: 100%;
     height: 100%;
 }
+
+
+.control-right {
+    position: absolute;
+    right: 1rem;
+    bottom: 1.5rem;
+}
+
+.control-center {
+    position: absolute;
+    right: 44%;
+    bottom: 1.5rem;
+}

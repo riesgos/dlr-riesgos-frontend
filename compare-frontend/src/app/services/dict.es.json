@@ -1,7 +1,9 @@
 {
+    "LinkViews": "Vistas vinculadas",
+    "Results": "Resultados",
     "popupHoverForInfo": "El tipo de edificio se muestra al pasar el ratón por encima de las barras.",
     "Danger!": "Esto eliminará sus resultados actuales.",
-    "FixedExtent": "Extensión fija",
+    "FixedExtent": "Vistas fijas",
     "AdjustExtent": "Adjust extent",
     "AbrahamsonEtAl2015SInter": "Abrahamson et al. 2015",
     "acceleration": "Aceleración",

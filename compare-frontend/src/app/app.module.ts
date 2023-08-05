@@ -60,7 +60,7 @@ import { ModalComponent } from './views/mappage/modal/modal.component';
 import { StartpageComponent } from './views/startpage/startpage.component';
 import { ImageLegendComponent } from './modules/wizard/tabComponents/legends/image-legend/image-legend.component';
 import { TextComponent } from './modules/wizard/tabComponents/legends/text/text.component';
-import { ControlButtonsComponent } from './modules/wizard/control-buttons/control-buttons.component';
+import { AppControlComponent } from './modules/components/app-control/app-control.component';
 
 @NgModule({
   declarations: [
@@ -93,7 +93,7 @@ import { ControlButtonsComponent } from './modules/wizard/control-buttons/contro
     InfoComponent,
     ImageLegendComponent,
     TextComponent,
-    ControlButtonsComponent
+    AppControlComponent
   ],
   imports: [
     BrowserModule,

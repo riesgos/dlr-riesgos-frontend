@@ -1,12 +1,13 @@
 
-.wizard-settings {
+.app-control {
     display: flex;
-    flex-direction: row;
-    margin: 0.5rem;
+    flex-direction: column;
+    margin: 0.25rem;
     align-items: center;
     justify-content: space-evenly;
 }
 
 .clearButton {
     height: 1.5rem;
+    width: 9rem;
 }

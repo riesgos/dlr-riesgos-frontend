@@ -1,0 +1,23 @@
+<div class="app-control box">
+
+    <button *ngIf="showFix" (click)="zoomClicked($event)" class="clearButton" style="display: flex; font-size: small; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 0.9rem;">
+        {{ 'FixedExtent' | translate }}
+        <ng-container *ngIf="zoomingToStep$ | async; else crossedOutBlock">
+            <div style="padding-left: 0.25rem;">&cross;</div>
+        </ng-container>
+        <ng-template #crossedOutBlock>
+            <div style="padding-left: 0.25rem;">&check;</div>
+        </ng-template>
+    </button>
+
+    <button *ngIf="showLink" (click)="linkClicked($event)"  class="clearButton" style="display: flex; font-size: small; flex-direction: row; align-items: center; justify-content: center;">
+        {{ 'LinkViews' | translate }}
+        <ng-container *ngIf="viewsLinked$ | async; else crossedOutBlock">
+            <div style="padding-left: 0.25rem;">&check;</div>
+        </ng-container>
+        <ng-template #crossedOutBlock>
+            <div style="padding-left: 0.25rem;">&cross;</div>
+        </ng-template>
+    </button>
+
+</div>

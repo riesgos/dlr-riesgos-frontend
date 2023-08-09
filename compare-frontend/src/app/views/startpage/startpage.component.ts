@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { RiesgosState, ScenarioName } from 'src/app/state/state';
 import * as AppActions from '../../state/actions';
 import { RuleSetName } from 'src/app/state/rules';
+import GeoJSON from 'ol/format/GeoJSON';
 
 @Component({
   selector: 'app-startpage',
@@ -15,6 +16,17 @@ export class StartpageComponent implements OnInit {
   public studyAreas$ = this.store.select((state) => {
     return state.riesgos.metaData
   });
+  // feature = new GeoJSON().readFeature({
+  //   type: "Feature", 
+  //   geometry: {
+  //     type: "Polygon",
+  //     coordinates: []
+  //   },
+  //   properties: {
+  //     'c1': '{"0": 0.2, "1": 2.3, "2": 0.1, "3": 0.2, "4": 1.2}',
+
+  //   }
+  // });
 
   constructor(
     private store: Store<{riesgos: RiesgosState}>,

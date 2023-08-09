@@ -2,6 +2,7 @@ import { getBuildingClassColor } from './colorhelpers';
 import { select, pointer } from 'd3-selection';
 import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
+import { format } from 'd3-format';
 
 
 
@@ -96,10 +97,16 @@ export function createBigBarChart(
         const padding = 0.1 * (maxVal - minVal);
         const startVal = minVal >= 0.0 ? 0 : minVal - padding;
         const endVal = maxVal + padding;
-        const yScale = scaleLinear()
-            .domain([startVal, endVal])
+        let yScale = scaleLinear()
+            .domain([Math.round(startVal), Math.round(endVal)])
             .range([height - xAxisSize.height, 0]);
         const yAxisGenerator = axisLeft(yScale);
+
+        if (maxVal < 50) { // making sure that only integer values on y-axis
+          const yAxisTicks = yScale.ticks().filter(tick => Number.isInteger(tick));
+          yAxisGenerator.tickValues(yAxisTicks).tickFormat(format("d"));
+        }
+
         graph.append('g')
             .attr('class', 'yAxis')
             .call(yAxisGenerator);

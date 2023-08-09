@@ -63,7 +63,6 @@ export class EqSelection implements Converter {
                 if (leftEqSelected.features && leftEqSelected.features[0] && leftEqSelected.features[0].properties) {
                     const key = eqToLabel(leftEqSelected.features[0]);
                     delete options[key];
-                    console.log('new options: ', options);
                 }
             }
         }

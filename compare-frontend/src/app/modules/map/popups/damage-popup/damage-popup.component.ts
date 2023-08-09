@@ -75,6 +75,7 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
 
     let countTotal = 0;
     for (const datum of data) {
+      datum.value = Math.round(datum.value);
       datum.hoverText = "" + Math.round(datum.value) + " edificios";
       countTotal += datum.value;
     }

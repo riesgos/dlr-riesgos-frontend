@@ -139,7 +139,7 @@ export interface RiesgosState {
     };
     metaData: RiesgosScenarioMetadata[];
     rules: RuleSetName | undefined;
-    userChoiceLinkMapViews: boolean;
+    userChoiceLinkMapViews: boolean | undefined;
 }
 
 
@@ -148,6 +148,6 @@ export const initialRiesgosState: RiesgosState = {
     scenarioData: {},
     metaData: [],
     rules: undefined,
-    userChoiceLinkMapViews: true
+    userChoiceLinkMapViews: undefined
 };
 

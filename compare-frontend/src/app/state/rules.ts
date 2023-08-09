@@ -5,10 +5,10 @@ export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIde
 
 export interface Rules {
     partition: boolean,
-    mirrorStepFocus: (userChoiceMapsLinked: boolean) => boolean,
-    mirrorOpacity: (userChoiceMapsLinked: boolean) => boolean,
-    mirrorClick: (userChoiceMapsLinked: boolean, compositeId: string) => boolean,
-    mirrorMove: (userChoiceMapsLinked: boolean) => boolean,
+    mirrorStepFocus: (userChoiceMapsLinked: boolean | undefined) => boolean,
+    mirrorOpacity: (userChoiceMapsLinked: boolean | undefined) => boolean,
+    mirrorClick: (userChoiceMapsLinked: boolean | undefined, compositeId: string) => boolean,
+    mirrorMove: (userChoiceMapsLinked: boolean | undefined) => boolean,
     mirrorWizard:  boolean,
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
@@ -23,13 +23,13 @@ export interface Rules {
 export function getRules(ruleSet: RuleSetName | undefined): Rules {
     let rules: Rules = {
         partition: true,
-        mirrorStepFocus: (userChoiceMapsLinked) => userChoiceMapsLinked,
-        mirrorOpacity: (userChoiceMapsLinked) => userChoiceMapsLinked,
+        mirrorStepFocus: (userChoiceMapsLinked) => userChoiceMapsLinked === undefined ? true : userChoiceMapsLinked,
+        mirrorOpacity: (userChoiceMapsLinked) => userChoiceMapsLinked === undefined ? true : userChoiceMapsLinked,
         oneFocusOnly: true,
         focusFirstStepImmediately: true,
         mirrorData: false,
-        mirrorClick: (userChoiceMapsLinked: boolean, compositeId: string) => userChoiceMapsLinked && compositeId !== 'userChoiceLayer',
-        mirrorMove: userChoiceMapsLinked => userChoiceMapsLinked,
+        mirrorClick: (userChoiceMapsLinked: boolean | undefined, compositeId: string) => userChoiceMapsLinked === true && compositeId !== 'userChoiceLayer',
+        mirrorMove: userChoiceMapsLinked => userChoiceMapsLinked === undefined ? true : userChoiceMapsLinked,
         mirrorWizard: false,
         mirrorReset: false,
         allowReset: partition => true,
@@ -60,9 +60,9 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         case 'compareIdentical':
             rules.focusFirstStepImmediately = true;
             rules.mirrorData = true;
-            rules.mirrorStepFocus = userChoiceMapsLinked => userChoiceMapsLinked;
-            rules.mirrorMove = userChoiceMapsLinked => userChoiceMapsLinked;
-            rules.mirrorClick = userChoiceMapsLinked => userChoiceMapsLinked;
+            rules.mirrorStepFocus = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? false : userChoiceMapsLinked;
+            rules.mirrorMove = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? false : userChoiceMapsLinked;
+            rules.mirrorClick = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? false : userChoiceMapsLinked;
             rules.mirrorReset = true;
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.allowReset = partition => partition === 'left';
@@ -77,9 +77,9 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             }
             break;
         case 'compareAdvanced':
-            rules.mirrorStepFocus = userChoiceMapsLinked => userChoiceMapsLinked;
-            rules.mirrorMove = userChoiceMapsLinked => userChoiceMapsLinked;
-            rules.mirrorClick = (userChoiceMapsLinked: boolean, compositeId: string) => false;
+            rules.mirrorStepFocus = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? true : userChoiceMapsLinked;
+            rules.mirrorMove = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? true : userChoiceMapsLinked;
+            rules.mirrorClick = (userChoiceMapsLinked, compositeId) => false;
             rules.autoPilot = () => false;
             break;
         case 'classic':

@@ -61,7 +61,7 @@ export const reducer = createReducer(
       }
     }
 
-    state.userChoiceLinkMapViews = true;
+    state.userChoiceLinkMapViews = undefined;
 
     state.currentScenario = action.scenario;
     return state;

@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WizardService } from '../../wizard/wizard.service';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, filter } from 'rxjs';
+import { BehaviorSubject, filter, map } from 'rxjs';
 import { RiesgosState } from 'src/app/state/state';
 import * as Actions from 'src/app/state/actions';
+import { getRules } from 'src/app/state/rules';
 
 @Component({
   selector: 'app-app-control',
@@ -23,7 +24,17 @@ export class AppControlComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.store.select(s => s.riesgos.userChoiceLinkMapViews).subscribe(this.partitionsLinked$);
+    this.store.select(s => s.riesgos)
+      .pipe(map(riesgosState => {
+        const linked = riesgosState.userChoiceLinkMapViews;
+        if (linked === undefined) {
+          const rules = getRules(riesgosState.rules);
+          const doLink = rules.mirrorMove(linked);
+          return doLink;
+        }
+        return linked;
+      }))
+      .subscribe(this.partitionsLinked$);
     this.store.select(s => s.riesgos.scenarioData['PeruShort']?.left?.zoomToSelectedStep || false).subscribe(this.zoomingToStep$);
   }
 

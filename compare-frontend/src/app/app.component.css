@@ -9,7 +9,7 @@
 }
 
 .header .nav-item {
-    padding: 1.9rem 1.9rem 0.8rem 1.9rem;
+    padding: 0.35rem 1.9rem 0.35rem 1.9rem;
     color: var(--accent-color-200);
     cursor: pointer;
 }
@@ -41,15 +41,5 @@
     opacity: 0.5;
 }
 
-.message {
-    /* position: absolute; */
-    background-color: var(--accent-color-800);
-    color: var(--white);
-    width: 100%;
-}
 
-.message p {
-    padding: 0.125rem 1rem 0.125rem 1rem;
-    margin: 0;
-}
 

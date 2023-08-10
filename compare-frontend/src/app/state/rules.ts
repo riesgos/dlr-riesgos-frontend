@@ -13,9 +13,10 @@ export interface Rules {
     oneFocusOnly: boolean,
     focusFirstStepImmediately: boolean,
     mirrorData: boolean,
-    allowReset: (partition: PartitionName) => boolean,
     mirrorReset: boolean,
     autoPilot: (stepId: string) => boolean,
+    allowReset: (partition: PartitionName) => boolean,
+    allowViewLinkToggling: boolean,
     allowConfiguration: (productId: string) => boolean,
     modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) => ModalState,
 }
@@ -33,8 +34,9 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         mirrorWizard: false,
         mirrorReset: false,
         allowReset: partition => true,
-        autoPilot: (stepId: string) => stepId !== "selectEq",
+        allowViewLinkToggling: true,
         allowConfiguration: () => true,
+        autoPilot: (stepId: string) => stepId !== "selectEq",
         modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) =>  ({ args: undefined }),
     };
 
@@ -56,11 +58,15 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
                 }
                 return { args: undefined };
             }
+            rules.mirrorClick = () => true;
+            rules.mirrorMove = () => true;
+            rules.mirrorStepFocus = () => true;
+            rules.allowViewLinkToggling = false;
             break;
         case 'compareIdentical':
             rules.focusFirstStepImmediately = true;
             rules.mirrorData = true;
-            rules.mirrorStepFocus = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? false : userChoiceMapsLinked;
+            rules.mirrorStepFocus = () => false;
             rules.mirrorMove = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? false : userChoiceMapsLinked;
             rules.mirrorClick = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? false : userChoiceMapsLinked;
             rules.mirrorReset = true;
@@ -75,6 +81,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
                 }
                 return { args: undefined }
             }
+            rules.allowViewLinkToggling = true;
             break;
         case 'compareAdvanced':
             rules.mirrorStepFocus = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? true : userChoiceMapsLinked;

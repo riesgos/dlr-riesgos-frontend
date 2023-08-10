@@ -13,10 +13,8 @@ import { getRules } from 'src/app/state/rules';
 })
 export class AppControlComponent implements OnInit {
 
-  @Input() showLink = true;
-  @Input() showFix = true;
+  showLink$ = this.store.select(s => s.riesgos.rules).pipe(map(rules => getRules(rules).allowViewLinkToggling));
   partitionsLinked$ = new BehaviorSubject<boolean>(false);
-  zoomingToStep$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private wizardSvc: WizardService,
@@ -35,15 +33,10 @@ export class AppControlComponent implements OnInit {
         return linked;
       }))
       .subscribe(this.partitionsLinked$);
-    this.store.select(s => s.riesgos.scenarioData['PeruShort']?.left?.zoomToSelectedStep || false).subscribe(this.zoomingToStep$);
   }
 
   linkClicked($event: MouseEvent) {
     this.store.dispatch(Actions.setLinkMapViews({linkMapViews: !this.partitionsLinked$.value}))
-  }
-
-  zoomClicked($event: MouseEvent) {
-    this.store.dispatch(Actions.setZoomToStep({zoomToStep: !this.zoomingToStep$.value}));
   }
 
 }

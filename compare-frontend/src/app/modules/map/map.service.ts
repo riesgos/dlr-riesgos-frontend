@@ -108,7 +108,7 @@ export class MapService {
                 const composites = layerComposites.flat();
 
                 for (const composite of composites) {
-                    composite.opacity = 0.75;
+                    composite.opacity = 0.65;
                 }
 
                 // apply user defined visibility

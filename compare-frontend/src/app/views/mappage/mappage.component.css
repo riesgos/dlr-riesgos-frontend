@@ -21,10 +21,17 @@
 
 
 
-
+/*
+z-index hack: map wizard comes first on page, then map. but wizard gets z=1 and finally overlay gets z=2.
+this way popups appear over wizard.
+*/
 .page-wizard {
     position: absolute;
     top: 1rem;
+    z-index: 1;
+}
+.ol-overlaycontainer-stopevent {
+    z-index: 2 !important;
 }
 
 .page-wizard.left {
@@ -97,3 +104,4 @@
     right: 41%;
     bottom: 1.5rem;
 }
+

@@ -64,7 +64,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           center: [0, 0],
           zoom: 0
         }),
-        controls: defaults({ attribution: true, rotate: false, zoom: false }),
+        controls: defaults({ attribution: true, rotate: false, zoom: true }),
         overlays: [this.overlay]
       });
 

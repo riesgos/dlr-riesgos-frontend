@@ -9,6 +9,7 @@ import { PartitionName, RiesgosState, RiesgosScenarioState, ScenarioName, scenar
   selector: 'app-mappage',
   templateUrl: './mappage.component.html',
   styleUrls: ['./mappage.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MappageComponent {
 

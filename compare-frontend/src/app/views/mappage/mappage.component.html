@@ -7,11 +7,10 @@
 <ng-template #oneMap>
     <div *ngIf="scenario$ | async as scenario" class="page">
         <ng-container *ngIf="focus$ | async as focus">
+            <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
                 <div class="maps">
                     <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
                 </div>
-                <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
-                <app-app-control     [showLink]="false" [showFix]="true" class="control-right"></app-app-control>
         </ng-container>
     </div>
 </ng-template>
@@ -21,14 +20,15 @@
     <div *ngIf="scenario$ | async as scenario" class="page">
         <ng-container *ngIf="focus$ | async as focus">
             <ng-container *ngIf="modals$ | async as modals">
+                
+                <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
+                <app-wizard          [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
 
                 <div class="maps">
                     <app-map *ngIf="focus.left || !focus.right" [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
                     <app-map *ngIf="focus.right"                [scenario]="scenario" [partition]="'right'" class="page-map right"></app-map>
                 </div>
 
-                <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="focus.left"  class="page-wizard left"></app-wizard>
-                <app-wizard          [scenario]="scenario" [partition]="'right'" [focus]="focus.right" class="page-wizard right"></app-wizard>
 
                 <div *ngIf="modals['left'].args" class="modal left">
                     <app-modal [scenario]="scenario" [partition]="'left'" 
@@ -49,7 +49,7 @@
                     </app-modal>
                 </div>
 
-                <app-app-control     [showLink]="true" [showFix]="true"  class="control-center"></app-app-control>
+                <app-app-control class="control-center"></app-app-control>
 
             </ng-container>
         </ng-container>

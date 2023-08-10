@@ -31,3 +31,14 @@
 .closeIcon:hover {
     color: var(--gray-1200);
 }
+
+
+.left .ol-zoom {
+    right: .5em;
+    left: unset;
+}
+.left .ol-attribution {
+    left: 0;
+    right: unset;
+    border-radius: 0 4px 0;
+}

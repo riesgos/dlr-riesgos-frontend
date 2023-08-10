@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, PartitionName, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setZoomToStep, setLinkMapViews, stepChange } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setLinkMapViews, stepChange } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, getMapPositionForStep, offsetCenterForPartition } from './helpers';
 import { getRules } from './rules';
@@ -92,20 +92,6 @@ export const reducer = createReducer(
       }
     } else {
       handle(partitionData, action);
-    }
-
-    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
-      if (scenarioName === action.scenario) {
-        for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-          if (partitionName === action.partition) {
-            if (partitionData.zoomToSelectedStep) {
-              const {center, zoom} = getMapPositionForStep(action.scenario, partitionName as any, action.stepId);
-              partitionData.map.center = center;
-              partitionData.map.zoom = zoom;
-            }
-          }
-        }
-      }
     }
 
     return state;
@@ -375,21 +361,6 @@ export const reducer = createReducer(
     return state;
   }),
 
-  immerOn(setZoomToStep, (state, action) => {
-    for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
-      for (const [partition, partitionData] of Object.entries(scenarioData)) {
-        partitionData.zoomToSelectedStep = action.zoomToStep;
-        if (partitionData.focus.focusedSteps.length > 0) {
-          const firstOpenStepId = partitionData.focus.focusedSteps[0];
-          const {center, zoom} = getMapPositionForStep(scenarioName as ScenarioName, partition as PartitionName, firstOpenStepId);
-          partitionData.map.center = center;
-          partitionData.map.zoom = zoom;
-        }
-      }
-    }
-    return state;
-  }),
-
 
   immerOn(setLinkMapViews, (state, action) => {
     state.userChoiceLinkMapViews = action.linkMapViews;
@@ -468,8 +439,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
         modal: {
           args: undefined,
         },
-        controlExpanded: true,
-        zoomToSelectedStep: false
+        controlExpanded: true
       };
       
       const newPartitionData: RiesgosScenarioState = {

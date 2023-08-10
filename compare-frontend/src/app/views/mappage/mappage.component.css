@@ -101,7 +101,14 @@ this way popups appear over wizard.
 
 .control-center {
     position: absolute;
-    right: 41%;
+    width: 100%;
     bottom: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.control-center .control {
+    width: 5rem;
 }
 

@@ -9,6 +9,63 @@
     justify-content: space-between;
 }
 
+.step-header-logo-and-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.step-icon {
+    width: 1rem;
+    height: 1rem;
+    padding: 0 0.5rem;
+}
+.step-icon-unavailable {
+    background-color: var(--gray-100);
+}
+.focus .step-icon-unavailable {
+    background-color: var(--gray-400);
+}
+.step-icon-available {
+    background-color: var(--accent-color-800);
+}
+.focus .step-icon-available {
+    background-color: var(--accent-color-1200);
+}
+.autoPilot .step-icon-available {
+    background-color: var(--gray-100);
+}
+.focus .autoPilot .step-icon-available {
+    background-color: var(--gray-400);
+}
+.step-icon-running {
+    background-color: var(--notice);
+}
+.focus .step-icon-running {
+    background-color: var(--notice-dark);
+}
+.step-icon-completed {
+    background-color: var(--success);
+}
+.focus .step-icon-completed {
+    background-color: var(--success-dark);
+}
+.step-icon-error {
+    background-color: var(--warning);
+}
+.focus .step-icon-error {
+    background-color: var(--warning-dark);
+}
+
+
+
+
+
+
+
+
+
+
 
 .step-header-unavailable {
     cursor: default;

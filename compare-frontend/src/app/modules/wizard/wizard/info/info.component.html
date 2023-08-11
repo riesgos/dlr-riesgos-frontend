@@ -1,6 +1,6 @@
 <div style="display: flex; align-items: center;">
 
-    <ng-container *ngIf="partition === 'left'">
+    <ng-container *ngIf="partition === 'right'">
         <app-svg 
             *ngIf="!!(allowsReset$ | async)"
             (click)="reset()"
@@ -13,7 +13,7 @@
     <h4 style="color: var(--gray-600)">{{ title$ | async }}</h4> 
     
     
-    <ng-container *ngIf="partition === 'right'">
+    <ng-container *ngIf="partition === 'left'">
         <app-svg 
             *ngIf="!!(allowsReset$ | async)"
             (click)="reset()"

@@ -78,6 +78,7 @@ export const reducer = createReducer(
     const rules = getRules(state.rules);
 
     function handle(pd: RiesgosScenarioState, action: ReturnType<typeof stepSetFocus>) {
+      if (!partitionData.controlExpanded) partitionData.controlExpanded = true;
       if (action.focus === false) {
         pd.focus.focusedSteps = pd.focus.focusedSteps.filter(s => s !== action.stepId);
       } else {

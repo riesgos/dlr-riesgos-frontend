@@ -16,3 +16,19 @@
     justify-content: space-between;
 }
 
+.wizard.expanded {
+
+}
+
+.wizard.collapsed {
+    width: 2.3rem;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.wizard.collapsed .step-body {
+    display: none;
+}
+.right .wizard.collapsed {
+    right: 0px;
+    position: absolute;
+}

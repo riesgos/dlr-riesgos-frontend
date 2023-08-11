@@ -128,7 +128,7 @@ export class WizardService {
                     }
                     stepData.push(stepDatum);
                 }
-
+console.log("wizard expanded", state.controlExpanded)
                 return { stepData: stepData, wizardExpanded: state.controlExpanded };
             })
         );

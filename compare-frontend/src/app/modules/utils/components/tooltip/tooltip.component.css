@@ -8,9 +8,11 @@
     font-size: 13px;
     margin-top: 5px;
     transform:translateX(-50%);
+    z-index: 3;
   }
 
   .tooltip::before {
+    z-index: 3;
     content: '';
     width: 0;
     height: 0;

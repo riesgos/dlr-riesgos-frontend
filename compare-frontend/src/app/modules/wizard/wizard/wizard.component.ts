@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { PartitionName, RiesgosState, ScenarioName } from 'src/app/state/state';
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { WizardComposite, WizardService, WizardState } from '../wizard.service';
 import { Store } from '@ngrx/store';
@@ -10,7 +10,8 @@ import * as Actions from 'src/app/state/actions';
 @Component({
   selector: 'app-wizard',
   templateUrl: './wizard.component.html',
-  styleUrls: ['./wizard.component.css']
+  styleUrls: ['./wizard.component.css'],
+  encapsulation: ViewEncapsulation.None // so that display:none works for step-bodies
 })
 export class WizardComponent implements OnInit {
 

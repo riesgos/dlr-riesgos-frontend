@@ -27,7 +27,7 @@ this way popups appear over wizard.
 */
 .page-wizard {
     position: absolute;
-    top: 1rem;
+    top: 0.5rem;
     z-index: 1;
 }
 .ol-overlaycontainer-stopevent {
@@ -35,11 +35,11 @@ this way popups appear over wizard.
 }
 
 .page-wizard.left {
-    left: 1rem;
+    left: 0.5rem;
 }
 
 .page-wizard.right {
-    right: 1rem;
+    right: 0.5rem;
 }
 
 

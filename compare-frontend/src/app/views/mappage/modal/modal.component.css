@@ -8,10 +8,13 @@
     align-content: center;
     place-content: revert;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
 .dialog {
     border: none;
     border-radius: 5px;
     margin: 2rem;
+    z-index: 2;
 }

@@ -301,7 +301,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         const horizontalPositioning = pixelX < (mapX/2) ? "left" : "right";
         const verticalPositioning   = pixelY < (mapY/2) ? "top" : "bottom";
         const positioning: Positioning = `${verticalPositioning}-${horizontalPositioning}`;
+        this.popup.nativeElement.classList.remove(`arrow-top-left`);
+        this.popup.nativeElement.classList.remove(`arrow-top-right`);
+        this.popup.nativeElement.classList.remove(`arrow-bottom-left`);
+        this.popup.nativeElement.classList.remove(`arrow-bottom-right`);
+        this.popup.nativeElement.classList.add(`arrow-${verticalPositioning}-${horizontalPositioning}`);
         this.overlay.setPositioning(positioning);
+        this.overlay.setOffset([horizontalPositioning === 'left' ? -10 : 10, verticalPositioning === 'bottom' ? -10 : 10]);
       }
       this.overlay.setPosition(location);
     }

@@ -1,5 +1,7 @@
 <div class="map" id="map" #mapContainer></div>
-<div class="popup" id="popup" #popup>
-    <div class="closeIcon" (click)="closePopup()">x</div>
-    <ng-container #popupBody></ng-container>
+<div class="popup" #popup id="popup">
+    <div class="popupContent">
+        <div class="closeIcon" (click)="closePopup()">x</div>
+        <ng-container #popupBody></ng-container>
+    </div>
 </div>

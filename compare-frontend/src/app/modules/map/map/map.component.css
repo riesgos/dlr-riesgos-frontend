@@ -9,7 +9,7 @@
 }
 
 
-.popup {
+.popupContent {
     background: var(--gray-10);
     padding: .5rem;
     border-radius: .25rem;
@@ -17,6 +17,42 @@
     outline-color: var(--gray-400);
     outline-style: solid;
 }
+  .arrow-top-left:before {
+    content: "";
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent var(--gray-10) transparent;
+    position: absolute;
+    transform: translate(0px, -10px);
+  }
+  .arrow-top-right:before {
+    content: "";
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent var(--gray-10) transparent;
+    position: absolute;
+    transform: translate(0, -10px);
+    right: 0px;
+  }
+  .arrow-bottom-left:after {
+    content: "";
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent var(--gray-10) transparent;
+    position: absolute;
+    transform: rotate(180deg);
+  }
+  .arrow-bottom-right:after {
+    content: "";
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent var(--gray-10) transparent;
+    position: absolute;
+    transform: rotate(180deg);
+    right: 0px;
+  }
+
+
 
 .closeIcon {
     float: right;

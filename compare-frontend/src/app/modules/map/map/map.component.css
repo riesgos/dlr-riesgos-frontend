@@ -17,6 +17,18 @@
     outline-color: var(--gray-400);
     outline-style: solid;
 }
+  .arrow-top-left .popupContent {
+    border-radius: 0 .25rem .25rem .25rem;
+  }
+  .arrow-top-right .popupContent {
+    border-radius: .25rem 0 .25rem .25rem;
+  }
+  .arrow-bottom-left .popupContent {
+    border-radius: .25rem .25rem .25rem 0;
+  }
+  .arrow-bottom-right .popupContent {
+    border-radius: .25rem .25rem 0 .25rem;
+  }
   .arrow-top-left:before {
     content: "";
     border-style: solid;

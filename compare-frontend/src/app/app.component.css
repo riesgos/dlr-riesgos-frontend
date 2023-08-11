@@ -9,7 +9,7 @@
 }
 
 .header .nav-item {
-    padding: 0.35rem 1.9rem 0.35rem 1.9rem;
+    padding: 0.32rem 1.9rem 0.32rem 1.9rem;
     color: var(--accent-color-200);
     cursor: pointer;
 }

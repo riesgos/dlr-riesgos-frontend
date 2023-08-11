@@ -1,7 +1,9 @@
-import { partition } from "rxjs";
 import { RiesgosState, ScenarioName, PartitionName, ModalState, StepStateTypes } from "./state";
 
 export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIdentical' | 'compareAdvanced' | 'classic';
+
+let eqCompletedBefore = false;
+
 
 export interface Rules {
     partition: boolean,
@@ -47,9 +49,20 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.focusFirstStepImmediately = true;
             rules.partition = false;
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
+            rules.modal = (state, scenario, partition) => {
+                if (partition === "left") {
+                    const result = showColorExplanationModal(state, scenario, partition);
+                    if (result) return result;
+                }
+                return {args: undefined};
+            }
             break;
         case 'compareScenarios':
             rules.modal = (state, scenario, partition) => {
+                if (partition === "left") {
+                    const result = showColorExplanationModal(state, scenario, partition);
+                    if (result) return result;
+                }
                 if (partition === "right") {
                     if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
@@ -73,6 +86,10 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.allowReset = partition => partition === 'left';
             rules.modal = (state, scenario, partition) => {
+                if (partition === "left") {
+                    const result = showColorExplanationModal(state, scenario, partition);
+                    if (result) return result;
+                }
                 if (partition === "right") {
                     if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
                 }
@@ -99,6 +116,16 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
     return rules;
 }
 
+
+function showColorExplanationModal(state: RiesgosState, scenario: ScenarioName, partition: PartitionName) {
+        const scenarioState = state.scenarioData[scenario]![partition]!;
+        const eqSelectCompleted = scenarioState.steps.find(s => s.step.id === "selectEq")?.state.type === StepStateTypes.completed;
+        if (eqSelectCompleted && !eqCompletedBefore) {
+            eqCompletedBefore = true;
+            return { args: { title: "", subtitle: "", body: "explanationOfColors", closable: true }};
+        }
+        return undefined;
+}
 
 function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partition: PartitionName) {
     const scenarioData = state.scenarioData[scenario];

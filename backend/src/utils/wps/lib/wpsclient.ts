@@ -9,8 +9,8 @@ import { WPS_1_0_0 } from './jsonix/WPS_1_0_0';
 import { WPS_2_0 } from './jsonix/WPS_2_0';
 import { Jsonix } from './jsonix/jsonix';
 import axios from 'axios';
-import axiosBetterStacktrace from 'axios-better-stacktrace';
-axiosBetterStacktrace(axios);
+// import axiosBetterStacktrace from 'axios-better-stacktrace';
+// axiosBetterStacktrace(axios);
 import { sleep, toPromise } from '../../async';
 
 

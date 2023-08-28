@@ -21,6 +21,7 @@ export interface Rules {
     allowViewLinkToggling: boolean,
     allowConfiguration: (productId: string) => boolean,
     modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) => ModalState,
+    productDefault: (scenarioId: ScenarioName, productId: string) => any | undefined,
 }
 
 export function getRules(ruleSet: RuleSetName | undefined): Rules {
@@ -40,6 +41,17 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         allowConfiguration: () => true,
         autoPilot: (stepId: string) => stepId !== "selectEq",
         modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) =>  ({ args: undefined }),
+        productDefault: (scenarioId: ScenarioName, productId: string) => {
+            if (scenarioId === "PeruShort") {
+                if (productId === "schemaTs") {
+                    return "Medina_2019";
+                }
+                if (productId === "exposureModelName") {
+                    return "LimaBlocks";
+                }
+            }
+            return undefined;
+        }
     };
 
     // This could become arbitrarily complicated. 

@@ -4,7 +4,7 @@ import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, Scenari
 import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setLinkMapViews, stepChange } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, getMapPositionForStep, offsetCenterForPartition } from './helpers';
-import { getRules } from './rules';
+import { Rules, getRules } from './rules';
 
 
 
@@ -56,7 +56,7 @@ export const reducer = createReducer(
         for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
           const configurable = partitionData.products.map(p => p.id).filter(id => rules.allowConfiguration(id));
           const nonConfigurable = partitionData.products.map(p => p.id).filter(id => !configurable.includes(id));
-          setValuesToDefaults(partitionData, nonConfigurable);
+          setValuesToDefaults(rules, partitionData, nonConfigurable);
         }
       }
     }
@@ -237,7 +237,7 @@ export const reducer = createReducer(
         for (const input of step.step.inputs) {
           const product = scenarioState.products.find(p => p.id === input.id)!;
           const productValue = product.value;
-          const defaultValue = input.default;
+          const defaultValue = rules.productDefault(action.scenario, product.id) || input.default;
           if (productValue) continue;
           if (defaultValue) product.value = defaultValue;
         }
@@ -508,7 +508,7 @@ function deriveState(state: RiesgosState) {
   return state;
 }
 
-function setValuesToDefaults(partitionData: RiesgosScenarioState, ids: string[]) {
+function setValuesToDefaults(rules: Rules, partitionData: RiesgosScenarioState, ids: string[]) {
   for (const id of ids) {
     const product = partitionData.products.find(p => p.id === id);
     const stepInput = partitionData.steps.map(s => s.step.inputs).flat().find(i => i.id === id);
@@ -521,6 +521,11 @@ function setValuesToDefaults(partitionData: RiesgosScenarioState, ids: string[])
       product.options = [product.reference];
       stepInput.options = product.options;
       if (stepInput && stepInput.options) stepInput.options = [product.reference];
+    } else if (rules.productDefault(partitionData.scenario, id)) {
+      const userDefinedDefault = rules.productDefault(partitionData.scenario, id);
+      if (product) product.value = userDefinedDefault;
+      if (product) product.options = [userDefinedDefault];
+      stepInput.options = [userDefinedDefault];
     } else if (product?.options) {
       product.value = product.options[0];
       product.options = [product.options[0]];

@@ -18,7 +18,7 @@ export class TSDmg implements Converter {
         if (!wmsProduct) return of([]);
         const summaryProduct = data.find(d => d.id === "tsDamageSummary");
         if (!summaryProduct) return of([]);
-
+        
         const schema = data.find(d => d.id === "schemaTs")?.value || "Medina_2019";
 
         const wms = new URL(wmsProduct.value);

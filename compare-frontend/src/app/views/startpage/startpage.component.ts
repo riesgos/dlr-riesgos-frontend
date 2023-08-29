@@ -13,6 +13,8 @@ import GeoJSON from 'ol/format/GeoJSON';
 })
 export class StartpageComponent implements OnInit {
 
+  public showDisclaimer = true;
+
   public studyAreas$ = this.store.select((state) => {
     return state.riesgos.metaData
   });

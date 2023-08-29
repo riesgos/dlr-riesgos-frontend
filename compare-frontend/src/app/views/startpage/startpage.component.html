@@ -23,8 +23,6 @@
   <div class="content">
       <div class="studyAreas" *ngIf="studyAreas$ | async as studyAreas">
 
-
-
           <div class="studyArea box hasShadow" *ngFor="let studyArea of studyAreas">
       
               <div class="studyAreaDescription">
@@ -158,3 +156,16 @@
   
   </footer>
 </div>
+
+
+<!-- <div *ngIf="showDisclaimer" class="modal middle">
+  <div class="backdrop">
+    <dialog open class="dialog hasShadow">
+        <h4 >{{ 'title' | translate }}</h4>
+        <h6 >{{ 'subtitle' | translate }}</h6>
+        <p>{{ 'body' | translate }}</p>
+        <button >OK</button>
+        <button >{{ 'dontShowAgain' | translate }}</button>
+    </dialog>
+  </div>
+</div> -->

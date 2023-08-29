@@ -352,6 +352,8 @@ export const reducer = createReducer(
 
   immerOn(openModal, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
+    const modalId = action.args?.id;
+    if (modalId && partitionData.modal.dontShowAgain.includes(modalId)) return state;
     partitionData.modal.args = action.args;
     return state;
   }),

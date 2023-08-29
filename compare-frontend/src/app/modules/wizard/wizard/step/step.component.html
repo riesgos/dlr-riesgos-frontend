@@ -9,8 +9,8 @@
             <app-svg 
                 [class]="['step-icon', 'step-icon-' + data.step.state.type]"
                 [path]="'assets/icons/' + getIconNameFor(data.step.step.id) + '.svg'"
-                [tooltip]="data.step.step.title | translate"
-            ></app-svg>
+                ></app-svg> 
+                <!--[tooltip]="data.step.step.title | translate"-->
     
             <h4>{{ data.step.step.title | translate }}</h4>
         </div>

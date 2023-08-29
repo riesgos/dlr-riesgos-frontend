@@ -41,9 +41,10 @@
 
 
 
+
 .studyAreas {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     z-index: 1;
 }
 

@@ -7,10 +7,18 @@
 <ng-template #oneMap>
     <div *ngIf="scenario$ | async as scenario" class="page">
         <ng-container *ngIf="focus$ | async as focus">
-            <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
+            <ng-container *ngIf="modals$ | async as modals">
+                <app-wizard          [scenario]="scenario" [partition]="'left'"  [focus]="true"  class="page-wizard left"></app-wizard>
                 <div class="maps">
                     <app-map [scenario]="scenario" [partition]="'left'" class="page-map left"></app-map>
                 </div>
+                <div *ngIf="modals['left'].args" class="modal middle">
+                    <app-modal [scenario]="scenario" [partition]="'left'" 
+                            [title]="modals['left'].args.title"  [subtitle]="modals['left'].args.subtitle"  
+                            [body]="modals['left'].args.body"  [closable]="modals['left'].args.closable"  >
+                    </app-modal>
+                </div>
+            </ng-container>
         </ng-container>
     </div>
 </ng-template>

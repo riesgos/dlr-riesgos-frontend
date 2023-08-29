@@ -1,5 +1,9 @@
 {
-    "explanationOfColors": "explanationOfColors",
+    "LinkViewToggle": "Toggle link between views",
+    "wizardShowOrHide": "Toggle menu",
+    "Danger!": "Reset all processes",
+    "startPageOverview": "The Demonstrator is an information system developed within the framework of the RIESGOS project with the purpose of analyzing multi-risk scenarios of natural hazards such as earthquakes, landslides, volcanoes, floods and tsunamis. <br/>The basic version (“Light Demonstrator”) allows the user to simulate an earthquake off the coast of Lima and Callao and analyze the cascading effects, for example, the tsunami that would occur, damage to residential buildings and in the electrical network.<br/>The simulations are based on scientific models developed by the RIESGOS project using databases from different sources that have not been reviewed or authorized by the sectoral entities of Peru. For this reason the information presented should in no case be used for planning or other practical applications.",
+    "explanationOfColors": "The analysis process has been activated. The program now requests the participating specialized institutes, via web services, for the modeling results based on the earthquake you have selected. This may take a moment. As soon as the results are available, the corresponding parameter field in the control box will be displayed in green. To see the results, just click on the corresponding parameter field.",
     "popupHoverForInfo": "Hover over bars to see building type.",
     "FixedExtent": "Fixed extent",
     "AdjustExtent": "Ajustar extensión",

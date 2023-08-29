@@ -2,6 +2,7 @@
 import requests as r
 import json
 import xml.etree.ElementTree as ET
+import time
 
 #%% 
 
@@ -169,7 +170,7 @@ def getFragilityRef():
     return tree[1][0].attrib['{http://www.w3.org/1999/xlink}href']
 
 
-def getEqDamage(exposureRef: str, fragilityRef: str, eqRef: str):
+def getEqDamageV2(exposureRef: str, fragilityRef: str, eqRef: str):
     url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?service=WPS"
 
     payload = """
@@ -206,6 +207,71 @@ def getEqDamage(exposureRef: str, fragilityRef: str, eqRef: str):
 
     return data
 
+def getEqDamageV1(exposureRef: str, fragilityRef: str, eqRef: str):
+    url = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService?service=WPS&request=Execute&version=1.0.0&identifier=org.n52.gfz.riesgos.algorithm.impl.DeusProcess"
+
+    payload = """
+<wps:Execute xmlns:wps="http://www.opengis.net/wps/1.0.0" service="WPS" version="1.0.0">
+    <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">org.n52.gfz.riesgos.algorithm.impl.DeusProcess</p0:Identifier>
+    <wps:DataInputs>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">intensity</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">intensity</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Reference p1:href="{eqRef}" xmlns:p1="http://www.w3.org/1999/xlink" method="GET" mimeType="text/xml"/>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">exposure</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">exposure</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Reference p2:href="{exposureRef}" xmlns:p2="http://www.w3.org/1999/xlink" method="GET" mimeType="application/json"/>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">fragility</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">fragility</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Reference p3:href="{fragilityRef}" xmlns:p3="http://www.w3.org/1999/xlink" method="GET" mimeType="application/json"/>
+        </wps:Input>
+        <wps:Input>
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">schema</p0:Identifier>
+            <p0:Title xmlns:p0="http://www.opengis.net/ows/1.1">schema</p0:Title>
+            <p0:Abstract xmlns:p0="http://www.opengis.net/ows/1.1"></p0:Abstract>
+            <wps:Data>
+                <wps:LiteralData>SARA_v1.0</wps:LiteralData>
+            </wps:Data>
+        </wps:Input>
+    </wps:DataInputs>
+    <wps:ResponseForm>
+        <wps:RawDataOutput mimeType="application/json">
+            <p0:Identifier xmlns:p0="http://www.opengis.net/ows/1.1">merged_output</p0:Identifier>
+        </wps:RawDataOutput>
+    </wps:ResponseForm>
+</wps:Execute>
+    """.format(eqRef=eqRef, exposureRef=exposureRef, fragilityRef=fragilityRef)
+    
+    headers = {
+        'Content-Type': 'application/xml'
+    }
+
+    response = r.request("POST", url, headers=headers, data=payload)
+    data = response.json()
+
+    return data
+
+
+class AsyncRequester:
+    def __init__(self, url: str, body: str):
+        self.url = url
+        self.body = body
+
+    def run(self):
+        response = self.start()
+        while not results:
+            time.sleep(3)
+            reference, results = self.getState()
+        return results
+
+
 # %%
 exposureData = getExposure()
 with open("data/exposure.json", "w") as fh:
@@ -221,8 +287,7 @@ for eqPara in eqParas:
 
     eqRef = getEqRef(eqPara)
 
-    eqDmgData = getEqDamage(exposureRef, fragilityRef, eqRef)
-
+    eqDmgData = getEqDamageV1(exposureRef, fragilityRef, eqRef)
     with open(f"data/eq_dmg_{eqPara['id']}.json", "w") as fh:
         json.dump(eqDmgData, fh)
 
@@ -231,7 +296,6 @@ for eqPara in eqParas:
     tsRef = getTsRef(eqPara)
 
     tsDmgData = getTsDamage(eqDmgRef, fragilityRef, tsRef)
-
     with open(f"data/ts_dmg_{eqPara['id']}.json", "w") as fh:
         json.dump(eqDmgData, fh)
 

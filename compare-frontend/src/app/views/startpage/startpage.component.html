@@ -22,6 +22,9 @@
 
   <div class="content">
       <div class="studyAreas" *ngIf="studyAreas$ | async as studyAreas">
+
+
+
           <div class="studyArea box hasShadow" *ngFor="let studyArea of studyAreas">
       
               <div class="studyAreaDescription">
@@ -64,6 +67,10 @@
   
               </div>
       
+          </div>
+
+          <div class="studyArea box hasShadow">
+            <p [innerHTML]="'startPageOverview' | translate"></p>
           </div>
       </div>
   </div>

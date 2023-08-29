@@ -1,6 +1,7 @@
 import { Feature, FeatureCollection, Point } from "geojson";
 import { WpsClient, WpsInput, WpsOutputDescription } from "../utils/wps/public-api";
 import config from "../config.json";
+import { writeTextFile } from "../utils/files";
 
 
 const wpsClient1 = new WpsClient('1.0.0');
@@ -371,6 +372,12 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
         type: 'complex',
         format: 'application/json'
     }];
+
+
+    const executeUrl = wpsClient2.wpsMarshaller.executeUrl(url, processId);
+    const execBody = wpsClient2.wpsMarshaller.marshalExecBody(processId, inputs, outputs, false);
+    const xmlExecBody = wpsClient2.xmlMarshaller.marshalString(execBody);
+    const success = await writeTextFile("body3.xml", xmlExecBody)
 
     const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
 

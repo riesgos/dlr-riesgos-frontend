@@ -2,7 +2,7 @@ import { RiesgosState, ScenarioName, PartitionName, ModalState, StepStateTypes }
 
 export type RuleSetName = 'selectOneScenario' | 'compareScenarios' | 'compareIdentical' | 'compareAdvanced' | 'classic';
 
-let eqCompletedBefore = false;
+let fullRunCompletedBefore = false;
 
 
 export interface Rules {
@@ -130,13 +130,20 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
 
 
 function showColorExplanationModal(state: RiesgosState, scenario: ScenarioName, partition: PartitionName) {
-        const scenarioState = state.scenarioData[scenario]![partition]!;
-        const eqSelectCompleted = scenarioState.steps.find(s => s.step.id === "selectEq")?.state.type === StepStateTypes.completed;
-        if (eqSelectCompleted && !eqCompletedBefore) {
-            eqCompletedBefore = true;
-            return { args: { title: "", subtitle: "", body: "explanationOfColors", closable: true }};
-        }
+    if (fullRunCompletedBefore) {
+        console.log("Not showing color modal because already seen before.");
         return undefined;
+    }
+    const scenarioState = state.scenarioData[scenario]![partition]!;
+    const eqSelectCompleted = scenarioState.steps.find(s => s.step.id === "selectEq")?.state.type === StepStateTypes.completed;
+    const fullRunCompleted = allStepsCompleted(state, scenario, partition);
+    if (fullRunCompleted) {
+        fullRunCompletedBefore = true;
+    }
+    if (eqSelectCompleted && !fullRunCompleted) {
+        return { args: { title: "", subtitle: "", body: "explanationOfColors", closable: true }};
+    }
+    return undefined;
 }
 
 function allStepsCompleted(state: RiesgosState, scenario: ScenarioName, partition: PartitionName) {

@@ -352,7 +352,7 @@ export const reducer = createReducer(
 
   immerOn(openModal, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
-    partitionData.modal.args = action.args
+    partitionData.modal.args = action.args;
     return state;
   }),
 

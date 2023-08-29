@@ -59,7 +59,7 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
       color: `rgb(${exposureDamageRange(0, 4, 4).join(',')})`,
       hoverText: ``
     }];
-
+  
     const props = this.feature.getProperties();
     for (const [key, value] of Object.entries(props)) {
       if (['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22'].includes(key)) {
@@ -72,14 +72,14 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
         }
       }
     }
-
+  
     let countTotal = 0;
     for (const datum of data) {
-      datum.value = Math.round(datum.value);
-      datum.hoverText = "" + Math.round(datum.value) + " edificios";
+      datum.value = datum.value;
+      datum.hoverText = "" + datum.value.toPrecision(3) + " edificios";
       countTotal += datum.value;
     }
-
+  
     this.data = data;
     if (countTotal <= 0) {
       this.data = [];
@@ -88,17 +88,19 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
       this.additionalText = 'no_residential_buildings';
     }
   
-    createBigBarChart(
-      this.container.nativeElement, 
-      this.data, 
-      this.width, 
-      this.height, 
-      this.translateSvc.translate(this.xLabel),
-      this.translateSvc.translate(this.yLabel),
-      ''
-    );
+    setTimeout(() => { // if not timeout, then labels don't have enough space on graph
+      createBigBarChart(
+        this.container.nativeElement, 
+        this.data, 
+        this.width, 
+        this.height, 
+        this.translateSvc.translate(this.xLabel),
+        this.translateSvc.translate(this.yLabel),
+        ''
+      );
+    }, 100);
   }
-
+  
   ngAfterViewInit(): void {
   }
 

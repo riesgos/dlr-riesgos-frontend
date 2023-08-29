@@ -172,7 +172,7 @@ export function createBigBarChart(
           const positionInLayer = [evt.layerX, evt.layerY];    // doesnt seem to work in raw html
           let x = Math.min(positionInsideSvg[0], positionInLayer[0]);
           if (x > centerWidth / 2) {
-            x -= maxWidthHoverText;
+            x -= text.length * 6;
             x -= 20;  // safety-distance so popup doesn't touch mouse (which would trigger a `mouseout` event)
           } else {
             x += 20; // safety-distance so popup doesn't touch mouse (which would trigger a `mouseout` event)

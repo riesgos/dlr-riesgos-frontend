@@ -1,6 +1,6 @@
 <div class="app-control" *ngIf="(showLink$ | async)">
 
-    <button (click)="linkClicked($event)"  [tooltip]="'LinkViewToggle' | translate"  class="button" style="z-index: 2; display: flex; font-size: small; flex-direction: row; align-items: center; justify-content: center;">
+    <button (click)="linkClicked($event)"  [tooltip]="'LinkViewToggle' | translate"  class="button" style="z-index: 2; display: flex; font-size: larger; width: 100%; flex-direction: row; align-items: center; justify-content: center;">
         <!-- {{ 'LinkViews' | translate }} -->
         <ng-container *ngIf="partitionsLinked$ | async; else crossedOutBlock">
             <div>&#9901;</div>

@@ -62,22 +62,18 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.partition = false;
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.modal = (state, scenario, partition) => {
-                const partitionState = state.scenarioData[scenario]![partition]!;
-                const modalState = partitionState.modal;
                 if (partition === "left") {
                     const result = showColorExplanationModal(state, scenario, partition);
-                    if (result && !modalState.dontShowAgain.includes(result.id)) return result;
+                    if (result) return result;
                 }
                 return undefined;
             }
             break;
         case 'compareScenarios':
             rules.modal = (state, scenario, partition) => {
-                const partitionState = state.scenarioData[scenario]![partition]!;
-                const modalState = partitionState.modal;
                 if (partition === "left") {
                     const result = showColorExplanationModal(state, scenario, partition);
-                    if (result && !modalState.dontShowAgain.includes(result.id)) return result;
+                    if (result) return result;
                 }
                 if (partition === "right") {
                     if (!allStepsCompleted(state, scenario, "left")) return {id: "willActivateOnceLeftDone", title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false, dontShowAgainAble: false };
@@ -102,11 +98,9 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.allowReset = partition => partition === 'left';
             rules.modal = (state, scenario, partition) => {
-                const partitionState = state.scenarioData[scenario]![partition]!;
-                const modalState = partitionState.modal;
                 if (partition === "left") {
                     const result = showColorExplanationModal(state, scenario, partition);
-                    if (result && !modalState.dontShowAgain.includes(result.id)) return result;
+                    if (result) return result;
                 }
                 if (partition === "right") {
                     if (!allStepsCompleted(state, scenario, "left")) return {id: "willActivateOnceLeftDone", title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false, dontShowAgainAble: false };

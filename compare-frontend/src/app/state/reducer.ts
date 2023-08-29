@@ -352,8 +352,16 @@ export const reducer = createReducer(
 
   immerOn(openModal, (state, action) => {
     const partitionData = state.scenarioData[action.scenario]![action.partition]!;
+
+    // if in `dontShowAgainList`, then dont show it.
     const modalId = action.args?.id;
-    if (modalId && partitionData.modal.dontShowAgain.includes(modalId)) return state;
+    if (modalId && partitionData.modal.dontShowAgain.includes(modalId)) {
+      if (partitionData.modal.args && partitionData.modal.args.id === modalId) {
+        partitionData.modal.args = undefined;
+      }
+      return state;
+    }
+    
     partitionData.modal.args = action.args;
     return state;
   }),

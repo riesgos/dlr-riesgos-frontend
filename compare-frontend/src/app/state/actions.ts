@@ -33,6 +33,7 @@ export const toggleWizard = createAction('Toggle wizard', props<{ scenario: Scen
 
 export const openModal = createAction('Opening modal', props<{ scenario: ScenarioName, partition: PartitionName, args: ModalState['args'] }>());
 export const closeModal = createAction('Closing modal', props<{ scenario: ScenarioName, partition: PartitionName }>());
+export const dontShowAgainModal = createAction('Dont show modal again', props<{scenario: ScenarioName, partition: PartitionName, modalId: string}>());
 
 export const setLinkMapViews = createAction('Setting link-map-views behaviour', props<{ linkMapViews: boolean; }>());
 

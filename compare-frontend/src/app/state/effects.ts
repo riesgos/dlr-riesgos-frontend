@@ -156,8 +156,8 @@ check if more  │     └───────┬──────┘
             for (const [scenario, scenarioData] of Object.entries(state.scenarioData)) {
                 for (const [partition, partitionData] of Object.entries(scenarioData)) {
                     const modal = rules.modal(state, scenario as ScenarioName, partition as PartitionName);
-                    if (modal.args) {  // There should be a modal ...
-                        actions.push(AppActions.openModal({scenario: scenario as ScenarioName, partition: partition as PartitionName, args: modal.args }));
+                    if (modal) {  // There should be a modal ...
+                        actions.push(AppActions.openModal({scenario: scenario as ScenarioName, partition: partition as PartitionName, args: modal }));
                     } else { // There should not be one ...
                         if (partitionData.modal.args) { // ... but there is one:
                             actions.push(AppActions.closeModal({scenario: scenario as ScenarioName, partition: partition as PartitionName}));

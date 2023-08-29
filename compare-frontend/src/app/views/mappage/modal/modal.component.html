@@ -4,5 +4,6 @@
         <h6 *ngIf="subtitle !== ''">{{ subtitle | translate }}</h6>
         <p>{{ body | translate }}</p>
         <button *ngIf="closable" (click)="clickOnCloseButton()">OK</button>
+        <button *ngIf="dontShowAgainAble" (click)="clickOnDontShowAgainButton()">{{ 'dontShowAgain' | translate }}</button>
     </dialog>
 </div>

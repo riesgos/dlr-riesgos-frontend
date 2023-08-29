@@ -20,7 +20,7 @@ export interface Rules {
     allowReset: (partition: PartitionName) => boolean,
     allowViewLinkToggling: boolean,
     allowConfiguration: (productId: string) => boolean,
-    modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) => ModalState,
+    modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) => ModalState['args'],
     productDefault: (scenarioId: ScenarioName, productId: string) => any | undefined,
 }
 
@@ -40,7 +40,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         allowViewLinkToggling: true,
         allowConfiguration: () => true,
         autoPilot: (stepId: string) => stepId !== "selectEq",
-        modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) =>  ({ args: undefined }),
+        modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) =>  undefined,
         productDefault: (scenarioId: ScenarioName, productId: string) => {
             if (scenarioId === "PeruShort") {
                 if (productId === "schemaTs") {
@@ -62,26 +62,30 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.partition = false;
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.modal = (state, scenario, partition) => {
+                const partitionState = state.scenarioData[scenario]![partition]!;
+                const modalState = partitionState.modal;
                 if (partition === "left") {
                     const result = showColorExplanationModal(state, scenario, partition);
-                    if (result) return result;
+                    if (result && !modalState.dontShowAgain.includes(result.id)) return result;
                 }
-                return {args: undefined};
+                return undefined;
             }
             break;
         case 'compareScenarios':
             rules.modal = (state, scenario, partition) => {
+                const partitionState = state.scenarioData[scenario]![partition]!;
+                const modalState = partitionState.modal;
                 if (partition === "left") {
                     const result = showColorExplanationModal(state, scenario, partition);
-                    if (result) return result;
+                    if (result && !modalState.dontShowAgain.includes(result.id)) return result;
                 }
                 if (partition === "right") {
-                    if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
+                    if (!allStepsCompleted(state, scenario, "left")) return {id: "willActivateOnceLeftDone", title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false, dontShowAgainAble: false };
                 }
                 if (partition === "middle") {
-                    if (allStepsCompleted(state, scenario, "left") && noStepsStarted(state, scenario, "right")) return { args: {title: "startRight", subtitle: "", body: "compareEqWithLeft", closable: true} };
+                    if (allStepsCompleted(state, scenario, "left") && noStepsStarted(state, scenario, "right")) return {id: "compareEqWithLeft", title: "startRight", subtitle: "", body: "compareEqWithLeft", closable: true, dontShowAgainAble: false };
                 }
-                return { args: undefined };
+                return undefined;
             }
             rules.mirrorClick = () => true;
             rules.mirrorMove = () => true;
@@ -98,17 +102,19 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.allowConfiguration = (productId: string) => productId === "userChoice";
             rules.allowReset = partition => partition === 'left';
             rules.modal = (state, scenario, partition) => {
+                const partitionState = state.scenarioData[scenario]![partition]!;
+                const modalState = partitionState.modal;
                 if (partition === "left") {
                     const result = showColorExplanationModal(state, scenario, partition);
-                    if (result) return result;
+                    if (result && !modalState.dontShowAgain.includes(result.id)) return result;
                 }
                 if (partition === "right") {
-                    if (!allStepsCompleted(state, scenario, "left")) return { args: { title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false }};
+                    if (!allStepsCompleted(state, scenario, "left")) return {id: "willActivateOnceLeftDone", title: "", subtitle: "", body: "willActivateOnceLeftDone", closable: false, dontShowAgainAble: false };
                 }
                 if (partition === "middle") {
-                    if (allStepsCompleted(state, scenario, "left")) return { args: {title: "windowAvailable", subtitle: "", body: "compareIdenticalWithLeft", closable: true} };
+                    if (allStepsCompleted(state, scenario, "left")) return {id: "compareIdenticalWithLeft", title: "windowAvailable", subtitle: "", body: "compareIdenticalWithLeft", closable: true, dontShowAgainAble: false };
                 }
-                return { args: undefined }
+                return undefined;
             }
             rules.allowViewLinkToggling = true;
             break;
@@ -141,7 +147,7 @@ function showColorExplanationModal(state: RiesgosState, scenario: ScenarioName, 
         fullRunCompletedBefore = true;
     }
     if (eqSelectCompleted && !fullRunCompleted) {
-        return { args: { title: "", subtitle: "", body: "explanationOfColors", closable: true }};
+        return { id: "colorExplanation", title: "", subtitle: "", body: "explanationOfColors", closable: false, dontShowAgainAble: true };
     }
     return undefined;
 }

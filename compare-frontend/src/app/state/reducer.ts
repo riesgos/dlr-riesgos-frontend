@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { RiesgosState, initialRiesgosState, RiesgosProduct, RiesgosStep, ScenarioName, StepStateAvailable, StepStateCompleted, StepStateTypes, StepStateUnavailable, StepStateRunning, StepStateError, PartitionName, RiesgosScenarioState, RiesgosScenarioMetadata } from './state';
-import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setLinkMapViews, stepChange } from './actions';
+import { ruleSetPicked, scenarioLoadStart, scenarioLoadSuccess, scenarioLoadFailure, stepSetFocus, stepConfig, stepExecStart, stepExecSuccess, stepExecFailure, scenarioPicked, autoPilotDequeue, autoPilotEnqueue, mapMove, mapClick, togglePartition, stepReset, mapLayerVisibility, movingBackToMenu, openModal, closeModal, toggleWizard, stepResetAll, setLinkMapViews, stepChange, dontShowAgainModal } from './actions';
 import { API_ScenarioInfo } from '../services/backend.service';
 import { allParasSet, getMapPositionForStep, offsetCenterForPartition } from './helpers';
 import { Rules, getRules } from './rules';
@@ -363,6 +363,14 @@ export const reducer = createReducer(
   }),
 
 
+  immerOn(dontShowAgainModal, (state, action) => {
+    const partitionData = state.scenarioData[action.scenario]![action.partition]!;
+    partitionData.modal.args = undefined;
+    partitionData.modal.dontShowAgain.push(action.modalId);
+    return state;
+  }),
+
+
   immerOn(setLinkMapViews, (state, action) => {
     state.userChoiceLinkMapViews = action.linkMapViews;
     return state;
@@ -439,6 +447,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
         steps: newSteps,
         modal: {
           args: undefined,
+          dontShowAgain: []
         },
         controlExpanded: true
       };
@@ -472,7 +481,7 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
   const rules = getRules(state.rules);
   for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
     for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-      partitionData.modal = rules.modal(state, scenarioName as ScenarioName, partitionName as PartitionName);
+      partitionData.modal.args = rules.modal(state, scenarioName as ScenarioName, partitionName as PartitionName);
     }
   }
 

@@ -14,8 +14,8 @@
                 </div>
                 <div *ngIf="modals['left'].args" class="modal middle">
                     <app-modal [scenario]="scenario" [partition]="'left'" 
-                            [title]="modals['left'].args.title"  [subtitle]="modals['left'].args.subtitle"  
-                            [body]="modals['left'].args.body"  [closable]="modals['left'].args.closable"  >
+                            [id]="modals['left'].args.id" [title]="modals['left'].args.title"  [subtitle]="modals['left'].args.subtitle"  
+                            [body]="modals['left'].args.body"  [closable]="modals['left'].args.closable" [dontShowAgainAble]="modals['left'].args.dontShowAgainAble"  >
                     </app-modal>
                 </div>
             </ng-container>
@@ -40,20 +40,20 @@
 
                 <div *ngIf="modals['left'].args" class="modal left">
                     <app-modal [scenario]="scenario" [partition]="'left'" 
-                            [title]="modals['left'].args.title"  [subtitle]="modals['left'].args.subtitle"  
-                            [body]="modals['left'].args.body"  [closable]="modals['left'].args.closable"  >
+                            [id]="modals['left'].args.id" [title]="modals['left'].args.title"  [subtitle]="modals['left'].args.subtitle"  
+                            [body]="modals['left'].args.body"  [closable]="modals['left'].args.closable" [dontShowAgainAble]="modals['left'].args.dontShowAgainAble"  >
                     </app-modal>
                 </div>
                 <div *ngIf="modals['right'].args" class="modal right">
                     <app-modal [scenario]="scenario" [partition]="'right'"
-                            [title]="modals['right'].args.title" [subtitle]="modals['right'].args.subtitle" 
-                            [body]="modals['right'].args.body" [closable]="modals['right'].args.closable" >
+                            [id]="modals['right'].args.id" [title]="modals['right'].args.title" [subtitle]="modals['right'].args.subtitle" 
+                            [body]="modals['right'].args.body" [closable]="modals['right'].args.closable" [dontShowAgainAble]="modals['right'].args.dontShowAgainAble" >
                     </app-modal>
                 </div>
                 <div *ngIf="modals['middle'].args" class="modal middle">
                     <app-modal [scenario]="scenario" [partition]="'middle'"
-                            [title]="modals['middle'].args.title" [subtitle]="modals['middle'].args.subtitle" 
-                            [body]="modals['middle'].args.body" [closable]="modals['middle'].args.closable" >
+                            [id]="modals['middle'].args.id" [title]="modals['middle'].args.title" [subtitle]="modals['middle'].args.subtitle" 
+                            [body]="modals['middle'].args.body" [closable]="modals['middle'].args.closable" [dontShowAgainAble]="modals['middle'].args.dontShowAgainAble" >
                     </app-modal>
                 </div>
 

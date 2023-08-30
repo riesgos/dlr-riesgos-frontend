@@ -9,4 +9,5 @@ export class TooltipComponent {
   tooltip: string = '';
   left: number = 0;
   top: number = 0;
+  direction: 'left' | 'right' | 'center' = 'center';
 }

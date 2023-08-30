@@ -7,6 +7,7 @@ import { TooltipComponent } from '../components/tooltip/tooltip.component';
 export class TooltipDirective {
 
   @Input() tooltip = '';
+  @Input() tooltipDirection: 'left' | 'right' | 'center' = 'center';
 
   private componentRef: ComponentRef<any> | null = null;
 
@@ -37,6 +38,8 @@ export class TooltipDirective {
       const {left, right, bottom} = this.elementRef.nativeElement.getBoundingClientRect();
       this.componentRef.instance.left = (right - left) / 2 + left;
       this.componentRef.instance.top = bottom;
+      this.componentRef.instance.direction = this.tooltipDirection;
+      console.log("set tooltip", this.componentRef.instance.left, this.componentRef.instance.top)
     }
   }
 

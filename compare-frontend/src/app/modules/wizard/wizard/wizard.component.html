@@ -2,11 +2,11 @@
 
     <div class="wizard box" *ngIf="focus">
         <div class="wizard-header">
-            <app-svg *ngIf="partition === 'left' && state.wizardExpanded"  (click)="hideWizard()"    [tooltip]="'wizardShowOrHide' | translate" [path]="'assets/icons/double_caret_up.svg'" style="transform: rotate(-90deg); width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
-            <app-svg *ngIf="partition === 'left' && !state.wizardExpanded" (click)="expandWizard()"  [tooltip]="'wizardShowOrHide' | translate" [path]="'assets/icons/double_caret_down.svg'" style="transform: rotate(-90deg); width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
+            <app-svg *ngIf="partition === 'left' && state.wizardExpanded"  (click)="hideWizard()"    [tooltip]="'wizardShowOrHide' | translate" [tooltipDirection]="'right'" [path]="'assets/icons/double_caret_up.svg'" style="transform: rotate(-90deg); width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
+            <app-svg *ngIf="partition === 'left' && !state.wizardExpanded" (click)="expandWizard()"  [tooltip]="'wizardShowOrHide' | translate" [tooltipDirection]="'right'" [path]="'assets/icons/double_caret_down.svg'" style="transform: rotate(-90deg); width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
             <app-info [scenario]="scenario" [partition]="partition"></app-info>
-            <app-svg *ngIf="partition === 'right' && state.wizardExpanded"  (click)="hideWizard()"    [tooltip]="'wizardShowOrHide' | translate" [path]="'assets/icons/double_caret_up.svg'" style="transform: rotate(90deg); width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
-            <app-svg *ngIf="partition === 'right' && !state.wizardExpanded" (click)="expandWizard()"  [tooltip]="'wizardShowOrHide' | translate" [path]="'assets/icons/double_caret_down.svg'" style="transform: rotate(90deg); width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
+            <app-svg *ngIf="partition === 'right' && state.wizardExpanded"  (click)="hideWizard()"    [tooltip]="'wizardShowOrHide' | translate" [tooltipDirection]="'left'" [path]="'assets/icons/double_caret_up.svg'" style="transform: rotate(90deg); width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
+            <app-svg *ngIf="partition === 'right' && !state.wizardExpanded" (click)="expandWizard()"  [tooltip]="'wizardShowOrHide' | translate" [tooltipDirection]="'left'" [path]="'assets/icons/double_caret_down.svg'" style="transform: rotate(90deg); width: 20px; height: 20px; background-color: var(--gray-600);"></app-svg>
         </div>
     
     </div>

@@ -14,7 +14,7 @@ import { movingBackToMenu } from './state/actions'; import GeoJSON from 'ol/form
 export class AppComponent {
 
   public ruleSet$: Observable<RuleSetName | 'none'>;
-  
+
   constructor(private router: Router, private store: Store<{riesgos: RiesgosState}>) {
     this.ruleSet$ = this.store.select(state => state.riesgos.rules).pipe(
       map(v => v === undefined ? 'none' : v)
@@ -24,6 +24,18 @@ export class AppComponent {
   clickOnModes() {
     this.store.dispatch(movingBackToMenu());
     this.router.navigateByUrl("/");
+  }
+
+  clickOnTutorial() {
+    if (this.router.url.includes('tutorial')) return;
+    const targetUrl = this.router.serializeUrl(
+      this.router.createUrlTree([`/tutorial`])
+    );
+    window.open(targetUrl, '_blank');
+  }
+
+  getCurrentUrl() {
+    return window.location.href;
   }
 
 }

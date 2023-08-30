@@ -3,10 +3,10 @@
     <button (click)="linkClicked($event)"  [tooltip]="'LinkViewToggle' | translate"  class="button" style="z-index: 2; display: flex; font-size: larger; width: 100%; flex-direction: row; align-items: center; justify-content: center;">
         <!-- {{ 'LinkViews' | translate }} -->
         <ng-container *ngIf="partitionsLinked$ | async; else crossedOutBlock">
-            <div>&#9901;</div>
+            <app-svg [path]="'assets/icons/married.svg'" style="width: 20px; height: 20px; background-color: var(--white);"></app-svg>
         </ng-container>
         <ng-template #crossedOutBlock>
-            <div>&#9902;</div>
+            <app-svg [path]="'assets/icons/divorced.svg'" style="width: 20px; height: 20px; background-color: var(--white);"></app-svg>
         </ng-template>
     </button>
 

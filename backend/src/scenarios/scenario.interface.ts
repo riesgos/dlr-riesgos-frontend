@@ -29,7 +29,7 @@ export async function verifyAllFulfilled(scenarioFactories: ScenarioFactory[]) {
 
 export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[], config: ScenarioAPIConfig) {
     app.use(express.json({
-        limit: '50mb'  // required because exposure objects can become pretty big
+        limit: '200mb'  // required because exposure objects can become pretty big
     }));
     app.use((req, res, next) => {
         res.setHeader('Expires', new Date(Date.now() +  1 * 60 * 1000).toUTCString());
@@ -64,6 +64,7 @@ export function addScenarioApi(app: Express, scenarioFactories: ScenarioFactory[
         const state: ScenarioState = req.body;
         const skipCache = req.query.skipCache === 'true' || req.query.skipCache === 'True' || req.query.skipCache === 'TRUE'  ? true : false;
         const key = objectHash({scenarioId, stepId, state});
+        console.log(`Scheduling task: ${key}/${scenarioId}-${stepId}`);
         pool.scheduleTask(key, async () => await scenario.execute(stepId, state, skipCache));
         // send user a ticket for polling
         res.setHeader('Expires', new Date(Date.now() +  1 * 100).toUTCString());

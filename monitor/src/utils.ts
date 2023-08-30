@@ -32,7 +32,7 @@ export async function testAllRandomly(serverUrl: string, port: number) {
 
 
 
-export async function runScenario(serverUrl: string, port: number, scenarioId: string, inputPicker: InputPicker) {
+export async function runScenario(serverUrl: string, port: number, scenarioId: string, inputPicker: InputPicker, resolveReferencesImmediately=false) {
     const axiosArgs = {
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
@@ -43,7 +43,7 @@ export async function runScenario(serverUrl: string, port: number, scenarioId: s
     // Test all steps
     let state: ScenarioState = { data: [] };
     for (const step of scenarioData.steps) {
-        console.log(`Testing step: ${scenarioId}/${step.id} ...`);
+        console.log(`Testing step: ${scenarioId}/${step.id}`);
 
         // 1. set inputs and outputs
         for (const input of step.inputs) {
@@ -70,11 +70,12 @@ export async function runScenario(serverUrl: string, port: number, scenarioId: s
 
 
         // 2. execute
-        const response = await axios.post(`${serverUrl}:${port}/scenarios/${scenarioId}/steps/${step.id}/execute?skipCache=true`, state, axiosArgs);
+        const response = await axios.post(`${serverUrl}:${port}/scenarios/${scenarioId}/steps/${step.id}/execute`, state, axiosArgs);
         const ticket = response.data.ticket;
         let poll: any;
         do {
             await sleep(500);
+            process.stdout.write(".");
             poll = await axios.get(`${serverUrl}:${port}/scenarios/${scenarioId}/steps/${step.id}/execute/poll/${ticket}`, axiosArgs);
         } while (poll.data.ticket);
         if (poll.data.error) {
@@ -83,9 +84,11 @@ export async function runScenario(serverUrl: string, port: number, scenarioId: s
         const results = poll.data.results;
 
         // 3. resolve references
-        for (const product of results.data) {
-            if (product.reference && !product.value) {
-                product.value = (await axios.get(`${serverUrl}:${port}/files/${product.reference}`, axiosArgs)).data;
+        if (resolveReferencesImmediately) {
+            for (const product of results.data) {
+                if (product.reference && !product.value) {
+                    product.value = (await axios.get(`${serverUrl}:${port}/files/${product.reference}`, axiosArgs)).data;
+                }
             }
         }
 
@@ -155,6 +158,14 @@ function getDefaultValue(scenarioId: string, stepId: string, paraId: string, cur
             }
         case 'Ecuador':
         case 'PeruShort':
+            switch (stepId) {
+                case 'EqSimulation':
+                    switch (paraId) {
+                        case 'selectedEq':
+                            const userChoice = currentState.data.find(d => d.id === 'userChoice');
+                            return { type: "FeatureCollection", features: [userChoice.value] };
+                    }
+            }
         default:
             throw Error(`Unknown combination ${scenarioId}/${stepId}/${paraId}`);
     }
@@ -175,7 +186,8 @@ export interface Datum {
     value: any,
 };
 export interface DatumWithOptions extends Datum {
-    options: string[]
+    options: string[],
+    default?: string
 }
 export function isDatumWithOptions(datum: Datum): datum is DatumWithOptions {
     return datum.hasOwnProperty('options') && (datum as DatumWithOptions).options.length > 0;

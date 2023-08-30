@@ -21,6 +21,21 @@
       "runtimeExecutable": "~/Desktop/Google-Chrome.AppImage"
     },
     {
+      "name": "Monitor: ts-node",
+      "type": "node",
+      "request": "launch",
+      "args": [
+          "../${relativeFile}"
+      ],
+      "runtimeArgs": [
+          "-r",
+          "ts-node/register"
+      ],
+      "cwd": "${workspaceRoot}/monitor",
+      "internalConsoleOptions": "openOnSessionStart",
+      "runtimeExecutable": "/localhome/lang_m13/.nvm/versions/node/v16.20.1/bin/node"
+  },
+    {
       "name": "Backend: ts-node",
       "type": "node",
       "request": "launch",

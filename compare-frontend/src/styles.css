@@ -201,3 +201,12 @@ main
 }
 
 
+.infoBox {
+    width: 100%;
+    background-color: var(--accent-color-100);
+    outline: 1px solid var(--accent-color-1200);
+    color: var(--accent-color-1200);
+    padding: 0.125rem 0.5rem 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+}
+

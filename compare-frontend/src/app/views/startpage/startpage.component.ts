@@ -5,6 +5,7 @@ import { RiesgosState, ScenarioName } from 'src/app/state/state';
 import * as AppActions from '../../state/actions';
 import { RuleSetName } from 'src/app/state/rules';
 import GeoJSON from 'ol/format/GeoJSON';
+import { StoreService } from 'src/app/services/store.service';
 
 @Component({
   selector: 'app-startpage',
@@ -32,10 +33,12 @@ export class StartpageComponent implements OnInit {
 
   constructor(
     private store: Store<{riesgos: RiesgosState}>,
+    private local: StoreService,
     private router: Router
     ) {}
 
   ngOnInit(): void {
+    this.showDisclaimer = this.local.readLocal('showDisclaimer') === 'false' ? false : true;
     this.store.dispatch(AppActions.scenarioLoadStart());
   }
 
@@ -43,6 +46,11 @@ export class StartpageComponent implements OnInit {
     this.store.dispatch(AppActions.ruleSetPicked({ rules: ruleSetName }));
     this.store.dispatch(AppActions.scenarioPicked({ scenario: id }));
     this.router.navigate(['/map']);
+  }
+
+  dontShowDisclaimerAgain() {
+    this.local.writeLocal('showDisclaimer', 'false');
+    this.showDisclaimer = false;
   }
 
 }

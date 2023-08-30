@@ -158,14 +158,16 @@
 </div>
 
 
-<!-- <div *ngIf="showDisclaimer" class="modal middle">
+<div *ngIf="showDisclaimer" class="modal middle">
   <div class="backdrop">
     <dialog open class="dialog hasShadow">
-        <h4 >{{ 'title' | translate }}</h4>
-        <h6 >{{ 'subtitle' | translate }}</h6>
-        <p>{{ 'body' | translate }}</p>
-        <button >OK</button>
-        <button >{{ 'dontShowAgain' | translate }}</button>
+      <div class="infoBox" style="margin-bottom: 0.5rem; width: 98.5%;">
+        <h4 >{{ 'Disclaimer' | translate }}</h4>
+      </div>
+      <p [innerHTML]="'DisclaimerText' | translate"></p>
+      <div class="right">
+        <button (click)="dontShowDisclaimerAgain()">OK</button>
+      </div>
     </dialog>
   </div>
-</div> -->
+</div>

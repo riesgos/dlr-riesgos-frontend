@@ -131,7 +131,7 @@
     "Description": "Descripción",
     "direction": "Dirección",
     "Disclaimer": "Descargo de responsabilidad",
-    "DisclaimerText": "Este es el demostrador de una herramienta de exploración multiriesgo y aún se encuentra en fase de construcción. IMPORTANTE: los resultados mostrados todavía no están consolidados y en ningún caso son aptos para la planificación u otras aplicaciones prácticas.",
+    "DisclaimerText": "Este es el demostrador de una herramienta de exploración multiriesgo y aún se encuentra en fase de construcción. <br/><b>IMPORTANTE:</b> los resultados mostrados todavía no están consolidados y en ningún caso son aptos para la planificación u otras aplicaciones prácticas.",
     "distribution_lines": "Tramos de media tensión",
     "District": "Distrito",
     "DLR": "DLR: Centro Aeroespacial Alemán",

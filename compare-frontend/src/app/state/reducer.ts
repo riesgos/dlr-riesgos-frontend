@@ -392,7 +392,7 @@ export const reducer = createReducer(
 
 
 function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios: API_ScenarioInfo[]): RiesgosState {
-
+  const rules = getRules(currentState.rules);
   const newScenariosData: RiesgosState["scenarioData"] = {};
 
   for (const apiScenario of apiScenarios) {
@@ -487,13 +487,6 @@ function parseAPIScenariosIntoNewState(currentState: RiesgosState, apiScenarios:
   };
 
   const state = deriveState(newState);
-
-  const rules = getRules(state.rules);
-  for (const [scenarioName, scenarioData] of Object.entries(state.scenarioData)) {
-    for (const [partitionName, partitionData] of Object.entries(scenarioData)) {
-      partitionData.modal.args = rules.modal(state, scenarioName as ScenarioName, partitionName as PartitionName);
-    }
-  }
 
   return state;
 }

@@ -188,6 +188,15 @@ check if more  │     └───────┬──────┘
     private modalClosed$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.closeModal),
         withLatestFrom(this.store$.select(state => state.riesgos)),
+        filter(([action, state]) => {
+            const currentScenario = state.currentScenario;
+            if (!currentScenario) return false;
+            const scenarioData = state.scenarioData[currentScenario as ScenarioName];
+            if (!scenarioData) return false;
+            const partitionData = scenarioData.left;
+            if (!partitionData) return false;
+            return true;
+        }),
         map(([action, state]) => {
             const currentScenario = state.currentScenario;
             const scenarioData = state.scenarioData[currentScenario as ScenarioName]!.left!;

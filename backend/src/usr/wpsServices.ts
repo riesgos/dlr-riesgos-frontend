@@ -374,10 +374,10 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
     }];
 
 
-    const executeUrl = wpsClient2.wpsMarshaller.executeUrl(url, processId);
-    const execBody = wpsClient2.wpsMarshaller.marshalExecBody(processId, inputs, outputs, false);
-    const xmlExecBody = wpsClient2.xmlMarshaller.marshalString(execBody);
-    const success = await writeTextFile("body3.xml", xmlExecBody)
+    // const executeUrl = wpsClient2.wpsMarshaller.executeUrl(url, processId);
+    // const execBody = wpsClient2.wpsMarshaller.marshalExecBody(processId, inputs, outputs, false);
+    // const xmlExecBody = wpsClient2.xmlMarshaller.marshalString(execBody);
+    // const success = await writeTextFile("body3.xml", xmlExecBody)
 
     const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
 

@@ -7,7 +7,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
-import { CommonModule } from '@angular/common';
+import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConverterService, converterToken as mapConverterToken, DefaultConverter } from './modules/map/converter.service';
@@ -116,6 +116,11 @@ import { TutorialComponent } from './views/tutorial/tutorial.component';
       useFactory: (configService: ConfigService) => {
         return () => configService.loadConfig();
       }
+    },
+    {
+      provide: APP_BASE_HREF,
+      useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
+      deps: [PlatformLocation]
     },
     MapService,
     ConverterService,

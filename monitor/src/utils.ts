@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { writeFileSync } from 'promise-fs';
 
 
 export async function testAndRepeat(serverUrl: string, port: number, minutes: number) {

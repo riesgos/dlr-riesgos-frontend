@@ -12,7 +12,7 @@ export async function testAndRepeat(serverUrl: string, port: number, minutes: nu
 
 
 
-export type InputPicker = (input: DatumWithOptions) => Datum | DatumReference;
+export type InputPicker = (input: Datum | DatumReference, state: ScenarioState, scenarioId: string, stepId: string) => Promise<Datum | DatumReference>;
 
 export async function testAllRandomly(serverUrl: string, port: number) {
 
@@ -46,20 +46,7 @@ export async function runScenario(serverUrl: string, port: number, scenarioId: s
 
         // 1. set inputs and outputs
         for (const input of step.inputs) {
-            if (isDatumWithOptions(input)) {
-                state.data.push(inputPicker(input));
-            } 
-            else if ((state.data.find(p => p.id === input.id) as Datum | undefined)?.value) {
-                state.data.push({
-                    id: input.id,
-                    value: (state.data.find(p => p.id === input.id) as Datum | undefined)?.value
-                });
-            } else {
-                state.data.push({
-                    id: input.id,
-                    value: getDefaultValue(scenarioId, step.id, input.id, state)
-                });
-            }
+            state.data.push(await inputPicker(input, state, scenarioId, step.id));
         }
         for (const output of step.outputs) {
             if (!state.data.find(p => p.id === output.id)) {
@@ -98,16 +85,45 @@ export async function runScenario(serverUrl: string, port: number, scenarioId: s
     return state;
 }
 
-const pickRandomOption: InputPicker = (input: DatumWithOptions) => {
-    if (input.id === 'exposureModelName') return {
-        id: input.id,
-        value: input.options.filter(o => o !== 'LimaBlocks')[Math.floor(Math.random() * input.options.length)]
+const pickRandomOption: InputPicker = async (input: {id: string}, state: ScenarioState, scenarioId: string, stepId: string) => {
+
+    // 1. Some special cases
+    if (input.id === "exposureModelName") {
+        return {
+            id: input.id,
+            value: (input as {id: string, options: any[]}).options.filter(o => o !== 'LimaBlocks')[Math.floor(Math.random() * (input as {id: string, options: any[]}).options.length)]
+        };
+    }
+    if (input.id === "userChoice") {
+        // 1. find avaliable eqs
+        // 2. resolve if required
+        // 3. return random one
     }
 
+
+    // 2. Some inputs which already have a value
+    if (isDatumReference(input)) return input;
+    if (isResolvedDatum(input)) return input;
+    const foundInState = state.data.find(d => d.id === input.id);
+    if (foundInState) {
+        if (isDatumReference(foundInState)) return foundInState;
+        if (isResolvedDatum(foundInState)) return foundInState;
+    }
+
+    // 3. Some inputs with options
+    if (isDatumWithDefault(input)) return {id: input.id, value: input.default};
+    if (isDatumWithOptions(input)) {
+        const index = Math.floor(Math.random() * input.options.length);
+        const chosenOption = input.options[index];
+        return {...input, value: chosenOption};
+    }
+
+    // 4. Some scenario-specific defaults
     return {
         id: input.id,
-        value: input.options[Math.floor(Math.random() * input.options.length)]
-    };
+        value: getDefaultValue(scenarioId, stepId, input.id, state)
+    }
+
 }
 
 
@@ -156,15 +172,6 @@ function getDefaultValue(scenarioId: string, stepId: string, paraId: string, cur
                     }
             }
         case 'Ecuador':
-        case 'PeruShort':
-            switch (stepId) {
-                case 'EqSimulation':
-                    switch (paraId) {
-                        case 'selectedEq':
-                            const userChoice = currentState.data.find(d => d.id === 'userChoice');
-                            return { type: "FeatureCollection", features: [userChoice.value] };
-                    }
-            }
         default:
             throw Error(`Unknown combination ${scenarioId}/${stepId}/${paraId}`);
     }
@@ -185,10 +192,15 @@ export interface Datum {
     value: any,
 };
 export interface DatumWithOptions extends Datum {
-    options: string[],
-    default?: string
+    options: string[]
 }
-export function isDatumWithOptions(datum: Datum): datum is DatumWithOptions {
+export interface DatumWithDefault extends Datum {
+    default: any
+}
+export function isDatumWithDefault(datum: {id: string}): datum is DatumWithDefault {
+    return datum.hasOwnProperty('default') && (datum as DatumWithDefault).default !== undefined;
+}
+export function isDatumWithOptions(datum: {id: string}): datum is DatumWithOptions {
     return datum.hasOwnProperty('options') && (datum as DatumWithOptions).options.length > 0;
 }
 export interface DatumReference {

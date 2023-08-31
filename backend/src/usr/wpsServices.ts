@@ -515,7 +515,12 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
         type: 'complex',
         reference: false,
         format: 'application/WMS'
-    }, {
+    },{
+        id: 'merged_output',
+        reference: true,
+        type: 'complex',
+        format: 'application/json'
+    },  {
         id: 'meta_summary',
         type: 'complex',
         reference: false,
@@ -526,7 +531,8 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
 
     return {
         wms: results.find(r => r.description.id === 'shapefile_summary')?.value[0],
-        summary: results.find(r => r.description.id === 'meta_summary')?.value[0]
+        summary: results.find(r => r.description.id === 'meta_summary')?.value[0],
+        damageRef: results.find(r => r.description.id === 'merged_output' && r.description.reference === true)?.value,
     };
 }
 

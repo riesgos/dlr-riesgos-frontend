@@ -1,5 +1,5 @@
-import { writeJsonFile, writeTextFile } from "./files";
-import { ScenarioState, Datum, isDatumReference, InputPicker, DatumWithOptions, DatumReference, runScenario } from "./utils";
+import { fileExists, writeJsonFile } from "./files";
+import { ScenarioState, Datum, isDatumReference, InputPicker, DatumReference, runScenario, isResolvedDatum, isDatumWithOptions, isDatumWithDefault } from "./utils";
 import axios from "axios";
 
 const eqParas: any[] = [
@@ -687,6 +687,18 @@ const eqParas: any[] = [
     }
 ];
 
+function isString(x: any): x is string {
+    return typeof x === "string" || x instanceof String;
+}
+
+function isArray(x: any): x is Array<any> {
+    return Array.isArray(x);
+}
+
+function isRefUrl(s: string): boolean {
+    return s.startsWith("https://") && s.includes("RetrieveResultServlet");
+}
+
 async function writeAllDataToFiles(eqParaId: string, serverUrl: string, port: number, data: ScenarioState): Promise<void> {
     const axiosArgs = {
         maxBodyLength: Infinity,
@@ -694,50 +706,87 @@ async function writeAllDataToFiles(eqParaId: string, serverUrl: string, port: nu
     };
 
     for (const datum of data.data) {
+
+        let value;
         if (isDatumReference(datum)) {
-            const data = (await axios.get(`${serverUrl}:${port}/files/${datum.reference}`, axiosArgs)).data;
+            const response = await axios.get(`${serverUrl}:${port}/files/${datum.reference}`, axiosArgs);
+            const data = response.data;
+            value = data;
+        } else {
+            value = datum.value;
+        }
+        
+        if (isString(value) && isRefUrl(value)) {
+            const ref = value;
+            const response = await axios.get(ref, axiosArgs);
+            const data = response.data;
+            writeJsonFile(`../cache/${eqParaId}/${datum.id}.json`, data);
+        } else if (isArray(value) && value.length > 0 && isString(value[0]) && isRefUrl(value[0])) {
+            const ref = value[0];
+            const response = await axios.get(ref, axiosArgs);
+            const data = response.data;
             writeJsonFile(`../cache/${eqParaId}/${datum.id}.json`, data);
         } else {
-            writeJsonFile(`../cache/${eqParaId}/${datum.id}.json`, datum.value);
+            writeJsonFile(`../cache/${eqParaId}/${datum.id}.json`, value);
         }
     }
 
 }
 
 function createParaPicker(eqPara: any): InputPicker {
-    function paraPicker(input: DatumWithOptions): Datum {
+    async function paraPicker(input: {id: string}, state: ScenarioState, scenarioId: string, stepId: string): Promise<Datum | DatumReference> {
+
+        // 1. Some inputs with pre-determined values
         if (input.id === "exposureModelName") {
             return {
                 id: input.id,
                 value: "LimaBlocks"
             };
-        } else if (input.id === "userChoice") {
+        }
+        if (input.id === "selectedEq") {
             return {
                 id: input.id,
                 value: eqPara
             };
-        } else if (input.id === "schemaTs") {
+        }
+        if (input.id === "schemaTs") {
             return {
                 id: input.id,
                 value: "Medina_2019"
             };
-        } else {
-            return {
-                id: input.id,
-                value: input.default ? input.default : input.options[0]
-            };
         }
+        
+        // 2. Some inputs which already have a value
+        if (isDatumReference(input)) return input;
+        if (isResolvedDatum(input)) return input;
+        const foundInState = state.data.find(d => d.id === input.id);
+        if (foundInState) {
+            if (isDatumReference(foundInState)) return foundInState;
+            if (isResolvedDatum(foundInState)) return foundInState;
+        }
+
+        // 3. Some inputs with options
+        if (isDatumWithDefault(input)) return {id: input.id, value: input.default};
+        if (isDatumWithOptions(input)) {
+            const index = Math.floor(Math.random() * input.options.length);
+            const chosenOption = input.options[index];
+            return {...input, value: chosenOption};
+        }
+
+        throw Error(`Don't know how to pick a value for ${input.id}`);
     }
     return paraPicker;
 }
 
-async function runAndSavePeruShort(serverUrl: string, port: number) {
+async function runAndSavePeruShort(serverUrl: string, port: number, overwriteExisting=true) {
 
 
     const scenarioId = "PeruShort";
 
     for (const eqPara of eqParas) {
-        // try {            
+        if (!overwriteExisting && fileExists(`../cache/${eqPara.id}`)) continue;
+
+        try {   
             console.log(`Working on eq ${eqPara.id}`)
     
             const inputPicker = createParaPicker(eqPara);
@@ -746,9 +795,9 @@ async function runAndSavePeruShort(serverUrl: string, port: number) {
     
             await writeAllDataToFiles(eqPara.id, serverUrl, port, state);
     
-        // } catch (error) {
-        //     console.error(error);
-        // }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
 }

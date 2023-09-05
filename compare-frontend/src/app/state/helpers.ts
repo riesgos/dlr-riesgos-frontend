@@ -12,11 +12,11 @@ export function offsetCenterForPartition(center: number[], zoom: number, sourceP
     let newCenter = [...center];
     if (sourcePartition === 'left') {
         if (targetPartition === 'right') {
-            newCenter[0] += 0.9 * (14 - zoom) / 14;
+            newCenter[0] += 0.4 * (14 - zoom) / 14;
         }
     } else if (sourcePartition === 'right') {
         if (targetPartition === 'left') {
-            newCenter[0] -= 0.9 * (14 - zoom) / 14;
+            newCenter[0] -= 0.4 * (14 - zoom) / 14;
         }
     }
     return newCenter;

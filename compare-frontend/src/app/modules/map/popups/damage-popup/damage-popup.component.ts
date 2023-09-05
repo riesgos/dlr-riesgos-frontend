@@ -10,6 +10,7 @@ import { exposureDamageRange, yellowPurpleRange, yellowRedRange } from 'src/app/
 
 type knownSchemas = 'SARA_v1.0' | 'SUPPASRI2013_v2.0' | 'Medina_2019';
 
+
 @Component({
   selector: 'app-damage-popup',
   templateUrl: './damage-popup.component.html',
@@ -18,11 +19,12 @@ type knownSchemas = 'SARA_v1.0' | 'SUPPASRI2013_v2.0' | 'Medina_2019';
 export class DamagePopupComponent implements OnInit, AfterViewInit {
 
   @Input() feature!: FeatureLike;
-  @Input() schema!: knownSchemas;
+  @Input() metaData!: DeusMetaData;
   @Input() additionalText?: string;
   @Input() heading?: string;
   @Input() xLabel!: string;
   @Input() yLabel!: string;
+  public countTotal: string | undefined;
   public width = 300;
   public height = 250;
   public data: BarDatum[] = [];
@@ -62,7 +64,8 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
   
     const props = this.feature.getProperties();
     for (const [key, value] of Object.entries(props)) {
-      if (['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22'].includes(key)) {
+      const translatedKey = this.metaData.custom_columns[key];
+      if (translatedKey && translatedKey.startsWith("Buildings in") && translatedKey.endsWith("per damage state")) {
         if (value !== undefined && value !== "") {
           const classData = JSON.parse(value);
           for (const [dmgClass, count] of Object.entries(classData)) {
@@ -72,7 +75,7 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
         }
       }
     }
-  
+
     let countTotal = 0;
     for (const datum of data) {
       datum.value = datum.value;
@@ -80,12 +83,15 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
       countTotal += datum.value;
     }
   
+  
     this.data = data;
     if (countTotal <= 0) {
       this.data = [];
       this.width = 0;
       this.height = 0;
       this.additionalText = 'no_residential_buildings';
+    } else {
+      this.countTotal = countTotal.toFixed(2);
     }
   
     setTimeout(() => { // if not timeout, then labels don't have enough space on graph

@@ -25,6 +25,8 @@ for path in dirPaths:
     eqDmgData = json.read(fh)
 
     for feature in eqDmgData["features"]:
+        # calc weighted damage
+        # discard all other data
         pass
 
     eqDmgTargetFile = os.path.join(path, "eqDamageRefUpdated.json")

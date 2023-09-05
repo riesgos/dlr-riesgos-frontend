@@ -280,7 +280,8 @@ export const reducer = createReducer(
     if (rules.mirrorMove(state.userChoiceLinkMapViews)) {
       for (const [otherPartition, otherPartitionData] of Object.entries(scenarioState)) {
         if (otherPartition !== action.partition) {
-          otherPartitionData.map.center = offsetCenterForPartition(action.center, action.zoom, action.partition, otherPartition as PartitionName);
+          // otherPartitionData.map.center = offsetCenterForPartition(action.center, action.zoom, action.partition, otherPartition as PartitionName);
+          otherPartitionData.map.center = action.center;
           otherPartitionData.map.zoom = action.zoom;
         }
       }

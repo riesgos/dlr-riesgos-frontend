@@ -1,0 +1,1 @@
+https://github.com/camptocamp/docker-mapserver

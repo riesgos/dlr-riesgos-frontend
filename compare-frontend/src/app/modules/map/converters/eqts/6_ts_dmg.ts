@@ -56,7 +56,6 @@ export class TSDmg implements Converter {
                             metaData: summaryProduct.value,
                             xLabel: 'Damage',
                             yLabel: 'Nr_buildings',
-                            schema: 'SARA_v1.0',
                             heading: 'damage_classification_tsunami',
                             additionalText: "DamageStatesGeneralized"
                         }

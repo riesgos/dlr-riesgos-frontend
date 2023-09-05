@@ -2,6 +2,8 @@
     <h4>{{ heading | translate }}</h4>
 </ng-container>
 
+<div *ngIf="countTotal">{{ countTotal }} {{ 'buildings' | translate }}</div>
+
 <div id="container" #container [style]="{'width': width + 'px', 'height': height + 'px'}">
 </div>
 

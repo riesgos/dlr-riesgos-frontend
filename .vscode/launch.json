@@ -5,6 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceRoot}/cache",
+      "python": "/localhome/lang_m13/miniconda3/envs/geo/bin/python"
+    },
+    {
       "name": "Firefox attach to running instance",
       "type": "firefox",
       "request": "launch",
@@ -25,50 +35,50 @@
       "type": "node",
       "request": "launch",
       "args": [
-          "../${relativeFile}"
+        "../${relativeFile}"
       ],
       "runtimeArgs": [
-          "-r",
-          "ts-node/register"
+        "-r",
+        "ts-node/register"
       ],
       "cwd": "${workspaceRoot}/monitor",
       "internalConsoleOptions": "openOnSessionStart",
       "runtimeExecutable": "/localhome/lang_m13/.nvm/versions/node/v16.20.1/bin/node"
-  },
+    },
     {
       "name": "Backend: ts-node",
       "type": "node",
       "request": "launch",
       "args": [
-          "../${relativeFile}"
+        "../${relativeFile}"
       ],
       "runtimeArgs": [
-          "-r",
-          "ts-node/register"
+        "-r",
+        "ts-node/register"
       ],
       "cwd": "${workspaceRoot}/backend",
       "internalConsoleOptions": "openOnSessionStart",
       "runtimeExecutable": "/localhome/lang_m13/.nvm/versions/node/v16.20.1/bin/node"
-  },
-  {
+    },
+    {
       "name": "Backend: Jest file",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceRoot}/backend/node_modules/.bin/jest",
       "args": [
-          "${fileBasenameNoExtension}",
-          "--runInBand",
-          "--watch",
-          "--coverage=false",
-          "--no-cache"
+        "${fileBasenameNoExtension}",
+        "--runInBand",
+        "--watch",
+        "--coverage=false",
+        "--no-cache"
       ],
       "cwd": "${workspaceRoot}/backend",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
       "windows": {
-          "program": "${workspaceFolder}/backend/node_modules/jest/bin/jest"
+        "program": "${workspaceFolder}/backend/node_modules/jest/bin/jest"
       }
-  },
+    },
   ]
 }

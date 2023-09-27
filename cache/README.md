@@ -1,6 +1,6 @@
-there are issues saving files:
-    saving zip'ed shapefiles.
-    Shapefiles are only very small. Why?
+ok, uploading the styles will not work for the life of me.
+What if I just mount all data, set configuration manually, and store the config dir in git?
+
 
 
 

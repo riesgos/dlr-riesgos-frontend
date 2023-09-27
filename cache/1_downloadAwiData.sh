@@ -5,6 +5,6 @@ cd downloadDir
 curl https://nextcloud.awi.de/s/aNXgXxN9qk5RZRz/download/riesgos_tsunami_data.tgz -o riesgos_tsunami_data.tgz
 tar -xzf riesgos_tsunami_data.tgz
 rm riesgos_tsunami_data.tgz
-mv -r data/data ../
+mv data/data ../awiData
 cd ..
-rm -f downloadDir
+rm -rf downloadDir

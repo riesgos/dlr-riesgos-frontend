@@ -1,6 +1,6 @@
 quakeml:quakeledger/*
-bak
 __pycache__
 container
 data
+awiData
 cache

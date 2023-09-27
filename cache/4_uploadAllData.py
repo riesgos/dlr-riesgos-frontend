@@ -142,23 +142,23 @@ def uploadEqData(eqNr):
     geo.registerStylesWithLayer("pga", ["shakemap-pga"], workSpaceName, firstStyleDefault=True)
 
     # eqDmg
-    geo.upload_style(path=f"./styles/gfz-prod/style-damagestate-sara-plasma.sld", name="style-damagestate-sara-plasma", workspace=workSpaceName, sld_version="1.1.0")
-    geo.upload_style(path=f"./styles/gfz-prod/style-cum-loss-peru-plasma.sld", name="style-cum-loss-peru-plasma", workspace=workSpaceName, sld_version="1.1.0")
+    geo.upload_style(path=f"./styles/gfz-prod/style-damagestate-sara-plasma.sld", name="style-damagestate-sara-plasma", workspace=workSpaceName, sld_version="1.0.0")
+    geo.upload_style(path=f"./styles/gfz-prod/style-cum-loss-peru-plasma.sld", name="style-cum-loss-peru-plasma", workspace=workSpaceName, sld_version="1.0.0")
     geo.registerStylesWithLayer("eqDamageShapefile", ["style-damagestate-sara-plasma", "style-cum-loss-peru-plasma"], workSpaceName, firstStyleDefault=True)
 
     # tsDmg
-    geo.upload_style(path=f"./styles/gfz-prod/style-damagestate-medina-plasma.sld", name="style-damagestate-medina-plasma", workspace=workSpaceName, sld_version="1.1.0")
-    geo.upload_style(path=f"./styles/gfz-prod/style-damagestate-suppasri-plasma.sld", name="style-damagestate-suppasri-plasma", workspace=workSpaceName, sld_version="1.1.0")
+    geo.upload_style(path=f"./styles/gfz-prod/style-damagestate-medina-plasma.sld", name="style-damagestate-medina-plasma", workspace=workSpaceName, sld_version="1.0.0")
+    geo.upload_style(path=f"./styles/gfz-prod/style-damagestate-suppasri-plasma.sld", name="style-damagestate-suppasri-plasma", workspace=workSpaceName, sld_version="1.0.0")
     geo.registerStylesWithLayer("tsDamageShapefile", [ "style-damagestate-medina-plasma", "style-damagestate-suppasri-plasma", "style-cum-loss-peru-plasma"], workSpaceName, firstStyleDefault=True)
 
     # sysrel
 
     # arrivalTime
-    geo.upload_style(path=f"./styles/awi/Arrivaltime.sld", name="arrivalTimes", workspace=workSpaceName, sld_version="1.1.0")
+    geo.upload_style(path=f"./styles/awi/Arrivaltime.sld", name="arrivalTimes", workspace=workSpaceName, sld_version="1.0.0")
     geo.registerStylesWithLayer("arrivalTimes", ["arrivalTimes"], workSpaceName, True)
 
     # epiCenter
-    geo.upload_style(path=f"./styles/awi/epiCenter.sld", name="epiCenter", workspace=workSpaceName, sld_version="1.1.0")
+    geo.upload_style(path=f"./styles/awi/epiCenter.sld", name="epiCenter", workspace=workSpaceName, sld_version="1.0.0")
     geo.registerStylesWithLayer("epiCenter", ["epiCenter"], workSpaceName, True)
 
     # mwh
@@ -191,3 +191,5 @@ for i, eqNr in enumerate(eqNrs):
 
 
 
+
+# %%

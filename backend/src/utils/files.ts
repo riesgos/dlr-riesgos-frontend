@@ -60,7 +60,7 @@ export async function writeTextFile(filePath: string, data: string) {
         return true;
     } catch (e) {
         console.error(e);
-        return false;
+        throw e;
     }
 }
 

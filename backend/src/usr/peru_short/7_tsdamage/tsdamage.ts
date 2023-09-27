@@ -23,7 +23,7 @@ async function tsDamage(inputs: Datum[]) {
 
     const fragilityRef = await getFragility(chosenFragility.value);
     
-    const { wms, summary, damageRef } = await getNeptunusTsunamiDamage('SARA_v1.0', fragilityRef, tsunamiGeoTiffRequest, updatedExposureRef.value);
+    const { wms, summary, damageRef, shapefile } = await getNeptunusTsunamiDamage('SARA_v1.0', fragilityRef, tsunamiGeoTiffRequest, updatedExposureRef.value);
   
 
     return [{
@@ -35,6 +35,9 @@ async function tsDamage(inputs: Datum[]) {
     }, {
         id: 'tsDamageRef',
         value: damageRef
+    }, {
+        id: 'tsDamageShapefile',
+        value: shapefile
     }];
 }
 
@@ -59,6 +62,8 @@ export const step: Step = {
         id: 'tsDamageSummary'
     }, {
         id: 'tsDamageRef'
+    }, {
+        id: 'tsDamageShapefile'
     }],
     function: tsDamage
 };

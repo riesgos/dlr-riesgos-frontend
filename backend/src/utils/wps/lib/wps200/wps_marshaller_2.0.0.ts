@@ -137,7 +137,17 @@ export class WpsMarshaller200 implements WpsMarshaller {
 
     if (isResult(responseJson.value)) {
       for (const output of responseJson.value.output) {
-        const outputDescription = outputDescriptions.find(od => od.id === output.id);
+        let outputDescription: WpsDataDescription | undefined = undefined;
+        let candidateOutputDescriptions = outputDescriptions.filter(od => od.id === output.id);
+        if (candidateOutputDescriptions.length === 1) outputDescription = candidateOutputDescriptions[0];
+        else {
+          candidateOutputDescriptions = candidateOutputDescriptions.filter(co => co.format === output.data?.mimeType ||co.format === output.reference?.mimeType);
+          if (candidateOutputDescriptions.length === 1) outputDescription = candidateOutputDescriptions[0];
+          else {
+            candidateOutputDescriptions = candidateOutputDescriptions.filter(co => output.data?.encoding === co.encoding || output.reference?.encoding === co.encoding);
+            if (candidateOutputDescriptions.length === 1) outputDescription = candidateOutputDescriptions[0];
+          }
+        }
         if (!outputDescription) {
           throw new Error(`Could not find an output-description for the parameter ${output.id}.`);
         }
@@ -274,7 +284,7 @@ export class WpsMarshaller200 implements WpsMarshaller {
             href: i.value,
             mimeType: i.description.format,
             schema: i.description.schema,
-            encoding: i.description.encoding || "UTF-8"
+            encoding: i.description.encoding
           }
         };
       } else {

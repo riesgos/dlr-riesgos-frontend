@@ -1,7 +1,7 @@
 export type WpsVersion = '1.0.0' | '2.0.0';
 export type WpsDataFormat = 'application/vnd.geo+json' | 'application/json' | 'application/WMS' |
-  'application/xml' | 'text/xml' | 'application/text' | 'image/geotiff' |
-  'text/plain' | 'string';
+  'application/xml' | 'text/xml' | 'text/xml; subtype=gml/2.1.2' | 'application/text' | 'image/geotiff' |
+  'text/plain' | 'application/x-zipped-shp' | 'string';
 
 
 export type ProcessId = string;
@@ -18,8 +18,7 @@ export interface WpsDataDescription {
   options?: any[];
   /** http://earthquake.usgs.gov/eqcenter/shakemap , ... */
   schema?: string;
-  /** UTF-8, ... */
-  encoding?: string;
+  encoding?: 'UTF-8' | 'base64' | string;
 }
 export type WpsInputDescription = WpsDataDescription;
 export type WpsOutputDescription = WpsDataDescription;

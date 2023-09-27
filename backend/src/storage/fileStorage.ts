@@ -18,6 +18,8 @@ export class FileStorage<Properties extends {}> {
         const hash = objectHash(props);
         const fullFilePath = pathJoin([this.filePath, hash]);
         const success = await writeJsonFile(fullFilePath, data);
+        if (success) console.log(`added data with lineage ${JSON.stringify(props)} under hash ${hash}`);
+        else console.error(`Something went wrong when attempting to save file with lineage ${JSON.stringify(props)} under hash ${hash}`);
         return hash;
     }
 
@@ -35,6 +37,7 @@ export class FileStorage<Properties extends {}> {
             console.log(`Store: fetched data from cache: ${key}`);
             return contents;
         } catch (error) {
+            console.error(error);
             return undefined;
         }
     }

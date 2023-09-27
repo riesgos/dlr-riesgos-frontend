@@ -126,7 +126,7 @@ export class Scenario {
         if (isResolvedDatum(entry)) return entry;
         if (isDatumReference(entry)) {
             const value = await this.store.getDataByKey(entry.reference);
-            if (value === undefined) throw Error(`Couldn't resolve datum "${id}" with refrence "${entry.reference}". Might be out of date.`);
+            if (value === undefined) throw Error(`Couldn't resolve datum "${id}" with reference "${entry.reference}". Might be out of date.`);
             const datum: Datum = { id, value };
             return datum;
         }
@@ -144,7 +144,9 @@ export class Scenario {
     }
 
     private async addDatum(newDatum: Datum, state: ScenarioState): Promise<ScenarioState> {
-
+        if (newDatum.id === "eqDamageRef" || newDatum.id === "eqDamageShapefile") {
+            console.log("Obacht!");
+        }
         // Data is stored in cache hashed by the inputs that led to it.
         const linage = this.getLinage(newDatum.id, state);
         const key = await this.store.addData(newDatum.value, linage);

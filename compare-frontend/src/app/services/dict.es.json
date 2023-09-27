@@ -1,7 +1,7 @@
 {
     "buildings": "edificios",
     "dontShowAgain": "No volver a mostrar",
-    "wizardShowOrHide": "Botón para mostrar u ocultar el menú",
+    "wizardShowOrHide": "Botón para mostrar u ocultar el menú.",
     "startPageOverview": "El Demostrador es un sistema de información desarrollado en el marco del proyecto RIESGOS con el propósito de analizar escenarios multi-riesgos de amenazas naturales como terremotos, deslizamientos, volcanes, inundaciones y tsunamis. La versión básica (“Demostrador Light”) permite al usuario simular un terremoto frente a las costas de Lima y Callao y analizar los efectos en cascada, por ejemplo, el tsunami que se produciría, los daños en los edificios residenciales y en la red eléctrica. Las simulaciones se basan en modelos científicos desarrollados por el proyecto RIESGOS utilizando bases de datos de diferentes fuentes que no han sido revisadas ni autorizadas por las entidades sectoriales del Perú. Por este motivo la información presentada en ningún caso debe ser utilizada para la planificación u otras aplicaciones prácticas.",
     "explanationOfColors": "El proceso de análisis se ha activado. El programa solicita ahora a los institutos especializados participantes, a través de servicios web, los resultados de la modelización basados en el terremoto que ha seleccionado.  Esto puede tardar un momento. En cuanto los resultados estén disponibles, el campo de parámetros correspondiente en el cuadro de control se mostrará en verde. Para ver los resultados, sólo tiene que hacer clic en el campo del parámetro correspondiente.",
     "LinkViewToggle": "Botón para vincular o desvincular las vistas del mapa en las dos ventanas.",

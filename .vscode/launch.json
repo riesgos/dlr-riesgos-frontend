@@ -40,14 +40,15 @@
       "type": "node",
       "request": "launch",
       "args": [
-          "${relativeFile}"
+          "../${relativeFile}"
       ],
       "runtimeArgs": [
           "-r",
           "ts-node/register"
       ],
       "cwd": "${workspaceRoot}/backend",
-      "internalConsoleOptions": "openOnSessionStart"
+      "internalConsoleOptions": "openOnSessionStart",
+      "runtimeExecutable": "/localhome/lang_m13/.nvm/versions/node/v16.20.1/bin/node"
   },
   {
       "name": "Backend: Jest file",

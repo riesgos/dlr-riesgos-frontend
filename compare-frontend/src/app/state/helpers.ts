@@ -147,7 +147,7 @@ export function convertApiDataToRiesgosData(apiData: (API_Datum | API_DatumRefer
 
 
 export function getMapPositionForStep(scenario: ScenarioName, partition: PartitionName, stepId: string): {center: number[], zoom: number} {
-    if (scenario === 'PeruShort') {
+    if (scenario === 'PeruShort' || scenario === 'PeruCached') {
         switch (stepId) {
             case 'selectEq':
                 return { zoom: 7, center: [-77.6, -12] };

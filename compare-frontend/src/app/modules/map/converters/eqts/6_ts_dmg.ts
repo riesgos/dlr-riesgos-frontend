@@ -10,7 +10,7 @@ import { createTableHtml } from "src/app/helpers/others";
 export class TSDmg implements Converter {
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "TsDamage";
+        return scenario === "PeruShort" &&  step === "TsDamage";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

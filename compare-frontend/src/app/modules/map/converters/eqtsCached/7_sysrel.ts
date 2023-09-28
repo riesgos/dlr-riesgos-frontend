@@ -15,12 +15,12 @@ import { Injectable } from "@angular/core";
 
 
 @Injectable()
-export class SysRel implements Converter {
+export class CachedSysRel implements Converter {
 
     constructor(private translate: TranslationService) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" &&  step === "SysRel";
+        return scenario === "PeruCached" &&  step === "SysRel";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

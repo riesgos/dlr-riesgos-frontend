@@ -1,6 +1,6 @@
 {
     "allowedScenarios": [
-        "PeruShort"
+        "PeruCached"
     ],
     "production": true,
     "backendUrl": "https://riesgos.dlr.de/backend",

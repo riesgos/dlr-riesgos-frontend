@@ -7,10 +7,10 @@ import { DamagePopupComponent } from "../../popups/damage-popup/damage-popup.com
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
 import { createTableHtml } from "src/app/helpers/others";
 
-export class EqDmg implements Converter {
+export class CachedEqDmg implements Converter {
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" &&  step === "EqDamage";
+        return scenario === "PeruCached" &&  step === "EqDamage";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

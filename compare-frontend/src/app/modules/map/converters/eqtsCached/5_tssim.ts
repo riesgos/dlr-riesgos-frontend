@@ -12,7 +12,7 @@ import { TranslationService } from "src/app/services/translation.service";
 
 
 @Injectable()
-export class TsSim implements Converter {
+export class CachedTsSim implements Converter {
 
     constructor(
         private http: HttpClient,
@@ -20,7 +20,7 @@ export class TsSim implements Converter {
     ) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" &&  step === 'Tsunami';
+        return scenario === "PeruCached" &&  step === 'Tsunami';
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

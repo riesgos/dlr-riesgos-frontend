@@ -4,10 +4,11 @@ import { ScenarioAPIConfig, addScenarioApi } from './scenarios/scenario.interfac
 // import { parseCode } from './parser/scenarioParser';
 import { peruFactory } from './usr/peru/peru';
 import { peruShortFactory } from './usr/peru_short/peru';
+import { peruCachedFactory } from './usr/peru_cached/peru';
 import { chileFactory } from './usr/chile/chile';
 import { ecuadorFactory } from './usr/ecuador/ecuador';
 import config from "./config.json";
-import { sleep } from './utils/async';
+
 
 
 const port = config.port;
@@ -28,7 +29,7 @@ async function main() {
     app.use(cors());
     
     // const scenarioFactories = await parseCode(scriptDir);
-    const scenarioFactories = [chileFactory, ecuadorFactory, peruFactory, peruShortFactory];
+    const scenarioFactories = [chileFactory, ecuadorFactory, peruFactory, peruShortFactory, peruCachedFactory];
 
     // Checking that all scenarios are ready
     // for (const factory of scenarioFactories) {

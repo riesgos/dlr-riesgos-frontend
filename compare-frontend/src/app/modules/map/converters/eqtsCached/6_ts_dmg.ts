@@ -7,23 +7,25 @@ import { DamagePopupComponent } from "../../popups/damage-popup/damage-popup.com
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
 import { createTableHtml } from "src/app/helpers/others";
 
-export class EqDmg implements Converter {
+export class CachedTSDmg implements Converter {
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" &&  step === "EqDamage";
+        return scenario === "PeruCached" &&  step === "TsDamage";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {
-        const wmsProduct = data.find(p => p.id === "eqDamageWms");
+        const wmsProduct = data.find(p => p.id === "tsDamageWms");
         if (!wmsProduct) return of([]);
-        const summaryProduct = data.find(d => d.id === "eqDamageSummary");
+        const summaryProduct = data.find(d => d.id === "tsDamageSummary");
         if (!summaryProduct) return of([]);
+        
+        const schema = data.find(d => d.id === "schemaTs")?.value || "Medina_2019";
 
         const wms = new URL(wmsProduct.value);
 
         const dmgLayer: LayerComposite = {
-            id: "EqDamage-WMS-damage",
-            stepId: "EqDamage",
+            id: "TsDamage-WMS-damage",
+            stepId: "TsDamage",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,
@@ -31,7 +33,7 @@ export class EqDmg implements Converter {
                         "LAYERS": wms.searchParams.get('layers'),
                         "FORMAT": wms.searchParams.get('format'),
                         "VERSION": wms.searchParams.get('Version'),
-                        "STYLES": "style-damagestate-sara-plasma",
+                        "STYLES": `style-damagestate-${schema === "Medina_2019" ? "medina" : "suppasri"}-plasma`,
                     }
                 })
             }),
@@ -42,7 +44,7 @@ export class EqDmg implements Converter {
                     return {
                         component: StringPopupComponent,
                         args: {
-                            title: "earthquake_damage_classification",
+                            title: "damage_classification_tsunami",
                             body: 'no_residential_buildings'
                         }
                     }
@@ -54,8 +56,8 @@ export class EqDmg implements Converter {
                             metaData: summaryProduct.value,
                             xLabel: 'Damage',
                             yLabel: 'Nr_buildings',
-                            heading: 'earthquake_damage_classification',
-                            additionalText: 'DamageStatesGeneralized'
+                            heading: 'damage_classification_tsunami',
+                            additionalText: "DamageStatesGeneralized"
                         }
                     };
                 }
@@ -64,8 +66,8 @@ export class EqDmg implements Converter {
         };
 
         const econLayer: LayerComposite = {
-            id: "EqDamage-WMS-econ",
-            stepId: "EqDamage",
+            id: "TsDamage-WMS-econ",
+            stepId: "TsDamage",
             layer: new TileLayer({
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,
@@ -92,13 +94,12 @@ export class EqDmg implements Converter {
                 return {
                     component: StringPopupComponent,
                     args: {
-                        title: "eq-economic-loss-title",
+                        title: "ts-economic-loss-title",
                         body: loss
                     }
                 };
             },
-            opacity: 1.0,
-            visible: true
+            visible: true,
         };
 
         return of([dmgLayer, econLayer]);

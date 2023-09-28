@@ -16,12 +16,12 @@ import { Injectable } from "@angular/core";
 
 
 @Injectable()
-export class Exposure implements Converter {
+export class CachedExposure implements Converter {
 
     constructor(private translator: TranslationService) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" &&  step === "Exposure";
+        return scenario === "PeruCached" &&  step === "Exposure";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

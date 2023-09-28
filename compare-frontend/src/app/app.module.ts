@@ -62,6 +62,13 @@ import { ImageLegendComponent } from './modules/wizard/tabComponents/legends/ima
 import { TextComponent } from './modules/wizard/tabComponents/legends/text/text.component';
 import { AppControlComponent } from './modules/components/app-control/app-control.component';
 import { TutorialComponent } from './views/tutorial/tutorial.component';
+import { CachedEqSelection } from './modules/map/converters/eqtsCached/1_eqselect';
+import { CachedEqSimulation } from './modules/map/converters/eqtsCached/2_eqsim';
+import { CachedExposure } from './modules/map/converters/eqtsCached/3_exposure';
+import { CachedEqDmg } from './modules/map/converters/eqtsCached/4_eq_dmg';
+import { CachedTsSim } from './modules/map/converters/eqtsCached/5_tssim';
+import { CachedTSDmg } from './modules/map/converters/eqtsCached/6_ts_dmg';
+import { CachedSysRel } from './modules/map/converters/eqtsCached/7_sysrel';
 
 @NgModule({
   declarations: [
@@ -122,6 +129,7 @@ import { TutorialComponent } from './views/tutorial/tutorial.component';
       useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
       deps: [PlatformLocation]
     },
+
     MapService,
     ConverterService,
     { provide: mapConverterToken, useClass: EqSelection, multi: true },
@@ -131,7 +139,17 @@ import { TutorialComponent } from './views/tutorial/tutorial.component';
     { provide: mapConverterToken, useClass: TsSim, multi: true },
     { provide: mapConverterToken, useClass: TSDmg, multi: true },
     { provide: mapConverterToken, useClass: SysRel, multi: true },
+    
+    { provide: mapConverterToken, useClass: CachedEqSelection, multi: true },
+    { provide: mapConverterToken, useClass: CachedEqSimulation, multi: true },
+    { provide: mapConverterToken, useClass: CachedExposure, multi: true },
+    { provide: mapConverterToken, useClass: CachedEqDmg, multi: true },
+    { provide: mapConverterToken, useClass: CachedTsSim, multi: true },
+    { provide: mapConverterToken, useClass: CachedTSDmg, multi: true },
+    { provide: mapConverterToken, useClass: CachedSysRel, multi: true },
+    
     { provide: mapConverterToken, useClass: DefaultConverter, multi: true },
+    
     WizardService,
     WizardConverterService,
     { provide: wizardConverterToken, useClass: WizardEqSelection, multi: true },

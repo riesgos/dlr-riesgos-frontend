@@ -19,7 +19,7 @@ import { TranslationService } from "src/app/services/translation.service";
 import { ResolverService } from "src/app/services/resolver.service";
 
 @Injectable()
-export class EqSelection implements Converter {
+export class CachedEqSelection implements Converter {
     
     private riesgosState$ = new BehaviorSubject<RiesgosState | undefined>(undefined);
     private leftEqSelect$ = new BehaviorSubject<RiesgosProductResolved | undefined>(undefined);
@@ -33,7 +33,7 @@ export class EqSelection implements Converter {
         this.riesgosState$.pipe(
             filter(state => !!state),
             map(state => {
-                const leftScenarioData = state!.scenarioData.PeruShort!.left!;
+                const leftScenarioData = state!.scenarioData.PeruCached!.left!;
                 const eqProduct = leftScenarioData.products.find(p => p.id === "selectedEq")!;
                 return eqProduct;
             }),
@@ -45,7 +45,7 @@ export class EqSelection implements Converter {
     }
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" && step === "selectEq";
+        return scenario === "PeruCached" && step === "selectEq";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[], partition: PartitionName): Observable<LayerComposite[]> {

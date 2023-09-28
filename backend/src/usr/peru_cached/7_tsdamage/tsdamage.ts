@@ -6,11 +6,11 @@ import { readJsonFile } from "../../../utils/files";
 async function tsDamage(inputs: Datum[]) {
 
     const selectedEq = inputs.find(i => i.id === 'selectedEq')!.value;
-    const id = selectedEq.features[0].id.replace("peru_", "");
+    const id = selectedEq.features[0].id.replace("peru_", "").replace("quakeml:quakeledger/", "");
   
     const wms = `http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AtsDamage_${id}`;
-    const summary = await readJsonFile(`../cached_data/tsDamageSummary_${id}.json`);
-
+    const summary = await readJsonFile(`${__dirname}/../../../../data/data/cached_data/tsDamageSummary_${id}.json`);
+    
     return [{
         id: 'tsDamageWms',
         value: wms

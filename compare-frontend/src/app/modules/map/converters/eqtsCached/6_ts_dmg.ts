@@ -30,9 +30,7 @@ export class CachedTSDmg implements Converter {
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,
                     params: {
-                        "LAYERS": wms.searchParams.get('layers'),
-                        "FORMAT": wms.searchParams.get('format'),
-                        "VERSION": wms.searchParams.get('Version'),
+                        "LAYERS": wms.searchParams.get('LAYERS'),
                         "STYLES": `style-damagestate-${schema === "Medina_2019" ? "medina" : "suppasri"}-plasma`,
                     }
                 })
@@ -72,9 +70,7 @@ export class CachedTSDmg implements Converter {
                 source: new TileWMS({
                     url: `${wms.origin}/${wms.pathname}`,
                     params: {
-                        "LAYERS": wms.searchParams.get('layers'),
-                        "FORMAT": wms.searchParams.get('format'),
-                        "VERSION": wms.searchParams.get('Version'),
+                        "LAYERS": wms.searchParams.get('LAYERS'),
                         "STYLES": "style-cum-loss-peru-plasma"
                     }
                 })

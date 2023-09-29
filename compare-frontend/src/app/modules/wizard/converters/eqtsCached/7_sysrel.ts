@@ -3,9 +3,9 @@ import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
 import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
 
-export class SysRel implements Converter {
+export class CachedSysRel implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" && step === "SysRel";
+        return scenario === "PeruCached" && step === "SysRel";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {

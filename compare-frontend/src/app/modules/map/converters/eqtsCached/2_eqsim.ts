@@ -27,7 +27,7 @@ export class CachedEqSimulation implements Converter {
 
             const fullUrl = new URL(product.value);
             const baseUrl = fullUrl.origin + fullUrl.pathname;
-            const layers = fullUrl.searchParams.get("layers");
+            const layers = fullUrl.searchParams.get("LAYERS");
 
             return of([
                 {

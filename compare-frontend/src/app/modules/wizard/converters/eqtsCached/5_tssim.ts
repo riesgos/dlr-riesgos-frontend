@@ -5,9 +5,9 @@ import { MultiLegendComponent } from "../../tabComponents/legends/legendComponen
 import { ImageLegendComponent } from "../../tabComponents/legends/image-legend/image-legend.component";
 
 
-export class TsSim implements Converter {
+export class CachedTsSim implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" && step === 'Tsunami';
+        return step === 'Tsunami';
     }
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
 

@@ -5,17 +5,15 @@ import { TranslatedImageComponent } from "../../tabComponents/legends/translated
 import { MultiLegendComponent } from "../../tabComponents/legends/legendComponents/multi-legend/multi-legend.component";
 
 
-export class TsDmg implements Converter {
+export class CachedEqDmg implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" && step === "TsDamage";
+        return scenario === "PeruCached" && step === "EqDamage";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
-        const step = state.steps.find(s => s.step.id === "TsDamage")!;
-        const wmsProduct = data.find(p => p.id === "tsDamageWms");
+        const step = state.steps.find(s => s.step.id === "EqDamage")!;
+        const wmsProduct = data.find(p => p.id === "eqDamageWms");
         if (!wmsProduct) return { hasFocus: false, inputs: [], layerControlables: [], step: step, oneLayerOnly: true };
-
-        const schemaProduct = data.find(d => d.id === "schemaTs");
 
         const wms = new URL(wmsProduct.value);
         const baseLegendEcon = `${wms.origin}/${wms.pathname}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.1.1&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${wms.searchParams.get('layers')}&STYLES=default`;
@@ -24,15 +22,9 @@ export class TsDmg implements Converter {
         return {
             hasFocus: false, // doesn't matter what we set here - will be overridden by wizard-svc
             isAutoPiloted: false, // doesn't matter what we set here - will be overridden by wizard-svc
-            layerControlables: [],  // doesn't matter what we set here - will be overridden by wizard-svc
+            layerControlables: [], // doesn't matter what we set here - will be overridden by wizard-svc
             oneLayerOnly: true,
-            inputs: [{
-                productId: "schemaTs",
-                formtype: "string-select",
-                label: "Schema",
-                options: schemaProduct?.options,
-                currentValue: schemaProduct?.value
-            }],
+            inputs: [],
             step,
             legend: () => ({
                 component: MultiLegendComponent,

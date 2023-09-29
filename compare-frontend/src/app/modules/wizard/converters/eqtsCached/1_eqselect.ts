@@ -12,7 +12,7 @@ import { Store } from "@ngrx/store";
 
 
 @Injectable()
-export class EqSelection implements Converter {
+export class CachedEqSelection implements Converter {
 
     private riesgosState$ = new BehaviorSubject<RiesgosState | undefined>(undefined);
     private leftEqSelect$ = new BehaviorSubject<RiesgosProductResolved | undefined>(undefined);
@@ -38,7 +38,7 @@ export class EqSelection implements Converter {
 
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" && step === "selectEq";
+        return scenario === "PeruCached" && step === "selectEq";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[], partition: PartitionName): WizardComposite {

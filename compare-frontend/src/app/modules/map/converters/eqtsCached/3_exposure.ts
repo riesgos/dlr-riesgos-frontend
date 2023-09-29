@@ -13,6 +13,8 @@ import { BarDatum } from "src/app/helpers/d3charts";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
 import { TranslationService } from "src/app/services/translation.service";
 import { Injectable } from "@angular/core";
+import TileLayer from "ol/layer/Tile";
+import { TileWMS } from "ol/source";
 
 
 @Injectable()
@@ -28,55 +30,35 @@ export class CachedExposure implements Converter {
         const resolvedData = data.find(p => p.id === "exposure");
         if (!resolvedData || !resolvedData.value) return of([]);
 
-        const featureStyle = (feature: FeatureLike, resolution: number) => {
-
-            const props = feature.getProperties();
-            const expo = props['expo'];
-            let total = 0;
-            for (let i = 0; i < expo.Damage.length; i++) {
-                const nrBuildings = expo.Buildings[i];
-                total += nrBuildings;
-            }
-
-            let r = 160;
-            let g = 160;
-            let b = 160;
-            let a = 0.05;
-            if (total === 0) {
-                a = 0.9;
-            }
-      
-            return new Style({
-              fill: new Fill({
-                color: [r, g, b, a],
-      
-              }),
-              stroke: new Stroke({
-                color: [r, g, b, 1],
-                width: 2
-              })
-            });
-        }
-
+        const fullUrl = new URL(resolvedData.value);
+        const baseUrl = fullUrl.origin + fullUrl.pathname;
+        const layers = fullUrl.searchParams.get("LAYERS");
+        const style = fullUrl.searchParams.get("STYLE");
 
         return of([{
             id: "exposureLayer",
             stepId: "Exposure",
             visible: true,
-            layer: new VectorLayer({
-                source: new VectorSource({
-                    features: new GeoJSON({ dataProjection: 'EPSG:4326' }).readFeatures(resolvedData.value)
-                }),
-                style: featureStyle
+            layer: new TileLayer({
+                source: new TileWMS({
+                    url: baseUrl,
+                    params: {
+                        'LAYERS': layers,
+                        'STYLE': style
+                    }
+                })
             }),
             onClick: () => {},
             onHover: () => {},
-            popup: (location, features) => {
+            popup: (location: number[], features: FeatureLike[]) => {
 
                 if (features.length === 0) return undefined;
 
                 const props = features[0].getProperties();
-                const expo = props['expo'];
+                let expo = props['expo'];
+                if (typeof expo === "string") {
+                    expo = JSON.parse(expo);
+                }
 
                 const data: BarDatum[] = [];
                 for (let i = 0; i < Object.values(expo.Taxonomy).length; i++) {

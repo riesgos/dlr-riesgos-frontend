@@ -27,40 +27,11 @@ export class CachedTsSim implements Converter {
         const wmsProduct = data.find(d => d.id === 'tsWms');
         if (!wmsProduct) return of([]);
 
-        const capabiltiesUrl = wmsProduct.value;
-        const url = new URL(capabiltiesUrl);
-        const baseUrl = `${url.origin}${url.pathname}?service=wms&version=${url.searchParams.get("version")}`;
-        const layerNumber = +url.pathname.replace("/tsuna_geoserver/", "").replace("/ows", "");
+        const url = new URL(wmsProduct.value[0]);
+        const baseUrl = `${url.origin}${url.pathname}?service=wms&version=${url.searchParams.get("VERSION")}`;
+        const layerNumber = +url.searchParams.get("LAYERS")!.replace("riesgos:arrivalTimes_", "");
 
         const layers: LayerComposite[] = [{
-        //     id: "mwh",
-        //     stepId: "Tsunami",
-        //     layer: new TileLayer({
-        //         source: new TileWMS({
-        //             crossOrigin: 'anonymous', // so that the layer can be checked for alpha when checking if popup should be shown
-        //             url: baseUrl,
-        //             params: {
-        //                 "LAYERS": `${layerNumber}_mwh`,
-        //             }
-        //         })
-        //     }),
-        //     onClick: (location, features) => undefined,
-        //     onHover: (location, features) => undefined,
-        //     popup: (location, features) => {
-        //         const props = features[0].getProperties();
-        //         let entry = `${toDecimalPlaces(props['GRAY_INDEX'], 2)} m`;
-        //         if (props['GRAY_INDEX'] > 1000) entry = this.translation.translate('no_data');
-        //         return {
-        //             component: StringPopupComponent,
-        //             args: {
-        //                 title: `mwh`,
-        //                 body: createTableHtml([[entry]])
-        //             }  
-        //         };
-        //     },
-        //     opacity: 1.0,
-        //     visible: true
-        // }, {
             id: "mwhLand_local",
             stepId: "Tsunami",
             layer: new TileLayer({
@@ -68,7 +39,7 @@ export class CachedTsSim implements Converter {
                     crossOrigin: 'anonymous', // so that the layer can be checked for alpha when checking if popup should be shown
                     url: baseUrl,
                     params: {
-                        "LAYERS": `${layerNumber}_mwhLand_local`,
+                        "LAYERS": `mwhLand_local_${layerNumber}`,
                     }
                 })
             }),
@@ -95,7 +66,7 @@ export class CachedTsSim implements Converter {
                 source: new TileWMS({
                     url: baseUrl,
                     params: {
-                        "LAYERS": `${layerNumber}_arrivalTimes`,
+                        "LAYERS": `arrivalTimes_${layerNumber}`,
                     }
                 })
             }),

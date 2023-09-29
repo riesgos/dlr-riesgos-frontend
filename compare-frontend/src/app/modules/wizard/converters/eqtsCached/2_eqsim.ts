@@ -4,35 +4,21 @@ import { WizardComposite } from "../../wizard.service";
 import { TranslatedImageComponent } from "../../tabComponents/legends/translated-image/translated-image.component";
 import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
 
-export class EqSimulation implements Converter {
+export class CachedEqSimulation implements Converter {
     
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" && step === "EqSimulation";
+        return scenario === "PeruCached" && step === "EqSimulation";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
         const step = state.steps.find(s => s.step.id === "EqSimulation")!;
-        const vsgrid = state.products.find(p => p.id === "vsgrid")!;
-        const gmpe = state.products.find(p => p.id === "gmpe")!;
 
         return {
             hasFocus: false,
             layerControlables: [],
             oneLayerOnly: true,
             step: step,
-            inputs: [{
-                formtype: 'string-select',
-                label: "vsgrid",
-                productId: "vsgrid",
-                options: Object.fromEntries(vsgrid.options!.map(v => [v, v])),
-                currentValue: vsgrid?.value || vsgrid?.reference
-            }, {
-                formtype: 'string-select',
-                label: "gmpe",
-                productId: "gmpe",
-                options: Object.fromEntries(gmpe.options!.map(v => [v, v])),
-                currentValue: gmpe?.value || gmpe?.reference
-            }],
+            inputs: [],
             legend: () => ({
                 component: LegendComponent,
                 args: {

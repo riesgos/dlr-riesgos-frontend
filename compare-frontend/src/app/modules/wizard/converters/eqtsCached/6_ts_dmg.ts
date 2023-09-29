@@ -5,9 +5,9 @@ import { TranslatedImageComponent } from "../../tabComponents/legends/translated
 import { MultiLegendComponent } from "../../tabComponents/legends/legendComponents/multi-legend/multi-legend.component";
 
 
-export class TsDmg implements Converter {
+export class CachedTsDmg implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruShort" && step === "TsDamage";
+        return scenario === "PeruCached" && step === "TsDamage";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {
@@ -26,13 +26,7 @@ export class TsDmg implements Converter {
             isAutoPiloted: false, // doesn't matter what we set here - will be overridden by wizard-svc
             layerControlables: [],  // doesn't matter what we set here - will be overridden by wizard-svc
             oneLayerOnly: true,
-            inputs: [{
-                productId: "schemaTs",
-                formtype: "string-select",
-                label: "Schema",
-                options: schemaProduct?.options,
-                currentValue: schemaProduct?.value
-            }],
+            inputs: [],
             step,
             legend: () => ({
                 component: MultiLegendComponent,

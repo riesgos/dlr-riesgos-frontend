@@ -35,6 +35,13 @@ import { EqDmg as WizardEqDmg } from './modules/wizard/converters/eqts/4_eq_dmg'
 import { TsSim as WizardTsSim } from './modules/wizard/converters/eqts/5_tssim';
 import { TsDmg as WizardTsDmg } from './modules/wizard/converters/eqts/6_ts_dmg';
 import { SysRel as WizardSysRel } from './modules/wizard/converters/eqts/7_sysrel';
+import { CachedEqSelection as CachedWizardEqSelection } from './modules/wizard/converters/eqtsCached/1_eqselect';
+import { CachedEqSimulation as CachedWizardEqSimulation } from './modules/wizard/converters/eqtsCached/2_eqsim';
+import { CachedExposure as CachedWizardExposure } from './modules/wizard/converters/eqtsCached/3_exposure';
+import { CachedEqDmg as CachedWizardEqDmg } from './modules/wizard/converters/eqtsCached/4_eq_dmg';
+import { CachedTsSim as CachedWizardTsSim } from './modules/wizard/converters/eqtsCached/5_tssim';
+import { CachedTsDmg as CachedWizardTsDmg } from './modules/wizard/converters/eqtsCached/6_ts_dmg';
+import { CachedSysRel as CachedWizardSysRel } from './modules/wizard/converters/eqtsCached/7_sysrel';
 import { DescriptionComponent } from './modules/wizard/tabComponents/description/description.component';
 import { DownloadComponent } from './modules/wizard/tabComponents/download/download.component';
 import { ErrorComponent } from './modules/wizard/tabComponents/error/error.component';
@@ -159,6 +166,16 @@ import { CachedSysRel } from './modules/map/converters/eqtsCached/7_sysrel';
     { provide: wizardConverterToken, useClass: WizardTsSim, multi: true },
     { provide: wizardConverterToken, useClass: WizardTsDmg, multi: true },
     { provide: wizardConverterToken, useClass: WizardSysRel, multi: true },
+
+    { provide: wizardConverterToken, useClass: CachedWizardEqSelection, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardEqSimulation, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardExposure, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardEqDmg, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardTsSim, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardTsDmg, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardSysRel, multi: true },
+    
+
     { provide: wizardConverterToken, useClass: WizardDefaultConverter, multi: true },
   ],
   bootstrap: [AppComponent]

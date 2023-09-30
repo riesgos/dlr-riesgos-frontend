@@ -8,316 +8,6 @@ const eqParas: any[] = [
         "geometry": {
             "type": "Point",
             "coordinates": [
-                -80.1176,
-                -8.8907
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000011",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000011",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000011",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000011",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "35.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000011",
-            "magnitude.mag.value": "8.5",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000011",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000011"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -80.1645,
-                -8.6877
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000021",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000021",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000021",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000021",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "35.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000021",
-            "magnitude.mag.value": "8.6",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000021",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000021"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -80.2208,
-                -8.4567
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000031",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000031",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000031",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000031",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "35.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000031",
-            "magnitude.mag.value": "8.7",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000031",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000031"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -80.2878,
-                -8.1937
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000041",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000041",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000041",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000041",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "35.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000041",
-            "magnitude.mag.value": "8.8",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000041",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000041"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -80.3676,
-                -7.8942
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000051",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000051",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000051",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000051",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "35.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000051",
-            "magnitude.mag.value": "8.9",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000051",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000051"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -80.462,
-                -7.5531
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000111",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000111",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000111",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000111",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "34.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000111",
-            "magnitude.mag.value": "9.0",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000111",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000111"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -80.462,
-                -7.5531
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000211",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000211",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000211",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000211",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "34.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000211",
-            "magnitude.mag.value": "9.0",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000211",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000211"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -80.012,
-                -8.6531
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000311",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000311",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000311",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000311",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "34.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000311",
-            "magnitude.mag.value": "9.0",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000311",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000311"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -79.662,
-                -8.9931
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000411",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000411",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000411",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000411",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "34.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000411",
-            "magnitude.mag.value": "9.0",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000411",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000411"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
-                -72.7168,
-                -17.1578
-            ]
-        },
-        "properties": {
-            "publicID": "quakeml:quakeledger/peru_80000511",
-            "preferredOriginID": "quakeml:quakeledger/peru_80000511",
-            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000511",
-            "type": "earthquake",
-            "description.text": "expert",
-            "origin.publicID": "quakeml:quakeledger/peru_80000511",
-            "origin.time.value": "2019-01-01T00:00:00.000000Z",
-            "origin.depth.value": "40.0",
-            "origin.creationInfo.value": "GFZ",
-            "magnitude.publicID": "quakeml:quakeledger/peru_80000511",
-            "magnitude.mag.value": "9.0",
-            "magnitude.type": "MW",
-            "magnitude.creationInfo.value": "GFZ",
-            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000511",
-            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "312.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "20.0",
-            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
-            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
-        },
-        "id": "quakeml:quakeledger/peru_80000511"
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
                 -77.9318,
                 -12.1908
             ]
@@ -684,6 +374,316 @@ const eqParas: any[] = [
             "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
         },
         "id": "quakeml:quakeledger/peru_70000051"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -80.1176,
+                -8.8907
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000011",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000011",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000011",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000011",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "35.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000011",
+            "magnitude.mag.value": "8.5",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000011",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000011"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -80.1645,
+                -8.6877
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000021",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000021",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000021",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000021",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "35.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000021",
+            "magnitude.mag.value": "8.6",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000021",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000021"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -80.2208,
+                -8.4567
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000031",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000031",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000031",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000031",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "35.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000031",
+            "magnitude.mag.value": "8.7",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000031",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000031"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -80.2878,
+                -8.1937
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000041",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000041",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000041",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000041",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "35.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000041",
+            "magnitude.mag.value": "8.8",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000041",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000041"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -80.3676,
+                -7.8942
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000051",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000051",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000051",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000051",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "35.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000051",
+            "magnitude.mag.value": "8.9",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000051",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000051"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -80.462,
+                -7.5531
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000111",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000111",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000111",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000111",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "34.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000111",
+            "magnitude.mag.value": "9.0",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000111",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000111"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -80.462,
+                -7.5531
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000211",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000211",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000211",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000211",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "34.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000211",
+            "magnitude.mag.value": "9.0",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000211",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000211"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -80.012,
+                -8.6531
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000311",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000311",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000311",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000311",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "34.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000311",
+            "magnitude.mag.value": "9.0",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000311",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000311"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -79.662,
+                -8.9931
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000411",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000411",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000411",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000411",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "34.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000411",
+            "magnitude.mag.value": "9.0",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000411",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "334.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "12.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000411"
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -72.7168,
+                -17.1578
+            ]
+        },
+        "properties": {
+            "publicID": "quakeml:quakeledger/peru_80000511",
+            "preferredOriginID": "quakeml:quakeledger/peru_80000511",
+            "preferredMagnitudeID": "quakeml:quakeledger/peru_80000511",
+            "type": "earthquake",
+            "description.text": "expert",
+            "origin.publicID": "quakeml:quakeledger/peru_80000511",
+            "origin.time.value": "2019-01-01T00:00:00.000000Z",
+            "origin.depth.value": "40.0",
+            "origin.creationInfo.value": "GFZ",
+            "magnitude.publicID": "quakeml:quakeledger/peru_80000511",
+            "magnitude.mag.value": "9.0",
+            "magnitude.type": "MW",
+            "magnitude.creationInfo.value": "GFZ",
+            "focalMechanism.publicID": "quakeml:quakeledger/peru_80000511",
+            "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "312.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "20.0",
+            "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+            "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1"
+        },
+        "id": "quakeml:quakeledger/peru_80000511"
     }
 ];
 
@@ -816,7 +816,7 @@ function createParaPicker(eqPara: any): InputPicker {
                 value: "LimaBlocks"
             };
         }
-        if (input.id === "selectedEq") {
+        if (input.id === "userChoice") {
             return {
                 id: input.id,
                 value: eqPara

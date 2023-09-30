@@ -1,4 +1,5 @@
 quakeml:quakeledger/*
+quakeml:quakeledger.bak/*
 __pycache__
 container
 data

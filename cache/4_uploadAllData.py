@@ -139,9 +139,13 @@ def uploadAll():
     gfzDataPath = "./quakeml:quakeledger/"
     awiDataPath = "./awiData"
 
-    uploadExposureData(f"{gfzDataPath}/peru_70000011/exposure.json", "exposure", workSpaceName)
 
-    for dirName in os.listdir(gfzDataPath):
+    for i, dirName in enumerate(os.listdir(gfzDataPath)):
+        if "peru_" not in dirName: continue
+
+        if i == 0:
+            uploadExposureData(f"{gfzDataPath}/{dirName}/exposure.json", "exposure", workSpaceName)
+
         eqNr = int(dirName.replace("peru_", ""))
         if eqNr == 80000011: continue
 
@@ -173,6 +177,7 @@ def uploadAll():
 
 
     for dirName in os.listdir(gfzDataPath):
+        if "peru_" not in dirName: continue
         eqNr = int(dirName.replace("peru_", ""))
         if eqNr == 80000011: continue
 

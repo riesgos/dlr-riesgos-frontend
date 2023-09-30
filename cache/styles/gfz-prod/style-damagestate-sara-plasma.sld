@@ -9,7 +9,7 @@
                 <sld:Name>name</sld:Name>
                 <sld:Rule>
                     <sld:Name>Sin datos</sld:Name>
-                    
+
                     <ogc:Filter>
                         <ogc:PropertyIsEqualTo>
                             <ogc:PropertyName>buildings</ogc:PropertyName>
@@ -28,7 +28,7 @@
                 </sld:Rule>
                 <sld:Rule>
                     <sld:Name>Daño leve</sld:Name>
-                    
+
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsGreaterThan>
@@ -53,7 +53,7 @@
                 </sld:Rule>
                 <sld:Rule>
                     <sld:Name>Daño moderado</sld:Name>
-                    
+
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:And>
@@ -84,7 +84,7 @@
                 </sld:Rule>
                 <sld:Rule>
                     <sld:Name>Daño fuerte</sld:Name>
-                    
+
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:And>
@@ -115,7 +115,7 @@
                 </sld:Rule>
                 <sld:Rule>
                     <sld:Name>Daño severo</sld:Name>
-                    
+
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsGreaterThan>

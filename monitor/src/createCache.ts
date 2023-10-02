@@ -857,7 +857,13 @@ async function runAndSavePeruShort(serverUrl: string, port: number, overwriteExi
     const scenarioId = "PeruShort";
 
     for (const eqPara of eqParas) {
-        if (!overwriteExisting && fileExists(`../cache/${eqPara.id}`)) continue;
+        if (!overwriteExisting && fileExists(`../cache/${eqPara.id}`)) {
+            console.log(`Already have ${eqPara.id}. Moving on.`);
+            continue;
+        } 
+        
+        // const nr = +eqPara.id.replace("peru_" , "");
+        // if (![70000012, 70000013, 70000031, 80000311].includes(nr)) continue;
 
         try {   
             console.log(`Working on eq ${eqPara.id}`)

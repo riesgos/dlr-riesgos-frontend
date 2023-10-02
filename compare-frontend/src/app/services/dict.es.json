@@ -75,7 +75,7 @@
     "Code licenses": "Licencias codigo",
     "Collapsed": "Colapsado",
     "compareEqWithLeft": "Seleccione otro escenario de terremoto y compárelo con los datos de la izquierda.",
-    "compareIdentical": "Comparar diferentes pasos de un escenario",
+    "compareIdentical": "Comparar diferentes pasos del mismo escenario",
     "compareIdenticalHelp": " Seleccione un escenario para comparar los diferentes pasos del análisis multi-riesgos del mismo escenario en dos ventanas separadas.",
     "compareIdenticalWithLeft": "Ahora puede utilizar ambas ventanas para comparar entre sí los pasos individuales del escenario seleccionado.",
     "compareScenarios": "Comparar dos escenarios",

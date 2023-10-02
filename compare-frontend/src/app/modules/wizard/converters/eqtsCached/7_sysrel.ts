@@ -1,9 +1,15 @@
 import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved } from "src/app/state/state";
 import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
-import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
+import { TranslatedImageComponent } from "../../tabComponents/legends/translated-image/translated-image.component";
+import { TranslationService } from "src/app/services/translation.service";
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class CachedSysRel implements Converter {
+
+    constructor(private translate: TranslationService) {}
+
     applies(scenario: ScenarioName, step: string): boolean {
         return scenario === "PeruCached" && step === "SysRel";
     }
@@ -12,6 +18,10 @@ export class CachedSysRel implements Converter {
         const step = state.steps.find(s => s.step.id === "SysRel")!;
         const datum = data.find(d => d.id === "sysRel");
         if (!datum) return {hasFocus: false, inputs: [], step, layerControlables: [], oneLayerOnly: false};
+
+        const wms = new URL(datum.value);
+        const baseLegend = `${wms.origin}/${wms.pathname}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.1.1&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${wms.searchParams.get('LAYERS')}`;
+
 
         return {
             hasFocus: false, // doesn't matter what we set here - will be overridden by wizard-svc
@@ -22,21 +32,14 @@ export class CachedSysRel implements Converter {
             step,
             legend: () => {
                 return {
-                    component: LegendComponent,
-                    args: {
-                        entries: [{
-                            text: 'Prob. 0.0',
-                            color: '#00ff00'
-                          }, {
-                            text: 'Prob. 0.5',
-                            color: '#fdfd7d'
-                          }, {
-                            text: 'Prob. 1.0',
-                            color: '#ff0000'
-                        }],
-                        continuous: true,
-                        height: 90
-                    }
+                    component: TranslatedImageComponent,
+                        args: {
+                            title: this.translate.translate('Prob_Interuption'),
+                            languageImageMap: {
+                                'EN': baseLegend + '&language=en',
+                                'ES': baseLegend + '',
+                            }
+                        }
                 }
             }
         }

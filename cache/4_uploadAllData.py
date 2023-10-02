@@ -102,19 +102,49 @@ def uploadSysrelData(sourcePath, name, workSpaceName):
 
     sourcePathRoot = "/".join(sourcePath.split("/")[:-1])
     targetPath = f"{sourcePathRoot}/{name}.shp.zip"
+    targetTargetPath = f"{sourcePathRoot}/{name}_extracted"
     df = gpd.read_file(sourcePath)
     df.to_file(targetPath, driver="ESRI Shapefile")
-    geo.create_shp_datastore(store_name=name, path=targetPath, workspace=workSpaceName, file_extension="shp")
+    z = zp.ZipFile(targetPath)
+    z.extractall(targetTargetPath)
+    extractedFileNames = os.listdir(targetTargetPath)
+    for extractedName in extractedFileNames:
+        fullPath = f"{targetTargetPath}/{extractedName}"
+        extension = fullPath.split(".")[-1]
+        renamedFullPath = f"{targetTargetPath}/{name}.{extension}"
+        sh.move(fullPath, renamedFullPath)
+    dictToSubfiles = {
+        "dbf": f"{targetTargetPath}/{name}.dbf",
+        "prj": f"{targetTargetPath}/{name}.prj",
+        "shp": f"{targetTargetPath}/{name}.shp",
+        "shx": f"{targetTargetPath}/{name}.shx"
+    }
+    geo.create_shp_datastore(store_name=name, path=dictToSubfiles, workspace=workSpaceName)
 
 
 def uploadExposureData(sourcePath, name, workSpaceName):
     """ geoserver can't handle geojson, turn to shapefile instead """
-
     sourcePathRoot = "/".join(sourcePath.split("/")[:-1])
-    targetPath = f"{sourcePathRoot}/exposure.shp.zip"
+    targetPath = f"{sourcePathRoot}/{name}.shp.zip"
+    targetTargetPath = f"{sourcePathRoot}/{name}_extracted"
     df = gpd.read_file(sourcePath)
+    df["buildings"] = df["expo"].map(lambda o: sum(o["Buildings"]))
     df.to_file(targetPath, driver="ESRI Shapefile")
-    geo.create_shp_datastore(store_name=name, path=targetPath, workspace=workSpaceName, file_extension="shp")
+    z = zp.ZipFile(targetPath)
+    z.extractall(targetTargetPath)
+    extractedFileNames = os.listdir(targetTargetPath)
+    for extractedName in extractedFileNames:
+        fullPath = f"{targetTargetPath}/{extractedName}"
+        extension = fullPath.split(".")[-1]
+        renamedFullPath = f"{targetTargetPath}/{name}.{extension}"
+        sh.move(fullPath, renamedFullPath)
+    dictToSubfiles = {
+        "dbf": f"{targetTargetPath}/{name}.dbf",
+        "prj": f"{targetTargetPath}/{name}.prj",
+        "shp": f"{targetTargetPath}/{name}.shp",
+        "shx": f"{targetTargetPath}/{name}.shx"
+    }
+    geo.create_shp_datastore(store_name=name, path=dictToSubfiles, workspace=workSpaceName)
 
 
 def uploadAwiTiff(sourcePath, name, workSpaceName):
@@ -142,9 +172,6 @@ def uploadAll():
 
     for i, dirName in enumerate(os.listdir(gfzDataPath)):
         if "peru_" not in dirName: continue
-
-        if i == 0:
-            uploadExposureData(f"{gfzDataPath}/{dirName}/exposure.json", "exposure", workSpaceName)
 
         eqNr = int(dirName.replace("peru_", ""))
         if eqNr == 80000011: continue
@@ -174,6 +201,7 @@ def uploadAll():
     geo.upload_style( path=f"./styles/awi/Arrivaltime.sld",                            name="arrivalTimes",                       workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/awi/epiCenter.sld",                              name="epiCenter",                          workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/awi/waveHeight_old.sld",                         name="mwh",                                workspace=workSpaceName,  sld_version="1.0.0" )
+    geo.upload_style( path=f"./styles/other/sysrel.sld",                               name="sysrel",                             workspace=workSpaceName,  sld_version="1.0.0" )
 
 
     for dirName in os.listdir(gfzDataPath):
@@ -189,10 +217,40 @@ def uploadAll():
         geo.registerStylesWithLayer( f"mwh_{eqNr}",               ["mwh"],                                                                                                   workSpaceName, firstStyleDefault=True )
         geo.registerStylesWithLayer( f"mwhLand_global_{eqNr}",    ["mwh"],                                                                                                   workSpaceName, firstStyleDefault=True )
         geo.registerStylesWithLayer( f"mwhLand_local_{eqNr}",     ["mwh"],                                                                                                   workSpaceName, firstStyleDefault=True )
+        geo.registerStylesWithLayer( f"sysrel_{eqNr}",            ["sysrel"],                                                                                                workSpaceName, firstStyleDefault=True )
 
 
+    #-------------------------------------------------------------------
+    #   EXPOSURE (special case, only needs to be uploaded once)
+    #-------------------------------------------------------------------
+
+    for i, dirName in enumerate(os.listdir(gfzDataPath)):
+        if "peru_" not in dirName: continue
+
+        if i == 0:
+            uploadExposureData(f"{gfzDataPath}/{dirName}/exposure.json", "exposure", workSpaceName)
+            geo.upload_style(path=f"./styles/other/exposure.sld", name="exposure", workspace=workSpaceName, sld_version="1.0.0")
+            geo.registerStylesWithLayer( f"exposure", ["exposure"], workSpaceName, firstStyleDefault=True)
+
+        break
 
 
+    #-------------------------------------------------------------------
+    #   DAMAGE SUMMARIES (moving to backend/data)
+    #-------------------------------------------------------------------
+
+    for i, dirName in enumerate(os.listdir(gfzDataPath)):
+        if "peru_" not in dirName: continue
+
+        eqNr = int(dirName.replace("peru_", ""))
+        
+        sourcePath = f"{gfzDataPath}/{dirName}/eqDamageSummary.json"
+        targetPath = f"../backend/data/data/cached_data/eqDamageSummary_{eqNr}.json"
+        sh.copy(sourcePath, targetPath)
+
+        sourcePath = f"{gfzDataPath}/{dirName}/tsDamageSummary.json"
+        targetPath = f"../backend/data/data/cached_data/tsDamageSummary_{eqNr}.json"
+        sh.copy(sourcePath, targetPath)
 
 
 #%%

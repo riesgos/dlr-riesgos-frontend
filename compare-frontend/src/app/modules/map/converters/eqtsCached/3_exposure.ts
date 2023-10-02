@@ -55,28 +55,9 @@ export class CachedExposure implements Converter {
                 if (features.length === 0) return undefined;
 
                 const props = features[0].getProperties();
-                let expo = props['expo'];
-                if (typeof expo === "string") {
-                    expo = JSON.parse(expo);
-                }
+                const buildings = parseInt(props["buildings"]);
 
-                const data: BarDatum[] = [];
-                for (let i = 0; i < Object.values(expo.Taxonomy).length; i++) {
-                    const tax = expo['Taxonomy'][i]; // .match(/^[a-zA-Z]*/)[0];
-                    const bld = expo['Buildings'][i];
-                    if (!data.map(dp => dp.label).includes(tax)) {
-                        data.push({
-                        label: tax,
-                        value: bld,
-                        hoverText: `${bld} - {{ ${tax} }}`
-                        });
-                    } else {
-                        const datum = data.find(dp => dp.label === tax);
-                        if (datum) datum.value += bld;
-                    }
-                }
-
-                if (data.length <= 0) {
+                if (buildings <= 0) {
                     return {
                         component: StringPopupComponent,
                         args: {
@@ -84,23 +65,10 @@ export class CachedExposure implements Converter {
                         }
                     }
                 }
-
-                // return {
-                //     component: BarchartComponent,
-                //     args: {
-                //         data: data,
-                //         width: 350,
-                //         height: 300,
-                //         xLabel: `Taxonomy`,
-                //         yLabel: `Buildings`,
-                //         title: `Exposure`,
-                //         smallPrint: `popupHoverForInfo`
-                //     }
-                // }
                 return {
                     component: StringPopupComponent,
                     args: {
-                        body: this.translator.translate('ResidentialBuildings') + `: ` + Math.round(data.reduce((last, curr) => curr.value + last, 0))
+                        body: this.translator.translate('ResidentialBuildings') + `: ` + buildings
                     }
                 }
              }

@@ -252,6 +252,28 @@ check if more  │     └───────┬──────┘
             return AppActions.mapMove({ scenario: action.scenario, partition: action.partition, zoom, center  });
         })
     ));
+    // private zoomToEqAfterOtherSideComplete$ = createEffect(() => this.actions$.pipe(
+    //     ofType(AppActions.stepExecSuccess),
+    //     withLatestFrom(this.store$.select(state => state.riesgos)),
+    //     filter(([action, state]) => {
+    //         const scenarioData = state.scenarioData[action.scenario];
+    //         if (!scenarioData) return false;
+    //         const partitionData = scenarioData[action.partition];
+    //         if (!partitionData) return false;
+
+    //         if (action.step !== "sysRel") return false;
+    //         // const otherPartition = action.partition === "left" ? "right" : "left";
+    //         // const otherPartitionData = scenarioData[otherPartition];
+    //         // if (otherPartitionData?.focus.focusedSteps.)
+
+    //         return true;
+    //     }),
+    //     map(([action, state]) => {
+    //         const otherPartition = action.partition === "left" ? "right" : "left";
+    //         const { zoom, center } = getMapPositionForStep(action.scenario, otherPartition, "Exposure");
+    //         return AppActions.mapMove({ scenario: action.scenario, partition: otherPartition, zoom, center  });
+    //     })
+    // ));
 
 
     

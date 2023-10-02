@@ -25,7 +25,7 @@ export class CachedEqSelection implements Converter {
         this.riesgosState$.pipe(
             filter(state => !!state),
             map(state => {
-                const leftScenarioData = state!.scenarioData.PeruShort!.left!;
+                const leftScenarioData = state!.scenarioData.PeruCached!.left!;
                 const eqProduct = leftScenarioData.products.find(p => p.id === "selectedEq")!;
                 return eqProduct;
             }),

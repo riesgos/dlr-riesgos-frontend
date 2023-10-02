@@ -15,10 +15,8 @@ export class CachedTsDmg implements Converter {
         const wmsProduct = data.find(p => p.id === "tsDamageWms");
         if (!wmsProduct) return { hasFocus: false, inputs: [], layerControlables: [], step: step, oneLayerOnly: true };
 
-        const schemaProduct = data.find(d => d.id === "schemaTs");
-
         const wms = new URL(wmsProduct.value);
-        const baseLegendEcon = `${wms.origin}/${wms.pathname}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.1.1&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${wms.searchParams.get('layers')}&STYLES=default`;
+        const baseLegendEcon = `${wms.origin}/${wms.pathname}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.1.1&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${wms.searchParams.get('LAYERS')}&STYLES=default`;
 
 
         return {

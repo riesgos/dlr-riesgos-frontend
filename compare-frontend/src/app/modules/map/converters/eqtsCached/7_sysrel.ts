@@ -3,7 +3,7 @@ import { ScenarioName, RiesgosScenarioState, RiesgosProductResolved } from "src/
 import { Converter, LayerComposite } from "../../converter.service";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
-import { Vector } from "ol/source";
+import { TileWMS, Vector } from "ol/source";
 import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
 import Style from "ol/style/Style";
@@ -12,6 +12,7 @@ import { createKeyValueTableHtml } from "src/app/helpers/others";
 import { StringPopupComponent } from "../../popups/string-popup/string-popup.component";
 import { TranslationService } from "src/app/services/translation.service";
 import { Injectable } from "@angular/core";
+import TileLayer from "ol/layer/Tile";
 
 
 @Injectable()
@@ -27,39 +28,26 @@ export class CachedSysRel implements Converter {
         const datum = data.find(d => d.id === "sysRel");
         if (!datum) return of([]);
 
+        const url = new URL(datum.value);
+        const baseUrl = `${url.origin}${url.pathname}?service=wms&version=${url.searchParams.get("VERSION")}`;
+
+
         const layer: LayerComposite = {
             id: "Productname_system_reliability_vector",
             stepId: "SysRel",
-            layer: new VectorLayer({
-                source: new Vector({
-                    features: new GeoJSON().readFeatures(datum.value)
-                }),
-                style: (feature) => {
-                    const props = feature.getProperties();
-                    let probDisr = 0;
-                    if (props['Prob_Disruption']) {
-                        probDisr = props['Prob_Disruption'];
+            layer: new TileLayer({
+                source: new TileWMS({
+                    url: baseUrl,
+                    params: {
+                        "LAYERS": url.searchParams.get('LAYERS'),
                     }
-    
-                    const [r, g, b] = greenYellowRedRange(0, 1, probDisr);
-    
-                    return new Style({
-                      fill: new Fill({
-                        color: [r, g, b, 0.5],
-                      }),
-                      stroke: new Stroke({
-                        color: [r, g, b, 1],
-                        width: 2
-                      })
-                    });
-                }
+                }),
             }),
             popup: (location, features) => {
                 const feature = features[0];
                 const props = feature.getProperties();
                 const selectedProps: any = {};
-                // selectedProps[this.translate.translate('Area')] = (+props['Area']).toFixed(2);
-                selectedProps[this.translate.translate('Prob_Interuption')] = Math.round(+props['Prob_Disruption'] * 100) + " %";
+                selectedProps[this.translate.translate('Prob_Interuption')] = Math.round(+props['Prob_Disru'] * 100) + " %";
                 const table = createKeyValueTableHtml(selectedProps);
 
                 return {

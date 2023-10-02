@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MappageComponent } from './views/mappage/mappage.component';
 import { StartpageComponent } from './views/startpage/startpage.component';
 import { TutorialComponent } from './views/tutorial/tutorial.component';
+import { LicensesComponent } from './views/licenses/licenses.component';
 
 const routes: Routes = [{
   path: '',
@@ -13,6 +14,9 @@ const routes: Routes = [{
 }, {
   path: 'tutorial',
   component: TutorialComponent
+}, {
+  path: 'licenses',
+  component: LicensesComponent
 }];
 
 @NgModule({

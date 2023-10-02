@@ -91,7 +91,7 @@ export class DamagePopupComponent implements OnInit, AfterViewInit {
       this.height = 0;
       this.additionalText = 'no_residential_buildings';
     } else {
-      this.countTotal = countTotal.toFixed(2);
+      this.countTotal = Math.round(countTotal) + "";
     }
   
     setTimeout(() => { // if not timeout, then labels don't have enough space on graph

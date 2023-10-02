@@ -76,6 +76,7 @@ import { CachedEqDmg } from './modules/map/converters/eqtsCached/4_eq_dmg';
 import { CachedTsSim } from './modules/map/converters/eqtsCached/5_tssim';
 import { CachedTSDmg } from './modules/map/converters/eqtsCached/6_ts_dmg';
 import { CachedSysRel } from './modules/map/converters/eqtsCached/7_sysrel';
+import { LicensesComponent } from './views/licenses/licenses.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { CachedSysRel } from './modules/map/converters/eqtsCached/7_sysrel';
     ImageLegendComponent,
     TextComponent,
     AppControlComponent,
-    TutorialComponent
+    TutorialComponent,
+    LicensesComponent
   ],
   imports: [
     BrowserModule,

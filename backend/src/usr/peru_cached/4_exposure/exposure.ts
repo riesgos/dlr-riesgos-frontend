@@ -4,7 +4,7 @@ import { Datum, Step } from "../../../scenarios/scenarios";
 async function getExposure(inputs: Datum[]) {
 
 
-    const exposureModel = "http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES=&LAYERS=riesgos:exposure.shp";
+    const exposureModel = "http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES=&LAYERS=riesgos:exposure";
   
     return [{
         id: 'exposure',

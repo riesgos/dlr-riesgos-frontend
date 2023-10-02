@@ -6,8 +6,7 @@ async function calcSysRel(inputs: Datum[]) {
     const selectedEq = inputs.find(i => i.id === 'selectedEq')!.value;
     const id = selectedEq.features[0].id.replace("peru_", "").replace("quakeml:quakeledger/", "");
 
-    const wms = `http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AsysRel_${id}`;
-
+    const wms = `http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&LAYERS=riesgos:sysrel_${id}&TRANSPARENT=true&VERSION=1.1.1`;
     return [{
         id: 'sysRel',
         value: wms

@@ -19,6 +19,9 @@ async function calculateDamage(inputs: Datum[]) {
     }, {
         id: 'eqDamageRef',
         value: damageRef
+    // }, {
+    //     id: 'eqDamageShapefile',
+    //     value: shapefile
     }];
 }
 
@@ -39,6 +42,8 @@ export const step: Step = {
         id: 'eqDamageSummary'
     }, {
         id: 'eqDamageRef'
+    // }, {
+    //     id: 'eqDamageShapefile'
     }],
     function: calculateDamage
 };

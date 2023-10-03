@@ -45,7 +45,7 @@ export class EqSelection implements Converter {
     }
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "selectEq";
+        return scenario === "PeruShort" && step === "selectEq";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[], partition: PartitionName): Observable<LayerComposite[]> {

@@ -35,6 +35,9 @@ async function tsDamage(inputs: Datum[]) {
     }, {
         id: 'tsDamageRef',
         value: damageRef
+    // }, {
+    //     id: 'tsDamageShapefile',
+    //     value: shapefile
     }];
 }
 
@@ -59,6 +62,8 @@ export const step: Step = {
         id: 'tsDamageSummary'
     }, {
         id: 'tsDamageRef'
+    // }, {
+    //     id: 'tsDamageShapefile'
     }],
     function: tsDamage
 };

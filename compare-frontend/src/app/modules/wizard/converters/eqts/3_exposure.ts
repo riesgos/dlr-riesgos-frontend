@@ -7,7 +7,7 @@ import { TextComponent } from "../../tabComponents/legends/text/text.component";
 
 export class Exposure implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "Exposure";
+        return scenario === "PeruShort" && step === "Exposure";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {

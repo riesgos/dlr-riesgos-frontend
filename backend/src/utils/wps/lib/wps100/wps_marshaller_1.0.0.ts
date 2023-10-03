@@ -136,7 +136,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
 
       if (data.complexData.encoding === 'base64') {
         if (typeof module !== 'undefined' && module.exports) { // node
-          data.complexData.content.map(c => new Buffer(c, 'base64').toString('ascii'));
+          data.complexData.content.map(c => Buffer.from(c, 'base64').toString('ascii'));
         } else { // browser
           // @ts-ignore
           data.complexData.content.map(c => atob(c));
@@ -311,6 +311,7 @@ export class WpsMarshaller100 implements WpsMarshaller {
             asReference: output.reference,
             mimeType: output.format
           };
+          if (output.encoding) defType.encoding = output.encoding;
           break;
         default:
           throw new Error(`This Wps-output-type has not been implemented yet! ${output} `);

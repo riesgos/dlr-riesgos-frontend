@@ -20,7 +20,7 @@ export class SysRel implements Converter {
     constructor(private translate: TranslationService) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "SysRel";
+        return scenario === "PeruShort" &&  step === "SysRel";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

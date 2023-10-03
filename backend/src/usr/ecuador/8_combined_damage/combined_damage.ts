@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getDamageJson, getFragility } from "../../wpsServices";
+import { getDamageJsonEcuador, getFragility } from "../../wpsServices";
 
 
 async function combinedDamage(data: Datum[]) {
@@ -8,7 +8,7 @@ async function combinedDamage(data: Datum[]) {
     const currentExposureRef = data.find(d => d.id === 'ashfallDamageRef')!.value;
     const fragilityRef = await getFragility('Mavrouli_et_al_2014');
 
-    const {damageRef, json, summary} = await getDamageJson('Torres_Corredor_et_al_2017', fragilityRef, intensityXmlRef, currentExposureRef);
+    const {damageRef, json, summary} = await getDamageJsonEcuador('Torres_Corredor_et_al_2017', fragilityRef, intensityXmlRef, currentExposureRef);
 
     const ashfallDamage = data.find(d => d.id === 'ashfallDamage')!.value;
     for (let i = 0; i < json.features.length; i++) {

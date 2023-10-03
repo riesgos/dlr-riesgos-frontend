@@ -31,7 +31,7 @@ export async function testAllRandomly(serverUrl: string, port: number) {
 
 
 
-export async function runScenario(serverUrl: string, port: number, scenarioId: string, inputPicker: InputPicker, resolveReferencesImmediately=false) {
+export async function runScenario(serverUrl: string, port: number, scenarioId: string, inputPicker: InputPicker, skipCache=true, resolveReferencesImmediately=false) {
     const axiosArgs = {
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
@@ -56,7 +56,7 @@ export async function runScenario(serverUrl: string, port: number, scenarioId: s
 
 
         // 2. execute
-        const response = await axios.post(`${serverUrl}:${port}/scenarios/${scenarioId}/steps/${step.id}/execute`, state, axiosArgs);
+        const response = await axios.post(`${serverUrl}:${port}/scenarios/${scenarioId}/steps/${step.id}/execute${ skipCache ? '?skipCache=true' : '' }`, state, axiosArgs);
         const ticket = response.data.ticket;
         let poll: any;
         do {

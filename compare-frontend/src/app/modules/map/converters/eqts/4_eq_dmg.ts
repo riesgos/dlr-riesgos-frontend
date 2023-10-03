@@ -10,7 +10,7 @@ import { createTableHtml } from "src/app/helpers/others";
 export class EqDmg implements Converter {
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "EqDamage";
+        return scenario === "PeruShort" &&  step === "EqDamage";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

@@ -5,7 +5,7 @@ import { LegendComponent } from "../../tabComponents/legends/legendComponents/le
 
 export class SysRel implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "SysRel";
+        return scenario === "PeruShort" && step === "SysRel";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {

@@ -7,7 +7,7 @@ import { LegendComponent } from "../../tabComponents/legends/legendComponents/le
 export class EqSimulation implements Converter {
     
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "EqSimulation";
+        return scenario === "PeruShort" && step === "EqSimulation";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {

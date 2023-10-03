@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { getVolcanusAshfallDamage, getFragility, getDamage, getDamageJson } from "../../wpsServices";
+import { getVolcanusAshfallDamage, getFragility, getDamage, getDamageJsonEcuador } from "../../wpsServices";
 
 
 async function calcDamage(data: Datum[]) {
@@ -8,7 +8,7 @@ async function calcDamage(data: Datum[]) {
     const intensityXmlRef = data.find(d => d.id === 'laharShakemapRefs')!.value.velRef;
 
     const vulnerabilityRef = await getFragility('Mavrouli_et_al_2014');
-    const { damageRef, summary, json } = await getDamageJson('Mavrouli_et_al_2014', vulnerabilityRef, intensityXmlRef, exposureRef);
+    const { damageRef, summary, json } = await getDamageJsonEcuador('Mavrouli_et_al_2014', vulnerabilityRef, intensityXmlRef, exposureRef);
 
     return [{
         id: 'laharDamage',

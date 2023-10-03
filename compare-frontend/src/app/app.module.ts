@@ -35,6 +35,13 @@ import { EqDmg as WizardEqDmg } from './modules/wizard/converters/eqts/4_eq_dmg'
 import { TsSim as WizardTsSim } from './modules/wizard/converters/eqts/5_tssim';
 import { TsDmg as WizardTsDmg } from './modules/wizard/converters/eqts/6_ts_dmg';
 import { SysRel as WizardSysRel } from './modules/wizard/converters/eqts/7_sysrel';
+import { CachedEqSelection as CachedWizardEqSelection } from './modules/wizard/converters/eqtsCached/1_eqselect';
+import { CachedEqSimulation as CachedWizardEqSimulation } from './modules/wizard/converters/eqtsCached/2_eqsim';
+import { CachedExposure as CachedWizardExposure } from './modules/wizard/converters/eqtsCached/3_exposure';
+import { CachedEqDmg as CachedWizardEqDmg } from './modules/wizard/converters/eqtsCached/4_eq_dmg';
+import { CachedTsSim as CachedWizardTsSim } from './modules/wizard/converters/eqtsCached/5_tssim';
+import { CachedTsDmg as CachedWizardTsDmg } from './modules/wizard/converters/eqtsCached/6_ts_dmg';
+import { CachedSysRel as CachedWizardSysRel } from './modules/wizard/converters/eqtsCached/7_sysrel';
 import { DescriptionComponent } from './modules/wizard/tabComponents/description/description.component';
 import { DownloadComponent } from './modules/wizard/tabComponents/download/download.component';
 import { ErrorComponent } from './modules/wizard/tabComponents/error/error.component';
@@ -62,6 +69,14 @@ import { ImageLegendComponent } from './modules/wizard/tabComponents/legends/ima
 import { TextComponent } from './modules/wizard/tabComponents/legends/text/text.component';
 import { AppControlComponent } from './modules/components/app-control/app-control.component';
 import { TutorialComponent } from './views/tutorial/tutorial.component';
+import { CachedEqSelection } from './modules/map/converters/eqtsCached/1_eqselect';
+import { CachedEqSimulation } from './modules/map/converters/eqtsCached/2_eqsim';
+import { CachedExposure } from './modules/map/converters/eqtsCached/3_exposure';
+import { CachedEqDmg } from './modules/map/converters/eqtsCached/4_eq_dmg';
+import { CachedTsSim } from './modules/map/converters/eqtsCached/5_tssim';
+import { CachedTSDmg } from './modules/map/converters/eqtsCached/6_ts_dmg';
+import { CachedSysRel } from './modules/map/converters/eqtsCached/7_sysrel';
+import { LicensesComponent } from './views/licenses/licenses.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +110,8 @@ import { TutorialComponent } from './views/tutorial/tutorial.component';
     ImageLegendComponent,
     TextComponent,
     AppControlComponent,
-    TutorialComponent
+    TutorialComponent,
+    LicensesComponent
   ],
   imports: [
     BrowserModule,
@@ -122,6 +138,7 @@ import { TutorialComponent } from './views/tutorial/tutorial.component';
       useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
       deps: [PlatformLocation]
     },
+
     MapService,
     ConverterService,
     { provide: mapConverterToken, useClass: EqSelection, multi: true },
@@ -131,7 +148,17 @@ import { TutorialComponent } from './views/tutorial/tutorial.component';
     { provide: mapConverterToken, useClass: TsSim, multi: true },
     { provide: mapConverterToken, useClass: TSDmg, multi: true },
     { provide: mapConverterToken, useClass: SysRel, multi: true },
+    
+    { provide: mapConverterToken, useClass: CachedEqSelection, multi: true },
+    { provide: mapConverterToken, useClass: CachedEqSimulation, multi: true },
+    { provide: mapConverterToken, useClass: CachedExposure, multi: true },
+    { provide: mapConverterToken, useClass: CachedEqDmg, multi: true },
+    { provide: mapConverterToken, useClass: CachedTsSim, multi: true },
+    { provide: mapConverterToken, useClass: CachedTSDmg, multi: true },
+    { provide: mapConverterToken, useClass: CachedSysRel, multi: true },
+    
     { provide: mapConverterToken, useClass: DefaultConverter, multi: true },
+    
     WizardService,
     WizardConverterService,
     { provide: wizardConverterToken, useClass: WizardEqSelection, multi: true },
@@ -141,6 +168,16 @@ import { TutorialComponent } from './views/tutorial/tutorial.component';
     { provide: wizardConverterToken, useClass: WizardTsSim, multi: true },
     { provide: wizardConverterToken, useClass: WizardTsDmg, multi: true },
     { provide: wizardConverterToken, useClass: WizardSysRel, multi: true },
+
+    { provide: wizardConverterToken, useClass: CachedWizardEqSelection, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardEqSimulation, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardExposure, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardEqDmg, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardTsSim, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardTsDmg, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardSysRel, multi: true },
+    
+
     { provide: wizardConverterToken, useClass: WizardDefaultConverter, multi: true },
   ],
   bootstrap: [AppComponent]

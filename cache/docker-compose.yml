@@ -1,0 +1,39 @@
+# -v 
+# old style argument
+# if source is a path, assumed to be a bind-mount
+# else assumed to be a volume
+# --mount
+# new style argument
+# allows to specify sub-arguments: type, src, dest, volume-args, ...
+
+
+version: '3'
+services: 
+    geoserver:
+      image: docker.osgeo.org/geoserver:2.22.3
+      ports:
+        - 8080:8080
+      environment:
+        - SKIP_DEMO_DATA=true
+        - CORS_ENABLED=true
+      # volumes:
+      #   - type: volume  # other options: bind, tempfs
+      #     source: containerData
+      #     target: /opt/geoserver_data/
+      #   - type: volume  # other options: bind, tempfs
+      #     source: containerConfig
+      #     target: /opt/apache-tomcat-9.0.74/webapps/geoserver/
+
+volumes:
+  containerData:
+    driver: local
+    driver_opts:  # local driver, therefore all driver_options are as in linux' `mount(8)`. Particularly, `type` and `bind` mean not the same thing as they do for docker.
+      type: none
+      o: bind
+      device: /localhome/lang_m13/Desktop/code/dlr-riesgos-frontend/cache/container/data
+  containerConfig:
+    driver: local
+    driver_opts:  # local driver, therefore all driver_options are as in linux' `mount(8)`. Particularly, `type` and `bind` mean not the same thing as they do for docker.
+      type: none
+      o: bind
+      device: /localhome/lang_m13/Desktop/code/dlr-riesgos-frontend/cache/container/conf

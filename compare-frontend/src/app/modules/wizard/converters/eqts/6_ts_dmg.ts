@@ -7,7 +7,7 @@ import { MultiLegendComponent } from "../../tabComponents/legends/legendComponen
 
 export class TsDmg implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "TsDamage";
+        return scenario === "PeruShort" && step === "TsDamage";
     }
 
     getInfo(state: RiesgosScenarioState, data: RiesgosProductResolved[]): WizardComposite {

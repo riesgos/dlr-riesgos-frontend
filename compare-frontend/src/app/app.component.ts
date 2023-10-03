@@ -36,6 +36,11 @@ export class AppComponent {
     window.open(this.getTutorialUrl(), '_blank');
   }
 
+  clickOnLicenses() {
+    if (this.getCurrentUrl().includes('licenses')) return;
+    window.open(this.getLicensesUrl(), '_blank');
+  }
+
   getCurrentUrl() {
     return window.location.href;
   }
@@ -48,4 +53,11 @@ export class AppComponent {
     return `${currentUrl.origin}${this.baseHref}tutorial`;
   }
 
+  private getLicensesUrl() {
+    // https://itnext.io/how-to-extract-the-base-href-in-angular-bbbd559a1ad6
+    const currentUrl = new URL(this.getCurrentUrl());
+    // const path = currentUrl.pathname.split("/").slice(1);
+    // const isOnSubPath = path.includes(this.baseHref);
+    return `${currentUrl.origin}${this.baseHref}licenses`;
+  }
 }

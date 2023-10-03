@@ -20,7 +20,7 @@ export class TsSim implements Converter {
     ) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === 'Tsunami';
+        return scenario === "PeruShort" &&  step === 'Tsunami';
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

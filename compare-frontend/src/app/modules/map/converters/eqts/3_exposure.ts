@@ -21,7 +21,7 @@ export class Exposure implements Converter {
     constructor(private translator: TranslationService) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return step === "Exposure";
+        return scenario === "PeruShort" &&  step === "Exposure";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

@@ -13,7 +13,7 @@ import { maybeArraysEqual } from 'src/app/state/helpers';
 import { FeatureLike } from 'ol/Feature';
 import { TileWMS, VectorTile, XYZ } from 'ol/source';
 // import Attribution from 'ol/control/Attribution';
-import {defaults} from 'ol/control';
+import {Zoom, defaults} from 'ol/control';
 import { HttpClient } from '@angular/common/http';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { applyStyle } from 'ol-mapbox-style';
@@ -56,7 +56,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     private zone: NgZone,
     private http: HttpClient
   ) {
+
       // no need to run this outside of zone
+      const myZoom = new Zoom({
+        zoomInTipLabel: "", zoomOutTipLabel: ""
+      })
+
       this.map = new OlMap({
         layers: this.baseLayers,
         view: new View({
@@ -64,10 +69,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           center: [0, 0],
           zoom: 0
         }),
-        controls: defaults({ attribution: true, rotate: false, zoom: true }),
+        controls: defaults({ attribution: true, rotate: false, zoom: false }).extend([myZoom]),
         overlays: [this.overlay]
       });
-
 
       this.store.select(s => s.riesgos).subscribe(this.__currentRiesgosState);
   }
@@ -258,7 +262,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           }
           const url = source.getFeatureInfoUrl(location, view.getResolution() || 10_000, view.getProjection(), { 'INFO_FORMAT': 'application/json' });
           if (url && alpha > 0) {
-            const result = await firstValueFrom<any>(this.http.get(url));
+            let result;
+            try {
+              result = await firstValueFrom<any>(this.http.get(url));
+            } catch (error) {
+              console.error(error);
+            }
             if (result && result.features && result.features.length > 0 && result.features[0].properties && Object.keys(result.features[0].properties).length > 0) {
               const resultFeatures = new GeoJSON().readFeatures(result);
               clickedFeature = resultFeatures[0];

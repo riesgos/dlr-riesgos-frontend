@@ -298,9 +298,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 for (const layer of baseLayers) {
                     if (layer instanceof LayerGroup) {
-                        this.layersSvc.addLayerGroup(layer, 'Layers');
+                        this.layersSvc.addLayerGroup(layer, 'Baselayers');
                     } else {
-                        this.layersSvc.addLayer(layer, 'Layers', false);
+                        this.layersSvc.addLayer(layer, 'Baselayers', false);
                     }
                 }
 
@@ -585,7 +585,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'Powerlines',
                 legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=19&'
             });
-
             const energyGroup = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'peru_energy',
@@ -594,7 +593,19 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 expanded: true,
                 visible: false
             });
-            layers.push(energyGroup);
+            // layers.push(energyGroup);
+
+            // const 
+            const waterGroup = new LayerGroup({
+                id: 'peru_water',
+                name: 'peru_water',
+                filtertype: 'Layers',
+                layers: [],
+                expanded: true,
+                visible: false
+            });
+            layers.push(waterGroup);
+
         }
 
         if (scenario === 'Ecuador') {
@@ -654,7 +665,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private getBaseLayers(scenario: string): Observable<(Layer | LayerGroup)[]> {
 
         const osmLayer = new OsmTileLayer({
-            visible: false,
+            visible: true,
             legendImg: 'assets/layer-preview/osm-96px.jpg'
         });
 
@@ -678,7 +689,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             attribution: `© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap contributors</a>`,
             description: `vtiles_description`,
             type: 'custom',
-            visible: true,
+            visible: false,
             custom_layer: vectorTile
         });
 

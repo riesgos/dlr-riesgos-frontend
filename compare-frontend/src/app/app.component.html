@@ -11,9 +11,10 @@
     <p style="margin: 1rem; color: var(--accent-color-800);">Version: 0.0.1</p>
 
     <nav *ngIf="ruleSet$ | async as ruleSet">
-      <a                            class="nav-item" [class.active]="ruleSet === 'none' && !getCurrentUrl().includes('tutorial')"               (click)="clickOnModes()"    >{{ 'Modes' | translate }}</a>
+      <a                            class="nav-item" [class.active]="ruleSet === 'none' && !getCurrentUrl().includes('tutorial') && !getCurrentUrl().includes('licenses')"   (click)="clickOnModes()"    >{{ 'Modes' | translate }}</a>
       <a *ngIf="ruleSet !== 'none'" class="nav-item" [class.active]="true"                             >{{ ruleSet | translate }}</a>
       <a                            class="nav-item" [class.active]="getCurrentUrl().includes('tutorial')"  (click)="clickOnTutorial()" >{{ 'Tutorial' | translate }}</a>
+      <a                            class="nav-item" [class.active]="getCurrentUrl().includes('licenses')"  (click)="clickOnLicenses()" >{{ 'Licenses' | translate }}</a>
     </nav>
 
     <div class="logoSection">

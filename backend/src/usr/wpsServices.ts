@@ -146,12 +146,12 @@ export async function getEqSim(gmpe: Gmpe, vsgrid: Vsgrid, selectedEq: any) {
         reference: true,
         type: 'complex',
         format: 'text/xml'
-    }, {
-        id: 'shakeMapFile',
-        reference: true,
-        type: 'complex',
-        format: 'image/geotiff',
-        encoding: 'base64'
+    // }, {
+    //     id: 'shakeMapFile',
+    //     reference: true,
+    //     type: 'complex',
+    //     format: 'image/geotiff',
+    //     encoding: 'base64'
     }];
 
     const results = await wpsClient1.executeAsync(url, processId, wpsInputs, wpsOutputs);
@@ -159,7 +159,7 @@ export async function getEqSim(gmpe: Gmpe, vsgrid: Vsgrid, selectedEq: any) {
     return {
         wms: results.find(r => r.description.format === 'application/WMS')?.value[0],
         xml: results.find(r => r.description.format === 'text/xml')?.value,
-        geotiffRef: results.find(r => r.description.format === 'image/geotiff')?.value
+        // geotiffRef: results.find(r => r.description.format === 'image/geotiff')?.value
     };
 }
 
@@ -368,12 +368,12 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
         reference: false,
         format: 'application/WMS',
         encoding: 'UTF-8'
-    }, {
-        id: 'shapefile_summary',
-        type: 'complex',
-        reference: true,
-        format: 'application/x-zipped-shp',
-        encoding: 'base64'
+    // }, {
+    //     id: 'shapefile_summary',
+    //     type: 'complex',
+    //     reference: true,
+    //     format: 'application/x-zipped-shp',
+    //     encoding: 'base64'
     }, {
         id: 'meta_summary',
         type: 'complex',
@@ -389,16 +389,11 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
     }];
 
 
-    // const executeUrl = wpsClient2.wpsMarshaller.executeUrl(url, processId);
-    // const execBody = wpsClient2.wpsMarshaller.marshalExecBody(processId, inputs, outputs, false);
-    // const xmlExecBody = wpsClient2.xmlMarshaller.marshalString(execBody);
-    // const success = await writeTextFile("body3.xml", xmlExecBody)
-
     const results = await wpsClient2.executeAsync(url, processId, inputs, outputs);
-// @TODO: wms and shapefile are assigned the same output-description.
+
     return {
         wms: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === 'application/WMS')?.value[0],
-        shapefile: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === 'application/x-zipped-shp')?.value,
+        // shapefile: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === 'application/x-zipped-shp')?.value,
         summary: results.find(r => r.description.id === 'meta_summary')?.value[0],
         damageRef: results.find(r => r.description.id === 'merged_output')?.value
     };
@@ -531,12 +526,12 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
         type: 'complex',
         reference: false,
         format: 'application/WMS'
-    }, {
-        id: 'shapefile_summary',
-        type: 'complex',
-        reference: true,
-        format: 'application/x-zipped-shp',
-        encoding: 'base64'
+    // }, {
+    //     id: 'shapefile_summary',
+    //     type: 'complex',
+    //     reference: true,
+    //     format: 'application/x-zipped-shp',
+    //     encoding: 'base64'
     }, {
         id: 'merged_output',
         reference: true,
@@ -554,7 +549,7 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
 
     return {
         wms: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === "application/WMS")?.value[0],
-        shapefile: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === "application/x-zipped-shp")?.value,
+        // shapefile: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === "application/x-zipped-shp")?.value,
         summary: results.find(r => r.description.id === 'meta_summary')?.value[0],
         damageRef: results.find(r => r.description.id === 'merged_output' && r.description.reference === true)?.value,
     };

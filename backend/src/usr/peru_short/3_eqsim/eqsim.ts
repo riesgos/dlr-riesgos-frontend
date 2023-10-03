@@ -9,7 +9,7 @@ async function simulateEq(inputs: Datum[]) {
     const gmpe = inputs.find(i => i.id === 'gmpe')!.value;
     const vsgrid = inputs.find(i => i.id === 'vsgrid')!.value;
 
-    const { wms, xml, geotiffRef } = await getEqSim(gmpe, vsgrid, selectedEq);
+    const { wms, xml } = await getEqSim(gmpe, vsgrid, selectedEq);
 
     return [{
         id: 'eqSimWms',
@@ -17,9 +17,6 @@ async function simulateEq(inputs: Datum[]) {
     }, {
         id: 'eqSimXmlRef',
         value: xml
-    }, {
-        id: 'eqSimGeotiffRef',
-        value: geotiffRef
     }];
 }
 
@@ -44,8 +41,6 @@ export const step: Step = {
         id: 'eqSimWms'
     }, {
         id: 'eqSimXmlRef'
-    }, {
-        id: 'eqSimGeotiffRef'
     }],
     function: simulateEq
 };

@@ -83,7 +83,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
                 }
                 return undefined;
             }
-            rules.mirrorClick = () => true;
+            rules.mirrorClick = (userChoiceLinkMapViews, compositeId) => compositeId !== 'userChoiceLayer';
             rules.mirrorMove = () => true;
             rules.mirrorStepFocus = () => true;
             rules.allowViewLinkToggling = false;

@@ -144,9 +144,6 @@ export class Scenario {
     }
 
     private async addDatum(newDatum: Datum, state: ScenarioState): Promise<ScenarioState> {
-        if (newDatum.id === "eqDamageRef" || newDatum.id === "eqDamageShapefile") {
-            console.log("Obacht!");
-        }
         // Data is stored in cache hashed by the inputs that led to it.
         const linage = this.getLinage(newDatum.id, state);
         const key = await this.store.addData(newDatum.value, linage);

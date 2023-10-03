@@ -16,13 +16,13 @@ services:
       environment:
         - SKIP_DEMO_DATA=true
         - CORS_ENABLED=true
-      volumes:
-        - type: volume  # other options: bind, tempfs
-          source: containerData
-          target: /opt/geoserver_data/
-        - type: volume  # other options: bind, tempfs
-          source: containerConfig
-          target: /opt/apache-tomcat-9.0.74/webapps/geoserver/
+      # volumes:
+      #   - type: volume  # other options: bind, tempfs
+      #     source: containerData
+      #     target: /opt/geoserver_data/
+      #   - type: volume  # other options: bind, tempfs
+      #     source: containerConfig
+      #     target: /opt/apache-tomcat-9.0.74/webapps/geoserver/
 
 volumes:
   containerData:

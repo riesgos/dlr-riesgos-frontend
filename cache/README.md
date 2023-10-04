@@ -11,6 +11,7 @@ Hugo's layer einfügen
     - but: while CORS: *, it does require authentication.
     - I don't have access to authentication, though: https://sigrid.cenepred.gob.pe/arcgis/tokens/generateToken <-- requires a SIGRID-password, apprently.
     - Also, the source URL is going to change.
+- Just downloaded data manually.
 
 
 

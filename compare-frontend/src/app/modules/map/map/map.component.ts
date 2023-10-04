@@ -41,7 +41,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   @ViewChild('popupBody', { read: ViewContainerRef, static: true }) popupContainer!: ViewContainerRef;
 
   private baseLayers: Layer[] = getBaseLayers();
-  private overlay = new Overlay({});
+  private overlay = new Overlay({
+    autoPan: true
+  });
   private map!: OlMap;
 
   private olSubs: Map<'moveend' | 'click', (event: BaseEvent | Event) => unknown> = new Map();
@@ -145,7 +147,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   public closePopup() {
     this.zone.run(() => this.mapSvc.closePopup(this.scenario, this.partition));
   }
-
 
   private handleMove(state: MapState) {
     if (

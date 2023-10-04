@@ -1,0 +1,6 @@
+<ng-container *ngIf="checkIsComponentItem(layer.legendImg, layer); else imageUrl">
+    <ukis-dynamic-component [(dynamicComponent)]="layer.legendImg"></ukis-dynamic-component>
+</ng-container>
+<ng-template #imageUrl>
+    <img [src]="layer.legendImg" />
+</ng-template>

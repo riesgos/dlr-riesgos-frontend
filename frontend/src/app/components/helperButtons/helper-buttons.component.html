@@ -30,7 +30,22 @@
     <div class="modal-dialog" role="dialog" aria-hidden="true">
         <div class="modal-content">
             <h3 class="modal-title">{{'Print' | translate}}</h3>
-            <div class="modal-body"></div>
+            <div class="modal-body">
+
+                <div class="previewHtml">
+                    <canvas id="previewCanvas" #previewCanvas></canvas>
+                    <div class="sidebarContainer">
+                        <div id="sidebar" #sideBar></div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="onPrintClicked()">{{'Print' | translate}}</button>
+                <button type="button" class="btn btn-primary" (click)="onUpdateClicked()">{{'Create map' | translate}}</button>
+                <button type="button" class="btn btn-outline" (click)="showPrintModal = false">{{'Cancel' | translate}}</button>
+            </div>
         </div>
     </div>
 </div>

@@ -82,6 +82,7 @@ import { LegendComponent } from './components/dynamic/legend/legend.component';
 import { BarchartComponent } from './components/dynamic/barchart/barchart.component';
 import { CircleLegendComponent } from './components/dynamic/circle-legend/circle-legend.component';
 import { MultiLegendComponent } from './components/dynamic/multi-legend/multi-legend.component';
+import { LegendItemComponent } from './components/print/legend-item/legend-item.component';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
@@ -142,6 +143,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     BarchartComponent,
     CircleLegendComponent,
     MultiLegendComponent,
+    LegendItemComponent,
   ],
   imports: [
     BrowserAnimationsModule,

@@ -13,6 +13,8 @@ import { Pixel } from 'ol/pixel';
 import { Coordinate } from 'ol/coordinate';
 import VectorSource from 'ol/source/Vector';
 import { containsXY } from 'ol/extent';
+import RenderEvent from 'ol/render/Event';
+import RenderEventType from 'ol/render/EventType';
 
 
 function apply(transform, coordinate) {
@@ -215,6 +217,7 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         this.lineShader.bind(this.context);
         this.lineShader.updateUniformData(this.context, 'u_bbox', bbox);
         this.lineShader.draw(this.context);
+        this.postRender(this.canvas.getContext('webgl2'), frameState);
         return this.canvas;
     }
 
@@ -270,6 +273,26 @@ export class WebGlPolygonRenderer extends LayerRenderer<VectorLayer<VectorSource
         }
         return undefined;
     }
+
+
+
+    postRender(context, frameState) {
+        this.dispatchRenderEvent_(RenderEventType.POSTRENDER, context, frameState);
+    }
+
+    dispatchRenderEvent_(type, context, frameState) {
+        const layer = this.getLayer();
+        if (layer.hasListener(type)) {
+
+          const event = new RenderEvent(
+            type,
+            undefined,
+            frameState,
+            context
+          );
+          layer.dispatchEvent(event);
+        }
+      }
 }
 
 export interface WebGlPolygonLayerOptions extends Options<VectorSource<Polygon>> {
@@ -291,4 +314,6 @@ export class WebGlPolygonLayer extends VectorLayer<VectorSource<Polygon>> {
     }
 
     renderDeclutter(frameState) {}
+
+  
 }

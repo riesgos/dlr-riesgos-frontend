@@ -3,7 +3,7 @@ import { initialRiesgosState, isRiesgosUnresolvedRefProduct, isRiesgosResolvedRe
 import * as RiesgosActions from './riesgos.actions';
 import { API_ScenarioInfo } from '../services/backend/backend.service';
 import { immerOn } from 'ngrx-immer/store';
-import { WritableDraft } from 'immer/dist/internal';
+
 
 
 
@@ -29,7 +29,8 @@ export const reducer = createReducer(
             if (isRiesgosUnresolvedRefProduct(p)) p.reference = undefined;
             if (isRiesgosValueProduct(p)) p.value = undefined;
         });
-        return state;
+        const newState = deriveState(state);
+        return newState;
     }),
 
     immerOn(RiesgosActions.restartingFromStep,  (state, action) => {
@@ -150,7 +151,7 @@ function parseAPIScenariosIntoState(currentScenario: ScenarioName, scenarios: AP
     return state;
 }
 
-function deriveState(state: WritableDraft<RiesgosState>) {
+function deriveState(state: RiesgosState) {
     for (const scenarioName in state.scenarioData) {
         const scenario = state.scenarioData[scenarioName];
         for (const step of scenario.steps) {
@@ -174,7 +175,7 @@ function deriveState(state: WritableDraft<RiesgosState>) {
     return state;
 }
 
-function removeDownstreamData(stepId: string, state: WritableDraft<RiesgosState>) {
+function removeDownstreamData(stepId: string, state: RiesgosState) {
     const scenario = state.scenarioData[state.currentScenario];
     const step = scenario.steps.find(s => s.step.id === stepId);
     const outputIds = step.step.outputs.map(o => o.id);

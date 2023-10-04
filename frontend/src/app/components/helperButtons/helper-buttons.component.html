@@ -2,13 +2,10 @@
     <clr-icon shape="refresh"></clr-icon>
 </button>
 
-<button class="btn btn-primary" (click)="showStoreModal = true" title="{{ 'Save' | translate }}">
-    <clr-icon shape="download-cloud"></clr-icon>
+<button class="btn btn-primary" (click)="showPrintModal = true" title="{{ 'Print' | translate }}">
+    <clr-icon shape="printer"></clr-icon>
 </button>
 
-<button class="btn btn-primary" (click)="showRestoreModal = true" title="{{ 'Restore' | translate }}">
-    <clr-icon shape="upload-cloud"></clr-icon>
-</button>
 
 <div *ngIf="showResetModal" class="modal">
     <div class="modal-dialog" role="dialog" aria-hidden="true">
@@ -28,54 +25,14 @@
 </div>
 <div *ngIf="showResetModal" class="modal-backdrop" aria-hidden="true"></div>
 
-<div *ngIf="showStoreModal" class="modal">
-    <div class="modal-dialog modal-xl" role="dialog" aria-hidden="true">
+
+<div *ngIf="showPrintModal" class="modal">
+    <div class="modal-dialog" role="dialog" aria-hidden="true">
         <div class="modal-content">
-            <h3 class="modal-title">{{'Store data' | translate }}</h3>
-            <div class="modal-body">
-
-                <p>{{'Please enter a name under which to store the current state' | translate}}</p>
-
-                <form clrForm>
-                    <clr-input-container>
-                        <label for="name">{{'Name' | translate }}</label>
-                        <input clrInput type="text" id="name" [formControl]="nameControl" />
-                        <clr-control-error>{{ 'invalid filename' | translate }}</clr-control-error>
-                    </clr-input-container>
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="saveState()">{{'Store' | translate}}</button>
-                <button type="button" class="btn btn-outline" (click)="showStoreModal = false">{{'Cancel' | translate}}</button>
-            </div>
+            <h3 class="modal-title">{{'Print' | translate}}</h3>
+            <div class="modal-body"></div>
         </div>
     </div>
 </div>
-<div *ngIf="showStoreModal" class="modal-backdrop" aria-hidden="true"></div>
-
-
-<div *ngIf="showRestoreModal" class="modal">
-    <div class="modal-dialog modal-xl" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <h3 class="modal-title">{{'Restore data' | translate }}</h3>
-            <div class="modal-body">
-        
-                <p>{{'Please upload a state that you want to restore.' | translate}}</p>
-                <div class="dropzone" ukisDnd (fileDropped)="fileDropped($event)">
-                    <div class="text-wrapper">
-                        <div class="centered">{{dropFieldText$ | async | translate}}</div>
-                    </div>
-                </div>
-        
-        
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="restoreState()" [disabled]="!(stateToBeRestored$ | async)">{{'Restore' | translate}}</button>
-                <button type="button" class="btn btn-outline" (click)="cancelRestoreState()">{{'Cancel' | translate}}</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div *ngIf="showRestoreModal" class="modal-backdrop" aria-hidden="true"></div>
+<div *ngIf="showPrintModal" class="modal-backdrop" aria-hidden="true"></div>
 

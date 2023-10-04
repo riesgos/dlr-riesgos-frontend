@@ -19,33 +19,20 @@ import { map, tap } from 'rxjs/operators';
 export class HelperButtonsComponent implements OnInit {
 
     showResetModal = false;
-    showRestoreModal = false;
-    showStoreModal = false;
-    nameControl: UntypedFormControl;
-    dropFieldText$: BehaviorSubject<string>;
-    stateToBeRestored$: BehaviorSubject<RiesgosScenarioState>;
+    showPrintModal = false;
     private currentState: RiesgosScenarioState;
 
     constructor(
         private store: Store<State>
     ) {
-        this.nameControl = new UntypedFormControl('Save state', [Validators.required, noSpecialChars]);
     }
 
     ngOnInit() {
         this.store.pipe(select(getCurrentScenarioRiesgosState)).subscribe((state: RiesgosScenarioState) => {
             this.currentState = state;
         });
-        this.dropFieldText$ = new BehaviorSubject<string>('Drop your file here!');
-        this.stateToBeRestored$ = new BehaviorSubject<RiesgosScenarioState>(null);
     }
 
-    saveState(): void {
-        const name = this.nameControl.value;
-        const data = this.currentState;
-        downloadJson(data, name + '.json');
-        this.showStoreModal = false;
-    }
 
     onResetClicked(): void {
         const currentScenario = this.currentState.scenario;
@@ -53,59 +40,6 @@ export class HelperButtonsComponent implements OnInit {
         this.showResetModal = false;
     }
 
-    restoreState(): void {
-        const stateToRestore: RiesgosScenarioState = this.stateToBeRestored$.value;
-        // @TODO: instead of just a ProductsProvided action,
-        // create a new action that validates that all data is still there on the remote servers.
-        this.store.dispatch(RiesgosActions.userDataProvided({
-            scenario: this.currentState.scenario,
-            products: stateToRestore.products
-        }));
-
-        // Don't do a RiesgosDataUpdate here!
-        // RiesgosDataUpdate is intended to be used only from riesgos.effects.ts
-        // If you call RiesgosDataUpdate directly, WFC will not be updated.
-        // Also, the map will not display your loaded products.
-        // this.store.dispatch(new RiesgosDataUpdate({
-        //     processes: stateToRestore.processStates,
-        //     products: stateToRestore.productValues,
-        //     graph: stateToRestore.graph
-        // }))
-        this.showRestoreModal = false;
-    }
-
-    cancelRestoreState(): void {
-        this.stateToBeRestored$.next(null);
-        this.dropFieldText$.next(null);
-        this.showRestoreModal = false;
-    }
-
-    fileDropped(files: FileList) {
-        const file = files[0];
-        this.extractSaveState(file).subscribe((state: RiesgosScenarioState) => {
-            this.dropFieldText$.next(file.name);
-            this.stateToBeRestored$.next(state);
-        });
-    }
-
-    private extractSaveState(file: File): Observable<RiesgosScenarioState> {
-        const state$ = parseFile(file).pipe(
-            map((content: string) => JSON.parse(content)),
-            tap((result: RiesgosScenarioState) => {
-                if (!isRiesgosScenarioState(result)) {
-                    throw Error(`The file ${file.name} did not contain a valid RiesgosScenarioState`);
-                }
-            })
-        );
-        return state$;
-    }
 
 }
 
-
-function noSpecialChars(control: UntypedFormControl): { [key: string]: boolean } {
-    const nameRegexp: RegExp = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    if (control.value && nameRegexp.test(control.value)) {
-       return { invalidName: true };
-    }
-}

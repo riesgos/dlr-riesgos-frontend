@@ -8,17 +8,18 @@ import { Store, select } from '@ngrx/store';
 import { MapOlService } from '@dlr-eoc/map-ol';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { OsmTileLayer } from '@dlr-eoc/base-layers-raster';
-import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup } from '@dlr-eoc/services-layers';
+import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer } from '@dlr-eoc/services-layers';
 
 import { click, noModifierKeys } from 'ol/events/condition';
 import { DragBox, Select } from 'ol/interaction';
-import { GeoJSON, KML, MVT } from 'ol/format';
+import { GeoJSON, KML, MVT, EsriJSON } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import { SelectEvent } from 'ol/interaction/Select';
-import { TileWMS, VectorTile } from 'ol/source';
+import { TileWMS, VectorTile, TileArcGISRest, Vector as VectorSource } from 'ol/source';
 import Geometry from 'ol/geom/Geometry';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
+import {tile as tileStrategy} from 'ol/loadingstrategy.js';
 import TileLayer from 'ol/layer/Tile';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { applyStyle } from 'ol-mapbox-style';
@@ -41,7 +42,7 @@ import { MappableProduct } from './mappable/mappable_products';
 import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 
 
-const mapProjection = 'EPSG:3857';
+const mapProjection = 'EPSG:4326'; // 'EPSG:3857';
 
 @Component({
     selector: 'ukis-map',
@@ -505,102 +506,33 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         if (scenario === 'Peru') {
 
 
-            const distributionLines = new CustomLayer<TileLayer<TileWMS>>({
-                custom_layer: new TileLayer({
-                    source: new TileWMS({
-                        projection: 'EPSG:4326',
-                        attributions: 'https://gisem.osinergmin.gob.pe/',
-                        attributionsCollapsible: true,
-                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
-                        params: {
-                            layers: '12'
-                        },
-                    })
-                }),
-                id: 'peru_distributionLines',
-                name: 'distribution_lines',
-                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=12&'
-            });
-            const substations = new CustomLayer<TileLayer<TileWMS>>({
-                custom_layer: new TileLayer({
-                    source: new TileWMS({
-                        projection: 'EPSG:4326',
-                        attributions: 'https://gisem.osinergmin.gob.pe/',
-                        attributionsCollapsible: true,
-                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
-                        params: {
-                            layers: '16'
-                        },
-                    })
-                }),
-                id: 'peru_substations',
-                name: 'substations',
-                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=16&'
-            });
-            const nonConventional = new CustomLayer<TileLayer<TileWMS>>({
-                custom_layer: new TileLayer({
-                    source: new TileWMS({
-                        projection: 'EPSG:4326',
-                        attributions: 'https://gisem.osinergmin.gob.pe/',
-                        attributionsCollapsible: true,
-                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
-                        params: {
-                            layers: '25'
-                        },
-                    })
-                }),
-                id: 'peru_nonConventional',
-                name: 'generation_nonConventional',
-                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=25&'
-            });
-            const conventional = new CustomLayer<TileLayer<TileWMS>>({
-                custom_layer: new TileLayer({
-                    source: new TileWMS({
-                        projection: 'EPSG:4326',
-                        attributions: 'https://gisem.osinergmin.gob.pe/',
-                        attributionsCollapsible: true,
-                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
-                        params: {
-                            layers: '33'
-                        },
-                    })
-                }),
-                id: 'peru_conventional',
-                name: 'generation_conventional',
-                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=33&'
-            });
-            const transmission = new CustomLayer<TileLayer<TileWMS>>({
-                custom_layer: new TileLayer({
-                    source: new TileWMS({
-                        projection: 'EPSG:4326',
-                        attributions: 'https://gisem.osinergmin.gob.pe/',
-                        attributionsCollapsible: true,
-                        url: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WMSServer',
-                        params: {
-                            layers: '19'
-                        },
-                    })
-                }),
+            const transmission = new VectorLayer({
                 id: 'peru_transmission',
                 name: 'Powerlines',
-                legendImg: 'https://gisem.osinergmin.gob.pe/serverosih/services/Electricidad/ELECTRICIDAD/MapServer/WmsServer?request=GetLegendGraphic&version=1.3.0&format=image/png&layer=19&'
+                type: 'geojson',
+                url: 'assets/data/geojson/peru_water/infra_transmision.geojson',
             });
             const energyGroup = new LayerGroup({
                 filtertype: 'Layers',
                 id: 'peru_energy',
                 name: 'peru_energy',
-                layers: [distributionLines, substations, nonConventional, conventional, transmission],
+                layers: [transmission],
                 expanded: true,
                 visible: false
             });
-            // layers.push(energyGroup);
+            layers.push(energyGroup);
 
-            // const 
+            const ukisWaterLayer = new VectorLayer({
+                type: 'geojson',
+                url: 'assets/data/geojson/peru_water/infra_sanitaria.geojson',
+                id: 'sigird_water',
+                name: 'SIGRID water'
+            });
             const waterGroup = new LayerGroup({
                 id: 'peru_water',
                 name: 'peru_water',
                 filtertype: 'Layers',
-                layers: [],
+                layers: [ukisWaterLayer],
                 expanded: true,
                 visible: false
             });

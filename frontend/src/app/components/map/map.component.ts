@@ -12,15 +12,13 @@ import { Layer, LayersService, RasterLayer, CustomLayer, LayerGroup, VectorLayer
 
 import { click, noModifierKeys } from 'ol/events/condition';
 import { DragBox, Select } from 'ol/interaction';
-import { GeoJSON, KML, MVT, EsriJSON } from 'ol/format';
+import { GeoJSON, KML, MVT } from 'ol/format';
 import { get as getProjection } from 'ol/proj';
 import { SelectEvent } from 'ol/interaction/Select';
-import { TileWMS, VectorTile, TileArcGISRest, Vector as VectorSource } from 'ol/source';
+import { VectorTile} from 'ol/source';
 import Geometry from 'ol/geom/Geometry';
 import olVectorLayer from 'ol/layer/Vector';
 import olVectorSource from 'ol/source/Vector';
-import {tile as tileStrategy} from 'ol/loadingstrategy.js';
-import TileLayer from 'ol/layer/Tile';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { applyStyle } from 'ol-mapbox-style';
 import { createXYZ } from 'ol/tilegrid';
@@ -42,7 +40,7 @@ import { MappableProduct } from './mappable/mappable_products';
 import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
 
 
-const mapProjection = 'EPSG:4326'; // 'EPSG:3857';
+const mapProjection = 'EPSG:3857';
 
 @Component({
     selector: 'ukis-map',
@@ -517,7 +515,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: 'peru_energy',
                 name: 'peru_energy',
                 layers: [transmission],
-                expanded: true,
+                expanded: false,
                 visible: false
             });
             layers.push(energyGroup);
@@ -533,7 +531,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                 name: 'peru_water',
                 filtertype: 'Layers',
                 layers: [ukisWaterLayer],
-                expanded: true,
+                expanded: false,
                 visible: false
             });
             layers.push(waterGroup);
@@ -598,7 +596,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const osmLayer = new OsmTileLayer({
             visible: true,
-            legendImg: 'assets/layer-preview/osm-96px.jpg'
+            legendImg: 'assets/layer-preview/osm-96px.jpg',
+            crossOrigin: 'anonymous'
         });
 
         const vectorTile = new VectorTileLayer({

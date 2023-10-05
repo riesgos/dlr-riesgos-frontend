@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, Validators } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from 'src/app/ngrx_register';
 import { getCurrentScenarioRiesgosState } from 'src/app/riesgos/riesgos.selectors';
-import { RiesgosScenarioState, isRiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
+import { RiesgosScenarioState } from 'src/app/riesgos/riesgos.state';
 import * as RiesgosActions from 'src/app/riesgos/riesgos.actions';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { downloadJson, parseFile } from 'src/app/helpers/others';
-import { map, tap } from 'rxjs/operators';
+import { MapOlService } from '@dlr-eoc/map-ol';
+import { simpleMapToCanvas } from '../print/print';
+import { Layer, LayersService } from '@dlr-eoc/services-layers';
+import { BehaviorSubject } from 'rxjs';
+import { LegendItemComponent } from '../print/legend-item/legend-item.component';
+import { toPng } from 'html-to-image';
 
 
 
@@ -19,32 +21,25 @@ import { map, tap } from 'rxjs/operators';
 export class HelperButtonsComponent implements OnInit {
 
     showResetModal = false;
-    showRestoreModal = false;
-    showStoreModal = false;
-    nameControl: UntypedFormControl;
-    dropFieldText$: BehaviorSubject<string>;
-    stateToBeRestored$: BehaviorSubject<RiesgosScenarioState>;
+    showPrintModal = false;
+    @ViewChild('previewHtml', {read: ElementRef}) previewHtml: ElementRef<HTMLDivElement>;
+    @ViewChild('previewCanvas', {read: ElementRef}) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('sideBar', {read: ViewContainerRef}) sideBar: ViewContainerRef;
     private currentState: RiesgosScenarioState;
+    private currentLayers$ = new BehaviorSubject<Layer[]>([]);
 
     constructor(
-        private store: Store<State>
+        private store: Store<State>,
+        private mapSvc: MapOlService,
+        private layerSvc: LayersService
     ) {
-        this.nameControl = new UntypedFormControl('Save state', [Validators.required, noSpecialChars]);
+        this.layerSvc.getOverlays().subscribe(this.currentLayers$);
     }
 
     ngOnInit() {
         this.store.pipe(select(getCurrentScenarioRiesgosState)).subscribe((state: RiesgosScenarioState) => {
             this.currentState = state;
         });
-        this.dropFieldText$ = new BehaviorSubject<string>('Drop your file here!');
-        this.stateToBeRestored$ = new BehaviorSubject<RiesgosScenarioState>(null);
-    }
-
-    saveState(): void {
-        const name = this.nameControl.value;
-        const data = this.currentState;
-        downloadJson(data, name + '.json');
-        this.showStoreModal = false;
     }
 
     onResetClicked(): void {
@@ -53,59 +48,40 @@ export class HelperButtonsComponent implements OnInit {
         this.showResetModal = false;
     }
 
-    restoreState(): void {
-        const stateToRestore: RiesgosScenarioState = this.stateToBeRestored$.value;
-        // @TODO: instead of just a ProductsProvided action,
-        // create a new action that validates that all data is still there on the remote servers.
-        this.store.dispatch(RiesgosActions.userDataProvided({
-            scenario: this.currentState.scenario,
-            products: stateToRestore.products
-        }));
-
-        // Don't do a RiesgosDataUpdate here!
-        // RiesgosDataUpdate is intended to be used only from riesgos.effects.ts
-        // If you call RiesgosDataUpdate directly, WFC will not be updated.
-        // Also, the map will not display your loaded products.
-        // this.store.dispatch(new RiesgosDataUpdate({
-        //     processes: stateToRestore.processStates,
-        //     products: stateToRestore.productValues,
-        //     graph: stateToRestore.graph
-        // }))
-        this.showRestoreModal = false;
-    }
-
-    cancelRestoreState(): void {
-        this.stateToBeRestored$.next(null);
-        this.dropFieldText$.next(null);
-        this.showRestoreModal = false;
-    }
-
-    fileDropped(files: FileList) {
-        const file = files[0];
-        this.extractSaveState(file).subscribe((state: RiesgosScenarioState) => {
-            this.dropFieldText$.next(file.name);
-            this.stateToBeRestored$.next(state);
+    async onPrintClicked() {
+        const container = document.getElementById('previewHtml');
+        console.log(container.clientWidth, container.clientHeight)
+        const result = await toPng(container, {
+            width: container.clientWidth,
+            height: container.clientHeight,
+            backgroundColor: 'white'
         });
+        downloadURI(result, "map.png");
     }
 
-    private extractSaveState(file: File): Observable<RiesgosScenarioState> {
-        const state$ = parseFile(file).pipe(
-            map((content: string) => JSON.parse(content)),
-            tap((result: RiesgosScenarioState) => {
-                if (!isRiesgosScenarioState(result)) {
-                    throw Error(`The file ${file.name} did not contain a valid RiesgosScenarioState`);
+    activatePrintModal(): void {
+        this.showPrintModal = true;
+        setTimeout(() => {
+            simpleMapToCanvas(this.mapSvc.map, this.previewCanvas.nativeElement, 600, 800);
+            // simpleMapToCanvas(this.mapSvc.map, this.previewCanvas.nativeElement, 600, 800);
+            for (const layer of this.currentLayers$.value) {
+                if (layer.visible && layer.opacity > 0.0) {
+                    const component = this.sideBar.createComponent(LegendItemComponent);
+                    component.instance.layer = layer;
                 }
-            })
-        );
-        return state$;
+            }
+        }, 500);
     }
 
 }
 
 
-function noSpecialChars(control: UntypedFormControl): { [key: string]: boolean } {
-    const nameRegexp: RegExp = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    if (control.value && nameRegexp.test(control.value)) {
-       return { invalidName: true };
-    }
-}
+
+function downloadURI(uri: string, name: string) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }

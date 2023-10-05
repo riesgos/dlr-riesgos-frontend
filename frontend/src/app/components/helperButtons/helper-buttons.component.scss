@@ -1,16 +1,16 @@
 
 .previewHtml {
+  width: 800px;
   display: flex;
   flex-direction: row;
-  overflow: scroll;
 }
 .previewHtml #previewCanvas {
-  flex: 2;
+  width: 500px;
+  height: 500px;
 }
-.previewHtml #sidebar {
-  flex: 1;
+.previewHtml .sidebarContainer {
+  width: 350px;
+  height: 500px;
 }
-.sidebarContainer {
-  display: flex;
-  flex-direction: column;
+.previewHtml .sidebarContainer #sidebar {
 }

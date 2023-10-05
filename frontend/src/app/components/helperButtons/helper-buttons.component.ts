@@ -53,7 +53,8 @@ export class HelperButtonsComponent implements OnInit {
         console.log(container.clientWidth, container.clientHeight)
         const result = await toPng(container, {
             width: container.clientWidth,
-            height: container.clientHeight
+            height: container.clientHeight,
+            backgroundColor: 'white'
         });
         downloadURI(result, "map.png");
     }

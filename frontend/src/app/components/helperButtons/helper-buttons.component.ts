@@ -9,7 +9,7 @@ import { simpleMapToCanvas } from '../print/print';
 import { Layer, LayersService } from '@dlr-eoc/services-layers';
 import { BehaviorSubject } from 'rxjs';
 import { LegendItemComponent } from '../print/legend-item/legend-item.component';
-
+import { toPng } from 'html-to-image';
 
 
 
@@ -22,7 +22,8 @@ export class HelperButtonsComponent implements OnInit {
 
     showResetModal = false;
     showPrintModal = false;
-    @ViewChild('previewCanvas') previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('previewHtml', {read: ElementRef}) previewHtml: ElementRef<HTMLDivElement>;
+    @ViewChild('previewCanvas', {read: ElementRef}) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('sideBar', {read: ViewContainerRef}) sideBar: ViewContainerRef;
     private currentState: RiesgosScenarioState;
     private currentLayers$ = new BehaviorSubject<Layer[]>([]);
@@ -47,19 +48,39 @@ export class HelperButtonsComponent implements OnInit {
         this.showResetModal = false;
     }
 
-    onPrintClicked(): void {
-        // https://www.npmjs.com/package/html-to-image
+    async onPrintClicked() {
+        const container = document.getElementById('previewHtml');
+        console.log(container.clientWidth, container.clientHeight)
+        const result = await toPng(container, {
+            width: container.clientWidth,
+            height: container.clientHeight
+        });
+        downloadURI(result, "map.png");
     }
 
-    onUpdateClicked(): void {
-        simpleMapToCanvas(this.mapSvc.map, this.previewCanvas.nativeElement, 600, 800);
-        for (const layer of this.currentLayers$.value) {
-            if (layer.visible && layer.opacity > 0.0) {
-                const component = this.sideBar.createComponent(LegendItemComponent);
-                component.instance.layer = layer;
+    activatePrintModal(): void {
+        this.showPrintModal = true;
+        setTimeout(() => {
+            simpleMapToCanvas(this.mapSvc.map, this.previewCanvas.nativeElement, 600, 800);
+            // simpleMapToCanvas(this.mapSvc.map, this.previewCanvas.nativeElement, 600, 800);
+            for (const layer of this.currentLayers$.value) {
+                if (layer.visible && layer.opacity > 0.0) {
+                    const component = this.sideBar.createComponent(LegendItemComponent);
+                    component.instance.layer = layer;
+                }
             }
-        }
+        }, 500);
     }
 
 }
 
+
+
+function downloadURI(uri: string, name: string) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }

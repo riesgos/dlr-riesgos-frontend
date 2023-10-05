@@ -596,7 +596,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const osmLayer = new OsmTileLayer({
             visible: true,
-            legendImg: 'assets/layer-preview/osm-96px.jpg'
+            legendImg: 'assets/layer-preview/osm-96px.jpg',
+            crossOrigin: 'anonymous'
         });
 
         const vectorTile = new VectorTileLayer({

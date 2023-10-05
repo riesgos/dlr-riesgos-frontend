@@ -81,6 +81,8 @@ export function mapToSingleCanvas(map: Map, targetCanvas: HTMLCanvasElement,
     const subscriptions: EventsKey[] = [];
     for (const layer of layers) {
         if (layer.getVisible() && layer.getOpacity() > 0.0) {
+            // if (layer.get('id').includes('osm')) continue;  // osm is tainted and cannot be printed
+
             // Step 2: catch each layer's postrender event.
             // Note that ol/renderer/webgl/* does not call `this.postRender(context, frameState)`
             // in `renderFrame` - so heatmaps won't be copied here!
@@ -95,7 +97,6 @@ export function mapToSingleCanvas(map: Map, targetCanvas: HTMLCanvasElement,
                     const image = canvasToImage(sourceCanvas);
                     // downloadURI(sourceCanvas.toDataURL('image/png'), 'image.png'); <-- image is correctly rendered out of webgl.
                     targetContext.drawImage(image, 0, 0, image.width, image.height, 0, 0, targetCanvas.width, targetCanvas.height);
-                    console.log(`drew webgl layer`)
                 }
             });
             if (Array.isArray(key)) {

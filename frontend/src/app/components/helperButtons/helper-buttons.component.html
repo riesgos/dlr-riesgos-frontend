@@ -2,7 +2,7 @@
     <clr-icon shape="refresh"></clr-icon>
 </button>
 
-<button class="btn btn-primary" (click)="showPrintModal = true" title="{{ 'Print' | translate }}">
+<button class="btn btn-primary" (click)="activatePrintModal()" title="{{ 'Print' | translate }}">
     <clr-icon shape="printer"></clr-icon>
 </button>
 
@@ -32,18 +32,16 @@
             <h3 class="modal-title">{{'Print' | translate}}</h3>
             <div class="modal-body">
 
-                <div class="previewHtml">
+                <div id="previewHtml" class="previewHtml" #previewHtml>
                     <canvas id="previewCanvas" #previewCanvas></canvas>
                     <div class="sidebarContainer">
                         <div id="sidebar" #sideBar></div>
-
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" (click)="onPrintClicked()">{{'Print' | translate}}</button>
-                <button type="button" class="btn btn-primary" (click)="onUpdateClicked()">{{'Create map' | translate}}</button>
                 <button type="button" class="btn btn-outline" (click)="showPrintModal = false">{{'Cancel' | translate}}</button>
             </div>
         </div>

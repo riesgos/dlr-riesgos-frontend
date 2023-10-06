@@ -158,7 +158,8 @@ def uploadAll():
     #   WORKSPACE
     #-------------------------------------------------------------------    
 
-    workSpaceName="riesgos"
+    workSpaceName="findme"
+    # workSpaceName="riesgos"
     geo.create_workspace(workspace=workSpaceName)
 
 
@@ -254,7 +255,9 @@ def uploadAll():
 
 
 #%%
-geo = MyGeoserver("http://localhost:8080/geoserver", username="admin", password="geoserver")
+# geoserverUrl= "http://localhost:8080/geoserver"
+geoserverUrl = "https://riesgos.dlr.de/cacheServer/geoserver"
+geo = MyGeoserver(geoserverUrl, username="admin", password="geoserver")
 uploadAll()
 
 

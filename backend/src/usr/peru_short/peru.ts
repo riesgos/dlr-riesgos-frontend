@@ -17,11 +17,15 @@ export const peruShortFactory = new ScenarioFactory(
 
 peruShortFactory.registerCondition(async () => {
     for (const [key, val] of Object.entries(config.services)) {
+        //@ts-ignore
         const url = val.url;
+        //@ts-ignore
         const procId = val.id;
         const request = `${url}?service=WPS&request=DescribeProcess&identifier=${procId}&version=2.0.0`;
         try {
-            const response = await axios.get(request);
+            if (url && procId) {
+                const response = await axios.get(request);
+            }
         } catch (error) {
             return `Error in attempting to access ${url} for process ${key} (id=${procId}): ${error}`;
         }

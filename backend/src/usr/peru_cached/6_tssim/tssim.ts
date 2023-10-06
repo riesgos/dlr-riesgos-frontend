@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-
+import config from "../../../config.json";
 
 async function tsunamiSimulation(inputs: Datum[]) {
 
@@ -7,11 +7,11 @@ async function tsunamiSimulation(inputs: Datum[]) {
     const id = selectedEq.features[0].id.replace("peru_", "").replace("quakeml:quakeledger/", "");
 
     const wms = [
-        `http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AarrivalTimes_${id}`,
-        `http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AepiCenter_${id}`,
-        `http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AmwhLand_global_${id}`,
-        `http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AmwhLand_local_${id}`,
-        `http://localhost:8080/geoserver/riesgos/wms?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3Amwh_${id}`
+        `${config.services.cacheServer}?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AarrivalTimes_${id}`,
+        `${config.services.cacheServer}?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AepiCenter_${id}`,
+        `${config.services.cacheServer}?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AmwhLand_global_${id}`,
+        `${config.services.cacheServer}?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3AmwhLand_local_${id}`,
+        `${config.services.cacheServer}?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES&LAYERS=riesgos%3Amwh_${id}`
     ];
   
     return [{

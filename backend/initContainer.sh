@@ -27,6 +27,7 @@ vars[TsunamiUrl]="https://riesgos.52north.org/wps"
 vars[SysrelUrl]="https://riesgos.52north.org/javaps/service"
 vars[SysrelEcuadorUrl]="https://riesgos.52north.org/javaps/service"
 vars[LaharUrl]="https://riesgos.52north.org/geoserver/ows"
+vars[cacheServer]="https://riesgos.dlr.de/cacheserver"
 
 for variableName in "${!vars[@]}"; do 
 

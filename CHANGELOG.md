@@ -1,5 +1,8 @@
 # Ongoing
 
+geoserver cache:
+https://octopus.com/blog/defining-tomcat-context-paths
+
 ## Long term work
 - Remove plotly completely, use d3 only.
     Requires that createBarChart and createGroupedBarchart are not called from `detailPopupHTML`.

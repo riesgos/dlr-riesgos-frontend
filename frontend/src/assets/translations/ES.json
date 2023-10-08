@@ -553,6 +553,8 @@
     "v_atwdmax": "Velocidad en sitio de máxima profundidad / Inundación",
     "ValpCommuna": "Valparaíso communas",
     "ValpCVTBayesian": "Valparaíso CVT (Bayesian)",
+    "ValpOBM23Comunas": "Valparaíso OBM23 (Comunas)",
+    "ValpOBM23Region": "Valparaíso OBM23 (Region)",
     "ValpCVTSaraDownscaled": "Valparaíso CVT Sara (reducido)",
     "ValpRegularGrid": "Valparaíso cuadrícla regular",
     "ValpRegularOriginal": "Valparaíso regular (original)",

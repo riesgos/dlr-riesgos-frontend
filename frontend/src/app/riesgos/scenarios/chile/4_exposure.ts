@@ -39,7 +39,9 @@ export class ModelChoiceChile implements WizardableProductAugmenter {
           'ValpCVTBayesian',
           'ValpCommuna',
           'ValpRegularOriginal',
-          'ValpRegularGrid'
+          'ValpRegularGrid',
+          'ValpOBM23Comunas',
+          'ValpOBM23Region'
         ],
         defaultValue: 'ValpCVTBayesian',
       },

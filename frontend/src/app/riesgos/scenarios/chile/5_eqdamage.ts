@@ -14,7 +14,7 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { map, switchMap, take, withLatestFrom } from 'rxjs/operators';
+import { filter, map, switchMap, takeLast } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
@@ -38,6 +38,7 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                 }
                 return of(undefined);
             }),
+            filter(value => value !== undefined)
         )
         .subscribe((aeqs: RiesgosProductResolved | undefined) => {
             this.metadata$.next(aeqs);
@@ -65,10 +66,14 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                         format: 'application/WMS',
                     },
                 });
-        
-                return combineLatest([layers$, this.metadata$.pipe(take(1))]).pipe(
+
+                return combineLatest([layers$, this.metadata$]).pipe(
                     map(([layers, metaData]) => {
                         const metaDataValue = metaData.value;
+                        if (!metaDataValue) {
+                            console.error(`No metadata for eq-damage`);
+                            // return [];
+                        }
 
                         const econLayer: ProductLayer = layers[0];
                         const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
@@ -97,7 +102,8 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                                 bottomText: `{{ loss_calculated_from }} <a href="./#/documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                             }
                         }
-                        if (metaDataValue) {
+                        // @TODO: this is problematic - sometimes no metadata value has arrived yet
+                        if (metaDataValue) {  
                             econLayer.popup = {
                                 dynamicPopup: {
                                     component: EconomicDamagePopupComponent,
@@ -153,6 +159,7 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                                 }
                             };
                         }
+
                         const counts = metaDataValue?.total?.buildings_by_damage_state || 0.0;
                         const html =
                             createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])

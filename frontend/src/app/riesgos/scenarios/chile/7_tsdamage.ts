@@ -3,7 +3,7 @@ import { MapOlService } from "@dlr-eoc/map-ol";
 import { LayersService } from "@dlr-eoc/services-layers";
 import { Store } from "@ngrx/store";
 import { BehaviorSubject, combineLatest, of } from "rxjs";
-import { switchMap, map, withLatestFrom, take } from "rxjs/operators";
+import { switchMap, map, withLatestFrom, take, filter } from "rxjs/operators";
 import { StringSelectUserConfigurableProduct } from "src/app/components/config_wizard/wizardable_products";
 import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
 import { DamagePopupComponent } from "src/app/components/dynamic/damage-popup/damage-popup.component";
@@ -62,20 +62,28 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
     }>({ tsMetaData: undefined, tsSchema: undefined });
 
     constructor(private store: Store, private resolver: DataService) {
-        const tsDamageSummary$ = this.store.select(getProduct('tsDamageSummaryChile')).pipe(switchMap(p => {
-            if (p) {
-                if (p.reference) return this.resolver.resolveReference(p);
-                return of(p);
-            }
-            return of(undefined);
-        }));
-        const tsSchema$ = this.store.select(getProduct('schemaTsChile')).pipe(switchMap(p => {
-            if (p) {
-                if (p.reference) return this.resolver.resolveReference(p);
-                return of(p);
-            }
-            return of(undefined);
-        }));
+
+        const tsDamageSummary$ = this.store.select(getProduct('tsDamageSummaryChile')).pipe(
+            switchMap(p => {
+                if (p) {
+                    if (p.reference) return this.resolver.resolveReference(p);
+                    return of(p);
+                }
+                return of(undefined);
+            }),
+            filter(value => value !== undefined)
+        );
+
+        const tsSchema$ = this.store.select(getProduct('schemaTsChile')).pipe(
+            switchMap(p => {
+                if (p) {
+                    if (p.reference) return this.resolver.resolveReference(p);
+                    return of(p);
+                }
+                return of(undefined);
+            }),
+            filter(value => value !== undefined)
+        );
 
         combineLatest([tsDamageSummary$, tsSchema$]).subscribe(([tsMetaData, tsSchema]) => {
             this.tsMetadata$.next({

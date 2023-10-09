@@ -29,6 +29,7 @@ https://octopus.com/blog/defining-tomcat-context-paths
 # [2.0.7]
 
 ## Features
+- merged in new frontend.
 - icons for different modes
 - showing version number
 - showing mode upon selection
@@ -42,42 +43,17 @@ https://octopus.com/blog/defining-tomcat-context-paths
 - eqLegend: closer together
 - popups:
     - correct popup shown when multiple layers at same time
+- no longer jump to location
+- for some steps, only one layer visible at the same time
+- update eq style upon dropdown select
+- translate html tables
+- parseAPIScenariosIntoNewState
+- tsunami damage
+- tsunami sim
+- sysrel
 
-- Ongoing:
-
-    - no longer jump to location
-    - mapState.layers <-  shouldn't be optional
-        - A visible
-
-
-    - for some steps, only one layer visible at the same time
-    - update eq style upon dropdown select
-        - through update in state.map.layers.selected (new feature in layerComposite)
-
-    - translate html tables
-    - parseAPIScenariosIntoNewState
-        - middle partition doesnt need all that data ... only needs modal
-    - click: popup remains open: doesn't stay in exactly the same spot
-        click on dmg-post ts
-        activate dmg-post eq
-        move back to dmg-post-ts
-    - tsunami damage
-        - wizard
-            - info
-            - legends (with correct schema and styling)
-    - tsunami sim
-        - wizard
-            - legends
-    - sysrel
-        - map
-            - popup: translation
-        - wiard: 
-            - legend
-
-- Upcoming:
-    - legends and layers in same tab
-        - or hide those legends of invisible layers
-    - redo-button
+## Bugs
+- Fixed race condition in eq- and ts-damge popups
 
 
 # [2.0.6](https://github.com/riesgos/dlr-riesgos-frontend/releases/tag/2.0.5) (Jun 11 2023) Compare prototype working 

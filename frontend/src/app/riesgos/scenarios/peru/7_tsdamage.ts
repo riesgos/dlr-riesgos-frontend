@@ -3,7 +3,7 @@ import { MapOlService } from "@dlr-eoc/map-ol";
 import { LayersService } from "@dlr-eoc/services-layers";
 import { Store } from "@ngrx/store";
 import { BehaviorSubject, combineLatest, of } from "rxjs";
-import { switchMap, map, withLatestFrom, take } from "rxjs/operators";
+import { switchMap, map, withLatestFrom, take, filter } from "rxjs/operators";
 import { StringSelectUserConfigurableProduct } from "src/app/components/config_wizard/wizardable_products";
 import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
 import { DamagePopupComponent } from "src/app/components/dynamic/damage-popup/damage-popup.component";
@@ -24,6 +24,7 @@ import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
 import { State } from "src/app/ngrx_register";
 import { TranslatedImageComponent } from "src/app/components/dynamic/translated-image/translated-image.component";
+import { fileGroupIcon } from "@cds/core/icon";
 
 
 
@@ -62,20 +63,26 @@ export class TsDamageWmsPeru implements MappableProductAugmenter {
     }>({ tsMetaData: undefined, tsSchema: undefined });
 
     constructor(private store: Store, private resolver: DataService) {
-        const tsDamageSummary$ = this.store.select(getProduct('tsDamageSummary')).pipe(switchMap(p => {
-            if (p) {
-                if (p.reference) return this.resolver.resolveReference(p);
-                return of(p);
-            }
-            return of(undefined);
-        }));
-        const tsSchema$ = this.store.select(getProduct('schemaTs')).pipe(switchMap(p => {
-            if (p) {
-                if (p.reference) return this.resolver.resolveReference(p);
-                return of(p);
-            }
-            return of(undefined);
-        }));
+        const tsDamageSummary$ = this.store.select(getProduct('tsDamageSummary')).pipe(
+            switchMap(p => {
+                if (p) {
+                    if (p.reference) return this.resolver.resolveReference(p);
+                    return of(p);
+                }
+                return of(undefined);
+            }),
+            filter(value => value !== undefined && value.value)
+        );
+        const tsSchema$ = this.store.select(getProduct('schemaTs')).pipe(
+            switchMap(p => {
+                if (p) {
+                    if (p.reference) return this.resolver.resolveReference(p);
+                    return of(p);
+                }
+                return of(undefined);
+            }),
+            filter(value => value !== undefined)
+        );
 
         combineLatest([tsDamageSummary$, tsSchema$]).subscribe(([tsMetaData, tsSchema]) => {
             this.tsMetadata$.next({
@@ -107,7 +114,9 @@ export class TsDamageWmsPeru implements MappableProductAugmenter {
                     },
                 });
         
-                return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
+                // return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
+                return layers$.pipe(
+                    withLatestFrom(this.tsMetadata$),
                     map(([layers, tsMetaDataResolved]) => {
                         const {tsMetaData, tsSchema} = tsMetaDataResolved;
         

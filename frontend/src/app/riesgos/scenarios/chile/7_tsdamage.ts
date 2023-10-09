@@ -71,7 +71,7 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                 }
                 return of(undefined);
             }),
-            filter(value => value !== undefined)
+            filter(value => value !== undefined && value.value)
         );
 
         const tsSchema$ = this.store.select(getProduct('schemaTsChile')).pipe(
@@ -115,7 +115,9 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                     },
                 });
 
-                return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
+                // return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
+                return layers$.pipe(
+                    withLatestFrom(this.tsMetadata$),
                     map(([layers, tsMetaDataResolved]) => {
                         const {tsMetaData, tsSchema} = tsMetaDataResolved;
         

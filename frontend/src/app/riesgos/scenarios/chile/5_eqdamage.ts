@@ -14,7 +14,7 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { filter, map, switchMap, takeLast } from 'rxjs/operators';
+import { filter, map, switchMap, takeLast, withLatestFrom } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
@@ -38,7 +38,7 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                 }
                 return of(undefined);
             }),
-            filter(value => value !== undefined)
+            filter(value => value !== undefined && value.value)
         )
         .subscribe((aeqs: RiesgosProductResolved | undefined) => {
             this.metadata$.next(aeqs);
@@ -67,7 +67,9 @@ export class EqDamageWmsChile implements MappableProductAugmenter {
                     },
                 });
 
-                return combineLatest([layers$, this.metadata$]).pipe(
+                // return combineLatest([layers$, this.metadata$]).pipe(
+                return layers$.pipe(
+                    withLatestFrom(this.metadata$),
                     map(([layers, metaData]) => {
                         const metaDataValue = metaData.value;
                         if (!metaDataValue) {

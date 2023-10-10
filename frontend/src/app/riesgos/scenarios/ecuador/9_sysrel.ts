@@ -111,7 +111,7 @@ export class LaharReliability implements WizardableStepAugmenter {
                 }, {
                     label: 'ELEPCO S.A., 2019', href: 'https://elepcosa.com.ec/'
                 }, {
-                    label: 'Github', href: 'https://github.com/riesgos/System_Reliability'
+                    label: 'Rosero, 2020', href: 'https://github.com/riesgos/System_Reliability'
                 }]
             }
         }

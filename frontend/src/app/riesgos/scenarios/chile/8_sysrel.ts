@@ -94,7 +94,7 @@ export class EqReliabilityChile implements WizardableStepAugmenter {
                 }, {
                     label: 'Superintendencia de Electricidad y Combustibles, 2018', href: 'https://www.sec.cl/sitioweb/transparencia_activa/canales_ingreso.html'
                 }, {
-                    label: 'Github', href: 'https://github.com/riesgos/System_Reliability'
+                    label: 'Rosero, 2020', href: 'https://github.com/riesgos/System_Reliability'
                 }]
             }
         }

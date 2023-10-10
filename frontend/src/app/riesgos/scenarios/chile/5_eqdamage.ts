@@ -198,7 +198,7 @@ export class EqDeusChile implements WizardableStepAugmenter {
                 providerUrl: 'https://www.gfz-potsdam.de/en/',
                 shape: 'dot-circle' as 'dot-circle',
                 wikiLink: 'ExposureAndVulnerability',
-                dataSources: [{ label: "DEUS", href: "https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674" }]
+                dataSources: [{ label: "Brinckmann et al., 2021", href: "https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674" }]
             }
         }
     }

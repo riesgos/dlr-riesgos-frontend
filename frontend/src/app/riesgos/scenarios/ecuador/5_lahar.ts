@@ -85,7 +85,7 @@ export class LaharSim implements WizardableStepAugmenter {
                 providerUrl: 'https://www.tum.de/en/',
                 shape: 'avalanche',
                 wikiLink: 'LaharSimulation',
-                dataSources: [{ label: 'Frimberger (2021)', href: 'https://doi.org/10.1002/esp.5056'}]
+                dataSources: [{ label: 'Frimberger et al., 2020', href: 'https://doi.org/10.1002/esp.5056'}]
             }
         }
     }

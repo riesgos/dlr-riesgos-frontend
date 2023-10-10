@@ -168,9 +168,9 @@ export class AvailableEqsPeru implements MappableProductAugmenter {
                         });
                     },
                     detailPopupHtml: (properties) => {
-                        let text = `<h3>{{ Available_earthquakes }}</h3>`;
+                        let text = `<h3>{{ Popup_title_available_earthquakes }}</h3>`;
                         const selectedProperties = {
-                            '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                            '{{ Magnitude }}': "Mw " + toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
                             '{{ Depth }}': toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                             Id: regexTransform(properties['origin.publicID']),
                         };
@@ -196,16 +196,16 @@ export class AvailableEqsPeru implements MappableProductAugmenter {
                                 inputs: {
                                     title: 'Depth',
                                     entries: [{
-                                        text: '0km',
+                                        text: '0 km',
                                         color: `rgb(${yellowRedRange(100, 0, 0).join(', ')})`,
                                     }, {
-                                        text: '30km',
+                                        text: '30 km',
                                         color: `rgb(${yellowRedRange(100, 0, 30).join(', ')})`,
                                     }, {
-                                        text: '60km',
+                                        text: '60 km',
                                         color: `rgb(${yellowRedRange(100, 0, 60).join(', ')})`,
                                     }, {
-                                        text: '100km',
+                                        text: '100 km',
                                         color: `rgb(${yellowRedRange(100, 0, 100).join(', ')})`,
                                     }],
                                     continuous: true,
@@ -217,16 +217,16 @@ export class AvailableEqsPeru implements MappableProductAugmenter {
                                 inputs: {
                                     title: 'Magnitude',
                                     entries: [{
-                                        label: 'Mag. 6.0',
+                                        label: 'Mw 6.0',
                                         radius: linInterpolateXY(5, 5, 10, 20, 6.0),
                                     }, {
-                                        label: 'Mag. 7.0',
+                                        label: 'Mw 7.0',
                                         radius: linInterpolateXY(5, 5, 10, 20, 7.0),
                                     }, {
-                                        label: 'Mag. 8.0',
+                                        label: 'Mw 8.0',
                                         radius: linInterpolateXY(5, 5, 10, 20, 8.0),
                                     }, {
-                                        label: 'Mag. 9.0',
+                                        label: 'Mw 9.0',
                                         radius: linInterpolateXY(5, 5, 10, 20, 9.0),
                                     }],
                                     height: 100
@@ -258,7 +258,7 @@ export class QuakeLedgerPeru implements WizardableStepAugmenter {
                 providerUrl: 'https://www.gfz-potsdam.de/en/',
                 wikiLink: 'EqCatalogue',
                 dataSources: [{
-                    label: 'Quakeledger (GFZ)',
+                    label: 'Pittore et al., 2021',
                     href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=bae8fc94-4799-11ec-947f-3811b03e280f'
                 }]
             }

@@ -249,7 +249,7 @@ export class ExposureModelPeru implements WizardableStepAugmenter {
         providerUrl: 'https://www.gfz-potsdam.de/en/',
         wikiLink: 'ExposureAndVulnerability',
         dataSources: [
-          { label: 'Gomez-Zapata, 2021', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=8c3ba5ec-26b3-11ec-9603-497c92695674' },
+          { label: 'Gomez-Zapata et al., 2021', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=8c3ba5ec-26b3-11ec-9603-497c92695674' },
           { label: 'INEI, 2017', href: 'http://censo2017.inei.gob.pe/' }
         ],
       }

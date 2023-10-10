@@ -13,8 +13,8 @@ async function loadEqs(inputs: Datum[]) {
 
     const bbox: Bbox = {
         crs: 'EPSG:4326',
-        lllon: -73.5, lllat: -34,
-        urlon: -70.5, urlat: -29.0,
+        lllon: -75, lllat: -39,
+        urlon: -60, urlat: -20,
     };
     
     const result = await getAvailableEqs(catalogType, bbox, mmin, mmax, zmin, zmax);

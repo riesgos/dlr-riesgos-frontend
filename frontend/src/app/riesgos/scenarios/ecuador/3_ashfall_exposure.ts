@@ -133,7 +133,7 @@ export class AshfallExposureProvider implements WizardableStepAugmenter {
         providerName: 'GFZ',
         providerUrl: 'https://www.gfz-potsdam.de/en/',
         wikiLink: 'ExposureAndVulnerabilityEcuador',
-        dataSources: [{label: 'Gobierno Autónomo Descentralizado Provincial de Cotopaxi'}, {label: 'Assetmaster (GFZ)', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=eb481d5a-479b-11ec-947f-3811b03e280f'}]
+        dataSources: [{label: 'Gobierno Autónomo Descentralizado Provincial de Cotopaxi'}, {label: 'Pittore et al., 2021', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=eb481d5a-479b-11ec-947f-3811b03e280f'}]
       }
     };
   }

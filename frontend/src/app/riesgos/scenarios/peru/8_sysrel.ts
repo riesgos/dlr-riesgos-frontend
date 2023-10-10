@@ -89,11 +89,11 @@ export class EqReliabilityPeru implements WizardableStepAugmenter {
                 shape: 'router',
                 wikiLink: 'CriticalInfrastructure',
                 dataSources: [{
-                    label: 'Osinergmin, 2019', href: 'https://www.osinergmin.gob.pe/SitePages/version-anterior.aspx'
+                    label: 'Osinergmin, 2019', href: 'https://www.gob.pe/osinergmin'
                 }, {
                     label: 'COES, 2019', href: 'https://www.coes.org.pe/portal/'
                 }, {
-                    label: 'Github', href: 'https://github.com/riesgos/System_Reliability'
+                    label: 'Rosero, 2020', href: 'https://github.com/riesgos/System_Reliability'
                 }]
             }
         }

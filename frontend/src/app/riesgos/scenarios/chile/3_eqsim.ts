@@ -65,7 +65,7 @@ export class ShakygroundChile implements WizardableStepAugmenter {
                 providerName: 'GFZ',
                 providerUrl: 'https://www.gfz-potsdam.de/en/',
                 wikiLink: 'EqSimulation',
-                dataSources: [{ label: 'Shakyground (GFZ)', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=2dd724a7-47a1-11ec-947f-3811b03e280f' }]
+                dataSources: [{ label: 'Weatherill et al., 2021', href: 'https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=2dd724a7-47a1-11ec-947f-3811b03e280f' }]
             }
         };
     }

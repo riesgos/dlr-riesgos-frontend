@@ -49,7 +49,7 @@ export class UserinputSelectedEqPeru implements WizardableProductAugmenter {
         let dflt = undefined;
         if (currentValue) {
             for (const feature of currentValue.value.features) {
-                const key = `${regexTransform(feature.id)}/ Mag. ${feature.properties['magnitude.mag.value']}`;
+                const key = eqToLabel(feature);
                 options[key] = {
                     type: 'FeatureCollection',
                     features: [feature]
@@ -74,6 +74,12 @@ export class UserinputSelectedEqPeru implements WizardableProductAugmenter {
 
 }
 
+function eqToLabel(eq: any) {
+    const id = eq["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
+    const mag = eq["properties"]["magnitude.mag.value"];
+    const depth = eq["properties"]["origin.depth.value"];
+    return `Mw ${mag}, ${depth} km (${id})`;
+}
 
 export class SelectedEqPeru implements MappableProductAugmenter {
     appliesTo(product: RiesgosProduct): boolean {
@@ -107,7 +113,7 @@ export class SelectedEqPeru implements MappableProductAugmenter {
                     detailPopupHtml: (properties: object) => {
                         let text = `<h3>{{ Selected_earthquake }}</h3>`;
                         const selectedProperties = {
-                            '{{ Magnitude }}': toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
+                            '{{ Magnitude }}': "Mw " + toDecimalPlaces(properties['magnitude.mag.value'] as number, 1),
                             '{{ Depth }}': toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km',
                             Id: regexTransform(properties['origin.publicID']),
                         };
@@ -128,7 +134,7 @@ export class SelectedEqPeru implements MappableProductAugmenter {
                       globalSummary: (value) => {
                         const feature = value.features[0];
                         const properties = feature.properties;
-                        const magnitude = toDecimalPlaces(properties['magnitude.mag.value'] as number, 1);
+                        const magnitude = "Mw " + toDecimalPlaces(properties['magnitude.mag.value'] as number, 1);
                         const depth = toDecimalPlaces(properties['origin.depth.value'] as number, 1) + ' km';
                         const id = regexTransform(properties['origin.publicID']);
         

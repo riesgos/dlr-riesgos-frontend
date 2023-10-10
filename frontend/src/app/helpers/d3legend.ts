@@ -133,7 +133,7 @@ function createLegendDiscrete(
   direction: LegendDirection,
   entries: LegendEntryDiscrete[],
   fractionGraphic: number = 0.5,
-  margin: number = 10,
+  margin: Margins = {bottom: 10, top: 5, left: 5, right: 5},
   labelAngle: number = 0
 ) {
 
@@ -169,10 +169,10 @@ function createLegendDiscrete(
   // appending legend to selection
 
   const legendGroup = svgSelection
-    .attr('width', width + (2 * margin))
-    .attr('height', height + (2 * margin))
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
     .append('g')
-      .attr('transform', `translate(${margin}, ${margin})`)
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .attr('class', 'legendGroup');
 
 
@@ -222,7 +222,7 @@ function createLegendContinuous(
   direction: LegendDirection,
   entries: LegendEntryContinuous[],
   fractionGraphic: number = 0.5,
-  margin: number = 10,
+  margin: Margins = {bottom: 10, top: 5, left: 5, right: 5},
   labelAngle: number = 0
 ) {
 
@@ -251,10 +251,10 @@ function createLegendContinuous(
   // appending legend to selection
 
   const legendGroup = svgSelection
-    .attr('width', width + (2 * margin))
-    .attr('height', height + (2 * margin))
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
     .append('g')
-    .attr('transform', `translate(${margin}, ${margin})`)
+    .attr('transform', `translate(${margin.left}, ${margin.top})`)
     .attr('class', 'legendGroup');
 
 
@@ -350,7 +350,7 @@ export function legendComponent() {
   let _direction: LegendDirection = 'horizontal';
   let _fractionGraphic = 0.5;
   let _continuous = false;
-  let _margin = 10;
+  let _margin: Margins = {bottom: 10, top: 5, left: 5, right: 5};
   let _entries: LegendEntry[] = [];
 
   function legend(selection) {
@@ -390,10 +390,13 @@ export function legendComponent() {
   legend.height          = (height: number)                   => { _height = height; return legend; }
   legend.angle           = (angle: number)                    => { _angle = angle; return legend; }
   legend.fractionGraphic = (fractionGraphic: number)          => { _fractionGraphic = fractionGraphic; return legend; }
-  legend.margin          = (margin: number)                   => { _margin = margin; return legend; }
+  legend.margin          = (margin: Margins)                   => { _margin = margin; return legend; }
   legend.direction       = (direction: LegendDirection)       => { _direction = direction; return legend; }
   legend.continuous      = (continuous: boolean)              => { _continuous = continuous; return legend; }
   legend.entries         = (entries: LegendEntry[])           => { _entries = entries; return legend; }
 
   return legend;
 }
+
+
+export type Margins = {top: number, bottom: number, left: number, right: number}

@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { legendComponent, LegendDirection, LegendEntry } from 'src/app/helpers/d3legend';
+import { legendComponent, LegendDirection, LegendEntry, Margins } from 'src/app/helpers/d3legend';
 import { select } from 'd3-selection';
 import { SimplifiedTranslationService } from 'src/app/services/simplifiedTranslation/simplified-translation.service';
 
@@ -18,7 +18,7 @@ export class LegendComponent implements OnInit {
   @Input() labelAngle: number = 0;
   @Input() direction: LegendDirection = 'vertical';
   @Input() fractionGraphic = this.direction === 'vertical' ? 0.125 : 0.5;
-  @Input() margin = 10;
+  @Input() margin: Margins = {bottom: 10, top: 5, left: 5, right: 5};
   @Input() continuous = false;
   @Input() entries: LegendEntry[] = [];
   @Input() svgContainerStyle = "";

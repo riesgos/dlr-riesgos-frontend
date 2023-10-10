@@ -113,7 +113,7 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                             labelAngle: 60,
                             width: 180,
                             height: 60,
-                            margin: 20,
+                            margin: {bottom: 15, top: 5, left: 5, right: 25},
                             svgContainerStyle: "margin-bottom: -2rem; margin-top: -1rem;"
                         }
                 }
@@ -151,7 +151,7 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                             labelAngle: 60,
                             width: 180,
                             height: 60,
-                            margin: 20,
+                            margin: {bottom: 15, top: 5, left: 5, right: 25},
                             svgContainerStyle: "margin-bottom: -2rem; margin-top: -1rem;"
                         }
                 }
@@ -189,7 +189,7 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                             labelAngle: 60,
                             width: 180,
                             height: 60,
-                            margin: 20,
+                            margin: {bottom: 15, top: 5, left: 5, right: 25},
                             svgContainerStyle: "margin-bottom: -2rem; margin-top: -1rem;"
                         }
                 }

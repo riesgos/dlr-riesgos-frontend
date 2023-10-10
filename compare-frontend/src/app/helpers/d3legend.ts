@@ -1,6 +1,6 @@
-import { Selection } from 'd3-selection';
-import { HSLColor, RGBColor, color, hsl } from 'd3-color';
+import { RGBColor, color, hsl } from 'd3-color';
 import { scaleLinear } from 'd3-scale';
+import { Selection } from 'd3-selection';
 import { fraction } from './colorhelpers';
 import { rgb } from 'd3-color';
 

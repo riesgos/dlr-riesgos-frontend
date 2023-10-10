@@ -120,7 +120,7 @@ export class LayerMarshaller  {
                         layers[0].visible = false;
                         break;
                 }
-                layers[0].legendImg = 'assets/images/shakemap_pga_legend_labeled.svg';
+                // layers[0].legendImg = 'assets/images/shakemap_pga_legend_labeled.svg';
                 layers[0].opacity = 0.3;
                 return layers;
             }));

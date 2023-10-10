@@ -5,6 +5,7 @@ import { WmsLayerProduct } from "src/app/components/map/mappable/mappable_produc
 import { toDecimalPlaces } from "src/app/helpers/colorhelpers";
 import { MappableProductAugmenter, WizardableProductAugmenter, WizardableStepAugmenter } from "src/app/services/augmenter/augmenter.service";
 import { RiesgosProduct, RiesgosProductResolved, RiesgosStep } from "../../riesgos.state";
+import { LegendComponent } from "src/app/components/dynamic/legend/legend.component";
 
 
 
@@ -94,6 +95,28 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                     `;
                     return html;
                 },
+                legendImg: {
+                        component: LegendComponent,
+                        inputs: {
+                            title: 'PGA [g]',
+                            entries: [
+                                {color: "#FFFFFF", text:"0"      },
+                                {color: "#BFCCFF", text:"0.0015" },
+                                {color: "#80FFFF", text:"0.0075" },
+                                {color: "#FFFF00", text:"0.0350" },
+                                {color: "#FF9100", text:"0.1500" },
+                                {color: "#C80000", text:"0.7500" },
+                                {color: "#800000", text:"1.5000" },
+                            ],
+                            continuous: true,
+                            direction: 'horizontal',
+                            labelAngle: 60,
+                            width: 180,
+                            height: 60,
+                            margin: 20,
+                            svgContainerStyle: "margin-bottom: -2rem; margin-top: -1rem;"
+                        }
+                }
             },
         }, {
             ... product,
@@ -110,6 +133,28 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                     `;
                     return html;
                 },
+                legendImg: {
+                        component: LegendComponent,
+                        inputs: {
+                            title: 'SA 0.3',
+                            entries: [
+                                {color: "#FFFFFF", text:"0"      },
+                                {color: "#BFCCFF", text:"0.0015" },
+                                {color: "#80FFFF", text:"0.0075" },
+                                {color: "#FFFF00", text:"0.0350" },
+                                {color: "#FF9100", text:"0.1500" },
+                                {color: "#C80000", text:"0.7500" },
+                                {color: "#800000", text:"1.5000" },
+                            ],
+                            continuous: true,
+                            direction: 'horizontal',
+                            labelAngle: 60,
+                            width: 180,
+                            height: 60,
+                            margin: 20,
+                            svgContainerStyle: "margin-bottom: -2rem; margin-top: -1rem;"
+                        }
+                }
             }
         }, {
             ...product,
@@ -126,6 +171,28 @@ export class ShakemapWmsPeru implements MappableProductAugmenter {
                     `;
                     return html;
                 },
+                legendImg: {
+                        component: LegendComponent,
+                        inputs: {
+                            title: 'SA 1.0',
+                            entries: [
+                                {color: "#FFFFFF", text:"0"      },
+                                {color: "#BFCCFF", text:"0.0015" },
+                                {color: "#80FFFF", text:"0.0075" },
+                                {color: "#FFFF00", text:"0.0350" },
+                                {color: "#FF9100", text:"0.1500" },
+                                {color: "#C80000", text:"0.7500" },
+                                {color: "#800000", text:"1.5000" },
+                            ],
+                            continuous: true,
+                            direction: 'horizontal',
+                            labelAngle: 60,
+                            width: 180,
+                            height: 60,
+                            margin: 20,
+                            svgContainerStyle: "margin-bottom: -2rem; margin-top: -1rem;"
+                        }
+                }
             },
         }];
     }

@@ -1,14 +1,26 @@
-import { color, hsl } from 'd3-color';
+import { RGBColor, color, hsl } from 'd3-color';
 import { scaleLinear } from 'd3-scale';
-import { select } from 'd3-selection';
-import { fraction, violetGreenScale2, yellowBlueRange, yellowRedRange } from './colorhelpers';
+import { Selection } from 'd3-selection';
+import { fraction } from './colorhelpers';
+import { rgb } from 'd3-color';
 
 
+function ensureRgb(colorString: string, fallback: {r: number, g: number, b: number} = {r: 125, g: 125, b: 125}): RGBColor {
+  const c = color(colorString);
+  if (c !== null) return c.rgb();
+  return rgb(fallback.r, fallback.g, fallback.b);
+}
+
+export interface Stop {
+  offset: number,
+  color: string,
+  opacity: number
+}
 
 function linearGradientComponent(gradientName: string) {
-  let _stops = [];
+  let _stops: Stop[] = [];
   let _name = gradientName;
-  let _direction = 'horizontal';
+  let _direction: LegendDirection = 'horizontal';
 
   function _getOrAddDefs(selection) {
     let defs = selection.select('defs');
@@ -42,7 +54,7 @@ function linearGradientComponent(gradientName: string) {
       .enter()
       .append('stop')
       .attr('offset', d => `${d.offset}%`)
-      .attr('style', d => `stop-color:rgb(${color(d.color).r}, ${color(d.color).g}, ${color(d.color).b}); stop-opacity:${d.opacity}`);
+      .attr('style', d => `stop-color:rgb(${ensureRgb(d.color).r}, ${ensureRgb(d.color).g}, ${ensureRgb(d.color).b}); stop-opacity:${d.opacity}`);
   }
 
   gradient.stops = (stops) => { _stops = stops; return gradient; }
@@ -55,13 +67,13 @@ function linearGradientComponent(gradientName: string) {
 function scaleColor() {
 
   // default parameters
-  let _domain = [0, 1];
-  let _range = ['rgb(255, 0, 0)', 'rgb(0, 0, 255)'];
+  let _domain: number[] = [0, 1];
+  let _range: string[] = ['rgb(255, 0, 0)', 'rgb(0, 0, 255)'];
 
   // actual interpolation
-  function interpolate(rStart, rEnd, rel) {
-    const cStart = color(rStart);
-    const cEnd = color(rEnd);
+  function interpolate(rStart: string, rEnd: string, rel: number) {
+    const cStart = color(rStart)!;
+    const cEnd = color(rEnd)!;
     const cStartHSL = hsl(cStart);
     const cEndHSL = hsl(cEnd);
     const hInterp = cStartHSL.h + rel * (cEndHSL.h - cStartHSL.h);
@@ -72,7 +84,7 @@ function scaleColor() {
   }
 
   // deciding which colors to interpolate between
-  function scale(d) {
+  function scale(d: number) {
     // if smaller than domain-start ...
     if (d < _domain[0]) {
       return _range[0];
@@ -93,8 +105,8 @@ function scaleColor() {
   };
 
   // public methods
-  scale.domain = function (d) { _domain = d; return scale; };
-  scale.range  = function (r) { _range = r;  return scale; };
+  scale.domain = function (d: number[]) { _domain = d; return scale; };
+  scale.range  = function (r: string[]) { _range = r;  return scale; };
 
   return scale;
 }
@@ -106,20 +118,29 @@ export interface LegendEntryDiscrete {
   text: string
 }
 
+interface LegendEntryDiscretePositioned extends LegendEntryDiscrete {
+  startPos: number,
+  textPos: number,
+  endPos: number,
+  scaledSize: number
+}
+
 
 function createLegendDiscrete(
-  svgSelection, id: string,
+  svgSelection,
+  id: string,
   width: number, height: number,
   direction: LegendDirection,
   entries: LegendEntryDiscrete[],
   fractionGraphic: number = 0.5,
-  margin: number = 10
+  margin: number = 10,
+  labelAngle: number = 0
 ) {
 
   // layouting
   const dominantSize = direction === 'horizontal' ? width : height;
 
-  const layoutEntries: any[] = [];
+  const layoutEntries: LegendEntryDiscretePositioned[] = [];
   let wSum = 0.0;
   for (const entry of entries) {
     layoutEntries.push({
@@ -167,7 +188,8 @@ function createLegendDiscrete(
       .attr('width',  d => direction === 'horizontal' ? d.scaledSize : graphicEntryWidth)
       .attr('height', d => direction === 'horizontal' ? graphicEntryHeight : d.scaledSize)
       .attr('fill',   d => d.color)
-      .attr('stroke', d => color(d.color).darker());
+      .attr('stroke', d => `rgb(${[... Object.values(ensureRgb(d.color).darker().rgb())]})` )
+      .attr('stroke-width', 1);
 
 
   const labels = legendGroup.selectAll('.label')
@@ -176,8 +198,8 @@ function createLegendDiscrete(
     .append('g')
       .attr('class', 'label')
       .attr('transform', d => direction === 'horizontal' ?
-                                            `translate(${d.textPos}, ${graphicHeight + 10})` :
-                                            `translate(${graphicWidth + 10}, ${d.textPos})`)
+                                            `rotate(${labelAngle}) translate(${d.textPos}, ${graphicHeight + 10})` :
+                                            `rotate(${labelAngle}) translate(${graphicWidth + 10}, ${d.textPos})`)
     .append('text')
       .text(d => d.text)
       .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left')
@@ -194,12 +216,14 @@ export interface LegendEntryContinuous {
 export type LegendDirection = 'horizontal' | 'vertical';
 
 function createLegendContinuous(
-  svgSelection, id: string,
+  svgSelection,
+  id: string,
   width: number, height: number,
   direction: LegendDirection,
   entries: LegendEntryContinuous[],
   fractionGraphic: number = 0.5,
-  margin: number = 10
+  margin: number = 10,
+  labelAngle: number = 0
 ) {
 
   // layouting
@@ -239,7 +263,7 @@ function createLegendContinuous(
     .stops(entries.map(e => ({
       offset: percentageScale(e.position),
       color: colorScale(e.position),
-      opacity: 1
+      opacity: 1,
     })));
 
   svgSelection.call(legendGradient);
@@ -249,10 +273,10 @@ function createLegendContinuous(
     .enter()
     .append('line')
     .attr('class', 'markLine')
-    .attr('x1', d => direction == 'vertical' ? 0                         : placementScale(d.position) )
-    .attr('x2', d => direction == 'vertical' ? graphicWidth + 8           : placementScale(d.position) )
-    .attr('y1', d => direction == 'vertical' ? placementScale(d.position) : 0                          )
-    .attr('y2', d => direction == 'vertical' ? placementScale(d.position) : graphicHeight + 6          )
+    .attr('x1', (d: LegendEntryContinuous) => direction == 'vertical' ? 0                         : placementScale(d.position) )
+    .attr('x2', (d: LegendEntryContinuous) => direction == 'vertical' ? graphicWidth + 8           : placementScale(d.position) )
+    .attr('y1', (d: LegendEntryContinuous) => direction == 'vertical' ? placementScale(d.position) : 0                          )
+    .attr('y2', (d: LegendEntryContinuous) => direction == 'vertical' ? placementScale(d.position) : graphicHeight + 6          )
     .attr('stroke', 'grey');
 
   const graphic = legendGroup.append('rect')
@@ -266,13 +290,14 @@ function createLegendContinuous(
     .enter()
     .append('g')
       .attr('class', 'label')
-      .attr('transform', d => direction === 'horizontal' ?
+      .attr('transform', (d: LegendEntryContinuous) => direction === 'horizontal' ?
         `translate(${placementScale(d.position)}, ${graphicHeight + 15})` :
-        `translate(${graphicWidth + 10}, ${placementScale(d.position)})`)
+        `translate(${graphicWidth + 10}, ${placementScale(d.position)} )`)
     .append('text')
-      .text(d => d.text)
-      .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left')
-      .style('dominant-baseline', 'middle');
+      .text((d: LegendEntryContinuous) => d.text)
+      // .style('text-anchor', direction === 'horizontal' ? 'middle' : 'left')
+      .style('dominant-baseline', 'middle')
+      .attr('transform', direction === 'horizontal' ? `rotate(${labelAngle})` : `rotate(${labelAngle})`);
 
 }
 
@@ -321,6 +346,7 @@ export function legendComponent() {
   let _id = 'myLegendGradient';
   let _width = 300;
   let _height = 100;
+  let _angle = 0;
   let _direction: LegendDirection = 'horizontal';
   let _fractionGraphic = 0.5;
   let _continuous = false;
@@ -342,7 +368,7 @@ export function legendComponent() {
         });
         p += delta;
       }
-      createLegendContinuous(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin);
+      createLegendContinuous(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin, _angle);
 
     } else {
       
@@ -355,13 +381,14 @@ export function legendComponent() {
           size: size
         })
       }
-      createLegendDiscrete(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin);
+      createLegendDiscrete(selection, _id, _width, _height, _direction, entries, _fractionGraphic, _margin, _angle);
     }
   }
 
   legend.id              = (id: string)                       => { _id = id; return legend; }
   legend.width           = (width: number)                    => { _width = width; return legend; }
   legend.height          = (height: number)                   => { _height = height; return legend; }
+  legend.angle           = (angle: number)                    => { _angle = angle; return legend; }
   legend.fractionGraphic = (fractionGraphic: number)          => { _fractionGraphic = fractionGraphic; return legend; }
   legend.margin          = (margin: number)                   => { _margin = margin; return legend; }
   legend.direction       = (direction: LegendDirection)       => { _direction = direction; return legend; }

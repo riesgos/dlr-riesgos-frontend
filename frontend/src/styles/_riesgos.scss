@@ -46,3 +46,7 @@ a.label {
     }
   }
 }
+
+.ol-popup::before {
+  pointer-events: none;
+}

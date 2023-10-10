@@ -274,6 +274,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.store.dispatch(interactionCompleted({ scenario: this.currentScenario$.getValue(), product }));
                 }
             }
+            // immediately after interaction, removing selected feature again.
+            // reason: otherwise, the currently selected point cannot be clicked again,
+            // which users find very confusing.
+            clickInteraction.getFeatures().clear();
         });
         this.mapSvc.map.addInteraction(clickInteraction as any);
 

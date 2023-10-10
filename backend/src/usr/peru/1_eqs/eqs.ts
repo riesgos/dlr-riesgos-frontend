@@ -34,7 +34,7 @@ export const step: Step = {
     description: 'QuakeLedgerDescription',
     inputs: [{
         id: 'eqCatalogType',
-        options: ['observed', 'expert'],
+        options: ['observed', 'expert', 'geofon'],
         default: 'observed'
     }, {
         id: 'eqMmin',

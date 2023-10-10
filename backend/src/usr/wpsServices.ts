@@ -1,13 +1,14 @@
 import { Feature, FeatureCollection, Point } from "geojson";
 import { WpsClient, WpsInput, WpsOutputDescription } from "../utils/wps/public-api";
 import config from "../config.json";
+import { GeofonService } from "../utils/geofon/geofon";
 
 
 const wpsClient1 = new WpsClient('1.0.0');
 const wpsClient2 = new WpsClient('2.0.0');
 
 
-export type CatalogType = 'observed' | 'deaggregation' | 'stochastic' | 'expert';
+export type CatalogType = 'observed' | 'deaggregation' | 'stochastic' | 'expert' | 'geofon';
 
 export interface Bbox {
     crs: 'EPSG:4326',
@@ -21,6 +22,12 @@ export async function getAvailableEqs(catalogType: CatalogType, bbox: Bbox, mmin
 
     const url = config.services.EqCatalog.url;
     const processId = config.services.EqCatalog.id;
+
+    if (catalogType === "geofon") {
+        const svc = new GeofonService();
+        const results = svc.getEqs(bbox, parseFloat(mmin || '6.0'), parseFloat(mmax || '9,5'), parseFloat(zmin || '0.0'), parseFloat(zmax || '100.0'), parseFloat(p || '0.0'));
+        return results;
+    }
 
     const inputs: WpsInput[] = [{
         description: {

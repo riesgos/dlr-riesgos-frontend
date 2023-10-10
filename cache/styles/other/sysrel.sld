@@ -9,7 +9,7 @@
                 <sld:Name>name</sld:Name>
 
                 <sld:Rule>
-                    <sld:Name>p &#x2264; 0.25</sld:Name>
+                    <sld:Name>p &#x2264; 25%</sld:Name>
                     <ogc:Filter>
                         <ogc:PropertyIsLessThanOrEqual>
                             <ogc:PropertyName>Prob_Disru</ogc:PropertyName>
@@ -28,7 +28,7 @@
                 </sld:Rule>
 
                 <sld:Rule>
-                    <sld:Name>p &#x2264; 0.50</sld:Name>
+                    <sld:Name>p &#x2264; 50%</sld:Name>
                     <ogc:Filter>
                         <ogc:PropertyIsLessThan>
                             <ogc:Literal>0.25</ogc:Literal>
@@ -51,7 +51,7 @@
                 </sld:Rule>
 
                 <sld:Rule>
-                    <sld:Name>p &#x2264; 0.75</sld:Name>
+                    <sld:Name>p &#x2264; 75%</sld:Name>
                     <ogc:Filter>
                         <ogc:PropertyIsLessThan>
                             <ogc:Literal>0.5</ogc:Literal>
@@ -74,7 +74,7 @@
                 </sld:Rule>
 
                 <sld:Rule>
-                    <sld:Name>p &#x2264; 1.00</sld:Name>
+                    <sld:Name>p &#x2264; 100%</sld:Name>
                     <ogc:Filter>
                         <ogc:PropertyIsLessThan>
                             <ogc:Literal>0.75</ogc:Literal>

@@ -115,12 +115,18 @@
     <p><strong>Daños post-terremoto y daños post-tsunami:</strong> Con el fin de evaluar el estado de los daños de los
         edificios residenciales y las pérdidas tras la ocurrencia del terremoto seleccionado, se activa el servicio web de
         actualización de la exposición a los daños. El resultado es la estimación de los daños en los edificios y los daños
-        en dólares.</p>
+        en dólares. <em>Nota:</em> Los edificios en cada celda se reclasifican entre pasos. Esta reclasificación es un proceso
+        probabilístico en el que un edificio podría ser reclasificado  partialmente como clase A y partialmente como clase B,
+        lo que podría dar como resultado números de edificios no enteros.
+    </p>
     <p><strong>Daños post-tsunami:</strong> Utilizando como entradas un modelo de exposición actualizado que incluye los
         daños inducidos por el terremoto y simulaciones de la profundidad de inundación del tsunami, se inicia de nuevo el
         servicio web DEUS con el fin de aproximar los daños acumulados esperados y desagregar las pérdidas por evento de
         peligro. El resultado es la estimación de los daños acumulados en los edificios y las pérdidas acumuladas en
-        dólares.</p>
+        dólares. <em>Nota:</em> Los edificios en cada celda se reclasifican entre pasos. Esta reclasificación es un proceso
+        probabilístico en el que un edificio podría ser reclasificado  partialmente como clase A y partialmente como clase B,
+        lo que podría dar como resultado números de edificios no enteros.
+    </p>
     <p><strong>Simulación de tsunami:</strong> Para aquellos terremotos que potencialmente pueden desencadenar un tsunami,
         se introduce otro servicio web que proporciona acceso a simulaciones numéricas precalculadas de tsunamis. Las
         simulaciones se generaron utilizando el modelo físico de generación y propagación TsunAWI, que tiene en cuenta una

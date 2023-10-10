@@ -31,7 +31,7 @@ export class EtypePeru implements WizardableProductAugmenter {
                     name: 'Catalogue type',
                     fieldtype: 'stringselect'
                 },
-                options: ['observed', 'expert'],
+                options: ['observed', 'expert', 'geofon'],
                 defaultValue: 'observed'
             },
         }];

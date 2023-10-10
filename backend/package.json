@@ -9,7 +9,7 @@
     "test": "jest --runInBand --bail",
     "test:watch": "jest --watch --bail",
     "test:oneFile": "jest --runInBand --bail src/usr/peru_short/4_exposure",
-    "test:oneTest": "jest --runInBand --bail --testNamePattern 'Peru-short: Testing eq-simulation'",
+    "test:oneTest": "jest --runInBand --bail --testNamePattern 'should return data formated like quakeledger'",
     "run": "node dist/main.js"
   },
   "keywords": [

@@ -29,19 +29,19 @@ import { ThemeService, ThemeMetadata } from 'src/app/services/theme/theme.servic
         animate('0.5s')
       ]),
 
-      state('focussedDark', style({
-        'color': 'var(--clr-color-neutral-0)',
-        'font-weight': 'bolder',
-        'background-color': 'var(--clr-color-action-900)'
-      })),
-      state('unfocussedDark', style({
-        'color': 'var(--clr-color-neutral-400)',
-        'font-weight': 'normal',
-        'background-color': '#17242b'
-      })),
-      transition('focussedDark <=> unfocussedDark', [
-        animate('0.5s')
-      ]),
+      // state('focussedDark', style({
+      //   'color': 'var(--clr-color-neutral-0)',
+      //   'font-weight': 'bolder',
+      //   'background-color': 'var(--clr-color-action-900)'
+      // })),
+      // state('unfocussedDark', style({
+      //   'color': 'var(--clr-color-neutral-400)',
+      //   'font-weight': 'normal',
+      //   'background-color': '#17242b'
+      // })),
+      // transition('focussedDark <=> unfocussedDark', [
+      //   animate('0.5s')
+      // ]),
 
     ]),
 
@@ -56,15 +56,15 @@ import { ThemeService, ThemeMetadata } from 'src/app/services/theme/theme.servic
         animate('0.5s')
       ]),
 
-      state('focussedDark', style({
-        'background-color': 'var(--clr-color-action-900)'
-      })),
-      state('unfocussedDark', style({
-        'background-color': '#17242b'
-      })),
-      transition('focussedDark <=> unfocussedDark', [
-        animate('0.5s')
-      ])
+      // state('focussedDark', style({
+      //   'background-color': 'var(--clr-color-action-900)'
+      // })),
+      // state('unfocussedDark', style({
+      //   'background-color': '#17242b'
+      // })),
+      // transition('focussedDark <=> unfocussedDark', [
+      //   animate('0.5s')
+      // ])
     ]),
   ]
 })
@@ -125,9 +125,9 @@ export class RiesgosLayerentryComponent implements OnInit {
     } else {
       out += 'unfocussed';
     }
-    if (this.theme === 'dark') {
-      out += 'Dark';
-    }
+    // if (this.theme === 'dark') {
+    //   out += 'Dark';
+    // }
     return out;
   }
 

@@ -20,6 +20,11 @@
 
 }
 
+.wizard-content {
+    overflow: scroll;
+    max-height: 80vh;
+}
+
 .wizard.collapsed {
     width: 2.3rem;
     overflow: hidden;

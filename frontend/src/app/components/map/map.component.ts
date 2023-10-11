@@ -22,6 +22,9 @@ import olVectorSource from 'ol/source/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import { applyStyle } from 'ol-mapbox-style';
 import { createXYZ } from 'ol/tilegrid';
+import Style from 'ol/style/Style';
+import Fill from 'ol/style/Fill';
+import Stroke from 'ol/style/Stroke';
 import greyScale from '../../../assets/vector-tiles/open-map-style.Positron.json';
 
 
@@ -38,6 +41,7 @@ import { State } from 'src/app/ngrx_register';
 import { AugmenterService } from 'src/app/services/augmenter/augmenter.service';
 import { MappableProduct } from './mappable/mappable_products';
 import { BboxValue } from '../config_wizard/form-bbox-field/bboxfield/bboxfield.component';
+import { LegendComponent } from '../dynamic/legend/legend.component';
 
 
 const mapProjection = 'EPSG:3857';
@@ -508,11 +512,48 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         if (scenario === 'Peru') {
 
 
-            const transmission = new VectorLayer({
-                id: 'peru_transmission',
+            const transmission = new CustomLayer({
+                custom_layer: new olVectorLayer({
+                    source: new olVectorSource({
+                        url: 'assets/data/geojson/peru_water/infra_transmision.geojson',
+                        format: new GeoJSON({
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                        })
+                    }),
+                    style: (feature) => {
+                        const props = feature.getProperties();
+                        return new Style({
+                            stroke: new Stroke({
+                                color: parseFloat(props.tension) > 50 ? 'rgb(240, 149, 52)' : 'rgb(230, 229, 69)',
+                                width: parseFloat(props.tension) > 50 ? 3: 2,
+                            })
+                        });
+                    }
+                }),
+                legendImg: {
+                    component: LegendComponent,
+                    inputs: {
+                        title: 'Powerlines',
+                        entries: [{
+                            text: 'Linea',
+                            color: `rgb(240, 149, 52)`,
+                        }, {
+                            text: 'Derivacion',
+                            color: `rgb(230, 229, 69)`,
+                        }],
+                        continuous: false,
+                        height: 60,
+                        width: 150,
+                    }
+                },
                 name: 'Powerlines',
-                type: 'geojson',
-                url: 'assets/data/geojson/peru_water/infra_transmision.geojson',
+                id: 'peru_transmission',
+                type: 'custom',
+                visible: false,
+                popup: true,
+                description: `Líneas de Transmisión Eléctrica, clasificada de acuerdo a su nivel de tension (kV). Fuente: Ministerio de Energía y Minas (MINEM), 2014.`,
+                attribution: 'Ministerio de Energía y Minas (MINEM), 2014.',
             });
             const energyGroup = new LayerGroup({
                 filtertype: 'Layers',
@@ -524,11 +565,70 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             });
             layers.push(energyGroup);
 
-            const ukisWaterLayer = new VectorLayer({
-                type: 'geojson',
-                url: 'assets/data/geojson/peru_water/infra_sanitaria.geojson',
+            const ukisWaterLayer = new CustomLayer({
+                custom_layer: new olVectorLayer({
+                    source: new olVectorSource({
+                        url: 'assets/data/geojson/peru_water/infra_sanitaria.geojson',
+                        format: new GeoJSON({
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: this.mapSvc.map.getView().getProjection().getCode()
+                        })
+                    }),
+                    style: (feature) => {
+                        const props = feature.getProperties();
+                        const type = props['tipo_red'];
+                        console.log(type)
+                        let width, color;
+                        switch (type) {
+                            case "Red primaria":
+                                width = 3;
+                                color = 'rgb(0, 0, 0)';
+                                break;
+                            case "Red secundaria":
+                                width = 2;
+                                color = 'rgb(0, 95, 223)';
+                                break;
+                            case "Alcantarillado":
+                            default:
+                                width = 1;
+                                color = 'rgb(208, 4, 248)';
+                                break;
+                        }
+                        console.log(props)
+                        return new Style({
+                            stroke: new Stroke({
+                                color: color,
+                                width: width,
+                            })
+                        });
+                    }
+                }),
+                legendImg: {
+                    component: LegendComponent,
+                    inputs: {
+                        title: 'SIGRID water',
+                        entries: [{
+                            text: 'Red primaria',
+                            color: `rgb(0, 0, 0)`,
+                        }, {
+                            text: 'Red secundaria',
+                            color: `rgb(0, 95, 223)`,
+                        }, {
+                            text: 'Alcantarillado',
+                            color: `rgb(208, 4, 248)`,
+                        }],
+                        continuous: false,
+                        height: 80,
+                        width: 150,
+                    }
+                },
+                name: 'SIGRID water',
                 id: 'sigird_water',
-                name: 'SIGRID water'
+                type: 'custom',
+                visible: false,
+                popup: true,
+                description: `Red de captación y distribución de agua de centros poblados de la región de Huancavelica y de la red de agua de Lima y Callao. Fuente: Servicio de Agua Potable y Alcantarillado de Lima(SEDAPAL,2015), Gobierno Regional de Huancavelica (2014).`,
+                attribution: 'Servicio de Agua Potable y Alcantarillado de Lima (SEDAPAL,2015), Gobierno Regional de Huancavelica (2014).',
             });
             const waterGroup = new LayerGroup({
                 id: 'peru_water',

@@ -10,7 +10,8 @@
     "test:watch": "jest --watch --bail",
     "test:oneFile": "jest --runInBand --bail src/usr/peru_short/4_exposure",
     "test:oneTest": "jest --runInBand --bail --testNamePattern 'should return data formated like quakeledger'",
-    "run": "node dist/main.js"
+    "run": "node dist/main.js",
+    "observable": "ts-node-dev --respawn src/observable.ts"
   },
   "keywords": [
     "riesgos"

@@ -32,11 +32,6 @@
               "node_modules/ol/ol.css",
               "node_modules/@clr/icons/clr-icons.min.css",
               {
-                "input": "src/styles.dark.scss",
-                "bundleName": "styles-theme-dark",
-                "inject": false
-              },
-              {
                 "input": "src/styles.light.scss",
                 "bundleName": "styles-theme-light",
                 "inject": true

@@ -1,5 +1,6 @@
 import objectHash from 'object-hash';
 import { deleteFile, fileExists, getFileLastChange, pathJoin, readJsonFile, writeJsonFile } from '../utils/files';
+import { sleep } from '../utils/async';
 
 
 
@@ -17,10 +18,15 @@ export class FileStorage<Properties extends {}> {
     public async addData(data: any, props: Properties): Promise<string> {
         const hash = objectHash(props);
         const fullFilePath = pathJoin([this.filePath, hash]);
-        if (fileExists(fullFilePath)) console.error(`FileStorage: file with lineage already exists: `, props);
+        if (fileExists(fullFilePath)) console.warn(`FileStorage: file with lineage already exists: `, props);
         const success = await writeJsonFile(fullFilePath, data);
-        if (success) console.log(`added data with lineage ${JSON.stringify(props)} under hash ${hash}`);
-        else console.error(`Something went wrong when attempting to save file with lineage ${JSON.stringify(props)} under hash ${hash}`);
+        if (!success) {
+            console.error(`Something went wrong when attempting to save file with lineage ${JSON.stringify(props)} under hash ${hash}`);
+            // throw Error(`Something went wrong when attempting to save file with lineage ${JSON.stringify(props)} under hash ${hash}`);
+            await sleep(100);
+            await deleteFile(fullFilePath);
+            await this.addData(data, props);
+        }
         return hash;
     }
 

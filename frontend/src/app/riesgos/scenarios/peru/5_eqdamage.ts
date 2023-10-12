@@ -27,34 +27,30 @@ import { TranslatedImageComponent } from 'src/app/components/dynamic/translated-
 
 export class EqDamageWmsPeru implements MappableProductAugmenter {
 
-    private metadata$ = new BehaviorSubject<RiesgosProductResolved | undefined>(undefined);
+    private metadata$ = this.store.select(getProduct('eqDamageSummary')).pipe(
+        switchMap(p => {
+            console.log("New eqDamageSummary: ", p)
+            if (p) {
+                if (p.reference) return this.resolver.resolveReference(p);
+                return of(p);
+            }
+            return of(undefined);
+        }),
+        filter(value => value !== undefined && value.value)
+    );
 
-    constructor(private store: Store, private resolver: DataService) {
-        this.store.select(getProduct('eqDamageSummary')).pipe(
-            switchMap(p => {
-                if (p) {
-                    if (p.reference) return this.resolver.resolveReference(p);
-                    return of(p);
-                }
-                return of(undefined);
-            }),
-            filter(value => value !== undefined && value.value)
-        )
-        .subscribe((aeqs: RiesgosProductResolved | undefined) => {
-            this.metadata$.next(aeqs);
-        });
-    }
+    constructor(private store: Store, private resolver: DataService) {}
 
     appliesTo(product: RiesgosProduct): boolean {
         return product.id === 'eqDamageWms';
     }
 
     makeProductMappable(product: RiesgosProductResolved): MappableProduct[] {
-        
-        return [{
-            ... product,
-            toUkisLayers: (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store, layerMarshaller: LayerMarshaller) => {
 
+        return [{
+            ...product,
+            toUkisLayers: (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store, layerMarshaller: LayerMarshaller) => {
+                console.log("making layers from ", product.value);
                 const layers$ = layerMarshaller.makeWmsLayers({
                     id: product.id,
                     value: product.value,
@@ -66,16 +62,17 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                         format: 'application/WMS',
                     },
                 });
-        
-                // return combineLatest([layers$, this.metadata$.pipe(take(1))]).pipe(
-                return layers$.pipe(
-                    withLatestFrom(this.metadata$),
+
+                return combineLatest([layers$, this.metadata$.pipe(take(1))]).pipe(
+                    // return layers$.pipe(
+                    //     withLatestFrom(this.metadata$),
                     map(([layers, metaData]) => {
+                        console.log(`combined latest of `, layers, metaData)
                         const metaDataValue = metaData.value;
 
                         const econLayer: ProductLayer = layers[0];
-                        const damageLayer: ProductLayer = new ProductRasterLayer({ ... econLayer });
-        
+                        const damageLayer: ProductLayer = new ProductRasterLayer({ ...econLayer });
+
                         econLayer.id += '_economic';
                         econLayer.name = 'eq-economic-loss-title';
                         econLayer.icon = 'dot-circle';
@@ -96,7 +93,7 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                             component: InfoTableComponentComponent,
                             inputs: {
                                 // title: 'Total damage',
-                                data: [[{value: 'Loss'}, {value: totalDamageFormatted}]],
+                                data: [[{ value: 'Loss' }, { value: totalDamageFormatted }]],
                                 bottomText: `{{ loss_calculated_from }} <a href="./#/documentation#ExposureAndVulnerability" target="_blank">{{ replacement_costs }}</a>`
                             }
                         }
@@ -117,12 +114,12 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                                 }
                             }
                         }
-        
-                        
+
+
                         damageLayer.id += '_damage';
                         damageLayer.name = 'eq-exposure';
                         damageLayer.icon = 'dot-circle';
-                        damageLayer.params = { ... econLayer.params };
+                        damageLayer.params = { ...econLayer.params };
                         damageLayer.params.STYLES = 'style-damagestate-sara-plasma';
                         const baseLegendDmg = damageLayer.legendImg;
                         damageLayer.legendImg = {
@@ -160,15 +157,15 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                         const html =
                             createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
                             + '{{ BuildingTypesSaraExtensive }}';
-        
+
                         damageLayer.dynamicDescription = {
                             component: TranslatableStringComponent,
                             inputs: {
                                 text: html
                             }
                         };
-        
-                        
+
+                        console.log(`combine latest now returning mappable layers: `, [econLayer, damageLayer])
                         return [econLayer, damageLayer];
                     })
                 );

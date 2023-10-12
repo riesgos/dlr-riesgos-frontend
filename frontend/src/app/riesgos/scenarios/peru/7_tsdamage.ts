@@ -57,39 +57,31 @@ export class SchemaTs implements WizardableProductAugmenter {
 
 export class TsDamageWmsPeru implements MappableProductAugmenter {
 
-    private tsMetadata$ = new BehaviorSubject<{
-        tsMetaData: RiesgosProductResolved | undefined,
-        tsSchema: RiesgosProductResolved | undefined
-    }>({ tsMetaData: undefined, tsSchema: undefined });
 
-    constructor(private store: Store, private resolver: DataService) {
-        const tsDamageSummary$ = this.store.select(getProduct('tsDamageSummary')).pipe(
-            switchMap(p => {
-                if (p) {
-                    if (p.reference) return this.resolver.resolveReference(p);
-                    return of(p);
-                }
-                return of(undefined);
-            }),
-            filter(value => value !== undefined && value.value)
-        );
-        const tsSchema$ = this.store.select(getProduct('schemaTs')).pipe(
-            switchMap(p => {
-                if (p) {
-                    if (p.reference) return this.resolver.resolveReference(p);
-                    return of(p);
-                }
-                return of(undefined);
-            }),
-            filter(value => value !== undefined)
-        );
+    private tsDamageSummary$ = this.store.select(getProduct('tsDamageSummary')).pipe(
+        switchMap(p => {
+            if (p) {
+                if (p.reference) return this.resolver.resolveReference(p);
+                return of(p);
+            }
+            return of(undefined);
+        }),
+        filter(value => value !== undefined && value.value)
+    );
 
-        combineLatest([tsDamageSummary$, tsSchema$]).subscribe(([tsMetaData, tsSchema]) => {
-            this.tsMetadata$.next({
-                tsMetaData, tsSchema
-            });
-        });
-    }
+    private tsSchema$ = this.store.select(getProduct('schemaTs')).pipe(
+        switchMap(p => {
+            if (p) {
+                if (p.reference) return this.resolver.resolveReference(p);
+                return of(p);
+            }
+            return of(undefined);
+        }),
+        filter(value => value !== undefined)
+    );
+
+
+    constructor(private store: Store, private resolver: DataService) {}
 
     appliesTo(product: RiesgosProduct): boolean {
         return product.id === 'tsDamageWms';
@@ -114,11 +106,8 @@ export class TsDamageWmsPeru implements MappableProductAugmenter {
                     },
                 });
         
-                // return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
-                return layers$.pipe(
-                    withLatestFrom(this.tsMetadata$),
-                    map(([layers, tsMetaDataResolved]) => {
-                        const {tsMetaData, tsSchema} = tsMetaDataResolved;
+                return combineLatest([layers$, this.tsDamageSummary$, this.tsSchema$]).pipe(
+                    map(([layers, tsMetaData, tsSchema]) => {
         
                         const chosenSchema = tsSchema.value;
         
@@ -238,7 +227,8 @@ export class TsDamageWmsPeru implements MappableProductAugmenter {
         
         
                         return [econLayer, damageLayer];
-                    })
+                    }),
+                    take(1)
                 );
             },
         }];

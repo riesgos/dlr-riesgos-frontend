@@ -198,17 +198,17 @@ export class RearrangingGroupedBarChart {
         const colorData = subGroupNames.map((n, i) => ({key: n, val: subGroupColors[i]}));
         const I = subGroupNames.length;
         this.selectors.legend.selectAll('.legendEntry').remove();
+        const legendEntries = this.selectors.legend
+        .selectAll('.legendEntry')
+        .data(colorData, (d: any) => d.key);
+        const rectWidth = 14;
+        const rectHeight = 10;
+        const newLegendEntriesG = legendEntries
+            .enter()
+                .append('g')
+                .attr('class',     'legendEntry'                                                    )
+                .attr('transform', (d: any, i: number) => `translate(${(i - I / 2) * rectWidth}, 0)`);
         if (I > 1) {
-            const legendEntries = this.selectors.legend
-                .selectAll('.legendEntry')
-                .data(colorData, (d: any) => d.key);
-            const rectWidth = 14;
-            const rectHeight = 10;
-            const newLegendEntriesG = legendEntries
-                .enter()
-                    .append('g')
-                        .attr('class',     'legendEntry'                                                    )
-                        .attr('transform', (d: any, i: number) => `translate(${(i - I / 2) * rectWidth}, 0)`);
             newLegendEntriesG
                 .append('rect')
                     .attr('fill',   (d: any) => d.val )
@@ -220,8 +220,8 @@ export class RearrangingGroupedBarChart {
                     .style('font-size', '.75em'                      )
                     .attr('fill',       (d: any) => d.val            )
                     .attr('transform', `translate(3, 15), rotate(90)`);
-            this.selectors.legendEntriesG = newLegendEntriesG;
         }
+        this.selectors.legendEntriesG = newLegendEntriesG;
 
 
         // updating sub-groups

@@ -38,7 +38,6 @@ export class FormStringFieldComponent implements OnInit, AfterViewInit, OnDestro
   ngOnInit() {
     this.subscription = this.control.valueChanges.subscribe(val => {
       if(this.control.valid && this.control.value !== this.parameter.value) {
-        console.log(`new control value: control: ${this.control.value}, para: ${this.parameter.value}`)
         this.store.dispatch(userDataProvided({
           scenario: this.scenario,
           products: [{

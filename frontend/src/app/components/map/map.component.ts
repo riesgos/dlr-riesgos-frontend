@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { BehaviorSubject, forkJoin, Observable, of, Subscription } from 'rxjs';
-import { map, withLatestFrom, switchMap, filter, bufferCount } from 'rxjs/operators';
+import { map, withLatestFrom, switchMap, filter, bufferCount, tap } from 'rxjs/operators';
 import { featureCollection as tFeatureCollection } from '@turf/helpers';
 import { Store, select } from '@ngrx/store';
 
@@ -161,8 +161,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const addedLayers$ = diff$.pipe(
             map(d => d.toAdd),
+            tap(d => console.log(`need to load map props for products `, d)),
             switchMap(products => this.augmenter.loadMapPropertiesForProducts(products)),
+            tap(d => console.log(`added map props to products `, d)),
             switchMap((products: MappableProduct[]) => this.layerMarshaller.productsToLayers(products)),
+            tap(d => console.log(`got ukis layers`, d)),
             filter(ls => ls.length > 0),
             map(addedLayers => {
                 addedLayers.map(l => {
@@ -209,9 +212,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         );
 
         const sub3 = addedLayers$.subscribe(toAdd => {
+            console.log(`adding to map`, toAdd)
             toAdd.map(l => this.layersSvc.addLayer(l, l.filtertype));
         });
         const sub4 = updatedLayers$.subscribe(toUpdate => {
+            console.log(`updating on map`, toUpdate)
             toUpdate.map(l => this.layersSvc.updateLayer(l, l.filtertype));
         });
         const sub7 = removedLayers$.subscribe(toRemove => {
@@ -577,7 +582,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                     style: (feature) => {
                         const props = feature.getProperties();
                         const type = props['tipo_red'];
-                        console.log(type)
                         let width, color;
                         switch (type) {
                             case "Red primaria":
@@ -594,7 +598,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                                 color = 'rgb(208, 4, 248)';
                                 break;
                         }
-                        console.log(props)
                         return new Style({
                             stroke: new Stroke({
                                 color: color,

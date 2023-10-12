@@ -66,12 +66,13 @@ export class LayerMarshaller  {
             return of([]);
         }
 
-        const observables$ = [];
+        const observables$: Observable<ProductLayer[]>[] = [];
         for (const product of products) {
             observables$.push(this.toLayers(product));
         }
         return forkJoin(observables$).pipe(
             map((results: ProductLayer[][]) => {
+                console.log(`layer-marshaller: forkJoin: `, results);
                 const newLayers: ProductLayer[] = [];
                 for (const result of results) {
                     for (const layer of result) {

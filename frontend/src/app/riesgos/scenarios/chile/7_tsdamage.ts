@@ -115,9 +115,9 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                     },
                 });
 
-                // return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
-                return layers$.pipe(
-                    withLatestFrom(this.tsMetadata$),
+                return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
+                // return layers$.pipe(
+                //     withLatestFrom(this.tsMetadata$),
                     map(([layers, tsMetaDataResolved]) => {
                         const {tsMetaData, tsSchema} = tsMetaDataResolved;
         

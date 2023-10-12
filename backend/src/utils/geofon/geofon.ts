@@ -18,10 +18,6 @@ export class GeofonService {
             + `&maxdepth=${zmax * 1000}&mindepth=${zmin * 1000}`
             + `&starttime=${startDate.toISOString()}&endtime=${endDate.toISOString()}`;
     
-    console.log("---------------------------------------------")  
-    console.log(requestUrl)
-    console.log("---------------------------------------------")  
-    
         const response = await axios.get(requestUrl, {});
         const results: FeatureCollection = response.data;
         const shakeMlResults = this.convertToShakeMl(results);

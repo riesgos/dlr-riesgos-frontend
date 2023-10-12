@@ -50,7 +50,6 @@ export class HelperButtonsComponent implements OnInit {
 
     async onPrintClicked() {
         const container = document.getElementById('previewHtml');
-        console.log(container.clientWidth, container.clientHeight)
         const result = await toPng(container, {
             width: container.clientWidth,
             height: container.clientHeight,

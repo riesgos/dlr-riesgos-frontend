@@ -56,41 +56,29 @@ export class SchemaTsChile implements WizardableProductAugmenter {
 
 export class TsDamageWmsChile implements MappableProductAugmenter {
 
-    private tsMetadata$ = new BehaviorSubject<{
-        tsMetaData: RiesgosProductResolved | undefined,
-        tsSchema: RiesgosProductResolved | undefined
-    }>({ tsMetaData: undefined, tsSchema: undefined });
+    private tsDamageSummary$ = this.store.select(getProduct('tsDamageSummaryChile')).pipe(
+        switchMap(p => {
+            if (p) {
+                if (p.reference) return this.resolver.resolveReference(p);
+                return of(p);
+            }
+            return of(undefined);
+        }),
+        filter(value => value !== undefined && value.value)
+    );
 
-    constructor(private store: Store, private resolver: DataService) {
+    private tsSchema$ = this.store.select(getProduct('schemaTsChile')).pipe(
+        switchMap(p => {
+            if (p) {
+                if (p.reference) return this.resolver.resolveReference(p);
+                return of(p);
+            }
+            return of(undefined);
+        }),
+        filter(value => value !== undefined)
+    );
 
-        const tsDamageSummary$ = this.store.select(getProduct('tsDamageSummaryChile')).pipe(
-            switchMap(p => {
-                if (p) {
-                    if (p.reference) return this.resolver.resolveReference(p);
-                    return of(p);
-                }
-                return of(undefined);
-            }),
-            filter(value => value !== undefined && value.value)
-        );
-
-        const tsSchema$ = this.store.select(getProduct('schemaTsChile')).pipe(
-            switchMap(p => {
-                if (p) {
-                    if (p.reference) return this.resolver.resolveReference(p);
-                    return of(p);
-                }
-                return of(undefined);
-            }),
-            filter(value => value !== undefined)
-        );
-
-        combineLatest([tsDamageSummary$, tsSchema$]).subscribe(([tsMetaData, tsSchema]) => {
-            this.tsMetadata$.next({
-                tsMetaData, tsSchema
-            });
-        });
-    }
+    constructor(private store: Store, private resolver: DataService) {}
 
     appliesTo(product: RiesgosProduct): boolean {
         return product.id === 'tsDamageWmsChile';
@@ -115,11 +103,8 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
                     },
                 });
 
-                return combineLatest([layers$, this.tsMetadata$.pipe(take(1))]).pipe(
-                // return layers$.pipe(
-                //     withLatestFrom(this.tsMetadata$),
-                    map(([layers, tsMetaDataResolved]) => {
-                        const {tsMetaData, tsSchema} = tsMetaDataResolved;
+                return combineLatest([layers$, this.tsDamageSummary$, this.tsSchema$]).pipe(
+                    map(([layers, tsMetaData, tsSchema]) => {
         
                         const chosenSchema = tsSchema.value;
         
@@ -239,7 +224,8 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
         
         
                         return [econLayer, damageLayer];
-                    })
+                    }),
+                    take(1)  // otherwise stream never ends and layers never drawn
                 );
             },
         }];

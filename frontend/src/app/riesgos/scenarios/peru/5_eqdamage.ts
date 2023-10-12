@@ -14,8 +14,8 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { filter, map, switchMap, take, withLatestFrom } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs/operators';
+import { combineLatest, of } from 'rxjs';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
 import { ProductLayer, ProductRasterLayer } from 'src/app/components/map/mappable/map.types';
@@ -29,7 +29,6 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
 
     private metadata$ = this.store.select(getProduct('eqDamageSummary')).pipe(
         switchMap(p => {
-            console.log("New eqDamageSummary: ", p)
             if (p) {
                 if (p.reference) return this.resolver.resolveReference(p);
                 return of(p);
@@ -48,9 +47,9 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
     makeProductMappable(product: RiesgosProductResolved): MappableProduct[] {
 
         return [{
-            ...product,
+            ... product,
             toUkisLayers: (ownValue: any, mapSvc: MapOlService, layerSvc: LayersService, http: HttpClient, store: Store, layerMarshaller: LayerMarshaller) => {
-                console.log("making layers from ", product.value);
+
                 const layers$ = layerMarshaller.makeWmsLayers({
                     id: product.id,
                     value: product.value,
@@ -69,6 +68,10 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                     map(([layers, metaData]) => {
                         console.log(`combined latest of `, layers, metaData)
                         const metaDataValue = metaData.value;
+                        if (!metaDataValue) {
+                            console.error(`No metadata for eq-damage`);
+                            // return [];
+                        }
 
                         const econLayer: ProductLayer = layers[0];
                         const damageLayer: ProductLayer = new ProductRasterLayer({ ...econLayer });
@@ -153,6 +156,7 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                                 }
                             };
                         }
+
                         const counts = metaDataValue?.total?.buildings_by_damage_state || 0.0;
                         const html =
                             createHeaderTableHtml(Object.keys(counts), [Object.values(counts).map((c: number) => toDecimalPlaces(c, 0))])
@@ -165,7 +169,6 @@ export class EqDamageWmsPeru implements MappableProductAugmenter {
                             }
                         };
 
-                        console.log(`combine latest now returning mappable layers: `, [econLayer, damageLayer])
                         return [econLayer, damageLayer];
                     })
                 );

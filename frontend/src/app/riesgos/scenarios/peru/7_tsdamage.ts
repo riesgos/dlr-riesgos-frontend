@@ -228,7 +228,7 @@ export class TsDamageWmsPeru implements MappableProductAugmenter {
         
                         return [econLayer, damageLayer];
                     }),
-                    take(1)
+                    take(1)  // otherwise stream never ends and layers never drawn
                 );
             },
         }];

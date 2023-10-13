@@ -15,7 +15,7 @@ export class FileStorage<Properties extends {}> {
         // and they can restore properties from a hash.
     }
 
-    public async addData(data: any, props: Properties): Promise<string> {
+    public async addData(data: any, props: Properties, attempt = 0): Promise<string> {
         const hash = objectHash(props);
         const fullFilePath = pathJoin([this.filePath, hash]);
         if (fileExists(fullFilePath)) console.warn(`FileStorage: file with lineage already exists: `, props);
@@ -23,9 +23,11 @@ export class FileStorage<Properties extends {}> {
         if (!success) {
             console.error(`Something went wrong when attempting to save file with lineage ${JSON.stringify(props)} under hash ${hash}`);
             // throw Error(`Something went wrong when attempting to save file with lineage ${JSON.stringify(props)} under hash ${hash}`);
-            await sleep(100);
-            await deleteFile(fullFilePath);
-            await this.addData(data, props);
+            if (attempt < 3) {
+                await sleep(100);
+                await deleteFile(fullFilePath);
+                await this.addData(data, props, attempt+=1);
+            }
         }
         return hash;
     }

@@ -6,6 +6,7 @@ import { peruFactory } from './usr/peru/peru';
 import { peruShortFactory } from './usr/peru_short/peru';
 import { peruCachedFactory } from './usr/peru_cached/peru';
 import { chileFactory } from './usr/chile/chile';
+import { chileShortFactory } from './usr/chile_short/chileShort';
 import { ecuadorFactory } from './usr/ecuador/ecuador';
 import config from "./config.json";
 
@@ -29,7 +30,7 @@ async function main() {
     app.use(cors());
     
     // const scenarioFactories = await parseCode(scriptDir);
-    const scenarioFactories = [chileFactory, ecuadorFactory, peruFactory, peruShortFactory, peruCachedFactory];
+    const scenarioFactories = [chileFactory, chileShortFactory, ecuadorFactory, peruFactory, peruShortFactory, peruCachedFactory];
 
     // Checking that all scenarios are ready
     // for (const factory of scenarioFactories) {

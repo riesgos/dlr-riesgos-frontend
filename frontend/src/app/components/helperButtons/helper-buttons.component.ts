@@ -50,10 +50,15 @@ export class HelperButtonsComponent implements OnInit {
 
     async onPrintClicked() {
         const container = document.getElementById('previewHtml');
+
+        const BROKEN_IMAGE_PLACEHOLDER = 'data:image/gif;base64,R0lGODlhGQAZAPQAAISChKWipcbT7+fr/8bf51KuOdbf93vDc87b9/f3997n/2u2Y9bf/5SSlJzHtcbT9////+/z/1KyOdbj94zHjNbb9/f3/2u6Y9bj/5yenLXP1sbX9wAAAAAAAAAAAAAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+ICAgPD94cGFja2V0IGVuZD0idyI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPS0dDPzs3My8rJyMfGxcTDwsHAv769vLu6ubi3trW0s7KxsK+urayrqqmop6alpKOioaCfnp2cm5qZmJeWlZSTkpGQj46NjIuKiYiHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1JRUE9OTUxLSklIR0ZFRENCQUA/Pj08Ozo5ODc2NTQzMjEwLy4tLCsqKSgnJiUkIyIhIB8eHRwbGhkYFxYVFBMSERAPDg0MCwoJCAcGBQQDAgEAACwAAAAAGQAZAAAF/2DgWGRpmlkTaIkFvWIkzzSdZY42JS8UBIqJcEicKBSZAGSSIfB8AaHBMBlYB5OpMAlJaAhOyy+LKLsgljKCyn1pMruxATGI9CARxZqZ0fgDKg5yCHZ3EAN7KQ2LjA1JVWeGiGVCV1aAjwOGPZN0dTNijlFzaqWlWlQKA5hRCBuvsLGnWgqsEwgCsLmxurAIE7a4rwLEucW7u78EGmO4x8/QAr8uj87PfhrRCmfV0djRmi/dxA4OC+foF34CE4bjAuUFBRL05zkICj0JCd0a5vQAAx4wZEuAPwoLAgYs18NCBFsEHBxQqPDJCyyAfiw7kJCiBAcE9H0BpiJARI8AQyL2IKCOZIAMFCZ6dLDvRYKYEig4SPHywAWUGu4kAHiAwqIQADs=';
+
         const result = await toPng(container, {
             width: container.clientWidth,
             height: container.clientHeight,
-            backgroundColor: 'white'
+            backgroundColor: 'white',
+            // cacheBust: true,
+            imagePlaceholder: BROKEN_IMAGE_PLACEHOLDER
         });
         downloadURI(result, "map.png");
     }

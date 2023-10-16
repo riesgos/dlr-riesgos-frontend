@@ -12,14 +12,14 @@ async function tsDamage(inputs: Datum[]) {
 
     const tsunamiWmsUrl = tsWms.value;
     const layerId = tsunamiWmsUrl.match(/geoserver\/(\d+)\/ows/)[1];
-    const limaBbox = '-77.39,-12.53,-76.56,-11.69';
+    const valpaBbox = '-71.939,-33.371,-71.205,-32.848';
     const w = 2048;
     const h = 2048;
     const parameter = 'mwhLand_local';
     let tsunamiGeoTiffRequest = tsunamiWmsUrl.replace('wms', 'WCS');
     tsunamiGeoTiffRequest = tsunamiGeoTiffRequest.replace('1.3.0', '1.0.0');
     tsunamiGeoTiffRequest = tsunamiGeoTiffRequest.replace('GetCapabilities', 'GetCoverage');
-    tsunamiGeoTiffRequest += `&format=image/geotiff&COVERAGE=${layerId}_${parameter}&bbox=${limaBbox}&CRS=EPSG:4326&width=${w}&height=${h}`;
+    tsunamiGeoTiffRequest += `&format=image/geotiff&COVERAGE=${layerId}_${parameter}&bbox=${valpaBbox}&CRS=EPSG:4326&width=${w}&height=${h}`;
 
     const fragilityRef = await getFragility(chosenFragility.value);
     

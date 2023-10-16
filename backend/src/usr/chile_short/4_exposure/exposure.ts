@@ -8,10 +8,10 @@ async function getExposure(inputs: Datum[]) {
 
     const bbox: Bbox = {
         crs: 'EPSG:4326',
-        lllon: -80.8,
-        urlon:  -71.4,
-        lllat: -20.2,
-        urlat: -10.0
+        lllon: -73,
+        urlon:  -70,
+        lllat: -35,
+        urlat: -32
     }
 
     const { exposureModel, exposureRef } = await getExposureModel(exposureSelection.value, 'SARA_v1.0', bbox);

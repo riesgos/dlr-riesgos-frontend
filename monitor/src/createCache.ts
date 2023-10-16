@@ -2620,14 +2620,14 @@ async function writeAllDataToFiles(eqParaId: string, serverUrl: string, port: nu
             const ref = value;
             let extraArgs = {};
             // https://stackoverflow.com/questions/60454048/how-does-axios-handle-blob-vs-arraybuffer-as-responsetype
-            if (datum.id === "eqDamageShapefile" || datum.id === "tsDamageShapefile") extraArgs = {responseType: 'arraybuffer', responseEncoding: 'base64'};
+            if (datum.id === "eqDamageShapefileChile" || datum.id === "tsDamageShapefileChile") extraArgs = {responseType: 'arraybuffer', responseEncoding: 'base64'};
             const response = await axios.get(ref, {...axiosArgs, ...extraArgs});
             mimeType = response.headers['Content-Type'] ? response.headers['Content-Type'] as string : 'application/json';
             value = response.data;
         } else if (isArray(value) && value.length > 0 && isString(value[0]) && isRefUrl(value[0])) {
             const ref = value[0];
             let extraArgs = {};
-            if (datum.id === "eqDamageShapefile" || datum.id === "tsDamageShapefile") extraArgs = {responseType: 'arraybuffer', responseEncoding: 'base64'};
+            if (datum.id === "eqDamageShapefileChile" || datum.id === "tsDamageShapefileChile") extraArgs = {responseType: 'arraybuffer', responseEncoding: 'base64'};
             const response = await axios.get(ref, {...axiosArgs, ...extraArgs});
             mimeType = response.headers['Content-Type'] ? response.headers['Content-Type'] as string : 'application/json';
             value = response.data;

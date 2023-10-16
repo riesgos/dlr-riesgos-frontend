@@ -530,8 +530,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                         const props = feature.getProperties();
                         return new Style({
                             stroke: new Stroke({
-                                color: parseFloat(props.tension) > 50 ? 'rgb(240, 149, 52)' : 'rgb(230, 229, 69)',
-                                width: parseFloat(props.tension) > 50 ? 3: 2,
+                                color: parseFloat(props.tension) >= 50 ? 'rgb(240, 149, 52)' : 'rgb(230, 229, 69)',
+                                width: parseFloat(props.tension) >= 50 ? 3: 2,
                             })
                         });
                     }

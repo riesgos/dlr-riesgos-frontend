@@ -1,4 +1,7 @@
 {
+    "sysRelTransmission": "Líneas de transmisión eléctrica",
+    "sysRelSanitaria": "Infraestructura sanitaria",
+    "SIGRID water": "Infraestructura sanitaria",
     "buildings": "edificios",
     "dontShowAgain": "No volver a mostrar",
     "wizardShowOrHide": "Botón para mostrar u ocultar el menú.",

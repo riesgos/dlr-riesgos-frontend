@@ -1,6 +1,6 @@
 import { fileExists, writeBinaryFile, writeJsonFile, writeTextFile } from "./files";
 import { ScenarioState, Datum, isDatumReference, InputPicker, DatumReference, runScenario, isResolvedDatum, isDatumWithOptions, isDatumWithDefault } from "./utils";
-import axios from "axios";
+// import axios from "axios";
 
 const eqParas: any[] = [
         {
@@ -2545,98 +2545,74 @@ function decodeBase64Data(base64String: string): {type: string, data: Buffer} {
 }
 
 
-function writeGeotiff(path: string, data: any) {
-    try {
-        const buffer = decodeBase64Data(data);
-        writeBinaryFile(path, buffer.data);
-    } catch (error) {
-        const buffer = Buffer.from(data, 'base64');
-        writeBinaryFile(path, buffer);
-    }
+
+
+
+
+
+async function saveValueToFile(eqParaId: string, serverUrl: string, port: number, datum: Datum) {
+
 }
 
-function writeZippedShapefile(path: string, data: any) {
-    try {
-        const buffer = decodeBase64Data(data);
-        writeBinaryFile(path, buffer.data);
-    } catch (error) {
-        const buffer = Buffer.from(data, 'base64');
-        writeBinaryFile(path, buffer);
-    }
-}
+async function saveReferenceToFile(eqParaId: string, serverUrl: string, port: number, datum: DatumReference) {
+    
+    const response = await fetch(`${serverUrl}:${port}/files/${datum.reference}`);
 
-function writeXml(path: string, data: any) {
-    writeTextFile(path, data);
-}
+    const mimeType = response.headers.get('Content-Type');
+    const encoding = response.headers.get('charset');
 
-function writeToFile(eqParaId: string, datumId: string, data: any, mimeType: string) {
-    switch (datumId) {
+    switch (datum.id) {
         case 'eqDamageShapefile':
         case 'tsDamageShapefile':
         case 'eqDamageShapefileChile':
         case 'tsDamageShapefileChile':
-            writeZippedShapefile(`../cache/${eqParaId}/${datumId}.shp.zip`, data);
+            const binaryData = await response.blob();
+            const arrayBuffer = await binaryData.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            await writeBinaryFile(`../cache/${eqParaId}/${datum.id}.shp.zip`, buffer);
             return;
         case 'eqSimGeotiffRef':
         case 'eqSimGeotiffRefChile':
-            writeGeotiff(`../cache/${eqParaId}/${datumId}.geotiff`, data);
+            const binaryData2 = await response.blob();
+            const arrayBuffer2 = await binaryData2.arrayBuffer();
+            const buffer2 = Buffer.from(arrayBuffer2);
+            await writeBinaryFile(`../cache/${eqParaId}/${datum.id}.geotiff`, buffer2);
             return;
         case 'eqSimXmlRef':
         case 'eqSimXmlRefChile':
-            writeXml(`../cache/${eqParaId}/${datumId}.xml`, data);
+            const data = await response.text();
+            await writeTextFile(`../cache/${eqParaId}/${datum.id}.xml`, data);
             return;
     }
+
     switch (mimeType) {
-        case 'image/geotiff':
-            writeGeotiff(`../cache/${eqParaId}/${datumId}.geotiff`, data);
         case 'application/x-zipped-shp':
-            writeZippedShapefile(`../cache/${eqParaId}/${datumId}.shp.zip`, data);
+            const binaryData = await response.blob();
+            const arrayBuffer = await binaryData.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            await writeBinaryFile(`../cache/${eqParaId}/${datum.id}.shp.zip`, buffer);
+            return;
+        case 'image/geotiff':
+            const binaryData2 = await response.blob();
+            const arrayBuffer2 = await binaryData2.arrayBuffer();
+            const buffer2 = Buffer.from(arrayBuffer2);
+            await writeBinaryFile(`../cache/${eqParaId}/${datum.id}.geotiff`, buffer2);
+            return;
         case 'application/json':
         default:
-            writeJsonFile(`../cache/${eqParaId}/${datumId}.json`, data);
+            const data = await response.json();
+            writeJsonFile(`../cache/${eqParaId}/${datum.id}.json`, data);
     }
 }
 
 async function writeAllDataToFiles(eqParaId: string, serverUrl: string, port: number, data: ScenarioState): Promise<void> {
-    const axiosArgs = {
-        maxBodyLength: Infinity,
-        maxContentLength: Infinity,
-    };
-
     for (const datum of data.data) {
-
-        let value;
-        let mimeType = "application/json";
         if (isDatumReference(datum)) {
-            const response = await axios.get(`${serverUrl}:${port}/files/${datum.reference}`, axiosArgs);
-            const data = response.data;
-            mimeType = response.headers['Content-Type'] ? response.headers['Content-Type'] as string : 'application/json';
-            value = data;
+            await saveReferenceToFile(eqParaId, serverUrl, port, datum);
         } else {
-            value = datum.value;
+            await saveValueToFile(eqParaId, serverUrl, port, datum);
         }
-        
-        if (isString(value) && isRefUrl(value)) {
-            const ref = value;
-            let extraArgs = {};
-            // https://stackoverflow.com/questions/60454048/how-does-axios-handle-blob-vs-arraybuffer-as-responsetype
-            if (datum.id === "eqDamageShapefileChile" || datum.id === "tsDamageShapefileChile") extraArgs = {responseType: 'arraybuffer', responseEncoding: 'base64'};
-            const response = await axios.get(ref, {...axiosArgs, ...extraArgs});
-            mimeType = response.headers['Content-Type'] ? response.headers['Content-Type'] as string : 'application/json';
-            value = response.data;
-        } else if (isArray(value) && value.length > 0 && isString(value[0]) && isRefUrl(value[0])) {
-            const ref = value[0];
-            let extraArgs = {};
-            if (datum.id === "eqDamageShapefileChile" || datum.id === "tsDamageShapefileChile") extraArgs = {responseType: 'arraybuffer', responseEncoding: 'base64'};
-            const response = await axios.get(ref, {...axiosArgs, ...extraArgs});
-            mimeType = response.headers['Content-Type'] ? response.headers['Content-Type'] as string : 'application/json';
-            value = response.data;
-        } 
-        
-        writeToFile(eqParaId, datum.id, value, mimeType);
-
     }
-
 }
 
 function createParaPicker(eqPara: any): InputPicker {

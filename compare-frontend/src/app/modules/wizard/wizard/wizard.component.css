@@ -21,7 +21,7 @@
 }
 
 .wizard-content {
-    overflow: scroll;
+    overflow-y: scroll;
     max-height: 80vh;
 }
 

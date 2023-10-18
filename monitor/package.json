@@ -8,7 +8,7 @@
     "build:watch": "tsc -w",
     "start": "ts-node-dev --respawn src/runall.ts",
     "run": "node dist/runall.js",
-    "createCache": "ts-node-dev  src/createCache.ts"
+    "createCache": "tsc --build && node --max-old-space-size=24576 dist/createCache.js"
   },
   "author": "",
   "license": "Apache-2.0",

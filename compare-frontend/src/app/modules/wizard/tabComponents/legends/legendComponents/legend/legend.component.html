@@ -1,4 +1,4 @@
-<div class="head" *ngIf="title !== '' && title !== undefined">{{ title | translate }}</div>
+<h5 *ngIf="title !== '' && title !== undefined">{{ title | translate }}</h5>
 <div [style]="svgContainerStyle"> 
     <svg #legendAnchor ></svg>
     <p style="margin-top: 0;" *ngIf="text !== '' && text !== undefined">{{ text | translate }}</p>

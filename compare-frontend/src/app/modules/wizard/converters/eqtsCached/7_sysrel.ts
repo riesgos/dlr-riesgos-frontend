@@ -4,6 +4,8 @@ import { WizardComposite } from "../../wizard.service";
 import { TranslatedImageComponent } from "../../tabComponents/legends/translated-image/translated-image.component";
 import { TranslationService } from "src/app/services/translation.service";
 import { Injectable } from "@angular/core";
+import { MultiLegendComponent } from "../../tabComponents/legends/legendComponents/multi-legend/multi-legend.component";
+import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
 
 @Injectable()
 export class CachedSysRel implements Converter {
@@ -27,19 +29,58 @@ export class CachedSysRel implements Converter {
             hasFocus: false, // doesn't matter what we set here - will be overridden by wizard-svc
             isAutoPiloted: false, // doesn't matter what we set here - will be overridden by wizard-svc
             layerControlables: [], // doesn't matter what we set here - will be overridden by wizard-svc
-            oneLayerOnly: true,
+            oneLayerOnly: false,
             inputs: [],
             step,
             legend: () => {
                 return {
-                    component: TranslatedImageComponent,
-                        args: {
-                            title: this.translate.translate('Prob_Interuption'),
-                            languageImageMap: {
-                                'EN': baseLegend + '&language=en',
-                                'ES': baseLegend + '',
+                    component: MultiLegendComponent,
+                    args: {
+                        legendComponents: [{
+                            component: TranslatedImageComponent,
+                            args: {
+                                title: this.translate.translate('Prob_Interuption'),
+                                languageImageMap: {
+                                    'EN': baseLegend + '&language=en',
+                                    'ES': baseLegend + '',
+                                }
                             }
-                        }
+                        }, {
+                            component: LegendComponent,
+                            args: {
+                                title: 'Powerlines',
+                                entries: [{
+                                    text: 'Linea',
+                                    color: `rgb(240, 149, 52)`,
+                                }, {
+                                    text: 'Derivacion',
+                                    color: `rgb(230, 229, 69)`,
+                                }],
+                                continuous: false,
+                                height: 60,
+                                width: 150,
+                            }
+                        }, {
+                            component: LegendComponent,
+                            args: {
+                                title: 'SIGRID water',
+                                entries: [{
+                                    text: 'Red primaria',
+                                    color: `rgb(0, 0, 0)`,
+                                }, {
+                                    text: 'Red secundaria',
+                                    color: `rgb(0, 95, 223)`,
+                                }, {
+                                    text: 'Alcantarillado',
+                                    color: `rgb(208, 4, 248)`,
+                                }],
+                                continuous: false,
+                                height: 80,
+                                width: 150,
+                            }
+                        }],
+                        direction: 'vertical'
+                    }
                 }
             }
         }

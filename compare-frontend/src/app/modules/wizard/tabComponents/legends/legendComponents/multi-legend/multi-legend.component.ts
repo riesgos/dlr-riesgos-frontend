@@ -11,6 +11,7 @@ export class MultiLegendComponent implements OnInit {
     component: Type<any>,
     args: {[key: string]: any}
   }[] = [];
+  @Input() direction: 'horizontal' | 'vertical' = 'horizontal';
 
   @ViewChild("anchor", { read: ViewContainerRef, static: true }) anchor!: ViewContainerRef;
 

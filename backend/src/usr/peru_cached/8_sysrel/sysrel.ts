@@ -1,5 +1,7 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
 import config from '../../../config.json';
+import infraSanitaria from './data/infra_sanitaria.json';
+import infraTransmission from './data/infra_transmision.json';
 
 async function calcSysRel(inputs: Datum[]) {
 
@@ -10,6 +12,12 @@ async function calcSysRel(inputs: Datum[]) {
     return [{
         id: 'sysRel',
         value: wms
+    }, {
+        id: 'sysRelSanitaria',
+        value: infraSanitaria
+    }, {
+        id: 'sysRelTransmission',
+        value: infraTransmission
     }];
 }
 
@@ -24,6 +32,10 @@ export const step: Step = {
     }],
     outputs: [{
         id: 'sysRel'
+    }, {
+        id: 'sysRelSanitaria'
+    }, {
+        id: 'sysRelTransmission'
     }],
     function: calcSysRel
 };

@@ -12,6 +12,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-slider/ngx-slider": "^2.0.4",
     "@angular/animations": "14.2.10",
     "@angular/cdk": "14.0.0",
     "@angular/common": "14.2.10",

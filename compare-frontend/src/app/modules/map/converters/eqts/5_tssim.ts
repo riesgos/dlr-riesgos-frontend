@@ -30,7 +30,12 @@ export class TsSim implements Converter {
         const capabiltiesUrl = wmsProduct.value;
         const url = new URL(capabiltiesUrl);
         const baseUrl = `${url.origin}${url.pathname}?service=wms&version=${url.searchParams.get("version")}`;
-        const layerNumber = +url.pathname.replace("/tsuna_geoserver/", "").replace("/ows", "");
+        const layerNumberRegex = /\/(\d+)\//;
+        const matchResult = url.pathname.match(layerNumberRegex);
+        let layerNumber = matchResult 
+                        ? matchResult[1] 
+                        : url.pathname.replace("/tsuna_geoserver/", "").replace("/tsunageoserver/", "").replace("/ows", "");
+
 
         const layers: LayerComposite[] = [{
         //     id: "mwh",

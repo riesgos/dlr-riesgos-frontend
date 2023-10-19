@@ -1,0 +1,8 @@
+{
+    "allowedScenarios": [
+        "PeruShort"
+    ],
+    "production": false,
+    "backendUrl": "http://localhost:8014",
+    "proxyUrl": ""
+}

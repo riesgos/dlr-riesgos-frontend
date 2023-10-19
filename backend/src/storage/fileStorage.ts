@@ -46,7 +46,7 @@ export class FileStorage<Properties extends {}> {
             console.log(`Store: fetched data from cache: ${key}`);
             return contents;
         } catch (error) {
-            console.error(error);
+            // console.log(error);
             return undefined;
         }
     }

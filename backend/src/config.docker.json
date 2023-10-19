@@ -1,0 +1,57 @@
+{
+   "port": "8014",
+    "logDir": "./data/logs",
+    "storeDir": "./data/store",
+    "maxStoreLifeTimeMinutes": "1440",
+    "sender": "info@test.com",
+    "sendMailTo": "someone@somewhere.de, someone-else@somewhere.de",
+    "maxLogAgeMinutes": "1440",
+    "verbosity": "verbose",
+    "services": {
+        "EqCatalog": {
+            "url": "http://10.104.136.68:80/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess"
+        },
+        "EqSim": {
+            "url": "http://10.104.136.68:80/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess"
+        },
+        "Fragility": {
+            "url": "http://10.104.136.68:80/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess"
+        },
+        "Exposure": {
+            "url": "http://10.104.136.68:80/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess"
+        },
+        "Deus": {
+            "url": "http://10.104.136.68:80/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.DeusProcess"
+        },
+        "Neptunus": {
+            "url": "http://10.104.136.68:80/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.NeptunusProcess"
+        },
+        "Volcanus": {
+            "url": "http://10.104.136.68:80/wps/WebProcessingService",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.VolcanusProcess"
+        },
+        "Tsunami": {
+            "url": "http://10.104.136.68:80/tsunawps",
+            "id": "get_scenario"
+        },
+        "Sysrel": {
+            "url": "http://10.104.136.68:80/sysrelwps",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.SystemReliabilitySingleProcess"
+        },
+        "SysrelEcuador": {
+            "url": "https://riesgos.52north.org/javaps/service",
+            "id": "org.n52.gfz.riesgos.algorithm.impl.SystemReliabilityMultiProcess"
+        },
+        "Lahar": {
+            "url": "https://riesgos.52north.org/geoserver/ows",
+            "id": "gs:LaharModel"
+        },
+        "cacheServer": "https://riesgos.dlr.de/cacheserver"
+    }
+}

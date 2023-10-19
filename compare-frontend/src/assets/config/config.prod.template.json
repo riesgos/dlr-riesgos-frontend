@@ -1,6 +1,6 @@
 {
     "allowedScenarios": [
-        "PeruCached"
+        "allowedScenariosPlaceholder"
     ],
     "production": true,
     "backendUrl": "backendUrlPlaceholder:backendPortPlaceholder",

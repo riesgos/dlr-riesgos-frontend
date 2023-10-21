@@ -17,7 +17,7 @@ export class CachedSysRelChile implements Converter {
     constructor(private translate: TranslationService) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruCached" &&  step === "SysRelChile";
+        return scenario === "ChileCached" &&  step === "SysRelChile";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

@@ -14,7 +14,7 @@ import { toDecimalPlaces } from "src/app/helpers/colorhelpers";
 @Injectable()
 export class CachedEqSimulationChile implements Converter {
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruCached" &&  step === "EqSimulationChile";
+        return scenario === "ChileCached" &&  step === "EqSimulationChile";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

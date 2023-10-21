@@ -25,10 +25,6 @@ export const step: Step = {
     }],
     outputs: [{
         id: 'eqSimWmsChile'
-    }, {
-        id: 'eqSimXmlRefChile'
-    }, {
-        id: 'eqSimGeotiffRefChile'
     }],
     function: simulateEq
 };

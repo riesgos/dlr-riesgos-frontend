@@ -10,7 +10,7 @@ import { createTableHtml } from "src/app/helpers/others";
 export class CachedTSDmgChile implements Converter {
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruCached" &&  step === "TsDamageChile";
+        return scenario === "ChileCached" &&  step === "TsDamageChile";
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

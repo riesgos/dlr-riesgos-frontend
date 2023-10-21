@@ -20,7 +20,7 @@ export class CachedTsSimChile implements Converter {
     ) {}
 
     applies(scenario: ScenarioName, step: string): boolean {
-        return scenario === "PeruCached" &&  step === 'TsunamiChile';
+        return scenario === "ChileCached" &&  step === 'TsunamiChile';
     }
 
     makeLayers(state: RiesgosScenarioState, data: RiesgosProductResolved[]): Observable<LayerComposite[]> {

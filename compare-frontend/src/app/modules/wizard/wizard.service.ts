@@ -102,7 +102,7 @@ export class WizardService {
 
         const wizardState$ = combineLatest([resolvedData$, mapState$, changedState$, this.store.select(s => s.riesgos)]).pipe(
             map(([resolvedData, mapState, state, riesgosState]) => {
-                const stepData: WizardComposite[] = [];  console.log(`new wizard data`)
+                const stepData: WizardComposite[] = [];
 
                 const autoPilotables = state.steps.map(s => s.step.id).filter(id => rules.autoPilot(id));
                 for (const step of state.steps) {
@@ -128,7 +128,7 @@ export class WizardService {
                     }
                     stepData.push(stepDatum);
                 }
-console.log("wizard expanded", state.controlExpanded)
+
                 return { stepData: stepData, wizardExpanded: state.controlExpanded };
             })
         );

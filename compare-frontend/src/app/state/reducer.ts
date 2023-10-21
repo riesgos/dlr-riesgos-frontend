@@ -541,6 +541,7 @@ function setValuesToDefaults(rules: Rules, partitionData: RiesgosScenarioState, 
       stepInput.options = [userDefinedDefault];
     } else if (product?.options) {
       product.value = product.options[0];
+      console.log("only one option for ", partitionData.scenario, product.id)
       product.options = [product.options[0]];
       stepInput.options = product.options;
     }

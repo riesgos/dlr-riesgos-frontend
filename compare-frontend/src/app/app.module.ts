@@ -77,6 +77,20 @@ import { CachedTsSim } from './modules/map/converters/eqtsCached/5_tssim';
 import { CachedTSDmg } from './modules/map/converters/eqtsCached/6_ts_dmg';
 import { CachedSysRel } from './modules/map/converters/eqtsCached/7_sysrel';
 import { LicensesComponent } from './views/licenses/licenses.component';
+import { CachedEqSelectionChile } from './modules/map/converters/eqtsCachedChile/1_eqselect';
+import { CachedEqSimulationChile } from './modules/map/converters/eqtsCachedChile/2_eqsim';
+import { CachedExposureChile } from './modules/map/converters/eqtsCachedChile/3_exposure';
+import { CachedEqDmgChile } from './modules/map/converters/eqtsCachedChile/4_eq_dmg';
+import { CachedTsSimChile } from './modules/map/converters/eqtsCachedChile/5_tssim';
+import { CachedTSDmgChile } from './modules/map/converters/eqtsCachedChile/6_ts_dmg';
+import { CachedSysRelChile } from './modules/map/converters/eqtsCachedChile/7_sysrel';
+import { CachedWizardEqSelectionChile } from './modules/wizard/converters/eqtsCachedChile/1_eqselect';
+import { CachedWizardEqSimulationChile } from './modules/wizard/converters/eqtsCachedChile/2_eqsim';
+import { CachedWizardExposureChile } from './modules/wizard/converters/eqtsCachedChile/3_exposure';
+import { CachedWizardEqDmgChile } from './modules/wizard/converters/eqtsCachedChile/4_eq_dmg';
+import { CachedWizardTsSimChile } from './modules/wizard/converters/eqtsCachedChile/5_tssim';
+import { CachedWizardTsDmgChile } from './modules/wizard/converters/eqtsCachedChile/6_ts_dmg';
+import { CachedWizardSysRelChile } from './modules/wizard/converters/eqtsCachedChile/7_sysrel';
 
 @NgModule({
   declarations: [
@@ -156,6 +170,14 @@ import { LicensesComponent } from './views/licenses/licenses.component';
     { provide: mapConverterToken, useClass: CachedTsSim, multi: true },
     { provide: mapConverterToken, useClass: CachedTSDmg, multi: true },
     { provide: mapConverterToken, useClass: CachedSysRel, multi: true },
+
+    { provide: mapConverterToken, useClass: CachedEqSelectionChile, multi: true },
+    { provide: mapConverterToken, useClass: CachedEqSimulationChile, multi: true },
+    { provide: mapConverterToken, useClass: CachedExposureChile, multi: true },
+    { provide: mapConverterToken, useClass: CachedEqDmgChile, multi: true },
+    { provide: mapConverterToken, useClass: CachedTsSimChile, multi: true },
+    { provide: mapConverterToken, useClass: CachedTSDmgChile, multi: true },
+    { provide: mapConverterToken, useClass: CachedSysRelChile, multi: true },
     
     { provide: mapConverterToken, useClass: DefaultConverter, multi: true },
     
@@ -177,6 +199,13 @@ import { LicensesComponent } from './views/licenses/licenses.component';
     { provide: wizardConverterToken, useClass: CachedWizardTsDmg, multi: true },
     { provide: wizardConverterToken, useClass: CachedWizardSysRel, multi: true },
     
+    { provide: wizardConverterToken, useClass: CachedWizardEqSelectionChile, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardEqSimulationChile, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardExposureChile, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardEqDmgChile, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardTsSimChile, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardTsDmgChile, multi: true },
+    { provide: wizardConverterToken, useClass: CachedWizardSysRelChile, multi: true },
 
     { provide: wizardConverterToken, useClass: WizardDefaultConverter, multi: true },
   ],

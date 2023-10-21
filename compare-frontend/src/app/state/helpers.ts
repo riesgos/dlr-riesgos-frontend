@@ -164,6 +164,26 @@ export function getMapPositionForStep(scenario: ScenarioName, partition: Partiti
             case 'SysRel':
                 return { zoom: 9.5, center: [-77.15, -12] };
         }
+        return { zoom: 4, center: [-77.15, -12] };
+    } 
+    if (scenario === 'ChileShort' || scenario === 'ChileCached') {
+        switch (stepId) {
+            case 'selectEqChile':
+                return { zoom: 7, center: [-71.7, -32.9] };
+            case 'EqSimulationChile':
+                return { zoom: 7, center: [-71.6, -33.0] };
+            case 'ExposureChile':
+                return { zoom: 10, center: [-71.6, -33.0] };
+            case 'EqDamageChile':
+                return { zoom: 10, center: [-71.6, -33.0] };
+            case 'TsunamiChile':
+                return { zoom: 6, center: [-71.6, -33.0] };
+            case 'TsDamageChile':
+                return { zoom: 10, center: [-71.6, -33.0] };
+            case 'SysRelChile':
+                return { zoom: 9.5, center: [-71.6, -33.0] };
+        }
+        return { zoom: 4, center: [-71.6, -33.0] };
     }
-    return { zoom: 4, center: [-77.15, -12] };
+    return { zoom: 2, center: [0, 0]};
 }

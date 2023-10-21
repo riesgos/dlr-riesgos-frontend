@@ -3,7 +3,7 @@ import { RuleSetName } from "./rules";
 
 
 
-export type ScenarioName = 'Chile' | 'Peru' | 'PeruShort' | 'PeruCached' | 'Ecuador';
+export type ScenarioName = 'Chile' | 'Peru' | 'PeruShort' | 'PeruCached' | 'ChileCached' | 'ChileShort' | 'Ecuador';
 export type ScenarioNameOrNone = 'none' | ScenarioName;
 export function scenarioNameIsNotNone(name: ScenarioNameOrNone): name is ScenarioName {
     return name !== 'none';

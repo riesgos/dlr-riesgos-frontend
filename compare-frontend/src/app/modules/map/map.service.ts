@@ -68,7 +68,6 @@ export class MapService {
                 if (!arraysEqual(last.map.center, current.map.center)) return true;
                 if (!arraysEqual(last.map.layerSettings, current.map.layerSettings)) return true;
                 if (!maybeArraysEqual(last.map.clickLocation!, current.map.clickLocation!)) return true;
-                // if (last.steps.find(s => s.step.id === "selectEq")!.step.inputs[0].options?.length !== current.steps.find(s => s.step.id === "selectEq")!.step.inputs[0].options?.length) console.log('new map because eqselect'); return true;
                 return false;
             }) as OperatorFunction<(RiesgosScenarioState | undefined)[], RiesgosScenarioState[]>,
             map(([_, current]) => current),

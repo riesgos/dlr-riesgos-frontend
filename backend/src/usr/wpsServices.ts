@@ -158,7 +158,7 @@ export async function getEqSim(gmpe: Gmpe, vsgrid: Vsgrid, selectedEq: any) {
         reference: true,
         type: 'complex',
         format: 'image/geotiff',
-        encoding: 'base64'
+        // encoding: 'base64'
     }];
 
     const results = await wpsClient1.executeAsync(url, processId, wpsInputs, wpsOutputs);
@@ -380,7 +380,7 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
         type: 'complex',
         reference: true,
         format: 'application/x-zipped-shp',
-        encoding: 'base64'
+        // encoding: 'base64'
     }, {
         id: 'meta_summary',
         type: 'complex',
@@ -538,7 +538,7 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
         type: 'complex',
         reference: true,
         format: 'application/x-zipped-shp',
-        encoding: 'base64'
+        // encoding: 'base64'
     }, {
         id: 'merged_output',
         reference: true,

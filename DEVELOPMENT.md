@@ -4,7 +4,12 @@ This document serves as a brief introduction to working with and extending this 
 
 
 ## Business logic
-@TODO
+
+- backend: service orchestration
+- cache: some utility scripts for managing downloaded result data, not always used
+- monitor: periodically executes all services with a random selection of parameters; notifies admin on failure
+- frontend: standard frontend
+- compare-frontend: "light" frontend; simpler, more comfortable, less options to pick
 
 ## Getting started
 Usually, you'll want to use [one of our stable releases](https://github.com/riesgos/dlr-riesgos-frontend/tags).

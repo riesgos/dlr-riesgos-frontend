@@ -39,14 +39,14 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         allowReset: partition => true,
         allowViewLinkToggling: true,
         allowConfiguration: () => true,
-        autoPilot: (stepId: string) => stepId !== "selectEq",
+        autoPilot: (stepId: string) => stepId !== "selectEq" && stepId !== "selectEqChile",
         modal: (state: RiesgosState, scenarioName: ScenarioName, partition: PartitionName) =>  undefined,
         productDefault: (scenarioId: ScenarioName, productId: string) => {
-            if (scenarioId === "PeruShort") {
-                if (productId === "schemaTs") {
+            if (scenarioId.includes("Peru") || scenarioId.includes("Chile")) {
+                if (productId === "schemaTs" || productId === "schemaTsChile") {
                     return "Medina_2019";
                 }
-                if (productId === "exposureModelName") {
+                if (productId === "exposureModelName" || productId === "exposureModelNameChile") {
                     return "LimaBlocks";
                 }
             }
@@ -60,7 +60,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
         case 'selectOneScenario':
             rules.focusFirstStepImmediately = true;
             rules.partition = false;
-            rules.allowConfiguration = (productId: string) => productId === "userChoice";
+            rules.allowConfiguration = (productId: string) => productId === "userChoice" || productId === "userChoiceChile";
             rules.modal = (state, scenario, partition) => {
                 if (partition === "left") {
                     const result = showColorExplanationModal(state, scenario, partition);
@@ -95,7 +95,7 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
             rules.mirrorMove = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? false : userChoiceMapsLinked;
             rules.mirrorClick = userChoiceMapsLinked => userChoiceMapsLinked === undefined ? false : userChoiceMapsLinked;
             rules.mirrorReset = true;
-            rules.allowConfiguration = (productId: string) => productId === "userChoice";
+            rules.allowConfiguration = (productId: string) => productId === "userChoice" || productId === "userChoiceChile";
             rules.allowReset = partition => partition === 'left';
             rules.modal = (state, scenario, partition) => {
                 if (partition === "left") {
@@ -135,7 +135,7 @@ function showColorExplanationModal(state: RiesgosState, scenario: ScenarioName, 
         return undefined;
     }
     const scenarioState = state.scenarioData[scenario]![partition]!;
-    const eqSelectCompleted = scenarioState.steps.find(s => s.step.id === "selectEq")?.state.type === StepStateTypes.completed;
+    const eqSelectCompleted = scenarioState.steps.find(s => s.step.id === "selectEq" || s.step.id === "selectEqChile")?.state.type === StepStateTypes.completed;
     const fullRunCompleted = allStepsCompleted(state, scenario, partition);
     if (fullRunCompleted) {
         fullRunCompletedBefore = true;

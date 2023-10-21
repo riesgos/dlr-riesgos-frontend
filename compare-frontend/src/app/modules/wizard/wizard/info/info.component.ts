@@ -32,14 +32,14 @@ export class InfoComponent {
         const partitionData = scenarioData[this.partition];
         if (!partitionData) return undefined;
         const products = partitionData.products;
-        const eqProd = products.find(p => p.id === "userChoice");
+        const eqProd = products.find(p => p.id === "userChoice" || p.id === "userChoiceChile");
         if (!eqProd) return undefined;
         return eqProd.value;
       }),
 
       map(data => {
         if (data === undefined) return this.translate.translate("Wizard");
-        const id = data["properties"]["publicID"].replace("quakeml:quakeledger/peru_", "");
+        const id = data["properties"]["publicID"].replace("quakeml:quakeledger/", "").replace("peru_", "");
         const depth = data["properties"]["origin.depth.value"];
         const mag = data["properties"]["magnitude.mag.value"];
         return `Mw ${mag}, ${depth} km (${id})`;

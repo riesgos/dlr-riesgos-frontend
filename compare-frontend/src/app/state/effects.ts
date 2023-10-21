@@ -215,7 +215,7 @@ check if more  │     └───────┬──────┘
             const partitionData = scenarioData[action.partition];
             if (!partitionData) return false;
             if (action.focus !== true) return false;
-            if (action.stepId !== "selectEq") return false;
+            if (action.stepId !== "selectEq" && action.stepId !== "selectedEqChile") return false;
             const stepData = partitionData.steps.find(s => s.step.id === action.stepId);
             if (stepData?.state.type !== StepStateTypes.available) return false;
             return true;
@@ -227,12 +227,8 @@ check if more  │     └───────┬──────┘
     ));
     private zoomToEqOnReset$ = createEffect(() => this.actions$.pipe(
         ofType(AppActions.stepResetAll),
-        filter((action) => {
-            if (action.scenario !== "PeruShort") return false;
-            return true;
-        }),
         map((action) => {
-            const { zoom, center } = getMapPositionForStep(action.scenario, action.partition, "selectEq");
+            const { zoom, center } = getMapPositionForStep(action.scenario, action.partition, action.scenario.includes("Chile") ? "selectEqChile" : "selectEq");
             return AppActions.mapMove({ scenario: action.scenario, partition: action.partition, zoom, center  });
         })
     ));
@@ -244,11 +240,11 @@ check if more  │     └───────┬──────┘
             if (!scenarioData) return false;
             const partitionData = scenarioData[action.partition];
             if (!partitionData) return false;
-            if (action.step !== "selectEq") return false;
+            if (action.step !== "selectEq" && action.step !== "selectEqChile") return false;
             return true;
         }),
         map(([action, state]) => {
-            const { zoom, center } = getMapPositionForStep(action.scenario, action.partition, "Exposure");
+            const { zoom, center } = getMapPositionForStep(action.scenario, action.partition, action.scenario.includes("Chile") ? "ExposureChile" : "Exposure");
             return AppActions.mapMove({ scenario: action.scenario, partition: action.partition, zoom, center  });
         })
     ));
@@ -264,12 +260,12 @@ check if more  │     └───────┬──────┘
             if (!partitionData) return false;
 
             // ... and if it was the last step in the scenario ...
-            if (action.step !== "SysRel") return false;
+            if (action.step !== "SysRel" && action.step !== "SysRelChile") return false;
 
             // ... and if the other side hasn't picked an eq yet ... 
             const otherPartition = action.partition === "left" ? "right" : "left";
             const otherPartitionData = scenarioData[otherPartition];
-            const selectedEq = otherPartitionData?.products.find(p => p.id === "userChoice");
+            const selectedEq = otherPartitionData?.products.find(p => p.id === "userChoice" || p.id === "userChoiceChile");
             if (selectedEq?.value || selectedEq?.reference) return false;
 
             return true;
@@ -278,8 +274,7 @@ check if more  │     └───────┬──────┘
             // ... then go and focus on eq-selection
             const otherPartition = action.partition === "left" ? "right" : "left";
             // return AppActions.stepSetFocus({ scenario: action.scenario, partition: otherPartition, stepId: "selectEq", focus: true });
-            console.log(`---------------------focussing on exposure in ${otherPartition}---------------------`)
-            const { zoom, center } = getMapPositionForStep(action.scenario, otherPartition, "selectEq");
+            const { zoom, center } = getMapPositionForStep(action.scenario, otherPartition, action.scenario.includes("Chile") ? "selectedEqChile" : "selectEq");
             return AppActions.mapMove({ scenario: action.scenario, partition: otherPartition, zoom, center  });
         })
     ));

@@ -22,18 +22,25 @@ export class StepComponent {
   public getIconNameFor(stepId: string) {
     switch(stepId) {
         case "selectEq":
+        case "selectEqChile":
           return "pointerRight";
         case "EqSimulation":
+        case "EqSimulationChile":
           return "earthquake";
         case "Exposure":
+        case "ExposureChile":
           return "exposure";
         case "EqDamage":
+        case "EqDamageChile":
           return "buildingsEarthquake";
         case "Tsunami":
+        case "TsunamiChile":
           return "tsunami";
         case "TsDamage":
+        case "TsDamageChile":
           return "buildingsTsunami";
         case "SysRel":
+        case "SysRelChile":
           return "sysrel";
         default: 
           return "questionmark"

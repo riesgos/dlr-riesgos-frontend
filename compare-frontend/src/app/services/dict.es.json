@@ -1,4 +1,7 @@
 {
+    "ChileShort": "Zona costera del Gran Valparaíso",
+    "ChileCached": "Zona costera del Gran Valparaíso",
+    "Chile Scenario Description": "Simulación de un terremoto cerca de la costa de Valparaíso que desencadena un tsunami y causa daños en edificios y redes eléctricas.",
     "sysRelTransmission": "Líneas de transmisión eléctrica",
     "sysRelSanitaria": "Infraestructura sanitaria",
     "SIGRID water": "Infraestructura sanitaria",

@@ -91,6 +91,20 @@ import { CachedWizardEqDmgChile } from './modules/wizard/converters/eqtsCachedCh
 import { CachedWizardTsSimChile } from './modules/wizard/converters/eqtsCachedChile/5_tssim';
 import { CachedWizardTsDmgChile } from './modules/wizard/converters/eqtsCachedChile/6_ts_dmg';
 import { CachedWizardSysRelChile } from './modules/wizard/converters/eqtsCachedChile/7_sysrel';
+import { EqSelectionChile } from './modules/map/converters/eqtsChile/1_eqselect';
+import { EqSimulationChile } from './modules/map/converters/eqtsChile/2_eqsim';
+import { ExposureChile } from './modules/map/converters/eqtsChile/3_exposure';
+import { EqDmgChile } from './modules/map/converters/eqtsChile/4_eq_dmg';
+import { TsSimChile } from './modules/map/converters/eqtsChile/5_tssim';
+import { TSDmgChile } from './modules/map/converters/eqtsChile/6_ts_dmg';
+import { SysRelChile } from './modules/map/converters/eqtsChile/7_sysrel';
+import { WizardEqSimulationChile } from './modules/wizard/converters/eqtsChile/2_eqsim';
+import { WizardExposureChile } from './modules/wizard/converters/eqtsChile/3_exposure';
+import { WizardEqDmgChile } from './modules/wizard/converters/eqtsChile/4_eq_dmg';
+import { WizardTsSimChile } from './modules/wizard/converters/eqtsChile/5_tssim';
+import { WizardTsDmgChile } from './modules/wizard/converters/eqtsChile/6_ts_dmg';
+import { WizardSysRelChile } from './modules/wizard/converters/eqtsChile/7_sysrel';
+import { WizardEqSelectionChile } from './modules/wizard/converters/eqtsChile/1_eqselect';
 
 @NgModule({
   declarations: [
@@ -163,6 +177,14 @@ import { CachedWizardSysRelChile } from './modules/wizard/converters/eqtsCachedC
     { provide: mapConverterToken, useClass: TSDmg, multi: true },
     { provide: mapConverterToken, useClass: SysRel, multi: true },
     
+    { provide: mapConverterToken, useClass: EqSelectionChile, multi: true },
+    { provide: mapConverterToken, useClass: EqSimulationChile, multi: true },
+    { provide: mapConverterToken, useClass: ExposureChile, multi: true },
+    { provide: mapConverterToken, useClass: EqDmgChile, multi: true },
+    { provide: mapConverterToken, useClass: TsSimChile, multi: true },
+    { provide: mapConverterToken, useClass: TSDmgChile, multi: true },
+    { provide: mapConverterToken, useClass: SysRelChile, multi: true },
+
     { provide: mapConverterToken, useClass: CachedEqSelection, multi: true },
     { provide: mapConverterToken, useClass: CachedEqSimulation, multi: true },
     { provide: mapConverterToken, useClass: CachedExposure, multi: true },
@@ -190,6 +212,14 @@ import { CachedWizardSysRelChile } from './modules/wizard/converters/eqtsCachedC
     { provide: wizardConverterToken, useClass: WizardTsSim, multi: true },
     { provide: wizardConverterToken, useClass: WizardTsDmg, multi: true },
     { provide: wizardConverterToken, useClass: WizardSysRel, multi: true },
+
+    { provide: wizardConverterToken, useClass: WizardEqSelectionChile, multi: true },
+    { provide: wizardConverterToken, useClass: WizardEqSimulationChile, multi: true },
+    { provide: wizardConverterToken, useClass: WizardExposureChile, multi: true },
+    { provide: wizardConverterToken, useClass: WizardEqDmgChile, multi: true },
+    { provide: wizardConverterToken, useClass: WizardTsSimChile, multi: true },
+    { provide: wizardConverterToken, useClass: WizardTsDmgChile, multi: true },
+    { provide: wizardConverterToken, useClass: WizardSysRelChile, multi: true },
 
     { provide: wizardConverterToken, useClass: CachedWizardEqSelection, multi: true },
     { provide: wizardConverterToken, useClass: CachedWizardEqSimulation, multi: true },

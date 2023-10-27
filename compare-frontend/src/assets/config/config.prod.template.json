@@ -1,7 +1,5 @@
 {
-    "allowedScenarios": [
-        "allowedScenariosPlaceholder"
-    ],
+    "allowedScenarios": allowedScenariosPlaceholder,
     "production": true,
     "backendUrl": "backendUrlPlaceholder:backendPortPlaceholder",
     "proxyUrl": "https://riesgos.dlr.de/proxy"

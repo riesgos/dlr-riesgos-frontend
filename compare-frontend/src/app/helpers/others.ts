@@ -149,6 +149,14 @@ export function downloadBlob(blob: Blob, fileName: string) {
     document.body.removeChild(a);
 }
 
+export function downloadURI(uri: string, name: string) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
 export function parseFile(file: File): Observable<string> {
 

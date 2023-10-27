@@ -1,11 +1,12 @@
-import { Component, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { RiesgosState } from './state/state';
 import { Observable, map } from 'rxjs';
 import { RuleSetName } from './state/rules';
-import { movingBackToMenu } from './state/actions'; import GeoJSON from 'ol/format/GeoJSON';
+import { movingBackToMenu } from './state/actions';
 import { APP_BASE_HREF } from '@angular/common';
+
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import { APP_BASE_HREF } from '@angular/common';
 export class AppComponent {
 
   public ruleSet$: Observable<RuleSetName | 'none'>;
+  @ViewChild('main', {read: ElementRef, static: true}) main!: ElementRef<HTMLDivElement>;
 
   constructor(
       private router: Router,
@@ -39,6 +41,19 @@ export class AppComponent {
   clickOnLicenses() {
     if (this.getCurrentUrl().includes('licenses')) return;
     window.open(this.getLicensesUrl(), '_blank');
+  }
+
+  async printPage() {
+    try {
+      window.print();
+    } catch (error) {
+      console.warn(error);
+    }
+    // const png = await toPng(this.main.nativeElement, {
+    //   canvasHeight: 800,
+    //   canvasWidth: 1024,
+    // });
+    // downloadURI(png, "map.png");
   }
 
   getCurrentUrl() {

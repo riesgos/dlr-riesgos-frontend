@@ -1,6 +1,6 @@
 {
     "allowedScenarios": [
-        "PeruCached", "ChileCached"
+        "PeruCached", "ChileShort"
     ],
     "production": false,
     "backendUrl": "http://localhost:8008",

@@ -3087,7 +3087,7 @@ async function runAndSave(scenarioId: "PeruShort" | "ChileShort", serverUrl: str
     
             const inputPicker = createParaPicker(eqPara);
     
-            const state = await runScenario(serverUrl, port, scenarioId, inputPicker, true, false);
+            const state = await runScenario(serverUrl, port, scenarioId, inputPicker, false, false);
     
             await writeAllDataToFiles(eqPara.id, serverUrl, port, state);
     

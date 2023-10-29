@@ -160,7 +160,7 @@ def uploadAll():
     #   WORKSPACE
     #-------------------------------------------------------------------    
 
-    print("Creating workspace")
+    print("-----------------------Creating workspace-----------------------------")
     workSpaceName="riesgos"
     try:
         geo.create_workspace(workspace=workSpaceName)
@@ -175,13 +175,18 @@ def uploadAll():
     gfzDataPath = "./quakeml:quakeledger/"
     awiDataPath = "./awiData"
 
+    files = os.listdir(gfzDataPath)
+    files = [f for f in files if "DS_Store" not in f]
+    files = sorted(files)
+    # filesRawData = [f for f in files if int(f) >= 90000120]
+    filesRawData = files
+    # files = files[:5]
 
-    for i, dirName in enumerate(os.listdir(gfzDataPath)):
-        #if "peru_" not in dirName: continue
+    for i, dirName in enumerate(filesRawData):
 
         eqNr = int(dirName.replace("peru_", ""))
         if eqNr == 80000011: continue
-        print(f"Uploading data for eq {eqNr}")
+        print(f"---------Uploading data for eq {eqNr}---------------")
 
 
         uploadEqSimFile    ( f"{gfzDataPath}/{dirName}/eqSimGeotiffRefChile.geotiff",   f"pga_{eqNr}",          workSpaceName )
@@ -200,11 +205,11 @@ def uploadAll():
     #-------------------------------------------------------------------
     #   STYLES
     #-------------------------------------------------------------------
-    print("Uploading styles")
+    print("-----------------------Uploading styles----------------------------")
 
     geo.upload_style( path=f"./styles/gfz-prod/shakemap-pga.sld",                      name="shakemap-pga",                       workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-sara-plasma.sld",     name="style-damagestate-sara-plasma",      workspace=workSpaceName,  sld_version="1.0.0" )
-    geo.upload_style( path=f"./styles/gfz-prod/style-cum-loss-peru-plasma.sld",        name="style-cum-loss-peru-plasma",         workspace=workSpaceName,  sld_version="1.0.0" )
+    geo.upload_style( path=f"./styles/gfz-prod/style-cum-loss-chile-plasma.sld",        name="style-cum-loss-chile-plasma",         workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-medina-plasma.sld",   name="style-damagestate-medina-plasma",    workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-suppasri-plasma.sld", name="style-damagestate-suppasri-plasma",  workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/awi/Arrivaltime.sld",                            name="arrivalTimes",                       workspace=workSpaceName,  sld_version="1.0.0" )
@@ -213,15 +218,14 @@ def uploadAll():
     geo.upload_style( path=f"./styles/other/sysrel.sld",                               name="sysrel",                             workspace=workSpaceName,  sld_version="1.0.0" )
 
 
-    for dirName in os.listdir(gfzDataPath):
-        #if "peru_" not in dirName: continue
+    for dirName in files:
         eqNr = int(dirName.replace("peru_", ""))
         if eqNr == 80000011: continue
-        print(f"Registering styles with layer {eqNr}")
+        print(f"-------------Registering styles with layer {eqNr}----------------")
 
         geo.registerStylesWithLayer( f"pga_{eqNr}",               ["shakemap-pga"],                                                                                          workSpaceName, firstStyleDefault=True )
-        geo.registerStylesWithLayer( f"eqDamage_{eqNr}",          ["style-damagestate-sara-plasma", "style-cum-loss-peru-plasma"],                                           workSpaceName, firstStyleDefault=True )
-        geo.registerStylesWithLayer( f"tsDamage_{eqNr}",          [ "style-damagestate-medina-plasma", "style-damagestate-suppasri-plasma", "style-cum-loss-peru-plasma"],   workSpaceName, firstStyleDefault=True )
+        geo.registerStylesWithLayer( f"eqDamage_{eqNr}",          ["style-damagestate-sara-plasma", "style-cum-loss-chile-plasma"],                                           workSpaceName, firstStyleDefault=True )
+        geo.registerStylesWithLayer( f"tsDamage_{eqNr}",          [ "style-damagestate-medina-plasma", "style-damagestate-suppasri-plasma", "style-cum-loss-chile-plasma"],   workSpaceName, firstStyleDefault=True )
         geo.registerStylesWithLayer( f"arrivalTimes_{eqNr}",      ["arrivalTimes"],                                                                                          workSpaceName, firstStyleDefault=True )
         geo.registerStylesWithLayer( f"epiCenter_{eqNr}",         ["epiCenter"],                                                                                             workSpaceName, firstStyleDefault=True )
         geo.registerStylesWithLayer( f"mwh_{eqNr}",               ["mwh"],                                                                                                   workSpaceName, firstStyleDefault=True )
@@ -234,10 +238,10 @@ def uploadAll():
     #   EXPOSURE (special case, only needs to be uploaded once)
     #-------------------------------------------------------------------
 
-    for i, dirName in enumerate(os.listdir(gfzDataPath)):
-        #if "peru_" not in dirName: continue
+    for i, dirName in enumerate(files):
 
         if i == 0:
+            print("-----------------------Uploading exposure data-----------------------------")
             uploadExposureData(f"{gfzDataPath}/{dirName}/exposureChile.json", "exposure", workSpaceName)
             geo.upload_style(path=f"./styles/other/exposure.sld", name="exposure", workspace=workSpaceName, sld_version="1.0.0")
             geo.registerStylesWithLayer( f"exposure", ["exposure"], workSpaceName, firstStyleDefault=True)
@@ -248,9 +252,8 @@ def uploadAll():
     #-------------------------------------------------------------------
     #   DAMAGE SUMMARIES (moving to backend/data)
     #-------------------------------------------------------------------
-    print("Metadata to backend locally saved data")
-    for i, dirName in enumerate(os.listdir(gfzDataPath)):
-        # if "peru_" not in dirName: continue
+    print("-----------------------Metadata to backend locally saved data---------------------")
+    for i, dirName in enumerate(files):
 
         eqNr = int(dirName.replace("peru_", ""))
         
@@ -265,7 +268,6 @@ def uploadAll():
 
 #%%
 geoserverUrl= "http://localhost:8080/geoserver"
-# geoserverUrl = "https://riesgos.dlr.de/cacheServer/geoserver"
 geo = MyGeoserver(geoserverUrl, username="admin", password="geoserver")
 uploadAll()
 

@@ -2,5 +2,8 @@
 node_modules
 build
 dist
-/data/*
+/data/logs/*
+/data/store/*
+/data/logs.bak/*
+data/store.bak/*
 test-data

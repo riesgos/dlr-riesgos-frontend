@@ -182,17 +182,18 @@ def uploadAll():
     filesRawData = files
     # files = files[:5]
 
-    for i, dirName in enumerate(filesRawData):
+    for dirName in filesRawData:
 
         eqNr = int(dirName.replace("peru_", ""))
         if eqNr == 80000011: continue
         print(f"---------Uploading data for eq {eqNr}---------------")
+        country = "peru" if "peru" in dirName else "chile"
+        fileEnding = "Chile" if country == "chile" else ""
 
-
-        uploadEqSimFile    ( f"{gfzDataPath}/{dirName}/eqSimGeotiffRefChile.geotiff",   f"pga_{eqNr}",          workSpaceName )
-        uploadGfzShapeFile ( f"{gfzDataPath}/{dirName}/eqDamageShapefileChile.shp.zip", f"eqDamage_{eqNr}",     workSpaceName )
-        uploadGfzShapeFile ( f"{gfzDataPath}/{dirName}/tsDamageShapefileChile.shp.zip", f"tsDamage_{eqNr}",     workSpaceName )
-        uploadSysrelData   ( f"{gfzDataPath}/{dirName}/sysRelChile.json",               f"sysrel_{eqNr}",       workSpaceName )
+        uploadEqSimFile    ( f"{gfzDataPath}/{dirName}/eqSimGeotiffRef{fileEnding}.geotiff",   f"pga_{eqNr}",          workSpaceName )
+        uploadGfzShapeFile ( f"{gfzDataPath}/{dirName}/eqDamageShapefile{fileEnding}.shp.zip", f"eqDamage_{eqNr}",     workSpaceName )
+        uploadGfzShapeFile ( f"{gfzDataPath}/{dirName}/tsDamageShapefile{fileEnding}.shp.zip", f"tsDamage_{eqNr}",     workSpaceName )
+        uploadSysrelData   ( f"{gfzDataPath}/{dirName}/sysRel{fileEnding}.json",               f"sysrel_{eqNr}",       workSpaceName )
 
         uploadAwiShapeFile ( f"{awiDataPath}/{eqNr}/{eqNr}_arrivalTimes/",         f"arrivalTimes_{eqNr}", workSpaceName )      
         uploadAwiShapeFile ( f"{awiDataPath}/{eqNr}/{eqNr}_epiCenter/",            f"epiCenter_{eqNr}",    workSpaceName )
@@ -209,7 +210,7 @@ def uploadAll():
 
     geo.upload_style( path=f"./styles/gfz-prod/shakemap-pga.sld",                      name="shakemap-pga",                       workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-sara-plasma.sld",     name="style-damagestate-sara-plasma",      workspace=workSpaceName,  sld_version="1.0.0" )
-    geo.upload_style( path=f"./styles/gfz-prod/style-cum-loss-chile-plasma.sld",        name="style-cum-loss-chile-plasma",         workspace=workSpaceName,  sld_version="1.0.0" )
+    geo.upload_style( path=f"./styles/gfz-prod/style-cum-loss-{country}-plasma.sld",   name=f"style-cum-loss-{country}-plasma",   workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-medina-plasma.sld",   name="style-damagestate-medina-plasma",    workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-suppasri-plasma.sld", name="style-damagestate-suppasri-plasma",  workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/awi/Arrivaltime.sld",                            name="arrivalTimes",                       workspace=workSpaceName,  sld_version="1.0.0" )
@@ -224,8 +225,8 @@ def uploadAll():
         print(f"-------------Registering styles with layer {eqNr}----------------")
 
         geo.registerStylesWithLayer( f"pga_{eqNr}",               ["shakemap-pga"],                                                                                          workSpaceName, firstStyleDefault=True )
-        geo.registerStylesWithLayer( f"eqDamage_{eqNr}",          ["style-damagestate-sara-plasma", "style-cum-loss-chile-plasma"],                                           workSpaceName, firstStyleDefault=True )
-        geo.registerStylesWithLayer( f"tsDamage_{eqNr}",          [ "style-damagestate-medina-plasma", "style-damagestate-suppasri-plasma", "style-cum-loss-chile-plasma"],   workSpaceName, firstStyleDefault=True )
+        geo.registerStylesWithLayer( f"eqDamage_{eqNr}",          ["style-damagestate-sara-plasma", f"style-cum-loss-{country}-plasma"],                                           workSpaceName, firstStyleDefault=True )
+        geo.registerStylesWithLayer( f"tsDamage_{eqNr}",          [ "style-damagestate-medina-plasma", "style-damagestate-suppasri-plasma", f"style-cum-loss-{country}-plasma"],   workSpaceName, firstStyleDefault=True )
         geo.registerStylesWithLayer( f"arrivalTimes_{eqNr}",      ["arrivalTimes"],                                                                                          workSpaceName, firstStyleDefault=True )
         geo.registerStylesWithLayer( f"epiCenter_{eqNr}",         ["epiCenter"],                                                                                             workSpaceName, firstStyleDefault=True )
         geo.registerStylesWithLayer( f"mwh_{eqNr}",               ["mwh"],                                                                                                   workSpaceName, firstStyleDefault=True )
@@ -238,36 +239,43 @@ def uploadAll():
     #   EXPOSURE (special case, only needs to be uploaded once)
     #-------------------------------------------------------------------
 
-    for i, dirName in enumerate(files):
+    for dirName in files:
 
-        if i == 0:
+        country = "peru" if "peru" in dirName else "chile"
+        fileEnding = "Chile" if country == "chile" else ""
+        
+        if "80674883" in dirName or "70000011" in dirName:
             print("-----------------------Uploading exposure data-----------------------------")
-            uploadExposureData(f"{gfzDataPath}/{dirName}/exposureChile.json", "exposure", workSpaceName)
-            geo.upload_style(path=f"./styles/other/exposure.sld", name="exposure", workspace=workSpaceName, sld_version="1.0.0")
-            geo.registerStylesWithLayer( f"exposure", ["exposure"], workSpaceName, firstStyleDefault=True)
+            uploadExposureData(f"{gfzDataPath}/{dirName}/exposure{fileEnding}.json", f"exposure_{country}", workSpaceName)
+            if "80674883" in dirName:
+                geo.upload_style(path=f"./styles/other/exposure.sld", name="exposure", workspace=workSpaceName, sld_version="1.0.0")
+            geo.registerStylesWithLayer( f"exposure_{country}", ["exposure"], workSpaceName, firstStyleDefault=True)
 
-        break
+        
 
 
     #-------------------------------------------------------------------
     #   DAMAGE SUMMARIES (moving to backend/data)
     #-------------------------------------------------------------------
-    print("-----------------------Metadata to backend locally saved data---------------------")
-    for i, dirName in enumerate(files):
+    # print("-----------------------Metadata to backend locally saved data---------------------")
+    # for i, dirName in enumerate(files):
 
-        eqNr = int(dirName.replace("peru_", ""))
+    #     country = "peru" if "peru" in dirName else "chile"
+    #     fileEnding = "Chile" if country == "chile" else ""
+
+    #     eqNr = int(dirName.replace("peru_", ""))
         
-        sourcePath = f"{gfzDataPath}/{dirName}/eqDamageSummaryChile.json"
-        targetPath = f"../backend/data/data/cached_data/eqDamageSummary_{eqNr}.json"
-        sh.copy(sourcePath, targetPath)
+    #     sourcePath = f"{gfzDataPath}/{dirName}/eqDamageSummary{fileEnding}.json"
+    #     targetPath = f"../backend/data/data/cached_data/eqDamageSummary_{eqNr}.json"
+    #     sh.copy(sourcePath, targetPath)
 
-        sourcePath = f"{gfzDataPath}/{dirName}/tsDamageSummaryChile.json"
-        targetPath = f"../backend/data/data/cached_data/tsDamageSummary_{eqNr}.json"
-        sh.copy(sourcePath, targetPath)
+    #     sourcePath = f"{gfzDataPath}/{dirName}/tsDamageSummary{fileEnding}.json"
+    #     targetPath = f"../backend/data/data/cached_data/tsDamageSummary_{eqNr}.json"
+    #     sh.copy(sourcePath, targetPath)
 
 
 #%%
-geoserverUrl= "http://localhost:8080/geoserver"
+geoserverUrl= "http://10.104.103.71/geoserver"
 geo = MyGeoserver(geoserverUrl, username="admin", password="geoserver")
 uploadAll()
 

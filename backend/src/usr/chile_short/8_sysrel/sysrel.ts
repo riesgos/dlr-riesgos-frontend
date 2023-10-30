@@ -6,7 +6,7 @@ async function calcSysRel(inputs: Datum[]) {
 
     const intensityRef = inputs.find(i => i.id === 'eqSimXmlRefChile')!;
 
-    const result = await getSystemReliability('peru', intensityRef.value);
+    const result = await getSystemReliability('chile', intensityRef.value);
 
     return [{
         id: 'sysRelChile',

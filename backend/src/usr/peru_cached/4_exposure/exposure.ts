@@ -4,7 +4,7 @@ import config from "../../../config.json";
 async function getExposure(inputs: Datum[]) {
 
 
-    const exposureModel = `${config.services.cacheServer}?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES=&LAYERS=riesgos:exposure`;
+    const exposureModel = `${config.services.cacheServer}?SERVICE=WMS&VERSION=1.1.1&TRANSPARENT=true&STYLES=&LAYERS=riesgos:exposure_peru`;
   
     return [{
         id: 'exposure',

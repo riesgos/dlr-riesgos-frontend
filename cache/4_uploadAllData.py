@@ -178,11 +178,12 @@ def uploadAll():
     files = os.listdir(gfzDataPath)
     files = [f for f in files if "DS_Store" not in f]
     files = sorted(files)
+    # files = [f for f in files if "90000116" in f or "90000117" in f or "90000118" in f or "90000119" in f]
     # filesRawData = [f for f in files if int(f) >= 90000120]
-    filesRawData = files
+    # filesRawData = files
     # files = files[:5]
 
-    for dirName in filesRawData:
+    for dirName in files:
 
         eqNr = int(dirName.replace("peru_", ""))
         if eqNr == 80000011: continue
@@ -210,13 +211,14 @@ def uploadAll():
 
     geo.upload_style( path=f"./styles/gfz-prod/shakemap-pga.sld",                      name="shakemap-pga",                       workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-sara-plasma.sld",     name="style-damagestate-sara-plasma",      workspace=workSpaceName,  sld_version="1.0.0" )
-    geo.upload_style( path=f"./styles/gfz-prod/style-cum-loss-{country}-plasma.sld",   name=f"style-cum-loss-{country}-plasma",   workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-medina-plasma.sld",   name="style-damagestate-medina-plasma",    workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/gfz-prod/style-damagestate-suppasri-plasma.sld", name="style-damagestate-suppasri-plasma",  workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/awi/Arrivaltime.sld",                            name="arrivalTimes",                       workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/awi/epiCenter.sld",                              name="epiCenter",                          workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/awi/waveHeight_old.sld",                         name="mwh",                                workspace=workSpaceName,  sld_version="1.0.0" )
     geo.upload_style( path=f"./styles/other/sysrel.sld",                               name="sysrel",                             workspace=workSpaceName,  sld_version="1.0.0" )
+    for country in ["chile", "peru"]:
+        geo.upload_style( path=f"./styles/gfz-prod/style-cum-loss-{country}-plasma.sld",   name=f"style-cum-loss-{country}-plasma",   workspace=workSpaceName,  sld_version="1.0.0" )
 
 
     for dirName in files:
@@ -239,17 +241,17 @@ def uploadAll():
     #   EXPOSURE (special case, only needs to be uploaded once)
     #-------------------------------------------------------------------
 
-    for dirName in files:
+    # for dirName in files:
 
-        country = "peru" if "peru" in dirName else "chile"
-        fileEnding = "Chile" if country == "chile" else ""
+    #     country = "peru" if "peru" in dirName else "chile"
+    #     fileEnding = "Chile" if country == "chile" else ""
         
-        if "80674883" in dirName or "70000011" in dirName:
-            print("-----------------------Uploading exposure data-----------------------------")
-            uploadExposureData(f"{gfzDataPath}/{dirName}/exposure{fileEnding}.json", f"exposure_{country}", workSpaceName)
-            if "80674883" in dirName:
-                geo.upload_style(path=f"./styles/other/exposure.sld", name="exposure", workspace=workSpaceName, sld_version="1.0.0")
-            geo.registerStylesWithLayer( f"exposure_{country}", ["exposure"], workSpaceName, firstStyleDefault=True)
+    #     if "80674883" in dirName or "70000011" in dirName:
+    #         print("-----------------------Uploading exposure data-----------------------------")
+    #         uploadExposureData(f"{gfzDataPath}/{dirName}/exposure{fileEnding}.json", f"exposure_{country}", workSpaceName)
+    #         if "80674883" in dirName:
+    #             geo.upload_style(path=f"./styles/other/exposure.sld", name="exposure", workspace=workSpaceName, sld_version="1.0.0")
+    #         geo.registerStylesWithLayer( f"exposure_{country}", ["exposure"], workSpaceName, firstStyleDefault=True)
 
         
 

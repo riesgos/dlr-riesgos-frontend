@@ -1,7 +1,5 @@
-import { writeFileSync } from "fs";
 import { fileExists, writeBinaryFile, writeJsonFile, writeTextFile } from "./files";
-import { ScenarioState, Datum, isDatumReference, InputPicker, DatumReference, runScenario, isResolvedDatum, isDatumWithOptions, isDatumWithDefault } from "./utils";
-// import axios from "axios";
+import { ScenarioState, Datum, isDatumReference, InputPicker, DatumReference, runScenario, isResolvedDatum, isDatumWithOptions, isDatumWithDefault, sleep } from "./utils";
 
 const eqParasChile: any[] = [
         {
@@ -3084,6 +3082,7 @@ async function runAndSave(scenarioId: "PeruShort" | "ChileShort", serverUrl: str
 
         try {   
             console.log(`Working on eq ${eqPara.id}`)
+            const start = new Date();
     
             const inputPicker = createParaPicker(eqPara);
     
@@ -3091,6 +3090,9 @@ async function runAndSave(scenarioId: "PeruShort" | "ChileShort", serverUrl: str
     
             await writeAllDataToFiles(eqPara.id, serverUrl, port, state);
     
+            const end = new Date();
+            const diff = ((end.getTime() - start.getTime()) / 1000.0).toFixed(2);
+            console.log(`took ${diff} seconds`);
         } catch (error) {
             console.error(error);
             writeTextFile("./error.json", (error as any).message);

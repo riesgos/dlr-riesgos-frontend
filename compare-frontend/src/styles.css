@@ -212,3 +212,8 @@ main
     border-radius: 0.25rem;
 }
 
+
+
+.dataColumn {
+    white-space: nowrap;
+}

@@ -53,7 +53,7 @@ export function createKeyValueTableHtml(data: {[key: string]: any}, type: TableT
     };
 
     const htmlRows = rows.map(row => {
-        return `<tr><td>${row.key}</td><td>${row.val}</td></tr>`;
+        return `<tr><td>${row.key}</td><td class="dataColumn">${row.val}</td></tr>`;
     });
 
     return `

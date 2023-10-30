@@ -67,9 +67,14 @@
       
           </div>
 
-          <div class="studyArea box hasShadow">
-            <p [innerHTML]="'startPageOverview' | translate"></p>
+
+          <div class="studyAreas" *ngIf="studyAreas$ | async as studyAreas">
+            <div class="studyArea box hasShadow" *ngFor="let studyArea of studyAreas">
+              <p *ngIf="studyArea.id.includes('ile')" [innerHTML]="'startPageOverview_chile' | translate"></p>
+              <p *ngIf="studyArea.id.includes('eru')" [innerHTML]="'startPageOverview' | translate"></p>
+            </div>
           </div>
+
       </div>
   </div>
   

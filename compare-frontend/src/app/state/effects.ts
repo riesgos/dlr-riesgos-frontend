@@ -262,6 +262,9 @@ check if more  │     └───────┬──────┘
             // ... and if it was the last step in the scenario ...
             if (action.step !== "SysRel" && action.step !== "SysRelChile") return false;
 
+            // ... and if not in standard-mode (otherwise standard-mode always jumps back out from city) ...
+            if (state.rules === "selectOneScenario" || state.rules === "classic") return false;
+
             // ... and if the other side hasn't picked an eq yet ... 
             const otherPartition = action.partition === "left" ? "right" : "left";
             const otherPartitionData = scenarioData[otherPartition];
@@ -274,7 +277,7 @@ check if more  │     └───────┬──────┘
             // ... then go and focus on eq-selection
             const otherPartition = action.partition === "left" ? "right" : "left";
             // return AppActions.stepSetFocus({ scenario: action.scenario, partition: otherPartition, stepId: "selectEq", focus: true });
-            const { zoom, center } = getMapPositionForStep(action.scenario, otherPartition, action.scenario.includes("Chile") ? "selectedEqChile" : "selectEq");
+            const { zoom, center } = getMapPositionForStep(action.scenario, otherPartition, action.scenario.includes("Chile") ? "selectEqChile" : "selectEq");
             return AppActions.mapMove({ scenario: action.scenario, partition: otherPartition, zoom, center  });
         })
     ));

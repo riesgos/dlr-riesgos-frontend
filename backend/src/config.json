@@ -52,6 +52,6 @@
             "url": "https://riesgos.52north.org/geoserver/ows",
             "id": "gs:LaharModel"
         },
-        "cacheServer": "http://localhost:8080/geoserver/riesgos/wms"
+        "cacheServer": "https://riesgos.dlr.de/cacheServer/geoserver/riesgos/wms"
     }
 }

@@ -212,7 +212,7 @@ export interface ScenarioState {
 }
 
 
-async function sleep(timeMs: number): Promise<boolean> {
+export async function sleep(timeMs: number): Promise<boolean> {
     return new Promise((resolve) => {
         setTimeout(() => resolve(true), timeMs);
     })

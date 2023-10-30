@@ -106,7 +106,24 @@ export class CachedSysRel implements Converter {
                 }),
                 onClick: () => {},
                 onHover: () => {},
-                popup: () => undefined,
+                popup: (location, features) => {
+                    const feature = features[0];
+                    const props = feature.getProperties();
+                    const selectedProps: any = {
+                        "Tipo": props["tipo"],
+                        "Material": props["material"],
+                        "Fuente": props["fuente"],
+                    };
+                    const table = createKeyValueTableHtml(selectedProps);
+    
+                    return {
+                        component: StringPopupComponent,
+                        args: {
+                            title: 'sysRelSanitaria',
+                            body: table
+                        }
+                    }
+                },
                 visible: false,
                 opacity: 1.0
             };
@@ -134,7 +151,26 @@ export class CachedSysRel implements Converter {
                 }),
                 onClick: () => {},
                 onHover: () => {},
-                popup: () => undefined,
+                popup: (location, features) => {
+                    const feature = features[0];
+                    const props = feature.getProperties();
+                    const selectedProps: any = {
+                        "Nombre": props["nombre_lin"],
+                        "Empresa": props["empresa"],
+                        "Concesion": props["concesion"],
+                        "Tensión": props["tension"],
+                        "Fuente": props["fuente"]
+                    };
+                    const table = createKeyValueTableHtml(selectedProps);
+    
+                    return {
+                        component: StringPopupComponent,
+                        args: {
+                            title: 'Powerlines',
+                            body: table
+                        }
+                    }
+                },
                 visible: false,
                 opacity: 1.0
             };

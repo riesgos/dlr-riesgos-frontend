@@ -1,29 +1,29 @@
 import axios from 'axios';
 
 
-export async function testAndRepeat(serverUrl: string, port: number, minutes: number) {
+export async function testAndRepeat(serverUrl: string, minutes: number) {
     const startTime = Date.now();
     console.log(`Starting tests: ${new Date()}`);
-    await testAllRandomly(serverUrl, port);
+    await testAllRandomly(serverUrl);
     const endTime = Date.now();
     console.log(`Tests completed: ${new Date()} - took ${(endTime - startTime) / 1000 / 60} minutes`);
-    setTimeout(() => testAndRepeat(serverUrl, port, minutes), minutes * 60 * 1000);
+    setTimeout(() => testAndRepeat(serverUrl, minutes), minutes * 60 * 1000);
 }
 
 
 
 export type InputPicker = (input: Datum | DatumReference, state: ScenarioState, scenarioId: string, stepId: string) => Promise<Datum | DatumReference>;
 
-export async function testAllRandomly(serverUrl: string, port: number) {
+export async function testAllRandomly(serverUrl: string) {
 
     // Test all scenarios
-    const scenarios = (await axios.get(`${serverUrl}:${port}/scenarios`)).data;
+    const scenarios = (await axios.get(`${serverUrl}/scenarios`)).data;
     for (const scenario of scenarios) {
         // Two scenarios we deliberately skip (for now):
         if(scenario.id === 'Ecuador' || scenario.id === 'PeruShort') continue;
 
         console.log(`Testing scenario: ${scenario.id} ...`);
-        await runScenario(serverUrl, port, scenario.id, pickRandomOption);
+        await runScenario(serverUrl, scenario.id, pickRandomOption);
     }
 }
 
@@ -31,13 +31,13 @@ export async function testAllRandomly(serverUrl: string, port: number) {
 
 
 
-export async function runScenario(serverUrl: string, port: number, scenarioId: string, inputPicker: InputPicker, skipCache=true, resolveReferencesImmediately=false) {
+export async function runScenario(serverUrl: string, scenarioId: string, inputPicker: InputPicker, skipCache=true, resolveReferencesImmediately=false) {
     const axiosArgs = {
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
     };
 
-    const scenarioData = (await axios.get(`${serverUrl}:${port}/scenarios/${scenarioId}/`)).data;
+    const scenarioData = (await axios.get(`${serverUrl}/scenarios/${scenarioId}/`)).data;
 
     // Test all steps
     let state: ScenarioState = { data: [] };
@@ -56,13 +56,13 @@ export async function runScenario(serverUrl: string, port: number, scenarioId: s
 
 
         // 2. execute
-        const response = await axios.post(`${serverUrl}:${port}/scenarios/${scenarioId}/steps/${step.id}/execute${ skipCache ? '?skipCache=true' : '' }`, state, axiosArgs);
+        const response = await axios.post(`${serverUrl}/scenarios/${scenarioId}/steps/${step.id}/execute${ skipCache ? '?skipCache=true' : '' }`, state, axiosArgs);
         const ticket = response.data.ticket;
         let poll: any;
         do {
             await sleep(500);
             process.stdout.write(".");
-            poll = await axios.get(`${serverUrl}:${port}/scenarios/${scenarioId}/steps/${step.id}/execute/poll/${ticket}`, axiosArgs);
+            poll = await axios.get(`${serverUrl}/scenarios/${scenarioId}/steps/${step.id}/execute/poll/${ticket}`, axiosArgs);
         } while (poll.data.ticket);
         if (poll.data.error) {
             throw Error(poll.data.error);
@@ -73,7 +73,7 @@ export async function runScenario(serverUrl: string, port: number, scenarioId: s
         if (resolveReferencesImmediately) {
             for (const product of results.data) {
                 if (product.reference && !product.value) {
-                    product.value = (await axios.get(`${serverUrl}:${port}/files/${product.reference}`, axiosArgs)).data;
+                    product.value = (await axios.get(`${serverUrl}/files/${product.reference}`, axiosArgs)).data;
                 }
             }
         }

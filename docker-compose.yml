@@ -4,12 +4,12 @@ services:
     build: ./backend
     image: dlrriesgos/backend
     ports:
-      - ${backendPort}:${backendPort}
+      - 8000:8000
     volumes:
       - logs:/backend/data/logs
       - store:/backend/data/store
     environment:
-      port: ${backendPort}
+      port: 8000
       maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
       sendMailTo: ${sendMailTo}
       sourceEmail: ${sourceEmail}
@@ -31,11 +31,10 @@ services:
     depends_on:
       - backend
     ports:
-      - 8000:80
+      - 8001:80
     environment:
-      subPath: ${frontendSubPath}
+      subPath: "/"
       backendUrl: ${backendUrl}
-      backendPort: ${backendPort}
 
   compare-frontend:
     build: ./compare-frontend
@@ -43,20 +42,19 @@ services:
     depends_on:
       - backend
     ports:
-      - 8001:80
+      - 8002:80
     environment:
-      subPath: ${compareFrontendSubPath}
+      subPath: "/"
       backendUrl: ${backendUrl}
-      backendPort: ${backendPort}
       allowedScenarios: '["ChileCached", "PeruCached"]'
 
-  cache-server:
-    image: docker.osgeo.org/geoserver:2.23.1
-    ports:
-      - 8004:8080
-    environment:
-      CORS_ENABLED: true
-      SKIP_DEMO_DATA: true
+  # cache-server:
+  #   image: docker.osgeo.org/geoserver:2.23.1
+  #   ports:
+  #     - 8003:8080
+  #   environment:
+  #     CORS_ENABLED: true
+  #     SKIP_DEMO_DATA: true
       
   # monitor:
   #   build: ./monitor
@@ -64,9 +62,7 @@ services:
   #   depends_on:
   #     - backend
   #   environment:
-  #     # This url is called inside of docker-network, so "http://backend" gets resolved to the actual IP
-  #     backendUrl: "http://backend"
-  #     backendPort: ${backendPort}
+  #     backendUrl: "http://backend:8000"
   #     sendMailTo: ${sendMailTo}
   #     sourceEmail: ${sourceEmail}
   #     testServiceEveryMinutes: ${testServiceEveryMinutes}

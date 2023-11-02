@@ -83,6 +83,7 @@ import { BarchartComponent } from './components/dynamic/barchart/barchart.compon
 import { CircleLegendComponent } from './components/dynamic/circle-legend/circle-legend.component';
 import { MultiLegendComponent } from './components/dynamic/multi-legend/multi-legend.component';
 import { LegendItemComponent } from './components/print/legend-item/legend-item.component';
+import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
@@ -177,8 +178,15 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
         return () => configService.loadConfig();
       },
       multi: true
+    }, {
+      provide: APP_BASE_HREF,
+      useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
+      deps: [PlatformLocation]
+    }, { 
+      provide: HTTP_INTERCEPTORS, 
+      useClass: PostSpreadInterceptor, 
+      multi: true 
     },
-    { provide: HTTP_INTERCEPTORS, useClass: PostSpreadInterceptor, multi: true },
     AlertService,
     DisclaimerService,
     ProgressService,

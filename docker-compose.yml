@@ -50,13 +50,13 @@ services:
       backendPort: ${backendPort}
       allowedScenarios: '["ChileCached", "PeruCached"]'
 
-  cache-server:
-    image: docker.osgeo.org/geoserver:2.23.1
-    ports:
-      - 8004:8080
-    environment:
-      CORS_ENABLED: true
-      SKIP_DEMO_DATA: true
+  # cache-server:
+  #   image: docker.osgeo.org/geoserver:2.23.1
+  #   ports:
+  #     - 8004:8080
+  #   environment:
+  #     CORS_ENABLED: true
+  #     SKIP_DEMO_DATA: true
       
   # monitor:
   #   build: ./monitor

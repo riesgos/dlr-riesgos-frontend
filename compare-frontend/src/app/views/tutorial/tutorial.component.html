@@ -1,12 +1,8 @@
-<ng-container *ngIf="scenario$ | async as scenario">
-    <ng-container [ngSwitch]="scenario">
-        <ng-container *ngSwitchCase="'ChileShort'"  [ngTemplateOutlet]="chileTutorial" ></ng-container>
-        <ng-container *ngSwitchCase="'ChileCached'" [ngTemplateOutlet]="chileTutorial" ></ng-container>
-        <ng-container *ngSwitchCase="'PeruShort'"   [ngTemplateOutlet]="peruTutorial"  ></ng-container>
-        <ng-container *ngSwitchCase="'PeruCached'"  [ngTemplateOutlet]="peruTutorial"  ></ng-container>
-        <ng-container *ngSwitchDefault              [ngTemplateOutlet]="peruTutorial"  ></ng-container>
+    <ng-container [ngSwitch]="tutorial">
+        <ng-container *ngSwitchCase="'Chile'" [ngTemplateOutlet]="chileTutorial" ></ng-container>
+        <ng-container *ngSwitchCase="'Peru'"  [ngTemplateOutlet]="peruTutorial"  ></ng-container>
+        <ng-container *ngSwitchDefault        [ngTemplateOutlet]="peruTutorial"  ></ng-container>
     </ng-container>
-</ng-container>
 
 
 
@@ -39,7 +35,7 @@
             </li>
         </ul>
         <h2 id="funcionalidades-de-la-herramienta">Funcionalidades de la herramienta</h2>
-        <p><img src="assets/images/DemoLight_Tutorial_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        <p><img src="assets/images/DemoLight_Tutorial_Chile_01.png"style="max-width: 100%;" alt="optionaler Titel">
         </p>
         <h2 id="botones">Botones</h2>
         <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_01.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para mostrar u ocultar el menú</p>
@@ -69,7 +65,7 @@
         </ul>
         <h2 id="modo-para-comparar-dos-escenarios-distintos">Modo para comparar dos escenarios distintos</h2>
         <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
-            <img src="assets/images/DemoLight_Tutorial_02.png"style="max-width: 100%;" alt="optionaler Titel">
+            <img src="assets/images/DemoLight_Tutorial_Chile_02.png"style="max-width: 100%;" alt="optionaler Titel">
             <br/>
         
             <strong>1. paso:</strong> Seleccione un terremoto <em>en el menú de la izquierda</em>:
@@ -93,7 +89,7 @@
         <h2 id="modo-para-comparar-diferentes-pasos-de-un-mismo-escenario">Modo para comparar diferentes pasos de un mismo
             escenario</h2>
         <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
-            <img src="assets/images/DemoLight_Tutorial_03.png"style="max-width: 100%;" alt="optionaler Titel">
+            <img src="assets/images/DemoLight_Tutorial_Chile_03.png"style="max-width: 100%;" alt="optionaler Titel">
         </p>
         <p><strong>1. paso:</strong> Seleccione un terremoto en el menú de la izquierda:
             Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
@@ -212,7 +208,7 @@
             </li>
         </ul>
         <h2 id="funcionalidades-de-la-herramienta">Funcionalidades de la herramienta</h2>
-        <p><img src="assets/images/DemoLight_Tutorial_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        <p><img src="assets/images/DemoLight_Tutorial_Peru_01.png"style="max-width: 100%;" alt="optionaler Titel">
         </p>
         <h2 id="botones">Botones</h2>
         <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_01.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para mostrar u ocultar el menú</p>
@@ -242,7 +238,7 @@
         </ul>
         <h2 id="modo-para-comparar-dos-escenarios-distintos">Modo para comparar dos escenarios</h2>
         <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
-            <img src="assets/images/DemoLight_Tutorial_02.png"style="max-width: 100%;" alt="optionaler Titel">
+            <img src="assets/images/DemoLight_Tutorial_Peru_02.png"style="max-width: 100%;" alt="optionaler Titel">
             <br/>
         
             <strong>1. paso:</strong> Seleccione un terremoto <em>en el menú de la izquierda</em>:
@@ -266,7 +262,7 @@
         <h2 id="modo-para-comparar-diferentes-pasos-de-un-mismo-escenario">Modo para comparar diferentes pasos de un mismo
             escenario</h2>
         <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
-            <img src="assets/images/DemoLight_Tutorial_03.png"style="max-width: 100%;" alt="optionaler Titel">
+            <img src="assets/images/DemoLight_Tutorial_Peru_03.png"style="max-width: 100%;" alt="optionaler Titel">
         </p>
         <p><strong>1. paso:</strong> Seleccione un terremoto en el menú de la izquierda:
             Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista

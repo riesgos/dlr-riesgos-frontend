@@ -1,6 +1,7 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { APP_BASE_HREF } from '@angular/common';
 
 
 @Component({
@@ -13,10 +14,10 @@ export class LicensesComponent implements OnInit {
 
   public licenses: Observable<string>;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, @Inject(APP_BASE_HREF) private baseHref: string) { }
 
   ngOnInit() {
-    this.licenses = this.http.get('3rdpartylicenses.txt', { responseType: 'text' });
+    this.licenses = this.http.get(`/${this.baseHref}/3rdpartylicenses.txt`, { responseType: 'text' });
   }
 
 }

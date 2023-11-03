@@ -37,44 +37,23 @@ export class CachedWizardSysRelChile implements Converter {
                     component: MultiLegendComponent,
                     args: {
                         legendComponents: [{
-                            component: TranslatedImageComponent,
+                            component: LegendComponent,
                             args: {
                                 title: this.translate.translate('Prob_Interuption'),
-                                languageImageMap: {
-                                    'EN': baseLegend + '&language=en',
-                                    'ES': baseLegend + '',
-                                }
-                            }
-                        }, {
-                            component: LegendComponent,
-                            args: {
-                                title: 'Powerlines',
                                 entries: [{
-                                    text: 'Linea',
-                                    color: `rgb(240, 149, 52)`,
+                                    text: 'p < 25 %',
+                                    color: `rgb(236, 234, 197)`,
                                 }, {
-                                    text: 'Derivacion',
-                                    color: `rgb(230, 229, 69)`,
-                                }],
-                                continuous: false,
-                                height: 60,
-                                width: 150,
-                            }
-                        }, {
-                            component: LegendComponent,
-                            args: {
-                                title: 'SIGRID water',
-                                entries: [{
-                                    text: 'Red primaria',
-                                    color: `rgb(0, 0, 0)`,
+                                    text: 'p < 50 %',
+                                    color: `rgb(218, 179, 155)`,
                                 }, {
-                                    text: 'Red secundaria',
-                                    color: `rgb(0, 95, 223)`,
+                                    text: 'p < 75 %',
+                                    color: `rgb(195, 139, 136)`,
                                 }, {
-                                    text: 'Alcantarillado',
-                                    color: `rgb(208, 4, 248)`,
-                                }],
-                                continuous: false,
+                                    text: 'p < 100 %',
+                                    color: `rgb(163, 125, 137)`,
+                                },],
+                                continuous: true,
                                 height: 80,
                                 width: 150,
                             }

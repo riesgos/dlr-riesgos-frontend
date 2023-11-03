@@ -37,13 +37,25 @@ export class CachedSysRel implements Converter {
                     component: MultiLegendComponent,
                     args: {
                         legendComponents: [{
-                            component: TranslatedImageComponent,
+                            component: LegendComponent,
                             args: {
                                 title: this.translate.translate('Prob_Interuption'),
-                                languageImageMap: {
-                                    'EN': baseLegend + '&language=en',
-                                    'ES': baseLegend + '',
-                                }
+                                entries: [{
+                                    text: 'p < 25 %',
+                                    color: `rgb(236, 234, 197)`,
+                                }, {
+                                    text: 'p < 50 %',
+                                    color: `rgb(218, 179, 155)`,
+                                }, {
+                                    text: 'p < 75 %',
+                                    color: `rgb(195, 139, 136)`,
+                                }, {
+                                    text: 'p < 100 %',
+                                    color: `rgb(163, 125, 137)`,
+                                },],
+                                continuous: true,
+                                height: 80,
+                                width: 150,
                             }
                         }, {
                             component: LegendComponent,
@@ -57,7 +69,7 @@ export class CachedSysRel implements Converter {
                                     color: `rgb(230, 229, 69)`,
                                 }],
                                 continuous: false,
-                                height: 60,
+                                height: 40,
                                 width: 150,
                             }
                         }, {
@@ -75,7 +87,7 @@ export class CachedSysRel implements Converter {
                                     color: `rgb(208, 4, 248)`,
                                 }],
                                 continuous: false,
-                                height: 80,
+                                height: 60,
                                 width: 150,
                             }
                         }],

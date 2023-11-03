@@ -16,7 +16,7 @@ export class LicensesComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.licenses = this.http.get('/3rdpartylicenses.txt', { responseType: 'text' });
+    this.licenses = this.http.get('3rdpartylicenses.txt', { responseType: 'text' });
   }
 
 }

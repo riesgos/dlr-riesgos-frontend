@@ -65,6 +65,8 @@ h1 {
 
 text {
     fill: var(--gray-1000);
+    font-family: Nunito, Arial, Helvetica, sans-serif;
+    font-size: 0.7em;
 }
 
 button {

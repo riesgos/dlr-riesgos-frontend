@@ -35,12 +35,12 @@ export class AppComponent {
 
   clickOnTutorial() {
     if (this.getCurrentUrl().includes('tutorial')) return;
-    window.open(this.getTutorialUrl(), '_blank');
+    window.open(this.getTutorialUrl(), "_self"); //, '_blank');
   }
 
   clickOnLicenses() {
     if (this.getCurrentUrl().includes('licenses')) return;
-    window.open(this.getLicensesUrl(), '_blank');
+    window.open(this.getLicensesUrl(), "_self"); //, '_blank');
   }
 
   async printPage() {

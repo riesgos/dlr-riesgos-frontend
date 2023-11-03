@@ -1,175 +1,355 @@
-<div class="tutorialPage">
+    <ng-container [ngSwitch]="tutorial">
+        <ng-container *ngSwitchCase="'Chile'" [ngTemplateOutlet]="chileTutorial" ></ng-container>
+        <ng-container *ngSwitchCase="'Peru'"  [ngTemplateOutlet]="peruTutorial"  ></ng-container>
+        <ng-container *ngSwitchDefault        [ngTemplateOutlet]="peruTutorial"  ></ng-container>
+    </ng-container>
 
-    <h1 id="riesgos-demonstator-light-tutorial">RIESGOS DEMONSTATOR LIGHT - Tutorial</h1>
-    <h2 id="introducci-n">Introducción</h2>
-    <p>El “RIESGOS Demostrador” es un sistema de información desarrollado en el marco del proyecto RIESGOS con el propósito
-        de analizar escenarios multi-riesgos de amenazas naturales como terremotos, deslizamientos, volcanes, inundaciones y
-        tsunamis.
-        La versión básica (“RIESGOS Demostrador Light”) permite al usuario simular un terremoto frente a las costas de
-        Lima y Callao en Perú, y Valparaíso en Chile, y analizar los efectos en cascada, por ejemplo, el tsunami que se
-        produciría, los daños en los edificios residenciales y en la red eléctrica.
-        Las simulaciones se basan en modelos científicos desarrollados por el proyecto RIESGOS utilizando bases de datos
-        de diferentes fuentes que no han sido revisadas ni autorizadas por las entidades sectoriales del Perú. Por este
-        motivo la información presentada en ningún caso debe ser utilizada para la planificación u otras aplicaciones
-        prácticas.
-        <br/>
-    </p>
-    <h2 id="-c-mo-empezar-">¿Cómo empezar?</h2>
-    <p><strong>1. paso:</strong> Seleccione un área de estudio:</p>
-    <ul>
-        <li>Zona costera del Gran Valparaíso</li>
-        <li>Lima Metropolitana y Callao</li>
-    </ul>
-    <p><strong>2. paso:</strong> Seleccione un modo haciendo clic en la opción correspondiente:</p>
-    <ul>
-        <li><strong>Modo estándar</strong>: Seleccione un escenario para realizar un análisis multi-riesgos.</li>
-        <li><strong>Comparar dos escenarios distintos</strong>: Seleccione dos escenarios distintos para comparar los
-            resultados del análisis multi-riesgos en dos ventanas separadas.</li>
-        <li><strong>Comparar diferentes pasos de un mismo escenario</strong>: Seleccione un escenario para comparar los
-            diferentes pasos del análisis multi-riesgos del mismo escenario en dos ventanas separadas.
+
+
+<ng-template #chileTutorial>
+    <div class="tutorialPage">
+
+        <h1 id="riesgos-demonstator-light-tutorial">RIESGOS DEMONSTATOR LIGHT - Tutorial</h1>
+        <h2 id="introducci-n">Introducción</h2>
+        <p>El “RIESGOS Demostrador” es un sistema de información desarrollado en el marco del
+            proyecto RIESGOS con el propósito de analizar escenarios multi-riesgos de amenazas naturales como terremotos, deslizamientos, volcanes, inundaciones y
+            tsunamis.
+            La versión básica (“RIESGOS Demostrador Light”) permite al usuario simular un terremoto frente la zona costera
+            del Gran Valparaíso en Chile y analizar los efectos en cascada, por ejemplo, el tsunami que se
+            produciría, los daños en los edificios residenciales y en la red eléctrica.
+            Las simulaciones se basan en modelos científicos desarrollados por el proyecto RIESGOS utilizando bases de datos
+            de diferentes fuentes que no han sido revisadas ni autorizadas por las entidades sectoriales del Chile. Por este
+            motivo la información presentada en ningún caso debe ser utilizada para la planificación u otras aplicaciones
+            prácticas.            
             <br/>
-        </li>
-    </ul>
-    <h2 id="funcionalidades-de-la-herramienta">Funcionalidades de la herramienta</h2>
-    <p><img src="assets/images/DemoLight_Tutorial_01.png"style="max-width: 100%;" alt="optionaler Titel">
-    </p>
-    <h2 id="botones">Botones</h2>
-    <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_01.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para mostrar u ocultar el menú</p>
-    <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_02.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón de actualización para recargar el proceso</p>
-    <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_03.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para mostrar el resultado</p>
-    <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_04.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para ocultar el resultado</p>
-    <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_05.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para vincular o desvincular las vistas del mapa en las dos ventanas (sólo en el modo para comparar diferentes pasos de un mismo escenario)</p>
+        </p>
+        <h2 id="-c-mo-empezar-">¿Cómo empezar?</h2>
+        <p>Seleccione un modo haciendo clic en la opción correspondiente:</p>
+        <ul>
+            <li><strong>Modo estándar</strong>: Seleccione un escenario para realizar un análisis multi-riesgos.</li>
+            <li><strong>Comparar dos escenarios</strong>: Seleccione dos escenarios distintos para comparar los
+                resultados del análisis multi-riesgos en dos ventanas separadas.</li>
+            <li><strong>Comparar diferentes pasos de un mismo escenario</strong>: Seleccione un escenario para comparar los
+                diferentes pasos del análisis multi-riesgos del mismo escenario en dos ventanas separadas.
+                <br/>
+            </li>
+        </ul>
+        <h2 id="funcionalidades-de-la-herramienta">Funcionalidades de la herramienta</h2>
+        <p><img src="assets/images/DemoLight_Tutorial_Chile_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <h2 id="botones">Botones</h2>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_01.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para mostrar u ocultar el menú</p>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_02.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón de actualización para recargar el proceso</p>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_03.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para mostrar el resultado</p>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_04.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para ocultar el resultado</p>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_05.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para vincular o desvincular las vistas del mapa en las dos ventanas (sólo en el modo para comparar diferentes pasos de un mismo escenario)</p>
+            
         
     
-
-    <h2 id="modo-est-ndar">Modo estándar</h2>
-    <p><strong>1. paso:</strong> Seleccione un terremoto:
-        Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
-        desplegable.</p>
-    <p><strong>2. paso:</strong> Espere a que se analice el proceso.
-        Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información:<br/>
-        <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
-    </p>
-    <p><strong>3. paso:</strong> Analice los resultados de las distintas etapas de la cadena multi-riesgo:</p>
-    <ul>
-        <li>Si hace clic en un texto verde, aparecerá el resultado. Además, hay una pestaña para una descripción o leyenda.
-        </li>
-        <li>Se puede solicitar información haciendo clic en el mapa. Esto suele abrir nuevas ventanas emergentes.</li>
-        <li>Si se pasa el ratón por encima de los gráficos de barras, se puede solicitar más información (por ejemplo,
-            número de edificios).
-        </li>
-    </ul>
-    <h2 id="modo-para-comparar-dos-escenarios-distintos">Modo para comparar dos escenarios distintos</h2>
-    <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
-        <img src="assets/images/DemoLight_Tutorial_02.png"style="max-width: 100%;" alt="optionaler Titel">
-        <br/>
+        <h2 id="modo-est-ndar">Modo estándar</h2>
+        <p><strong>1. paso:</strong> Seleccione un terremoto:
+            Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
+            desplegable.</p>
+        <p><strong>2. paso:</strong> Espere a que se analice el proceso.
+            Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información:<br/>
+            <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <p><strong>3. paso:</strong> Analice los resultados de las distintas etapas de la cadena multi-riesgo:</p>
+        <ul>
+            <li>Si hace clic en un texto verde, aparecerá el resultado. Además, hay una pestaña para una descripción o leyenda.
+            </li>
+            <li>Se puede solicitar información haciendo clic en el mapa. Esto suele abrir nuevas ventanas emergentes.</li>
+            <li>Si se pasa el ratón por encima de los gráficos de barras, se puede solicitar más información (por ejemplo,
+                número de edificios).
+            </li>
+        </ul>
+        <h2 id="modo-para-comparar-dos-escenarios-distintos">Modo para comparar dos escenarios distintos</h2>
+        <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
+            <img src="assets/images/DemoLight_Tutorial_Chile_02.png"style="max-width: 100%;" alt="optionaler Titel">
+            <br/>
+        
+            <strong>1. paso:</strong> Seleccione un terremoto <em>en el menú de la izquierda</em>:
+            Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
+            desplegable.
+        </p>
+        <p><strong>2. paso:</strong> Espere a que se analice el proceso.
+            Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información: <br/>
+            <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <p><strong>3. paso:</strong> En cuanto se procesa un escenario en la parte izquierda, aparece una ventana emergente con
+            la siguiente información:
+        </p>
+        <img src="assets/images/DemoLight_Tutorial_PopUp_03.png"style="max-width: 100%" alt="optionaler Titel">
+        <p><strong>4. paso:</strong> : Seleccione otro escenario en el menú de la derecha y espere a que finalice el proceso de análisis.</p>
+        <p><strong>5. paso:</strong>  Compare los resultados de dos escenarios diferentes. Tenga en cuenta que las secciones del mapa están
+                vinculadas entre ellas.</p>
     
-        <strong>1. paso:</strong> Seleccione un terremoto <em>en el menú de la izquierda</em>:
-        Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
-        desplegable.
-    </p>
-    <p><strong>2. paso:</strong> Espere a que se analice el proceso.
-        Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información: <br/>
-        <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
-    </p>
-    <p><strong>3. paso:</strong> En cuanto se procesa un escenario en la parte izquierda, aparece una ventana emergente con
-        la siguiente información:
-    </p>
-    <img src="assets/images/DemoLight_Tutorial_PopUp_03.png"style="max-width: 100%" alt="optionaler Titel">
-    <p><strong>4. paso:</strong> : Seleccione otro escenario en el menú de la derecha y espere a que finalice el proceso de análisis.</p>
-    <p><strong>5. paso:</strong>  Compare los resultados de dos escenarios diferentes. Tenga en cuenta que las secciones del mapa están
-            vinculadas entre ellas.</p>
+    
+    
+        <h2 id="modo-para-comparar-diferentes-pasos-de-un-mismo-escenario">Modo para comparar diferentes pasos de un mismo
+            escenario</h2>
+        <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
+            <img src="assets/images/DemoLight_Tutorial_Chile_03.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <p><strong>1. paso:</strong> Seleccione un terremoto en el menú de la izquierda:
+            Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
+            desplegable.</p>
+        <p><strong>2. paso:</strong> Espere a que se analice el proceso.
+            Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información:<br/>
+            <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <p><strong>3. paso:</strong> En cuanto se procesa un escenario, aparece una ventana emergente con la siguiente
+            información:
+        </p>
+        <img src="assets/images/DemoLight_Tutorial_PopUp_04.png"style="max-width: 100%;" alt="optionaler Titel">
+        <p><strong>4. paso:</strong> Seleccione otro escenario en el menú de la derecha y espere a que finalice el proceso de
+            análisis.</p>
+        <p><strong>5. paso:</strong> Compare los resultados de diferentes pasos de un mismo escenario. Tenga en cuenta que las
+            vistas del mapa en las dos ventanas están vinculadas por defecto en ambas ventanas. Con un clic en el botón “link”,
+            puede desvincularlos para poder ver distintas secciones del mapa.</p>
+        <h2 id="informaci-n-sobre-m-todos-y-resultados">Información sobre métodos y resultados</h2>
+        <p><strong>Selección de terremoto:</strong> Lista de escenarios de seísmos precalculados con información sobre magnitud
+            y profundidad. El color del círculo indica la profundidad del seísmo (poca profundidad = rojo oscuro; gran
+            profundidad = amarillo). El tamaño del círculo indica la magnitud.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=bae8fc94-4799-11ec-947f-3811b03e280f">Pittore
+                et al., 2021</a>
+        </p>
+        <p><strong>Movimiento de tierra:</strong> Los campos de movimiento sísmico del suelo (o ground motion fields (GMF) por
+            sus siglas en inglés) son un conjunto de valores de las aceleraciones pronosticados para las ubicaciones muestreadas
+            tras haber seleccionado un escenario de terremoto. Este escenario tuvo que haber sido seleccionado previamente de
+            uno de los catálogos antes mencionados. Tenga en cuenta que en el demostrador RIESGOS, la ubicación epicentral
+            (proyección del hipocentro en la superficie) puede no coincidir con la traza de la ruptura de la falla finita que
+            muestra los valores máximos de aceleración.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=2dd724a7-47a1-11ec-947f-3811b03e280f">Weatherhill
+                et al., 2021</a>
+        </p>
+        <p><strong>Exposición:</strong> En el contexto del demostrador RIESGOS, la palabra “exposición” solo se refiere a la
+            representación espacial y temática del stock de edificios residenciales de determinadas áreas de estudio. Este grupo
+            de clases de edificios (también llamados &quot;esquemas&quot;) tienen un conjunto asociado de modelos de fragilidad
+            que antes se calibraban por peligros individuales. En otras palabras, existe un modelo o esquema de exposición por
+            cada amenaza natural considerada y para cada área de interés.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=8c3ba5ec-26b3-11ec-9603-497c92695674">Gomez-Zapata
+                et al., 2021</a>; <a
+                href="http://www.censo2017.cl/">INE,
+                2017</a>
+        </p>
+        <p><strong>Daños post-terremoto y daños post-tsunami:</strong> Con el fin de evaluar el estado de los daños de los
+            edificios residenciales y las pérdidas tras la ocurrencia del terremoto seleccionado, se activa el servicio web de
+            actualización de la exposición a los daños. El resultado es la estimación de los daños en los edificios y los daños
+            en dólares. <em>Nota:</em> Los edificios en cada celda se reclasifican entre pasos. Esta reclasificación es un proceso
+            probabilístico en el que un edificio podría ser reclasificado  partialmente como clase A y partialmente como clase B,
+            lo que podría dar como resultado números de edificios no enteros.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674">Brinckmann
+                et al., 2021</a>
+        </p>
+        <p><strong>Daños post-tsunami:</strong> Utilizando como entradas un modelo de exposición actualizado que incluye los
+            daños inducidos por el terremoto y simulaciones de la profundidad de inundación del tsunami, se inicia de nuevo el
+            servicio web DEUS con el fin de aproximar los daños acumulados esperados y desagregar las pérdidas por evento de
+            peligro. El resultado es la estimación de los daños acumulados en los edificios y las pérdidas acumuladas en
+            dólares. <em>Nota:</em> Los edificios en cada celda se reclasifican entre pasos. Esta reclasificación es un proceso
+            probabilístico en el que un edificio podría ser reclasificado  partialmente como clase A y partialmente como clase B,
+            lo que podría dar como resultado números de edificios no enteros.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674">Brinckmann
+                et al., 2021</a>
+        </p>
+        <p><strong>Simulación de tsunami:</strong> Para aquellos terremotos que potencialmente pueden desencadenar un tsunami,
+            se introduce otro servicio web que proporciona acceso a simulaciones numéricas precalculadas de tsunamis. Las
+            simulaciones se generaron utilizando el modelo físico de generación y propagación TsunAWI, que tiene en cuenta una
+            malla triangular con resolución variable. Los resultados disponibles incluyen los tiempos de llegada y la
+            profundidad de inundación del tsunami.</p>
+        <p><strong>Red eléctrica:</strong> Por último, se puede recibir información sobre la vulnerabilidad de la red eléctrica
+            mostrando una probabilidad espacialmente distribuida de interrupción del servicio en la zona afectada. Dicha
+            probabilidad se calcula a partir de una simulación Monte Carlo de fallos en cascada dentro de la red. 
+            <br/>
+            Fuentes de datos: 
+            <a href="https://github.com/riesgos/System_Reliability">Rosero, 2020</a>; 
+            <a href="https://www.coordinador.cl/">SEN, 2019</a>
+            <a href="https://www.sec.cl/">SEC, 2019</a>
+        </p>
+    </div>
+</ng-template>
+
+<ng-template #peruTutorial>
+    <div class="tutorialPage">
+
+        <h1 id="riesgos-demonstator-light-tutorial">RIESGOS DEMONSTATOR LIGHT - Tutorial</h1>
+        <h2 id="introducci-n">Introducción</h2>
+        <p>El “RIESGOS Demostrador” es un sistema de información desarrollado en el marco del proyecto RIESGOS con el propósito
+            de analizar escenarios multi-riesgos de amenazas naturales como terremotos, deslizamientos, volcanes, inundaciones y
+            tsunamis.
+            La versión básica (“RIESGOS Demostrador Light”) permite al usuario simular un terremoto frente a las costas de
+            Lima y Callao en Perú y analizar los efectos en cascada, por ejemplo, el tsunami que se
+            produciría, los daños en los edificios residenciales y en la red eléctrica.
+            Las simulaciones se basan en modelos científicos desarrollados por el proyecto RIESGOS utilizando bases de datos
+            de diferentes fuentes que no han sido revisadas ni autorizadas por las entidades sectoriales del Perú. Por este
+            motivo la información presentada en ningún caso debe ser utilizada para la planificación u otras aplicaciones
+            prácticas.
+            <br/>
+        </p>
+        <h2 id="-c-mo-empezar-">¿Cómo empezar?</h2>
+        <p>Seleccione un modo haciendo clic en la opción correspondiente:</p>
+        <ul>
+            <li><strong>Modo estándar</strong>: Seleccione un escenario para realizar un análisis multi-riesgos.</li>
+            <li><strong>Comparar dos escenarios distintos</strong>: Seleccione dos escenarios distintos para comparar los
+                resultados del análisis multi-riesgos en dos ventanas separadas.</li>
+            <li><strong>Comparar diferentes pasos de un mismo escenario</strong>: Seleccione un escenario para comparar los
+                diferentes pasos del análisis multi-riesgos del mismo escenario en dos ventanas separadas.
+                <br/>
+            </li>
+        </ul>
+        <h2 id="funcionalidades-de-la-herramienta">Funcionalidades de la herramienta</h2>
+        <p><img src="assets/images/DemoLight_Tutorial_Peru_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <h2 id="botones">Botones</h2>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_01.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para mostrar u ocultar el menú</p>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_02.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón de actualización para recargar el proceso</p>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_03.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para mostrar el resultado</p>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_04.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para ocultar el resultado</p>
+        <p style="display: flex; align-items: center;"><img src="assets/images/DemoLight_Tutorial_Button_05.png"style="width: 30px; margin-right: 0.5rem;" alt="optionaler Titel"> Botón para vincular o desvincular las vistas del mapa en las dos ventanas (sólo en el modo para comparar diferentes pasos de un mismo escenario)</p>
+            
+        
+    
+        <h2 id="modo-est-ndar">Modo estándar</h2>
+        <p><strong>1. paso:</strong> Seleccione un terremoto:
+            Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
+            desplegable.</p>
+        <p><strong>2. paso:</strong> Espere a que se analice el proceso.
+            Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información:<br/>
+            <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <p><strong>3. paso:</strong> Analice los resultados de las distintas etapas de la cadena multi-riesgo:</p>
+        <ul>
+            <li>Si hace clic en un texto verde, aparecerá el resultado. Además, hay una pestaña para una descripción o leyenda.
+            </li>
+            <li>Se puede solicitar información haciendo clic en el mapa. Esto suele abrir nuevas ventanas emergentes.</li>
+            <li>Si se pasa el ratón por encima de los gráficos de barras, se puede solicitar más información (por ejemplo,
+                número de edificios).
+            </li>
+        </ul>
+        <h2 id="modo-para-comparar-dos-escenarios-distintos">Modo para comparar dos escenarios</h2>
+        <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
+            <img src="assets/images/DemoLight_Tutorial_Peru_02.png"style="max-width: 100%;" alt="optionaler Titel">
+            <br/>
+        
+            <strong>1. paso:</strong> Seleccione un terremoto <em>en el menú de la izquierda</em>:
+            Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
+            desplegable.
+        </p>
+        <p><strong>2. paso:</strong> Espere a que se analice el proceso.
+            Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información: <br/>
+            <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <p><strong>3. paso:</strong> En cuanto se procesa un escenario en la parte izquierda, aparece una ventana emergente con
+            la siguiente información:
+        </p>
+        <img src="assets/images/DemoLight_Tutorial_PopUp_03.png"style="max-width: 100%" alt="optionaler Titel">
+        <p><strong>4. paso:</strong> : Seleccione otro escenario en el menú de la derecha y espere a que finalice el proceso de análisis.</p>
+        <p><strong>5. paso:</strong>  Compare los resultados de dos escenarios diferentes. Tenga en cuenta que las secciones del mapa están
+                vinculadas entre ellas.</p>
+    
+    
+    
+        <h2 id="modo-para-comparar-diferentes-pasos-de-un-mismo-escenario">Modo para comparar diferentes pasos de un mismo
+            escenario</h2>
+        <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
+            <img src="assets/images/DemoLight_Tutorial_Peru_03.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <p><strong>1. paso:</strong> Seleccione un terremoto en el menú de la izquierda:
+            Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
+            desplegable.</p>
+        <p><strong>2. paso:</strong> Espere a que se analice el proceso.
+            Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información:<br/>
+            <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
+        </p>
+        <p><strong>3. paso:</strong> En cuanto se procesa un escenario, aparece una ventana emergente con la siguiente
+            información:
+        </p>
+        <img src="assets/images/DemoLight_Tutorial_PopUp_04.png"style="max-width: 100%;" alt="optionaler Titel">
+        <p><strong>4. paso:</strong> Seleccione otro escenario en el menú de la derecha y espere a que finalice el proceso de
+            análisis.</p>
+        <p><strong>5. paso:</strong> Compare los resultados de diferentes pasos de un mismo escenario. Tenga en cuenta que las
+            vistas del mapa en las dos ventanas están vinculadas por defecto en ambas ventanas. Con un clic en el botón “link”,
+            puede desvincularlos para poder ver distintas secciones del mapa.</p>
+        <h2 id="informaci-n-sobre-m-todos-y-resultados">Información sobre métodos y resultados</h2>
+        <p><strong>Selección de terremoto:</strong> Lista de escenarios de seísmos precalculados con información sobre magnitud
+            y profundidad. El color del círculo indica la profundidad del seísmo (poca profundidad = rojo oscuro; gran
+            profundidad = amarillo). El tamaño del círculo indica la magnitud.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=bae8fc94-4799-11ec-947f-3811b03e280f">Pittore
+                et al., 2021</a>
+        </p>
+        <p><strong>Movimiento de tierra:</strong> Los campos de movimiento sísmico del suelo (o ground motion fields (GMF) por
+            sus siglas en inglés) son un conjunto de valores de las aceleraciones pronosticados para las ubicaciones muestreadas
+            tras haber seleccionado un escenario de terremoto. Este escenario tuvo que haber sido seleccionado previamente de
+            uno de los catálogos antes mencionados. Tenga en cuenta que en el demostrador RIESGOS, la ubicación epicentral
+            (proyección del hipocentro en la superficie) puede no coincidir con la traza de la ruptura de la falla finita que
+            muestra los valores máximos de aceleración.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=2dd724a7-47a1-11ec-947f-3811b03e280f">Weatherhill
+                et al., 2021</a>
+        </p>
+        <p><strong>Exposición:</strong> En el contexto del demostrador RIESGOS, la palabra “exposición” solo se refiere a la
+            representación espacial y temática del stock de edificios residenciales de determinadas áreas de estudio. Este grupo
+            de clases de edificios (también llamados &quot;esquemas&quot;) tienen un conjunto asociado de modelos de fragilidad
+            que antes se calibraban por peligros individuales. En otras palabras, existe un modelo o esquema de exposición por
+            cada amenaza natural considerada y para cada área de interés.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=8c3ba5ec-26b3-11ec-9603-497c92695674">Gomez-Zapata
+                et al., 2021</a>; <a
+                href="https://www.censos2017.pe/inei-difunde-base-de-datos-de-los-censos-nacionales-2017-y-el-perfil-sociodemografico-del-peru/">INEI,
+                2017</a>
+        </p>
+        <p><strong>Daños post-terremoto y daños post-tsunami:</strong> Con el fin de evaluar el estado de los daños de los
+            edificios residenciales y las pérdidas tras la ocurrencia del terremoto seleccionado, se activa el servicio web de
+            actualización de la exposición a los daños. El resultado es la estimación de los daños en los edificios y los daños
+            en dólares. <em>Nota:</em> Los edificios en cada celda se reclasifican entre pasos. Esta reclasificación es un proceso
+            probabilístico en el que un edificio podría ser reclasificado  partialmente como clase A y partialmente como clase B,
+            lo que podría dar como resultado números de edificios no enteros.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674">Brinckmann
+                et al., 2021</a>
+        </p>
+        <p><strong>Daños post-tsunami:</strong> Utilizando como entradas un modelo de exposición actualizado que incluye los
+            daños inducidos por el terremoto y simulaciones de la profundidad de inundación del tsunami, se inicia de nuevo el
+            servicio web DEUS con el fin de aproximar los daños acumulados esperados y desagregar las pérdidas por evento de
+            peligro. El resultado es la estimación de los daños acumulados en los edificios y las pérdidas acumuladas en
+            dólares. <em>Nota:</em> Los edificios en cada celda se reclasifican entre pasos. Esta reclasificación es un proceso
+            probabilístico en el que un edificio podría ser reclasificado  partialmente como clase A y partialmente como clase B,
+            lo que podría dar como resultado números de edificios no enteros.
+            <br>
+            Fuentes de datos: <a
+                href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674">Brinckmann
+                et al., 2021</a>
+        </p>
+        <p><strong>Simulación de tsunami:</strong> Para aquellos terremotos que potencialmente pueden desencadenar un tsunami,
+            se introduce otro servicio web que proporciona acceso a simulaciones numéricas precalculadas de tsunamis. Las
+            simulaciones se generaron utilizando el modelo físico de generación y propagación TsunAWI, que tiene en cuenta una
+            malla triangular con resolución variable. Los resultados disponibles incluyen los tiempos de llegada y la
+            profundidad de inundación del tsunami.</p>
+        <p><strong>Red eléctrica:</strong> Por último, se puede recibir información sobre la vulnerabilidad de la red eléctrica
+            mostrando una probabilidad espacialmente distribuida de interrupción del servicio en la zona afectada. Dicha
+            probabilidad se calcula a partir de una simulación Monte Carlo de fallos en cascada dentro de la red.
+            <br/>
+            Fuentes de datos: 
+            <a href="https://github.com/riesgos/System_Reliability">Rosero, 2020</a>; 
+            <a href="https://www.gob.pe/osinergmin">Osinergmin, 2019</a>;
+            <a href="https://www.coes.org.pe/portal/">COES, 2019</a>
+        </p>
+    </div>
+</ng-template>
 
 
-
-    <h2 id="modo-para-comparar-diferentes-pasos-de-un-mismo-escenario">Modo para comparar diferentes pasos de un mismo
-        escenario</h2>
-    <p>La aplicación aparece en una pantalla dividida (dos mapas en una pantalla):<br/>
-        <img src="assets/images/DemoLight_Tutorial_03.png"style="max-width: 100%;" alt="optionaler Titel">
-    </p>
-    <p><strong>1. paso:</strong> Seleccione un terremoto en el menú de la izquierda:
-        Haga clic en uno de los escenarios de terremoto que aparecen en el mapa o seleccione un terremoto de la lista
-        desplegable.</p>
-    <p><strong>2. paso:</strong> Espere a que se analice el proceso.
-        Después de hacer clic en el botón ejecutar, se abre una ventana emergente con la siguiente información:<br/>
-        <img src="assets/images/DemoLight_Tutorial_PopUp_01.png"style="max-width: 100%;" alt="optionaler Titel">
-    </p>
-    <p><strong>3. paso:</strong> En cuanto se procesa un escenario, aparece una ventana emergente con la siguiente
-        información:
-    </p>
-    <img src="assets/images/DemoLight_Tutorial_PopUp_04.png"style="max-width: 100%;" alt="optionaler Titel">
-    <p><strong>4. paso:</strong> Seleccione otro escenario en el menú de la derecha y espere a que finalice el proceso de
-        análisis.</p>
-    <p><strong>5. paso:</strong> Compare los resultados de diferentes pasos de un mismo escenario. Tenga en cuenta que las
-        vistas del mapa en las dos ventanas están vinculadas por defecto en ambas ventanas. Con un clic en el botón “link”,
-        puede desvincularlos para poder ver distintas secciones del mapa.</p>
-    <h2 id="informaci-n-sobre-m-todos-y-resultados">Información sobre métodos y resultados</h2>
-    <p><strong>Selección de terremoto:</strong> Lista de escenarios de seísmos precalculados con información sobre magnitud
-        y profundidad. El color del círculo indica la profundidad del seísmo (poca profundidad = rojo oscuro; gran
-        profundidad = amarillo). El tamaño del círculo indica la magnitud.
-        <br>
-        Fuentes de datos: <a
-            href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=bae8fc94-4799-11ec-947f-3811b03e280f">Pittore
-            et al., 2021</a>
-    </p>
-    <p><strong>Movimiento de tierra:</strong> Los campos de movimiento sísmico del suelo (o ground motion fields (GMF) por
-        sus siglas en inglés) son un conjunto de valores de las aceleraciones pronosticados para las ubicaciones muestreadas
-        tras haber seleccionado un escenario de terremoto. Este escenario tuvo que haber sido seleccionado previamente de
-        uno de los catálogos antes mencionados. Tenga en cuenta que en el demostrador RIESGOS, la ubicación epicentral
-        (proyección del hipocentro en la superficie) puede no coincidir con la traza de la ruptura de la falla finita que
-        muestra los valores máximos de aceleración.
-        <br>
-        Fuentes de datos: <a
-            href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=2dd724a7-47a1-11ec-947f-3811b03e280f">Weatherhill
-            et al., 2021</a>
-    </p>
-    <p><strong>Exposición:</strong> En el contexto del demostrador RIESGOS, la palabra “exposición” solo se refiere a la
-        representación espacial y temática del stock de edificios residenciales de determinadas áreas de estudio. Este grupo
-        de clases de edificios (también llamados &quot;esquemas&quot;) tienen un conjunto asociado de modelos de fragilidad
-        que antes se calibraban por peligros individuales. En otras palabras, existe un modelo o esquema de exposición por
-        cada amenaza natural considerada y para cada área de interés.
-        <br>
-        Fuentes de datos: <a
-            href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=8c3ba5ec-26b3-11ec-9603-497c92695674">Gomez-Zapata
-            et al., 2021</a>; <a
-            href="https://www.censos2017.pe/inei-difunde-base-de-datos-de-los-censos-nacionales-2017-y-el-perfil-sociodemografico-del-peru/">INEI,
-            2017</a>
-    </p>
-    <p><strong>Daños post-terremoto y daños post-tsunami:</strong> Con el fin de evaluar el estado de los daños de los
-        edificios residenciales y las pérdidas tras la ocurrencia del terremoto seleccionado, se activa el servicio web de
-        actualización de la exposición a los daños. El resultado es la estimación de los daños en los edificios y los daños
-        en dólares. <em>Nota:</em> Los edificios en cada celda se reclasifican entre pasos. Esta reclasificación es un proceso
-        probabilístico en el que un edificio podría ser reclasificado  partialmente como clase A y partialmente como clase B,
-        lo que podría dar como resultado números de edificios no enteros.
-        <br>
-        Fuentes de datos: <a
-            href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674">Brinckmann
-            et al., 2021</a>
-    </p>
-    <p><strong>Daños post-tsunami:</strong> Utilizando como entradas un modelo de exposición actualizado que incluye los
-        daños inducidos por el terremoto y simulaciones de la profundidad de inundación del tsunami, se inicia de nuevo el
-        servicio web DEUS con el fin de aproximar los daños acumulados esperados y desagregar las pérdidas por evento de
-        peligro. El resultado es la estimación de los daños acumulados en los edificios y las pérdidas acumuladas en
-        dólares. <em>Nota:</em> Los edificios en cada celda se reclasifican entre pasos. Esta reclasificación es un proceso
-        probabilístico en el que un edificio podría ser reclasificado  partialmente como clase A y partialmente como clase B,
-        lo que podría dar como resultado números de edificios no enteros.
-        <br>
-        Fuentes de datos: <a
-            href="https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=d38d2b34-d5ba-11eb-9603-497c92695674">Brinckmann
-            et al., 2021</a>
-    </p>
-    <p><strong>Simulación de tsunami:</strong> Para aquellos terremotos que potencialmente pueden desencadenar un tsunami,
-        se introduce otro servicio web que proporciona acceso a simulaciones numéricas precalculadas de tsunamis. Las
-        simulaciones se generaron utilizando el modelo físico de generación y propagación TsunAWI, que tiene en cuenta una
-        malla triangular con resolución variable. Los resultados disponibles incluyen los tiempos de llegada y la
-        profundidad de inundación del tsunami.</p>
-    <p><strong>Red eléctrica:</strong> Por último, se puede recibir información sobre la vulnerabilidad de la red eléctrica
-        mostrando una probabilidad espacialmente distribuida de interrupción del servicio en la zona afectada. Dicha
-        probabilidad se calcula a partir de una simulación Monte Carlo de fallos en cascada dentro de la red.
-        <br/>
-        Fuentes de datos: 
-        <a href="https://github.com/riesgos/System_Reliability">Rosero, 2020</a>; 
-        <a href="https://www.gob.pe/osinergmin">Osinergmin, 2019</a>;
-        <a href="https://www.coes.org.pe/portal/">COES, 2019</a>
-    </p>
-</div>

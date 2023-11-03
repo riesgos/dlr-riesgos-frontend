@@ -8,7 +8,7 @@ async function calculateDamage(inputs: Datum[]) {
     const exposureModelRef = inputs.find(i => i.id === 'exposureRefChile')!;
     const fragilityRef = await getFragility('SARA_v1.0');
     
-    const { wms, summary, damageRef, shapefile } = await getDamage('SARA_v1.0', fragilityRef, eqSimXmlRef.value, exposureModelRef.value);
+    const { wms, summary, damageRef } = await getDamage('SARA_v1.0', fragilityRef, eqSimXmlRef.value, exposureModelRef.value);
   
     return [{
         id: 'eqDamageWmsChile',
@@ -19,9 +19,9 @@ async function calculateDamage(inputs: Datum[]) {
     }, {
         id: 'eqDamageRefChile',
         value: damageRef
-    }, {
-        id: 'eqDamageShapefileChile',
-        value: shapefile
+    // }, {
+    //     id: 'eqDamageShapefileChile',
+    //     value: shapefile
     }];
 }
 
@@ -42,8 +42,8 @@ export const step: Step = {
         id: 'eqDamageSummaryChile'
     }, {
         id: 'eqDamageRefChile'
-    }, {
-        id: 'eqDamageShapefileChile'
+    // }, {
+    //     id: 'eqDamageShapefileChile'
     }],
     function: calculateDamage
 };

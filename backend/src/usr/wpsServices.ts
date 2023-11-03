@@ -376,12 +376,12 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
         format: 'application/WMS',
         encoding: 'UTF-8'
     }, {
-        id: 'shapefile_summary',
-        type: 'complex',
-        reference: true,
-        format: 'application/x-zipped-shp',
-        // encoding: 'base64'
-    }, {
+    //     id: 'shapefile_summary',
+    //     type: 'complex',
+    //     reference: true,
+    //     format: 'application/x-zipped-shp',
+    //     // encoding: 'base64'
+    // }, {
         id: 'meta_summary',
         type: 'complex',
         reference: false,
@@ -400,7 +400,7 @@ export async function getDamage(schemaName: Schema, fragilityRef: string, intens
 
     return {
         wms: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === 'application/WMS')?.value[0],
-        shapefile: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === 'application/x-zipped-shp')?.value,
+        // shapefile: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === 'application/x-zipped-shp')?.value,
         summary: results.find(r => r.description.id === 'meta_summary')?.value[0],
         damageRef: results.find(r => r.description.id === 'merged_output')?.value
     };
@@ -533,12 +533,12 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
         type: 'complex',
         reference: false,
         format: 'application/WMS'
-    }, {
-        id: 'shapefile_summary',
-        type: 'complex',
-        reference: true,
-        format: 'application/x-zipped-shp',
-        // encoding: 'base64'
+    // }, {
+    //     id: 'shapefile_summary',
+    //     type: 'complex',
+    //     reference: true,
+    //     format: 'application/x-zipped-shp',
+    //     // encoding: 'base64'
     }, {
         id: 'merged_output',
         reference: true,
@@ -556,7 +556,7 @@ export async function getNeptunusTsunamiDamage(schemaName: Schema, fragilityRef:
 
     return {
         wms: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === "application/WMS")?.value[0],
-        shapefile: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === "application/x-zipped-shp")?.value,
+        // shapefile: results.find(r => r.description.id === 'shapefile_summary' && r.description.format === "application/x-zipped-shp")?.value,
         summary: results.find(r => r.description.id === 'meta_summary')?.value[0],
         damageRef: results.find(r => r.description.id === 'merged_output' && r.description.reference === true)?.value,
     };

@@ -3,6 +3,7 @@ import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
 import { MultiLegendComponent } from "../../tabComponents/legends/legendComponents/multi-legend/multi-legend.component";
 import { ImageLegendComponent } from "../../tabComponents/legends/image-legend/image-legend.component";
+import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
 
 
 export class CachedTsSim implements Converter {
@@ -23,21 +24,28 @@ export class CachedTsSim implements Converter {
             inputs: [],
             step: step,
             legend: () => ({
-                component: MultiLegendComponent,
+                component: LegendComponent,
                 args: {
-                    legendComponents: [{
-                        component: ImageLegendComponent,
-                        args: {
-                            title: 'mwhLand_local',
-                            url: 'https://riesgos.52north.org/tsuna_geoserver/70000011/ows?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.3.0&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=70000011_mwhLand_local&STYLES=default',
-                        }
-                    // }, {
-                    //     component: ImageLegendComponent,
-                    //     args: {
-                    //         title: 'mwh',
-                    //         url: 'https://riesgos.52north.org/tsuna_geoserver/70000011/ows?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.3.0&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=70000011_mwh&STYLES=default',
-                    //     }
-                    }]
+                    title: 'mwhLand_local',
+                    entries: [{
+                        text: '>= 0.10 m',
+                        color: `rgb(44, 151, 184)`,
+                    }, {
+                        text: '>= 0.5 m',
+                        color: `rgb(161, 218, 180)`,
+                    }, {
+                        text: '>= 1.0 m',
+                        color: `rgb(231, 253, 112)`,
+                    }, {
+                        text: '>= 5.0 m',
+                        color: `rgb(255, 149, 59)`,
+                    }, {
+                        text: '>= 15.0 m',
+                        color: `rgb(255, 0, 0)`
+                    }],
+                    continuous: true,
+                    height: 100,
+                    width: 100
                 }
             })
         };

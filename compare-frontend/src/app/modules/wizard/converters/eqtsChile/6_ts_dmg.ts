@@ -3,6 +3,7 @@ import { Converter } from "../../converter.service";
 import { WizardComposite } from "../../wizard.service";
 import { TranslatedImageComponent } from "../../tabComponents/legends/translated-image/translated-image.component";
 import { MultiLegendComponent } from "../../tabComponents/legends/legendComponents/multi-legend/multi-legend.component";
+import { LegendComponent } from "../../tabComponents/legends/legendComponents/legend/legend.component";
 
 
 export class WizardTsDmgChile implements Converter {
@@ -38,20 +39,52 @@ export class WizardTsDmgChile implements Converter {
                 component: MultiLegendComponent,
                 args: {
                     legendComponents: [{
-                        component: TranslatedImageComponent,
+                        component: LegendComponent,
                         args: {
-                            languageImageMap: {
-                                'EN': baseLegendEcon + '&style=style-damagestate-sara-plasma&language=en',
-                                'ES': baseLegendEcon + '&style=style-damagestate-sara-plasma',
-                            }
+                            title: 'Daños',
+                            entries: [{
+                                text: 'Sin datos',
+                                color: `rgb(224, 224, 224)`,
+                            }, {
+                                text: 'Daño leve',
+                                color: `rgb(236, 234, 197)`,
+                            }, {
+                                text: 'Daño moderado',
+                                color: `rgb(218, 179, 155)`,
+                            }, {
+                                text: 'Daño fuerte',
+                                color: `rgb(195, 139, 136)`,
+                            }, {
+                                text: 'Daño severo',
+                                color: `rgb(163, 125, 137)`
+                            }],
+                            continuous: false,
+                            height: 100,
+                            width: 100
                         }
                     }, {
-                        component: TranslatedImageComponent,
+                        component: LegendComponent,
                         args: {
-                            languageImageMap: {
-                                'EN': baseLegendEcon + '&style=style-cum-loss-chile-plasma&language=en',
-                                'ES': baseLegendEcon + '&style=style-cum-loss-chile-plasma',
-                            }
+                            title: 'EqDamage-WMS-econ',
+                            entries: [{
+                                text: 'Sin datos',
+                                color: `rgb(224, 224, 224)`,
+                            }, {
+                                text: '< 50.000 USD',
+                                color: `rgb(236, 234, 197)`,
+                            }, {
+                                text: '< 100.000 USD',
+                                color: `rgb(218, 179, 155)`,
+                            }, {
+                                text: '< 1.000.000 USD',
+                                color: `rgb(195, 139, 136)`,
+                            }, {
+                                text: '> 1.000.000 USD',
+                                color: `rgb(163, 125, 137)`
+                            }],
+                            continuous: false,
+                            height: 100,
+                            width: 100
                         }
                     }]
                 }

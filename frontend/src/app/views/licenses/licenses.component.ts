@@ -17,7 +17,8 @@ export class LicensesComponent implements OnInit {
   constructor(private http: HttpClient, @Inject(APP_BASE_HREF) private baseHref: string) { }
 
   ngOnInit() {
-    this.licenses = this.http.get(`/${this.baseHref}/3rdpartylicenses.txt`, { responseType: 'text' });
+    const location = window.location;
+    this.licenses = this.http.get(`${location.origin}/${this.baseHref}/3rdpartylicenses.txt`, { responseType: 'text' });
   }
 
 }

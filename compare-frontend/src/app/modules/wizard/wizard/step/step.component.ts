@@ -41,6 +41,7 @@ export class StepComponent {
           return "buildingsTsunami";
         case "SysRel":
         case "SysRelChile":
+        case "damageConsumerAreasChile":
           return "sysrel";
         default: 
           return "questionmark"

@@ -46,8 +46,11 @@ export function getRules(ruleSet: RuleSetName | undefined): Rules {
                 if (productId === "schemaTs" || productId === "schemaTsChile") {
                     return "Medina_2019";
                 }
-                if (productId === "exposureModelName" || productId === "exposureModelNameChile") {
+                if (productId === "exposureModelName") {
                     return "LimaBlocks";
+                }
+                if (productId === "exposureModelNameChile") {
+                    return "ValpOBM23Region";
                 }
             }
             return undefined;

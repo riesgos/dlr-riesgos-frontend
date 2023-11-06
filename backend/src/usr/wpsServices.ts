@@ -231,6 +231,7 @@ export async function getFragility(schemaName: Schema) {
 export type ExposureModel = "ValpCVTBayesian" | "ValpCommuna" | "ValpRegularOriginal" | "ValpRegularGrid" | "ValpOBM23Comunas" | "ValpOBM23Region" | "LimaCVT1_PD30_TI70_5000" | "LimaCVT2_PD30_TI70_10000" | "LimaCVT3_PD30_TI70_50000" | "LimaCVT4_PD40_TI60_5000" | "LimaCVT5_PD40_TI60_10000" | "LimaCVT6_PD40_TI60_50000" | "LimaBlocks" | "LatacungaRuralAreas";
 
 
+
 /**
  * Calls Assetmaster
  */
@@ -324,6 +325,109 @@ export async function getExposureModel(modelName: ExposureModel, schemaName: Sch
     return {
         exposureModel: results.find(r => r.description.reference === false)!.value[0],
         exposureRef: results.find(r => r.description.reference === true)!.value,
+    };
+}
+
+
+/**
+ * Calls Assetmaster
+ */
+export async function getExposureModelWms(modelName: ExposureModel, schemaName: Schema, bbox: Bbox) {
+
+    const url = config.services.Exposure.url;
+    const processId = config.services.Exposure.id;
+
+
+    // bounding box: covering all study-areas (Chile, Ecuador, Peru)
+    const lonmin: WpsInput = {
+        description: {
+            id: 'lonmin',
+            reference: false,
+            type: 'literal'
+        },
+        value: bbox.lllon + ''
+    };
+    const lonmax: WpsInput = {
+        description: {
+            id: 'lonmax',
+            reference: false,
+            type: 'literal'
+        },
+        value: bbox.urlon + ''
+    };
+    const latmin: WpsInput = {
+        description: {
+            id: 'latmin',
+            reference: false,
+            type: 'literal'
+        },
+        value: bbox.lllat + ''
+    };
+    const latmax: WpsInput = {
+        description: {
+            id: 'latmax',
+            reference: false,
+            type: 'literal'
+        },
+        value: bbox.urlat + ''
+    };
+
+
+    const inputs: WpsInput[] = [{
+        description: {
+            id: 'model',
+            reference: false,
+            type: 'literal'
+        },
+        value: modelName
+    }, {
+        description: {
+            id: 'schema',
+            reference: false,
+            type: 'literal'
+        },
+        value: schemaName
+    },
+        lonmin, lonmax, latmin, latmax,
+    {
+        description: {
+            id: 'assettype',
+            type: 'literal',
+            reference: false
+        },
+        value: 'res'
+    }, {
+        description: {
+            id: 'querymode',
+            type: 'literal',
+            reference: false
+        },
+        value: 'intersects'
+    }];
+
+    const outputs: WpsOutputDescription[] = [{
+        id: 'shapefile_summary',
+        type: 'complex',
+        reference: false,
+        format: 'application/WMS'
+    }, {
+        id: 'meta_summary',
+        type: 'complex',
+        reference: false,
+        format: 'application/json'
+    }, {
+        id: 'selectedRowsGeoJson',
+        type: 'complex',
+        reference: true,
+        format: 'application/json'
+    }];
+
+    const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
+
+    return {
+        exposureWMS: results.find(r => r.description.id === "shapefile_summary")!.value,
+        exposureMetadata: results.find(r => r.description.id === "meta_summary")!.value,
+        exposureRef: results.find(r => r.description.id === "selectedRowsGeoJson")!.value,
     };
 }
 

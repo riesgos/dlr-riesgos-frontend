@@ -41,8 +41,10 @@ export class StepComponent {
           return "buildingsTsunami";
         case "SysRel":
         case "SysRelChile":
+        case "damageConsumerAreasChile":
           return "sysrel";
-        default: 
+        default:
+          console.warn(`Found no icon for stepId ${stepId}`);
           return "questionmark"
     }
   }

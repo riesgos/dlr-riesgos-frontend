@@ -2933,14 +2933,14 @@ function mimeAndEncoding(response: Response): {mimeType: string | null, encoding
 
 
 
-async function saveValueToFile(eqParaId: string, serverUrl: string, port: number, datum: Datum) {
+async function saveValueToFile(eqParaId: string, serverUrl: string, datum: Datum) {
     let value = datum.value;
     await writeJsonFile(`../cache/${eqParaId}/${datum.id}.json`, value);
 }
 
-async function saveReferenceToFile(eqParaId: string, serverUrl: string, port: number, datum: DatumReference) {
+async function saveReferenceToFile(eqParaId: string, serverUrl: string, datum: DatumReference) {
     
-    const response = await fetch(`${serverUrl}:${port}/files/${datum.reference}`);
+    const response = await fetch(`${serverUrl}/files/${datum.reference}`);
     const {mimeType, encoding} = mimeAndEncoding(response);
 
     switch (datum.id) {
@@ -3009,12 +3009,12 @@ async function saveReferenceToFile(eqParaId: string, serverUrl: string, port: nu
     }
 }
 
-async function writeAllDataToFiles(eqParaId: string, serverUrl: string, port: number, data: ScenarioState): Promise<void> {
+async function writeAllDataToFiles(eqParaId: string, serverUrl: string, data: ScenarioState): Promise<void> {
     for (const datum of data.data) {
         if (isDatumReference(datum)) {
-            await saveReferenceToFile(eqParaId, serverUrl, port, datum);
+            await saveReferenceToFile(eqParaId, serverUrl, datum);
         } else {
-            await saveValueToFile(eqParaId, serverUrl, port, datum);
+            await saveValueToFile(eqParaId, serverUrl, datum);
         }
     }
 }
@@ -3070,7 +3070,7 @@ function createParaPicker(eqPara: any): InputPicker {
     return paraPicker;
 }
 
-async function runAndSave(scenarioId: "PeruShort" | "ChileShort", serverUrl: string, port: number, overwriteExisting=true) {
+async function runAndSave(scenarioId: "PeruShort" | "ChileShort", serverUrl: string, overwriteExisting=true) {
 
     const eqParas = scenarioId === "PeruShort" ? eqParasPeru : eqParasChile;
 
@@ -3086,9 +3086,9 @@ async function runAndSave(scenarioId: "PeruShort" | "ChileShort", serverUrl: str
     
             const inputPicker = createParaPicker(eqPara);
     
-            const state = await runScenario(serverUrl, port, scenarioId, inputPicker, false, false);
+            const state = await runScenario(serverUrl, scenarioId, inputPicker, false, false);
     
-            await writeAllDataToFiles(eqPara.id, serverUrl, port, state);
+            await writeAllDataToFiles(eqPara.id, serverUrl, state);
     
             const end = new Date();
             const diff = ((end.getTime() - start.getTime()) / 1000.0).toFixed(2);
@@ -3103,4 +3103,4 @@ async function runAndSave(scenarioId: "PeruShort" | "ChileShort", serverUrl: str
 }
 
 
-runAndSave("ChileShort", "http://localhost", 8008, false);
+runAndSave("ChileShort", "http://localhost:8008", false);

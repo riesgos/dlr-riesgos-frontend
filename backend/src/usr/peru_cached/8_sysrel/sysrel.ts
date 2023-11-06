@@ -25,7 +25,7 @@ async function calcSysRel(inputs: Datum[]) {
 
 export const step: Step = {
     id: 'SysRel',
-    title: 'System reliability after EQ',
+    title: 'System reliability after EQ Peru',
     description: 'Description_system_reliability',
     inputs: [{
         id: 'selectedEq'

@@ -22,7 +22,6 @@ export class CachedSysRel implements Converter {
         if (!datum) return {hasFocus: false, inputs: [], step, layerControlables: [], oneLayerOnly: false};
 
         const wms = new URL(datum.value);
-        const baseLegend = `${wms.origin}/${wms.pathname}?REQUEST=GetLegendGraphic&SERVICE=WMS&VERSION=1.1.1&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&LAYER=${wms.searchParams.get('LAYERS')}`;
 
 
         return {
@@ -41,16 +40,16 @@ export class CachedSysRel implements Converter {
                             args: {
                                 title: this.translate.translate('Prob_Interuption'),
                                 entries: [{
-                                    text: 'p < 25 %',
+                                    text: '< 25 %',
                                     color: `rgb(236, 234, 197)`,
                                 }, {
-                                    text: 'p < 50 %',
+                                    text: '50 %',
                                     color: `rgb(218, 179, 155)`,
                                 }, {
-                                    text: 'p < 75 %',
+                                    text: '75 %',
                                     color: `rgb(195, 139, 136)`,
                                 }, {
-                                    text: 'p < 100 %',
+                                    text: '100 %',
                                     color: `rgb(163, 125, 137)`,
                                 },],
                                 continuous: true,
@@ -62,10 +61,10 @@ export class CachedSysRel implements Converter {
                             args: {
                                 title: 'Powerlines',
                                 entries: [{
-                                    text: 'Linea',
+                                    text: 'Línea',
                                     color: `rgb(240, 149, 52)`,
                                 }, {
-                                    text: 'Derivacion',
+                                    text: 'Derivación',
                                     color: `rgb(230, 229, 69)`,
                                 }],
                                 continuous: false,

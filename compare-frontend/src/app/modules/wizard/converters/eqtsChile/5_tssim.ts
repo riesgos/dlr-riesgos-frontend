@@ -28,19 +28,19 @@ export class WizardTsSimChile implements Converter {
                 args: {
                     title: 'mwhLand_local',
                     entries: [{
-                        text: '>= 0.10 m',
+                        text: '0.10 m',
                         color: `rgb(44, 151, 184)`,
                     }, {
-                        text: '>= 0.5 m',
+                        text: '0.5 m',
                         color: `rgb(161, 218, 180)`,
                     }, {
-                        text: '>= 1.0 m',
+                        text: '1.0 m',
                         color: `rgb(231, 253, 112)`,
                     }, {
-                        text: '>= 5.0 m',
+                        text: '5.0 m',
                         color: `rgb(255, 149, 59)`,
                     }, {
-                        text: '>= 15.0 m',
+                        text: '15.0 m',
                         color: `rgb(255, 0, 0)`
                     }],
                     continuous: true,

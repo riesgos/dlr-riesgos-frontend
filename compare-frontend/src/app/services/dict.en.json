@@ -1,4 +1,6 @@
 {
+    "Own code license header": "License for this software",
+    "Own code license": "This application is being distributed under an <a href='https://github.com/riesgos/dlr-riesgos-frontend/blob/main/LICENSE' target='_blank'>Apache 2</a> license. Its code  <a href='https://github.com/riesgos/dlr-riesgos-frontend/' target='_blank'>aquí</a>.",
     "dontShowAgain": "Don't show again",
     "LinkViewToggle": "Toggle link between views",
     "wizardShowOrHide": "Toggle menu",

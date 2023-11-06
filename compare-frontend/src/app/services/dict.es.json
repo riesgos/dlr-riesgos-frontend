@@ -1,4 +1,6 @@
 {
+    "Own code license header": "Licencia para este software",
+    "Own code license": "Este aplicación se distribuye bajo una licencia <a href='https://github.com/riesgos/dlr-riesgos-frontend/blob/main/LICENSE' target='_blank'>Apache 2</a>. Su código está disponible <a href='https://github.com/riesgos/dlr-riesgos-frontend/' target='_blank'>aquí</a>.",
     "ChileShort": "Zona costera del Gran Valparaíso",
     "ChileCached": "Zona costera del Gran Valparaíso",
     "Chile Scenario Description": "Simulación de un terremoto cerca de la costa de Valparaíso que desencadena un tsunami y causa daños en edificios y redes eléctricas.",

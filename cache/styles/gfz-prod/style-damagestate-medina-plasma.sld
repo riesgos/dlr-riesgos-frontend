@@ -37,7 +37,7 @@
                             </ogc:PropertyIsGreaterThan>
                             <ogc:PropertyIsLessThan>
                                 <ogc:PropertyName>w_damage</ogc:PropertyName>
-                                <ogc:Literal>1</ogc:Literal>
+                                <ogc:Literal>0.75</ogc:Literal>
                             </ogc:PropertyIsLessThan>
                         </ogc:And>
                     </ogc:Filter>
@@ -62,7 +62,7 @@
                                     <ogc:Literal>0</ogc:Literal>
                                 </ogc:PropertyIsGreaterThan>
                                 <ogc:PropertyIsLessThanOrEqualTo>
-                                    <ogc:Literal>1</ogc:Literal>
+                                    <ogc:Literal>0.75</ogc:Literal>
                                     <ogc:PropertyName>w_damage</ogc:PropertyName>
                                 </ogc:PropertyIsLessThanOrEqualTo>
                             </ogc:And>

@@ -24,56 +24,58 @@ export class SysRel implements Converter {
             legend: () => {
                return  {
                     component: MultiLegendComponent,
-                    args: [{
-                        component: LegendComponent,
-                        args: {
-                            entries: [{
-                                text: 'Prob. 0.0',
-                                color: '#00ff00'
-                            }, {
-                                text: 'Prob. 0.5',
-                                color: '#fdfd7d'
-                            }, {
-                                text: 'Prob. 1.0',
-                                color: '#ff0000'
-                            }],
-                            continuous: true,
-                            height: 90
-                        }
-                    }, {
-                        component: LegendComponent,
-                        args: {
-                            title: 'Powerlines',
-                            entries: [{
-                                text: 'Linea',
-                                color: `rgb(240, 149, 52)`,
-                            }, {
-                                text: 'Derivacion',
-                                color: `rgb(230, 229, 69)`,
-                            }],
-                            continuous: false,
-                            height: 40,
-                            width: 150,
-                        }
-                    }, {
-                        component: LegendComponent,
-                        args: {
-                            title: 'SIGRID water',
-                            entries: [{
-                                text: 'Red primaria',
-                                color: `rgb(0, 0, 0)`,
-                            }, {
-                                text: 'Red secundaria',
-                                color: `rgb(0, 95, 223)`,
-                            }, {
-                                text: 'Alcantarillado',
-                                color: `rgb(208, 4, 248)`,
-                            }],
-                            continuous: false,
-                            height: 60,
-                            width: 150,
-                        }
-                    }],
+                    args: {
+                        legendComponents: [{
+                            component: LegendComponent,
+                            args: {
+                                entries: [{
+                                    text: 'Prob. 0.0',
+                                    color: '#00ff00'
+                                }, {
+                                    text: 'Prob. 0.5',
+                                    color: '#fdfd7d'
+                                }, {
+                                    text: 'Prob. 1.0',
+                                    color: '#ff0000'
+                                }],
+                                continuous: true,
+                                height: 90
+                            }
+                        }, {
+                            component: LegendComponent,
+                            args: {
+                                title: 'Powerlines',
+                                entries: [{
+                                    text: 'Linea',
+                                    color: `rgb(240, 149, 52)`,
+                                }, {
+                                    text: 'Derivacion',
+                                    color: `rgb(230, 229, 69)`,
+                                }],
+                                continuous: false,
+                                height: 40,
+                                width: 150,
+                            }
+                        }, {
+                            component: LegendComponent,
+                            args: {
+                                title: 'SIGRID water',
+                                entries: [{
+                                    text: 'Red primaria',
+                                    color: `rgb(0, 0, 0)`,
+                                }, {
+                                    text: 'Red secundaria',
+                                    color: `rgb(0, 95, 223)`,
+                                }, {
+                                    text: 'Alcantarillado',
+                                    color: `rgb(208, 4, 248)`,
+                                }],
+                                continuous: false,
+                                height: 60,
+                                width: 150,
+                            }
+                        }]
+                    }
                 };
             }
         }

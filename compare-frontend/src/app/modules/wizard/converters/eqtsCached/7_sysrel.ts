@@ -40,19 +40,19 @@ export class CachedSysRel implements Converter {
                             args: {
                                 title: this.translate.translate('Prob_Interuption'),
                                 entries: [{
-                                    text: '< 25 %',
+                                    text: '<= 25 %',
                                     color: `rgb(236, 234, 197)`,
                                 }, {
-                                    text: '50 %',
+                                    text: '<= 50 %',
                                     color: `rgb(218, 179, 155)`,
                                 }, {
-                                    text: '75 %',
+                                    text: '<= 75 %',
                                     color: `rgb(195, 139, 136)`,
                                 }, {
-                                    text: '100 %',
+                                    text: '<= 100 %',
                                     color: `rgb(163, 125, 137)`,
                                 },],
-                                continuous: true,
+                                continuous: false,
                                 height: 80,
                                 width: 150,
                             }

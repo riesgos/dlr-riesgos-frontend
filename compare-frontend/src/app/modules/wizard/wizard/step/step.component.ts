@@ -43,7 +43,8 @@ export class StepComponent {
         case "SysRelChile":
         case "damageConsumerAreasChile":
           return "sysrel";
-        default: 
+        default:
+          console.warn(`Found no icon for stepId ${stepId}`);
           return "questionmark"
     }
   }

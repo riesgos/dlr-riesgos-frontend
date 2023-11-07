@@ -179,7 +179,7 @@ def uploadAll():
     files = [f for f in files if "DS_Store" not in f]
     files = sorted(files)
     # files = [f for f in files if "90000116" in f or "90000117" in f or "90000118" in f or "90000119" in f]
-    files = [f for f in files if int(f.replace("peru_", "")) >= 80674940]
+    # files = [f for f in files if int(f.replace("peru_", "")) >= 80674940]
     # filesRawData = files
     # files = files[:5]
 

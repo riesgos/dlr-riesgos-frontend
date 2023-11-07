@@ -52,6 +52,6 @@
             "url": "LaharUrlPlaceholder",
             "id": "gs:LaharModel"
         },
-        "cacheServer": "cacheServerPlaceholder"
+        "cacheServer": "CacheServerPlaceholder"
     }
 }

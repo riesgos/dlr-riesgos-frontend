@@ -2,7 +2,7 @@ services:
   
   backend:
     build: ./backend
-    image: dlrriesgos/backend
+    image: riesgoscached/backend
     ports:
       - 8000:8000
     volumes:
@@ -10,62 +10,41 @@ services:
       - store:/backend/data/store
     environment:
       port: 8000
-      maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
-      sendMailTo: ${sendMailTo}
-      sourceEmail: ${sourceEmail}
-      EqCatalogUrl: ${EqCatalogUrl}
-      EqSimUrl: ${EqSimUrl}
-      FragilityUrl: ${FragilityUrl}
-      ExposureUrl: ${ExposureUrl}
-      DeusUrl: ${DeusUrl}
-      NeptunusUrl: ${NeptunusUrl}
-      VolcanusUrl: ${VolcanusUrl}
-      TsunamiUrl: ${TsunamiUrl}
-      SysrelUrl: ${SysrelUrl}
-      SysrelEcuadorUrl: ${SysrelEcuadorUrl}
-      LaharUrl: ${LaharUrl}
-  
-  frontend:
-    build: ./frontend
-    image: dlrriesgos/frontend
-    depends_on:
-      - backend
-    ports:
-      - 8001:80
-    environment:
-      subPath: "/"
-      backendUrl: ${backendUrl}
+      maxStoreLifeTimeMinutes: 120
+      sendMailTo: michael.langbein@dlr.de
+      sourceEmail: test@test.com
+      EqCatalogUrl: https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+      EqSimUrl: https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+      FragilityUrl: https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+      ExposureUrl: https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+      DeusUrl: https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+      NeptunusUrl: https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+      VolcanusUrl: https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+      TsunamiUrl: https://riesgos.52north.org/wps
+      SysrelUrl: https://riesgos.52north.org/javaps/service
+      SysrelEcuadorUrl: https://riesgos.52north.org/javaps/service
+      LaharUrl: https://riesgos.52north.org/geoserver/ows
+      CacheServer: http://localhost:8003/geoserver/riesgos/wms
 
   compare-frontend:
     build: ./compare-frontend
-    image: dlrriesgos/compare-frontend
+    image: riesgoscached/compare-frontend
     depends_on:
       - backend
     ports:
       - 8002:80
     environment:
       subPath: "/"
-      backendUrl: ${backendUrl}
+      backendUrl: http://localhost:8000
       allowedScenarios: '["ChileCached", "PeruCached"]'
 
-  # cache-server:
-  #   image: docker.osgeo.org/geoserver:2.23.1
-  #   ports:
-  #     - 8003:8080
-  #   environment:
-  #     CORS_ENABLED: true
-  #     SKIP_DEMO_DATA: true
-      
-  # monitor:
-  #   build: ./monitor
-  #   image: dlrriesgos/monitor
-  #   depends_on:
-  #     - backend
-  #   environment:
-  #     backendUrl: "http://backend:8000"
-  #     sendMailTo: ${sendMailTo}
-  #     sourceEmail: ${sourceEmail}
-  #     testServiceEveryMinutes: ${testServiceEveryMinutes}
+  cache-server:
+    image: docker.osgeo.org/geoserver:2.23.1
+    ports:
+      - 8003:8080
+    environment:
+      CORS_ENABLED: true
+      SKIP_DEMO_DATA: true
 
       
 

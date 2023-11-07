@@ -2,6 +2,9 @@ FROM node:18
 
 WORKDIR backend
 
+RUN apt-get update
+RUN apt-get install vim curl -y
+
 # install and build
 COPY . .
 RUN npm ci
@@ -29,6 +32,7 @@ ENV TsunamiUrl "https://riesgos.52north.org/wps"
 ENV SysrelUrl "https://riesgos.52north.org/javaps/service"
 ENV SysrelEcuadorUrl "https://riesgos.52north.org/javaps/service"
 ENV LaharUrl "https://riesgos.52north.org/geoserver/ows"
+ENV CacheServer "https://riesgos.dlr.de/cacheServer"
 
 
 # running

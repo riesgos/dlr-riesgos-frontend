@@ -3,9 +3,6 @@ services:
   backend:
     build: ./backend
     image: riesgoscached/backend
-    volumes:
-      - logs:/backend/data/logs
-      - store:/backend/data/store
     environment:
       port: 80
       maxStoreLifeTimeMinutes: 120
@@ -34,11 +31,11 @@ services:
 
   cache-server:
     image: docker.osgeo.org/geoserver:2.23.1
-    ports:
-      - 8080:8080
     environment:
       CORS_ENABLED: true
       SKIP_DEMO_DATA: true
+    volumes:
+      - ./geoServerData:/opt/geoserver
 
   proxy:
     image: nginx:1.23.2-alpine
@@ -47,9 +44,3 @@ services:
     volumes:
       - ./reverse_proxy/default.conf:/etc/nginx/conf.d/default.conf:ro
       
-
-
-volumes:
-  logs: 
-  store:
-

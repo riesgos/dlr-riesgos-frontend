@@ -35,7 +35,7 @@ services:
       CORS_ENABLED: true
       SKIP_DEMO_DATA: true
     volumes:
-      - ./geoServerData:/opt/geoserver
+      - ./geoServerData:/opt/geoserver_data
 
   proxy:
     image: nginx:1.23.2-alpine

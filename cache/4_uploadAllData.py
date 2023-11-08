@@ -277,7 +277,7 @@ def uploadAll():
 
 
 #%%
-geoserverUrl= "http://10.17.192.96:8080/geoserver"
+geoserverUrl= "http://18.230.155.206/geoserver"
 geo = MyGeoserver(geoserverUrl, username="admin", password="geoserver")
 uploadAll()
 

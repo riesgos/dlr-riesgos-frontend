@@ -218,6 +218,10 @@ export const reducer = createReducer(
                 step.state = {type: StepStateTypes.unavailable};
               }
             }
+
+            // 4: activating first step
+            partitionData.focus.focusedSteps = [partitionData.steps[0].step.id];
+            
           }
         }
       }

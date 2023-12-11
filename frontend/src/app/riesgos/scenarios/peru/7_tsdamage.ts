@@ -24,7 +24,6 @@ import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
 import { State } from "src/app/ngrx_register";
 import { TranslatedImageComponent } from "src/app/components/dynamic/translated-image/translated-image.component";
-import { fileGroupIcon } from "@cds/core/icon";
 
 
 

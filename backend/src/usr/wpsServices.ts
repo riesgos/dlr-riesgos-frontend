@@ -425,7 +425,7 @@ export async function getExposureModelWms(modelName: ExposureModel, schemaName: 
     const results = await wpsClient1.executeAsync(url, processId, inputs, outputs);
 
     return {
-        exposureWMS: results.find(r => r.description.id === "shapefile_summary")!.value,
+        exposureWms: results.find(r => r.description.id === "shapefile_summary")!.value,
         exposureMetadata: results.find(r => r.description.id === "meta_summary")!.value,
         exposureRef: results.find(r => r.description.id === "selectedRowsGeoJson")!.value,
     };

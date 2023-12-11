@@ -1,5 +1,5 @@
 import { Datum, Step } from "../../../scenarios/scenarios";
-import { Bbox, getExposureModel } from "../../wpsServices";
+import { Bbox, getExposureModelWms } from "../../wpsServices";
 
 async function getExposure(inputs: Datum[]) {
 
@@ -13,15 +13,18 @@ async function getExposure(inputs: Datum[]) {
         urlat: -32
     }
 
-    const { exposureModel, exposureRef } = await getExposureModel(exposureSelection.value, 'SARA_v1.0', bbox);
+    const { exposureWms, exposureRef, exposureMetadata } = await getExposureModelWms(exposureSelection.value, 'SARA_v1.0', bbox);
   
     return [{
-        id: 'exposureChile',
-        value: exposureModel
+        id: 'exposureWmsChile',
+        value: exposureWms
+    }, {
+        id: 'exposureMetaChile',
+        value: exposureMetadata
     }, {
         id: 'exposureRefChile',
         value: exposureRef
-    }];
+    }]
 }
 
 
@@ -42,9 +45,11 @@ export const step: Step = {
          ]
     }],
     outputs: [{
-        id: 'exposureChile'
+        id: 'exposureWmsChile'
     }, {
         id: 'exposureRefChile'
+    }, {
+        id: 'exposureMetaChile'
     }],
     function: getExposure
 };

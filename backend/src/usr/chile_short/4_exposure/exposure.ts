@@ -14,11 +14,11 @@ async function getExposure(inputs: Datum[]) {
         urlat: -32
     }
 
-    const { exposureWMS, exposureMetadata, exposureRef} = await getExposureModelWms(exposureSelection.value, 'SARA_v1.0', bbox);
+    const { exposureWms, exposureMetadata, exposureRef} = await getExposureModelWms(exposureSelection.value, 'SARA_v1.0', bbox);
   
     return [{
         id: 'exposureWmsChile',
-        value: exposureWMS
+        value: exposureWms
     }, {
         id: 'exposureMetaChile',
         value: exposureMetadata

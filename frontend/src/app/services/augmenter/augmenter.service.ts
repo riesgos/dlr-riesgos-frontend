@@ -35,6 +35,7 @@ import { LaharDirection, LaharSim, LaharWmses } from 'src/app/riesgos/scenarios/
 import { LaharDamage, LaharDamageMultiLayer } from 'src/app/riesgos/scenarios/ecuador/7_lahardamage';
 import { LaharAshfallDamage, LaharAshfallDamageMultiLayer } from 'src/app/riesgos/scenarios/ecuador/8_laharAndAshDamage';
 import { DamageConsumerAreasEcuador, LaharReliability } from 'src/app/riesgos/scenarios/ecuador/9_sysrel';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -95,6 +96,7 @@ export class AugmenterService {
     private store: Store<State>,
     private dataSvc: DataService,
     private config: ConfigService,
+    private http: HttpClient,
   ) {
     this.augmenters = [
 
@@ -104,7 +106,7 @@ export class AugmenterService {
       new ZminPeru(), new ZmaxPeru(), new PPeru(),            new QuakeLedgerPeru(),    new AvailableEqsPeru(),
       new UserinputSelectedEqPeru(this.store, this.dataSvc),  new EqSelectionPeru(),    new SelectedEqPeru(),
       new VsgridPeru(), new GmpePeru(),                       new ShakygroundPeru(),    new ShakemapWmsPeru(),
-      new ModelChoicePeru(),                                  new ExposureModelPeru(),  new InitialExposurePeru(),  
+      new ModelChoicePeru(),                                  new ExposureModelPeru(),  new InitialExposurePeru(this.store, this.dataSvc, this.http),  
                                                               new EqDeusPeru(),         new EqDamageWmsPeru(this.store, this.dataSvc),
                                                               new TsServicePeru(),      new TsWmsPeru(),
       new SchemaTs(),                                         new TsDeusPeru(),         new TsDamageWmsPeru(this.store, this.dataSvc),
@@ -117,7 +119,7 @@ export class AugmenterService {
       new ZminChile(), new ZmaxChile(), new PChile(),          new QuakeLedgerChile(),    new AvailableEqsChile(),
       new UserinputSelectedEqChile(this.store, this.dataSvc),  new EqSelectionChile(),    new SelectedEqChile(),
       new VsgridChile(), new GmpeChile(),                      new ShakygroundChile(),    new ShakemapWmsChile(),
-      new ModelChoiceChile(),                                  new ExposureModelChile(),  new InitialExposureChile(),  
+      new ModelChoiceChile(),                                  new ExposureModelChile(),  new InitialExposureChile(this.store, this.dataSvc, this.http),  
                                                                new EqDeusChile(),         new EqDamageWmsChile(this.store, this.dataSvc),
                                                                new TsServiceChile(),      new TsWmsChile(),
       new SchemaTsChile(),                                     new TsDeusChile(),         new TsDamageWmsChile(this.store, this.dataSvc),

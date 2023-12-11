@@ -14,7 +14,7 @@ import { MapOlService } from '@dlr-eoc/map-ol';
 import { LayersService } from '@dlr-eoc/services-layers';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { filter, map, switchMap, take } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take } from 'rxjs/operators';
 import { combineLatest, of } from 'rxjs';
 import { WizardableStep } from 'src/app/components/config_wizard/wizardable_steps';
 import { LayerMarshaller } from 'src/app/components/map/mappable/layer_marshaller';
@@ -28,6 +28,7 @@ import { TranslatedImageComponent } from 'src/app/components/dynamic/translated-
 export class EqDamageWmsPeru implements MappableProductAugmenter {
 
     private metadata$ = this.store.select(getProduct('eqDamageSummary')).pipe(
+        shareReplay(),
         switchMap(p => {
             if (p) {
                 if (p.reference) return this.resolver.resolveReference(p);

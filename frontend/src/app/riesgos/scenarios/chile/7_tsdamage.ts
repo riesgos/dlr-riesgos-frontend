@@ -3,7 +3,7 @@ import { MapOlService } from "@dlr-eoc/map-ol";
 import { LayersService } from "@dlr-eoc/services-layers";
 import { Store } from "@ngrx/store";
 import { BehaviorSubject, combineLatest, of } from "rxjs";
-import { switchMap, map, withLatestFrom, take, filter } from "rxjs/operators";
+import { switchMap, map, withLatestFrom, take, filter, shareReplay } from "rxjs/operators";
 import { StringSelectUserConfigurableProduct } from "src/app/components/config_wizard/wizardable_products";
 import { WizardableStep } from "src/app/components/config_wizard/wizardable_steps";
 import { DamagePopupComponent } from "src/app/components/dynamic/damage-popup/damage-popup.component";
@@ -57,6 +57,7 @@ export class SchemaTsChile implements WizardableProductAugmenter {
 export class TsDamageWmsChile implements MappableProductAugmenter {
 
     private tsDamageSummary$ = this.store.select(getProduct('tsDamageSummaryChile')).pipe(
+        shareReplay(),
         switchMap(p => {
             if (p) {
                 if (p.reference) return this.resolver.resolveReference(p);
@@ -68,6 +69,7 @@ export class TsDamageWmsChile implements MappableProductAugmenter {
     );
 
     private tsSchema$ = this.store.select(getProduct('schemaTsChile')).pipe(
+        shareReplay(),
         switchMap(p => {
             if (p) {
                 if (p.reference) return this.resolver.resolveReference(p);

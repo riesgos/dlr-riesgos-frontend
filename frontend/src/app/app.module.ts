@@ -84,6 +84,7 @@ import { CircleLegendComponent } from './components/dynamic/circle-legend/circle
 import { MultiLegendComponent } from './components/dynamic/multi-legend/multi-legend.component';
 import { LegendItemComponent } from './components/print/legend-item/legend-item.component';
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
+import { AsyncBarchartComponent } from './components/dynamic/async-barchart/async-barchart.component';
 // loading an icon from the "core set" now must be done manually
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
@@ -145,6 +146,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     CircleLegendComponent,
     MultiLegendComponent,
     LegendItemComponent,
+    AsyncBarchartComponent,
   ],
   imports: [
     BrowserAnimationsModule,

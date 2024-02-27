@@ -1,76 +1,72 @@
 services:
-  
-  backend:
-    build: ./backend
-    image: dlrriesgos/backend
-    ports:
-      - 8000:8000
-    volumes:
-      - logs:/backend/data/logs
-      - store:/backend/data/store
-    environment:
-      port: 8000
-      maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
-      sendMailTo: ${sendMailTo}
-      sourceEmail: ${sourceEmail}
-      EqCatalogUrl: ${EqCatalogUrl}
-      EqSimUrl: ${EqSimUrl}
-      FragilityUrl: ${FragilityUrl}
-      ExposureUrl: ${ExposureUrl}
-      DeusUrl: ${DeusUrl}
-      NeptunusUrl: ${NeptunusUrl}
-      VolcanusUrl: ${VolcanusUrl}
-      TsunamiUrl: ${TsunamiUrl}
-      SysrelUrl: ${SysrelUrl}
-      SysrelEcuadorUrl: ${SysrelEcuadorUrl}
-      LaharUrl: ${LaharUrl}
-  
-  frontend:
-    build: ./frontend
-    image: dlrriesgos/frontend
-    depends_on:
-      - backend
-    ports:
-      - 8001:80
-    environment:
-      subPath: "/"
-      backendUrl: ${backendUrl}
+    backend:
+        build: ./backend
+        image: dlrriesgos/backend
+        ports:
+            - 8000:8000
+        volumes:
+            - logs:/backend/data/logs
+            - store:/backend/data/store
+        environment:
+            port: 8000
+            maxStoreLifeTimeMinutes: ${maxStoreLifeTimeMinutes}
+            sendMailTo: ${sendMailTo}
+            sourceEmail: ${sourceEmail}
+            EqCatalogUrl: ${EqCatalogUrl}
+            EqSimUrl: ${EqSimUrl}
+            FragilityUrl: ${FragilityUrl}
+            ExposureUrl: ${ExposureUrl}
+            DeusUrl: ${DeusUrl}
+            NeptunusUrl: ${NeptunusUrl}
+            VolcanusUrl: ${VolcanusUrl}
+            TsunamiUrl: ${TsunamiUrl}
+            SysrelUrl: ${SysrelUrl}
+            SysrelEcuadorUrl: ${SysrelEcuadorUrl}
+            LaharUrl: ${LaharUrl}
 
-  compare-frontend:
-    build: ./compare-frontend
-    image: dlrriesgos/compare-frontend
-    depends_on:
-      - backend
-    ports:
-      - 8002:80
-    environment:
-      subPath: "/"
-      backendUrl: ${backendUrl}
-      allowedScenarios: '["ChileCached", "PeruCached"]'
+    frontend:
+        build: ./frontend
+        image: dlrriesgos/frontend
+        depends_on:
+            - backend
+        ports:
+            - 8001:80
+        environment:
+            subPath: "/"
+            backendUrl: ${backendUrl}
+            allowedScenarios: '["Peru", "Chile", "Ecuador"]'
 
-  # cache-server:
-  #   image: docker.osgeo.org/geoserver:2.23.1
-  #   ports:
-  #     - 8003:8080
-  #   environment:
-  #     CORS_ENABLED: true
-  #     SKIP_DEMO_DATA: true
-      
-  # monitor:
-  #   build: ./monitor
-  #   image: dlrriesgos/monitor
-  #   depends_on:
-  #     - backend
-  #   environment:
-  #     backendUrl: "http://backend:8000"
-  #     sendMailTo: ${sendMailTo}
-  #     sourceEmail: ${sourceEmail}
-  #     testServiceEveryMinutes: ${testServiceEveryMinutes}
+    compare-frontend:
+        build: ./compare-frontend
+        image: dlrriesgos/compare-frontend
+        depends_on:
+            - backend
+        ports:
+            - 8002:80
+        environment:
+            subPath: "/"
+            backendUrl: ${backendUrl}
+            allowedScenarios: '["ChileCached", "PeruCached"]'
 
-      
+    # cache-server:
+    #   image: docker.osgeo.org/geoserver:2.23.1
+    #   ports:
+    #     - 8003:8080
+    #   environment:
+    #     CORS_ENABLED: true
+    #     SKIP_DEMO_DATA: true
 
+    # monitor:
+    #   build: ./monitor
+    #   image: dlrriesgos/monitor
+    #   depends_on:
+    #     - backend
+    #   environment:
+    #     backendUrl: "http://backend:8000"
+    #     sendMailTo: ${sendMailTo}
+    #     sourceEmail: ${sourceEmail}
+    #     testServiceEveryMinutes: ${testServiceEveryMinutes}
 
 volumes:
-  logs: 
-  store:
-
+    logs:
+    store:

@@ -39,7 +39,7 @@ export function addScenarioApi(
         })
     );
     app.use((req, res, next) => {
-        console.log(req.originalUrl);
+        console.log('>>>> New request:', req.originalUrl);
         res.setHeader(
             'Expires',
             new Date(Date.now() + 1 * 60 * 1000).toUTCString()

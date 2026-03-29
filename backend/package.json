@@ -40,7 +40,7 @@
     "@types/sendmail": "^1.4.4",
     "@types/xmlserializer": "^0.6.3",
     "axios-better-stacktrace": "^2.1.5",
-    "jest": "^27.5.1",
+    "jest": "^30.2.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
